@@ -175,6 +175,24 @@
       "parentUuid": "9f3c942f_5940927c",
       "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "550980d5_c844449a",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-09T22:41:05Z",
+      "side": 1,
+      "message": "Added a comment on the related bug (https://buganizer.corp.google.com/issues/253501976#comment2)",
+      "parentUuid": "9b921b15_194ce3f4",
+      "revId": "6d8fe4db5019198b6a3d9fc71de4413ad39631f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
