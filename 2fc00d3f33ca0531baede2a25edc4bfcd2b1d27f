@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "995bba47_214d5199",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2022-12-09T06:55:47Z",
+      "side": 1,
+      "message": "These logs will be quite verbose if we ever turn on debug level logging -- maybe `trace!` or skip some?",
+      "revId": "2fc00d3f33ca0531baede2a25edc4bfcd2b1d27f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
