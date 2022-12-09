@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "755c1c6b_94628b42",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2022-12-09T18:50:56Z",
+      "side": 1,
+      "message": "Can these be `std::string_view`?",
+      "range": {
+        "startLine": 57,
+        "startChar": 21,
+        "endLine": 57,
+        "endChar": 47
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1db72c4_543562dd",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2022-12-09T18:50:56Z",
+      "side": 1,
+      "message": "Nit: Better to use `std::string_view` for these args too if we have it.",
+      "range": {
+        "startLine": 128,
+        "startChar": 24,
+        "endLine": 128,
+        "endChar": 99
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6c5d679_f162b799",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2022-12-09T18:50:56Z",
+      "side": 1,
+      "message": "Nit: It\u0027s generally not a good idea to make data members const, even if they\u0027re never supposed to be modified, because it stops assignment operators from being generated and makes the type less \"normal\".\n\nNot that big of a deal here since this type is a test harness and we\u0027re not likely to _try_ to assign.",
+      "range": {
+        "startLine": 203,
+        "startChar": 0,
+        "endLine": 204,
+        "endChar": 40
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
