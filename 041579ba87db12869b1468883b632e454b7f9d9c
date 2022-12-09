@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fe95fa3_ca44a973",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-09T01:55:14Z",
+      "side": 1,
+      "message": "This is a failed attempt to do the optimization of avoiding extra data copy on the most common path (single-message response). Sorry about that. And reverted.",
+      "parentUuid": "a8604fdb_cd466202",
+      "revId": "041579ba87db12869b1468883b632e454b7f9d9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd93b51a_f5390b94",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-12-08T11:36:47Z",
       "side": 1,
       "message": "Won\u0027t `recv_buf` still have the leading byte indicating no-more-to-come?",
+      "revId": "041579ba87db12869b1468883b632e454b7f9d9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2290927e_66b75731",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-09T01:55:14Z",
+      "side": 1,
+      "message": "This is a failed attempt to do the optimization of avoiding extra data copy on the most common path (single-message response). Sorry about that. And reverted.",
+      "parentUuid": "bd93b51a_f5390b94",
       "revId": "041579ba87db12869b1468883b632e454b7f9d9c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
