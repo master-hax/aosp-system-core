@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52ed7741_e81eab7f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-11T09:52:44Z",
+      "side": 1,
+      "message": "pleae add a unit test",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 43
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78bcba7e_fd7771f2",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-11T09:52:44Z",
+      "side": 1,
+      "message": "shouldn\u0027t we not send SIGKILL if this is false (i.e. SIGTERM worked)? What if pid was reused after the SIGTERM and before the SIGKILL?",
+      "range": {
+        "startLine": 892,
+        "startChar": 12,
+        "endLine": 892,
+        "endChar": 40
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17013d8c_f27d2468",
+        "filename": "init/service.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-11T09:52:44Z",
+      "side": 1,
+      "message": "please remove the newline for consistency",
+      "range": {
+        "startLine": 59,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 10
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ba80b06_64daa38c",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-11T09:52:44Z",
+      "side": 1,
+      "message": "nit: move this to before ParseGroup to keep the alphabetical sorting?",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 1
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45fa3888_892e2f97",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-11T09:52:44Z",
+      "side": 1,
+      "message": "this new keyword should be documented in README.md",
+      "range": {
+        "startLine": 592,
+        "startChar": 10,
+        "endLine": 592,
+        "endChar": 21
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
