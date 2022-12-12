@@ -56,6 +56,29 @@
       "message": "You might want to split CTS test into a separate patch.",
       "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e631d43f_accbc99e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-12-12T19:10:34Z",
+      "side": 1,
+      "message": "is this 64K?? 67108864 is 64MB?!",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 24
+      },
+      "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
