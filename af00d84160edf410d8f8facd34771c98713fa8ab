@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "04ec7c06_60a9d002",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-12T21:37:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b41ae9b7_006025de",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 58
+      },
+      "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb1044c1_384fff16",
@@ -37,6 +61,24 @@
       "writtenOn": "2022-12-08T01:00:32Z",
       "side": 1,
       "message": "missing the bug number.",
+      "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b905bdcf_241b7eac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-12T21:37:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb1044c1_384fff16",
       "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +113,30 @@
       "writtenOn": "2022-12-12T19:10:34Z",
       "side": 1,
       "message": "is this 64K?? 67108864 is 64MB?!",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 24
+      },
+      "revId": "af00d84160edf410d8f8facd34771c98713fa8ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "318d41c4_026d9379",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-12T21:37:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e631d43f_accbc99e",
       "range": {
         "startLine": 51,
         "startChar": 16,
