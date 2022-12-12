@@ -18,25 +18,31 @@
 
 #include <string>
 
+#include <aidl/android/hardware/usb/gadget/GadgetFunction.h>
+#include <aidl/android/hardware/usb/gadget/IUsbGadget.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
-#include <android/hardware/usb/gadget/1.0/IUsbGadget.h>
+#include <android/binder_manager.h>
+#include <android/binder_process.h>
 
-#include <hidl/HidlTransportSupport.h>
-
+using aidl::android::hardware::usb::gadget::GadgetFunction;
+using aidl::android::hardware::usb::gadget::IUsbGadget;
 using android::base::GetProperty;
 using android::base::SetProperty;
-using android::hardware::configureRpcThreadpool;
-using android::hardware::usb::gadget::V1_0::GadgetFunction;
-using android::hardware::usb::gadget::V1_0::IUsbGadget;
-using android::hardware::Return;
+using ndk::ScopedAStatus;
+using std::shared_ptr;
+
+std::atomic<int> sUsbOperationCount{};
 
 int main(int /*argc*/, char** /*argv*/) {
     if (GetProperty("ro.bootmode", "") == "charger") exit(0);
+    int operationId = sUsbOperationCount++;
 
-    configureRpcThreadpool(1, true /*callerWillJoin*/);
-    android::sp<IUsbGadget> gadget = IUsbGadget::getService();
-    Return<void> ret;
+    ABinderProcess_setThreadPoolMaxThreadCount(0);
+    const std::string service_name = std::string(IUsbGadget::descriptor).append("/default");
+    shared_ptr<IUsbGadget> gadget = IUsbGadget::fromBinder(
+            ndk::SpAIBinder(AServiceManager_waitForService(service_name.c_str())));
+    ScopedAStatus ret;
 
     if (gadget != nullptr) {
         LOG(INFO) << "Usb HAL found.";
@@ -45,11 +51,11 @@ int main(int /*argc*/, char** /*argv*/) {
             LOG(INFO) << "peristent prop is adb";
             SetProperty("ctl.start", "adbd");
             ret = gadget->setCurrentUsbFunctions(static_cast<uint64_t>(GadgetFunction::ADB),
-                                                 nullptr, 0);
+                                                 nullptr, 0, operationId);
         } else {
             LOG(INFO) << "Signal MTP to enable default functions";
             ret = gadget->setCurrentUsbFunctions(static_cast<uint64_t>(GadgetFunction::MTP),
-                                                 nullptr, 0);
+                                                 nullptr, 0, operationId);
         }
 
         if (!ret.isOk()) LOG(ERROR) << "Error while invoking usb hal";
