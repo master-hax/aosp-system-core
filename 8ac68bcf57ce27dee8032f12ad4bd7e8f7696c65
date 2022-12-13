@@ -26,6 +26,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7a2eb452_5b894c3b",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-12-13T06:55:11Z",
+      "side": 1,
+      "message": "`std::mutex` might be preferable here.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd3a171a_45ba792e",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-12-13T06:55:11Z",
+      "side": 1,
+      "message": "`std::condition_variable`?",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c1db72c4_543562dd",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
