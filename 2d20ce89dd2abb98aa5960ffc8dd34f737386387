@@ -16,6 +16,24 @@
       "message": "i _think_ we have presubmit tests to check this, but we\u0027ll need to make sure one way or another that this doesn\u0027t break stuff like media processes --- splice() is a system call that\u0027s probably _not_ allowed by their seccomp filters?",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "867e12ed_24f6201f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-13T23:50:22Z",
+      "side": 1,
+      "message": "(if it doesn\u0027t work, you should just need to edit system/core/debuggerd/seccomp_policy/crash_dump.policy.def and rerun the generate.sh in that directory. assuming no-one\u0027s been guilty of any copy \u0026 paste!)",
+      "parentUuid": "a114e80e_8e58dc57",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
