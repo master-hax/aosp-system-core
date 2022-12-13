@@ -22,6 +22,30 @@
       },
       "revId": "5d33e593721680d5e87982f124e45b23ebef38b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7a1fb6b_b5b613ab",
+        "filename": "libutils/Unicode.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-13T21:41:16Z",
+      "side": 1,
+      "message": "I should have put on some comments - this function checks for either high surrogate or low surrogate, and the next one checks for if w1 is high surrogate and w2 is low surrogate (and if so they form a valid pair).\n\nThe previous version checks if it\u0027s a high surrogate, and if not - convert the current utf-16 character to utf-8. That missed the case if it\u0027s a low surrogate, which should be skipped.\n\nSo the logic in this version is (which should be correct):\n\n```\n  if (current_utf16_is_neither_high_nor_low_surrogate()) {\n    do normal conversion\n    continue\n  }\n  if (current_and_next_utf16_are_valid_surrogate_pair()) {\n    do surrogate pair conversion\n    continue\n  }\n  // lone high or lone low surrogate case here and will be skipped ...\n```\n\nAnd this also matches the current behavior.\n\nSo in short, this fixes the corner case in previous version of this CL.",
+      "parentUuid": "cc783cb4_7c83412c",
+      "range": {
+        "startLine": 284,
+        "startChar": 16,
+        "endLine": 284,
+        "endChar": 22
+      },
+      "revId": "5d33e593721680d5e87982f124e45b23ebef38b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
