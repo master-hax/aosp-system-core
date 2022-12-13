@@ -16,6 +16,24 @@
       "message": "I recommend using shared memory to pass around messages that are larger than TIPC buffer. Splitting a large message into multiple smaller ones is error prone and can lead to subtle bugs, e.g. aosp/1867153. The way old keymaster did it predates shared memory, and we never got around to changing it.",
       "revId": "3606cec3c00b9b32e4d0be4692ceeb7aa1865697",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12506292_7b0cd74e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2022-12-13T19:28:10Z",
+      "side": 1,
+      "message": "Thanks Tri @trong@google.com for the information and the pointer.\n\nThis is not something we have copied from the old keymaster. This is a fix to a new problem we faced in keymint rust TA. In keymint rust, we use CBOR serialization and for larger key sizes, generateKey response from the TA is larger than the TIPC buffer. Therefore, we split it in the TA code before putting it in the buffer (please see the other CLs in this topic) to make sure the response from the TA is not dropped before reaching the HAL.\n\nI have added a comment in the related bug to https://b.corp.google.com/issues/253501976#comment3 to revisit this in the bug fixing phase. I would like to move forward with this for now, in the interest of the IC timelines if that is fine with David @drysdale@google.com too. Thanks to Oralando, found this bug b/258706825 which tracks the Rust support for memory mapping in TIPC, which seems to be still under development.\n\nOn a separate note, I would like to know how to do retiring of the messages (i.e. the rust equivalent of `put_msg`) before sending the response from the TA, which seems to be the main highlight of aosp/1867153 that you pointed. I will ask about it from the Trusty Rust team, probably in the same bug (b/258706825).",
+      "parentUuid": "c09d1cf0_dd144f12",
+      "revId": "3606cec3c00b9b32e4d0be4692ceeb7aa1865697",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
