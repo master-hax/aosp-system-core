@@ -22,6 +22,30 @@
       },
       "revId": "80dd5d431c798a3a9d9bc0e271c3693c62030a64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c371c09_fabab50c",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-13T17:59:13Z",
+      "side": 1,
+      "message": "If an init bug sets this to something like \u0027SVC_RESTARTING\u0027, then this would occur. It would be an internal init bug, but historically init doesn\u0027t fail hard because if it does fail, then the device resets.\n\nI think that this strategy may have been okay or inevitable in the past because of the rapid growth of Android and the lack of infrastructure to test it thoroughly, but I think this is a bad strategy, and I\u0027ve fixed a few bugs over the years here which I think are largely preventable.\n\nWhat I think we should do in init is this:\n- log issues (to make sure we can see them when debugging)\n- find logs etc.. to bring various issues down to 0 occurances\n- switch them to hard failures\n\nIn order to overcome the issue where our tests don\u0027t cover hard failures which occur in apps, find logs gets us part of the way, but it may leave the device open to DOS. In order to prevent this, we should increase the use of fuzzers in init, work to simplify it (specifically - limit device-specific logic inside of init, such as setting specific properties. Changes like this, when we support a configuration language - init.rc - do not belong in init), and we should make changes like you are suggesting (avoiding untyped flags like this).\n\nThis is kind of the overall strategy I\u0027m applying everywhere.\n\nThere is a large amount of legacy cruft in init. Note issues b/210919187 as well as other disabled logs in init itself mean that most of the issues aren\u0027t visible. However, overall, it is working relatively well, and we don\u0027t have many core issues. So - I don\u0027t believe it should be a big effort to fix init. However, incrementally, this is the strategy I propose (maybe I can write it up the strategy to formalize it). However, it is how I\u0027m operating everywhere, as a general principle.\n\nIn summary, the strategy is:\n1. make issues visible\n2. fix issues\n3. fail hard if issue is re-introduced\n\nIt\u0027s the principle of \"monotonicity\". No hamster wheel, no Sisyphean tasks.",
+      "parentUuid": "28805b04_3e3260cb",
+      "range": {
+        "startLine": 871,
+        "startChar": 8,
+        "endLine": 872,
+        "endChar": 53
+      },
+      "revId": "80dd5d431c798a3a9d9bc0e271c3693c62030a64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
