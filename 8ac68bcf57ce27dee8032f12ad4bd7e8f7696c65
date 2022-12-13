@@ -60,6 +60,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "10976933_5f38fd43",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-12-13T07:14:01Z",
+      "side": 1,
+      "message": "Minor nit: `std::queue` might be more efficient.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c1db72c4_543562dd",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
