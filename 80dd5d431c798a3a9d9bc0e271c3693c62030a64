@@ -70,6 +70,30 @@
       },
       "revId": "80dd5d431c798a3a9d9bc0e271c3693c62030a64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88de786a_7e3d69f2",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 872,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-13T22:44:27Z",
+      "side": 1,
+      "message": "hahaha - point taken",
+      "parentUuid": "abf1b3df_a8336357",
+      "range": {
+        "startLine": 871,
+        "startChar": 8,
+        "endLine": 872,
+        "endChar": 53
+      },
+      "revId": "80dd5d431c798a3a9d9bc0e271c3693c62030a64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
