@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc783cb4_7c83412c",
+        "filename": "libutils/Unicode.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2022-12-13T21:23:22Z",
+      "side": 1,
+      "message": "this used to be 0xfc00 in the previous patch",
+      "range": {
+        "startLine": 284,
+        "startChar": 16,
+        "endLine": 284,
+        "endChar": 22
+      },
+      "revId": "5d33e593721680d5e87982f124e45b23ebef38b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
