@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9b1aaa26_9b11cb44",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-12-13T19:04:49Z",
+      "side": 1,
+      "message": "Does that work with `constexpr`?",
+      "parentUuid": "755c1c6b_94628b42",
+      "range": {
+        "startLine": 57,
+        "startChar": 21,
+        "endLine": 57,
+        "endChar": 47
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7a2eb452_5b894c3b",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
@@ -55,6 +79,24 @@
       "side": 1,
       "message": "Why is that? I would have thought that it was better to use the Android-specific concurrency types like how google3 uses the concurrency types from `absl`. instead of `std`.",
       "parentUuid": "7a2eb452_5b894c3b",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db13c438_ee9d9ecf",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2022-12-13T19:04:49Z",
+      "side": 1,
+      "message": "In Android it\u0027s actually the opposite, a lot of the old types are getting deprecated. A lot of code predates C++11 and the `std` types were not available back then.\nFor `Mutex` specifically, see https://android.googlesource.com/platform/system/core/+/refs/heads/master/libutils/include/utils/Mutex.h#84, and for `Vector` check out https://android.googlesource.com/platform/system/core/+/refs/heads/master/libutils/include/utils/Vector.h#51.",
+      "parentUuid": "31c603b6_21059f82",
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
