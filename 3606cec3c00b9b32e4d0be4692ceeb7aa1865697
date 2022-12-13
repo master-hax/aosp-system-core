@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c09d1cf0_dd144f12",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2022-12-13T02:33:26Z",
+      "side": 1,
+      "message": "I recommend using shared memory to pass around messages that are larger than TIPC buffer. Splitting a large message into multiple smaller ones is error prone and can lead to subtle bugs, e.g. aosp/1867153. The way old keymaster did it predates shared memory, and we never got around to changing it.",
+      "revId": "3606cec3c00b9b32e4d0be4692ceeb7aa1865697",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
