@@ -276,18 +276,13 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
       return false;
     }
 
-    char buf[1024];
-    rc = TEMP_FAILURE_RETRY(read(pipe_read.get(), buf, sizeof(buf)));
+    rc = TEMP_FAILURE_RETRY(
+        splice(pipe_read, nullptr, output_fd.get(), nullptr, pipe_buffer_size, 0));
     if (rc == 0) {
       // Done.
       break;
     } else if (rc == -1) {
       log_error(output_fd, errno, "error while reading");
-      return false;
-    }
-
-    if (!android::base::WriteFully(output_fd.get(), buf, rc)) {
-      log_error(output_fd, errno, "error while writing");
       return false;
     }
   }
