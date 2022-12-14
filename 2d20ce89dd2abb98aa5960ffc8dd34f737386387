@@ -105,6 +105,24 @@
       "parentUuid": "26ffbb3c_cc98ba84",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef79b99f_b17c8393",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-12-14T20:22:22Z",
+      "side": 1,
+      "message": "We do have tests that should catch a new syscall if it\u0027s not allowed. However, it can be a bit tricky. I am testing this just in case but I think this modified code path might not be reached if we detect that the process is special.",
+      "parentUuid": "26ffbb3c_cc98ba84",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
