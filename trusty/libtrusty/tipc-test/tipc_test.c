@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #define __USE_GNU
+#include <pthread.h>
 #include <sys/mman.h>
 #include <sys/uio.h>
 
@@ -44,6 +45,9 @@ static const char *closer2_name = "com.android.ipc-unittest.srv.closer2";
 static const char *closer3_name = "com.android.ipc-unittest.srv.closer3";
 static const char *main_ctrl_name = "com.android.ipc-unittest.ctrl";
 static const char* receiver_name = "com.android.trusty.memref.receiver";
+static const char* longwork_low_name = "com.android.trusty.longwork-lowprio";
+static const char* longwork_high_name = "com.android.trusty.longwork-highprio";
+static const char* longwork_normal_name = "com.android.trusty.longwork-normalprio";
 
 static const char* _sopts = "hsvDS:t:r:m:b:";
 /* clang-format off */
@@ -56,6 +60,7 @@ static const struct option _lopts[] =  {
     {"repeat",  required_argument, 0, 'r'},
     {"burst",   required_argument, 0, 'b'},
     {"msgsize", required_argument, 0, 'm'},
+    {"thread_cnt", required_argument, 0, 'T'},
     {0, 0, 0, 0}
 };
 /* clang-format on */
@@ -73,6 +78,7 @@ static const char* usage =
         "  -m, --msgsize size    max message size\n"
         "  -v, --variable        variable message size\n"
         "  -s, --silent          silent\n"
+        "  -T, --thread_cnt      number of threads for echo and writev tests\n"
         "\n";
 
 static const char* usage_long =
@@ -100,6 +106,7 @@ static uint opt_msgsize = 32;
 static uint opt_msgburst = 32;
 static bool opt_variable = false;
 static bool opt_silent = false;
+static uint opt_thread_cnt = 1;
 static char* srv_name = NULL;
 
 static void print_usage_and_exit(const char *prog, int code, bool verbose)
@@ -149,6 +156,10 @@ static void parse_options(int argc, char **argv)
 
             case 's':
                 opt_silent = true;
+                break;
+
+            case 'T':
+                opt_thread_cnt = atoi(optarg);
                 break;
 
             case 'h':
@@ -410,6 +421,108 @@ static int echo_test(uint repeat, uint msgsz, bool var)
     }
 
     return 0;
+}
+
+static int trigger_longwork(uint repeat, int highprio) {
+    int longwork_fd = -1;
+    const char* service_name;
+    char tx_buf[sizeof(uint32_t)];
+    size_t msg_len;
+    int ret = 0;
+    ssize_t rc;
+
+    if (highprio > 0) {
+        service_name = longwork_high_name;
+    } else if (highprio < 0) {
+        service_name = longwork_low_name;
+    } else {
+        service_name = longwork_normal_name;
+    }
+
+    longwork_fd = tipc_connect(dev_name, service_name);
+    if (longwork_fd < 0) {
+        fprintf(stderr, "%s: Failed to connect to '%s' service\n", __func__, service_name);
+        return longwork_fd;
+    }
+
+    /* embed repeat for trusty side to use as loop counter */
+    *((uint32_t*)tx_buf) = repeat;
+    msg_len = sizeof(uint32_t);
+
+    rc = write(longwork_fd, tx_buf, msg_len);
+    if ((size_t)rc != msg_len) {
+        perror("longwork_test: write");
+        ret = -1;
+        goto longwork_close_and_return;
+    }
+
+    rc = read(longwork_fd, tx_buf, msg_len);
+    if (rc < 0) {
+        perror("longwork_test: read");
+        ret = -1;
+        goto longwork_close_and_return;
+    }
+
+    if ((size_t)rc != msg_len || msg_len < sizeof(uint32_t)) {
+        fprintf(stderr, "data truncated (%zu vs. %zu)\n", rc, msg_len);
+        ret = -1;
+        goto longwork_close_and_return;
+    }
+
+    if (repeat != *((uint32_t*)tx_buf)) {
+        fprintf(stderr, "repeat not matched (%zu vs. %zu)\n", repeat, *((uint32_t*)tx_buf));
+        ret = -1;
+        goto longwork_close_and_return;
+    }
+
+longwork_close_and_return:
+    tipc_close(longwork_fd);
+    return ret;
+}
+
+typedef struct {
+    uint repeat;
+    uint msgsz;
+    uint seed;  // for variation between concurrent threads
+    int result;
+    bool var;
+    bool async;
+} threaded_test_args_t;
+
+typedef struct {
+    threaded_test_args_t args;
+    pthread_t t;
+} threaded_test_info_t;
+
+static int threaded_test(void* (*thread_func)(void*), uint thread_cnt, const uint repeat,
+                         const uint msgsz, const bool var, const bool async) {
+    threaded_test_info_t tinfo[thread_cnt];
+    int ret = 0;
+
+    for (int i = 0; i < thread_cnt; i++) {
+        tinfo[i].args.repeat = repeat;
+        tinfo[i].args.msgsz = msgsz;
+        tinfo[i].args.var = var;
+        tinfo[i].args.async = async;
+        tinfo[i].args.seed = 100000 * i;
+
+        ret = pthread_create(&tinfo[i].t, NULL, thread_func, &tinfo[i].args);
+        if (ret != 0) {
+            printf("%s: %s\n", __func__, strerror(ret));
+            return 1;
+        }
+    }
+
+    ret = 0;
+    for (int i = 0; i < thread_cnt; i++) {
+        pthread_join(tinfo[i].t, NULL);
+        if (tinfo[i].args.result != 0) {
+            fprintf(stderr, "thread #%d failed (%d)\n", i, tinfo[i].args.result);
+            ret = 1;
+        }
+    }
+
+    return ret;
 }
 
 static int burst_write_test(uint repeat, uint msgburst, uint msgsz, bool var)
@@ -942,6 +1055,20 @@ cleanup:
     return ret;
 }
 
+#define LOOP_CNT_MULT 2
+void* longwork_linux_thread(void* arg) {
+    threaded_test_args_t* et = (threaded_test_args_t*)arg;
+    volatile uint64_t count;
+    uint64_t end_count = (uint64_t)(et->repeat) * LOOP_CNT_MULT;
+
+    for (count = 0; count < end_count; ++count)
+        ;
+
+    et->result = 0;
+
+    return NULL;
+}
+
 int main(int argc, char **argv)
 {
     int rc = 0;
@@ -991,6 +1118,14 @@ int main(int argc, char **argv)
         rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
     } else if (strcmp(test_name, "send-fd") == 0) {
         rc = send_fd_test();
+    } else if (strcmp(test_name, "longwork-low") == 0) {
+        rc = trigger_longwork(opt_repeat, -1);
+    } else if (strcmp(test_name, "longwork-high") == 0) {
+        rc = trigger_longwork(opt_repeat, 1);
+    } else if (strcmp(test_name, "longwork-normal") == 0) {
+        rc = trigger_longwork(opt_repeat, 0);
+    } else if (strcmp(test_name, "longwork-local") == 0) {
+        rc = threaded_test(longwork_linux_thread, opt_thread_cnt, opt_repeat, 0, 0, false);
     } else {
         fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
         print_usage_and_exit(argv[0], EXIT_FAILURE, true);
