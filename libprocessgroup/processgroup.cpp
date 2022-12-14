@@ -518,12 +518,15 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
 
         return err;
     } else {
+        // retries > 0 means that we still have remaining processes
         if (retries > 0) {
             LOG(ERROR) << "Failed to kill process cgroup uid " << uid << " pid " << initialPid
                        << " in " << static_cast<int>(ms) << "ms, " << processes
                        << " processes remain";
+            return -1;
         }
-        return -1;
+        // we successfully killed at least 1 process
+        return 0;
     }
 }
 
