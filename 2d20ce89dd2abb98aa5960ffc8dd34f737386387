@@ -123,6 +123,24 @@
       "parentUuid": "26ffbb3c_cc98ba84",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ff5fa06_dbdbb584",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2022-12-14T23:32:33Z",
+      "side": 1,
+      "message": "This is odd, but this change seems to cause the test debuggerd_client.race to run forever. I ran it on my wembley and on a cheetah.\n\nIs there some way to verify that the debuggerd unit tests are actually running? Although, maybe it passes on cuttlefish.",
+      "parentUuid": "ef79b99f_b17c8393",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
