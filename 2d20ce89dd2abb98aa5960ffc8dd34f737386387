@@ -69,6 +69,42 @@
       "parentUuid": "867e12ed_24f6201f",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1920cd9_da10fc2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-14T18:20:11Z",
+      "side": 1,
+      "message": "no, don\u0027t get me wrong --- i like the splice change; it seems like a clever way to . i",
+      "parentUuid": "26ffbb3c_cc98ba84",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da2dd9ea_68eda388",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-14T18:20:11Z",
+      "side": 1,
+      "message": "no, don\u0027t get me wrong --- i like the splice change; it seems like a clever way to reduce overhead and (more importantly to me) remove some code.\n\ni just don\u0027t want to break things in the last working week of the year and leave others to pick up the pieces :-) (especially because there are known danger areas here, like the media code.)\n\neven if cferris does come back and confirm that we test that in presubmit, i\u0027d _still_ say \"let\u0027s submit this in january\" :-)",
+      "parentUuid": "26ffbb3c_cc98ba84",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
