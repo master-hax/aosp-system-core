@@ -203,7 +203,12 @@ void Service::KillProcessGroup(int signal, bool report_oneshot) {
                   << ") process group...";
         int max_processes = 0;
         int r;
-        if (signal == SIGTERM) {
+        // In case cgroups isn't available, there are no cgroups proc files. And
+        // killProcessGroup just sends the signal to -pid because it doesn't
+        // know whether pid is already killed or not. In such case, multiple
+        // kill() calls may succeed if pid becomes a zombie. That may result in
+        // unnecessary retries, so just try killing once.
+        if (signal == SIGTERM || !CgroupsAvailable()) {
             r = killProcessGroupOnce(proc_attr_.uid, pid_, signal, &max_processes);
         } else {
             r = killProcessGroup(proc_attr_.uid, pid_, signal, &max_processes);
