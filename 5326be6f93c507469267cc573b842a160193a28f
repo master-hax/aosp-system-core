@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f33bfbdc_504f2077",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-14T22:52:11Z",
+      "side": 1,
+      "message": "nit: \"dropped.\"",
+      "revId": "5326be6f93c507469267cc573b842a160193a28f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
