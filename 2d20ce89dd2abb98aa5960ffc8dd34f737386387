@@ -51,6 +51,24 @@
       "message": "(cferris: see my earlier comment about splice vs the media seccomp policies. seems like presubmit passed though?)",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26ffbb3c_cc98ba84",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-12-14T17:36:25Z",
+      "side": 1,
+      "message": "Good point. I think the splice change is pretty minor, so if it is risky, I\u0027m happy to just drop it. I think the other change is safe w.r.t. seccomp/selinux. Let me know what you think.",
+      "parentUuid": "867e12ed_24f6201f",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
