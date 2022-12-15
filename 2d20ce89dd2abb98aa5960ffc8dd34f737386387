@@ -159,6 +159,24 @@
       "parentUuid": "7ff5fa06_dbdbb584",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "307cdac4_7c6db9a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-12-15T19:24:37Z",
+      "side": 1,
+      "message": "I was able to reproduce on my oriole yesterday, but now I can\u0027t today...\n\nI added SPLICE_F_NONBLOCK to the splice flags and it returned EAGAIN instead of blocking forever, so it seems like the test\u0027s output pipe got full. That ought to be an issue for the old implementation too though, so I\u0027m not sure what\u0027s up. (to implement the timeout properly, we should really be polling the output fd for writability)\n\nI\u0027m going to try tweaking the setup half of the test to be less racy. Maybe it usually doesn\u0027t manage to start all the threads and if it does start all of them, then the output is too big for the pipe. If that is true, then I should be able to get the old implementation to fail as well.",
+      "parentUuid": "fd208984_c4eb3ae1",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
