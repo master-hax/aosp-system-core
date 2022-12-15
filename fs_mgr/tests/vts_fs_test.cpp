@@ -99,14 +99,11 @@ TEST(fs, PartitionTypes) {
         }
 
         if (entry.flags & MS_RDONLY) {
-            std::vector<std::string> allowed = {"erofs", "ext4"};
-            if (vsr_level == __ANDROID_API_T__) {
-                allowed.emplace_back("f2fs");
-            }
+            std::vector<std::string> allowed = {"erofs", "ext4", "f2fs"};
 
             EXPECT_NE(std::find(allowed.begin(), allowed.end(), entry.fs_type), allowed.end())
                     << entry.mount_point;
-        } else {
+        } else if (entry.mount_point == "/data" || entry.mount_point == "/metadata") {
             EXPECT_NE(entry.fs_type, "ext4") << entry.mount_point;
         }
     }
