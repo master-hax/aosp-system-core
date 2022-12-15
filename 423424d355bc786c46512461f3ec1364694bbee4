@@ -39,6 +39,23 @@
       },
       "revId": "423424d355bc786c46512461f3ec1364694bbee4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "686f0c9b_87d321bc",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-15T04:03:12Z",
+      "side": 1,
+      "message": "We need to mlock the pages post OTA reboot. What processes would this restrict to ?",
+      "revId": "423424d355bc786c46512461f3ec1364694bbee4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
