@@ -16,6 +16,29 @@
       "message": "Adding akailash@, since we use mlock in first-stage init.",
       "revId": "423424d355bc786c46512461f3ec1364694bbee4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1811add_5adc69f7",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-15T01:18:19Z",
+      "side": 1,
+      "message": "vendor here means that this test will be skipped on a device that was launched before U and upgraded to U. Is that your intention?",
+      "range": {
+        "startLine": 632,
+        "startChar": 42,
+        "endLine": 632,
+        "endChar": 48
+      },
+      "revId": "423424d355bc786c46512461f3ec1364694bbee4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
