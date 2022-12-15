@@ -141,6 +141,24 @@
       "parentUuid": "ef79b99f_b17c8393",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd208984_c4eb3ae1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-15T02:19:08Z",
+      "side": 1,
+      "message": "i don\u0027t have a 64-bit cuttlefish right now, but, yeah, it passes on 32-bit x86 cuttlefish:\n```\n[----------] 2 tests from debuggerd_client\n[ RUN      ] debuggerd_client.race\n[       OK ] debuggerd_client.race (1555 ms)\n[ RUN      ] debuggerd_client.no_timeout\n[       OK ] debuggerd_client.no_timeout (28 ms)\n[----------] 2 tests from debuggerd_client (1583 ms total)\n```",
+      "parentUuid": "7ff5fa06_dbdbb584",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
