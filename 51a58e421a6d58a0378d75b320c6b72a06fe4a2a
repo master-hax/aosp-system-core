@@ -22,6 +22,30 @@
       },
       "revId": "51a58e421a6d58a0378d75b320c6b72a06fe4a2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "115abf03_37a47abc",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-15T04:22:01Z",
+      "side": 1,
+      "message": "Do you mean that the second call to `DoKillProcessGroupOnce`? This loop is already guarded by `processes \u003e 0`.",
+      "parentUuid": "1fe4e78d_e1f8112b",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 31
+      },
+      "revId": "51a58e421a6d58a0378d75b320c6b72a06fe4a2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
