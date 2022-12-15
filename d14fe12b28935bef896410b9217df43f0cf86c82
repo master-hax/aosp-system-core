@@ -16,6 +16,24 @@
       "message": "(please don\u0027t submit this until the new year if -- like me -- you\u0027re not going to be here the next couple of weeks though!)",
       "revId": "d14fe12b28935bef896410b9217df43f0cf86c82",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a74bcd00_bcdb5c64",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2022-12-15T21:26:08Z",
+      "side": 1,
+      "message": "Yep agree - I guess even if I\u0027m around there\u0027d be limited support to fix any potential issue over the end of the year, so I\u0027ll get this submitted after that.",
+      "parentUuid": "33fb604d_230ed2bc",
+      "revId": "d14fe12b28935bef896410b9217df43f0cf86c82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
