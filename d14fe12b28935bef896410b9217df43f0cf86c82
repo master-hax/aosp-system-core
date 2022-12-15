@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33fb604d_230ed2bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-15T21:23:42Z",
+      "side": 1,
+      "message": "(please don\u0027t submit this until the new year if -- like me -- you\u0027re not going to be here the next couple of weeks though!)",
+      "revId": "d14fe12b28935bef896410b9217df43f0cf86c82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
