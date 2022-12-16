@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d9b46f2_d1e567b0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-16T06:44:02Z",
+      "side": 1,
+      "message": "Will update in next patch",
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b25d6390_7f147abb",
@@ -14,6 +31,30 @@
       "writtenOn": "2022-12-16T06:01:41Z",
       "side": 1,
       "message": "this isn\u0027t in the critical section, will it have race condition?",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 507,
+        "endChar": 58
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d6225d8_8f87baa2",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-16T06:44:02Z",
+      "side": 1,
+      "message": "Yes correcting it",
+      "parentUuid": "b25d6390_7f147abb",
       "range": {
         "startLine": 507,
         "startChar": 0,
@@ -60,6 +101,54 @@
       "writtenOn": "2022-12-16T06:01:41Z",
       "side": 1,
       "message": "does it seem to be empty set?",
+      "range": {
+        "startLine": 524,
+        "startChar": 35,
+        "endLine": 524,
+        "endChar": 48
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9348e92c_48ae3097",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-16T06:44:02Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f43b4541_c52a81cf",
+      "range": {
+        "startLine": 524,
+        "startChar": 35,
+        "endLine": 524,
+        "endChar": 48
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94b11de6_99cb92b6",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-16T06:44:02Z",
+      "side": 1,
+      "message": "Cleaning it",
+      "parentUuid": "435ea59d_135fec46",
       "range": {
         "startLine": 524,
         "startChar": 35,
