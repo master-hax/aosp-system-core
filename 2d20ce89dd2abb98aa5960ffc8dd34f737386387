@@ -195,6 +195,24 @@
       "parentUuid": "307cdac4_7c6db9a7",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ce3964b_6c2b9bae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-12-16T00:37:07Z",
+      "side": 1,
+      "message": "I spoke too soon :) After removing a debug log statement, I can repro again",
+      "parentUuid": "1a810d4a_ba6b2e47",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
