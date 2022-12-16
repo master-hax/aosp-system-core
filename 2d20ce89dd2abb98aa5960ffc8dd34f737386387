@@ -231,6 +231,24 @@
       "parentUuid": "7ce3964b_6c2b9bae",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "350cf562_99bbeecc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-12-16T16:19:04Z",
+      "side": 1,
+      "message": "\u003e It is probably reasonable to conclude that this change is too dangerous then. What do you all think?\n\nyeah, your argument is convincing to me. might be worth a code comment explaining why splice() won\u0027t work though, since this was not obvious :-)",
+      "parentUuid": "946ccefa_b9fd7e8b",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
