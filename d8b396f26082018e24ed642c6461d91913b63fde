@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b25d6390_7f147abb",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-16T06:01:41Z",
+      "side": 1,
+      "message": "this isn\u0027t in the critical section, will it have race condition?",
+      "range": {
+        "startLine": 507,
+        "startChar": 0,
+        "endLine": 507,
+        "endChar": 58
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f43b4541_c52a81cf",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-16T06:01:41Z",
+      "side": 1,
+      "message": "It seems to be an empty set?",
+      "range": {
+        "startLine": 524,
+        "startChar": 35,
+        "endLine": 524,
+        "endChar": 48
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "435ea59d_135fec46",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-16T06:01:41Z",
+      "side": 1,
+      "message": "does it seem to be empty set?",
+      "range": {
+        "startLine": 524,
+        "startChar": 35,
+        "endLine": 524,
+        "endChar": 48
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
