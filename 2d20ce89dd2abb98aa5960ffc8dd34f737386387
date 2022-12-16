@@ -177,6 +177,24 @@
       "parentUuid": "fd208984_c4eb3ae1",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a810d4a_ba6b2e47",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-12-16T00:33:33Z",
+      "side": 1,
+      "message": "Well, I can\u0027t get it to repro anymore, so it is difficult to solve the mystery. I wonder if there is some race that can occur which makes the dump text significantly larger (and thus the pipe gets full, so the test gets stuck).\n\nIn https://r.android.com/2359686, I\u0027m making the test setup more reliable. I ran the test with `--iterations 100` on my oriole and didn\u0027t see any failures.\n\nLet me know if it still fails for you.",
+      "parentUuid": "307cdac4_7c6db9a7",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
