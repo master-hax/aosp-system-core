@@ -213,6 +213,24 @@
       "parentUuid": "1a810d4a_ba6b2e47",
       "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "946ccefa_b9fd7e8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2022-12-16T01:05:36Z",
+      "side": 1,
+      "message": "I think I know what\u0027s going on. The failure goes away if the pipe size is increased (e.g. to 32 MB).\n\nPipes are internally a list of pages. If you splice from a pipe to another pipe, then linux doesn\u0027t copy the bytes, it just moves a page from one pipe to the other. debuggerd is making many small writes to the output FD. After a small write to the pipe, we\u0027ve got a barely populated page in the first pipe, then before much else gets written, the splice kicks in and moves the page over. Nothing compacts the pages in a pipe, so the second pipe ends up full of nearly empty pages. A pipe\u0027s fullness is determined by the number of pages, not the bytes inside the page, so we fill up the second pipe much more easily.\n\nIt is probably reasonable to conclude that this change is too dangerous then. What do you all think?\n\nWhether or not we drop the slice change, it is probably worth tweaking some of the surrounding code that causes this to happen.\n\n  * Buffering the writes from debuggerd would probably be a performance win. \n  \n  * Instead of a big pipe that requires us to tweak the size as conditions change, the test could use an anonymous file (which can just grow as needed) or spin up a thread to read from the pipe concurrently to the dump (which is what any real scenario should be doing)",
+      "parentUuid": "7ce3964b_6c2b9bae",
+      "revId": "2d20ce89dd2abb98aa5960ffc8dd34f737386387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
