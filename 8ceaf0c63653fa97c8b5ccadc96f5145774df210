@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08d3ae93_d2d02e44",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-16T00:01:42Z",
+      "side": 1,
+      "message": "Bypassing-presubmit for already failing test",
+      "revId": "8ceaf0c63653fa97c8b5ccadc96f5145774df210",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
