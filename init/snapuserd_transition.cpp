@@ -34,6 +34,7 @@
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
 #include <fs_avb/fs_avb.h>
+#include <fs_mgr/file_wait.h>
 #include <libsnapshot/snapshot.h>
 #include <private/android_filesystem_config.h>
 #include <procinfo/process_map.h>
@@ -49,6 +50,7 @@ namespace android {
 namespace init {
 
 using namespace std::string_literals;
+using namespace std::chrono_literals;
 
 using android::base::unique_fd;
 using android::snapshot::SnapshotManager;
@@ -262,39 +264,57 @@ void SnapuserdSelinuxHelper::FinishTransition() {
  * to these device mapper block devices are ok even though
  * we may see audit logs.
  */
-bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
-    std::string dev = "/dev/block/mapper/system"s + fs_mgr_get_slot_suffix();
-    android::base::unique_fd fd(open(dev.c_str(), O_RDONLY | O_DIRECT));
-    if (fd < 0) {
-        PLOG(ERROR) << "open " << dev << " failed";
+bool SnapuserdSelinuxHelper::TestSnapuserdIsReady(pid_t pid, std::chrono::milliseconds timeout_ms) {
+    std::error_code ec;
+    std::string status_file = "/proc/" + std::to_string(pid) + "/status";
+
+    // Wait for /proc/pid/status file
+    if (!android::fs_mgr::WaitForFile(status_file, 10s)) {
+        LOG(ERROR) << "Timed out - snapuserd daemon not found with pid: " << pid;
         return false;
     }
 
-    void* addr;
-    ssize_t page_size = getpagesize();
-    if (posix_memalign(&addr, page_size, page_size) < 0) {
-        PLOG(ERROR) << "posix_memalign with page size " << page_size;
-        return false;
+    // Scan for all dm-user misc devices
+    std::string dmuser_dir = "/dev/dm-user/";
+    std::set<std::string> dmuser_devices;
+    for (const auto& entry : std::filesystem::directory_iterator(dmuser_dir)) {
+        // Track all dm-user misc devices which are not from first stage
+        // We add "-init" to misc devices which were created in first stage.
+        // Ignore those device.
+        if (!android::base::EndsWith(entry.path().string(), "-init"))
+            dmuser_devices.insert(entry.path().string());
     }
 
-    std::unique_ptr<void, decltype(&::free)> buffer(addr, ::free);
+    auto start = std::chrono::steady_clock::now();
 
-    int iter = 0;
-    while (iter < 10) {
-        ssize_t n = TEMP_FAILURE_RETRY(pread(fd.get(), buffer.get(), page_size, 0));
-        if (n < 0) {
-            // Wait for sometime before retry
-            std::this_thread::sleep_for(100ms);
-        } else if (n == page_size) {
-            return true;
-        } else {
-            LOG(ERROR) << "pread returned: " << n << " from: " << dev << " expected: " << page_size;
+    while (true) {
+        // Daemon thread should have opened dm-user misc device.
+        std::string proc_dir = "/proc/" + std::to_string(pid) + "/fd";
+        for (const auto& entry : std::filesystem::directory_iterator(proc_dir)) {
+            std::string target;
+            if (android::base::Readlink(entry.path(), &target)) {
+                if (dmuser_devices.find(target) != dmuser_devices.end()) {
+                    dmuser_devices.erase(target);
+                    if (dmuser_devices.empty()) {
+                        return true;
+                    }
+                }
+            } else {
+                LOG(ERROR) << "Readlink failed: " << entry.path();
+            }
         }
 
-        iter += 1;
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+        if (elapsed >= timeout_ms) {
+            LOG(ERROR) << "Timed out - Snapuserd threads are not up.";
+            return false;
+        }
+
+        std::this_thread::sleep_for(200ms);
     }
 
-    return false;
+    return true;
 }
 
 void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
@@ -333,7 +353,7 @@ void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
             PLOG(ERROR) << "couldn't write oom_score_adj to snapuserd daemon with pid: " << pid;
         }
 
-        if (!TestSnapuserdIsReady()) {
+        if (!TestSnapuserdIsReady(pid, 20s)) {
             PLOG(FATAL) << "snapuserd daemon failed to launch";
         } else {
             LOG(INFO) << "snapuserd daemon is up and running";
