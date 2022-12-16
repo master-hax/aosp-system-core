@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e50ce6cd_8a9ef551",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2022-12-16T18:53:47Z",
+      "side": 1,
+      "message": "Looks ok to me given we umask(0) in first stage init, but adding Jiyong to double check.",
+      "revId": "55a3fd1177bf07143cd99717ef30da91bb071c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
