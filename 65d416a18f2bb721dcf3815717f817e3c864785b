@@ -16,6 +16,23 @@
       "message": "This may or may not TH without also removing the API itself...\n\nElliott thoughts on this dead api?",
       "revId": "65d416a18f2bb721dcf3815717f817e3c864785b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95b1cfd0_a179abb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2022-12-18T23:27:45Z",
+      "side": 1,
+      "message": "(the other half is in https://android-review.git.corp.google.com/c/platform/test/vts/+/2362048 - they both TH+2 even separately without a topic... but what should happen??)",
+      "revId": "65d416a18f2bb721dcf3815717f817e3c864785b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
