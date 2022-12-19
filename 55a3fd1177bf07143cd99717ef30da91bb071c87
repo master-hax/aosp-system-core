@@ -16,6 +16,23 @@
       "message": "Looks ok to me given we umask(0) in first stage init, but adding Jiyong to double check.",
       "revId": "55a3fd1177bf07143cd99717ef30da91bb071c87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7ddfa97_a5b1b2f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-19T02:04:54Z",
+      "side": 1,
+      "message": "I am not sure if this the best way. In the bug: \n\n\u003e Why I can\u0027t remount in console?\n\nI would like to ask why one can\u0027t umask explicitly before remounting.",
+      "revId": "55a3fd1177bf07143cd99717ef30da91bb071c87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
