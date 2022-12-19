@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95b35d57_00dd1955",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-19T06:19:20Z",
+      "side": 1,
+      "message": "Here I am checking if it end then not to proceed \u0026 continue with other dependencies",
+      "parentUuid": "b0a6b52f_952b4884",
+      "range": {
+        "startLine": 476,
+        "startChar": 0,
+        "endLine": 477,
+        "endChar": 25
+      },
+      "revId": "d8b396f26082018e24ed642c6461d91913b63fde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b25d6390_7f147abb",
