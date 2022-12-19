@@ -55,6 +55,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6c485939_73811888",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T22:04:09Z",
+      "side": 1,
+      "message": "can you change this to check for %s/%s/state_of_health and use it if/when exists and default to %s/%s/health_index otherwise?",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2295fa13_696b7e48",
         "filename": "healthd/BatteryMonitor.cpp",
         "patchSetId": 9
