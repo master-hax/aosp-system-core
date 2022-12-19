@@ -69,6 +69,24 @@
       "parentUuid": "44c74af3_0bd0cc90",
       "revId": "d14fe12b28935bef896410b9217df43f0cf86c82",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8f4a615_03ecb1cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2022-12-19T23:14:00Z",
+      "side": 1,
+      "message": "binder_parcel_fuzzer, libutils_fuzz_string8, and libutils_fuzz_string16 cover this.",
+      "parentUuid": "b45809d3_3b5e1f45",
+      "revId": "d14fe12b28935bef896410b9217df43f0cf86c82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
