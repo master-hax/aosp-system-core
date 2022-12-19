@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "79f5c51c_d50059d0",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T22:02:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58c653d6_bef68048",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2295fa13_696b7e48",
