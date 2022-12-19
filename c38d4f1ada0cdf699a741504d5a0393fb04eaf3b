@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3a827af3_b271b409",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-19T04:46:40Z",
+      "side": 1,
+      "message": "There are several *_test.cpp in system/core/init. I think this test should go to either init_test.cpp or service_test.cpp.\n\nI guess the binary you mentioned is to check if SIGTERM is actually received. Can it be pushed to /data/local/* along with the test? I am not sure if defining a service for a binary in /data/* is allowed or not. If not, you could use things like `cat` (which doesn\u0027t exit immediately, but blocked on user input) and use `strace` on the process to check if the signal was actually sent.",
+      "parentUuid": "a297e3b8_1b652f0c",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 43
+      },
+      "revId": "c38d4f1ada0cdf699a741504d5a0393fb04eaf3b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "78bcba7e_fd7771f2",
         "filename": "init/service.cpp",
         "patchSetId": 1
