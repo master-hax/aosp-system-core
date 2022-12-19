@@ -67,6 +67,23 @@
       "message": "also mHealthdConfig-\u003echargingStatePath and mHealthdConfig-\u003echargingPolicyPath",
       "revId": "74971ff460721213c5191914d792dc3888b9430b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ba3bc0d_64005fd4",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T21:54:28Z",
+      "side": 1,
+      "message": "also:\n\nandroid::String8  chargingStatePath\nandroid::String8  chargingPolicyPath",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
