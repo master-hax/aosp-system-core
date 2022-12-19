@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c503c5cd_33c05e00",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T21:53:48Z",
+      "side": 1,
+      "message": "please also read mHealthdConfig-\u003echargingState from mHealthdConfig-\u003echargingStatePath. \n\nAlso read mHealthdConfig-\u003echargingPolicy from  mHealthdConfig-\u003echargingPolicyPath.",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58c653d6_bef68048",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T21:53:48Z",
+      "side": 1,
+      "message": "can you change this to ../state_of_health and create the corresponding node in the power supply object with type BATTERY?",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2295fa13_696b7e48",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 792,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T21:53:48Z",
+      "side": 1,
+      "message": "please add mHealthdConfig-\u003echargingStatePath, default it to %s/%s/charging_state and create the corresponding node in the power supply object with type BATTERY.\n\nAlso initialize mHealthdConfig-\u003echargingPolicyPath with %s/%s/charging_policy and create the corresponding node in the power supply object with type BATTERY",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8aa5274c_31966138",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1319951
+      },
+      "writtenOn": "2022-12-19T21:53:48Z",
+      "side": 1,
+      "message": "also mHealthdConfig-\u003echargingStatePath and mHealthdConfig-\u003echargingPolicyPath",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
