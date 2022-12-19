@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3f6fa5b_1fa6621d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-19T06:58:01Z",
+      "side": 1,
+      "message": "can we use ordered map for fixed sequence?",
+      "range": {
+        "startLine": 449,
+        "startChar": 9,
+        "endLine": 449,
+        "endChar": 22
+      },
+      "revId": "a7e9e5bb0805c7b17e5e31f1586f37ef57088a86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
