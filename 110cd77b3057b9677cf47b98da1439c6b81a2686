@@ -33,6 +33,23 @@
       "message": "gentle ping",
       "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b8a3207_2e53e9b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-12-20T17:47:22Z",
+      "side": 1,
+      "message": "I don\u0027t think this retry behavior has anything to do with cgroups. In the implementation of DoKillProcessGroupOnce, if we don\u0027t have cgroups we just send a signal to the pgid. We can do that multiple times if the process doesn\u0027t immediately disappear / it\u0027s not a SIGKILL. I don\u0027t understand why you think having cgroups or not should affect that.",
+      "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
