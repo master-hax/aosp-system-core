@@ -480,13 +480,19 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
 
         // Find independent modules
         for (const auto& [it_mod, it_dep] : mod_with_deps) {
-            if (it_dep.size() == 1) {
-                if (module_options_[it_mod].find("load_sequential=1") != std::string::npos) {
-                    if (!LoadWithAliases(it_mod, true) && !IsBlocklisted(it_mod)) {
-                      return false;
-                    }
-                } else {
-                    mods_path_to_load.emplace_back(it_mod);
+            auto itd_last = it_dep.begin();
+            if (itd_last == it_dep.end())
+                continue;
+
+            auto cnd_last = MakeCanonical(*itd_last);
+            if (module_options_[cnd_last].find("load_sequential=1") != std::string::npos) {
+                if (!LoadWithAliases(cnd_last, true) && !IsBlocklisted(cnd_last)) {
+                    return false;
+                }
+            } else {
+                if (std::find(mods_path_to_load.begin(), mods_path_to_load.end(),
+                            cnd_last) == mods_path_to_load.end()) {
+                    mods_path_to_load.emplace_back(cnd_last);
                 }
             }
         }
