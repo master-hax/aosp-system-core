@@ -194,6 +194,10 @@ service A something
 }
 
 TEST(init, StartConsole) {
+    if (android::base::GetProperty("ro.build.type") == "user") {
+        GTEST_SKIP() << "Can't run on user builds. b/262090304";
+        return;
+    }
     std::string init_script = R"init(
 service console /system/bin/sh
     class core
