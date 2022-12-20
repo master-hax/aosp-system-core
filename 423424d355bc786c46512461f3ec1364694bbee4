@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a00726f_5d2d368b",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-20T00:46:13Z",
+      "side": 1,
+      "message": "Yes, this is our intention since we want to check the minimum of these so we only affect devices launching with U. Upgrading devices can use the old vendor images and only need to upgrade the system partition to U. \n\nThe vendor\u0027s `.rc` can still set some other memlock limit, similarly to what was being done in the cuttlefish\u0027s init script (aosp/2350203).",
+      "parentUuid": "a1811add_5adc69f7",
+      "range": {
+        "startLine": 632,
+        "startChar": 42,
+        "endLine": 632,
+        "endChar": 48
+      },
+      "revId": "423424d355bc786c46512461f3ec1364694bbee4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "686f0c9b_87d321bc",
