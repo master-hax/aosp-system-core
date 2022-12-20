@@ -21,7 +21,6 @@
 **   an explanation of this file format
 ** - dotfiles are ignored
 ** - directories named 'root' are ignored
-** - device notes, pipes, etc are not supported (error)
 */
 
 static void die(const char* why, ...) {
@@ -86,6 +85,9 @@ static void fix_stat(const char *path, struct stat *s)
         fs_config(path, is_dir, target_out_path, &s->st_uid, &s->st_gid, &st_mode, &capabilities);
         s->st_mode = (typeof(s->st_mode)) st_mode;
     }
+
+    if (S_ISREG(s->st_mode) || S_ISDIR(s->st_mode) || S_ISLNK(s->st_mode))
+        s->st_rdev = 0;
 }
 
 static void _eject(struct stat *s, char *out, int olen, char *data, unsigned datasize)
@@ -115,8 +117,8 @@ static void _eject(struct stat *s, char *out, int olen, char *data, unsigned dat
            datasize,
            0, // volmajor
            0, // volminor
-           0, // devmajor
-           0, // devminor,
+           major(s->st_rdev),
+           minor(s->st_rdev),
            olen + 1,
            0,
            out,
@@ -267,6 +269,9 @@ static void _archive(char *in, char *out, int ilen, int olen)
         size = readlink(in, buf, 1024);
         if(size < 0) die("cannot read symlink '%s'", in);
         _eject(&s, out, olen, buf, size);
+    } else if(S_ISBLK(s.st_mode) || S_ISCHR(s.st_mode) ||
+              S_ISFIFO(s.st_mode) || S_ISSOCK(s.st_mode)) {
+        _eject(&s, out, olen, NULL, 0);
     } else {
         die("Unknown '%s' (mode %d)?\n", in, s.st_mode);
     }
