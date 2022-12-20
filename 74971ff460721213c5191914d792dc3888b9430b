@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ec40a86_182d5bfe",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-12-20T12:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c503c5cd_33c05e00",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "58c653d6_bef68048",
@@ -70,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1c1077f_6e236770",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-12-20T12:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c485939_73811888",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2295fa13_696b7e48",
@@ -83,6 +119,24 @@
       "writtenOn": "2022-12-19T21:53:48Z",
       "side": 1,
       "message": "please add mHealthdConfig-\u003echargingStatePath, default it to %s/%s/charging_state and create the corresponding node in the power supply object with type BATTERY.\n\nAlso initialize mHealthdConfig-\u003echargingPolicyPath with %s/%s/charging_policy and create the corresponding node in the power supply object with type BATTERY",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50146aa5_3ad9edd2",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 792,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-12-20T12:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2295fa13_696b7e48",
       "revId": "74971ff460721213c5191914d792dc3888b9430b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -104,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "995d9c61_4a176415",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-12-20T12:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8aa5274c_31966138",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2ba3bc0d_64005fd4",
@@ -117,6 +189,24 @@
       "writtenOn": "2022-12-19T21:54:28Z",
       "side": 1,
       "message": "also:\n\nandroid::String8  chargingStatePath\nandroid::String8  chargingPolicyPath",
+      "revId": "74971ff460721213c5191914d792dc3888b9430b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c69e4f2d_dd6c2e17",
+        "filename": "healthd/include/healthd/healthd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2022-12-20T12:29:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2ba3bc0d_64005fd4",
       "revId": "74971ff460721213c5191914d792dc3888b9430b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
