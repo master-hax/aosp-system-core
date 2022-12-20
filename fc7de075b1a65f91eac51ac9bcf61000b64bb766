@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48801302_0e590cbc",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-12-20T00:33:45Z",
+      "side": 1,
+      "message": "I see there\u0027s other pattern used, and I think it aligns better to the commit message.\n```\n    if (getuid() !\u003d 0) {\n        GTEST_SKIP() \u003c\u003c \"Must be run as root.\";\n        return;\n    }\n```",
+      "range": {
+        "startLine": 197,
+        "startChar": 0,
+        "endLine": 200,
+        "endChar": 5
+      },
+      "revId": "fc7de075b1a65f91eac51ac9bcf61000b64bb766",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
