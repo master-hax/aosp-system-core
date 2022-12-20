@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e6bf7a9_b5517747",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2022-12-20T01:43:03Z",
+      "side": 1,
+      "message": "mistake?",
+      "range": {
+        "startLine": 197,
+        "startChar": 4,
+        "endLine": 197,
+        "endChar": 42
+      },
+      "revId": "616344116e8deaa622b82503415c081344567879",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
