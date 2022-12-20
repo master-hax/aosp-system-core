@@ -7,10 +7,13 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/sysmacros.h>
 #include <dirent.h>
 
 #include <stdarg.h>
 #include <fcntl.h>
+
+#include <linux/kdev_t.h>
 
 #include <private/android_filesystem_config.h>
 #include <private/fs_config.h>
@@ -332,6 +335,94 @@ static void read_canned_config(char* filename)
     fclose(f);
 }
 
+static int append_cpio_config_dir(char *path, char *args)
+{
+    struct stat s;
+
+    if (sscanf(args, "%o %d %d", &s.st_mode, &s.st_uid, &s.st_gid) != 3)
+        return -1;
+
+    s.st_mode |= S_IFDIR;
+
+    _eject(&s, path, strlen(path), NULL, 0);
+
+    return 0;
+}
+
+static int append_cpio_config_nod(char *path, char *args)
+{
+    int minor, major;
+    struct stat s;
+    char dev;
+
+    if (sscanf(args, "%o %d %d %c %d %d", &s.st_mode, &s.st_uid, &s.st_gid,
+              &dev, &major, &minor) != 6)
+        return -1;
+
+    s.st_rdev = MKDEV(major, minor);
+    if (dev == 'b')
+        s.st_mode |= S_IFBLK;
+    else
+        s.st_mode |= S_IFCHR;
+
+    _eject(&s, path, strlen(path), NULL, 0);
+
+    return 0;
+}
+
+static void append_cpio_config(const char *filename)
+{
+    char line[CANNED_LINE_LENGTH], *args, *type, *path;
+    FILE *f = fopen(filename, "re");
+    unsigned long line_num = 0;
+    char *err_msg = "";
+
+    if (!f) die("failed to open cpio config file '%s'", filename);
+
+    while (fgets(line, CANNED_LINE_LENGTH, f)) {
+        char *type;
+
+        line_num++;
+
+        if (*line == '#')
+            continue;
+
+        if (!(type = strtok(line, " \t")))
+            goto err;
+
+        if (*type == '\n')
+            continue;
+
+        if (!(path = strtok(NULL, " \t"))) {
+            err_msg = "a path is missing";
+            goto err;
+        }
+
+        if (!(args = strtok(NULL, "\n"))) {
+            err_msg = "args are missing";
+            goto err;
+        }
+
+        if (!strncmp(type, "dir", CANNED_LINE_LENGTH)) {
+	    err_msg = "bad arguments for dir";
+            if (append_cpio_config_dir(path, args))
+                goto err;
+        } else if (!strncmp(type, "nod", CANNED_LINE_LENGTH)) {
+	    err_msg = "bad arguments for nod";
+            if (append_cpio_config_nod(path, args))
+                goto err;
+        } else {
+            err_msg = "unknown type";
+            goto err;
+        }
+    }
+
+    return;
+err:
+    die("failed to read cpio config file '%s' line %d: %s",
+        filename, line_num, err_msg);
+}
+
 static void usage(void)
 {
     fprintf(stderr,
@@ -340,6 +431,7 @@ static void usage(void)
             "\t-h\tthis help\n"
             "\t-d\tfs-config directory\n"
             "\t-f\tcanned configuration file\n"
+	    "\t-c\tdev node file\n"
     );
 }
 
@@ -363,6 +455,9 @@ int main(int argc, char *argv[])
         case 'h':
             usage();
             return 0;
+        case 'c':
+            append_cpio_config(argv[optind - 1]);
+            break;
         default:
             usage();
             die("Unknown option %s", argv[optind - 1]);
