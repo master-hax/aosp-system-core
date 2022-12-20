@@ -19,6 +19,6 @@
 
 int main(int, char**) {
   volatile char* f = (char*)malloc(1);
-  printf("%c\n", f[17]);
+  printf("%c\n", f[17]);  // NOLINT
   return 0;
 }
