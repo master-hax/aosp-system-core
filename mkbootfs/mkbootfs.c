@@ -327,34 +327,52 @@ static void read_canned_config(char* filename)
     fclose(f);
 }
 
+static void usage(void)
+{
+    fprintf(stderr,
+            "Usage: mkbootfs [<options>] <directories>\n"
+            "\n"
+            "\t-h\tthis help\n"
+            "\t-d\tfs-config directory\n"
+            "\t-f\tcanned configuration file\n"
+    );
+}
 
 int main(int argc, char *argv[])
 {
-    if (argc == 1) {
-        fprintf(stderr,
-                "usage: %s [-d TARGET_OUTPUT_PATH] [-f CANNED_CONFIGURATION_PATH] DIRECTORIES...\n",
-                argv[0]);
-        exit(1);
+    int opt, num_dirs;
+
+    while (1) {
+    int opt = getopt(argc, argv, "d:f:c:h");
+
+        if (opt < 0)
+            break;
+
+        switch (opt) {
+        case 'd':
+            target_out_path = argv[optind - 1];
+            break;
+        case 'f':
+            read_canned_config(argv[optind - 1]);
+            break;
+        case 'h':
+            usage();
+            return 0;
+        default:
+            usage();
+            die("Unknown option %s", argv[optind - 1]);
+        }
     }
 
-    argc--;
-    argv++;
+    num_dirs = argc - optind;
+    argv += optind;
 
-    if (argc > 1 && strcmp(argv[0], "-d") == 0) {
-        target_out_path = argv[1];
-        argc -= 2;
-        argv += 2;
+    if (num_dirs <= 0) {
+        usage();
+        die("no directories to process?!");
     }
 
-    if (argc > 1 && strcmp(argv[0], "-f") == 0) {
-        read_canned_config(argv[1]);
-        argc -= 2;
-        argv += 2;
-    }
-
-    if(argc == 0) die("no directories to process?!");
-
-    while(argc-- > 0){
+    while(num_dirs-- > 0){
         char *x = strchr(*argv, '=');
         if(x != 0) {
             *x++ = 0;
