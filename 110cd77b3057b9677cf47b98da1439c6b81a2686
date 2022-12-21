@@ -68,6 +68,24 @@
       "parentUuid": "8b8a3207_2e53e9b6",
       "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a513f2c6_7dab2743",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2022-12-21T17:40:33Z",
+      "side": 1,
+      "message": "It sounds like you are talking about the `cgroup.procs` file inside the cgroup directory? But `CgroupsAvailable()` checks for `/proc/cgroup` not `cgroup.procs`.",
+      "parentUuid": "af707171_07673bd9",
+      "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
