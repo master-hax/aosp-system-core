@@ -117,6 +117,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f432f0e6_10e401fc",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-21T09:16:02Z",
+      "side": 1,
+      "message": "Yes, it is true for dependencies related to modules under modules.load",
+      "parentUuid": "3145a8e7_6617bb5f",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
