@@ -141,6 +141,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36de33ad_e65790f1",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-21T17:48:20Z",
+      "side": 1,
+      "message": "but if we still use set, begin() will not point to last dependency here, right?\n\nand when will begin() be equal to end()? this condition seems to be empty container.",
+      "parentUuid": "f432f0e6_10e401fc",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
