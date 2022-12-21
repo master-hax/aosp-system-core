@@ -34,6 +34,24 @@
       "parentUuid": "ec6e9120_0fcebadb",
       "revId": "494db0d5140709cdc43e852ef4dca7e2c322d292",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94965712_8e67336d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1972022
+      },
+      "writtenOn": "2022-12-21T10:00:03Z",
+      "side": 1,
+      "message": "Defining `WIN32_LEAN_AND_MEAN` macro seems to work with fastboot code. But it may not work for all cases. The workaround was proposed here https://sourceforge.net/p/mingw-w64/mailman/message/37751607/",
+      "parentUuid": "ec576deb_e86e8182",
+      "revId": "494db0d5140709cdc43e852ef4dca7e2c322d292",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
