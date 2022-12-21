@@ -93,6 +93,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3145a8e7_6617bb5f",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-21T08:20:59Z",
+      "side": 1,
+      "message": "so any last dependency should be always a independent module?",
+      "parentUuid": "3fa948cb_7cac928b",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
