@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "12f24414_1c8a4275",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-21T05:19:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d2fba67_8b1c983a",
+      "range": {
+        "startLine": 483,
+        "startChar": 0,
+        "endLine": 488,
+        "endChar": 13
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "60f8582c_d4a729f8",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-12-21T02:34:12Z",
       "side": 1,
       "message": "it seems we will load modules\u0027 first dependency in parallel, right? but how we make sure its first dependency is also independent?",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fa948cb_7cac928b",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-21T05:19:58Z",
+      "side": 1,
+      "message": "As dependencies are already copied in reverse order, so picking first element is the last dependency here",
+      "parentUuid": "60f8582c_d4a729f8",
       "range": {
         "startLine": 490,
         "startChar": 0,
