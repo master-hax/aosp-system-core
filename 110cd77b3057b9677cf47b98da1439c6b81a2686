@@ -50,6 +50,24 @@
       "message": "I don\u0027t think this retry behavior has anything to do with cgroups. In the implementation of DoKillProcessGroupOnce, if we don\u0027t have cgroups we just send a signal to the pgid. We can do that multiple times if the process doesn\u0027t immediately disappear / it\u0027s not a SIGKILL. I don\u0027t understand why you think having cgroups or not should affect that.",
       "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af707171_07673bd9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-21T01:39:42Z",
+      "side": 1,
+      "message": "Okay, let me elaborate.\n\n\u003e We can do that multiple times if the process doesn\u0027t immediately disappear / it\u0027s not a SIGKILL.\n\nSure. However, if SIGKILL takes more than expected (e.g. 200 ~ 300ms), all 40 retries will *succeed* and KillProcessGroup thinks that there are still remaining processes. We already observed this behavior, along with about 200 ~ ms regression per one service kill.\n\nHere is why cgroup case is fine. Once we send a signal, cgroup procs file becomes either removed or truncated, so we don\u0027t actually kill multiple times. I also verified this behavior while working on aosp/2305473. You can see that removing the following clause causes issues about killing services.\n\n    if (file_is_empty) {\n        // This happens when process is already dead\n        return 0;\n    }",
+      "parentUuid": "8b8a3207_2e53e9b6",
+      "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
