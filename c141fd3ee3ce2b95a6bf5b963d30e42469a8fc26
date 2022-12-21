@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d2fba67_8b1c983a",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-21T02:34:12Z",
+      "side": 1,
+      "message": "Can\u0027t we load these modules until their dependencies are loaded?",
+      "range": {
+        "startLine": 483,
+        "startChar": 0,
+        "endLine": 488,
+        "endChar": 13
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60f8582c_d4a729f8",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-21T02:34:12Z",
+      "side": 1,
+      "message": "it seems we will load modules\u0027 first dependency in parallel, right? but how we make sure its first dependency is also independent?",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
