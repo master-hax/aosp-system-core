@@ -189,6 +189,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fda1e282_c20690a7",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-22T06:56:48Z",
+      "side": 1,
+      "message": "We copy these dependency into set structure, which sort these elements, so that first element of set may not be last dependency. here\u0027s logg I added and part modules.dep .\n\nkernel.log:\n[    0.437142][    T1] init: z1 has dep: /lib/modules/e1.ko\n[    0.437147][    T1] init: z1 has dep: /lib/modules/p1.ko\n[    0.437152][    T1] init: z1 has dep: /lib/modules/z1.ko\n[    0.437158][    T1] init: z1 has dep: /lib/modules/z2.ko\n[    0.437163][    T1] init: z1 has dep: /lib/modules/z3.ko\n[    0.437168][    T1] init: z1 is loading last dep: e1\n\nmodules.dep:\n/lib/modules/z1.ko: /lib/modules/z2.ko /lib/modules/z3.ko /lib/modules/e1.ko /lib/modules/p1.ko\n\nlast dependency should be p1.ko",
+      "parentUuid": "4bf9b862_5a0b14c0",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
