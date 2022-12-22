@@ -237,6 +237,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbfb1e88_73ee68bf",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-22T07:06:17Z",
+      "side": 1,
+      "message": "Can we take both the patches as fixes and add the enhancements on top of it?",
+      "parentUuid": "b9967d9d_41917b22",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
