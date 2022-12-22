@@ -213,6 +213,30 @@
       },
       "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9967d9d_41917b22",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2022-12-22T07:02:22Z",
+      "side": 1,
+      "message": "Ok Got it. Yeah unordered map is needed which was added in my final patch. Let me add here too.\n\nI think slowly we are moving to my final patch.\nMoreover line 460 \u0026 line 468 are buggy since we are checking !\u003d and it might lead to unknown problems",
+      "parentUuid": "fda1e282_c20690a7",
+      "range": {
+        "startLine": 490,
+        "startChar": 0,
+        "endLine": 492,
+        "endChar": 25
+      },
+      "revId": "c141fd3ee3ce2b95a6bf5b963d30e42469a8fc26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
