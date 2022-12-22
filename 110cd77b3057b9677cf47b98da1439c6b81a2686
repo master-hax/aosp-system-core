@@ -86,6 +86,24 @@
       "parentUuid": "af707171_07673bd9",
       "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8ad68ce_b5cdc6a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-22T06:22:42Z",
+      "side": 1,
+      "message": "`CgroupsAvailable()` checks for `/proc/cgroup` and `cgroup.procs` file is not created depending on `CgroupsAvailable()`: https://cs.android.com/android/platform/superproject/+/master:system/core/init/service.cpp;l\u003d694;drc\u003dbb1ee3c6896ba902c75e578c94dac531e0284ff4",
+      "parentUuid": "a513f2c6_7dab2743",
+      "revId": "110cd77b3057b9677cf47b98da1439c6b81a2686",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
