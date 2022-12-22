@@ -33,6 +33,24 @@
       "message": "Shouldn\u0027t the bug number be changed into 213617178?",
       "revId": "fe957cce9e1d5c863f453943cc2c63a131f29d73",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22b819b7_673ad3a5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2022-12-22T00:53:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55137454_66213602",
+      "revId": "fe957cce9e1d5c863f453943cc2c63a131f29d73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
