@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -216,6 +217,65 @@ void HandlePropertyContexts(const std::string& filename,
     }
 }
 
+bool CheckServiceCapabilities(const ServiceList& service_list) {
+    static const std::set<std::string> kExemptList = {
+            "apexd",
+            "apexd-bootstrap",
+            "apexd-snapshotde",
+            "adbd",
+            "boottrace",
+            "boringssl_self_test32",
+            "boringssl_self_test64",
+            "boringssl_self_test_apex32",
+            "boringssl_self_test_apex64",
+            "bugreportd",
+            "charger",
+            "clear-bcb",
+            "composd",
+            "dumpstate",
+            "dumpstatez",
+            "fastbootd",
+            "gsid",
+            "installd",
+            "odsign",
+            "profcollectd",
+            "recovery",
+            "recovery-console",
+            "servicemanager",
+            "setup-bcb",
+            "snapuserd",
+            "snapuserd_proxy",
+            "ueventd",
+            "uncrypt",
+            "update_engine",
+            "update_verifier",
+            "update_verifier_nonencrypted",
+            "usbd",
+            "vold",
+            "zygote",
+            "zygote_secondary",
+    };
+    bool found_error = false;
+    for (const auto& service : service_list) {
+        if (service->uid() != 0) {
+            continue;
+        }
+        if (!service->capabilities().has_value() && kExemptList.count(service->name()) == 0) {
+            LOG(ERROR) << "Service '" << service->name() << "' (defined in " << service->filename()
+                       << ") runs under 'root' user but does not "
+                       << "specify capabiltiies it needs. This will result in service inheriting "
+                          "all the "
+                       << "capabilities that 'init' has. Please explicitly specify the "
+                          "capabilities that '"
+                       << service->name()
+                       << "' need. If it doesn't need any capabilities then leave the "
+                          "'capabilities' field empty.";
+            found_error = true;
+        }
+    }
+    return !found_error;
+}
+
 int main(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StdioLogger);
     android::base::SetMinimumLogSeverity(android::base::ERROR);
@@ -334,6 +394,9 @@ int main(int argc, char** argv) {
     size_t failures = parser.parse_error_count() + am.CheckAllCommands() + sl.CheckAllCommands();
     if (failures > 0) {
         LOG(ERROR) << "Failed to parse init scripts with " << failures << " error(s).";
+        return EXIT_FAILURE;
+    }
+    if (!CheckServiceCapabilities(sl)) {
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
