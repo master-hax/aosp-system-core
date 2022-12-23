@@ -69,6 +69,30 @@
       },
       "revId": "f1e3bfff40560c311c00474e640f59fc950acf5c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f64a01a_22bf73c7",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2022-12-23T14:39:01Z",
+      "side": 1,
+      "message": "Ideally, yes. But we currently are not enforcing GSI everywhere. \n\nBy the way, this comment could be addressed in a follow-up CL if it\u0027s not going to be trivial.",
+      "parentUuid": "9f7444d1_003a17c7",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 246,
+        "endChar": 41
+      },
+      "revId": "f1e3bfff40560c311c00474e640f59fc950acf5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
