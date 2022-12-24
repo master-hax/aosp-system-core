@@ -50,3 +50,30 @@ cc_binary {
         "-Werror",
     ],
 }
+
+cc_test {
+    name: "trusty-qos-test",
+    vendor: true,
+    srcs: [
+        "qos_test.cpp",
+    ],
+    local_include_dirs: [
+        "include",
+    ],
+    static_libs: [
+        "libtrusty_busy_test",
+        "libgmock",
+    ],
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libtrusty",
+        "libutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+    require_root: true,
+    proprietary: true,
+}
