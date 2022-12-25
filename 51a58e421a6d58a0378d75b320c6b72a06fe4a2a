@@ -46,6 +46,30 @@
       },
       "revId": "51a58e421a6d58a0378d75b320c6b72a06fe4a2a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7c610b1_e7a5cd23",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-12-25T23:53:58Z",
+      "side": 1,
+      "message": "Ah, right. The loop will terminate before reaching here if `DoKillProcessGroupOnce` returns a negative value.",
+      "parentUuid": "115abf03_37a47abc",
+      "range": {
+        "startLine": 474,
+        "startChar": 12,
+        "endLine": 474,
+        "endChar": 31
+      },
+      "revId": "51a58e421a6d58a0378d75b320c6b72a06fe4a2a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
