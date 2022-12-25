@@ -98,6 +98,24 @@
       "parentUuid": "686f0c9b_87d321bc",
       "revId": "423424d355bc786c46512461f3ec1364694bbee4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14c812c3_1ae17523",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2022-12-25T23:48:46Z",
+      "side": 1,
+      "message": "Got it. Thanks. This should be ok given we mlock prior to second-stage init.",
+      "parentUuid": "9d8f60c5_6db0bfbf",
+      "revId": "423424d355bc786c46512461f3ec1364694bbee4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
