@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e58a56f_5f99ab5f",
+        "filename": "trusty/test/qos/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-12-27T23:10:29Z",
+      "side": 1,
+      "message": "- you also seem to quit when reaching the end of stdin.\n- it might be useful to have a sleep command if stdin is a file",
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85133a84_7cdc76b0",
+        "filename": "trusty/test/qos/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-12-27T23:10:29Z",
+      "side": 1,
+      "message": "`\\\u0027\u0027{\"0\":24, \"3\":12}\u0027\\\u0027` might be more readable",
+      "range": {
+        "startLine": 32,
+        "startChar": 67,
+        "endLine": 32,
+        "endChar": 91
+      },
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a74a58c2_0742ab83",
+        "filename": "trusty/test/qos/include/trusty/busy_test/busy_test_client.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2022-12-27T23:10:29Z",
+      "side": 1,
+      "message": "add a busy_test_connect function here instead of having the client get the port name from the ipc interface header?",
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
