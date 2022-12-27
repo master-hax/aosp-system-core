@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3f51d3c_0b23b582",
+        "filename": "init/service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-27T00:26:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe8b88c1_58f55880",
+      "range": {
+        "startLine": 206,
+        "startChar": 11,
+        "endLine": 210,
+        "endChar": 57
+      },
+      "revId": "0e52d2442c48f8eafc93bf6b33dbd1c8c5e22ce1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5609abe8_00cda125",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Hmm yes, this doesn\u0027t agree with its comment\n\n    // Returns the same as killProcessGroup(), however it does not retry, which means\n    // that it only returns 0 in the case that the cgroup exists and it contains no processes.",
       "parentUuid": "5609abe8_00cda125",
+      "range": {
+        "startLine": 521,
+        "startChar": 11,
+        "endLine": 521,
+        "endChar": 67
+      },
+      "revId": "0e52d2442c48f8eafc93bf6b33dbd1c8c5e22ce1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2347aa01_b2bf87dd",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2022-12-27T00:26:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c2abf87_ac5b838c",
       "range": {
         "startLine": 521,
         "startChar": 11,
