@@ -142,6 +142,24 @@
       "parentUuid": "0b5af51a_2036ba88",
       "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93bca6c1_43af4a8c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 30
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-12-28T15:38:48Z",
+      "side": 1,
+      "message": "Marking this comment as resolved since the boot time regression only occurs for devices with a 4.19 kernel but not for devices with a 5.10 or 5.15 kernel and since there is agreement that the boot time regression should be addressed in the kernel if necessary.",
+      "parentUuid": "6e4401f0_68f1fc0c",
+      "revId": "d0074662993319d6fe3a77d76c07f42db27dbb8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
