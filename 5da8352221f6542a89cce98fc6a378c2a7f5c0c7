@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b5fe1c2_06f0f67e",
+        "filename": "trusty/test/qos/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-12-28T21:15:51Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9e58a56f_5f99ab5f",
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "85133a84_7cdc76b0",
@@ -41,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5de00ca7_5383ec94",
+        "filename": "trusty/test/qos/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-12-28T21:15:51Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "85133a84_7cdc76b0",
+      "range": {
+        "startLine": 32,
+        "startChar": 67,
+        "endLine": 32,
+        "endChar": 91
+      },
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a74a58c2_0742ab83",
@@ -54,6 +96,24 @@
       "writtenOn": "2022-12-27T23:10:29Z",
       "side": 1,
       "message": "add a busy_test_connect function here instead of having the client get the port name from the ipc interface header?",
+      "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec078e9d_a3411480",
+        "filename": "trusty/test/qos/include/trusty/busy_test/busy_test_client.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2022-12-28T21:15:51Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a74a58c2_0742ab83",
       "revId": "5da8352221f6542a89cce98fc6a378c2a7f5c0c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
