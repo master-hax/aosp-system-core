@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38cee41f_6f518e5a",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-12-28T15:38:43Z",
+      "side": 1,
+      "message": "Will do in a follow-up change.",
+      "parentUuid": "519abd79_953ec3ad",
+      "range": {
+        "startLine": 232,
+        "startChar": 13,
+        "endLine": 232,
+        "endChar": 24
+      },
+      "revId": "f1e3bfff40560c311c00474e640f59fc950acf5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e0e8188e_78e8d1ba",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Ideally, yes. But we currently are not enforcing GSI everywhere. \n\nBy the way, this comment could be addressed in a follow-up CL if it\u0027s not going to be trivial.",
       "parentUuid": "9f7444d1_003a17c7",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 246,
+        "endChar": 41
+      },
+      "revId": "f1e3bfff40560c311c00474e640f59fc950acf5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4696f86_749c605b",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2022-12-28T15:38:43Z",
+      "side": 1,
+      "message": "I see, will do in a separate change",
+      "parentUuid": "7f64a01a_22bf73c7",
       "range": {
         "startLine": 242,
         "startChar": 0,
