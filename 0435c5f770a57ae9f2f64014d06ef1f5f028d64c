@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6dfe7f1_2c65d0b9",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-29T03:42:35Z",
+      "side": 1,
+      "message": "Do we need it? I saw IsBlocklisted is only used when we load the module failed in LoadListedModules",
+      "range": {
+        "startLine": 479,
+        "startChar": 1,
+        "endLine": 485,
+        "endChar": 0
+      },
+      "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b449c5e0_ef4de21e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-29T03:42:35Z",
+      "side": 1,
+      "message": "Don\u0027t we need to check if the failed module is in block list?",
+      "range": {
+        "startLine": 487,
+        "startChar": 21,
+        "endLine": 487,
+        "endChar": 52
+      },
+      "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "821f9512_1dfb3797",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2022-12-29T03:42:35Z",
+      "side": 1,
+      "message": "Don\u0027t we need to check if the failed module is in block list?",
+      "range": {
+        "startLine": 509,
+        "startChar": 21,
+        "endLine": 509,
+        "endChar": 29
+      },
+      "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
