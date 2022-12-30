@@ -249,6 +249,21 @@ static void InfoMessage(const std::string& info) {
     fprintf(stderr, "(bootloader) %s\n", info.c_str());
 }
 
+<<<<<<< PATCH SET (29a75b [Fastboot] Add new TEXT message to protocol to handle long l)
+static void TextMessage(const std::string& text) {
+    fprintf(stderr, "%s", text.c_str());
+}
+
+static int64_t get_file_size(borrowed_fd fd) {
+    struct stat sb;
+    if (fstat(fd.get(), &sb) == -1) {
+        die("could not get file size");
+    }
+    return sb.st_size;
+}
+
+=======
+>>>>>>> BASE      (bb7948 Merge "storageproxyd: Add watchdog to log stuck requests")
 bool ReadFileToVector(const std::string& file, std::vector<char>* out) {
     out->clear();
 
@@ -2107,10 +2122,14 @@ int FastBootTool::Main(int argc, char* argv[]) {
         return 1;
     }
     fastboot::DriverCallbacks driver_callbacks = {
+<<<<<<< PATCH SET (29a75b [Fastboot] Add new TEXT message to protocol to handle long l)
+            .prolog = Status, .epilog = Epilog, .info = InfoMessage, .text = TextMessage};
+=======
             .prolog = Status,
             .epilog = Epilog,
             .info = InfoMessage,
     };
+>>>>>>> BASE      (bb7948 Merge "storageproxyd: Add watchdog to log stuck requests")
     fastboot::FastBootDriver fastboot_driver(transport, driver_callbacks, false);
     fb = &fastboot_driver;
 

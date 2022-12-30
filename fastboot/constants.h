@@ -44,6 +44,9 @@
 
 #define FB_COMMAND_SZ 4096
 #define FB_RESPONSE_SZ 256
+// This non-printable whose mnemonic is 'SUB' for substitute
+// is used as last character of data packet to indicate a split line
+#define FB_MULTILINE_CTRL '\26'
 
 #define FB_VAR_VERSION "version"
 #define FB_VAR_VERSION_BOOTLOADER "version-bootloader"
