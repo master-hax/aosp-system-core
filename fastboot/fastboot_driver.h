@@ -169,6 +169,7 @@ class FastBootDriver {
     std::function<void(int)> epilog_;
     std::function<void(const std::string&)> info_;
     bool disable_checks_;
+    std::string multiline_buffer;
 };
 
 }  // namespace fastboot

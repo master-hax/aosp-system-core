@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <chrono>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <regex>
 #include <vector>
@@ -484,7 +485,14 @@ RetCode FastBootDriver::HandleResponse(std::string* response, std::vector<std::s
         std::string input(status);
         if (android::base::StartsWith(input, "INFO")) {
             std::string tmp = input.substr(strlen("INFO"));
-            info_(tmp);
+            std::copy_if(tmp.begin(), tmp.end(), std::back_inserter(multiline_buffer),
+                         [](char c) { return c != '@'; });
+
+            if (tmp.back() != '@') {
+                info_(multiline_buffer);
+                multiline_buffer = "";
+            }
+
             add_info(std::move(tmp));
             // We may receive one or more INFO packets during long operations,
             // e.g. flash/erase if they are back by slow media like NAND/NOR
