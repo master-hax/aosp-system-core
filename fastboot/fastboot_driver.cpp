@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <chrono>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <regex>
 #include <vector>
@@ -459,6 +460,9 @@ RetCode FastBootDriver::DownloadCommand(uint32_t size, std::string* response,
     return SUCCESS;
 }
 
+std::string buffer;
+// std::string last_tmp;
+
 RetCode FastBootDriver::HandleResponse(std::string* response, std::vector<std::string>* info,
                                        int* dsize) {
     char status[FB_RESPONSE_SZ + 1];
@@ -484,7 +488,16 @@ RetCode FastBootDriver::HandleResponse(std::string* response, std::vector<std::s
         std::string input(status);
         if (android::base::StartsWith(input, "INFO")) {
             std::string tmp = input.substr(strlen("INFO"));
-            info_(tmp);
+            for (size_t idx = 0; idx < tmp.length(); ++idx) {
+                if (tmp[idx] != '@') {
+                    buffer += tmp[idx];
+                }
+            }
+            if (tmp[tmp.size() - 1] != '@') {
+                std::cerr << buffer << std::endl;
+                buffer = "";
+            }
+
             add_info(std::move(tmp));
             // We may receive one or more INFO packets during long operations,
             // e.g. flash/erase if they are back by slow media like NAND/NOR
@@ -514,7 +527,6 @@ RetCode FastBootDriver::HandleResponse(std::string* response, std::vector<std::s
         }
 
     }  // End of while loop
-
     return TIMEOUT;
 }
 
