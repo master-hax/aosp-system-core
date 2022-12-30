@@ -60,13 +60,14 @@ struct DriverCallbacks {
     std::function<void(const std::string&)> prolog = [](const std::string&) {};
     std::function<void(int)> epilog = [](int) {};
     std::function<void(const std::string&)> info = [](const std::string&) {};
+    std::function<void(const std::string&)> text = [](const std::string&) {};
 };
 
 class FastBootDriver {
     friend class FastBootTest;
 
   public:
-    static constexpr int RESP_TIMEOUT = 30;  // 30 seconds
+    static constexpr int RESP_TIMEOUT = 300;  // 300 seconds
     static constexpr uint32_t MAX_DOWNLOAD_SIZE = std::numeric_limits<uint32_t>::max();
     static constexpr size_t TRANSPORT_CHUNK_SIZE = 1024;
 
@@ -169,6 +170,7 @@ class FastBootDriver {
     std::function<void(const std::string&)> prolog_;
     std::function<void(int)> epilog_;
     std::function<void(const std::string&)> info_;
+    std::function<void(const std::string&)> text_;
     bool disable_checks_;
 };
 
