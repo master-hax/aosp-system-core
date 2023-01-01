@@ -195,6 +195,7 @@ void Service::NotifyStateChange(const std::string& new_state) const {
 }
 
 void Service::KillProcessGroup(int signal, bool report_oneshot) {
+    CHECK_GT(pid_, 0);
     // If we've already seen a successful result from killProcessGroup*(), then we have removed
     // the cgroup already and calling these functions a second time will simply result in an error.
     // This is true regardless of which signal was sent.
