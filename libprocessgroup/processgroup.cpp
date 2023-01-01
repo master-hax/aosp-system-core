@@ -201,14 +201,20 @@ extern "C" bool android_set_process_profiles(uid_t uid, pid_t pid, size_t num_pr
 }
 
 static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
+    CHECK_GE(uid, 0);
     return StringPrintf("%s/uid_%d", cgroup, uid);
 }
 
 static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(pid, 0);
     return StringPrintf("%s/uid_%d/pid_%d", cgroup, uid, pid);
 }
 
 static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned int retries) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(pid, 0);
+
     int ret = 0;
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
     auto uid_path = ConvertUidToPath(cgroup, uid);
