@@ -209,6 +209,9 @@ static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {
 }
 
 static int RemoveProcessGroup(const char* cgroup, uid_t uid, int pid, unsigned int retries) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(pid, 0);
+
     int ret = 0;
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
     auto uid_path = ConvertUidToPath(cgroup, uid);
@@ -367,6 +370,9 @@ err:
 // Returns 0 if there are no processes in the process cgroup left to kill
 // Returns -1 on error
 static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(initialPid, 0);
+
     // We separate all of the pids in the cgroup into those pids that are also the leaders of
     // process groups (stored in the pgids set) and those that are not (stored in the pids set).
     std::set<pid_t> pgids;
@@ -535,15 +541,22 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
 }
 
 int killProcessGroup(uid_t uid, int initialPid, int signal, int* max_processes) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(initialPid, 0);
     return KillProcessGroup(uid, initialPid, signal, 40 /*retries*/, max_processes);
 }
 
 int killProcessGroupOnce(uid_t uid, int initialPid, int signal, int* max_processes) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(initialPid, 0);
     return KillProcessGroup(uid, initialPid, signal, 0 /*retries*/, max_processes);
 }
 
 static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,
                                       bool activate_controllers) {
+    CHECK_GE(uid, 0);
+    CHECK_GT(initialPid, 0);
+
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
     struct stat cgroup_stat;
