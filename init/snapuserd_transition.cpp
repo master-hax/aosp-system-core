@@ -263,6 +263,17 @@ void SnapuserdSelinuxHelper::FinishTransition() {
  * we may see audit logs.
  */
 bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
+    // Wait for the daemon to be fully up. Daemon will write to path
+    // /metadata/ota/daemon-alive-indicator only when all the threads
+    // are ready and attached to dm-user.
+    //
+    // We can just return here if this is true as for GRF devices
+    // with Android S vendor, snapuserd will be from Android S. Hence,
+    // this check will fail. Thus we will fallback and issue an I/O.
+    if (!SnapuserdClient::TestDaemonAlive()) {
+        LOG(ERROR) << "TestDaemonAlive failed";
+    }
+
     std::string dev = "/dev/block/mapper/system"s + fs_mgr_get_slot_suffix();
     android::base::unique_fd fd(open(dev.c_str(), O_RDONLY | O_DIRECT));
     if (fd < 0) {
