@@ -29,10 +29,12 @@
 #include <chrono>
 #include <sstream>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
+#include <fs_mgr/file_wait.h>
 #include <snapuserd/snapuserd_client.h>
 
 namespace android {
@@ -277,6 +279,38 @@ bool SnapuserdClient::QueryUpdateVerification() {
     }
     std::string response = Receivemsg();
     return response == "success";
+}
+
+std::string SnapuserdClient::GetDaemonAliveIndicatorPath() {
+    return std::string(kDaemonAliveIndicatorPath);
+}
+
+bool SnapuserdClient::TestDaemonAlive() {
+    if (!android::fs_mgr::WaitForFile(SnapuserdClient::GetDaemonAliveIndicatorPath(), 15s)) {
+        LOG(ERROR) << "Timed out waiting for daemon indicator path: "
+                   << SnapuserdClient::GetDaemonAliveIndicatorPath();
+        return false;
+    }
+
+    return true;
+}
+
+bool SnapuserdClient::RemoveDaemonAliveIndicatorPath() {
+    // We will spin up the daemon just after selinux transition. Hence, remove
+    // any stale file if it exists
+    std::string error;
+    std::string filePath = SnapuserdClient::GetDaemonAliveIndicatorPath();
+    if (!android::base::RemoveFileIfExists(filePath, &error)) {
+        LOG(ERROR) << "Failed to remove DaemonAliveIndicatorPath - error: " << error;
+        return false;
+    }
+
+    if (!android::fs_mgr::WaitForFileDeleted(filePath, 5s)) {
+        LOG(ERROR) << "Timed out waiting for " << filePath << " to unlink";
+        return false;
+    }
+
+    return true;
 }
 
 }  // namespace snapshot

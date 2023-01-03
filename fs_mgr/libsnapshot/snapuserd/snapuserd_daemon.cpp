@@ -119,6 +119,14 @@ bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** ar
         }
     }
 
+    // We reach this point only during selinux transition during device boot.
+    // At this point, all threads are spin up and are ready to serve the I/O
+    // requests for dm-user. Lets inform init.
+    if (!android::base::WriteStringToFile("1", SnapuserdClient::GetDaemonAliveIndicatorPath())) {
+        PLOG(ERROR) << "Unable to write daemon alive indicator path: "
+                    << SnapuserdClient::GetDaemonAliveIndicatorPath();
+    }
+
     // Skip the accept() call to avoid spurious log spam. The server will still
     // run until all handlers have completed.
     return user_server_.WaitForSocket();
