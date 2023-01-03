@@ -32,6 +32,7 @@ static constexpr uint32_t PACKET_SIZE = 512;
 
 static constexpr char kSnapuserdSocket[] = "snapuserd";
 static constexpr char kSnapuserdSocketProxy[] = "snapuserd_proxy";
+static constexpr char kDaemonAliveIndicatorPath[] = "/metadata/ota/daemon-alive-indicator";
 
 // Ensure that the second-stage daemon for snapuserd is running.
 bool EnsureSnapuserdStarted();
@@ -91,6 +92,10 @@ class SnapuserdClient {
     // Check the update verification status - invoked by update_verifier during
     // boot
     bool QueryUpdateVerification();
+
+    static bool TestDaemonAlive();
+    static std::string GetDaemonAliveIndicatorPath();
+    static bool RemoveDaemonAliveIndicatorPath();
 };
 
 }  // namespace snapshot

@@ -303,6 +303,7 @@ bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock, const std::function
             GetRollbackIndicatorPath(),
             GetForwardMergeIndicatorPath(),
             GetOldPartitionMetadataPath(),
+            SnapuserdClient::GetDaemonAliveIndicatorPath(),
     };
     for (const auto& file : files) {
         RemoveFileIfExists(file);
@@ -1835,6 +1836,11 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         LOG(ERROR) << "Could not transition all snapuserd consumers.";
         return false;
     }
+
+    if (!SnapuserdClient::RemoveDaemonAliveIndicatorPath()) {
+        LOG(ERROR) << "Failed to remove DaemonAliveIndicatorPath";
+    }
+
     return true;
 }
 
