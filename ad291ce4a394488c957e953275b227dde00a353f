@@ -16,6 +16,24 @@
       "message": "i thought you were turning clang-tidy off for crash tests?",
       "revId": "ad291ce4a394488c957e953275b227dde00a353f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fbaffc05_6c6e00fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1052399
+      },
+      "writtenOn": "2023-01-03T23:50:50Z",
+      "side": 1,
+      "message": "Yes, this one was missed. I will abandon this CL and create another one to disable tidy for crash tests.",
+      "parentUuid": "ade68c7d_c6e84836",
+      "revId": "ad291ce4a394488c957e953275b227dde00a353f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
