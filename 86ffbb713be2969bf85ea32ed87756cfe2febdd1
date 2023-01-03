@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d4c1a61_8844281b",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-03T17:34:23Z",
+      "side": 1,
+      "message": "by not including the fact that both of the options take arguments, this help -- while longer -- is actually _less_ helpful than the old help.\n\ni\u0027d recommend copying the style of help in the toybox commands, since they\u0027re the vast majority of binaries in /bin.",
+      "range": {
+        "startLine": 333,
+        "startChar": 29,
+        "endLine": 333,
+        "endChar": 40
+      },
+      "revId": "86ffbb713be2969bf85ea32ed87756cfe2febdd1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49bc15da_6d3f2eac",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-03T17:34:23Z",
+      "side": 1,
+      "message": "use the usual while (getopt()) idiom",
+      "revId": "86ffbb713be2969bf85ea32ed87756cfe2febdd1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc64cd5c_93298e7d",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-03T17:34:23Z",
+      "side": 1,
+      "message": "note that this is also worse in that `--help` no longer works. use getopt_long() to not regress that.",
+      "revId": "86ffbb713be2969bf85ea32ed87756cfe2febdd1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
