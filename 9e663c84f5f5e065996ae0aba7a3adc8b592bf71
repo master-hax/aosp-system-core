@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "574d8ebf_67c1006c",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-03T17:42:09Z",
+      "side": 1,
+      "message": "missing braces",
+      "revId": "9e663c84f5f5e065996ae0aba7a3adc8b592bf71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
