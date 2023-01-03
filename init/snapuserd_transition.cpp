@@ -263,35 +263,38 @@ void SnapuserdSelinuxHelper::FinishTransition() {
  * we may see audit logs.
  */
 bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
-    std::string dev = "/dev/block/mapper/system"s + fs_mgr_get_slot_suffix();
-    android::base::unique_fd fd(open(dev.c_str(), O_RDONLY | O_DIRECT));
-    if (fd < 0) {
-        PLOG(ERROR) << "open " << dev << " failed";
-        return false;
-    }
-
-    void* addr;
-    ssize_t page_size = getpagesize();
-    if (posix_memalign(&addr, page_size, page_size) < 0) {
-        PLOG(ERROR) << "posix_memalign with page size " << page_size;
-        return false;
-    }
-
-    std::unique_ptr<void, decltype(&::free)> buffer(addr, ::free);
-
-    int iter = 0;
-    while (iter < 10) {
-        ssize_t n = TEMP_FAILURE_RETRY(pread(fd.get(), buffer.get(), page_size, 0));
-        if (n < 0) {
-            // Wait for sometime before retry
-            std::this_thread::sleep_for(100ms);
-        } else if (n == page_size) {
-            return true;
-        } else {
-            LOG(ERROR) << "pread returned: " << n << " from: " << dev << " expected: " << page_size;
+    if (SnapuserdClient::TestDaemonAlive()) {
+        std::string dev = "/dev/block/mapper/system"s + fs_mgr_get_slot_suffix();
+        android::base::unique_fd fd(open(dev.c_str(), O_RDONLY | O_DIRECT));
+        if (fd < 0) {
+            PLOG(ERROR) << "open " << dev << " failed";
+            return false;
         }
 
-        iter += 1;
+        void* addr;
+        ssize_t page_size = getpagesize();
+        if (posix_memalign(&addr, page_size, page_size) < 0) {
+            PLOG(ERROR) << "posix_memalign with page size " << page_size;
+            return false;
+        }
+
+        std::unique_ptr<void, decltype(&::free)> buffer(addr, ::free);
+
+        int iter = 0;
+        while (iter < 10) {
+            ssize_t n = TEMP_FAILURE_RETRY(pread(fd.get(), buffer.get(), page_size, 0));
+            if (n < 0) {
+                // Wait for sometime before retry
+                std::this_thread::sleep_for(100ms);
+            } else if (n == page_size) {
+                return true;
+            } else {
+                LOG(ERROR) << "pread returned: " << n << " from: " << dev
+                           << " expected: " << page_size;
+            }
+
+            iter += 1;
+        }
     }
 
     return false;
