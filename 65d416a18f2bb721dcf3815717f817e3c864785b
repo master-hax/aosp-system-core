@@ -33,6 +33,23 @@
       "message": "(the other half is in https://android-review.git.corp.google.com/c/platform/test/vts/+/2362048 - they both TH+2 even separately without a topic... but what should happen??)",
       "revId": "65d416a18f2bb721dcf3815717f817e3c864785b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed1ce049_41364a89",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-01-03T21:53:45Z",
+      "side": 1,
+      "message": "TH+2 expired.",
+      "revId": "65d416a18f2bb721dcf3815717f817e3c864785b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
