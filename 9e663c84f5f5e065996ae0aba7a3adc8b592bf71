@@ -16,6 +16,24 @@
       "message": "missing braces",
       "revId": "9e663c84f5f5e065996ae0aba7a3adc8b592bf71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6793a7de_eb345348",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-04T10:39:45Z",
+      "side": 1,
+      "message": "Ack... I suppose in this coding style, all the single line if must be on one line then, I\u0027ll updated the patch above then.",
+      "parentUuid": "574d8ebf_67c1006c",
+      "revId": "9e663c84f5f5e065996ae0aba7a3adc8b592bf71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
