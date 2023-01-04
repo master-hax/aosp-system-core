@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "877de7b5_fab2b6d9",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2023-01-04T02:51:36Z",
+      "side": 1,
+      "message": "keep the initialization consistent  with sender_desc?",
+      "revId": "1deb7c52c04c04fab86de284e415ae718d4111ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a8c3b28_c19b09f0",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2023-01-04T02:51:36Z",
+      "side": 1,
+      "message": "IMO, this is clearer if you put the SIGSYS check above the signal_has_si_addr check.",
+      "revId": "1deb7c52c04c04fab86de284e415ae718d4111ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
