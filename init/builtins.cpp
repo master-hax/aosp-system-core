@@ -111,11 +111,11 @@ class ErrorIgnoreEnoent {
   public:
     ErrorIgnoreEnoent()
         : ignore_error_(errno == ENOENT &&
-                        android::base::GetMinimumLogSeverity() > android::base::DEBUG) {}
+                        android::base::GetMinimumLogSeverity() <= android::base::DEBUG) {}
     explicit ErrorIgnoreEnoent(int errno_to_append)
         : error_(errno_to_append),
           ignore_error_(errno_to_append == ENOENT &&
-                        android::base::GetMinimumLogSeverity() > android::base::DEBUG) {}
+                        android::base::GetMinimumLogSeverity() <= android::base::DEBUG) {}
 
     template <typename T>
     operator android::base::expected<T, ResultError<android::base::Errno>>() {
