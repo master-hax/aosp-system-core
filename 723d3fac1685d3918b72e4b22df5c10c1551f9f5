@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9dcd539_bc1d1c89",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-04T18:25:30Z",
+      "side": 1,
+      "message": "Are these sysfs nodes upstreamed to the Android Common Kernel?",
+      "revId": "723d3fac1685d3918b72e4b22df5c10c1551f9f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43d18f1c_4f7fc439",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-04T18:25:30Z",
+      "side": 1,
+      "message": "Should this return the result to the HAL?",
+      "range": {
+        "startLine": 534,
+        "startChar": 0,
+        "endLine": 534,
+        "endChar": 4
+      },
+      "revId": "723d3fac1685d3918b72e4b22df5c10c1551f9f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
