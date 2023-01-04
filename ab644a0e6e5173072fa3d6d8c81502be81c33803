@@ -16,6 +16,24 @@
       "message": "I think this needs to be wrapped in an #ifdef USE_SCUDO",
       "revId": "ab644a0e6e5173072fa3d6d8c81502be81c33803",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c4e2bc5_0970f1ce",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-04T23:45:01Z",
+      "side": 1,
+      "message": "This passes on our 32 bit non-scudo build so the USE_SCUDO isn\u0027t necessary.",
+      "parentUuid": "7eb3c7bd_9258106c",
+      "revId": "ab644a0e6e5173072fa3d6d8c81502be81c33803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
