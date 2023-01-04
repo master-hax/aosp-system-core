@@ -33,6 +33,29 @@
       "message": "tab",
       "revId": "d31879b812b770055276521d1e3c8bec47084a76",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3464b00_4ded78ab",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1042384
+      },
+      "writtenOn": "2023-01-04T19:40:09Z",
+      "side": 1,
+      "message": "The call looks like will wait indefinitely when NOT declared(Refer to: https://source.corp.google.com/android/prebuilts/vndk/v32/x86/include/frameworks/native/libs/binder/ndk/include_platform/android/binder_manager.h;l\u003d87?q\u003dAServiceManager_waitForService\u0026sq\u003dpackage:%5Eandroid$\u0026start\u003d21)\n\nAServiceManager_isDeclared can be used to check if the AIDL service is declared.\n\nAlso, the code has to fall back to retrieving HIDL usbgadget service when AIDL usbgadget is not declared. This for remaining backwards compatible to devices which are under GRF/VF which were launched in previous desserts and are just upgrading to Android U.\n\nsmoreland@/devinmoore@ please correct me if I am wrong.",
+      "range": {
+        "startLine": 44,
+        "startChar": 28,
+        "endLine": 44,
+        "endChar": 58
+      },
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
