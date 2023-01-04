@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "add6d303_377f105a",
+        "filename": "usbd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-01-04T22:09:33Z",
+      "side": 1,
+      "message": "bpfmt -w Android.bp",
+      "parentUuid": "d8e8711d_20cca6b6",
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d3464b00_4ded78ab",
         "filename": "usbd/usbd.cpp",
         "patchSetId": 1
@@ -72,6 +90,30 @@
       "side": 1,
       "message": "Correct, and correct!",
       "parentUuid": "d3464b00_4ded78ab",
+      "range": {
+        "startLine": 44,
+        "startChar": 28,
+        "endLine": 44,
+        "endChar": 58
+      },
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "706f36d2_5b9b8e53",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-01-04T22:09:33Z",
+      "side": 1,
+      "message": "if (AServiceManager_isDeclared(...)) { AServiceManager_waitForService(...)}",
+      "parentUuid": "26a295d9_ff31e6f1",
       "range": {
         "startLine": 44,
         "startChar": 28,
