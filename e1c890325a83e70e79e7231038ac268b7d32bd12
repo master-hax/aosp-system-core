@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1eda64a_a60c8278",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-05T18:53:12Z",
+      "side": 1,
+      "message": "can we use a status_t?",
+      "range": {
+        "startLine": 534,
+        "startChar": 0,
+        "endLine": 534,
+        "endChar": 3
+      },
+      "revId": "e1c890325a83e70e79e7231038ac268b7d32bd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0adb5c67_5c35d2d4",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 545,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-05T18:53:12Z",
+      "side": 1,
+      "message": "please fix the typo",
+      "range": {
+        "startLine": 545,
+        "startChar": 44,
+        "endLine": 545,
+        "endChar": 53
+      },
+      "revId": "e1c890325a83e70e79e7231038ac268b7d32bd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
