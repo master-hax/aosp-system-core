@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af6d80bc_7cfa8d77",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "`type*` here and elsewhere",
+      "range": {
+        "startLine": 340,
+        "startChar": 34,
+        "endLine": 340,
+        "endChar": 40
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8de0487_826f39bd",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "braces when you have an else --- the \"or same line\" exception isn\u0027t allowed then.",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81728c14_08a9e8a0",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "move this down to L378",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40013c1a_1392dc53",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "getline()",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2fd6cd4_0c3ef758",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "you can avoid all these `goto`s by having another function here...\n\nalternatively, since this seems like a really simple case, you can just have error default to NULL rather than \"\" and then these become `break` and you have an `if (error !\u003d NULL)` guarding the die().",
+      "range": {
+        "startLine": 387,
+        "startChar": 43,
+        "endLine": 387,
+        "endChar": 51
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51109f28_a2e44f95",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "tabs",
+      "range": {
+        "startLine": 402,
+        "startChar": 0,
+        "endLine": 402,
+        "endChar": 1
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4b43ff7_a775a78f",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "is there some other tool this is copying that would make this \"nod\" rather than \"node\"?",
+      "range": {
+        "startLine": 405,
+        "startChar": 35,
+        "endLine": 405,
+        "endChar": 38
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2144c8e_037f5464",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "(actually, i almost asked this before --- why doesn\u0027t append_cpio_config_nod() call die() directly? that would also make this function a lot smaller and simpler.)",
+      "range": {
+        "startLine": 408,
+        "startChar": 16,
+        "endLine": 408,
+        "endChar": 24
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10166715_f9df9154",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "this is neither useful nor in alphabetical order ... but what i\u0027m really missing here (even as a code reviewer, not as a _user_) is \"what are the file formats?\". especially since you\u0027re adding a new one here :-)",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a185b0d5_71f4c70b",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:25:05Z",
+      "side": 1,
+      "message": "weird too that you say \"dev nodes\" here, but the function is called \"cpio config\", but the file format has two different options (for directories and nodes).\n\ndo we actually _need_ control over directory mode/uid/gid, or can it just be implicit if we ask for a node /dev/foo/bar, say? (obviously this isn\u0027t relevant if there is some precedent we\u0027re following here.)",
+      "range": {
+        "startLine": 437,
+        "startChar": 26,
+        "endLine": 437,
+        "endChar": 35
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
