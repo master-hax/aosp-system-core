@@ -16,6 +16,24 @@
       "message": "Afterthought: I guess we should do something similar for prng_seeder too?\n\n(it has its own `.rc` stub rather than living in the main `init.rc`)",
       "revId": "b728ecda2c015ac8995e6a11da2b941a5448fdd8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "595d7431_e720e624",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2023-01-05T13:53:56Z",
+      "side": 1,
+      "message": "I think prng_seeder doesn\u0027t run as root? Will double check and if needed upload another change for it",
+      "parentUuid": "9788ed69_7a46db84",
+      "revId": "b728ecda2c015ac8995e6a11da2b941a5448fdd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
