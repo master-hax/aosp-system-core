@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "60189a32_9e223b5c",
+        "filename": "usbd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1292828
+      },
+      "writtenOn": "2023-01-05T08:21:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "add6d303_377f105a",
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d3464b00_4ded78ab",
@@ -114,6 +132,30 @@
       "side": 1,
       "message": "if (AServiceManager_isDeclared(...)) { AServiceManager_waitForService(...)}",
       "parentUuid": "26a295d9_ff31e6f1",
+      "range": {
+        "startLine": 44,
+        "startChar": 28,
+        "endLine": 44,
+        "endChar": 58
+      },
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1aeed55f_9b0efb98",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1292828
+      },
+      "writtenOn": "2023-01-05T08:21:31Z",
+      "side": 1,
+      "message": "Thanks the advises.\n \nIn the old way it used V1_0::IUsbGadget to get HIDL service.\nI changed to aidl::IUsbGadget.\nI am not sure how to get the HIDL service, is there any example?\n```\nif(AServiceManager_isDeclared(service_name.c_str())) {\n        shared_ptr\u003cIUsbGadget\u003e gadget \u003d IUsbGadget::fromBinder(\n                ndk::SpAIBinder(AServiceManager_waitForService(service_name.c_str())));\n    } else {\n        //Implement get the HIDL service\n    }\n```",
+      "parentUuid": "706f36d2_5b9b8e53",
       "range": {
         "startLine": 44,
         "startChar": 28,
