@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "01118e3c_a741b62d",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T00:56:23Z",
+      "side": 1,
+      "message": "heh, that annoyed me too, but i felt like i\u0027d already hit my \"unnecessary changes\" quote with the s/info/si/ so next time i read this code i won\u0027t have to wonder whether it\u0027s a \"real\" siginfo struct or some debuggerd-internal subset.\n\ndone.",
+      "parentUuid": "877de7b5_fab2b6d9",
+      "revId": "1deb7c52c04c04fab86de284e415ae718d4111ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3a8c3b28_c19b09f0",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-01-04T02:51:36Z",
       "side": 1,
       "message": "IMO, this is clearer if you put the SIGSYS check above the signal_has_si_addr check.",
+      "revId": "1deb7c52c04c04fab86de284e415ae718d4111ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7081ce5c_0e9e5fce",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T00:56:23Z",
+      "side": 1,
+      "message": "i felt like a fault address is the common case and should go first, but i don\u0027t really care, so \"done\"...",
+      "parentUuid": "3a8c3b28_c19b09f0",
       "revId": "1deb7c52c04c04fab86de284e415ae718d4111ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
