@@ -26,6 +26,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e6d672d9_9cf36074",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-01-05T19:32:12Z",
+      "side": 1,
+      "message": "Shouldn\u0027t need this anymore now that aosp/2319592 is merged?",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "755c1c6b_94628b42",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
