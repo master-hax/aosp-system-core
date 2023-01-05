@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9788ed69_7a46db84",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2023-01-05T12:16:33Z",
+      "side": 1,
+      "message": "Afterthought: I guess we should do something similar for prng_seeder too?\n\n(it has its own `.rc` stub rather than living in the main `init.rc`)",
+      "revId": "b728ecda2c015ac8995e6a11da2b941a5448fdd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
