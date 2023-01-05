@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89a4216d_d737653c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-01-05T17:52:28Z",
+      "side": 1,
+      "message": "Do you need read as well as search?",
+      "range": {
+        "startLine": 16,
+        "startChar": 51,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "cd00d19cba34340f8a5c0d76096ea2077f384a44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
