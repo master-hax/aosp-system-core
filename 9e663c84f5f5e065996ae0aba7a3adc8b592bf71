@@ -34,6 +34,24 @@
       "parentUuid": "574d8ebf_67c1006c",
       "revId": "9e663c84f5f5e065996ae0aba7a3adc8b592bf71",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e1cd017_6c0ced6c",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:12:35Z",
+      "side": 1,
+      "message": "yeah, \"single line or braces (with braces preferred)\" is the rule:  https://google.github.io/styleguide/cppguide.html#Conditionals",
+      "parentUuid": "6793a7de_eb345348",
+      "revId": "9e663c84f5f5e065996ae0aba7a3adc8b592bf71",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
