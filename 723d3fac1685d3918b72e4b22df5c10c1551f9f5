@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f68fda9a_75840f2a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-05T06:46:33Z",
+      "side": 1,
+      "message": "These sysfs nodes are under reviewing and will be upstreamed to the Android Common Kernel once the review is complete.\nThanks for the reminding.",
+      "parentUuid": "e9dcd539_bc1d1c89",
+      "revId": "723d3fac1685d3918b72e4b22df5c10c1551f9f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "43d18f1c_4f7fc439",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-01-04T18:25:30Z",
       "side": 1,
       "message": "Should this return the result to the HAL?",
+      "range": {
+        "startLine": 534,
+        "startChar": 0,
+        "endLine": 534,
+        "endChar": 4
+      },
+      "revId": "723d3fac1685d3918b72e4b22df5c10c1551f9f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f94a6793_7acc919c",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-05T06:46:33Z",
+      "side": 1,
+      "message": "Thanks for the advice. done.",
+      "parentUuid": "43d18f1c_4f7fc439",
       "range": {
         "startLine": 534,
         "startChar": 0,
