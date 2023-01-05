@@ -22,6 +22,30 @@
       },
       "revId": "cd00d19cba34340f8a5c0d76096ea2077f384a44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6871ae91_1eaf97f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1059815
+      },
+      "writtenOn": "2023-01-05T18:09:27Z",
+      "side": 1,
+      "message": "Hmm, I needed R initially but X might be enough now. Let\u0027s see...",
+      "parentUuid": "89a4216d_d737653c",
+      "range": {
+        "startLine": 16,
+        "startChar": 51,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "cd00d19cba34340f8a5c0d76096ea2077f384a44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
