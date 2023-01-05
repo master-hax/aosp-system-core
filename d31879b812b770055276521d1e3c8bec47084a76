@@ -164,6 +164,30 @@
       },
       "revId": "d31879b812b770055276521d1e3c8bec47084a76",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb568b11_588a6cc0",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2023-01-05T17:18:18Z",
+      "side": 1,
+      "message": "\u003e I am not sure how to get the HIDL service, is there any example?\n\nGet the HIDL service the same way that we got it before and use the fully type:\n`android::sp\u003cIUsbGadget\u003e gadget \u003d android::hardware::usb::gadget::V1_0::IUsbGadget::getService();`",
+      "parentUuid": "1aeed55f_9b0efb98",
+      "range": {
+        "startLine": 44,
+        "startChar": 28,
+        "endLine": 44,
+        "endChar": 58
+      },
+      "revId": "d31879b812b770055276521d1e3c8bec47084a76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
