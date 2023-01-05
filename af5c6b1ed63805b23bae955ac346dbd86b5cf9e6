@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08f9aa6c_6089494f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:57:01Z",
+      "side": 1,
+      "message": "(i was just leaving this for dvander anyway, but since i was asked to comment...)",
+      "revId": "af5c6b1ed63805b23bae955ac346dbd86b5cf9e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee96ae50_07ba1738",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T17:57:01Z",
+      "side": 1,
+      "message": "this especially seems a mess, and i wonder what (if anything) the scalability plan is with this tool... does anyone _other_ than Pixel use it? if not, should this just move to Pixel and they can do what they like with it? or if others do use it, what\u0027s the plan for having some kind of \"vendor namespace\" for this stuff?\n\n(i\u0027m assuming dvander is the best person to answer those questions?)",
+      "revId": "af5c6b1ed63805b23bae955ac346dbd86b5cf9e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
