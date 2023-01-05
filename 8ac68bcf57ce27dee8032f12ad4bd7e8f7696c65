@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d169d02d_8f87b044",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-01-05T19:26:38Z",
+      "side": 1,
+      "message": "This isn\u0027t displaying correctly in the preview. I think you might need:\n\n```\n    $ ./repo_pull.py pull \"hashtag:trusty-metrics-nw\" -g https://android-review.googlesource.com \\\n      -b $BRANCH_NAME\n```\n\nSame for the Trusty sync command.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 15
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "755c1c6b_94628b42",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
