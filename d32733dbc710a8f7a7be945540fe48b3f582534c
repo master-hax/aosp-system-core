@@ -16,6 +16,24 @@
       "message": "I wish there was an easy way to add a test for this, but we don\u0027t have any log checking tests.\n\nAnd those tend to be flaky anyway.",
       "revId": "d32733dbc710a8f7a7be945540fe48b3f582534c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa3d3ec2_e827b552",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-05T23:30:03Z",
+      "side": 1,
+      "message": "yeah, the nearest i could find was one of your malloc debug tests, and that was a lot of infrastructure i didn\u0027t fancy trying to abstract out. it\u0027s a shame, though, because something like that would be useful.\n\nin the meantime, here\u0027s a manual test (from running `crasher seccomp`):\n```\n01-05 23:28:52.761 10355 10355 F libc    : Fatal signal 31 (SIGSYS), code 1 (SYS_SECCOMP), syscall 99999 in tid 10355 (crasher), pid 10355 (crasher)\n```",
+      "parentUuid": "5d61674a_d47cc5db",
+      "revId": "d32733dbc710a8f7a7be945540fe48b3f582534c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
