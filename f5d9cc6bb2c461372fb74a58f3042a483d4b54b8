@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72438278_3a7d3055",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-05T09:21:39Z",
+      "side": 0,
+      "message": "I think the existing impl is correct.\n\n* `loglevel`: smaller number is more critical. 0 EMERG - 7 DEBUG\n* `android::base::LogSeverity`: bigger number is more critical. 0 VERBOSE - 6 FATAL\n\nloglevel 7 maps to LogSeverity DEBUG (1)\nloglevel 0 maps to LogSeverity FATAL (6)\n\nSo, with `loglevel 7` this condition evaluates to `false`, which means that the ENOENT errors are NOT ignored (i.e. shown) as expected.\n\nWith `loglevel 6` or below, this becomes `true`, which means the ENOENT errors are silenced.\n\nAm I missing something?",
+      "range": {
+        "startLine": 114,
+        "startChar": 23,
+        "endLine": 114,
+        "endChar": 85
+      },
+      "revId": "f5d9cc6bb2c461372fb74a58f3042a483d4b54b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
