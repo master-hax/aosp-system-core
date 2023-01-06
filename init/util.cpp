@@ -145,7 +145,11 @@ Result<int> CreateSocket(const std::string& name, int type, bool passcred, bool 
     if (fchmodat(AT_FDCWD, addr.sun_path, perm, AT_SYMLINK_NOFOLLOW)) {
         return ErrnoError() << "Failed to fchmodat socket '" << addr.sun_path << "'";
     }
+<<<<<<< HEAD   (ddfa08 Merge "Revert "Migrate the blkio controller to the v2 cgroup)
     if (should_listen && listen(fd.get(), /* use OS maximum */ 1 << 30)) {
+=======
+    if (should_listen && listen(fd, /* use OS maximum */ 1 << 30)) {
+>>>>>>> BRANCH (88a4c6 Merge cherrypicks of [20026125, 20112204] into tm-qpr1-relea)
         return ErrnoError() << "Failed to listen on socket '" << addr.sun_path << "'";
     }
 
