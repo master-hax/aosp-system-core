@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "87a5cd8a_929cd991",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "af6d80bc_7cfa8d77",
+      "range": {
+        "startLine": 340,
+        "startChar": 34,
+        "endLine": 340,
+        "endChar": 40
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e8de0487_826f39bd",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-01-05T17:25:05Z",
       "side": 1,
       "message": "braces when you have an else --- the \"or same line\" exception isn\u0027t allowed then.",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77eb50b4_909fd1e9",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e8de0487_826f39bd",
       "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b74ba03_709eede6",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "81728c14_08a9e8a0",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "40013c1a_1392dc53",
@@ -75,6 +135,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "56992562_86ab6b0a",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "40013c1a_1392dc53",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c2fd6cd4_0c3ef758",
@@ -88,6 +166,30 @@
       "writtenOn": "2023-01-05T17:25:05Z",
       "side": 1,
       "message": "you can avoid all these `goto`s by having another function here...\n\nalternatively, since this seems like a really simple case, you can just have error default to NULL rather than \"\" and then these become `break` and you have an `if (error !\u003d NULL)` guarding the die().",
+      "range": {
+        "startLine": 387,
+        "startChar": 43,
+        "endLine": 387,
+        "endChar": 51
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c10afde8_7256000f",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c2fd6cd4_0c3ef758",
       "range": {
         "startLine": 387,
         "startChar": 43,
@@ -121,6 +223,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "37bc87ab_4af6c684",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "51109f28_a2e44f95",
+      "range": {
+        "startLine": 402,
+        "startChar": 0,
+        "endLine": 402,
+        "endChar": 1
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d4b43ff7_a775a78f",
@@ -134,6 +260,30 @@
       "writtenOn": "2023-01-05T17:25:05Z",
       "side": 1,
       "message": "is there some other tool this is copying that would make this \"nod\" rather than \"node\"?",
+      "range": {
+        "startLine": 405,
+        "startChar": 35,
+        "endLine": 405,
+        "endChar": 38
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a3cc475_47c9c9c0",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Yes, it is the same format as the kernel \"cpio config\" found in the kernel sources in usr/",
+      "parentUuid": "d4b43ff7_a775a78f",
       "range": {
         "startLine": 405,
         "startChar": 35,
@@ -167,6 +317,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f34cee71_302efb1b",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c2144c8e_037f5464",
+      "range": {
+        "startLine": 408,
+        "startChar": 16,
+        "endLine": 408,
+        "endChar": 24
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "10166715_f9df9154",
@@ -184,6 +358,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c21f16d_0b25101e",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "I put an example for the dev node file. For the canned configuration, I have no idea, it even seems deprecated, I can\u0027t find any user in build/",
+      "parentUuid": "10166715_f9df9154",
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a185b0d5_71f4c70b",
@@ -197,6 +389,30 @@
       "writtenOn": "2023-01-05T17:25:05Z",
       "side": 1,
       "message": "weird too that you say \"dev nodes\" here, but the function is called \"cpio config\", but the file format has two different options (for directories and nodes).\n\ndo we actually _need_ control over directory mode/uid/gid, or can it just be implicit if we ask for a node /dev/foo/bar, say? (obviously this isn\u0027t relevant if there is some precedent we\u0027re following here.)",
+      "range": {
+        "startLine": 437,
+        "startChar": 26,
+        "endLine": 437,
+        "endChar": 35
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2fcd257c_30eac5cb",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T10:50:17Z",
+      "side": 1,
+      "message": "I renamed it on the last iteration but have not changed the internals :/\n\nNow everything should be \"devnodes_desc\"",
+      "parentUuid": "a185b0d5_71f4c70b",
       "range": {
         "startLine": 437,
         "startChar": 26,
