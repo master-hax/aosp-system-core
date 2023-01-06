@@ -180,7 +180,7 @@ static bool __has_memfd_support() {
     return true;
 }
 
-static bool has_memfd_support() {
+int has_memfd_support() {
     /* memfd_supported is the initial global per-process state of what is known
      * about memfd.
      */
@@ -310,7 +310,7 @@ static int __ashmem_check_failure(int fd, int result)
     return result;
 }
 
-static bool memfd_is_ashmem(int fd) {
+int memfd_is_ashmem(int fd) {
     static bool fd_check_error_once = false;
 
     if (__ashmem_is_ashmem(fd, 0) == 0) {
