@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ca720208_ac6341c5",
+        "filename": "healthd/Android.bp",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-06T22:53:56Z",
+      "side": 1,
+      "message": "Because battermonitor only needs headers from this library, I think you might be better off moving this to static_libs. This might help you fix the build error but I am not sure. Feel free to submit in internal instead.",
+      "range": {
+        "startLine": 27,
+        "startChar": 38,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "bd6a1d577be7e791f0a24bacdab3e4df8e59f2db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d3600df_274001a6",
         "filename": "healthd/BatteryMonitor.cpp",
         "patchSetId": 19
