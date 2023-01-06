@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d3600df_274001a6",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-06T19:07:15Z",
+      "side": 1,
+      "message": "Doesn\u0027t this always return OK?",
+      "range": {
+        "startLine": 541,
+        "startChar": 0,
+        "endLine": 543,
+        "endChar": 17
+      },
+      "revId": "bd6a1d577be7e791f0a24bacdab3e4df8e59f2db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
