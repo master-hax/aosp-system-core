@@ -22,6 +22,8 @@
 #include <linux/ashmem.h>
 #endif
 
+#include <sys/stat.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,6 +34,7 @@ int ashmem_set_prot_region(int fd, int prot);
 int ashmem_pin_region(int fd, size_t offset, size_t len);
 int ashmem_unpin_region(int fd, size_t offset, size_t len);
 int ashmem_get_size_region(int fd);
+int ashmem_get_backing_ino(int fd, ino_t* ino);
 
 #ifdef __cplusplus
 }

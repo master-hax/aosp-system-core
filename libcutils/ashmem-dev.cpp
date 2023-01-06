@@ -474,3 +474,27 @@ int ashmem_get_size_region(int fd)
 
     return __ashmem_check_failure(fd, TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_SIZE, NULL)));
 }
+
+int ashmem_get_backing_ino(int fd, ino_t* ino) {
+    if (!ino) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    if (has_memfd_support() && !memfd_is_ashmem(fd)) {
+        struct stat st;
+        int ret = TEMP_FAILURE_RETRY(fstat(fd, &st));
+        if (ret < 0) {
+            return -1;
+        }
+        *ino = st.st_ino;
+    } else {
+        unsigned long ioctl_ino = 0;
+        int ret = TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_GET_FILE_ID, &ioctl_ino));
+        if (ret < 0) {
+            return -1;
+        }
+        *ino = (ino_t)ioctl_ino;
+    }
+    return 0;
+}
