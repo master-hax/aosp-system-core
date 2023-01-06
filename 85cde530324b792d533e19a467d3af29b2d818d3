@@ -320,6 +320,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6d844a11_61aa4348",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T17:21:40Z",
+      "side": 1,
+      "message": "I have not found any, beside some sources :/ \n\nhttps://android.googlesource.com/kernel/common/+/refs/heads/android-mainline/usr/default_cpio_list",
+      "parentUuid": "d975b427_907025f7",
+      "range": {
+        "startLine": 405,
+        "startChar": 35,
+        "endLine": 405,
+        "endChar": 38
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c2144c8e_037f5464",
         "filename": "mkbootfs/mkbootfs.c",
         "patchSetId": 6

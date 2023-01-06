@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e21b07d_5fb0dcad",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T17:21:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "72cb41e8_8ab330c9",
+      "revId": "4c19dd5b56b9c24b5c466ca65d6d0d2166cd3be8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e2619154_4f19e812",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-01-06T16:39:30Z",
       "side": 1,
       "message": "don\u0027t restrict yourself to C89 :-) don\u0027t declare until you can initialize, and don\u0027t do either until you actually need it. (and use the right type!)\n\nnote also that you\u0027re relying on the fact that we zero-initialize all locals here. it\u0027s better to explicitly zero `line` and `len` for clarity.\n\npersonally i like to call `len` `allocated_length` because people get very confused about what _exactly_ that value is, and make incorrect assumptions if you give it a more netural name like just `len`. (in particular, the value will not _decrease_ if you read a shorter line after a longer line, so it\u0027s _not_ the length of the line you\u0027re dealing with right now [except sometimes by coincidence!].)\n\nso this should be more like:\n```\nstatic void append_devnodes_desc(const char* filename)\n{\n    FILE* f \u003d fopen(filename, \"re\");\n    if (!f) die(\"failed to open cpio config file \u0027%s\u0027: %m\", filename);\n\n    char* line \u003d NULL;\n    size_t allocated_length \u003d 0;\n    size_t line_num \u003d 0;\n    while (getline(\u0026line, \u0026allocated_length, f) !\u003d -1) {\n.\n.\n.\n```\n\n(btw, i realize this is an existing issue, but if you\u0027re interested, i think we could profitably replace die() with https://man7.org/linux/man-pages/man3/error.3.html and then you could trivially include the reason _why_ fopen() failed. alternatively, the hack is what i\u0027ve shown here, using the %m GNU extension.)",
+      "revId": "4c19dd5b56b9c24b5c466ca65d6d0d2166cd3be8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6672ac67_2160cb77",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-06T17:21:40Z",
+      "side": 1,
+      "message": "Sorry, the only C I\u0027ve been writing all my professional life is kernel code and that coding style is burnt in my brain, to the point I even order my variable declaration by length.\n\nWill change that and the error()",
+      "parentUuid": "e2619154_4f19e812",
       "revId": "4c19dd5b56b9c24b5c466ca65d6d0d2166cd3be8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
