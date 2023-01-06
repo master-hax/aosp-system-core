@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b235f54_e0b9a019",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-06T20:10:05Z",
+      "side": 1,
+      "message": "\"missing type\"?",
+      "range": {
+        "startLine": 406,
+        "startChar": 52,
+        "endLine": 406,
+        "endChar": 54
+      },
+      "revId": "e4c145d46091fba49ed1a3182783c5172ea48744",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97106003_7777b4ff",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-06T20:10:05Z",
+      "side": 1,
+      "message": "(sorry for not noticing earlier, but...) these should all just be strcmp() now we\u0027re using getline(), right?",
+      "range": {
+        "startLine": 419,
+        "startChar": 13,
+        "endLine": 419,
+        "endChar": 20
+      },
+      "revId": "e4c145d46091fba49ed1a3182783c5172ea48744",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

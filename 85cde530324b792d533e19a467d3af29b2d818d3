@@ -342,6 +342,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "82aa7c5a_31278ac0",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-06T20:10:05Z",
+      "side": 1,
+      "message": "that\u0027s a pity. oh well, you did your best :-(",
+      "parentUuid": "6d844a11_61aa4348",
+      "range": {
+        "startLine": 405,
+        "startChar": 35,
+        "endLine": 405,
+        "endChar": 38
+      },
+      "revId": "85cde530324b792d533e19a467d3af29b2d818d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c2144c8e_037f5464",
