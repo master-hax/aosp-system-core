@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "820502f6_c1875c58",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-06T09:00:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c96cdd5_522b4bd7",
+      "range": {
+        "startLine": 534,
+        "startChar": 0,
+        "endLine": 534,
+        "endChar": 3
+      },
+      "revId": "e1c890325a83e70e79e7231038ac268b7d32bd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0adb5c67_5c35d2d4",
@@ -71,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "522205f4_92877cb4",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 545,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-06T09:00:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0adb5c67_5c35d2d4",
+      "range": {
+        "startLine": 545,
+        "startChar": 44,
+        "endLine": 545,
+        "endChar": 53
+      },
+      "revId": "e1c890325a83e70e79e7231038ac268b7d32bd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6bbab0cf_9cfcc65a",
@@ -84,6 +132,30 @@
       "writtenOn": "2023-01-05T22:32:10Z",
       "side": 1,
       "message": "Looking at the CL and the HAL change, why do you need a setProperty function? You could just have the HAL call setChargingPolicy directly.",
+      "range": {
+        "startLine": 64,
+        "startChar": 13,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "e1c890325a83e70e79e7231038ac268b7d32bd12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2132731_877a510b",
+        "filename": "healthd/include/healthd/BatteryMonitor.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-06T09:00:52Z",
+      "side": 1,
+      "message": "Thanks for the advice. done!",
+      "parentUuid": "6bbab0cf_9cfcc65a",
       "range": {
         "startLine": 64,
         "startChar": 13,
