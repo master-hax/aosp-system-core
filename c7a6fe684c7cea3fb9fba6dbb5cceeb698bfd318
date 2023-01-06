@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9c9ae64_cb996afd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-01-06T06:21:50Z",
+      "side": 1,
+      "message": "Hey, reviewers. I verified locally that reverting these fixes the linked failures including CtsInitTestCases.RebootTest#StopServicesSIGKILL",
+      "revId": "c7a6fe684c7cea3fb9fba6dbb5cceeb698bfd318",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
