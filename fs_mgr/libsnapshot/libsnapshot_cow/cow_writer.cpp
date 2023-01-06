@@ -275,6 +275,10 @@ void CowWriter::InitBatchWrites() {
 }
 
 void CowWriter::InitWorkers() {
+    if (num_compress_threads_ <= 1) {
+        LOG(INFO) << "Not creating new threads for compression.";
+        return;
+    }
     for (int i = 0; i < num_compress_threads_; i++) {
         auto wt = std::make_unique<CompressWorker>(compression_, header_.block_size);
         threads_.emplace_back(std::async(std::launch::async, &CompressWorker::RunThread, wt.get()));
@@ -447,6 +451,10 @@ bool CowWriter::CompressBlocks(size_t num_blocks, const void* data) {
     size_t num_blocks_per_thread = num_blocks / num_threads;
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
     compressed_buf_.clear();
+    if (num_threads <= 1) {
+        return CompressWorker::CompressBlocks(compression_, options_.block_size, data, num_blocks,
+                                              &compressed_buf_);
+    }
 
     // Submit the blocks per thread. The retrieval of
     // compressed buffers has to be done in the same order.
@@ -490,7 +498,7 @@ bool CowWriter::EmitBlocks(uint64_t new_block_start, const void* data, size_t si
     while (num_blocks) {
         size_t pending_blocks = (std::min(kProcessingBlocks, num_blocks));
 
-        if (compression_) {
+        if (compression_ && num_compress_threads_ > 1) {
             if (!CompressBlocks(pending_blocks, iter)) {
                 return false;
             }
@@ -512,7 +520,10 @@ bool CowWriter::EmitBlocks(uint64_t new_block_start, const void* data, size_t si
             }
 
             if (compression_) {
-                auto data = std::move(*buf_iter_);
+                auto data =
+                        num_compress_threads_ > 1
+                                ? std::move(*buf_iter_)
+                                : CompressWorker::Compress(compression_, iter, header_.block_size);
                 op.compression = compression_;
                 op.data_length = static_cast<uint16_t>(data.size());
 
