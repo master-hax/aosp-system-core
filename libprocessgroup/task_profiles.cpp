@@ -675,6 +675,16 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 std::string path = params_val["Path"].asString();
 
                 auto controller = cg_map.FindController(controller_name);
+                // For legacy task_profiles.json files that try to join the
+                // v1 blkio cgroup instead of the v2 io cgroup.
+                if (controller_name == "blkio" && !controller.HasValue()) {
+                    controller = cg_map.FindController("io");
+                    if (controller.HasValue()) {
+                        LOG(INFO) << "Please update task_profiles.json. Joining v2 io cgroup "
+                                     "instead of v1 blkio cgroup";
+                        path = "";
+                    }
+                }
                 if (controller.HasValue()) {
                     profile->Add(std::make_unique<SetCgroupAction>(controller, path));
                 } else {
