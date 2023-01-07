@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfb65251_35396013",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-01-07T02:15:35Z",
+      "side": 1,
+      "message": "this will sleep for 1s if the USB HAL isn\u0027t started up yet. Consider: L42 count to \u00271\u0027 + call \u0027startThreadPool\u0027. (also - yes I know this is a silly comment to have to make - we\u0027ve got to keep on improving this case)",
+      "range": {
+        "startLine": 50,
+        "startChar": 40,
+        "endLine": 50,
+        "endChar": 70
+      },
+      "revId": "1df6709795fa59e9d6086ccb45e81441a48d7f6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
