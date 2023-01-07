@@ -615,6 +615,26 @@ TaskProfiles::TaskProfiles() {
     }
 }
 
+// If a legacy task_profiles.json file refers to the v1 "blkio" controller, change the controller
+// name into "io" and the path into "".
+static void TranslateControllerAndPath(const CgroupMap& cg_map, std::string& controller_name,
+                                       std::string* path) {
+    if (cg_map.FindController("blkio").HasValue()) {
+        // The blkio controller has been mounted in the v1 hierarchy. No conversion is required.
+        return;
+    }
+    if (cg_map.FindController("io").HasValue() && controller_name == "blkio") {
+        // The io controller has been mounted in the v2 hierarchy and the controller name and path
+        // refer to the v1 hierarchy. Translate both.
+        LOG(INFO) << "Please update task_profiles.json. Using the v2 io cgroup controller instead "
+                     "of v1 blkio cgroup controller";
+        controller_name = "io";
+        if (path) {
+            *path = "";
+        }
+    }
+}
+
 bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
     std::string json_doc;
 
@@ -644,6 +664,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
             return false;
         }
 
+        TranslateControllerAndPath(cg_map, controller_name, nullptr);
         auto controller = cg_map.FindController(controller_name);
         if (controller.HasValue()) {
             auto iter = attributes_.find(name);
@@ -674,6 +695,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 std::string controller_name = params_val["Controller"].asString();
                 std::string path = params_val["Path"].asString();
 
+                TranslateControllerAndPath(cg_map, controller_name, &path);
                 auto controller = cg_map.FindController(controller_name);
                 if (controller.HasValue()) {
                     profile->Add(std::make_unique<SetCgroupAction>(controller, path));
