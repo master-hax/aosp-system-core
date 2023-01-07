@@ -677,6 +677,9 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                 auto controller = cg_map.FindController(controller_name);
                 if (controller.HasValue()) {
                     profile->Add(std::make_unique<SetCgroupAction>(controller, path));
+                } else if (controller_name == "blkio") {
+                    LOG(INFO) << "Please update task_profiles.json. Using the v2 io cgroup controller instead "
+                                 "of v1 blkio cgroup controller";
                 } else {
                     LOG(WARNING) << "JoinCgroup: controller " << controller_name << " is not found";
                 }
