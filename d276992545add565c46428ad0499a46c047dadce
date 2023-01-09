@@ -34,6 +34,24 @@
       "parentUuid": "b7519f34_04146d1c",
       "revId": "d276992545add565c46428ad0499a46c047dadce",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd989535_2f80d457",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1358301
+      },
+      "writtenOn": "2023-01-09T23:18:34Z",
+      "side": 1,
+      "message": "Ah, it could be. My mistake not noticing that this is on the same chain as that CL. Sorry for the confusion and feel free to submit.\n\nWe recently changed the notification logic to only alert on one CL in a chain so we thought it\u0027s a new one. I\u0027ve been looking into fixing attribution but it\u0027s more difficult than initially thought.",
+      "parentUuid": "f727ceae_e90bab63",
+      "revId": "d276992545add565c46428ad0499a46c047dadce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
