@@ -16,6 +16,23 @@
       "message": "LGTM, but you will need to add an owner (see the suggest owners button in the UI) for final approval.",
       "revId": "23f6b6727de5eb74f60d557b2fe2884e8c295c0b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59fbeb89_4c8d24b6",
+        "filename": "libdiskconfig/diskconfig.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-09T21:14:20Z",
+      "side": 1,
+      "message": "i suspect if you want to be \"good guy greg\" the _best_ fix here is to switch the `PART_SCHEME_` values over to an enum, make sure the warning for \"you missed a case\" is turned on, fix the \"unknown\" message for GPT to say \"not supported yet\" (like in the *other two* switches in this file /facepalm), and then _remove_ this default...\n\n...but, yeah, spelling this right is at least an improvement :-)",
+      "revId": "23f6b6727de5eb74f60d557b2fe2884e8c295c0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
