@@ -16,6 +16,24 @@
       "message": "Hi Bart,\n\nWe see this change (patch set 1) is causing perf boottime reg\n\nMetric TOTAL_BOOT_TIME-mean has regressed; its value is 20381.70 here, and increased from historical average 18856.43 by 1525.27 (8.09%).\n\nhttps://screenshot.googleplex.com/9HpCE2GZUNoc6rd\n\nhttps://crystalball-presubmit.corp.google.com/dashboard/I02200010122189073\n\nPlease help fix the regression before merging it.",
       "revId": "d276992545add565c46428ad0499a46c047dadce",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f727ceae_e90bab63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-09T19:38:33Z",
+      "side": 1,
+      "message": "Is the boot time regression perhaps caused by CL \"Migrate the blkio controller to the v2 cgroup hierarchy\" instead of by this CL?\n\nThe boot time regression introduced by that CL for Redfin devices has already been discussed. I think it is a performance issue in the 4.19 kernel.\n\nSince this boot time regression only occurs for older kernels, I prefer that it would be addressed after the CL mentioned above has been submitted. One possible solution is to fix the 4.19 kernel. Another possible solution is to upgrade Redfin devices to a newer kernel version.",
+      "parentUuid": "b7519f34_04146d1c",
+      "revId": "d276992545add565c46428ad0499a46c047dadce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
