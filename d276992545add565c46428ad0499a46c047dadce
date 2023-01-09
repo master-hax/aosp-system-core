@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7519f34_04146d1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1261281
+      },
+      "writtenOn": "2023-01-09T19:27:57Z",
+      "side": 1,
+      "message": "Hi Bart,\n\nWe see this change (patch set 1) is causing perf boottime reg\n\nMetric TOTAL_BOOT_TIME-mean has regressed; its value is 20381.70 here, and increased from historical average 18856.43 by 1525.27 (8.09%).\n\nhttps://screenshot.googleplex.com/9HpCE2GZUNoc6rd\n\nhttps://crystalball-presubmit.corp.google.com/dashboard/I02200010122189073\n\nPlease help fix the regression before merging it.",
+      "revId": "d276992545add565c46428ad0499a46c047dadce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
