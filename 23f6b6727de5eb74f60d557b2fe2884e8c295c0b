@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25295a5c_e856ffde",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1099348
+      },
+      "writtenOn": "2023-01-09T19:20:29Z",
+      "side": 1,
+      "message": "LGTM, but you will need to add an owner (see the suggest owners button in the UI) for final approval.",
+      "revId": "23f6b6727de5eb74f60d557b2fe2884e8c295c0b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
