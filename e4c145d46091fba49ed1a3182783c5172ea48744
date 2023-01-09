@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c4c19d8_990cb26a",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-09T09:37:20Z",
+      "side": 1,
+      "message": "I have not put anything there because this should never happen. The line is always terminated by \"\\n\", I never managed to trigger this error here.\n\nBut just in case, I\u0027ll add a message.",
+      "parentUuid": "5b235f54_e0b9a019",
+      "range": {
+        "startLine": 406,
+        "startChar": 52,
+        "endLine": 406,
+        "endChar": 54
+      },
+      "revId": "e4c145d46091fba49ed1a3182783c5172ea48744",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "97106003_7777b4ff",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-01-06T20:10:05Z",
       "side": 1,
       "message": "(sorry for not noticing earlier, but...) these should all just be strcmp() now we\u0027re using getline(), right?",
+      "range": {
+        "startLine": 419,
+        "startChar": 13,
+        "endLine": 419,
+        "endChar": 20
+      },
+      "revId": "e4c145d46091fba49ed1a3182783c5172ea48744",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "750f6a0c_14c87343",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-09T09:37:20Z",
+      "side": 1,
+      "message": "Ah yes, the CANNED_LINE_LENGTH doesn\u0027t mean anything here now!",
+      "parentUuid": "97106003_7777b4ff",
       "range": {
         "startLine": 419,
         "startChar": 13,
