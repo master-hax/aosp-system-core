@@ -308,7 +308,7 @@ cc_fuzz {
 cc_fuzz {
     name: "libutils_fuzz_refbase",
     defaults: ["libutils_fuzz_defaults"],
-    srcs: ["RefBase_fuzz.cpp"],
+    srcs: ["RefBase_fuzzer.cpp"],
 }
 
 cc_fuzz {
