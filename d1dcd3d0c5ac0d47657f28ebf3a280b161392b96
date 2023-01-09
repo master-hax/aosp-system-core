@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4af0a16_a02438a7",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1042384
+      },
+      "writtenOn": "2023-01-09T21:35:30Z",
+      "side": 1,
+      "message": "This seems to be repeated (77 -80). Why can\u0027t this be moved out to line 47 ?",
+      "range": {
+        "startLine": 55,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 49
+      },
+      "revId": "d1dcd3d0c5ac0d47657f28ebf3a280b161392b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
