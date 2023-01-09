@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31c7d474_a0391209",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-09T23:46:03Z",
+      "side": 1,
+      "message": "heh, +jmgao always used to prefer the BSD functions (whose names i\u0027ve never been able to keep straight), but this is the first time i remember hearing a _reason_...\n\n/me wonders whether we should add bionic\u0027s \u003cerror.h\u003e implementation to our musl for portability?",
+      "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
