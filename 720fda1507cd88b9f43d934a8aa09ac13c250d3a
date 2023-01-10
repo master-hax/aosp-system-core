@@ -22,6 +22,30 @@
       },
       "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4180990a_95405f00",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-10T23:57:58Z",
+      "side": 1,
+      "message": "Sorry for the basic question but can we do bool with C in android? I turned the return codes into ints because I wasn\u0027t sure about that. I\u0027ll try a compile with bool as the return code because I totally agree that we should keep it if possible.",
+      "parentUuid": "8115a52a_72ad7aba",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 3
+      },
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
