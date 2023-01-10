@@ -16,6 +16,24 @@
       "message": "LGTM, other than the lint warnings (although I feel a little bit conflicted with them; I think the names you provided are more understandable than the original argument names).",
       "revId": "ab489a7beba94f5ea4a65b9cec0faf34e960a4e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9b03b8a_f91410cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-01-10T06:31:12Z",
+      "side": 1,
+      "message": "Fixed to comply with linter.",
+      "parentUuid": "af9f6e5e_4d61d2b0",
+      "revId": "ab489a7beba94f5ea4a65b9cec0faf34e960a4e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
