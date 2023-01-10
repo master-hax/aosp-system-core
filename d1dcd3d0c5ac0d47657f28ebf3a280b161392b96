@@ -22,6 +22,30 @@
       },
       "revId": "d1dcd3d0c5ac0d47657f28ebf3a280b161392b96",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00b50392_027b5f5f",
+        "filename": "usbd/usbd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1292828
+      },
+      "writtenOn": "2023-01-10T03:50:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4af0a16_a02438a7",
+      "range": {
+        "startLine": 55,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 49
+      },
+      "revId": "d1dcd3d0c5ac0d47657f28ebf3a280b161392b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
