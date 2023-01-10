@@ -44,7 +44,10 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <fstream>
 #include <functional>
+#include <iostream>
+#include <memory>
 #include <regex>
 #include <string>
 #include <thread>
@@ -105,7 +108,6 @@ static bool g_disable_verity = false;
 static bool g_disable_verification = false;
 
 fastboot::FastBootDriver* fb = nullptr;
-
 enum fb_buffer_type {
     FB_BUFFER_FD,
     FB_BUFFER_SPARSE,
@@ -1408,6 +1410,43 @@ class ImageSource {
     virtual unique_fd OpenFile(const std::string& name) const = 0;
 };
 
+class Task {
+  public:
+    Task() = default;
+    virtual void Run() = 0;
+    virtual bool Parse(std::istream& text) = 0;
+    virtual ~Task() = default;
+};
+
+class FlashTask : public Task {
+  public:
+    void Run() override {}
+    bool Parse(std::istream& text) override {
+        std::getline(text, pname);
+        std::cout << "Flash Task pname is : " << pname << std::endl;
+        fname = find_item(pname);
+        if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
+
+        return true;
+    }
+
+  private:
+    std::string pname;
+    std::string fname;
+    ~FlashTask() {}
+};
+class RebootTask : public Task {
+  public:
+    void Run() override { return; }
+    bool Parse(std::istream& text) override {
+        std::string command;
+        std::getline(text, command);
+        std::cout << "Reboot Task text is: " << command << std::endl;
+        return true;
+    }
+    ~RebootTask() {}
+};
+
 class FlashAllTool {
   public:
     FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary,
@@ -1416,11 +1455,13 @@ class FlashAllTool {
     void Flash();
 
   private:
+    void HardcodedFlash();
     void CheckRequirements();
     void DetermineSecondarySlot();
     void CollectImages();
     void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
     void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
+    void FlashFromCommands();
     void UpdateSuperPartition();
 
     const ImageSource& source_;
@@ -1431,6 +1472,7 @@ class FlashAllTool {
     std::string secondary_slot_;
     std::vector<std::pair<const Image*, std::string>> boot_images_;
     std::vector<std::pair<const Image*, std::string>> os_images_;
+    std::vector<std::unique_ptr<Task>> tasks;
 };
 
 FlashAllTool::FlashAllTool(const ImageSource& source, const std::string& slot_override,
@@ -1441,19 +1483,7 @@ FlashAllTool::FlashAllTool(const ImageSource& source, const std::string& slot_ov
       wipe_(wipe),
       force_flash_(force_flash) {}
 
-void FlashAllTool::Flash() {
-    DumpInfo();
-    CheckRequirements();
-
-    // Change the slot first, so we boot into the correct recovery image when
-    // using fastbootd.
-    if (slot_override_ == "all") {
-        set_active("a");
-    } else {
-        set_active(slot_override_);
-    }
-
-    DetermineSecondarySlot();
+void FlashAllTool::HardcodedFlash() {
     CollectImages();
 
     CancelSnapshotIfNeeded();
@@ -1480,6 +1510,57 @@ void FlashAllTool::Flash() {
     FlashImages(os_images_);
 }
 
+void FlashAllTool::Flash() {
+    DumpInfo();
+    CheckRequirements();
+
+    // Change the slot first, so we boot into the correct recovery image when
+    // using fastbootd.
+    if (slot_override_ == "all") {
+        set_active("a");
+    } else {
+        set_active(slot_override_);
+    }
+
+    DetermineSecondarySlot();
+    FlashFromCommands();
+}
+
+void FlashAllTool::FlashFromCommands() {
+    std::string path = find_item_given_name("fastboot-info.txt");
+    std::ifstream stream(path);
+    if (!stream) {
+        std::cout << "flashing from hardcoded images. fastboot-info.txt does not exist\n";
+        HardcodedFlash();
+        return;
+    }
+    std::cout << "forming instructions from fastboot-info.txt\n";
+    std::string command;
+    while (stream >> command) {
+        if (command == "version") {
+            // error checking
+            std::string ver;
+            std::getline(stream, ver);
+            std::cout << "--version: " << ver << std::endl;
+        }
+        if (command == "flash") {
+            std::unique_ptr<Task> task = std::make_unique<FlashTask>();
+            task->Parse(stream);
+            tasks.emplace_back(std::move(task));
+
+        } else if (command == "begin") {
+            std::unique_ptr<Task> task = std::make_unique<RebootTask>();
+            task->Parse(stream);
+            tasks.emplace_back(std::move(task));
+        } else {
+            // errors
+            std::string text;
+            std::getline(stream, text);
+            std::cout << "--text: " << text << std::endl;
+        }
+    }
+    return;
+}
 void FlashAllTool::CheckRequirements() {
     std::vector<char> contents;
     if (!source_.ReadFile("android-info.txt", &contents)) {
