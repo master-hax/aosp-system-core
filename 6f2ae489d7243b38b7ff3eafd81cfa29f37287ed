@@ -34,6 +34,24 @@
       "parentUuid": "31c7d474_a0391209",
       "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da29d8c3_64267362",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-10T00:15:35Z",
+      "side": 1,
+      "message": "aye, but if i _read_ error() i know what it\u0027s doing. err() would be the _wrong_ translation here, no? ccross\u0027 errx() is the correct one?\n\n_that\u0027s_ why i don\u0027t like the BSD functions! i value my eyeballs and brain more than your fingers :-P",
+      "parentUuid": "0577f52d_1fe4be9b",
+      "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
