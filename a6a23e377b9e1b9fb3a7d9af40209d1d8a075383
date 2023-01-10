@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a318ca8d_ca2d5179",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-10T20:18:49Z",
+      "side": 1,
+      "message": "Are we going to delete libbatterymonitor-V1 etc. later? If so please add a TODO comment.",
+      "revId": "a6a23e377b9e1b9fb3a7d9af40209d1d8a075383",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
