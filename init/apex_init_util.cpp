@@ -18,7 +18,6 @@
 
 #include <glob.h>
 
-#include <map>
 #include <vector>
 
 #include <android-base/logging.h>
@@ -66,18 +65,15 @@ static Result<std::vector<std::string>> CollectApexConfigs(const std::string& ap
 }
 
 static Result<void> ParseConfigs(const std::vector<std::string>& configs) {
-    Parser parser = CreateApexConfigParser(ActionManager::GetInstance(),
-                     ServiceList::GetInstance());
-    bool success = true;
+    Parser parser =
+            CreateApexConfigParser(ActionManager::GetInstance(), ServiceList::GetInstance());
     for (const auto& c : configs) {
-        success &= parser.ParseConfigFile(c);
+        auto result = parser.ParseConfigFile(c);
+        if (!result.ok()) {
+            return Error() << "Unable to parse apex config: " << result.error();
+        }
     }
-
-    if (success) {
-        return {};
-    } else {
-        return Error() << "Unable to parse apex configs";
-    }
+    return {};
 }
 
 Result<void> ParseApexConfigs(const std::string& apex_name) {
