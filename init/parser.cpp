@@ -141,27 +141,26 @@ bool Parser::ParseConfigFileInsecure(const std::string& path) {
     return true;
 }
 
-bool Parser::ParseConfigFile(const std::string& path) {
+Result<void> Parser::ParseConfigFile(const std::string& path) {
     LOG(INFO) << "Parsing file " << path << "...";
     android::base::Timer t;
     auto config_contents = ReadFile(path);
     if (!config_contents.ok()) {
-        LOG(INFO) << "Unable to read config file '" << path << "': " << config_contents.error();
-        return false;
+        return Error() << "Unable to read config file '" << path
+                       << "': " << config_contents.error();
     }
 
     ParseData(path, &config_contents.value());
 
     LOG(VERBOSE) << "(Parsing " << path << " took " << t << ".)";
-    return true;
+    return {};
 }
 
-bool Parser::ParseConfigDir(const std::string& path) {
+Result<void> Parser::ParseConfigDir(const std::string& path) {
     LOG(INFO) << "Parsing directory " << path << "...";
     std::unique_ptr<DIR, decltype(&closedir)> config_dir(opendir(path.c_str()), closedir);
     if (!config_dir) {
-        PLOG(INFO) << "Could not import directory '" << path << "'";
-        return false;
+        return ErrnoError() << "Could not import directory '" << path << "'";
     }
     dirent* current_file;
     std::vector<std::string> files;
@@ -176,18 +175,19 @@ bool Parser::ParseConfigDir(const std::string& path) {
     // Sort first so we load files in a consistent order (bug 31996208)
     std::sort(files.begin(), files.end());
     for (const auto& file : files) {
-        if (!ParseConfigFile(file)) {
-            LOG(ERROR) << "could not import file '" << file << "'";
+        if (auto result = ParseConfigFile(file); !result.ok()) {
+            LOG(ERROR) << "could not import file '" << file << "': " << result.error();
         }
     }
-    return true;
+    return {};
 }
 
 bool Parser::ParseConfig(const std::string& path) {
-    if (is_dir(path.c_str())) {
-        return ParseConfigDir(path);
+    auto result = is_dir(path.c_str()) ? ParseConfigDir(path) : ParseConfigFile(path);
+    if (!result.ok()) {
+        LOG(INFO) << result.error();
     }
-    return ParseConfigFile(path);
+    return result.ok();
 }
 
 }  // namespace init
