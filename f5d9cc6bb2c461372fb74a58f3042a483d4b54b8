@@ -94,6 +94,30 @@
       },
       "revId": "f5d9cc6bb2c461372fb74a58f3042a483d4b54b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6ea966f_d541abed",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1970380
+      },
+      "writtenOn": "2023-01-10T07:23:08Z",
+      "side": 0,
+      "message": "Builtins.cpp\n        {\"loglevel\",                {1,     1,    {false,  do_loglevel}}},\n\nstatic Result\u003cvoid\u003e do_loglevel(const BuiltinArguments\u0026 args) {\n\n    android::base::SetMinimumLogSeverity(severity);\n\nwe are setting logseverity as minimum severity with current value\nso , we should check \u003c\u003d",
+      "parentUuid": "44a65d9a_3514322b",
+      "range": {
+        "startLine": 114,
+        "startChar": 23,
+        "endLine": 114,
+        "endChar": 85
+      },
+      "revId": "f5d9cc6bb2c461372fb74a58f3042a483d4b54b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
