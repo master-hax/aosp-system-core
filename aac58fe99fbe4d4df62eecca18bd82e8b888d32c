@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37ff6f06_943a0247",
+        "filename": "fastboot/usb_osx.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T17:45:06Z",
+      "side": 1,
+      "message": "accidental hard tab (did clang-format run?)",
+      "revId": "aac58fe99fbe4d4df62eecca18bd82e8b888d32c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
