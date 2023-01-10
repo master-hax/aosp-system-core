@@ -52,6 +52,24 @@
       "parentUuid": "0577f52d_1fe4be9b",
       "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2011cacc_30a200fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1894651
+      },
+      "writtenOn": "2023-01-10T00:36:15Z",
+      "side": 1,
+      "message": "\u003e aye, but if i read error() i know what it\u0027s doing.\n\nWell, assuming you don\u0027t glance past `error(errno, 1, \"foo\")` and not notice that errno and exit code were swapped.\n\n\u003e err() would be the wrong translation here, no? ccross\u0027 errx() is the correct one?\n\nNo, it\u0027s correct: errx is `error(rc, 0, msg)`. The fact that error doesn\u0027t print anything if the error is zero is *why* I don\u0027t like it: if errno happens to be zero, `error(1, errno, \"foo\")` will appear fine, but it\u0027s almost certainly not what you intended (even if you\u0027re doing this for unexpected EOF, you presumably want to print something more informative). err will print the obviously wrong looking \"foo: something went wrong: Success\"",
+      "parentUuid": "da29d8c3_64267362",
+      "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
