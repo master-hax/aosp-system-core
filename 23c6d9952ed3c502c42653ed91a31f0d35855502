@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41246673_4754635d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T05:05:00Z",
+      "side": 1,
+      "message": "wrong tab",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15e5a7c5_f9b47fc1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T05:05:00Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c6f096f_cdef6a3b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T05:05:00Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e6f9e64_aca7a1a1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_client.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T05:05:00Z",
+      "side": 1,
+      "message": "The naming here is a bit confusing since we already have indicators, it\u0027s just that they don\u0027t work under these unique circumstances.\n\nMaybe something like:\n\n    IsTransitionedDaemonReady();\n    RemoveTransitionedDaemonIndicator();\n\nThen, if possible, I\u0027d drop exposing the path. It\u0027s private to snapuserd. The only use of the path is in RemoveAllUpdateState(), but it doesn\u0027t follow the pattern there of concatenating metadata_dir_ for testing. So if snapuserd owns the path, let\u0027s hide it.\n\nOr if you want SnapshotManager to own the path - have SnapshotManager calculate the path, and pass the filename to snapuserd via argv.",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99e3b8b9_841f2d65",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-10T05:05:00Z",
+      "side": 1,
+      "message": "Is this compatible with Android S under GRF?",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
