@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8115a52a_72ad7aba",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-10T23:34:11Z",
+      "side": 1,
+      "message": "Is this because all of the other functions return int? I think it makes more sense to return a bool anyway. Especially since it seems like at some point a compiler is going to complain about returning boolean values when the return value is still int.",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 3
+      },
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
