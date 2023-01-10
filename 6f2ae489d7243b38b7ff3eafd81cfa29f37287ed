@@ -70,6 +70,24 @@
       "parentUuid": "da29d8c3_64267362",
       "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "668bf9c9_ff7ca6e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-10T02:03:16Z",
+      "side": 1,
+      "message": "\u003e Well, assuming you don\u0027t glance past error(errno, 1, \"foo\") and not notice that errno and exit code were swapped.\n\ni\u0027ve not seen anyone make that mistake. (though, yes, i\u0027d have preferred an error() and perror() type pair. though obviously _that_ name was taken. toybox\u0027s error_exit() and perror_exit() [and error_msg()/perror_msg()] are probably the least worst set i\u0027ve seen.)",
+      "parentUuid": "2011cacc_30a200fa",
+      "revId": "6f2ae489d7243b38b7ff3eafd81cfa29f37287ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
