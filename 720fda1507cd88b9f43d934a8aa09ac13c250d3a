@@ -128,6 +128,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0995f866_85064728",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-01-11T02:08:24Z",
+      "side": 1,
+      "message": "I have no desire for these low level functions and prefer the logic is in the wrapper (as Mark had originally done). That said, I\u0027m sympathetic to the fact that Mark has gone around on this a few times, so I\u0027m happy to let whatever folks are ok with land and can clean things up later if needed.",
+      "parentUuid": "64a27036_0a92846e",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
