@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e2b74bc_61dcc0b1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-01-11T19:26:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "41246673_4754635d",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "15e5a7c5_f9b47fc1",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-01-10T05:05:00Z",
       "side": 1,
       "message": "ditto",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "459be62d_2c792ad3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-01-11T19:26:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "15e5a7c5_f9b47fc1",
       "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e3b2675_ae88c2f3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-01-11T19:26:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c6f096f_cdef6a3b",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3e6f9e64_aca7a1a1",
@@ -69,6 +123,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6f348b8_80355298",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_client.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-01-11T19:26:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e6f9e64_aca7a1a1",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "99e3b8b9_841f2d65",
@@ -82,6 +154,24 @@
       "writtenOn": "2023-01-10T05:05:00Z",
       "side": 1,
       "message": "Is this compatible with Android S under GRF?",
+      "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7410f328_8b850d56",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-01-11T19:26:45Z",
+      "side": 1,
+      "message": "No. This check will fail for GRF devices. I have mentioned that in the comment; and it is ok. We will fallback and do the I/O for those devices.",
+      "parentUuid": "99e3b8b9_841f2d65",
       "revId": "23c6d9952ed3c502c42653ed91a31f0d35855502",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
