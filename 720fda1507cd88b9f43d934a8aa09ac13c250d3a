@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8177df4b_06f465ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-11T01:35:59Z",
+      "side": 1,
+      "message": "\u003e My vote, is to centralize this whole thing in ashmem-dev.cpp. One way or the other though, can we come to a final decision please? Thanks!\n\nyeah, mine too... let\u0027s do that.\n\n(i think last time you talked about the memfd functions i was unconvinced because i didn\u0027t think memfd was actually going to happen, and we\u0027d just avoid that completely.)",
+      "parentUuid": "66ff05bf_989fde89",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
