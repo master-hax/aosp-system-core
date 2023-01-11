@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "26fe40a9_870ef677",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-11T01:14:10Z",
+      "side": 1,
+      "message": "Right, that\u0027s why I commented as such on the Bitmap.java review before I pushed this patch :) Also, the `libcutil wrapper for ASHMEM_GET_FILE_ID ioctl` change had precisely this logic already implemented into `ashmem-dev.cpp` and *you told me* to push it into a local Bitmap.cpp function.",
+      "parentUuid": "b18b4df3_58fd482c",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
