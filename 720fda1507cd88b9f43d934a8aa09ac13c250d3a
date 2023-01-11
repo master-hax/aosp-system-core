@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b18b4df3_58fd482c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-11T00:56:09Z",
+      "side": 1,
+      "message": "fwiw, \"we need to expose _multiple_ low-level functions [that we don\u0027t think anyone else will need]\" is probably the argument for having your ioctl() wrapper in here instead...\n\njstultz: i know you\u0027re not very far on, so you probably don\u0027t know, but do you think anyone else is going to need these functions during the ashmem-\u003ememfd transition?",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
@@ -85,6 +102,30 @@
       "writtenOn": "2023-01-11T00:18:07Z",
       "side": 1,
       "message": "Done",
+      "parentUuid": "a496ed1c_a3061aa7",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 3
+      },
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eafe509a_bf9ad397",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-11T00:56:09Z",
+      "side": 1,
+      "message": "(note that if you _are_ in C, or you\u0027re in a header that might be used in either context, `#include \u003cstdbool.h\u003e` is your friend.)",
       "parentUuid": "a496ed1c_a3061aa7",
       "range": {
         "startLine": 183,
