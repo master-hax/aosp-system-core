@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eee43aa2_56b5ea40",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-01-11T08:07:06Z",
+      "side": 1,
+      "message": "Oh, I missed that this is also used by `perform_apex_config`. Thank you for catching this. I\u0027ll fix this.",
+      "parentUuid": "a09347a7_62b98eee",
+      "range": {
+        "startLine": 73,
+        "startChar": 12,
+        "endLine": 73,
+        "endChar": 18
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "38f082a6_1c57262e",
         "filename": "init/parser.cpp",
         "patchSetId": 2
@@ -180,6 +204,30 @@
       "side": 1,
       "message": "... but here we always return OK, even when there was an error.",
       "parentUuid": "fd1816d6_9d432fa1",
+      "range": {
+        "startLine": 194,
+        "startChar": 4,
+        "endLine": 194,
+        "endChar": 10
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "477203eb_b2221285",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-01-11T08:07:06Z",
+      "side": 1,
+      "message": "ok() returns `false` when it\u0027s error.",
+      "parentUuid": "66245623_b897a40f",
       "range": {
         "startLine": 194,
         "startChar": 4,
