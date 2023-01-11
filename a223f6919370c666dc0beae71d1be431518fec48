@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c473735_1a8db978",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T07:25:37Z",
+      "side": 1,
+      "message": "This is a change in behavior. We now abort as soon as an error is detected; doesn\u0027t parse other files after the error, which we parsed before.",
+      "range": {
+        "startLine": 73,
+        "startChar": 12,
+        "endLine": 73,
+        "endChar": 18
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38f082a6_1c57262e",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T07:25:37Z",
+      "side": 1,
+      "message": "Shoulnd\u0027t this be WARNING at least?",
+      "range": {
+        "startLine": 192,
+        "startChar": 12,
+        "endLine": 192,
+        "endChar": 16
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e9e1906_a7e217c5",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T07:25:37Z",
+      "side": 1,
+      "message": "So we are ignoring the error here, which makes the behavioral change to be more risky.",
+      "range": {
+        "startLine": 194,
+        "startChar": 4,
+        "endLine": 194,
+        "endChar": 10
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
