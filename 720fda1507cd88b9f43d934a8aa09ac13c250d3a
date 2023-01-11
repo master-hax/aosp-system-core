@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "64a27036_0a92846e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-11T01:42:09Z",
+      "side": 1,
+      "message": "+1\n\n(and if his answer is \"not sure\", let\u0027s assume \"no\", and go with the one-big-function for now and worry about the \"is it memfd\" stuff when we have an actual use case. i still find the has_memfd_support() vs memfd_is_ashmem() quite confusing, and i\u0027ll be honest --- if we do expose them i expect some callers to use them wrong because of that.)",
+      "parentUuid": "a32e9b8a_bdfaf0a1",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
