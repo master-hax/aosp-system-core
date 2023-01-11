@@ -143,6 +143,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "124ffc94_684b2c17",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T08:10:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "6411d76d_ad3e2612",
+      "range": {
+        "startLine": 192,
+        "startChar": 12,
+        "endLine": 192,
+        "endChar": 16
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e9e1906_a7e217c5",
@@ -228,6 +252,30 @@
       "side": 1,
       "message": "ok() returns `false` when it\u0027s error.",
       "parentUuid": "66245623_b897a40f",
+      "range": {
+        "startLine": 194,
+        "startChar": 4,
+        "endLine": 194,
+        "endChar": 10
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27cc871f_74a4e8d9",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T08:10:09Z",
+      "side": 1,
+      "message": "ah, this is returning the result of the check. Sorry!",
+      "parentUuid": "477203eb_b2221285",
       "range": {
         "startLine": 194,
         "startChar": 4,
