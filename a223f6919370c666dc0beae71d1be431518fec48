@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a09347a7_62b98eee",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T07:59:59Z",
+      "side": 1,
+      "message": "I think this new behavior is more risky because when this is called from `perform_apex_config`, `configs` will have rc files from different apexes. Then an error in one apex would affect other apexes.",
+      "parentUuid": "48a36bd3_d1ccba01",
+      "range": {
+        "startLine": 73,
+        "startChar": 12,
+        "endLine": 73,
+        "endChar": 18
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "38f082a6_1c57262e",
         "filename": "init/parser.cpp",
         "patchSetId": 2
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "Errors are handled by logging with INFO and returning false. This is to keep the original behavior.",
       "parentUuid": "4e9e1906_a7e217c5",
+      "range": {
+        "startLine": 194,
+        "startChar": 4,
+        "endLine": 194,
+        "endChar": 10
+      },
+      "revId": "a223f6919370c666dc0beae71d1be431518fec48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66245623_b897a40f",
+        "filename": "init/parser.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-11T07:59:59Z",
+      "side": 1,
+      "message": "... but here we always return OK, even when there was an error.",
+      "parentUuid": "fd1816d6_9d432fa1",
       "range": {
         "startLine": 194,
         "startChar": 4,
