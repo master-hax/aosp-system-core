@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a32e9b8a_bdfaf0a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-11T01:39:47Z",
+      "side": 1,
+      "message": "Lol! :)\n\nCool so I think let\u0027s wait to hear back from John - if he doesn\u0027t need the low level functions then I can push this all back into ashmem-dev.cpp, otherwise if he\u0027s going to use them we\u0027ll leave it it Bitmap.cpp. I take it that sounds reasonable to you?\n\nThanks!",
+      "parentUuid": "66ff05bf_989fde89",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
