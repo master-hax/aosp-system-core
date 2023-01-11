@@ -16,6 +16,24 @@
       "message": "accidental hard tab (did clang-format run?)",
       "revId": "aac58fe99fbe4d4df62eecca18bd82e8b888d32c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d97df05_3fcdeb2c",
+        "filename": "fastboot/usb_osx.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-01-11T19:32:32Z",
+      "side": 1,
+      "message": "Done - I might have suppressed it - sorry!",
+      "parentUuid": "37ff6f06_943a0247",
+      "revId": "aac58fe99fbe4d4df62eecca18bd82e8b888d32c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
