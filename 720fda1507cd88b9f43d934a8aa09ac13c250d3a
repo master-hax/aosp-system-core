@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3c7f901f_0e307cd7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-11T01:32:31Z",
+      "side": 1,
+      "message": "Actually, exporting these functions we discussed twice:\n\nOn the original ashmem-dev.cpp review:\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/2241636/comments/a23dad63_cb534634\n\n\n\u0027Hmm, if I want to keep the ability to seamlessly handled memfd vs ashmem while also inlining this function at it\u0027s call sites, I\u0027d need to export has_memfd_support() and memfd_is_ashmem(). Are we ok with that?\u0027\n\n\n\nAnd more recently, here in the Bitmap.java review:\n\nhttps://android-review.git.corp.google.com/c/platform/frameworks/base/+/2239343/comment/f7d8ab27_69f5305c/\n\n\u0027I can pull in the libcutil function, it will require exporting of has_memfd_support and memfd_is_ashmem for a single caller. Please let me know if that\u0027s not OK for any reason as I\u0027d like to avoid moving this code around any more :) :)`\n\n\nSo, we need to choose:\n\n- do we have only the bare ioctl in Bitmap.cpp\n\n- do we have the memfd/ashmem combined logic in Bitmap.cpp, which requires export of multiple low level functions\n\n- or lastly do we keep the logic centralized in ashmem-dev.cpp and handle both ashmem and memfd.\n\nMy vote, is to centralize this whole thing in ashmem-dev.cpp. One way or the other though, can we come to a final decision please? Thanks!",
+      "parentUuid": "26fe40a9_870ef677",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8115a52a_72ad7aba",
         "filename": "libcutils/ashmem-dev.cpp",
         "patchSetId": 1
