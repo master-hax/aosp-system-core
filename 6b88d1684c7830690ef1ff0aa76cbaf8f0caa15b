@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bdcc89d_463712aa",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-01-11T08:42:45Z",
+      "side": 1,
+      "message": "This is quite arbitrary. I\u0027m happy to get better suggestions ;-)",
+      "range": {
+        "startLine": 79,
+        "startChar": 81,
+        "endLine": 79,
+        "endChar": 84
+      },
+      "revId": "6b88d1684c7830690ef1ff0aa76cbaf8f0caa15b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
