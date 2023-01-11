@@ -16,6 +16,24 @@
       "message": "Are we going to delete libbatterymonitor-V1 etc. later? If so please add a TODO comment.",
       "revId": "a6a23e377b9e1b9fb3a7d9af40209d1d8a075383",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a80ba9d1_0bbb9fbb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-01-11T01:05:10Z",
+      "side": 1,
+      "message": "Thanks for the reminding. Done!",
+      "parentUuid": "a318ca8d_ca2d5179",
+      "revId": "a6a23e377b9e1b9fb3a7d9af40209d1d8a075383",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
