@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdf8d8ea_02e9364d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-12T18:55:55Z",
+      "side": 1,
+      "message": "A little awkward to make a SnapuserdClient from the server, just to call this. static function would be cleaner.",
+      "revId": "5140f3ad478465627169d2d29d2be4e7071895b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
