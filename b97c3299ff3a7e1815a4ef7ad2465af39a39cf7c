@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76e3046b_eaa961b4",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-12T23:36:42Z",
+      "side": 1,
+      "message": "Has it been considered to iterate over all block devices instead of only over /dev/sd[a-z]? An example of how to iterate over all block devices is available in the function PartitionParent() near the start of the fs_mgr/blockdev.cpp source file.",
+      "range": {
+        "startLine": 308,
+        "startChar": 12,
+        "endLine": 308,
+        "endChar": 47
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
