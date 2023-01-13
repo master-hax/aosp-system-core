@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea80e6ae_e3e11bdd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-13T07:01:38Z",
+      "side": 1,
+      "message": "out of curiosity, why is this?",
+      "revId": "d46ef240215b2838a89aaf759014ee08c8ea5d3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a43a2d4_0cfaf088",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-13T07:01:38Z",
+      "side": 1,
+      "message": "Since we\u0027re dropping the \"\u003d\", I think this should be:\n\n    } else if (flag \u003d\u003d \"zoned_device\") {",
+      "revId": "d46ef240215b2838a89aaf759014ee08c8ea5d3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
