@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "846fbf18_0b17bbe6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-01-13T18:47:14Z",
+      "side": 1,
+      "message": "@pcc@google.com",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b028ce2_de4e0947",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-01-13T18:47:14Z",
+      "side": 1,
+      "message": "ALL CAPS is too much, really.\nWe could bikeshed about how to present this warning better. I think a note is fine. Consider how a similar note is worded in hwasan for allocation-tail-overwritten bugs.\n\nMaybe in addition to this change \"Backtrace:\" to \"Backtrace (imprecise):\" ?",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
