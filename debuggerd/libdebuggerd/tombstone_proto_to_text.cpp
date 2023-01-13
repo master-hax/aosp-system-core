@@ -182,9 +182,12 @@ static void print_backtrace(CallbackType callback, const Tombstone& tombstone,
 }
 
 static void print_thread_backtrace(CallbackType callback, const Tombstone& tombstone,
-                                   const Thread& thread, bool should_log) {
+                                   const Thread& thread, bool should_log, bool imprecise = false) {
   CBS("");
-  CB(should_log, "backtrace:");
+  if (imprecise)
+    CB(should_log, "backtrace (imprecise):");
+  else
+    CB(should_log, "backtrace:");
   if (!thread.backtrace_note().empty()) {
     CB(should_log, "  NOTE: %s",
        android::base::Join(thread.backtrace_note(), "\n  NOTE: ").c_str());
@@ -316,6 +319,7 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
         StringPrintf(" from pid %d, uid %d", signal_info.sender_pid(), signal_info.sender_uid());
   }
 
+  bool is_async_mte_crash = false;
   if (!tombstone.has_signal_info()) {
     CBL("signal information missing");
   } else {
@@ -329,6 +333,9 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
     CBL("signal %d (%s), code %d (%s%s), fault addr %s", signal_info.number(),
         signal_info.name().c_str(), signal_info.code(), signal_info.code_name().c_str(),
         sender_desc.c_str(), fault_addr_desc.c_str());
+#ifdef SEGV_MTEAERR
+    is_async_mte_crash = signal_info.number() == SIGSEGV && signal_info.code() == SEGV_MTEAERR;
+#endif
   }
 
   if (tombstone.causes_size() == 1) {
@@ -340,7 +347,11 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
   }
 
   print_thread_registers(callback, tombstone, thread, true);
-  print_thread_backtrace(callback, tombstone, thread, true);
+  if (is_async_mte_crash) {
+    CBL("NOTE: This crash is an async MTE crash. The stacktrace below is at the next system call");
+    CBL("      or context switch that was executed after the fault occurred.");
+  }
+  print_thread_backtrace(callback, tombstone, thread, true, is_async_mte_crash);
 
   if (tombstone.causes_size() > 1) {
     CBS("");
