@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "905cde43_2b6df9cd",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-13T00:03:45Z",
+      "side": 1,
+      "message": "Would it be better to modify AllocAndReadFully so that:\n\nif (size \u003d\u003d 0 || !process_memory-\u003eReadFully(addr, buf.get(), size)) {\n  return std::unique_ptr\u003cchar[]\u003e();\n}\n\nThat way you can leave the rest in place. Or is it okay for the other sizes to be zero?",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 3
+      },
+      "revId": "2b6e2362a8a1694dc8598e1c26bd750fbfec2212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
