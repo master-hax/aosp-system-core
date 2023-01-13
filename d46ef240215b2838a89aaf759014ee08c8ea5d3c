@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0db77300_f93310a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-13T18:20:30Z",
+      "side": 1,
+      "message": "More information about zoned block devices and partition support is available at https://zonedstorage.io/docs/linux/part. From that website: \"As of kernel version 5.5.0, partition support for host-managed zoned block devices is no longer provided. If a well-formatted partition table is detected on a host-managed zoned block device, the kernel will ignore it and will not create the block device files that represent the partitions.\"",
+      "parentUuid": "40a4d670_18e65d53",
+      "revId": "d46ef240215b2838a89aaf759014ee08c8ea5d3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1a43a2d4_0cfaf088",
         "filename": "fs_mgr/fs_mgr_fstab.cpp",
         "patchSetId": 2
