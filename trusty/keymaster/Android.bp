@@ -80,6 +80,46 @@ cc_binary {
     vintf_fragments: ["4.0/android.hardware.keymaster@4.0-service.trusty.xml"],
 }
 
+cc_library {
+    name: "libkeymint_cpp_hal",
+    vendor: true,
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-DKEYMINT_OMIT_MAIN",
+    ],
+    local_include_dirs: [
+        "include",
+    ],
+    srcs: [
+        "TrustyKeymaster.cpp",
+        "ipc/trusty_keymaster_ipc.cpp",
+        "keymint/TrustyKeyMintDevice.cpp",
+        "keymint/TrustyKeyMintOperation.cpp",
+        "keymint/TrustyRemotelyProvisionedComponentDevice.cpp",
+        "keymint/TrustySecureClock.cpp",
+        "keymint/TrustySharedSecret.cpp",
+        "keymint/service.cpp",
+    ],
+    defaults: [
+        "keymint_use_latest_hal_aidl_ndk_shared",
+    ],
+    shared_libs: [
+        "android.hardware.security.rkp-V3-ndk",
+        "android.hardware.security.secureclock-V1-ndk",
+        "android.hardware.security.sharedsecret-V1-ndk",
+        "lib_android_keymaster_keymint_utils",
+        "libbase",
+        "libbinder_ndk",
+        "libhardware",
+        "libkeymaster_messages",
+        "libkeymint",
+        "liblog",
+        "libtrusty",
+        "libutils",
+    ],
+}
+
 cc_binary {
     name: "android.hardware.security.keymint-service.trusty",
     relative_install_path: "hw",

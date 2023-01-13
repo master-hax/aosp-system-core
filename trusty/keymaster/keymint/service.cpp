@@ -39,7 +39,8 @@ std::shared_ptr<T> addService(Args&&... args) {
     return service;
 }
 
-int main() {
+// Main function for C++ HAL service,  Accessible via C FFI to allow fallback from Rust HAL service.
+extern "C" int keymint_cpp_main() {
     auto trustyKeymaster = std::make_shared<keymaster::TrustyKeymaster>();
     int err = trustyKeymaster->Initialize(keymaster::KmVersion::KEYMINT_3);
     if (err != 0) {
@@ -59,3 +60,9 @@ int main() {
     ABinderProcess_joinThreadPool();
     return EXIT_FAILURE;  // should not reach
 }
+
+#ifndef KEYMINT_OMIT_MAIN
+int main() {
+    return keymint_cpp_main();
+}
+#endif

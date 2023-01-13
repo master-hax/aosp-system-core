@@ -37,7 +37,17 @@ static SHARED_SECRET_SERVICE_NAME: &str = "android.hardware.security.sharedsecre
 
 /// Local error type for failures in the HAL service.
 #[derive(Debug, Clone)]
-struct HalServiceError(String);
+struct HalServiceError {
+    msg: String,
+    // Indicate whether a C++ HAL service might have more success.
+    try_cpp: bool,
+}
+
+impl From<String> for HalServiceError {
+    fn from(msg: String) -> Self {
+        Self { msg, try_cpp: false }
+    }
+}
 
 #[derive(Debug)]
 struct TipcChannel(trusty::TipcChannel);
@@ -83,7 +93,14 @@ impl SerializedChannel for TipcChannel {
 
 fn main() {
     if let Err(e) = inner_main() {
-        panic!("HAL service failed: {:?}", e);
+        error!("KeyMint Rust HAL service failed: {}", e.msg);
+        if e.try_cpp {
+            error!("KeyMint/Rust failed to start; this may be due to mismatched HAL/TA");
+            error!("Attempting to start C++ HAL service, in case TA is Trusty impl");
+            cpp_main();
+        } else {
+            panic!("KeyMint Rust HAL service unrecoverable error: {:?}", e);
+        }
     }
 }
 
@@ -108,7 +125,11 @@ fn inner_main() -> Result<(), HalServiceError> {
     // Create connection to the TA
     let connection = trusty::TipcChannel::connect(DEFAULT_DEVICE, TRUSTY_KEYMINT_RUST_SERVICE_NAME)
         .map_err(|e| {
-            HalServiceError(format!("Failed to connect to Trusty Keymint TA because of {:?}.", e))
+            error!("Failed to connect to port '{}'", DEFAULT_DEVICE);
+            HalServiceError {
+                msg: format!("Failed to connect to Trusty KeyMint/Rust TA because of {:?}.", e),
+                try_cpp: true,
+            }
         })?;
     let tipc_channel = Arc::new(Mutex::new(TipcChannel(connection)));
 
@@ -116,7 +137,7 @@ fn inner_main() -> Result<(), HalServiceError> {
     let km_service = keymint::Device::new_as_binder(tipc_channel.clone());
     let km_service_name = format!("{}/{}", KM_SERVICE_NAME, SERVICE_INSTANCE);
     binder::add_service(&km_service_name, km_service.as_binder()).map_err(|e| {
-        HalServiceError(format!(
+        HalServiceError::from(format!(
             "Failed to register service {} because of {:?}.",
             km_service_name, e
         ))
@@ -126,7 +147,7 @@ fn inner_main() -> Result<(), HalServiceError> {
     let rpc_service = rpc::Device::new_as_binder(tipc_channel.clone());
     let rpc_service_name = format!("{}/{}", RPC_SERVICE_NAME, SERVICE_INSTANCE);
     binder::add_service(&rpc_service_name, rpc_service.as_binder()).map_err(|e| {
-        HalServiceError(format!(
+        HalServiceError::from(format!(
             "Failed to register service {} because of {:?}.",
             rpc_service_name, e
         ))
@@ -136,7 +157,7 @@ fn inner_main() -> Result<(), HalServiceError> {
     let sclock_service = secureclock::Device::new_as_binder(tipc_channel.clone());
     let sclock_service_name = format!("{}/{}", SECURE_CLOCK_SERVICE_NAME, SERVICE_INSTANCE);
     binder::add_service(&sclock_service_name, sclock_service.as_binder()).map_err(|e| {
-        HalServiceError(format!(
+        HalServiceError::from(format!(
             "Failed to register service {} because of {:?}.",
             sclock_service_name, e
         ))
@@ -146,7 +167,7 @@ fn inner_main() -> Result<(), HalServiceError> {
     let ssecret_service = sharedsecret::Device::new_as_binder(tipc_channel.clone());
     let ssecret_service_name = format!("{}/{}", SHARED_SECRET_SERVICE_NAME, SERVICE_INSTANCE);
     binder::add_service(&ssecret_service_name, ssecret_service.as_binder()).map_err(|e| {
-        HalServiceError(format!(
+        HalServiceError::from(format!(
             "Failed to register service {} because of {:?}.",
             ssecret_service_name, e
         ))
@@ -154,11 +175,22 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     // Send the HAL service information to the TA
     send_hal_info(tipc_channel.lock().unwrap().deref_mut())
-        .map_err(|e| HalServiceError(format!("Failed to populate HAL info: {:?}", e)))?;
+        .map_err(|e| HalServiceError::from(format!("Failed to populate HAL info: {:?}", e)))?;
 
     info!("Successfully registered KeyMint HAL services.");
     info!("Joining thread pool now.");
     binder::ProcessState::join_thread_pool();
     info!("KeyMint HAL service is terminating."); // should not reach here
     Ok(())
+}
+
+extern "C" {
+    /// C++ HAL service main function.
+    pub fn keymint_cpp_main() -> std::ffi::c_int;
+}
+
+fn cpp_main() {
+    info!("Invoking C++ main function");
+    let rc = unsafe { keymint_cpp_main() };
+    error!("C++ KeyMint main function exited with {}", rc);
 }
