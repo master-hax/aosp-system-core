@@ -46,6 +46,30 @@
       },
       "revId": "2b6e2362a8a1694dc8598e1c26bd750fbfec2212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec7bc17f_bddce502",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-13T00:17:35Z",
+      "side": 1,
+      "message": "I checked the scudo source code just to be sure, and it is fine now with a nullptr ring buffer. So looks good to me.",
+      "parentUuid": "b5484343_47c4ab41",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 3
+      },
+      "revId": "2b6e2362a8a1694dc8598e1c26bd750fbfec2212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
