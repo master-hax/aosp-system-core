@@ -22,6 +22,30 @@
       },
       "revId": "2b6e2362a8a1694dc8598e1c26bd750fbfec2212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5484343_47c4ab41",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-13T00:09:00Z",
+      "side": 1,
+      "message": "This is the only variable-sized one, so it\u0027s expected that this can be zero. For the other ones, AFAIK, it is unexpected. This is why I didn\u0027t modify the AllocAndReadFully.\n\nI did notice that the condition below is overeager, and corrected that. We can still try to find some information (though quite limited, because we turned off stack trace collection. But it should be able to tell you some basic information about overflows (like which-sized allocation overflowed by how much).",
+      "parentUuid": "905cde43_2b6df9cd",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 3
+      },
+      "revId": "2b6e2362a8a1694dc8598e1c26bd750fbfec2212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
