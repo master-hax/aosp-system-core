@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a6e8398_83ded86d",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2023-01-13T00:35:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f42500b_ce4f5d26",
+      "range": {
+        "startLine": 309,
+        "startChar": 35,
+        "endLine": 309,
+        "endChar": 44
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "905c71c3_b159db2a",
@@ -108,6 +132,30 @@
       "writtenOn": "2023-01-13T00:10:55Z",
       "side": 1,
       "message": "This excludes host-aware block devices. How about checking whether zoned !\u003d \"none\\n\"? From the kernel documentation:\n\nWhat:\t\t/sys/block/\u003cdisk\u003e/queue/zoned\nDate:\t\tSeptember 2016\nContact:\tDamien Le Moal \u003cdamien.lemoal@wdc.com\u003e\nDescription:\n\t\t[RO] zoned indicates if the device is a zoned block device and\n\t\tthe zone model of the device if it is indeed zoned.  The\n\t\tpossible values indicated by zoned are \"none\" for regular block\n\t\tdevices and \"host-aware\" or \"host-managed\" for zoned block\n\t\tdevices. The characteristics of host-aware and host-managed\n\t\tzoned block devices are described in the ZBC (Zoned Block\n\t\tCommands) and ZAC (Zoned Device ATA Command Set) standards.\n\t\tThese standards also define the \"drive-managed\" zone model.\n\t\tHowever, since drive-managed zoned block devices do not support\n\t\tzone commands, they will be treated as regular block devices and\n\t\tzoned will report \"none\".",
+      "range": {
+        "startLine": 314,
+        "startChar": 54,
+        "endLine": 314,
+        "endChar": 68
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffca8865_1bda4a9b",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2023-01-13T00:35:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "905c71c3_b159db2a",
       "range": {
         "startLine": 314,
         "startChar": 54,
