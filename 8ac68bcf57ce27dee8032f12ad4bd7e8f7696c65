@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a6cc1542_dab1e8b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-13T01:30:28Z",
+      "side": 1,
+      "message": "Should we maybe move this to `hardware/google/trusty`? It would be the first thing there, it\u0027s a start.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d169d02d_8f87b044",
         "filename": "trusty/stats/README.md",
         "patchSetId": 8
