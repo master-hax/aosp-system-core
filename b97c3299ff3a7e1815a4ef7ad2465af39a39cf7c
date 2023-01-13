@@ -46,6 +46,76 @@
       },
       "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "034b5b7a_5906282b",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-13T00:10:55Z",
+      "side": 1,
+      "message": "Thanks for the clarification.",
+      "parentUuid": "d24016de_47ce4a7d",
+      "range": {
+        "startLine": 308,
+        "startChar": 12,
+        "endLine": 308,
+        "endChar": 47
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f42500b_ce4f5d26",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-13T00:10:55Z",
+      "side": 1,
+      "message": "This variable name is misleading. I think that /dev/block/sde etc. are called block devices instead of partitions. How about renaming \"partition\" into \"bdev\"?",
+      "range": {
+        "startLine": 309,
+        "startChar": 35,
+        "endLine": 309,
+        "endChar": 44
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "905c71c3_b159db2a",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-01-13T00:10:55Z",
+      "side": 1,
+      "message": "This excludes host-aware block devices. How about checking whether zoned !\u003d \"none\\n\"? From the kernel documentation:\n\nWhat:\t\t/sys/block/\u003cdisk\u003e/queue/zoned\nDate:\t\tSeptember 2016\nContact:\tDamien Le Moal \u003cdamien.lemoal@wdc.com\u003e\nDescription:\n\t\t[RO] zoned indicates if the device is a zoned block device and\n\t\tthe zone model of the device if it is indeed zoned.  The\n\t\tpossible values indicated by zoned are \"none\" for regular block\n\t\tdevices and \"host-aware\" or \"host-managed\" for zoned block\n\t\tdevices. The characteristics of host-aware and host-managed\n\t\tzoned block devices are described in the ZBC (Zoned Block\n\t\tCommands) and ZAC (Zoned Device ATA Command Set) standards.\n\t\tThese standards also define the \"drive-managed\" zone model.\n\t\tHowever, since drive-managed zoned block devices do not support\n\t\tzone commands, they will be treated as regular block devices and\n\t\tzoned will report \"none\".",
+      "range": {
+        "startLine": 314,
+        "startChar": 54,
+        "endLine": 314,
+        "endChar": 68
+      },
+      "revId": "b97c3299ff3a7e1815a4ef7ad2465af39a39cf7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
