@@ -69,6 +69,24 @@
       "parentUuid": "4bcc39d1_2178d6ed",
       "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca340375_1507f80d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-14T00:56:58Z",
+      "side": 1,
+      "message": "hmm, maybe:\n\n\"This crash is an async MTE crash. Memory corruption has occurred in this process, but we do not know exactly where and when it happened. The stack trace below is the first system call or context switch that was executed after the memory corruption happened:\"\n\njust added a little bit more about the reason why we crashed (memory corruption), and made it clear that we don\u0027t know when it happened, but it\u0027s definitely not *this* stack trace",
+      "parentUuid": "0ab69913_a90cdfb6",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
