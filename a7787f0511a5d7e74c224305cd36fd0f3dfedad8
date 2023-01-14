@@ -51,6 +51,24 @@
       "parentUuid": "9b028ce2_de4e0947",
       "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ab69913_a90cdfb6",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-14T00:35:59Z",
+      "side": 1,
+      "message": "Made the note less shouty and added (imprecise). PTAL",
+      "parentUuid": "4bcc39d1_2178d6ed",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
