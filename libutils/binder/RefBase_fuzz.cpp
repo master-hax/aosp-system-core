@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,193 +13,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#define LOG_TAG "RefBaseFuzz"
-
-#include <thread>
-
-#include "fuzzer/FuzzedDataProvider.h"
-#include "log/log.h"
-#include "utils/RWLock.h"
+#include <fuzzer/FuzzedDataProvider.h>
 #include "utils/RefBase.h"
-#include "utils/StrongPointer.h"
 
+using namespace android;
 using android::RefBase;
-using android::RWLock;
-using android::sp;
-using android::wp;
 
-static constexpr int kMaxOperations = 100;
-static constexpr int kMaxThreads = 10;
-struct RefBaseSubclass : public RefBase {
+static constexpr int32_t kMaxAPIS = 13;
+
+class RefBaseSubclass : public RefBase {
   public:
-    RefBaseSubclass(bool* deletedCheck, RWLock& deletedMtx)
-        : mDeleted(deletedCheck), mRwLock(deletedMtx) {
-        RWLock::AutoWLock lock(mRwLock);
-        *mDeleted = false;
-        extendObjectLifetime(OBJECT_LIFETIME_WEAK);
-    }
+    RefBaseSubclass() { extendObjectLifetime(OBJECT_LIFETIME_WEAK); }
+};
 
-    virtual ~RefBaseSubclass() {
-        RWLock::AutoWLock lock(mRwLock);
-        *mDeleted = true;
-    }
+class RefBaseFuzzer {
+  public:
+    RefBaseFuzzer(const uint8_t* data, size_t size) : mFdp(data, size){};
+    void process();
 
   private:
-    bool* mDeleted;
-    android::RWLock& mRwLock;
+    FuzzedDataProvider mFdp;
 };
 
-// A thread-specific state object for ref
-struct RefThreadState {
-    size_t strongCount = 0;
-    size_t weakCount = 0;
-};
-
-RWLock gRefDeletedLock;
-bool gRefDeleted = false;
-bool gHasModifiedRefs = false;
-RefBaseSubclass* ref;
-RefBase::weakref_type* weakRefs;
-
-// These operations don't need locks as they explicitly check per-thread counts before running
-// they also have the potential to write to gRefDeleted, so must not be locked.
-const std::vector<std::function<void(RefThreadState*)>> kUnlockedOperations = {
-        [](RefThreadState* refState) -> void {
-            if (refState->strongCount > 0) {
-                ref->decStrong(nullptr);
-                gHasModifiedRefs = true;
-                refState->strongCount--;
-            }
-        },
-        [](RefThreadState* refState) -> void {
-            if (refState->weakCount > 0) {
-                weakRefs->decWeak(nullptr);
-                gHasModifiedRefs = true;
-                refState->weakCount--;
-            }
-        },
-};
-
-const std::vector<std::function<void(RefThreadState*)>> kMaybeLockedOperations = {
-        // Read-only operations
-        [](RefThreadState*) -> void { ref->getStrongCount(); },
-        [](RefThreadState*) -> void { weakRefs->getWeakCount(); },
-        [](RefThreadState*) -> void { ref->printRefs(); },
-
-        // Read/write operations
-        [](RefThreadState* refState) -> void {
-            ref->incStrong(nullptr);
-            gHasModifiedRefs = true;
-            refState->strongCount++;
-        },
-        [](RefThreadState* refState) -> void {
-            ref->forceIncStrong(nullptr);
-            gHasModifiedRefs = true;
-            refState->strongCount++;
-        },
-        [](RefThreadState* refState) -> void {
-            ref->createWeak(nullptr);
-            gHasModifiedRefs = true;
-            refState->weakCount++;
-        },
-        [](RefThreadState* refState) -> void {
-            // This will increment weak internally, then attempt to
-            // promote it to strong. If it fails, it decrements weak.
-            // If it succeeds, the weak is converted to strong.
-            // Both cases net no weak reference change.
-            if (weakRefs->attemptIncStrong(nullptr)) {
-                refState->strongCount++;
-                gHasModifiedRefs = true;
-            }
-        },
-        [](RefThreadState* refState) -> void {
-            if (weakRefs->attemptIncWeak(nullptr)) {
-                refState->weakCount++;
-                gHasModifiedRefs = true;
-            }
-        },
-        [](RefThreadState* refState) -> void {
-            weakRefs->incWeak(nullptr);
-            gHasModifiedRefs = true;
-            refState->weakCount++;
-        },
-};
-
-void loop(const std::vector<uint8_t>& fuzzOps) {
-    RefThreadState state;
-    uint8_t lockedOpSize = kMaybeLockedOperations.size();
-    uint8_t totalOperationTypes = lockedOpSize + kUnlockedOperations.size();
-    for (auto op : fuzzOps) {
-        auto opVal = op % totalOperationTypes;
-        if (opVal >= lockedOpSize) {
-            kUnlockedOperations[opVal % lockedOpSize](&state);
-        } else {
-            // We only need to lock if we have no strong or weak count
-            bool shouldLock = state.strongCount == 0 && state.weakCount == 0;
-            if (shouldLock) {
-                gRefDeletedLock.readLock();
-                // If ref has deleted itself, we can no longer fuzz on this thread.
-                if (gRefDeleted) {
-                    // Unlock since we're exiting the loop here.
-                    gRefDeletedLock.unlock();
-                    return;
+void RefBaseFuzzer::process() {
+    int32_t strongCount = 0;
+    int32_t weakCount = 0;
+    sp<RefBaseSubclass> ref = new RefBaseSubclass();
+    RefBase::weakref_type* weakRefs = ref->getWeakRefs();
+    int32_t id = mFdp.ConsumeIntegral<int32_t>();
+    while (mFdp.remaining_bytes()) {
+        int32_t refbaseFunc = mFdp.ConsumeIntegralInRange(0, kMaxAPIS);
+        switch (refbaseFunc) {
+            case 0:
+                ref->getStrongCount();
+                break;
+            case 1:
+                weakRefs->getWeakCount();
+                break;
+            case 2:
+                ref->printRefs();
+                break;
+            case 3:
+                ref->incStrong((void*)&id);
+                ++strongCount;
+                break;
+            case 4:
+                ref->forceIncStrong((void*)&id);
+                ++strongCount;
+                break;
+            case 5:
+                ref->createWeak((void*)&id);
+                ++weakCount;
+                break;
+            case 6:
+                if (weakRefs->attemptIncStrong((void*)&id)) {
+                    ++strongCount;
                 }
-            }
-            // Execute the locked operation
-            kMaybeLockedOperations[opVal](&state);
-            // Unlock if we locked.
-            if (shouldLock) {
-                gRefDeletedLock.unlock();
-            }
+                break;
+            case 7:
+                if (weakRefs->attemptIncWeak((void*)&id)) {
+                    ++weakCount;
+                }
+                break;
+            case 8:
+                weakRefs->incWeak((void*)&id);
+                ++weakCount;
+                break;
+            case 9:
+                if (strongCount > 0) {
+                    ref->decStrong((void*)&id);
+                    --strongCount;
+                }
+                break;
+            case 10:
+                if (weakCount > 0) {
+                    weakRefs->decWeak((void*)&id);
+                    --weakCount;
+                }
+                break;
+            case 11:
+                ref->incStrongRequireStrong((void*)&id);
+                ++strongCount;
+                break;
+            case 12:
+                weakRefs->incWeakRequireWeak((void*)&id);
+                ++weakCount;
+                break;
+            case 13:
+                weakRefs->trackMe(mFdp.ConsumeBool(), mFdp.ConsumeBool());
+                break;
         }
     }
 
-    // Instead of explicitly freeing this, we're going to remove our weak and
-    // strong references.
-    for (; state.weakCount > 0; state.weakCount--) {
-        weakRefs->decWeak(nullptr);
+    // Remove all weak and strong references.
+    if (weakCount > 0) {
+        for (; weakCount > 0; weakCount--) {
+            weakRefs->decWeak((void*)&id);
+        }
     }
-
-    // Clean up any strong references
-    for (; state.strongCount > 0; state.strongCount--) {
-        ref->decStrong(nullptr);
-    }
-}
-
-void spawnThreads(FuzzedDataProvider* dataProvider) {
-    std::vector<std::thread> threads = std::vector<std::thread>();
-
-    // Get the number of threads to generate
-    uint8_t count = dataProvider->ConsumeIntegralInRange<uint8_t>(1, kMaxThreads);
-    // Generate threads
-    for (uint8_t i = 0; i < count; i++) {
-        uint8_t opCount = dataProvider->ConsumeIntegralInRange<uint8_t>(1, kMaxOperations);
-        std::vector<uint8_t> threadOperations = dataProvider->ConsumeBytes<uint8_t>(opCount);
-        std::thread tmpThread = std::thread(loop, threadOperations);
-        threads.push_back(std::move(tmpThread));
-    }
-
-    for (auto& th : threads) {
-        th.join();
+    if (strongCount > 0) {
+        for (; strongCount > 0; strongCount--) {
+            ref->decStrong((void*)&id);
+        }
     }
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
-    gHasModifiedRefs = false;
-    ref = new RefBaseSubclass(&gRefDeleted, gRefDeletedLock);
-    weakRefs = ref->getWeakRefs();
-    // Since we are modifying flags, (flags & OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_WEAK
-    // is true. The destructor for RefBase should clean up weakrefs because of this.
-    FuzzedDataProvider dataProvider(data, size);
-    spawnThreads(&dataProvider);
-    LOG_ALWAYS_FATAL_IF(!gHasModifiedRefs && gRefDeleted, "ref(%p) was prematurely deleted!", ref);
-    // We need to explicitly delete this object
-    // if no refs have been added or deleted.
-    if (!gHasModifiedRefs && !gRefDeleted) {
-        delete ref;
-    }
-    LOG_ALWAYS_FATAL_IF(gHasModifiedRefs && !gRefDeleted,
-                        "ref(%p) should be deleted, is it leaking?", ref);
+    RefBaseFuzzer refBaseFuzzer(data, size);
+    refBaseFuzzer.process();
     return 0;
 }
