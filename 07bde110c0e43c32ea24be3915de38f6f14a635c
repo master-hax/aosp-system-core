@@ -16,6 +16,24 @@
       "message": "Do we want the watchdog not to fire if a normal process can\u0027t run a single write in 30 seconds?  Raising the priority this high would mean the watchdog wouldn\u0027t fire if another FIFO process was busy looping.",
       "revId": "07bde110c0e43c32ea24be3915de38f6f14a635c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b713ff5_106aa2bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1894651
+      },
+      "writtenOn": "2023-01-17T22:17:25Z",
+      "side": 1,
+      "message": "I guess the question is what the watchdog is intended to bite for. I think we\u0027re seeing situations during heavy memory pressure where the watchdog is getting swapped out and it\u0027s at the back of the queue. I think in practice, either the user is going to already be unhappy because the device has been hosed for 30 seconds and they\u0027re probably already holding the power button down, or the stuff being swapped out/ignored isn\u0027t actually critical to what they\u0027re doing, and the watchdog is pulling the plug prematurely. (We\u0027re probably more prone to this, because we try to run at full compute utilization)\n\nMaybe this should be a combination of mlocking all of the pages in the process, and using the highest non-RT priority or lowest RT priority?",
+      "parentUuid": "9245c97f_9b56e52d",
+      "revId": "07bde110c0e43c32ea24be3915de38f6f14a635c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
