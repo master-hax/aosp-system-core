@@ -22,6 +22,30 @@
       },
       "revId": "2a825a634415c8730e854f42511f09217b74d73c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "922b5925_d87771ca",
+        "filename": "libutils/include/utils/Mutex.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1880185
+      },
+      "writtenOn": "2023-01-17T20:35:26Z",
+      "side": 1,
+      "message": "it is guarantee \u0027tv_nsec \u003c 1000000000LL\u0027\nsince tv_nsec \u003c 1000000000LL and (timeoutNs % 1000000000LL) \u003c 1000000000LL\nadding those together will guarantee tv_nsec \u003c 2000000000LL and subtract that by  1000000000LL will guarantee \u0027tv_nsec \u003c 1000000000LL\u0027.",
+      "parentUuid": "c4e763f1_09a29ed7",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 5
+      },
+      "revId": "2a825a634415c8730e854f42511f09217b74d73c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
