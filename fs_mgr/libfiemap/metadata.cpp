@@ -30,6 +30,7 @@ namespace android {
 namespace fiemap {
 
 using namespace android::fs_mgr;
+using android::base::unique_fd;
 
 static constexpr uint32_t kMaxMetadataSize = 256 * 1024;
 
@@ -113,6 +114,17 @@ bool SaveMetadata(MetadataBuilder* builder, const std::string& metadata_dir) {
         LOG(ERROR) << "Unable to save new metadata";
         return false;
     }
+
+    unique_fd fd(open(metadata_file.c_str(), O_RDONLY | O_CLOEXEC));
+    if (fd < 0) {
+        LOG(ERROR) << "open failed: " << metadata_file;
+        return false;
+    }
+    if (fsync(fd)) {
+        LOG(ERROR) << "fsync failed: " << metadata_file;
+        return false;
+    }
+
     return true;
 }
 
