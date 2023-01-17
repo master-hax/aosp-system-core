@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "beee157e_be805e4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-17T20:42:36Z",
+      "side": 1,
+      "message": "Can you clarify more about the context here? Which caller of WriteToImageFile is getting interrupted?",
+      "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
