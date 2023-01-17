@@ -34,6 +34,24 @@
       "parentUuid": "9245c97f_9b56e52d",
       "revId": "07bde110c0e43c32ea24be3915de38f6f14a635c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f61782f_22afca6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-01-17T23:02:19Z",
+      "side": 1,
+      "message": "It\u0027s been a long time since I owned this, but the philosophy back then was to reboot the device if it was unusable and not expect the user to know how to long press power.\n\nmlocking the pages would make the process immune to kernel paging issues that would be affecting real processes.\n\nI don\u0027t see anything in common code that starts watchdogd (https://cs.android.com/search?q\u003dfile:%5C.rc$%20watchdogd\u0026sq\u003d\u0026ss\u003dandroid%2Fplatform%2Fsuperproject), which suggests that you are opting in to using it.  If it\u0027s not providing the behavior you need you could disable it or significantly increase the timeout or replace it with one that provides the specific semantics you\u0027re looking for.",
+      "parentUuid": "7b713ff5_106aa2bc",
+      "revId": "07bde110c0e43c32ea24be3915de38f6f14a635c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
