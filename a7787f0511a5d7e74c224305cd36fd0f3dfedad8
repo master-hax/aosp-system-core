@@ -123,6 +123,24 @@
       "parentUuid": "cc06c377_5ab5bc0d",
       "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f878277_cece0bc5",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-17T19:28:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "980f82b1_fa82dcb6",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
