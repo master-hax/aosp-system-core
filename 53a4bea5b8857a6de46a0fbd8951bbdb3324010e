@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc147520_12e67c3f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-01-17T18:50:58Z",
+      "side": 1,
+      "message": "The downside of this - it can break some tombstone parsers. \"backtrace:\" is a natural pattern to search for. Ideally everyone should use .pb tombstones for automated processing, but that sounds unlikely at this point.",
+      "revId": "53a4bea5b8857a6de46a0fbd8951bbdb3324010e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
