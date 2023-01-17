@@ -87,6 +87,24 @@
       "parentUuid": "0ab69913_a90cdfb6",
       "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc06c377_5ab5bc0d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-17T18:32:28Z",
+      "side": 1,
+      "message": "Fine with me, @eugenis@google.com WDYT?",
+      "parentUuid": "ca340375_1507f80d",
+      "revId": "a7787f0511a5d7e74c224305cd36fd0f3dfedad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
