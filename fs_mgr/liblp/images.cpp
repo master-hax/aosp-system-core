@@ -123,8 +123,12 @@ bool WriteToImageFile(borrowed_fd fd, const LpMetadata& input) {
     return true;
 }
 
+#if defined(_WIN32)
+static const int O_SYNC = 0;
+#endif
+
 bool WriteToImageFile(const std::string& file, const LpMetadata& input) {
-    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY, 0644));
+    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY | O_SYNC, 0644));
     if (fd < 0) {
         PERROR << __PRETTY_FUNCTION__ << " open failed: " << file;
         return false;
