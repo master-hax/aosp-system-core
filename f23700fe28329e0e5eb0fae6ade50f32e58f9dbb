@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf43d98d_2c739e49",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T19:25:40Z",
+      "side": 1,
+      "message": "lgtm. you\u0027ll probably want to unhook this from your topic and get it submitted, because i suspect you\u0027re about to have the same problem with the ART team\u0027s mainline prebuilt stuff for libcutils that you already had for bionic, and you\u0027ll need to get this CL in, have them (mast@?) update their prebuilts, and _then_ try with your other CLs?",
+      "revId": "f23700fe28329e0e5eb0fae6ade50f32e58f9dbb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

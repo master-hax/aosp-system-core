@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "78ac840d_05038da8",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T19:25:40Z",
+      "side": 1,
+      "message": "(exactly... past experience suggests otherwise you\u0027ll just always end up on the fallback path as the caller assumes this is a legit failure, and they don\u0027t have tests sophisticated enough to ensure they\u0027re testing both paths :-( )",
+      "parentUuid": "07132e84_38b6dea9",
+      "range": {
+        "startLine": 479,
+        "startChar": 4,
+        "endLine": 482,
+        "endChar": 5
+      },
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "edaef8d9_fc988290",
