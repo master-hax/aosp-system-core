@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3f451e5_24702c7e",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T01:55:58Z",
+      "side": 1,
+      "message": "i\u0027d rather just crash. c programmers don\u0027t check for failures :-(",
+      "range": {
+        "startLine": 479,
+        "startChar": 4,
+        "endLine": 482,
+        "endChar": 5
+      },
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "edaef8d9_fc988290",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T01:55:58Z",
+      "side": 1,
+      "message": "you don\u0027t actually use ret, so just `if (TEMP_FAILURE_RETRY(...) \u003d\u003d -1) return -1;`",
+      "range": {
+        "startLine": 487,
+        "startChar": 12,
+        "endLine": 487,
+        "endChar": 15
+      },
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d71a868b_64ad19b3",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 494,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T01:55:58Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 494,
+        "startChar": 12,
+        "endLine": 494,
+        "endChar": 15
+      },
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59fcdf9f_a9554bbf",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T01:55:58Z",
+      "side": 1,
+      "message": "https://google.github.io/styleguide/cppguide.html#Casting",
+      "range": {
+        "startLine": 497,
+        "startChar": 15,
+        "endLine": 497,
+        "endChar": 22
+      },
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "275c433e_366a4fed",
+        "filename": "libcutils/include/cutils/ashmem.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T01:55:58Z",
+      "side": 1,
+      "message": "\u003csys/types.h\u003e [https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_types.h.html]",
+      "revId": "523ad64f1cfb3ef38a2fa4333a7308c6e705b161",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
