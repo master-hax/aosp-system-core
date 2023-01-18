@@ -162,6 +162,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "21a4aeef_e30a3662",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-18T00:05:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e74a40c7_424c0833",
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8115a52a_72ad7aba",
@@ -271,6 +289,30 @@
       "side": 1,
       "message": "(note that if you _are_ in C, or you\u0027re in a header that might be used in either context, `#include \u003cstdbool.h\u003e` is your friend.)",
       "parentUuid": "a496ed1c_a3061aa7",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 3
+      },
+      "revId": "720fda1507cd88b9f43d934a8aa09ac13c250d3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83843476_32f66c2e",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1965080
+      },
+      "writtenOn": "2023-01-18T00:05:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eafe509a_bf9ad397",
       "range": {
         "startLine": 183,
         "startChar": 0,
