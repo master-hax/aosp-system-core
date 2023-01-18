@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e00f903_73b328ce",
+        "filename": "libstats/expresslog/.clang-format",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2023-01-18T02:49:40Z",
+      "side": 1,
+      "message": "does it make more sense to put this at the libstats level? We own all the code within it",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5784f2b6_3960d81f",
+        "filename": "libstats/expresslog/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2023-01-18T02:49:40Z",
+      "side": 1,
+      "message": "libbase is already present in system/lib, so we should be able to link it as a shared lib. IIRC, it also has a stable api surface",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b5e80bc_d58e321b",
+        "filename": "libstats/expresslog/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2023-01-18T02:49:40Z",
+      "side": 1,
+      "message": "is this safe? I don\u0027t think this should be 30. Not all of the apis that stats-log-api-gen uses are available on R+.\n\nIf this isn\u0027t needed, we could just remove it?",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a30157c_cf90f342",
+        "filename": "libstats/expresslog/include/Counter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2023-01-18T02:49:40Z",
+      "side": 1,
+      "message": "mostly out of curiosity, why are you making a class here? we could just have logIncrement since it is static?",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 21
+      },
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba56f631_78574bbe",
+        "filename": "libstats/expresslog/include/Counter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2023-01-18T02:49:40Z",
+      "side": 1,
+      "message": "nit: why not use const string\u0026?",
+      "range": {
+        "startLine": 26,
+        "startChar": 29,
+        "endLine": 26,
+        "endChar": 50
+      },
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
