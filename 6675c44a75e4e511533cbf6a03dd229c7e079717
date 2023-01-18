@@ -16,6 +16,24 @@
       "message": "Can you clarify more about the context here? Which caller of WriteToImageFile is getting interrupted?",
       "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5b02843_80359a73",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882080
+      },
+      "writtenOn": "2023-01-18T07:18:57Z",
+      "side": 1,
+      "message": "In OTA process, the device is doing super merging, one crash happened.\nDump the metadata partition, we find the data of metadata/gsi/lp_metadata is zero.\nThe func SaveMetadata() in file system/core/fs_mgr/libfiemap/metadata.cpp will call WriteToImageFile().",
+      "parentUuid": "beee157e_be805e4c",
+      "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
