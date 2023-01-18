@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6bbab1c6_36e1fd22",
+        "filename": "libstats/expresslog/.clang-format",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-01-18T04:13:38Z",
+      "side": 1,
+      "message": "it does, in terms of follow up CL - to avoid mixing new library source code with code style change for existing files I prefer to put it here\n\nwe could move it to upper level together with code style update in follow up cl",
+      "parentUuid": "8e00f903_73b328ce",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5784f2b6_3960d81f",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e833ead_9eed3525",
+        "filename": "libstats/expresslog/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-01-18T04:13:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5784f2b6_3960d81f",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7b5e80bc_d58e321b",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-01-18T02:49:40Z",
       "side": 1,
       "message": "is this safe? I don\u0027t think this should be 30. Not all of the apis that stats-log-api-gen uses are available on R+.\n\nIf this isn\u0027t needed, we could just remove it?",
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b62b8eb7_e6c92c93",
+        "filename": "libstats/expresslog/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-01-18T04:13:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b5e80bc_d58e321b",
       "revId": "6ce52041e64e733878de7bfce7249f22da453162",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -75,6 +129,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6b86e61_a6fa4570",
+        "filename": "libstats/expresslog/include/Counter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-01-18T04:13:38Z",
+      "side": 1,
+      "message": "to make naming convention similar to java - see http://cs/android/frameworks/base/core/java/com/android/internal/expresslog/Counter.java?l\u003d1",
+      "parentUuid": "3a30157c_cf90f342",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 21
+      },
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ba56f631_78574bbe",
@@ -88,6 +166,30 @@
       "writtenOn": "2023-01-18T02:49:40Z",
       "side": 1,
       "message": "nit: why not use const string\u0026?",
+      "range": {
+        "startLine": 26,
+        "startChar": 29,
+        "endLine": 26,
+        "endChar": 50
+      },
+      "revId": "6ce52041e64e733878de7bfce7249f22da453162",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0e5ced2_f75478d7",
+        "filename": "libstats/expresslog/include/Counter.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-01-18T04:13:38Z",
+      "side": 1,
+      "message": "const char* more portable and widely used in base/core/jni code base, also the content from JNI jstring object is easier/cheaper access as a const char*, see for example ScopedUtfChars::c_str(). This approach eliminates redundancy to construct a new string instance and avoid extra memory allocations",
+      "parentUuid": "ba56f631_78574bbe",
       "range": {
         "startLine": 26,
         "startChar": 29,
