@@ -34,6 +34,24 @@
       "parentUuid": "beee157e_be805e4c",
       "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cebcd06a_b87754b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-18T19:20:45Z",
+      "side": 1,
+      "message": "Okay, I think SaveMetadata is the correct place to do this then, in libfiemap. We should open() with the same flags WriteToImageFile(path) does, and then call WriteToImageFile(fd), and then call fsync().\n\nLet me know if you want us to write the patch.",
+      "parentUuid": "a5b02843_80359a73",
+      "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
