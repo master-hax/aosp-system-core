@@ -284,6 +284,40 @@
       },
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3721c9fb_164b2c85",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-18T22:55:33Z",
+      "side": 1,
+      "message": "This is too low for the emulator, I get timeouts when I run the test.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76194c8d_a6244457",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-18T22:55:33Z",
+      "side": 1,
+      "message": "Too low for qemu.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
