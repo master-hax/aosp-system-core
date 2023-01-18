@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "669ebcc2_c7a91822",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-18T23:17:35Z",
+      "side": 1,
+      "message": "yeah, that\u0027s the problem --- it\u0027s a behavior change. personally i\u0027d rather just leave Mutex as-is and tell anyone who cares \"use std::mutex instead\", so people opt-in to moving over rather than us forcing everyone to switch (without their knowing).\n\n+hboehm in case he disagrees and thinks we should give this a go. (though even so, that\u0027s probably a thing to do just _after_ a dessert branches so there\u0027s a whole year to find and fix issues rather than just _before_!)",
+      "parentUuid": "2eb02f71_928abf0b",
+      "revId": "2a825a634415c8730e854f42511f09217b74d73c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c4e763f1_09a29ed7",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 4
