@@ -110,19 +110,6 @@ constexpr char kWaitForDebuggerKey[] = "debug.debuggerd.wait_for_debugger";
   ASSERT_MATCH(result,                             \
                R"(#\d\d pc [0-9a-f]+\s+ \S+ (\(offset 0x[0-9a-f]+\) )?\()" frame_name R"(\+)");
 
-// Enable GWP-ASan at the start of this process. GWP-ASan is enabled using
-// process sampling, so we need to ensure we force GWP-ASan on.
-__attribute__((constructor)) static void enable_gwp_asan() {
-  android_mallopt_gwp_asan_options_t opts;
-  // No, we're not an app, but let's turn ourselves on without sampling.
-  // Technically, if someone's using the *.default_app sysprops, they'll adjust
-  // our settings, but I don't think this will be common on a device that's
-  // running debuggerd_tests.
-  opts.desire = android_mallopt_gwp_asan_options_t::Action::TURN_ON_FOR_APP;
-  opts.program_name = "";
-  android_mallopt(M_INITIALIZE_GWP_ASAN, &opts, sizeof(android_mallopt_gwp_asan_options_t));
-}
-
 static void tombstoned_intercept(pid_t target_pid, unique_fd* intercept_fd, unique_fd* output_fd,
                                  InterceptStatus* status, DebuggerdDumpType intercept_type) {
   intercept_fd->reset(socket_local_client(kTombstonedInterceptSocketName,
@@ -481,20 +468,33 @@ struct GwpAsanTestParameters {
   bool free_before_access;
   int access_offset;
   std::string cause_needle; // Needle to be found in the "Cause: [GWP-ASan]" line.
+  bool recoverable;
 };
 
 struct GwpAsanCrasherTest : CrasherTest, testing::WithParamInterface<GwpAsanTestParameters> {};
 
 GwpAsanTestParameters gwp_asan_tests[] = {
-  {/* alloc_size */ 7, /* free_before_access */ true, /* access_offset */ 0, "Use After Free, 0 bytes into a 7-byte allocation"},
-  {/* alloc_size */ 7, /* free_before_access */ true, /* access_offset */ 1, "Use After Free, 1 byte into a 7-byte allocation"},
-  {/* alloc_size */ 7, /* free_before_access */ false, /* access_offset */ 16, "Buffer Overflow, 9 bytes right of a 7-byte allocation"},
-  {/* alloc_size */ 16, /* free_before_access */ false, /* access_offset */ -1, "Buffer Underflow, 1 byte left of a 16-byte allocation"},
+    {/* alloc_size */ 7, /* free_before_access */ true, /* access_offset */ 0,
+     "Use After Free, 0 bytes into a 7-byte allocation", /* recoverable */ false},
+    {/* alloc_size */ 7, /* free_before_access */ true, /* access_offset */ 0,
+     "Use After Free, 0 bytes into a 7-byte allocation", /* recoverable */ true},
+    {/* alloc_size */ 15, /* free_before_access */ true, /* access_offset */ 1,
+     "Use After Free, 1 byte into a 15-byte allocation", /* recoverable */ false},
+    {/* alloc_size */ 15, /* free_before_access */ true, /* access_offset */ 1,
+     "Use After Free, 1 byte into a 15-byte allocation", /* recoverable */ true},
+    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ 4098,
+     "Buffer Overflow, 2 bytes right of a 4096-byte allocation", /* recoverable */ false},
+    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ 4098,
+     "Buffer Overflow, 2 bytes right of a 4096-byte allocation", /* recoverable */ true},
+    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ -1,
+     "Buffer Underflow, 1 byte left of a 4096-byte allocation", /* recoverable */ false},
+    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ -1,
+     "Buffer Underflow, 1 byte left of a 4096-byte allocation", /* recoverable */ true},
 };
 
 INSTANTIATE_TEST_SUITE_P(GwpAsanTests, GwpAsanCrasherTest, testing::ValuesIn(gwp_asan_tests));
 
-TEST_P(GwpAsanCrasherTest, gwp_asan_uaf) {
+TEST_P(GwpAsanCrasherTest, run_gwp_asan_test) {
   if (mte_supported()) {
     // Skip this test on MTE hardware, as MTE will reliably catch these errors
     // instead of GWP-ASan.
@@ -509,17 +509,29 @@ TEST_P(GwpAsanCrasherTest, gwp_asan_uaf) {
   int intercept_result;
   unique_fd output_fd;
   StartProcess([&params]() {
-    for (unsigned i = 0; i < GWP_ASAN_ITERATIONS_TO_ENSURE_CRASH; ++i) {
-      volatile char* p = reinterpret_cast<volatile char*>(malloc(params.alloc_size));
-      if (params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
-      p[params.access_offset] = 42;
-      if (!params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
+    const char* env[] = {"GWP_ASAN_SAMPLE_RATE=1", "GWP_ASAN_PROCESS_SAMPLING=1",
+                         "GWP_ASAN_MAX_ALLOCS=40000", nullptr, nullptr};
+    if (params.recoverable) {
+      env[3] = "GWP_ASAN_RECOVERABLE=true";
     }
+    std::string test_name = ::testing::UnitTest::GetInstance()->current_test_info()->name();
+    test_name = std::regex_replace(test_name, std::regex("run_gwp_asan_test"),
+                                   "DISABLED_run_gwp_asan_test");
+    std::string test_filter = "--gtest_filter=*";
+    test_filter += test_name;
+    std::string this_binary = testing::internal::GetArgvs()[0];
+    const char* args[] = {this_binary.c_str(), "--gtest_also_run_disabled_tests",
+                          test_filter.c_str(), nullptr};
+    execve(this_binary.c_str(), const_cast<char**>(args), const_cast<char**>(env));
   });
 
   StartIntercept(&output_fd);
   FinishCrasher();
-  AssertDeath(SIGSEGV);
+  if (params.recoverable) {
+    AssertDeath(0);
+  } else {
+    AssertDeath(SIGSEGV);
+  }
   FinishIntercept(&intercept_result);
 
   ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
@@ -536,6 +548,14 @@ TEST_P(GwpAsanCrasherTest, gwp_asan_uaf) {
     }
     ASSERT_MATCH(result, R"((^|\s)allocated by thread .*\n.*#00 pc)");
   }
+}
+
+TEST_P(GwpAsanCrasherTest, DISABLED_run_gwp_asan_test) {
+  GwpAsanTestParameters params = GetParam();
+  volatile char* p = reinterpret_cast<volatile char*>(malloc(params.alloc_size));
+  if (params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
+  p[params.access_offset] = 42;
+  if (!params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
 }
 
 struct SizeParamCrasherTest : CrasherTest, testing::WithParamInterface<size_t> {};
