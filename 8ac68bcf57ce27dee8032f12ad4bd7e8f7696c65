@@ -353,6 +353,24 @@
       "parentUuid": "7dab4dbd_2edad38f",
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "393205bb_d9408921",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-19T22:24:01Z",
+      "side": 1,
+      "message": "Definitely, so maybe we should just ignore `TrustyError` atoms.",
+      "parentUuid": "9704fdab_586a4453",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
