@@ -16,6 +16,52 @@
       "message": "PTAL",
       "revId": "51ff9c91f85f7486078a89a09e1b18664b48b8e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1770be6_888f7baa",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-19T20:41:26Z",
+      "side": 1,
+      "message": "`Note` to match the one on L357?",
+      "range": {
+        "startLine": 348,
+        "startChar": 9,
+        "endLine": 348,
+        "endChar": 13
+      },
+      "revId": "51ff9c91f85f7486078a89a09e1b18664b48b8e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d84fbc3_9026e1f8",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-01-19T20:41:26Z",
+      "side": 1,
+      "message": "delete this bit? the next sentence is more precise anyway, and i worry this is giving people an excuse to close the bug with \"/shrug\"...",
+      "range": {
+        "startLine": 349,
+        "startChar": 30,
+        "endLine": 349,
+        "endChar": 85
+      },
+      "revId": "51ff9c91f85f7486078a89a09e1b18664b48b8e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
