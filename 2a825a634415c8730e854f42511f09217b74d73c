@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eebe2b49_9b08082b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2023-01-19T00:16:19Z",
+      "side": 1,
+      "message": "This looks to me like a very partial solution to our timeout issues. See b/245772893 . (Even better, add a comment if you understand this better than me.)\n\nI think we should at least postpone this until we have a more complete solution. And I like Elliott\u0027s approach.",
+      "parentUuid": "669ebcc2_c7a91822",
+      "revId": "2a825a634415c8730e854f42511f09217b74d73c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c4e763f1_09a29ed7",
         "filename": "libutils/include/utils/Mutex.h",
         "patchSetId": 4
@@ -97,6 +115,30 @@
       "side": 1,
       "message": "I see, thanks.",
       "parentUuid": "922b5925_d87771ca",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 5
+      },
+      "revId": "2a825a634415c8730e854f42511f09217b74d73c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a943e78a_24871c74",
+        "filename": "libutils/include/utils/Mutex.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2023-01-19T00:16:19Z",
+      "side": 1,
+      "message": "It looks to me like nsec_t is signed, so this all kind of seems to be on thin ice? It should probably just fail if timeoutNs is negative, since the spec is unsatisfiable without a time machine.",
+      "parentUuid": "2027f203_60077fae",
       "range": {
         "startLine": 198,
         "startChar": 0,
