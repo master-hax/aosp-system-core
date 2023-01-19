@@ -70,6 +70,24 @@
       "parentUuid": "cebcd06a_b87754b2",
       "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa79c2c3_a742f82d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-19T15:28:02Z",
+      "side": 1,
+      "message": "CreateUpdateSnapshots() should probably just use a whole-system sync()...\n\nThe reason we\u0027d prefer not to sync in WriteToImageFile is that has many callers, and some of those callers don\u0027t care about syncing. For example it is unnecessary and slow for host/build tools.",
+      "parentUuid": "aef83ef5_d4241b83",
+      "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
