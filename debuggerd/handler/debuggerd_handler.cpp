@@ -565,6 +565,18 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     process_info = g_callbacks.get_process_info();
   }
 
+  // Handle recoverable GWP-ASan, using the provided callbacks provided by libc.
+  gwp_asan_callbacks_t gwp_asan_callbacks = g_callbacks.get_gwp_asan_callbacks();
+  bool gwp_asan_recoverable = false;
+  if (signal_number == SIGSEGV && signal_has_si_addr(info) &&
+      gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery &&
+      gwp_asan_callbacks.debuggerd_gwp_asan_pre_crash_report &&
+      gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report &&
+      gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery(info->si_addr)) {
+    gwp_asan_callbacks.debuggerd_gwp_asan_pre_crash_report(info->si_addr);
+    gwp_asan_recoverable = true;
+  }
+
   // If sival_int is ~0, it means that the fallback handler has been called
   // once before and this function is being called again to dump the stack
   // of a specific thread. It is possible that the prctl call might return 1,
@@ -649,6 +661,9 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     // If the signal is fatal, don't unlock the mutex to prevent other crashing threads from
     // starting to dump right before our death.
     pthread_mutex_unlock(&crash_mutex);
+  } else if (gwp_asan_recoverable) {
+    gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report(info->si_addr);
+    pthread_mutex_unlock(&crash_mutex);
   }
 #ifdef __aarch64__
   else if (info->si_signo == SIGSEGV &&
@@ -726,4 +741,49 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   action.sa_flags |= SA_EXPOSE_TAGBITS;
 
   debuggerd_register_handlers(&action);
+}
+
+// When debuggerd's signal handler is the first handler called, it's great at
+// handling the recoverable GWP-ASan mode. For apps, sigchain (from libart) is
+// always the first signal handler, and so the following function is what
+// sigchain must call before processing the signal. This allows for processing
+// of a potentially recoverable GWP-ASan crash. If the signal requires GWP-ASan
+// recovery, then dump a report (via the regular debuggerd hanndler), and patch
+// up the allocator, and allow the process to continue (indicated by returning
+// 'true'). If the crash has nothing to do with GWP-ASan, or recovery isn't
+// possible, return 'false'.
+bool debuggerd_first_chance_signal_handler_impl(int signal_number, siginfo_t* info, void* context) {
+  if (signal_number != SIGSEGV || !signal_has_si_addr(info)) return false;
+
+  gwp_asan_callbacks_t gwp_asan_callbacks = g_callbacks.get_gwp_asan_callbacks();
+  if (gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery == nullptr ||
+      gwp_asan_callbacks.debuggerd_gwp_asan_pre_crash_report == nullptr ||
+      gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report == nullptr ||
+      !gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery(info->si_addr)) {
+    return false;
+  }
+
+  // Only dump a crash report for the first GWP-ASan crash. ActivityManager
+  // doesn't like it when an app crashes multiple times, and is even more strict
+  // about an app crashing multiple times in a short time period. While the app
+  // won't crash fully when we do GWP-ASan recovery, ActivityManager still gets
+  // the information about the crash through the DropBoxManager service. If an
+  // app has multiple back-to-back GWP-ASan crashes, this would lead to the app
+  // crashing, which defeats the purpose of having the recoverable mode. To
+  // mitigate against this, only generate a debuggerd crash report for the first
+  // GWP-ASan crash encountered. We still need to do the patching up of the
+  // allocator though, so do that.
+  static pthread_mutex_t first_chance_mutex = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_lock(&first_chance_mutex);
+  static bool first_crash = true;
+
+  if (first_crash) {
+    debuggerd_signal_handler(signal_number, info, context);
+    first_crash = false;
+  } else {
+    gwp_asan_callbacks.debuggerd_gwp_asan_pre_crash_report(info->si_addr);
+    gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report(info->si_addr);
+  }
+
+  return true;
 }
