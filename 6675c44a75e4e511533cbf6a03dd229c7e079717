@@ -52,6 +52,24 @@
       "parentUuid": "a5b02843_80359a73",
       "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aef83ef5_d4241b83",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882080
+      },
+      "writtenOn": "2023-01-19T09:15:43Z",
+      "side": 1,
+      "message": "There are two places to call WriteToImageFile.\nOne is SaveMetadata(), another is CreateUpdateSnapshots().\nFrom OTA, I think all need to do write file Synchronously.\nSo I think do open with param O_SYNC in WriteToImageFile() is more reasonable.\nI found this commit https://android-review.googlesource.com/c/platform/system/core/+/2329507\nBut this one will raise build error. So I change it.\nOnce I tried to do fsync() in func SaveMetadata(), after calling WriteToImageFile(fd), it can work also.\nIf you don\u0027t agree above, I may submit another patch.  \nThanks very much.",
+      "parentUuid": "cebcd06a_b87754b2",
+      "revId": "6675c44a75e4e511533cbf6a03dd229c7e079717",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
