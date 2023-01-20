@@ -263,6 +263,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "51c31634_7510fba7",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-20T00:43:46Z",
+      "side": 1,
+      "message": "Nit: `auto session_initializer \u003d [](sp\u003cRpcSession\u003e\u0026 session) {` is simpler IMHO.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "b6c5d679_f162b799",
