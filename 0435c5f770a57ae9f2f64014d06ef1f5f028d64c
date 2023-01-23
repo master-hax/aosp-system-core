@@ -180,6 +180,29 @@
       },
       "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "baf30718_2531b0b2",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-01-23T19:03:23Z",
+      "side": 1,
+      "message": "Please make this block and the one above (line 528) follow the same format and coding style.",
+      "range": {
+        "startLine": 536,
+        "startChar": 16,
+        "endLine": 537,
+        "endChar": 53
+      },
+      "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
