@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ea88c4e_c4c68fcd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-01-23T18:11:07Z",
+      "side": 1,
+      "message": "Please upload this against the `master` branch instead.  The `android11-tests-dev` branch is not open for non-test-suite development.",
+      "revId": "ca5b5e67c3d423dc8ef29ad6950373d59f5d1d09",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
