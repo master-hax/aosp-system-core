@@ -82,7 +82,12 @@ namespace stats {
 class Stats : public BnStats {
   public:
     Stats() : BnStats() {}
-    Status reportVendorAtom(const ::VendorAtom& vendorAtom) {
+    Status reportVendorAtom(const ::VendorAtom&) {
+        LOG_ALWAYS_FATAL("reportVendorAtom called from Trusty");
+        return Status::ok();
+    }
+
+    Status reportVendorAtomSync(const ::VendorAtom& vendorAtom) {
         const char* atomIdStr = vendorAtomStr(vendorAtom.atomId);
         ALOGD("%s\n", atomIdStr);
         write(STDOUT_FILENO, atomIdStr, strlen(atomIdStr));
