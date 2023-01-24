@@ -203,6 +203,30 @@
       },
       "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bce06b9_7535a4b5",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2023-01-24T08:47:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baf30718_2531b0b2",
+      "range": {
+        "startLine": 536,
+        "startChar": 16,
+        "endLine": 537,
+        "endChar": 53
+      },
+      "revId": "0435c5f770a57ae9f2f64014d06ef1f5f028d64c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
