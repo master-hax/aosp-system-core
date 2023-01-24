@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a481544_3be57a5c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 574,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-24T18:44:44Z",
+      "side": 1,
+      "message": "this is a bit confusing. it shouldn\u0027t be possible that `needs_gwp_asan_recovery` is set but not `debuggerd_gwp_asan_pre_crash_report` and `debuggerd_gwp_asan_post_crash_report`; correct? maybe this should be a CHECK instead? otherwise as written it looks like even if `debuggerd_needs_gwp_asan_recovery` is true, there are cases where we don\u0027t recover.",
+      "range": {
+        "startLine": 572,
+        "startChar": 0,
+        "endLine": 574,
+        "endChar": 64
+      },
+      "revId": "6cedb8f3b65a0b46ae0c014627063b9575df2b45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
