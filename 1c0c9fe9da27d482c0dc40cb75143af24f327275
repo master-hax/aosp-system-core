@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6de65697_4dd2ffab",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-24T18:20:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4316671_e1b14fa5",
+      "revId": "1c0c9fe9da27d482c0dc40cb75143af24f327275",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "383a2ed2_0e54bf52",
@@ -48,6 +66,24 @@
       "writtenOn": "2023-01-24T18:07:06Z",
       "side": 1,
       "message": "you can actually avoid all the explicit string manipulation:\n```\nutsname uts;\nuname(\u0026uts);\nmod_dirs.emplace_back(android::base::StringPrintf(\"/lib/modules/%s\", uts.release));\n```",
+      "revId": "1c0c9fe9da27d482c0dc40cb75143af24f327275",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "308a15d0_dc2097b6",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-01-24T18:20:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "383a2ed2_0e54bf52",
       "revId": "1c0c9fe9da27d482c0dc40cb75143af24f327275",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
