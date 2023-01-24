@@ -82,7 +82,12 @@ namespace stats {
 class Stats : public BnStats {
   public:
     Stats() : BnStats() {}
-    Status reportVendorAtom(const ::VendorAtom& vendorAtom) {
+    Status reportVendorAtom(const ::VendorAtom&) {
+        LOG_ALWAYS_FATAL("reportVendorAtom called from Trusty");
+        return Status::ok();
+    }
+
+    Status reportVendorAtomSync(const ::VendorAtom& vendorAtom) {
         const char* atomIdStr = vendorAtomStr(vendorAtom.atomId);
         ALOGD("%s\n", atomIdStr);
         write(STDOUT_FILENO, atomIdStr, strlen(atomIdStr));
@@ -147,9 +152,9 @@ class TrustyStatsTestBase : public ::testing::Test {
         ASSERT_TRUE(mSession);
         auto root = mSession->getRootObject();
         ASSERT_TRUE(root);
-        auto statsSetter = IStatsSetter::asInterface(root);
-        ASSERT_TRUE(statsSetter);
-        statsSetter->setInterface(mStats);
+        mStatsSetter = IStatsSetter::asInterface(root);
+        ASSERT_TRUE(mStatsSetter);
+        mStatsSetter->setInterface(mStats);
     }
     void TearDown() override {
         /* close connection to unitest app */
@@ -157,11 +162,15 @@ class TrustyStatsTestBase : public ::testing::Test {
             tipc_close(mPortTestFd);
         }
         mPortTestFd = -1;
+        if (mStatsSetter) {
+            mStatsSetter->setInterface(nullptr);
+        }
         if (mSession) {
             ASSERT_TRUE(mSession->shutdownAndWait(true));
         }
         mSession.clear();
         mStats.clear();
+        mStatsSetter.clear();
     }
     void StartPortTest() {
         /* connect to unitest app */
@@ -198,6 +207,7 @@ class TrustyStatsTestBase : public ::testing::Test {
         ASSERT_EQ(pRxBuf[0], TEST_PASSED);
     }
     android::sp<Stats> mStats;
+    android::sp<IStatsSetter> mStatsSetter;
     android::sp<RpcSession> mSession;
     int mPortTestFd;
     const std::string mPortNameStatsSetter;
