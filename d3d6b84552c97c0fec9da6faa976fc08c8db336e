@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df08dea9_eb1de6c4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-01-24T21:34:58Z",
+      "side": 1,
+      "message": "edge case checking -- could this cause `size \u003d\u003d 0`?",
+      "range": {
+        "startLine": 1181,
+        "startChar": 0,
+        "endLine": 1181,
+        "endChar": 27
+      },
+      "revId": "d3d6b84552c97c0fec9da6faa976fc08c8db336e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
