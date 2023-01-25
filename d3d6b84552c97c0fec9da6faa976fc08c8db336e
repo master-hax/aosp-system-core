@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "40c6d0d2_c6a5c6f8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1180,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2023-01-25T16:12:02Z",
+      "side": 1,
+      "message": "This is the case, yes",
+      "parentUuid": "0d273197_8b94f601",
+      "range": {
+        "startLine": 1180,
+        "startChar": 19,
+        "endLine": 1180,
+        "endChar": 46
+      },
+      "revId": "d3d6b84552c97c0fec9da6faa976fc08c8db336e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "df08dea9_eb1de6c4",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-01-24T21:34:58Z",
       "side": 1,
       "message": "edge case checking -- could this cause `size \u003d\u003d 0`?",
+      "range": {
+        "startLine": 1181,
+        "startChar": 0,
+        "endLine": 1181,
+        "endChar": 27
+      },
+      "revId": "d3d6b84552c97c0fec9da6faa976fc08c8db336e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8d8d093_3a1fc51e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1181,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2023-01-25T16:12:02Z",
+      "side": 1,
+      "message": "Only if the underlying block device was \u003c 4096 bytes, which could never be a valid ext4 device.",
+      "parentUuid": "df08dea9_eb1de6c4",
       "range": {
         "startLine": 1181,
         "startChar": 0,
