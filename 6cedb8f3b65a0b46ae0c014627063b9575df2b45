@@ -39,6 +39,52 @@
       },
       "revId": "6cedb8f3b65a0b46ae0c014627063b9575df2b45",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aef6d932_a536334f",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-25T00:12:00Z",
+      "side": 1,
+      "message": "being killed?",
+      "range": {
+        "startLine": 772,
+        "startChar": 5,
+        "endLine": 772,
+        "endChar": 13
+      },
+      "revId": "6cedb8f3b65a0b46ae0c014627063b9575df2b45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3d6cd42_1b6e86f2",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-01-25T00:12:00Z",
+      "side": 1,
+      "message": "I don\u0027t fully understand why we don\u0027t run this for the first crash as well. Please add a comment.",
+      "range": {
+        "startLine": 783,
+        "startChar": 10,
+        "endLine": 785,
+        "endChar": 75
+      },
+      "revId": "6cedb8f3b65a0b46ae0c014627063b9575df2b45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
