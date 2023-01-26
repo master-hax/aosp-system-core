@@ -2176,7 +2176,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             fb->Boot();
         } else if (command == FB_CMD_FLASH) {
             std::string pname = next_arg(&args);
-
             std::string fname;
             if (!args.empty()) {
                 fname = next_arg(&args);
@@ -2184,21 +2183,20 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 fname = find_item(pname);
             }
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
-
-            auto flash = [&](const std::string& partition) {
-                if (should_flash_in_userspace(partition) && !is_userspace_fastboot() &&
-                    !force_flash) {
-                    die("The partition you are trying to flash is dynamic, and "
-                        "should be flashed via fastbootd. Please run:\n"
-                        "\n"
-                        "    fastboot reboot fastboot\n"
-                        "\n"
-                        "And try again. If you are intentionally trying to "
-                        "overwrite a fixed partition, use --force.");
-                }
-                do_flash(partition.c_str(), fname.c_str());
-            };
-            do_for_partitions(pname, slot_override, flash, true);
+            if (should_flash_in_userspace(pname) && !is_userspace_fastboot() && !force_flash) {
+                die("The partition you are trying to flash is dynamic, and "
+                    "should be flashed via fastbootd. Please run:\n"
+                    "\n"
+                    "    fastboot reboot fastboot\n"
+                    "\n"
+                    "And try again. If you are intentionally trying to "
+                    "overwrite a fixed partition, use --force.");
+            }
+            std::cout << " new fastboot" << std::endl;
+            FlashTask task(slot_override);
+            std::string text = pname + " " + fname;
+            task.Parse(text);
+            task.Run();
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
