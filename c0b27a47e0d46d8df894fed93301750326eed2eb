@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c23cdbc2_655cbdc1",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T01:11:42Z",
+      "side": 1,
+      "message": "Better to move to first use of signal_info.",
+      "range": {
+        "startLine": 308,
+        "startChar": 2,
+        "endLine": 308,
+        "endChar": 54
+      },
+      "revId": "c0b27a47e0d46d8df894fed93301750326eed2eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67db5e17_c76b888c",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T01:11:42Z",
+      "side": 1,
+      "message": "This is only used in one place now, can you move it to that location? Or even just use the function call and remove the variable completely.",
+      "range": {
+        "startLine": 385,
+        "startChar": 1,
+        "endLine": 385,
+        "endChar": 43
+      },
+      "revId": "c0b27a47e0d46d8df894fed93301750326eed2eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
