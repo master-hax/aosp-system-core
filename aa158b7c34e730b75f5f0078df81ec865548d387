@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5896335b_02002850",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1623,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ecc3da48_3387581b",
+      "range": {
+        "startLine": 1623,
+        "startChar": 30,
+        "endLine": 1623,
+        "endChar": 63
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "531e88a9_a690d188",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-01-26T02:17:59Z",
       "side": 1,
       "message": "I presume you are making this volatile so the code is not optimized away. It would be good to add a comment saying this.",
+      "range": {
+        "startLine": 1675,
+        "startChar": 2,
+        "endLine": 1675,
+        "endChar": 10
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5d52c96_2cb9d3c7",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1675,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "531e88a9_a690d188",
       "range": {
         "startLine": 1675,
         "startChar": 2,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e040c05b_1efc64ab",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e2ee4cf_a7eabc9d",
+      "range": {
+        "startLine": 569,
+        "startChar": 5,
+        "endLine": 569,
+        "endChar": 80
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "92cef329_18142f3a",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-01-26T02:17:59Z",
       "side": 1,
       "message": "There is no requirement that these callback values are set. There is only one place that I can find where they are not set though.\n\nI guess I\u0027m a little nervous about have this check which will potentially cause a double failure.",
+      "range": {
+        "startLine": 575,
+        "startChar": 0,
+        "endLine": 576,
+        "endChar": 78
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f1b98d9_eba859ea",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "all the gwp_asan_callbacks should be set, or none should be set.\n\nin a previous version of this patch, fmayer wanted me to move to CHECK()\u0027s to make that assertion clear to the programmer, but i\u0027ll move them back to being part of the branch to avoid a potential double fault.",
+      "parentUuid": "92cef329_18142f3a",
       "range": {
         "startLine": 575,
         "startChar": 0,
@@ -118,6 +214,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "02462e9f_b915c61c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "i was under the impression that this was basically the 2nd order recursion (first was the regular attempt at the signal handler which locked the mutex, and now we\u0027re in the fallback path) based on the comment above: \"it means that the fallback handler has been called once before and this function is being called again\".\n\nupdated the patch to remove the unlock, but if you could just double check that would be great. thanks :).",
+      "parentUuid": "3ebd80e6_cc61e019",
+      "range": {
+        "startLine": 594,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 41
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3581832_e7dc3a59",
         "filename": "debuggerd/handler/debuggerd_handler.cpp",
         "patchSetId": 8
@@ -129,6 +249,30 @@
       "writtenOn": "2023-01-26T02:17:59Z",
       "side": 1,
       "message": "What happens if a GWP-ASan recoverable crash occurs, and then a regular crash occurs? Does this mean the ultimate crash never gets sent to the ActivityManager?",
+      "range": {
+        "startLine": 773,
+        "startChar": 0,
+        "endLine": 782,
+        "endChar": 34
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c431b4d_87e57d64",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-01-26T16:55:28Z",
+      "side": 1,
+      "message": "ActivityManager gets notified about both the penultimate GWP-ASan crash, as well as the ultimate regular crash.\n\nThe idea here is basically that if you have an app that\u0027s doing multiple `malloc()-\u003euse-after-free`\u0027s in short succession, then naively ActivityManager would get one crash report per use-after-free, and this leads to ActivityManager terminating the app. Instead, we make it so only the first use-after-free is reported in any given app.\n\nNon-GWP-ASan crashes are unaffected. All are still delivered to ActivityManager as before.",
+      "parentUuid": "a3581832_e7dc3a59",
       "range": {
         "startLine": 773,
         "startChar": 0,
