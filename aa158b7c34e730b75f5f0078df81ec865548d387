@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecc3da48_3387581b",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1623,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "It might be better to use android::base::GetExecutablePath(). I don\u0027t think this would ever fail as written, but the libbase one is slightly more universal.",
+      "range": {
+        "startLine": 1623,
+        "startChar": 30,
+        "endLine": 1623,
+        "endChar": 63
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "531e88a9_a690d188",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1675,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "I presume you are making this volatile so the code is not optimized away. It would be good to add a comment saying this.",
+      "range": {
+        "startLine": 1675,
+        "startChar": 2,
+        "endLine": 1675,
+        "endChar": 10
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e2ee4cf_a7eabc9d",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "This comment is more of a what, and isn\u0027t very informative.\n\nMaybe would be better to say something about how GWP-ASan can trigger crashes, and under some circumstances we want to ignore those crashes.",
+      "range": {
+        "startLine": 569,
+        "startChar": 5,
+        "endLine": 569,
+        "endChar": 80
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92cef329_18142f3a",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "There is no requirement that these callback values are set. There is only one place that I can find where they are not set though.\n\nI guess I\u0027m a little nervous about have this check which will potentially cause a double failure.",
+      "range": {
+        "startLine": 575,
+        "startChar": 0,
+        "endLine": 576,
+        "endChar": 78
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ebd80e6_cc61e019",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be locked at this time. It\u0027s locked at line 602.",
+      "range": {
+        "startLine": 594,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 41
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3581832_e7dc3a59",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-01-26T02:17:59Z",
+      "side": 1,
+      "message": "What happens if a GWP-ASan recoverable crash occurs, and then a regular crash occurs? Does this mean the ultimate crash never gets sent to the ActivityManager?",
+      "range": {
+        "startLine": 773,
+        "startChar": 0,
+        "endLine": 782,
+        "endChar": 34
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
