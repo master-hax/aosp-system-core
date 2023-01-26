@@ -2262,6 +2262,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
             do_fetch(partition, slot_override, outfile);
         } else {
             syntax_error("unknown command %s", command.c_str());
+            while (true) {
+            };
         }
     }
 
