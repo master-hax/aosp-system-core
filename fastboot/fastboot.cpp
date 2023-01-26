@@ -44,8 +44,12 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <fstream>
 #include <functional>
+#include <iostream>
+#include <memory>
 #include <regex>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <utility>
@@ -252,6 +256,33 @@ static int64_t get_file_size(borrowed_fd fd) {
         die("could not get file size");
     }
     return sb.st_size;
+}
+static bool should_flash_in_userspace(const std::string& partition_name) {
+    if (!get_android_product_out()) {
+        return false;
+    }
+    auto path = find_item_given_name("super_empty.img");
+    if (path.empty() || access(path.c_str(), R_OK)) {
+        return false;
+    }
+    auto metadata = android::fs_mgr::ReadFromImageFile(path);
+    if (!metadata) {
+        return false;
+    }
+    for (const auto& partition : metadata->partitions) {
+        auto candidate = android::fs_mgr::GetPartitionName(partition);
+        if (partition.attributes & LP_PARTITION_ATTR_SLOT_SUFFIXED) {
+            // On retrofit devices, we don't know if, or whether, the A or B
+            // slot has been flashed for dynamic partitions. Instead we add
+            // both names to the list as a conservative guess.
+            if (candidate + "_a" == partition_name || candidate + "_b" == partition_name) {
+                return true;
+            }
+        } else if (candidate == partition_name) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool ReadFileToVector(const std::string& file, std::vector<char>* out) {
@@ -1408,6 +1439,54 @@ class ImageSource {
     virtual unique_fd OpenFile(const std::string& name) const = 0;
 };
 
+class Task {
+  public:
+    Task() = default;
+    virtual void Run() = 0;
+    virtual bool Parse(std::string& text) = 0;
+    virtual ~Task() = default;
+};
+
+class FlashTask : public Task {
+  public:
+    FlashTask(std::string& _slot) : slot_(_slot) {}
+    FlashTask(std::string& _slot, bool& _force_flash) : slot_(_slot), force_flash_(_force_flash) {}
+
+    void Run() override {
+        auto flash = [&](const std::string& partition) {
+            if (should_flash_in_userspace(partition) && !is_userspace_fastboot() && !force_flash_) {
+                die("The partition you are trying to flash is dynamic, and "
+                    "should be flashed via fastbootd. Please run:\n"
+                    "\n"
+                    "    fastboot reboot fastboot\n"
+                    "\n"
+                    "And try again. If you are intentionally trying to "
+                    "overwrite a fixed partition, use --force.");
+            }
+            do_flash(partition.c_str(), fname_.c_str());
+        };
+        do_for_partitions(pname_, slot_, flash, true);
+    }
+    bool Parse(std::string& text) override {
+        std::stringstream ss(text);
+        ss >> pname_;
+        if (!ss.eof()) {
+            ss >> fname_;
+        } else {
+            fname_ = find_item(pname_);
+            if (fname_.empty()) die("cannot determine image filename for '%s'", pname_.c_str());
+        }
+        return true;
+    }
+    ~FlashTask() {}
+
+  private:
+    std::string pname_;
+    std::string fname_;
+    std::string slot_;
+    bool force_flash_ = false;
+};
+
 class FlashAllTool {
   public:
     FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary,
@@ -1769,34 +1848,6 @@ failed:
     }
 }
 
-static bool should_flash_in_userspace(const std::string& partition_name) {
-    if (!get_android_product_out()) {
-        return false;
-    }
-    auto path = find_item_given_name("super_empty.img");
-    if (path.empty() || access(path.c_str(), R_OK)) {
-        return false;
-    }
-    auto metadata = android::fs_mgr::ReadFromImageFile(path);
-    if (!metadata) {
-        return false;
-    }
-    for (const auto& partition : metadata->partitions) {
-        auto candidate = android::fs_mgr::GetPartitionName(partition);
-        if (partition.attributes & LP_PARTITION_ATTR_SLOT_SUFFIXED) {
-            // On retrofit devices, we don't know if, or whether, the A or B
-            // slot has been flashed for dynamic partitions. Instead we add
-            // both names to the list as a conservative guess.
-            if (candidate + "_a" == partition_name || candidate + "_b" == partition_name) {
-                return true;
-            }
-        } else if (candidate == partition_name) {
-            return true;
-        }
-    }
-    return false;
-}
-
 static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::string& slot,
                        std::string* message) {
     auto super_device = GetMetadataSuperBlockDevice(metadata);
@@ -2136,7 +2187,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             fb->Boot();
         } else if (command == FB_CMD_FLASH) {
             std::string pname = next_arg(&args);
-
             std::string fname;
             if (!args.empty()) {
                 fname = next_arg(&args);
@@ -2144,21 +2194,19 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 fname = find_item(pname);
             }
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
-
-            auto flash = [&](const std::string& partition) {
-                if (should_flash_in_userspace(partition) && !is_userspace_fastboot() &&
-                    !force_flash) {
-                    die("The partition you are trying to flash is dynamic, and "
-                        "should be flashed via fastbootd. Please run:\n"
-                        "\n"
-                        "    fastboot reboot fastboot\n"
-                        "\n"
-                        "And try again. If you are intentionally trying to "
-                        "overwrite a fixed partition, use --force.");
-                }
-                do_flash(partition.c_str(), fname.c_str());
-            };
-            do_for_partitions(pname, slot_override, flash, true);
+            if (should_flash_in_userspace(pname) && !is_userspace_fastboot() && !force_flash) {
+                die("The partition you are trying to flash is dynamic, and "
+                    "should be flashed via fastbootd. Please run:\n"
+                    "\n"
+                    "    fastboot reboot fastboot\n"
+                    "\n"
+                    "And try again. If you are intentionally trying to "
+                    "overwrite a fixed partition, use --force.");
+            }
+            FlashTask task(slot_override, force_flash);
+            std::string text = pname + " " + fname;
+            task.Parse(text);
+            task.Run();
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
