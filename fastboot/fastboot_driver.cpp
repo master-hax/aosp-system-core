@@ -308,7 +308,7 @@ RetCode FastBootDriver::Upload(const std::string& outfile, std::string* response
 // This is the common way for the device to send data to the driver used by upload and fetch.
 RetCode FastBootDriver::RunAndReadBuffer(
         const std::string& cmd, std::string* response, std::vector<std::string>* info,
-        const std::function<RetCode(const char* data, uint64_t size)>& write_fn) {
+        const std::function<RetCode(std::vector<char>&& data, uint64_t size)>& write_fn) {
     RetCode ret;
     int dsize = 0;
     if ((ret = RawCommand(cmd, response, info, &dsize))) {
@@ -327,12 +327,13 @@ RetCode FastBootDriver::RunAndReadBuffer(
     std::vector<char> data(buf_size);
     uint64_t current_offset = 0;
     while (current_offset < total_size) {
-        uint64_t remaining = total_size - current_offset;
-        uint64_t chunk_size = std::min(buf_size, remaining);
+        const uint64_t remaining = total_size - current_offset;
+        const uint64_t chunk_size = std::min(buf_size, remaining);
+        data.resize(chunk_size);
         if ((ret = ReadBuffer(data.data(), chunk_size)) != SUCCESS) {
             return ret;
         }
-        if ((ret = write_fn(data.data(), chunk_size)) != SUCCESS) {
+        if ((ret = write_fn(std::move(data), chunk_size)) != SUCCESS) {
             return ret;
         }
         current_offset += chunk_size;
@@ -348,8 +349,8 @@ RetCode FastBootDriver::UploadInner(const std::string& outfile, std::string* res
         error_ = android::base::StringPrintf("Failed to open '%s'", outfile.c_str());
         return IO_ERROR;
     }
-    auto write_fn = [&](const char* data, uint64_t size) {
-        ofs.write(data, size);
+    auto write_fn = [&](auto&& data, uint64_t size) {
+        ofs.write(data.data(), size);
         if (ofs.fail() || ofs.bad()) {
             error_ = android::base::StringPrintf("Writing to '%s' failed", outfile.c_str());
             return IO_ERROR;
@@ -373,8 +374,8 @@ RetCode FastBootDriver::FetchToFd(const std::string& partition, android::base::b
             cmd += android::base::StringPrintf(":0x%08" PRIx64, size);
         }
     }
-    RetCode ret = RunAndReadBuffer(cmd, response, info, [&](const char* data, uint64_t size) {
-        if (!android::base::WriteFully(fd, data, size)) {
+    RetCode ret = RunAndReadBuffer(cmd, response, info, [&](auto&& data, uint64_t size) {
+        if (!android::base::WriteFully(fd, data.data(), size)) {
             error_ = android::base::StringPrintf("Cannot write: %s", strerror(errno));
             return IO_ERROR;
         }

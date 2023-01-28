@@ -89,7 +89,7 @@ class PartitionHandle {
   private:
     std::string path_;
     android::base::unique_fd fd_;
-    int flags_;
+    int flags_{};
     std::function<void()> closer_;
 };
 
