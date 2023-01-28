@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7d6ad7d_a8a59b1d",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-01-28T01:48:53Z",
+      "side": 1,
+      "message": "There is a race here between shutting down and sending the `DEC_STRONG` messages for the service\u0027s `BpBinder` for `mStats` on another thread. For now, adding `sched_yield` or `usleep` here before this call seems to fix the race.",
+      "revId": "3cb7b8d27a15d409647e10c7d7f75366d9a7a27d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
