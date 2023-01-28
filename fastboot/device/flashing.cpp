@@ -142,15 +142,96 @@ int FlashSparseData(PartitionHandle* handle, std::vector<char>& downloaded_data)
     return sparse_file_callback(file, false, false, WriteCallback, reinterpret_cast<void*>(handle));
 }
 
-int FlashBlockDevice(PartitionHandle* handle, std::vector<char>& downloaded_data) {
-    lseek64(handle->fd(), 0, SEEK_SET);
-    if (downloaded_data.size() >= sizeof(SPARSE_HEADER_MAGIC) &&
-        *reinterpret_cast<uint32_t*>(downloaded_data.data()) == SPARSE_HEADER_MAGIC) {
-        return FlashSparseData(handle, downloaded_data);
-    } else {
-        return FlashRawData(handle, downloaded_data);
+namespace {
+class WorkerInterface {
+  public:
+    using Task = std::function<bool()>;
+    virtual ~WorkerInterface() = default;
+    // Put a task on this worker's queue to execute later
+    virtual bool Schedule(Task) = 0;
+    // Wait for all tasks to complete.
+    virtual void WaitForAll() = 0;
+
+    // Get global background worker instance
+    static WorkerInterface* GetInstance();
+};
+class ThreadWorker final : public WorkerInterface {
+  public:
+    ThreadWorker() : thread_(&ThreadWorker::Run, this) {}
+    bool Schedule(Task t) override {
+        {
+            std::lock_guard g(mutex_);
+            if (stopped_) {
+                return false;
+            }
+            queue_.emplace(std::move(t));
+        }
+        consumer_cv_.notify_one();
+        return true;
     }
+    // Wait for all tasks to complete.
+    void WaitForAll() override {
+        std::unique_lock g(mutex_);
+        producer_cv_.wait(g, [this]() { return queue_.empty() && !processing_; });
+    }
+    ~ThreadWorker() override {
+        stopped_ = true;
+        consumer_cv_.notify_all();
+        thread_.join();
+    }
+
+  private:
+    void Run() {
+        while (true) {
+            Task t;
+            {
+                std::unique_lock g(mutex_);
+                consumer_cv_.wait(g, [this]() { return queue_.size() > 0 || stopped_; });
+                if (stopped_ && queue_.empty()) {
+                    return;
+                }
+                t = std::move(queue_.front());
+                queue_.pop();
+                processing_ = true;
+            }
+            t();
+            processing_ = false;
+            producer_cv_.notify_all();
+        }
+    }
+    std::atomic<bool> stopped_{};
+    std::atomic<bool> processing_{};
+    std::queue<Task> queue_;
+    std::condition_variable consumer_cv_;
+    std::condition_variable producer_cv_;
+    std::mutex mutex_;
+    std::thread thread_;
+};
+
+WorkerInterface* WorkerInterface::GetInstance() {
+    static ThreadWorker t;
+    return &t;
 }
+
+int FlashBlockDevice(FastbootDevice* device, const std::string& partition_name,
+                     std::vector<char>& downloaded_data) {
+    WorkerInterface::GetInstance()->Schedule(
+            [device, data = std::move(downloaded_data), partition_name]() mutable {
+                PartitionHandle handle;
+                if (!OpenPartition(device, partition_name, &handle, O_WRONLY | O_DIRECT)) {
+                    return -ENOENT;
+                }
+                lseek64(handle.fd(), 0, SEEK_SET);
+                if (data.size() >= sizeof(SPARSE_HEADER_MAGIC) &&
+                    *reinterpret_cast<uint32_t*>(data.data()) == SPARSE_HEADER_MAGIC) {
+                    return FlashSparseData(&handle, data);
+                } else {
+                    return FlashRawData(&handle, data);
+                }
+            });
+    return 0;
+}
+}  // namespace
 
 static void CopyAVBFooter(std::vector<char>* data, const uint64_t block_device_size) {
     if (data->size() < AVB_FOOTER_SIZE) {
@@ -174,31 +255,36 @@ static void CopyAVBFooter(std::vector<char>* data, const uint64_t block_device_s
 }
 
 int Flash(FastbootDevice* device, const std::string& partition_name) {
-    PartitionHandle handle;
-    if (!OpenPartition(device, partition_name, &handle, O_WRONLY | O_DIRECT)) {
-        return -ENOENT;
-    }
-
     std::vector<char> data = std::move(device->download_data());
+    uint64_t block_device_size = 0;
     if (data.size() == 0) {
         LOG(ERROR) << "Cannot flash empty data vector";
         return -EINVAL;
     }
-    uint64_t block_device_size = get_block_device_size(handle.fd());
+    {
+        PartitionHandle handle;
+        if (!OpenPartition(device, partition_name, &handle, O_WRONLY | O_DIRECT)) {
+            return -ENOENT;
+        }
+
+        block_device_size = get_block_device_size(handle.fd());
+        LOG(INFO) << "Flashing " << data.size() << " bytes into partition " << handle.path();
+    }
     if (data.size() > block_device_size) {
         LOG(ERROR) << "Cannot flash " << data.size() << " bytes to block device of size "
                    << block_device_size;
         return -EOVERFLOW;
-    } else if (data.size() < block_device_size &&
-               (partition_name == "boot" || partition_name == "boot_a" ||
-                partition_name == "boot_b" || partition_name == "init_boot" ||
-                partition_name == "init_boot_a" || partition_name == "init_boot_b")) {
+    }
+    if (data.size() < block_device_size &&
+        (partition_name == "boot" || partition_name == "boot_a" || partition_name == "boot_b" ||
+         partition_name == "init_boot" || partition_name == "init_boot_a" ||
+         partition_name == "init_boot_b")) {
         CopyAVBFooter(&data, block_device_size);
     }
     if (android::base::GetProperty("ro.system.build.type", "") != "user") {
         WipeOverlayfsForPartition(device, partition_name);
     }
-    int result = FlashBlockDevice(&handle, data);
+    int result = FlashBlockDevice(device, partition_name, data);
     sync();
     return result;
 }
