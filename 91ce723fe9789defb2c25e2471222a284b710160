@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95ab7411_db99a0cf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2023-01-30T18:42:52Z",
+      "side": 1,
+      "message": "LGTM, but I\u0027m not knowledgeable about this code",
+      "revId": "91ce723fe9789defb2c25e2471222a284b710160",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9c07f62_d862e9d3",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1510,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2023-01-30T18:42:52Z",
+      "side": 1,
+      "message": "did you mean to return here?",
+      "range": {
+        "startLine": 1510,
+        "startChar": 4,
+        "endLine": 1510,
+        "endChar": 5
+      },
+      "revId": "91ce723fe9789defb2c25e2471222a284b710160",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
