@@ -269,19 +269,14 @@ cc_test {
     defaults: ["libsnapshot_test_defaults", "libsnapshot_hal_deps"],
 }
 
-cc_test {
-    name: "vab_legacy_tests",
-    defaults: ["libsnapshot_test_defaults", "libsnapshot_hal_deps"],
-    cppflags: [
-        "-DLIBSNAPSHOT_TEST_VAB_LEGACY",
+sh_test {
+    name: "run_snapshot_tests",
+    src: "run_snapshot_tests.sh",
+    test_suites: [
+        "device-tests",
     ],
-}
-
-cc_test {
-    name: "vabc_legacy_tests",
-    defaults: ["libsnapshot_test_defaults", "libsnapshot_hal_deps"],
-    cppflags: [
-        "-DLIBSNAPSHOT_TEST_VABC_LEGACY",
+    required: [
+        "vts_libsnapshot_test",
     ],
 }
 
