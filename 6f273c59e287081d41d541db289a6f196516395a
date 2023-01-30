@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2fbe55f_1224b5a9",
+        "filename": "fs_mgr/liblp/include/liblp/super_layout_builder.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-01-30T20:17:38Z",
+      "side": 1,
+      "message": "[[nodiscard]] bool",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 8
+      },
+      "revId": "6f273c59e287081d41d541db289a6f196516395a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
