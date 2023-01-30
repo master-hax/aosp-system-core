@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90737c89_f4ca9135",
+        "filename": "fs_mgr/libfiemap/metadata.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-30T18:42:39Z",
+      "side": 1,
+      "message": "Can you move WriteToImageFile() here, and call it with \"fd\" instead of \"metadata_file\"?",
+      "revId": "2cb33b593ba4efaa2caae6b58755df52594fb3eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
