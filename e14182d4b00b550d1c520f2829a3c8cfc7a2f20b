@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76691293_573a01e2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1442,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-30T18:53:53Z",
+      "side": 1,
+      "message": "Can we define this in a new task.h file?",
+      "revId": "e14182d4b00b550d1c520f2829a3c8cfc7a2f20b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2278286e_25cb9655",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1450,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-30T18:53:53Z",
+      "side": 1,
+      "message": "Can we move this to either the task.h/.cpp file or a new flash_task.cpp? You\u0027ll be missing functions like do_for_partitions, do_lfash, find_item etc. But for now we can just add a fastboot.h header that prototypes those functions.",
+      "revId": "e14182d4b00b550d1c520f2829a3c8cfc7a2f20b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d6a0851_e1c237a3",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1452,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-30T18:53:53Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "revId": "e14182d4b00b550d1c520f2829a3c8cfc7a2f20b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9429808e_5e8c0c69",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1453,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-30T18:53:53Z",
+      "side": 1,
+      "message": "no need for \u0026 on primitives like bool",
+      "revId": "e14182d4b00b550d1c520f2829a3c8cfc7a2f20b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
