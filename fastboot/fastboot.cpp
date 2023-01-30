@@ -1488,6 +1488,26 @@ class FlashTask : public Task {
     bool force_flash_ = false;
 };
 
+class RebootTask : public Task {
+  public:
+    void Run() override {
+        if (!is_userspace_fastboot() && reboot_target == "userspace") {
+            reboot_to_userspace_fastboot();
+        };
+    }
+    bool Parse(std::string& text) override {
+        std::stringstream ss(text);
+        ss >> reboot_target;
+        // invalid arguments
+        if (!ss.eof()) return false;
+        return true;
+    }
+    ~RebootTask() {}
+
+  private:
+    std::string reboot_target;
+};
+
 class FlashAllTool {
   public:
     FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary,
