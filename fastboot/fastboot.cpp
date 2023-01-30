@@ -41,6 +41,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <task.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -1439,91 +1440,62 @@ class ImageSource {
     virtual unique_fd OpenFile(const std::string& name) const = 0;
 };
 
-class Task {
-  public:
-    Task() = default;
-    virtual void Run() = 0;
-    virtual bool Parse(std::string& text) = 0;
-    virtual ~Task() = default;
-};
-
-class FlashTask : public Task {
-  public:
-    FlashTask(std::string& _slot) : slot_(_slot) {}
-    FlashTask(std::string& _slot, bool& _force_flash) : slot_(_slot), force_flash_(_force_flash) {}
-
-    void Run() override {
-        auto flash = [&](const std::string& partition) {
-            if (should_flash_in_userspace(partition) && !is_userspace_fastboot() && !force_flash_) {
-                die("The partition you are trying to flash is dynamic, and "
-                    "should be flashed via fastbootd. Please run:\n"
-                    "\n"
-                    "    fastboot reboot fastboot\n"
-                    "\n"
-                    "And try again. If you are intentionally trying to "
-                    "overwrite a fixed partition, use --force.");
-            }
-            do_flash(partition.c_str(), fname_.c_str());
-        };
-        do_for_partitions(pname_, slot_, flash, true);
-    }
-    bool Parse(std::string& text) override {
-        std::stringstream ss(text);
-        ss >> pname_;
-        if (!ss.eof()) {
-            ss >> fname_;
-        } else {
-            fname_ = find_item(pname_);
-            if (fname_.empty()) die("cannot determine image filename for '%s'", pname_.c_str());
+void FlashTask::Run() {
+    auto flash = [&](const std::string& partition) {
+        if (should_flash_in_userspace(partition) && !is_userspace_fastboot() && !force_flash_) {
+            die("The partition you are trying to flash is dynamic, and "
+                "should be flashed via fastbootd. Please run:\n"
+                "\n"
+                "    fastboot reboot fastboot\n"
+                "\n"
+                "And try again. If you are intentionally trying to "
+                "overwrite a fixed partition, use --force.");
         }
-        return true;
+        do_flash(partition.c_str(), fname_.c_str());
+    };
+    do_for_partitions(pname_, slot_, flash, true);
+}
+
+bool FlashTask::Parse(std::string& text) {
+    std::stringstream ss(text);
+    ss >> pname_;
+    if (!ss.eof()) {
+        ss >> fname_;
+    } else {
+        fname_ = find_item(pname_);
+        if (fname_.empty()) die("cannot determine image filename for '%s'", pname_.c_str());
     }
-    ~FlashTask() {}
+    return true;
+}
 
-  private:
-    std::string pname_;
-    std::string fname_;
-    std::string slot_;
-    bool force_flash_ = false;
-};
-
-class RebootTask : public Task {
-  public:
-    RebootTask(){};
-    RebootTask(std::string _reboot_target) : reboot_target_(_reboot_target){};
-    void Run() override {
-        if ((reboot_target_ == "userspace" || reboot_target_ == "fastboot")) {
-            if (!is_userspace_fastboot()) {
-                reboot_to_userspace_fastboot();
-                fb->WaitForDisconnect();
-            }
-        } else if (reboot_target_ == "recovery") {
-            fb->RebootTo("recovery");
-            fb->WaitForDisconnect();
-        } else if (reboot_target_ == "bootloader") {
-            fb->RebootTo("bootloader");
-            fb->WaitForDisconnect();
-        } else if (reboot_target_ == "") {
-            fb->Reboot();
-            fb->WaitForDisconnect();
-        } else {
-            syntax_error("unknown reboot target %s", reboot_target_.c_str());
+void RebootTask::Run() {
+    if ((reboot_target_ == "userspace" || reboot_target_ == "fastboot")) {
+        if (!is_userspace_fastboot()) {
+            reboot_to_userspace_fastboot();
         }
+    } else if (reboot_target_ == "recovery") {
+        fb->RebootTo("recovery");
+        fb->WaitForDisconnect();
+    } else if (reboot_target_ == "bootloader") {
+        fb->RebootTo("bootloader");
+        fb->WaitForDisconnect();
+    } else if (reboot_target_ == "") {
+        fb->Reboot();
+        fb->WaitForDisconnect();
+    } else {
+        syntax_error("unknown reboot target %s", reboot_target_.c_str());
     }
-    bool Parse(std::string& text) override {
-        std::stringstream ss(text);
-        if (!ss.eof()) {
-            ss >> reboot_target_;
-        }
-        // invalid arguments
-        if (!ss.eof()) return false;
-        return true;
-    }
-    ~RebootTask() {}
+}
 
-  private:
-    std::string reboot_target_ = "";
-};
+bool RebootTask::Parse(std::string& text) {
+    std::stringstream ss(text);
+    if (!ss.eof()) {
+        ss >> reboot_target_;
+    }
+    // invalid arguments
+    if (!ss.eof()) return false;
+    return true;
+}
 
 class FlashAllTool {
   public:
