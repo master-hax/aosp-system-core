@@ -45,3 +45,16 @@ class FlashTask : public Task {
     std::string slot_;
     bool force_flash_ = false;
 };
+
+class RebootTask : public Task {
+  public:
+    RebootTask(fastboot::FastBootDriver* _fb);
+    RebootTask(fastboot::FastBootDriver* _fb, std::string _reboot_target);
+    void Run() override;
+    bool Parse(const std::string& text) override;
+    ~RebootTask() {}
+
+  private:
+    std::string reboot_target_ = "";
+    fastboot::FastBootDriver* fb_;
+};
