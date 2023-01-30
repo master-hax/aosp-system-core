@@ -2049,7 +2049,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             }
         }
     }
-
+    std::unique_ptr<Task> task;
     std::vector<std::string> args(argv, argv + argc);
     while (!args.empty()) {
         std::string command = next_arg(&args);
@@ -2102,28 +2102,20 @@ int FastBootTool::Main(int argc, char* argv[]) {
             fb->RawCommand("signature", "installing signature");
         } else if (command == FB_CMD_REBOOT) {
             wants_reboot = true;
-
+            task = std::make_unique<RebootTask>(fb);
             if (args.size() == 1) {
-                std::string what = next_arg(&args);
-                if (what == "bootloader") {
-                    wants_reboot = false;
-                    wants_reboot_bootloader = true;
-                } else if (what == "recovery") {
-                    wants_reboot = false;
-                    wants_reboot_recovery = true;
-                } else if (what == "fastboot") {
-                    wants_reboot = false;
-                    wants_reboot_fastboot = true;
-                } else {
-                    syntax_error("unknown reboot target %s", what.c_str());
-                }
+                std::string text = next_arg(&args);
+                task->Parse(text);
             }
             if (!args.empty()) syntax_error("junk after reboot command");
         } else if (command == FB_CMD_REBOOT_BOOTLOADER) {
+            task = std::make_unique<RebootTask>(fb, "bootloader");
             wants_reboot_bootloader = true;
         } else if (command == FB_CMD_REBOOT_RECOVERY) {
+            task = std::make_unique<RebootTask>(fb, "recovery");
             wants_reboot_recovery = true;
         } else if (command == FB_CMD_REBOOT_FASTBOOT) {
+            task = std::make_unique<RebootTask>(fb, "fastboot");
             wants_reboot_fastboot = true;
         } else if (command == FB_CMD_CONTINUE) {
             fb->Continue();
@@ -2282,19 +2274,10 @@ int FastBootTool::Main(int argc, char* argv[]) {
     if (wants_set_active) {
         fb->SetActive(next_active);
     }
-    if (wants_reboot && !skip_reboot) {
-        fb->Reboot();
-        fb->WaitForDisconnect();
-    } else if (wants_reboot_bootloader) {
-        fb->RebootTo("bootloader");
-        fb->WaitForDisconnect();
-    } else if (wants_reboot_recovery) {
-        fb->RebootTo("recovery");
-        fb->WaitForDisconnect();
-    } else if (wants_reboot_fastboot) {
-        reboot_to_userspace_fastboot();
+    if ((wants_reboot && !skip_reboot) || wants_reboot_bootloader || wants_reboot_recovery ||
+        wants_reboot_fastboot) {
+        task->Run();
     }
-
     fprintf(stderr, "Finished. Total time: %.3fs\n", (now() - start));
 
     auto* old_transport = fb->set_transport(nullptr);
