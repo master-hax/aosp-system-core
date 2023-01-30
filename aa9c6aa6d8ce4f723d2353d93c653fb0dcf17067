@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b78c1a4_1efdfa72",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1291,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-01-30T19:05:14Z",
+      "side": 1,
+      "message": "It doesn\u0027t though. access is still gated by selinux.",
+      "range": {
+        "startLine": 1291,
+        "startChar": 21,
+        "endLine": 1291,
+        "endChar": 27
+      },
+      "revId": "aa9c6aa6d8ce4f723d2353d93c653fb0dcf17067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e14aea7f_c4aa9191",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1294,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-01-30T19:05:14Z",
+      "side": 1,
+      "message": "same as above.",
+      "range": {
+        "startLine": 1294,
+        "startChar": 31,
+        "endLine": 1294,
+        "endChar": 37
+      },
+      "revId": "aa9c6aa6d8ce4f723d2353d93c653fb0dcf17067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "648bf5bf_4c418770",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1295,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-01-30T19:05:14Z",
+      "side": 1,
+      "message": "why is 777 needed here? Can you solve this with correct GID on the folder? Doesn\u0027t WM run as AID_SYSTEM?",
+      "range": {
+        "startLine": 1295,
+        "startChar": 10,
+        "endLine": 1295,
+        "endChar": 14
+      },
+      "revId": "aa9c6aa6d8ce4f723d2353d93c653fb0dcf17067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
