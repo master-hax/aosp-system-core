@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b5ac8e1d_c0ab8f9b",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-01-31T18:00:45Z",
+      "side": 1,
+      "message": "Also, the path to `repo_pull.py` is `development/tools/repo_pull/repo_pull.py`.  Not sure if it\u0027s needed, but I\u0027ve been using `\"hashtag:trusty-metrics-nw status:open\"` as the predicate too.",
+      "parentUuid": "d169d02d_8f87b044",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 15
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e6d672d9_9cf36074",
         "filename": "trusty/stats/README.md",
         "patchSetId": 8

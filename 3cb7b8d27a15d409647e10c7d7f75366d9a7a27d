@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4ab65574_c5e23db9",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-01-31T18:00:45Z",
+      "side": 1,
+      "message": "aosp/2317065 is abandoned now.",
+      "range": {
+        "startLine": 23,
+        "startChar": 6,
+        "endLine": 23,
+        "endChar": 122
+      },
+      "revId": "3cb7b8d27a15d409647e10c7d7f75366d9a7a27d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a7d6ad7d_a8a59b1d",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 9
