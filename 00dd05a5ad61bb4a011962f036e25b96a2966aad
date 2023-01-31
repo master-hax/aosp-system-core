@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68375789_e72b70d0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-01-31T16:59:38Z",
+      "side": 1,
+      "message": "Can we merge the revert \u0026 resubmit it with aosp/2411276 in the topic",
+      "revId": "00dd05a5ad61bb4a011962f036e25b96a2966aad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
