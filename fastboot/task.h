@@ -29,3 +29,19 @@ class Task {
     virtual bool Parse(const std::string& text) = 0;
     virtual ~Task() = default;
 };
+
+class FlashTask : public Task {
+  public:
+    FlashTask(std::string& _slot);
+    FlashTask(std::string& _slot, bool& _force_flash);
+
+    void Run() override;
+    bool Parse(const std::string& text);
+    ~FlashTask() {}
+
+  private:
+    std::string pname_;
+    std::string fname_;
+    std::string slot_;
+    bool force_flash_ = false;
+};
