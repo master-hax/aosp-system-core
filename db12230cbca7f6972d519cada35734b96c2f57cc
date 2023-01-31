@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1eeddf86_3bb9bc25",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-01-31T10:29:56Z",
+      "side": 1,
+      "message": "How far can this be moved up? For example, can this be somewhere in the first-stage init?",
+      "revId": "db12230cbca7f6972d519cada35734b96c2f57cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
