@@ -954,7 +954,9 @@ static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
     unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_BINARY)));
 
     if (fd == -1) {
-        return false;
+        auto path = find_item_given_name(fname);
+        fd = unique_fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_RDONLY | O_BINARY)));
+        if (fd == -1) return false;
     }
 
     struct stat s;
@@ -2314,7 +2316,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             syntax_error("unknown command %s", command.c_str());
         }
     }
-
     if (wants_wipe) {
         if (force_flash) {
             CancelSnapshotIfNeeded();
