@@ -25,8 +25,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+#pragma once
 
 #include <bootimg.h>
+#include <string>
 
 class FastBootTool {
   public:
@@ -36,3 +38,12 @@ class FastBootTool {
     void ParseOsVersion(boot_img_hdr_v1*, const char*);
     unsigned ParseFsOption(const char*);
 };
+
+bool should_flash_in_userspace(const std::string& partition_name);
+bool is_userspace_fastboot();
+void do_flash(const char* pname, const char* fname);
+void do_for_partitions(const std::string& part, const std::string& slot,
+                       const std::function<void(const std::string&)>& func, bool force_slot);
+std::string find_item(const std::string& item);
+void reboot_to_userspace_fastboot();
+void syntax_error(const char* fmt, ...);
