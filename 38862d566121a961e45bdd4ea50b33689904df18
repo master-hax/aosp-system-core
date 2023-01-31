@@ -16,6 +16,24 @@
       "message": "nit: \"GetPartitionPath\"",
       "revId": "38862d566121a961e45bdd4ea50b33689904df18",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "642ec2d5_8b3351ae",
+        "filename": "fs_mgr/libfs_avb/avb_ops.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-01-31T18:19:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "23e86d78_ad59168f",
+      "revId": "38862d566121a961e45bdd4ea50b33689904df18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
