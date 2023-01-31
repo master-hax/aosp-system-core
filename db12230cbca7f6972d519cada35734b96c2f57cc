@@ -16,6 +16,24 @@
       "message": "How far can this be moved up? For example, can this be somewhere in the first-stage init?",
       "revId": "db12230cbca7f6972d519cada35734b96c2f57cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af99c006_675698ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1458990
+      },
+      "writtenOn": "2023-01-31T11:59:13Z",
+      "side": 1,
+      "message": "I guess we can only keep this line in second-stage init since SELinux setup is after first-stage init.\nThe boot sequence is like \n1. \"first stage init\": Mount partitions\n2. \"setup selinux\": Load sepolicy, set selinux enforcement\n    (system/core/init/selinux.cpp has its own SelinuxSetupKernelLogging())\n3. \"second stage init\": PropertyInit(), SelabelInitialize()\n    \nI just noticed that PropertyInit() generates some SELinux denials. Maybe we can move SelinuxSetupKernelLogging() right after InitKernelLogging(argv). Let me have a try. \nThanks for your review!",
+      "parentUuid": "1eeddf86_3bb9bc25",
+      "revId": "db12230cbca7f6972d519cada35734b96c2f57cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
