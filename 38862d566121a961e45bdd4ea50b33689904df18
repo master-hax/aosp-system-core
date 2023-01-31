@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23e86d78_ad59168f",
+        "filename": "fs_mgr/libfs_avb/avb_ops.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-01-31T18:17:14Z",
+      "side": 1,
+      "message": "nit: \"GetPartitionPath\"",
+      "revId": "38862d566121a961e45bdd4ea50b33689904df18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
