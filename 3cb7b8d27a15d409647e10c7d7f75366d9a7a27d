@@ -57,6 +57,24 @@
       "parentUuid": "a7d6ad7d_a8a59b1d",
       "revId": "3cb7b8d27a15d409647e10c7d7f75366d9a7a27d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dec1caa5_e8c37ebf",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-01T05:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "249cc56d_465a7c5e",
+      "revId": "3cb7b8d27a15d409647e10c7d7f75366d9a7a27d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
