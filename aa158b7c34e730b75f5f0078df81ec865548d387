@@ -284,6 +284,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc45017e_fca0dc2e",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-02-01T23:28:25Z",
+      "side": 1,
+      "message": "for kDebuggerdFallbackSivalUintptrRequestDump, yep, makes sense.\n\nfor prctl(PR_GET_NO_NEW_PRIVS,...) \u003d\u003d 1, seems we definitely still need the unlock.  this codepath is triggered by processes (and the tests) running under seccomp, because they can\u0027t execve.\n\ni\u0027ve modified the branch to only call the fallback handlers in the prctl case.",
+      "parentUuid": "de3af85d_97b577b3",
+      "range": {
+        "startLine": 594,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 41
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3581832_e7dc3a59",

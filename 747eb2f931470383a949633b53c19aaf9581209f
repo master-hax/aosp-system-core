@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fb7fd7c7_66581b3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-02-01T23:28:25Z",
+      "side": 1,
+      "message": "could you double check for me that aosp/2394588 was also patched in your local branch?\n\nmy aosp_sunfish-userdebug build and aosp_cf_x86_phone-userdebug both pass.",
+      "parentUuid": "34cdb7dc_b1c4232c",
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f84065cb_a3690781",
         "filename": "debuggerd/debuggerd_test.cpp",
         "patchSetId": 10
@@ -31,6 +49,30 @@
       "writtenOn": "2023-02-01T04:20:17Z",
       "side": 1,
       "message": "The names of the tests are not very understandable. For example:\n\n4096OverflowLeft1Seccomp\n\nIt might be better if it were something like:\n\nOverflow4096AllocLeft1ByteSeccomp",
+      "range": {
+        "startLine": 1594,
+        "startChar": 13,
+        "endLine": 1594,
+        "endChar": 17
+      },
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "496e8317_0c9764b2",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-02-01T23:28:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f84065cb_a3690781",
       "range": {
         "startLine": 1594,
         "startChar": 13,
@@ -54,6 +96,30 @@
       "writtenOn": "2023-02-01T04:20:17Z",
       "side": 1,
       "message": "As mentioned above, this code should not be here. You should never get here when handling a crash.",
+      "range": {
+        "startLine": 596,
+        "startChar": 0,
+        "endLine": 599,
+        "endChar": 5
+      },
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf0eb25a_3a8ffaed",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 599,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-02-01T23:28:25Z",
+      "side": 1,
+      "message": "Ack, see above",
+      "parentUuid": "8bc327c9_405c81d5",
       "range": {
         "startLine": 596,
         "startChar": 0,
