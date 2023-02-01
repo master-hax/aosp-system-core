@@ -238,6 +238,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "60061a31_9f7974c4",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-02-01T04:20:17Z",
+      "side": 1,
+      "message": "Looking at the code and remembering how this works is a bit weird.\n\nThis really only happens when you do a debuggerd -b of a privileged process. In that case, it does hold the lock, but it should not be unlocked because what is happening is:\n\n- First crashing signal occurs in privileged process.\n- Grab lock.\n- Resend the signal to every live thread to dump that thread.\n- Finish dumping, unlock.\n\nWhen generating a tombstone, you don\u0027t do this process. You never re-send the signal on each thread to generate each thread\u0027s backtrace.",
+      "parentUuid": "02462e9f_b915c61c",
+      "range": {
+        "startLine": 594,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 41
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de3af85d_97b577b3",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-02-01T04:20:17Z",
+      "side": 1,
+      "message": "This code is visited in two different cases, and I don\u0027t think it needs to unlock in either. Looking through, I believe it always unlocks before resending the signal.\n\nAlso, I\u0027m pretty sure that the gwp_asan_recoverable variable can never be true if it got into that code at about line 596. That\u0027s why the unlock didn\u0027t do anything.",
+      "parentUuid": "02462e9f_b915c61c",
+      "range": {
+        "startLine": 594,
+        "startChar": 0,
+        "endLine": 594,
+        "endChar": 41
+      },
+      "revId": "aa158b7c34e730b75f5f0078df81ec865548d387",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3581832_e7dc3a59",
         "filename": "debuggerd/handler/debuggerd_handler.cpp",
         "patchSetId": 8

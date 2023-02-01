@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34cdb7dc_b1c4232c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-02-01T04:20:17Z",
+      "side": 1,
+      "message": "I tried to run these tests on a real device and a number fail on my panther. I don\u0027t know if they pass on cuttlefish, and not an arm device though.\n\nAll of the failures look like this:\n\n[ RUN      ] GwpAsanTests/GwpAsanCrasherTest.run_gwp_asan_test/7UseAfterFreeRight0RecoverableSeccomp\nsystem/core/debuggerd/debuggerd_test.cpp:290: Failure\nValue of: (((status) \u0026 0x7f) \u003d\u003d 0)\n  Actual: false\nExpected: true\nTerminated due to unexpected signal 11\n\nSo it seems something is not recovering properly.",
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f84065cb_a3690781",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1594,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-02-01T04:20:17Z",
+      "side": 1,
+      "message": "The names of the tests are not very understandable. For example:\n\n4096OverflowLeft1Seccomp\n\nIt might be better if it were something like:\n\nOverflow4096AllocLeft1ByteSeccomp",
+      "range": {
+        "startLine": 1594,
+        "startChar": 13,
+        "endLine": 1594,
+        "endChar": 17
+      },
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bc327c9_405c81d5",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 599,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-02-01T04:20:17Z",
+      "side": 1,
+      "message": "As mentioned above, this code should not be here. You should never get here when handling a crash.",
+      "range": {
+        "startLine": 596,
+        "startChar": 0,
+        "endLine": 599,
+        "endChar": 5
+      },
+      "revId": "747eb2f931470383a949633b53c19aaf9581209f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
