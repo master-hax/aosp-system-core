@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5607f36e_0f67efff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-02T22:59:19Z",
+      "side": 1,
+      "message": "Flash {partition} with tasks. Moved tasks to other class.",
+      "revId": "0bfca8d7992e5f0d57f38b8caa38d5f5e17fa30f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
