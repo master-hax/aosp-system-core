@@ -16,6 +16,29 @@
       "message": "Task class. Rebased commits to be in order",
       "revId": "456777b509be44d366b7b7521a7c74dd10e28c8c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee565ae6_0b712cb0",
+        "filename": "fastboot/task.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-02T23:05:06Z",
+      "side": 1,
+      "message": "put copy right headers and ifdef guards",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 17
+      },
+      "revId": "456777b509be44d366b7b7521a7c74dd10e28c8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
