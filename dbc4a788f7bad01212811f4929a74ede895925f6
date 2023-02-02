@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "853c364c_0dfc9119",
+        "filename": "fs_mgr/libfs_avb/avb_ops.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-02-02T00:07:53Z",
+      "side": 1,
+      "message": "This line doesn\u0027t have any impact, and is just locally setting the pointer value to NULL.\n\nI strongly suspect we intended to set the contents of the pointer to 0 here instead, and I\u0027ve put up a follow-up CL that does this: https://android-review.git.corp.google.com/c/platform/system/core/+/2417979",
+      "revId": "dbc4a788f7bad01212811f4929a74ede895925f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
