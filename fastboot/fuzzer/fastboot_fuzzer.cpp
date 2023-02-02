@@ -20,7 +20,7 @@
 #include "socket_mock_fuzz.h"
 #include "tcp.h"
 #include "udp.h"
-#include "vendor_boot_img_utils.h"
+#include "util/vendor_boot_img.h"
 
 #include <fuzzer/FuzzedDataProvider.h>
 

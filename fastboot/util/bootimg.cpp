@@ -26,13 +26,12 @@
  * SUCH DAMAGE.
  */
 
-#include "bootimg_utils.h"
-
-#include "util/util.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "util/bootimg.h"
+#include "util/util.h"
 
 static void bootimg_set_cmdline_v3_and_above(boot_img_hdr_v3* h, const std::string& cmdline) {
     if (cmdline.size() >= sizeof(h->cmdline)) die("command line too large: %zu", cmdline.size());

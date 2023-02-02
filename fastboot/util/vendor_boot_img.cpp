@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#include "vendor_boot_img_utils.h"
-
 #include <string.h>
 
 #include <android-base/file.h>
 #include <android-base/result.h>
 #include <bootimg.h>
 #include <libavb/libavb.h>
+
+#include "util/vendor_boot_img.h"
 
 namespace {
 
