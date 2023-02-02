@@ -50,7 +50,7 @@
 #include <thread>
 
 #include "usb.h"
-#include "util.h"
+#include "util/util.h"
 
 using namespace std::chrono_literals;
 
