@@ -32,7 +32,7 @@
 #include <gtest/gtest.h>
 #include <libavb/libavb.h>
 
-#include "vendor_boot_img_utils.h"
+#include "util/vendor_boot_img.h"
 
 using android::base::borrowed_fd;
 using android::base::ErrnoError;

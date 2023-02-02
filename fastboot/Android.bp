@@ -51,13 +51,13 @@ cc_library_host_static {
 
     compile_multilib: "first",
     srcs: [
-        "bootimg_utils.cpp",
         "fs.cpp",
         "socket.cpp",
         "tcp.cpp",
         "udp.cpp",
         "util/util.cpp",
-        "vendor_boot_img_utils.cpp",
+        "util/bootimg.cpp",
+        "util/vendor_boot_img.cpp",
         "fastboot_driver.cpp",
     ],
 
@@ -282,14 +282,14 @@ cc_library_host_static {
     defaults: ["fastboot_host_defaults"],
 
     srcs: [
-        "bootimg_utils.cpp",
         "fastboot.cpp",
         "fs.cpp",
         "socket.cpp",
         "tcp.cpp",
         "udp.cpp",
         "util/util.cpp",
-        "vendor_boot_img_utils.cpp",
+        "util/bootimg.cpp",
+        "util/vendor_boot_img.cpp",
         "fastboot_driver.cpp",
     ],
 
@@ -394,7 +394,7 @@ cc_test_host {
 
 cc_test_host {
     name: "fastboot_vendor_boot_img_utils_test",
-    srcs: ["vendor_boot_img_utils_test.cpp"],
+    srcs: ["util/vendor_boot_img_test.cpp"],
     static_libs: [
         "libbase",
         "libc++fs",
