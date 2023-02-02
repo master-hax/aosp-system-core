@@ -52,6 +52,24 @@
       "parentUuid": "1bba4b5b_7645f581",
       "revId": "9ac093716664a71b325806f562597d057e3dcba5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35a3b00d_c052580e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-02T16:37:41Z",
+      "side": 1,
+      "message": "I\u0027m not hugely in favor of this, since \"util\" is too broad of a bucket. Pretty much everything in fastboot could be categorized as \"util\" code. And if util.cpp is getting too big, that suggests something is being miscategorized.\n\nIf we add new directories, let\u0027s do it on a subcomponent basis. Eg there\u0027s already one for fastbootd (device/) and fuzzing (fuzzer/). There could conceivably be one for transport code (including all the socket, usb, tcp, udp files).",
+      "parentUuid": "31fa21a6_1d3215a4",
+      "revId": "9ac093716664a71b325806f562597d057e3dcba5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
