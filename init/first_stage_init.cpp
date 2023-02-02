@@ -212,8 +212,9 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
     }
 
     Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(recovery, MODULE_BASE_DIR));
-    bool retval = (want_parallel) ? m.LoadModulesParallel(std::thread::hardware_concurrency())
-                                  : m.LoadListedModules(!want_console);
+    bool retval = (!recovery && want_parallel) ?
+                   m.LoadModulesParallel(std::thread::hardware_concurrency())
+                   : m.LoadListedModules(!want_console);
     modules_loaded = m.GetModuleCount();
     if (modules_loaded > 0) {
         return retval;
