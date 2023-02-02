@@ -76,7 +76,7 @@
 #include "transport.h"
 #include "udp.h"
 #include "usb.h"
-#include "util.h"
+#include "util/util.h"
 #include "vendor_boot_img_utils.h"
 
 using android::base::borrowed_fd;
