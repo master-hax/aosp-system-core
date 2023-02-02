@@ -16,6 +16,24 @@
       "message": "what is the motivation for a separate directory here? is it going to be its own buildable component?",
       "revId": "9ac093716664a71b325806f562597d057e3dcba5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bba4b5b_7645f581",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-02T16:19:16Z",
+      "side": 1,
+      "message": "\u003e is it going to be its own buildable component?\n\nFound it hard to maintain huge util.cpp file, but instead of using `_util` postfix decided to move all utils to the separate folder following the same approach as adb does.\n\nAs a next CL going to move all `_util` files into this folder without breaking a git history.",
+      "parentUuid": "eb15f81e_0179e494",
+      "revId": "9ac093716664a71b325806f562597d057e3dcba5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
