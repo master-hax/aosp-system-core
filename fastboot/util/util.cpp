@@ -33,7 +33,7 @@
 
 #include <sys/time.h>
 
-#include "util.h"
+#include "util/util.h"
 
 static bool g_verbose = false;
 
