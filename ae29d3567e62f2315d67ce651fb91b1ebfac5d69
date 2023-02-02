@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f61c0c57_c5f19d24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-02T08:13:39Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it be clearer to have `want_parallel` as false when in recovery mode? \n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/init/first_stage_init.cpp;drc\u003dd01921034cc63c9f0942b5fb451cbc971e7407b1;l\u003d327",
+      "revId": "ae29d3567e62f2315d67ce651fb91b1ebfac5d69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
