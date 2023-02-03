@@ -26,6 +26,7 @@
 
 #include "ipc.h"
 #include "log.h"
+#include "watchdog.h"
 
 #define MAX_RECONNECT_RETRY_COUNT 5
 #define TRUSTY_RECONNECT_TIMEOUT_SEC 5
@@ -93,23 +94,20 @@ ssize_t ipc_get_msg(struct storage_msg *msg, void *req_buf, size_t req_buf_len)
    return rc - sizeof(*msg);
 }
 
-int ipc_respond(struct storage_msg *msg, void *out, size_t out_size)
-{
-    ssize_t rc;
-    struct iovec iovs[2] = {{msg, sizeof(*msg)}, {out, out_size}};
+int ipc_respond(struct storage_msg* msg, void* out, size_t out_size, struct watcher* watcher) {
+   ssize_t rc;
+   struct iovec iovs[2] = {{msg, sizeof(*msg)}, {out, out_size}};
 
-    assert(tipc_fd >=  0);
+   assert(tipc_fd >= 0);
 
-    msg->cmd |= STORAGE_RESP_BIT;
+   msg->cmd |= STORAGE_RESP_BIT;
 
-    rc = writev(tipc_fd, iovs, out ? 2 : 1);
-    if (rc < 0) {
-        ALOGE("error sending response 0x%x: %s\n",
-              msg->cmd, strerror(errno));
-        return -1;
-    }
+   rc = writev(tipc_fd, iovs, out ? 2 : 1);
+   watch_finish(watcher);
+   if (rc < 0) {
+       ALOGE("error sending response 0x%x: %s\n", msg->cmd, strerror(errno));
+       return -1;
+   }
 
-    return 0;
+   return 0;
 }
-
-

@@ -180,9 +180,8 @@ static ssize_t read_with_retry(int fd, void *buf_, size_t size, off_t offset)
     return rcnt;
 }
 
-int storage_file_delete(struct storage_msg *msg,
-                        const void *r, size_t req_len)
-{
+int storage_file_delete(struct storage_msg* msg, const void* r, size_t req_len,
+                        struct watcher* watcher) {
     char *path = NULL;
     const struct storage_file_delete_req *req = r;
 
@@ -228,11 +227,12 @@ int storage_file_delete(struct storage_msg *msg,
 err_response:
     if (path)
         free(path);
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-static void sync_parent(const char* path) {
+static void sync_parent(const char* path, struct watcher* watcher) {
     int parent_fd;
+    watch_progress(watcher, "syncing parent");
     char* parent_path = dirname(path);
     parent_fd = TEMP_FAILURE_RETRY(open(parent_path, O_RDONLY));
     if (parent_fd >= 0) {
@@ -242,9 +242,11 @@ static void sync_parent(const char* path) {
         ALOGE("%s: failed to open parent directory \"%s\" for sync: %s\n", __func__, parent_path,
               strerror(errno));
     }
+    watch_progress(watcher, "done syncing parent");
 }
 
-int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
+int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len,
+                      struct watcher* watcher) {
     char* path = NULL;
     const struct storage_file_open_req *req = r;
     struct storage_file_open_resp resp = {0};
@@ -306,7 +308,7 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
             char* parent_path = dirname(path);
             rc = mkdir(parent_path, S_IRWXU);
             if (rc == 0) {
-                sync_parent(parent_path);
+                sync_parent(parent_path, watcher);
             } else if (errno != EEXIST) {
                 ALOGE("%s: Could not create parent directory \"%s\": %s\n", __func__, parent_path,
                       strerror(errno));
@@ -347,7 +349,7 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
     }
 
     if (open_flags & O_CREAT) {
-        sync_parent(path);
+        sync_parent(path, watcher);
     }
     free(path);
 
@@ -367,17 +369,16 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len) {
         }
     }
 
-    return ipc_respond(msg, &resp, sizeof(resp));
+    return ipc_respond(msg, &resp, sizeof(resp), watcher);
 
 err_response:
     if (path)
         free(path);
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-int storage_file_close(struct storage_msg *msg,
-                       const void *r, size_t req_len)
-{
+int storage_file_close(struct storage_msg* msg, const void* r, size_t req_len,
+                       struct watcher* watcher) {
     const struct storage_file_close_req *req = r;
 
     if (req_len != sizeof(*req)) {
@@ -390,7 +391,9 @@ int storage_file_close(struct storage_msg *msg,
     int fd = remove_fd(req->handle);
     ALOGV("%s: handle = %u: fd = %u\n", __func__, req->handle, fd);
 
+    watch_progress(watcher, "fsyncing before file close");
     int rc = fsync(fd);
+    watch_progress(watcher, "done fsyncing before file close");
     if (rc < 0) {
         rc = errno;
         ALOGE("%s: fsync failed for fd=%u: %s\n",
@@ -411,13 +414,11 @@ int storage_file_close(struct storage_msg *msg,
     msg->result = STORAGE_NO_ERROR;
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-
-int storage_file_write(struct storage_msg *msg,
-                       const void *r, size_t req_len)
-{
+int storage_file_write(struct storage_msg* msg, const void* r, size_t req_len,
+                       struct watcher* watcher) {
     int rc;
     const struct storage_file_write_req *req = r;
 
@@ -439,7 +440,7 @@ int storage_file_write(struct storage_msg *msg,
     }
 
     if (msg->flags & STORAGE_MSG_FLAG_POST_COMMIT) {
-        rc = storage_sync_checkpoint();
+        rc = storage_sync_checkpoint(watcher);
         if (rc < 0) {
             msg->result = STORAGE_ERR_SYNC_FAILURE;
             goto err_response;
@@ -449,13 +450,11 @@ int storage_file_write(struct storage_msg *msg,
     msg->result = STORAGE_NO_ERROR;
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-
-int storage_file_read(struct storage_msg *msg,
-                      const void *r, size_t req_len)
-{
+int storage_file_read(struct storage_msg* msg, const void* r, size_t req_len,
+                      struct watcher* watcher) {
     int rc;
     const struct storage_file_read_req *req = r;
 
@@ -485,16 +484,14 @@ int storage_file_read(struct storage_msg *msg,
     }
 
     msg->result = STORAGE_NO_ERROR;
-    return ipc_respond(msg, &read_rsp, read_res + sizeof(read_rsp.hdr));
+    return ipc_respond(msg, &read_rsp, read_res + sizeof(read_rsp.hdr), watcher);
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-
-int storage_file_get_size(struct storage_msg *msg,
-                          const void *r, size_t req_len)
-{
+int storage_file_get_size(struct storage_msg* msg, const void* r, size_t req_len,
+                          struct watcher* watcher) {
     const struct storage_file_get_size_req *req = r;
     struct storage_file_get_size_resp resp = {0};
 
@@ -518,16 +515,14 @@ int storage_file_get_size(struct storage_msg *msg,
 
     resp.size = stat.st_size;
     msg->result = STORAGE_NO_ERROR;
-    return ipc_respond(msg, &resp, sizeof(resp));
+    return ipc_respond(msg, &resp, sizeof(resp), watcher);
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-
-int storage_file_set_size(struct storage_msg *msg,
-                          const void *r, size_t req_len)
-{
+int storage_file_set_size(struct storage_msg* msg, const void* r, size_t req_len,
+                          struct watcher* watcher) {
     const struct storage_file_set_size_req *req = r;
 
     if (req_len != sizeof(*req)) {
@@ -550,10 +545,11 @@ int storage_file_set_size(struct storage_msg *msg,
     msg->result = STORAGE_NO_ERROR;
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
-int storage_file_get_max_size(struct storage_msg* msg, const void* r, size_t req_len) {
+int storage_file_get_max_size(struct storage_msg* msg, const void* r, size_t req_len,
+                              struct watcher* watcher) {
     const struct storage_file_get_max_size_req* req = r;
     struct storage_file_get_max_size_resp resp = {0};
     uint64_t max_size = 0;
@@ -586,10 +582,10 @@ int storage_file_get_max_size(struct storage_msg* msg, const void* r, size_t req
 
     resp.max_size = max_size;
     msg->result = STORAGE_NO_ERROR;
-    return ipc_respond(msg, &resp, sizeof(resp));
+    return ipc_respond(msg, &resp, sizeof(resp), watcher);
 
 err_response:
-    return ipc_respond(msg, NULL, 0);
+    return ipc_respond(msg, NULL, 0, watcher);
 }
 
 int storage_init(const char *dirname)
@@ -606,10 +602,10 @@ int storage_init(const char *dirname)
     return 0;
 }
 
-int storage_sync_checkpoint(void)
-{
+int storage_sync_checkpoint(struct watcher* watcher) {
     int rc;
 
+    watch_progress(watcher, "sync fd table");
     /* sync fd table and reset it to clean state first */
     for (uint fd = 0; fd < FD_TBL_SIZE; fd++) {
          if (fd_state[fd] == SS_DIRTY) {
@@ -634,10 +630,12 @@ int storage_sync_checkpoint(void)
          * because our fd table is large enough to handle the few open files we
          * use.
          */
-        sync();
-        fs_state = SS_CLEAN;
+         watch_progress(watcher, "all fs sync");
+         sync();
+         fs_state = SS_CLEAN;
     }
+
+    watch_progress(watcher, "done syncing");
 
     return 0;
 }
-
