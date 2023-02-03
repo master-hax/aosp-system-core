@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e0d8af8_b637210d",
+        "filename": "init/fuzzer/init_devices_fuzzer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1869221
+      },
+      "writtenOn": "2023-02-03T22:19:31Z",
+      "side": 1,
+      "message": "would it make sense to sometimes randomize this? Maybe 1/10 times get the path from FuzzedDataProvider?",
+      "range": {
+        "startLine": 44,
+        "startChar": 18,
+        "endLine": 44,
+        "endChar": 29
+      },
+      "revId": "91475c00c9cbfeaef7b7144f0006705ec293334e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
