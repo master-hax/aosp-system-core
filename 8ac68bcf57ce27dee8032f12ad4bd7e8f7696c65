@@ -112,6 +112,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c4c8519_4ec37ffc",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6d672d9_9cf36074",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 14
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "755c1c6b_94628b42",
@@ -173,6 +197,30 @@
       "side": 1,
       "message": "Yep! See go/totw/140",
       "parentUuid": "9b1aaa26_9b11cb44",
+      "range": {
+        "startLine": 57,
+        "startChar": 21,
+        "endLine": 57,
+        "endChar": 47
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74a082bc_9bd922c1",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Since we need null-terminated strings in some places (mainly `tipc_connect`), we can\u0027t really use `std::string_view` here (see my other comment).",
+      "parentUuid": "bf1470d6_90fec6ff",
       "range": {
         "startLine": 57,
         "startChar": 21,
@@ -254,6 +302,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bd105b1_0bc5c34a",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aea330b5_e00989f1",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd3a171a_45ba792e",
@@ -271,6 +337,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f22a7a0_a9fdf9cf",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd3a171a_45ba792e",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "10976933_5f38fd43",
@@ -284,6 +368,24 @@
       "writtenOn": "2022-12-13T07:14:01Z",
       "side": 1,
       "message": "Minor nit: `std::queue` might be more efficient.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50ccd092_0177d4cf",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10976933_5f38fd43",
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -313,6 +415,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a832a5b_80da07cd",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "We call `c_str()` on these strings in some places, and `std::string_view` does not have that. String views are not guaranteed to be null-terminated anyway.\n\nWe could use `std::string\u0026\u0026` and `std::move` to prevent some copies, though.",
+      "parentUuid": "c1db72c4_543562dd",
+      "range": {
+        "startLine": 128,
+        "startChar": 24,
+        "endLine": 128,
+        "endChar": 99
+      },
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "51c31634_7510fba7",
         "filename": "trusty/stats/stats_test.cpp",
         "patchSetId": 8
@@ -324,6 +450,24 @@
       "writtenOn": "2023-01-20T00:43:46Z",
       "side": 1,
       "message": "Nit: `auto session_initializer \u003d [](sp\u003cRpcSession\u003e\u0026 session) {` is simpler IMHO.",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e21da573_e51a6a47",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T07:29:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51c31634_7510fba7",
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
