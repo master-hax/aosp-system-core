@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d16ae02_08664a6c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2023-02-03T02:05:06Z",
+      "side": 1,
+      "message": "please check AyeAye error that says that android-buganizer-tools-create can\u0027t access the component id 30545",
+      "revId": "20057fe5cbda130b2b847dc48c8493381eb45140",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
