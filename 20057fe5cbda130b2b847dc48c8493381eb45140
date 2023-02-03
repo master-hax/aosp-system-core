@@ -34,6 +34,24 @@
       "parentUuid": "3d16ae02_08664a6c",
       "revId": "20057fe5cbda130b2b847dc48c8493381eb45140",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4899791c_66de8277",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897543
+      },
+      "writtenOn": "2023-02-03T03:32:39Z",
+      "side": 1,
+      "message": "I will double check this component manually. Currently there is a bug in issuetracker API which may leading to a false detection.",
+      "parentUuid": "4c7d44f1_6b093f4d",
+      "revId": "20057fe5cbda130b2b847dc48c8493381eb45140",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
