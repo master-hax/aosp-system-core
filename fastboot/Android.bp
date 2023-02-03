@@ -284,8 +284,10 @@ cc_library_host_static {
     srcs: [
         "bootimg_utils.cpp",
         "fastboot.cpp",
+        "filesystem.cpp",
         "fs.cpp",
         "socket.cpp",
+        "storage.cpp",
         "tcp.cpp",
         "udp.cpp",
         "util.cpp",
