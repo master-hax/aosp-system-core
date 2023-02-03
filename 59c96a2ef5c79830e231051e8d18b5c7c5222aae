@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65a3e833_7525119a",
+        "filename": "trusty/storage/proxy/ipc.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "Split the style and white space changes into a separate CL?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c697aa3d_e16a1a7e",
+        "filename": "trusty/storage/proxy/ipc.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "Might be more robust to move this into the callers, since that\u0027s where you call the initial `watch` (and assuming every `watch` needs to be paired with a `watch_finish`).",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c563e7d2_18fc58ee",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "C++\u0027s `ScopeGuard` could be used to automatically call `watch_finish`. If you don\u0027t want to switch the language, the `cleanup` attribute could also work.",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1523a7cf_74c64cd9",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "You include that header everywhere else, why not here?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54ae1e5b_375f6d8b",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "Should these be `private`?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b23a5aba_f6f61ceb",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "https://google.github.io/styleguide/cppguide.html#Declaration_Order. These should probably come later, and you should start with `public:`. Is it different for Android?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f611d0f_cc9c6bb2",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "`static`?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c11edd87_7faffdff",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "Could this loop be `do { ... } while (watcher_)`? Maybe with `!!watcher_` as the condition? Then you don\u0027t need the `else if` at the end.",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40677185_c5df4338",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "Could be shortened to `timeout \u003d std::min(2 * timeout, kMaxTimeoutMs);`",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86d0ebf4_3b8705c0",
+        "filename": "trusty/storage/proxy/watchdog.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T01:04:28Z",
+      "side": 1,
+      "message": "If this needs to be paired with `watch_finish`, maybe call it `watch_start` or `watch_begin`?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
