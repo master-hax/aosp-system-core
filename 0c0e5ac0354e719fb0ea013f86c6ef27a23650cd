@@ -45,6 +45,30 @@
       },
       "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22cebcb8_f00551c2",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-03T18:11:52Z",
+      "side": 1,
+      "message": "This actually changed recently, mutable references are ok now per the style guide. But since this isn\u0027t an outparam yeah it should be const.\n\nhttps://google.github.io/styleguide/cppguide.html#Inputs_and_Outputs",
+      "parentUuid": "b8c4d200_8550169f",
+      "range": {
+        "startLine": 35,
+        "startChar": 23,
+        "endLine": 35,
+        "endChar": 40
+      },
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
