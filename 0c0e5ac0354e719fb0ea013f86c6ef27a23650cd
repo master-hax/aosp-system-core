@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62152fa0_665fba9a",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-03T17:52:54Z",
+      "side": 1,
+      "message": "Try copying the license header from https://cs.android.com/android/platform/superproject/+/master:system/core/fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp;l\u003d1?q\u003dcow_writer.cpp\u0026sq\u003d",
+      "range": {
+        "startLine": 5,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 20
+      },
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8c4d200_8550169f",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-03T17:52:54Z",
+      "side": 1,
+      "message": "AOSP has strict policy on mutable references. For taking inputs, use const reference. For output, use mutable pointer.",
+      "range": {
+        "startLine": 35,
+        "startChar": 23,
+        "endLine": 35,
+        "endChar": 40
+      },
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
