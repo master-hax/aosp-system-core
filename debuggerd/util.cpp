@@ -23,6 +23,7 @@
 #include <utility>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include "protocol.h"
@@ -93,4 +94,9 @@ bool iterate_tids(pid_t pid, std::function<void(pid_t)> callback) {
     callback(tid);
   }
   return true;
+}
+
+bool IsMicrodroid() {
+  static bool is_microdroid = android::base::GetProperty("ro.hardware", "") == "microdroid";
+  return is_microdroid;
 }
