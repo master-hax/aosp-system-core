@@ -196,6 +196,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d75bb93c_b21e970a",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T19:56:37Z",
+      "side": 1,
+      "message": "It has to be a struct if we want to expose it as an opaque struct pointer to C.",
+      "parentUuid": "692b82db_505988e9",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b23a5aba_f6f61ceb",
         "filename": "trusty/storage/proxy/watchdog.cpp",
         "patchSetId": 1

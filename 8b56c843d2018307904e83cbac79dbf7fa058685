@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "495930ae_45ccaa87",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T19:56:37Z",
+      "side": 1,
+      "message": "`rc` is set on all code paths, we could but it would be redundant.",
+      "parentUuid": "e5089173_925f541e",
+      "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "13f4658e_56ef75c4",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20cb27e5_34e5578c",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T19:56:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13f4658e_56ef75c4",
+      "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a60738e7_3e1011d5",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-02-03T04:08:59Z",
       "side": 1,
       "message": "A comment I forgot to make earlier: can there ever be more than one watchdog? I wonder if it would make sense to treat it as a singleton, and access it from anywhere with a global or static getter. Then you wouldn\u0027t need to pass it around everywhere.",
+      "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "262a050e_ebf08dd4",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T19:56:37Z",
+      "side": 1,
+      "message": "Currently, no, but I wanted to design this in such a way to not assume that. Globals are bad, and I couldn\u0027t avoid the watchdog thread itself being global, but we should be able to have individual watchers.",
+      "parentUuid": "a60738e7_3e1011d5",
       "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
