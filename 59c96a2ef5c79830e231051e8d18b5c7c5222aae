@@ -178,6 +178,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "692b82db_505988e9",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-03T04:02:30Z",
+      "side": 1,
+      "message": "I wonder if we should just make `watcher` into a class instead.",
+      "parentUuid": "904c9c91_121769e0",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b23a5aba_f6f61ceb",
         "filename": "trusty/storage/proxy/watchdog.cpp",
         "patchSetId": 1
