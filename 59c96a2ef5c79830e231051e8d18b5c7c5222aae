@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b58700a6_3e382f9d",
+        "filename": "trusty/storage/proxy/ipc.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "65a3e833_7525119a",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c697aa3d_e16a1a7e",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-03T01:04:28Z",
       "side": 1,
       "message": "Might be more robust to move this into the callers, since that\u0027s where you call the initial `watch` (and assuming every `watch` needs to be paired with a `watch_finish`).",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34fefa8a_5bbbd371",
+        "filename": "trusty/storage/proxy/ipc.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c697aa3d_e16a1a7e",
       "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2616c4b1_0a599744",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c563e7d2_18fc58ee",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1523a7cf_74c64cd9",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-02-03T01:04:28Z",
       "side": 1,
       "message": "You include that header everywhere else, why not here?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cbf32d2_ca4e5923",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Circular dependency",
+      "parentUuid": "1523a7cf_74c64cd9",
       "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -88,6 +160,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "904c9c91_121769e0",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Style guide says struct fields may not be private. I\u0027m fine with breaking that here, if you think it\u0027s worthwhile.",
+      "parentUuid": "54ae1e5b_375f6d8b",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b23a5aba_f6f61ceb",
         "filename": "trusty/storage/proxy/watchdog.cpp",
         "patchSetId": 1
@@ -99,6 +189,24 @@
       "writtenOn": "2023-02-03T01:04:28Z",
       "side": 1,
       "message": "https://google.github.io/styleguide/cppguide.html#Declaration_Order. These should probably come later, and you should start with `public:`. Is it different for Android?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8fbd2ae_bbc038b2",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Style guide says they come after any type declarations.",
+      "parentUuid": "b23a5aba_f6f61ceb",
       "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -120,6 +228,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc9fca62_55139dd1",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Put it in an anonymous namespace.",
+      "parentUuid": "1f611d0f_cc9c6bb2",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c11edd87_7faffdff",
@@ -133,6 +259,24 @@
       "writtenOn": "2023-02-03T01:04:28Z",
       "side": 1,
       "message": "Could this loop be `do { ... } while (watcher_)`? Maybe with `!!watcher_` as the condition? Then you don\u0027t need the `else if` at the end.",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74de1825_89894c57",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c11edd87_7faffdff",
       "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -154,6 +298,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b26db8ae_b9d77fff",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "40677185_c5df4338",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "86d0ebf4_3b8705c0",
@@ -167,6 +329,24 @@
       "writtenOn": "2023-02-03T01:04:28Z",
       "side": 1,
       "message": "If this needs to be paired with `watch_finish`, maybe call it `watch_start` or `watch_begin`?",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1820c7a1_f7f93b75",
+        "filename": "trusty/storage/proxy/watchdog.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-03T02:02:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86d0ebf4_3b8705c0",
       "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
