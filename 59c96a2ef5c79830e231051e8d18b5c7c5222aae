@@ -212,6 +212,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45ca3e99_43b5310a",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-04T00:27:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d75bb93c_b21e970a",
+      "revId": "59c96a2ef5c79830e231051e8d18b5c7c5222aae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b23a5aba_f6f61ceb",

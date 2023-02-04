@@ -104,6 +104,24 @@
       "parentUuid": "a60738e7_3e1011d5",
       "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9467330e_6314888e",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-02-04T00:27:00Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "262a050e_ebf08dd4",
+      "revId": "8b56c843d2018307904e83cbac79dbf7fa058685",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
