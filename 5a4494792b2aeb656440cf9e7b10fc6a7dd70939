@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "642f2af4_cb38e152",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T19:10:34Z",
+      "side": 1,
+      "message": "nit: move \u003cstring\u003e above \u003cbootimg.h\u003e into its own block",
+      "revId": "5a4494792b2aeb656440cf9e7b10fc6a7dd70939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "543bdfca_ff76b9d5",
+        "filename": "fastboot/task.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T19:10:34Z",
+      "side": 1,
+      "message": "Let\u0027s add a task.cpp file to put this implementation code, it makes the headers simpler.",
+      "revId": "5a4494792b2aeb656440cf9e7b10fc6a7dd70939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
