@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87d6f69b_8d266618",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-02-06T19:37:56Z",
+      "side": 1,
+      "message": "do any of the handlers return a positive value to indicate an error? If you removed the only code that did that, you may as well remove the check.",
+      "revId": "97255ac946eafb949ff4700815daf4417d42ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1493294d_edc537d5",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-02-06T19:37:56Z",
+      "side": 1,
+      "message": "does this not deadlock?",
+      "revId": "97255ac946eafb949ff4700815daf4417d42ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
