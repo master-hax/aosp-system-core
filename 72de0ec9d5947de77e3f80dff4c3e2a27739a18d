@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e409bba_c97e3eb7",
+        "filename": "fastboot/task.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T19:00:18Z",
+      "side": 1,
+      "message": "nit: newline between #pragma and first #include set",
+      "revId": "72de0ec9d5947de77e3f80dff4c3e2a27739a18d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2bdd856e_b0979506",
+        "filename": "fastboot/task.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T19:00:18Z",
+      "side": 1,
+      "message": "nit: std include set and android include set should have a newline in between",
+      "revId": "72de0ec9d5947de77e3f80dff4c3e2a27739a18d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
