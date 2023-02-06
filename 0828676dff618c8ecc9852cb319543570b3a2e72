@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d4b9702_ee01bd8c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1013540
+      },
+      "writtenOn": "2023-02-06T02:44:07Z",
+      "side": 1,
+      "message": "when process fork, if the property lock is locked in the function  ContextNode::Open (bionic/libc/system_properties/context_node.cpp), the service process will hang and don\u0027t execv",
+      "revId": "0828676dff618c8ecc9852cb319543570b3a2e72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
