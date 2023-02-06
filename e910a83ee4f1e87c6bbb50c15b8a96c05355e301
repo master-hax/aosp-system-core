@@ -16,6 +16,24 @@
       "message": "OK. But this, and `watchdog_thread_ \u003d...` above, relies on the caller being single threaded anyway, so you could just move this before the lock since the lock is only used to synchronize with the watchdog thread (which should never change watcher_)",
       "revId": "e910a83ee4f1e87c6bbb50c15b8a96c05355e301",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9694961_b73cc859",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-06T21:40:49Z",
+      "side": 1,
+      "message": "Very good point. I\u0027ve moved this and now documented it as such. It won\u0027t be hard to extend this to a multi-threaded context, but we don\u0027t have a good way to test that right now, and it\u0027s not needed.",
+      "parentUuid": "883b49ca_f9b30575",
+      "revId": "e910a83ee4f1e87c6bbb50c15b8a96c05355e301",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
