@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9c22e94_d15f33e4",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-06T20:28:52Z",
+      "side": 1,
+      "message": "Turns out they don\u0027t. I\u0027ve simplified the whole thing and removed the boolean now.",
+      "parentUuid": "87d6f69b_8d266618",
+      "revId": "97255ac946eafb949ff4700815daf4417d42ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1493294d_edc537d5",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-06T19:37:56Z",
       "side": 1,
       "message": "does this not deadlock?",
+      "revId": "97255ac946eafb949ff4700815daf4417d42ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94283b9b_24f62c2c",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-02-06T20:28:52Z",
+      "side": 1,
+      "message": "It does indeed. Fixed, and I have now tested that code path (manually).",
+      "parentUuid": "1493294d_edc537d5",
       "revId": "97255ac946eafb949ff4700815daf4417d42ff3a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
