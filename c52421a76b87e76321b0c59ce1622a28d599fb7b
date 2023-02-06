@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6c63ea56_0b5d80d9",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-06T22:54:35Z",
+      "side": 1,
+      "message": "Both of them are portable enough for us, but since fcntl + F_SETLKW / F_SETLK is the POSIX, while flock is BSD and was emulated in the glibc only before Linux 2.0 decided to go with fcntl",
+      "parentUuid": "77fe1db3_d9855d95",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d30d9e3b_079a7924",
         "filename": "fastboot/filesystem.cpp",
         "patchSetId": 5
@@ -65,6 +83,24 @@
       "writtenOn": "2023-02-06T22:44:50Z",
       "side": 1,
       "message": "I think this function can be replaced as:\n\n    namespace fs \u003d std::filesystem;\n    \n    std::error_code ec;\n    return fs::create_directories(directory_path, ec);",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7418102_a89de278",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-06T22:54:35Z",
+      "side": 1,
+      "message": "Reached @rprichard and he shared that std::filesystem isn\u0027t supported for Windows (blocked by b/175635923)",
+      "parentUuid": "970c2315_54ded653",
       "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -122,6 +158,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a3cfa562_53cabb14",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-06T22:54:35Z",
+      "side": 1,
+      "message": "The same thing, blocked by b/175635923",
+      "parentUuid": "fd196601_2cecf2de",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7e196c4d_bebeaa90",
         "filename": "fastboot/storage.cpp",
         "patchSetId": 5
@@ -133,6 +187,24 @@
       "writtenOn": "2023-02-06T22:44:50Z",
       "side": 1,
       "message": "same here",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7fa4fe5_8ad183c2",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-06T22:54:35Z",
+      "side": 1,
+      "message": "The same thing, blocked by b/175635923",
+      "parentUuid": "7e196c4d_bebeaa90",
       "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
