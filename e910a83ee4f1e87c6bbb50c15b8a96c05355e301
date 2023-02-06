@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "883b49ca_f9b30575",
+        "filename": "trusty/storage/proxy/watchdog.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-02-06T20:54:20Z",
+      "side": 1,
+      "message": "OK. But this, and `watchdog_thread_ \u003d...` above, relies on the caller being single threaded anyway, so you could just move this before the lock since the lock is only used to synchronize with the watchdog thread (which should never change watcher_)",
+      "revId": "e910a83ee4f1e87c6bbb50c15b8a96c05355e301",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
