@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89a6f674_1ea81d0f",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-02-06T21:16:45Z",
+      "side": 1,
+      "message": "I see this CL has been reverted, but presumably we\u0027ll want to reland this.  When we do, I\u0027m wondering why we added this check here.\n\nIt\u0027s my understanding that unordered_map::erase() works fine with keys that aren\u0027t in the map: https://en.cppreference.com/w/cpp/container/unordered_map/erase\n\nThus, it seems redundant to perform this check, since `erase()` is going to perform the same check.  And since we\u0027re holding a lock here, it seems like we probably want to be particularly sensitive to unnecessary code.",
+      "revId": "3e6c9dbee8a354d824b89eb54573103594f1cffe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
