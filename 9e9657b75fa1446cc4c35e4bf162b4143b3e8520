@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be39aec8_b1f2e8ba",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-06T18:11:10Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e539a61e_f9b5e771",
+        "filename": "debuggerd/tombstone_handler.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-06T18:11:10Z",
+      "side": 1,
+      "message": "just one function but make the proto fd optional?\n\nthat said ... i don\u0027t think we want to support that. new code that only supports one should probably only support proto, not text. (since text is a subset of proto _generated from_ proto.)",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
