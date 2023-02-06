@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77fe1db3_d9855d95",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "flock()?",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d30d9e3b_079a7924",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "int: get_homedir_path()\n\n(or bonus - start using CamelCase names for new stuff in fastboot)",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81d675fe_ede8b38f",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "return access(path.c_str(), F_OK) \u003d\u003d 0",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "970c2315_54ded653",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "I think this function can be replaced as:\n\n    namespace fs \u003d std::filesystem;\n    \n    std::error_code ec;\n    return fs::create_directories(directory_path, ec);",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d49fd14b_3c6edd19",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "android::base::RemoveFileIfExists",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1c5938e_7c2b37f7",
+        "filename": "fastboot/filesystem.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "const std::string\u0026",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd196601_2cecf2de",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "You can eliminate the #ifdef and kPathSeparator:\n\n    #include \u003cfilesystem\u003e\n\n    namespace fs \u003d std::filesystem;\n\n    auto home_fastboot_path \u003d fs::path(home_path) / \".fastboot\";\n\nMake sure to add libc++fs to the .bp file.",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e196c4d_bebeaa90",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-06T22:44:50Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
