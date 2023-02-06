@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eccc7cb2_5f23db09",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-06T17:45:04Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Build Warnings: parameter \u0027_reboot_target\u0027 is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]\n\nAnalyzer Description: Reports warnings that originate from build.log in the build artifacts.\nOwner: farivar@google.com\n\n    parameter \u0027_reboot_target\u0027 is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]\n            : reboot_target_(_reboot_target), fb_(_fb){};\n                             ^\n                             std::move(    )\n\nThis finding was found on https://android-build.googleplex.com/builds/build-details/P49237817/targets/aosp_arm64-userdebug_tidy, but may also be present on other builds.",
+      "range": {
+        "startLine": 76,
+        "startChar": 26,
+        "endLine": 76,
+        "endChar": 53
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3321ae6_38cae77c",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-06T17:45:04Z",
+      "side": 1,
+      "message": "It\u0027s better to mark this as const, and remove the Parse() method. Only allow passing in reboot_target_ from constructor.",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
