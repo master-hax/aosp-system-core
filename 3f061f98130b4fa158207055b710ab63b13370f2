@@ -33,6 +33,24 @@
       "message": "Should logging.h include endian.h then?",
       "revId": "3f061f98130b4fa158207055b710ab63b13370f2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6ee326c_cde2b97a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-06T18:30:56Z",
+      "side": 1,
+      "message": "i _think_ we tried that before, but that also causes carnage? there\u0027s really no good answer when multiple headers both want ERROR...\n\nlooks like google3 has since moved to a different set of names (like kError) here and then has more complicated #define stitching elsewhere that can cope with ERROR being 0 and a bogus INTERNAL_SEVERITY_0 that\u0027s the same as INTERNAL_SEVERITY_ERROR. which sounds like a good idea, but potentially a large disruptive change to get there. file a bug and go with this workaround for now? (unless you have someone who wants to try that!)",
+      "parentUuid": "372da83b_30b7e5d6",
+      "revId": "3f061f98130b4fa158207055b710ab63b13370f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
