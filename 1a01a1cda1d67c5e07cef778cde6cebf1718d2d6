@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c40cad01_7f813ca6",
+        "filename": "fastboot/task.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:38:59Z",
+      "side": 1,
+      "message": "not used in this header, remove?",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 18
+      },
+      "revId": "1a01a1cda1d67c5e07cef778cde6cebf1718d2d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
