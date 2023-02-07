@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41645f7c_8f880faf",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1442,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T19:12:42Z",
+      "side": 1,
+      "message": "oops this is part of the flashall changes, not meant to be on this cl",
+      "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
