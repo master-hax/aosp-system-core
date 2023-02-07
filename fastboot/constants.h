@@ -19,6 +19,7 @@
 #define FB_CMD_DOWNLOAD "download"
 #define FB_CMD_UPLOAD "upload"
 #define FB_CMD_FLASH "flash"
+#define FB_CMD_FLASH_KERNEL "flash-kernel"
 #define FB_CMD_ERASE "erase"
 #define FB_CMD_BOOT "boot"
 #define FB_CMD_SET_ACTIVE "set_active"
