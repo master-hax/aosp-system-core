@@ -234,7 +234,8 @@ CgroupMap::Result CgroupMap::ActivateControllers(const std::string& path) const 
                 std::string str("+");
                 str.append(ACgroupController_getName(controller));
                 if (!WriteStringToFile(str, path + "/cgroup.subtree_control")) {
-                    return Result::kError;
+                    PLOG(ERROR) << str << " > " << path << "/cgroup.subtree_control";
+                    return (flags & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) ? Result::kNoSuchController : Result::kError;
                 }
             }
         }
