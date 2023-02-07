@@ -593,9 +593,10 @@ static int blocked_read_test(uint repeat)
 static int ta2ta_ipc_test(void)
 {
     enum test_message_header {
-        TEST_PASSED = 0,
-        TEST_FAILED = 1,
-        TEST_MESSAGE = 2,
+      TEST_PASSED = 0,
+      TEST_FAILED = 1,
+      TEST_MESSAGE = 2,
+      TEST_TEXT = 3,
     };
 
     int fd;
@@ -626,6 +627,8 @@ static int ta2ta_ipc_test(void)
         } else if (rx_buf[0] == TEST_FAILED) {
             break;
         } else if (rx_buf[0] == TEST_MESSAGE) {
+            write(STDOUT_FILENO, rx_buf + 1, ret - 1);
+        } else if (rx_buf[0] == TEST_TEXT) {
             write(STDOUT_FILENO, rx_buf + 1, ret - 1);
         } else {
             fprintf(stderr, "%s: Bad message header: %d\n", __func__, rx_buf[0]);
