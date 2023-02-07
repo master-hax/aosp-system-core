@@ -309,7 +309,7 @@ static ActivationResult ActivateV2CgroupController(const CgroupDescriptor& descr
 
         if (!base::WriteStringToFile(str, path)) {
             LOG(ERROR) << "Failed to activate controller " << controller->name();
-            return ActivationResult::kError;
+            return ActivationResult::kNoSuchController;
         }
     }
 
