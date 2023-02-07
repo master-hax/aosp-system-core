@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a9699c3_6e2dbef4",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:35:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eccc7cb2_5f23db09",
+      "range": {
+        "startLine": 76,
+        "startChar": 26,
+        "endLine": 76,
+        "endChar": 53
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3321ae6_38cae77c",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-02-06T17:45:04Z",
       "side": 1,
       "message": "It\u0027s better to mark this as const, and remove the Parse() method. Only allow passing in reboot_target_ from constructor.",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65064cc4_0fa0fd97",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:35:57Z",
+      "side": 1,
+      "message": "Parsing is going to be done when fastboot-info.txt is read. Might be messier if we parse outside of the class in RebootTask and parse in the class for FlashTask?",
+      "parentUuid": "e3321ae6_38cae77c",
       "range": {
         "startLine": 108,
         "startChar": 4,
