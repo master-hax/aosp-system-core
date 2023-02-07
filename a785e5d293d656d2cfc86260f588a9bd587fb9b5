@@ -93,6 +93,30 @@
       },
       "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0913666b_749a857f",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:55:16Z",
+      "side": 1,
+      "message": "Yea, let\u0027s create a centralized class/function for parsing fastboot-info.txt. This class/function will take an input string an return a vector of parsed task instances. Then, each task class is only an immutable container of parsed information.",
+      "parentUuid": "65064cc4_0fa0fd97",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
