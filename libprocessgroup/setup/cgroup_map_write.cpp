@@ -254,76 +254,108 @@ static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors
 // To avoid issues in sdk_mac build
 #if defined(__ANDROID__)
 
-static bool SetupCgroup(const CgroupDescriptor& descriptor) {
+// A negative number smaller than all Linux error codes. See also the definition of MAX_ERRNO in the
+// kernel header include/linux/err.h.
+static constexpr int kActivationFailed = -4096;
+
+static int MountV2CgroupController(const CgroupDescriptor& descriptor) {
     const format::CgroupController* controller = descriptor.controller();
 
+    // /sys/fs/cgroup is created by cgroup2 with specific selinux permissions,
+    // try to create again in case the mount point is changed
+    if (!Mkdir(controller->path(), 0, "", "")) {
+        LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
+        return kActivationFailed;
+    }
+
+    // The memory_recursiveprot mount option has been introduced by kernel commit
+    // 8a931f801340 ("mm: memcontrol: recursive memory.low protection"; v5.7). Try first to
+    // mount with that option enabled. If mounting fails because the kernel is too old,
+    // retry without that mount option.
+    if (mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
+              "memory_recursiveprot") < 0) {
+        LOG(INFO) << "Mounting memcg with memory_recursiveprot failed. Retrying without.";
+        if (mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
+                  nullptr) < 0) {
+            PLOG(ERROR) << "Failed to mount cgroup v2";
+        }
+    }
+
+    // selinux permissions change after mounting, so it's ok to change mode and owner now
+    if (!ChangeDirModeAndOwner(controller->path(), descriptor.mode(), descriptor.uid(),
+                               descriptor.gid())) {
+        LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
+        return -1;
+    }
+
+    return 0;
+}
+
+static int ActivateV2CgroupController(const CgroupDescriptor& descriptor) {
+    const format::CgroupController* controller = descriptor.controller();
+
+    if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
+        LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
+        return kActivationFailed;
+    }
+
+    if (controller->flags() & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION) {
+        std::string str = "+";
+        str += controller->name();
+        std::string path = controller->path();
+        path += "/cgroup.subtree_control";
+
+        if (!base::WriteStringToFile(str, path)) {
+            LOG(ERROR) << "Failed to activate controller " << controller->name();
+            return kActivationFailed;
+        }
+    }
+
+    return 0;
+}
+
+static int MountV1CgroupController(const CgroupDescriptor& descriptor) {
+    const format::CgroupController* controller = descriptor.controller();
+
+    // mkdir <path> [mode] [owner] [group]
+    if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
+        LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
+        return kActivationFailed;
+    }
+
+    // Unfortunately historically cpuset controller was mounted using a mount command
+    // different from all other controllers. This results in controller attributes not
+    // to be prepended with controller name. For example this way instead of
+    // /dev/cpuset/cpuset.cpus the attribute becomes /dev/cpuset/cpus which is what
+    // the system currently expects.
+    if (!strcmp(controller->name(), "cpuset")) {
+        // mount cpuset none /dev/cpuset nodev noexec nosuid
+        return mount("none", controller->path(), controller->name(),
+                     MS_NODEV | MS_NOEXEC | MS_NOSUID, nullptr);
+    } else {
+        // mount cgroup none <path> nodev noexec nosuid <controller>
+        return mount("none", controller->path(), "cgroup", MS_NODEV | MS_NOEXEC | MS_NOSUID,
+                     controller->name());
+    }
+    return 0;
+}
+
+static bool SetupCgroup(const CgroupDescriptor& descriptor) {
+    const format::CgroupController* controller = descriptor.controller();
     int result;
+
     if (controller->version() == 2) {
-        result = 0;
         if (!strcmp(controller->name(), CGROUPV2_CONTROLLER_NAME)) {
-            // /sys/fs/cgroup is created by cgroup2 with specific selinux permissions,
-            // try to create again in case the mount point is changed
-            if (!Mkdir(controller->path(), 0, "", "")) {
-                LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
-                return false;
-            }
-
-            // The memory_recursiveprot mount option has been introduced by kernel commit
-            // 8a931f801340 ("mm: memcontrol: recursive memory.low protection"; v5.7). Try first to
-            // mount with that option enabled. If mounting fails because the kernel is too old,
-            // retry without that mount option.
-            if (mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
-                      "memory_recursiveprot") < 0) {
-                LOG(INFO) << "Mounting memcg with memory_recursiveprot failed. Retrying without.";
-                if (mount("none", controller->path(), "cgroup2", MS_NODEV | MS_NOEXEC | MS_NOSUID,
-                          nullptr) < 0) {
-                    PLOG(ERROR) << "Failed to mount cgroup v2";
-                }
-            }
-
-            // selinux permissions change after mounting, so it's ok to change mode and owner now
-            if (!ChangeDirModeAndOwner(controller->path(), descriptor.mode(), descriptor.uid(),
-                                       descriptor.gid())) {
-                LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
-                result = -1;
-            }
+            result = MountV2CgroupController(descriptor);
         } else {
-            if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
-                LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
-                return false;
-            }
-
-            if (controller->flags() & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION) {
-                std::string str = std::string("+") + controller->name();
-                std::string path = std::string(controller->path()) + "/cgroup.subtree_control";
-
-                if (!base::WriteStringToFile(str, path)) {
-                    LOG(ERROR) << "Failed to activate controller " << controller->name();
-                    return false;
-                }
-            }
+            result = ActivateV2CgroupController(descriptor);
         }
     } else {
-        // mkdir <path> [mode] [owner] [group]
-        if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
-            LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
-            return false;
-        }
+        result = MountV1CgroupController(descriptor);
+    }
 
-        // Unfortunately historically cpuset controller was mounted using a mount command
-        // different from all other controllers. This results in controller attributes not
-        // to be prepended with controller name. For example this way instead of
-        // /dev/cpuset/cpuset.cpus the attribute becomes /dev/cpuset/cpus which is what
-        // the system currently expects.
-        if (!strcmp(controller->name(), "cpuset")) {
-            // mount cpuset none /dev/cpuset nodev noexec nosuid
-            result = mount("none", controller->path(), controller->name(),
-                           MS_NODEV | MS_NOEXEC | MS_NOSUID, nullptr);
-        } else {
-            // mount cgroup none <path> nodev noexec nosuid <controller>
-            result = mount("none", controller->path(), "cgroup", MS_NODEV | MS_NOEXEC | MS_NOSUID,
-                           controller->name());
-        }
+    if (result == kActivationFailed) {
+        return false;
     }
 
     if (result < 0) {
