@@ -146,6 +146,11 @@ struct Image {
     bool IsSecondary() const { return nickname.empty(); }
 };
 
+static std::vector<std::string> kernel_partitions = {"boot",   "dtbo",          "pvmfw",
+                                                     "vbmeta", "vbmeta_system", "vendor_boot"};
+static std::vector<std::string> os_partitions = {"product", "system", "system_ext",
+                                                 "system system_other.img"};
+
 static std::vector<Image> images = {
         // clang-format off
     { "boot",     "boot.img",         "boot.sig",     "boot",     false, ImageType::BootCritical },
@@ -1434,6 +1439,7 @@ class FlashAllTool {
     std::string current_slot_;
     std::string secondary_slot_;
 
+    std::vector<std::unique_ptr<Task>> tasks;
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
 };
@@ -2232,6 +2238,17 @@ int FastBootTool::Main(int argc, char* argv[]) {
             std::string text = pname + " " + fname;
             task.Parse(text);
             task.Run();
+        } else if (command == FB_CMD_FLASH_KERNEL) {
+            std::vector<std::unique_ptr<FlashTask>> tasks;
+            for (auto part : kernel_partitions) {
+                std::unique_ptr<FlashTask> flash_task =
+                        std::make_unique<FlashTask>(slot_override, force_flash);
+                flash_task->Parse(part);
+                tasks.emplace_back(std::move(flash_task));
+            }
+            for (auto& i : tasks) {
+                i->Run();
+            }
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
