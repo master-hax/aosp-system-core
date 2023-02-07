@@ -16,6 +16,24 @@
       "message": "Hi Jiyong, I still don\u0027t have idea why your component ids always cause the API return permission deny. For not blocking your CL, you can add a reviewer who can +2 for Lint and submit this CL.",
       "revId": "078cc15b00a329051f5bf5bccdc50641305cce17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b777f931_46e1161f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2023-02-07T02:45:03Z",
+      "side": 1,
+      "message": "I did +2.",
+      "parentUuid": "bed7893a_ba18a1ec",
+      "revId": "078cc15b00a329051f5bf5bccdc50641305cce17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
