@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6028072_f8f57c03",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "642f2af4_cb38e152",
+      "revId": "5a4494792b2aeb656440cf9e7b10fc6a7dd70939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "543bdfca_ff76b9d5",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-06T19:10:34Z",
       "side": 1,
       "message": "Let\u0027s add a task.cpp file to put this implementation code, it makes the headers simpler.",
+      "revId": "5a4494792b2aeb656440cf9e7b10fc6a7dd70939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be0ec2be_4de5fefd",
+        "filename": "fastboot/task.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "543bdfca_ff76b9d5",
       "revId": "5a4494792b2aeb656440cf9e7b10fc6a7dd70939",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
