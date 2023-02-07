@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45979871_1257d796",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-07T17:24:43Z",
+      "side": 1,
+      "message": "Seems like I overthought it in a bit :) Updated to flock and tested it works as expected.",
+      "parentUuid": "16fd0727_fc202c47",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d30d9e3b_079a7924",
@@ -71,6 +89,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd49c9cc_f58e3f93",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-07T17:24:43Z",
+      "side": 1,
+      "message": "Renamed to GetHomeDirPath and renamed everything I\u0027m adding following Google C++ style guide",
+      "parentUuid": "d30d9e3b_079a7924",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "81d675fe_ede8b38f",
@@ -84,6 +120,24 @@
       "writtenOn": "2023-02-06T22:44:50Z",
       "side": 1,
       "message": "return access(path.c_str(), F_OK) \u003d\u003d 0",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9767c27_32f2fca3",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-07T17:24:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81d675fe_ede8b38f",
       "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -140,6 +194,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27286f4d_07458e48",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-07T17:24:43Z",
+      "side": 1,
+      "message": "Thanks. Removed this function.",
+      "parentUuid": "d49fd14b_3c6edd19",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a1c5938e_7c2b37f7",
@@ -153,6 +225,24 @@
       "writtenOn": "2023-02-06T22:44:50Z",
       "side": 1,
       "message": "const std::string\u0026",
+      "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d784df2_b295620c",
+        "filename": "fastboot/filesystem.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-07T17:24:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1c5938e_7c2b37f7",
       "revId": "c52421a76b87e76321b0c59ce1622a28d599fb7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
