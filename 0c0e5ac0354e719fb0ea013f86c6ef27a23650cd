@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5290a272_d47a87ea",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6eccc05_b61126b5",
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "62152fa0_665fba9a",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-02-03T17:52:54Z",
       "side": 1,
       "message": "Try copying the license header from https://cs.android.com/android/platform/superproject/+/master:system/core/fs_mgr/libsnapshot/libsnapshot_cow/cow_writer.cpp;l\u003d1?q\u003dcow_writer.cpp\u0026sq\u003d",
+      "range": {
+        "startLine": 5,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 20
+      },
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8550634_20542800",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62152fa0_665fba9a",
       "range": {
         "startLine": 5,
         "startChar": 4,
@@ -101,6 +143,30 @@
       "writtenOn": "2023-02-06T17:36:53Z",
       "side": 1,
       "message": "build failures are due to fastboot.h not having include guards. Add include guards to fastboot.h",
+      "parentUuid": "22cebcb8_f00551c2",
+      "range": {
+        "startLine": 35,
+        "startChar": 23,
+        "endLine": 35,
+        "endChar": 40
+      },
+      "revId": "0c0e5ac0354e719fb0ea013f86c6ef27a23650cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5423f34e_9517a96b",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:12Z",
+      "side": 1,
+      "message": "Done",
       "parentUuid": "22cebcb8_f00551c2",
       "range": {
         "startLine": 35,

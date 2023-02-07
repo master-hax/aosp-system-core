@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bad766b9_fad91461",
+        "filename": "fastboot/task.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e409bba_c97e3eb7",
+      "revId": "72de0ec9d5947de77e3f80dff4c3e2a27739a18d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2bdd856e_b0979506",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-06T19:00:18Z",
       "side": 1,
       "message": "nit: std include set and android include set should have a newline in between",
+      "revId": "72de0ec9d5947de77e3f80dff4c3e2a27739a18d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3da208c1_e5b9570d",
+        "filename": "fastboot/task.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-07T02:36:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2bdd856e_b0979506",
       "revId": "72de0ec9d5947de77e3f80dff4c3e2a27739a18d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
