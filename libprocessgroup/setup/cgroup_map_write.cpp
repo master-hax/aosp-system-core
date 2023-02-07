@@ -303,8 +303,13 @@ static bool ActivateV2CgroupController(const CgroupDescriptor& descriptor) {
         path += "/cgroup.subtree_control";
 
         if (!base::WriteStringToFile(str, path)) {
-            LOG(ERROR) << "Failed to activate controller " << controller->name();
-            return false;
+            if (controller->flags() & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) {
+                LOG(INFO) << "Failed to activate optional controller " << controller->name();
+                return true;
+            } else {
+                LOG(ERROR) << "Failed to activate controller " << controller->name();
+                return false;
+            }
         }
     }
 
@@ -335,7 +340,14 @@ static bool MountV1CgroupController(const CgroupDescriptor& descriptor) {
         res = mount("none", controller->path(), "cgroup", MS_NODEV | MS_NOEXEC | MS_NOSUID,
                     controller->name());
     }
-    return res == 0;
+    if (res == 0) {
+        return true;
+    }
+    if (controller->flags() & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) {
+        LOG(INFO) << "Failed to activate optional controller " << controller->name();
+        return true;
+    }
+    return false;
 }
 
 static bool SetupCgroup(const CgroupDescriptor& descriptor) {

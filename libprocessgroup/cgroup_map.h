@@ -60,6 +60,7 @@ class CgroupMap {
     enum class Result {
         kSuccess,
         kError,
+        kNoSuchController,
     };
 
     // Selinux policy ensures only init process can successfully use this function
