@@ -307,7 +307,7 @@ static int ActivateV2CgroupController(const CgroupDescriptor& descriptor) {
 
         if (!base::WriteStringToFile(str, path)) {
             LOG(ERROR) << "Failed to activate controller " << controller->name();
-            return kActivationFailed;
+            return -1;
         }
     }
 
