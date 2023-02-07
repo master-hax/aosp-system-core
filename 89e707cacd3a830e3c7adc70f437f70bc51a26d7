@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b3e9a02_b670f1f7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "Looks like we are formatting a string just to make FlashTask immediately parse it. Can we instead pass `pname` and `fname` as separate parameters in constructor of FlashTask? This avoid unnecessary parsing/formatting.",
+      "range": {
+        "startLine": 2246,
+        "startChar": 0,
+        "endLine": 2246,
+        "endChar": 51
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbaf585e_47e609ce",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "new line at end of file",
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ee84098_757876d5",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d7547f6_5ec99d48",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "new line at end of file",
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35d77c80_1b829103",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "why do we need mutable ref here? Use const ref if you want to copy, and move ref if you want to take inputs by moving.",
+      "range": {
+        "startLine": 35,
+        "startChar": 14,
+        "endLine": 35,
+        "endChar": 32
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c68a0cd_b4b59ed3",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "no need to take primitive value by ref. Unless you want to modify the input.",
+      "range": {
+        "startLine": 36,
+        "startChar": 34,
+        "endLine": 36,
+        "endChar": 52
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f149fe8f_5331b8f8",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:50:24Z",
+      "side": 1,
+      "message": "same here, const ref if you can, move ref if you have to",
+      "range": {
+        "startLine": 36,
+        "startChar": 14,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
