@@ -16,6 +16,29 @@
       "message": "oops this is part of the flashall changes, not meant to be on this cl",
       "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7302c390_555cd152",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2251,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-07T20:57:43Z",
+      "side": 1,
+      "message": "create a \"FlaskAll\" task that internally stores a vector of partitions to flash. Then create an instance of FlashAll task in this `else if` clause. This makes structure of code consistent.",
+      "range": {
+        "startLine": 2243,
+        "startChar": 12,
+        "endLine": 2251,
+        "endChar": 13
+      },
+      "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
