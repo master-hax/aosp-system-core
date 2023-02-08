@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47e18bc7_ddacfe73",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-02-08T08:36:28Z",
+      "side": 1,
+      "message": "what information goes into this directory? Should this go into per-user-encrypted storage?",
+      "range": {
+        "startLine": 929,
+        "startChar": 23,
+        "endLine": 929,
+        "endChar": 43
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd648c72_f1586b22",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-02-08T08:36:28Z",
+      "side": 1,
+      "message": "the restorecon isn\u0027t necessary. Init\u0027s mkdir already correctly labels the new directory.\n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/init/util.cpp;drc\u003da04fe6afd7436798064d3a0b21a5c7d973295d22;l\u003d270",
+      "range": {
+        "startLine": 930,
+        "startChar": 0,
+        "endLine": 930,
+        "endChar": 48
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
