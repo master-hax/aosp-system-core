@@ -53,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc3ef4a5_21a0d88f",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T17:29:10Z",
+      "side": 1,
+      "message": "It\u0027s better to keep the errno \u003d\u003d EEXIST check, eg if two processes race to create it or something. It\u0027s the DirectoryExists call that\u0027s not needed.",
+      "parentUuid": "71ddc02c_ce80115c",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a43c391_bc85f373",
@@ -172,6 +190,24 @@
       "side": 1,
       "message": "We can get rid of another file if instead of removing the devices file we will just open and close it with trunc flag. But I found using separate file is a more universal and safe approach to follow. What do you think?",
       "parentUuid": "b809be0e_9ab58d19",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c443db57_509dcd6b",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T17:29:10Z",
+      "side": 1,
+      "message": "A \".lock\" file is usually different and usually indicates that an operation is in progress. It\u0027s created when an operation starts, and is removed when the operation completes. If the process aborts/crashes then the lock file acts as a tombstone (next time the operation resumes, it knows something went wrong).\n\nSo I think truncating is cleaner. In your use case, the lock file is only protecting a single file (\"devices\"), and flock()/LockFileEx() on \"devices\" would guarantee you have exclusive access.",
+      "parentUuid": "abfb1a62_a4713caf",
       "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
