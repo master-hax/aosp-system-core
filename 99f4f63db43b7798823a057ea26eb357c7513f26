@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0c0625aa_ead7d5d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-02-08T19:12:05Z",
+      "side": 1,
+      "message": "+1\nI was slightly surprised to see this CL, rather than just allowing longer line output up to the current protocol.  \nPlease can you update the existing design doc with a section to clarify why longer lines is not preferred?\nThat said, this implementation is quite small and neat.",
+      "parentUuid": "b27e4446_fdf462ce",
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c3aee913_b0d5e40f",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 9
