@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bc58c7ca_bf10a03b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-08T18:52:49Z",
+      "side": 1,
+      "message": "make sure you first use flash station to flash a known build, then flash your local build of kernel. We want to make sure the AVB chain still checks out after flashing a subset of partitions.",
+      "range": {
+        "startLine": 9,
+        "startChar": 6,
+        "endLine": 9,
+        "endChar": 50
+      },
+      "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bec6255c_615a16f3",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-08T18:52:49Z",
+      "side": 1,
+      "message": "@dvander@google.com I believe pvmfw is part of bootloader? Do we need to flash it to update kernel?",
+      "range": {
+        "startLine": 149,
+        "startChar": 81,
+        "endLine": 149,
+        "endChar": 86
+      },
+      "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "41645f7c_8f880faf",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 1
@@ -31,6 +77,29 @@
       "writtenOn": "2023-02-08T18:48:51Z",
       "side": 1,
       "message": "You can use the Images list and grab BootCritical partitions instead, no need for a separate list.",
+      "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8222330_ebf62fae",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2243,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-08T18:52:49Z",
+      "side": 1,
+      "message": "cons auto\u0026",
+      "range": {
+        "startLine": 2243,
+        "startChar": 17,
+        "endLine": 2243,
+        "endChar": 21
+      },
       "revId": "63149a7537616e881bea4ec1a4404c534bcd835d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
