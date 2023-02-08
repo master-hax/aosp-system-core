@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66643dbe_103bde55",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "Given this EEXIST check, do you need the DirectoryExists call?",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a43c391_bc85f373",
+        "filename": "fastboot/filesystem.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "You should be able to use android::base::unique_fd here and avoid the close() logic in the destructor.",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0db0746b_e716c1d7",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "LOG(FATAL) \u003c\u003c \"Cannot create directory: \" \u003c\u003c home_fastboot_path;",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c790dc29_14e5c5c4",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "Why do you need a separate lock file?",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc9f37ba_d2b888af",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "nit: \"StoreDevices\" or something, to pair with \"ReadDevices\" (Dump often means \"write to stdout for debugging\")",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74f6102f_c211b855",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:30:15Z",
+      "side": 1,
+      "message": "PLOG(FATAL) \u003c\u003c \"Failed to clear connected device list: \" \u003c\u003c devices_path_;",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
