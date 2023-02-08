@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c1182f1f_2653d2d7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:39:02Z",
+      "side": 1,
+      "message": "I was going to suggest that we change Parse() to accept an argc/argv, and then the fastboot-info.txt file could be tokenized before being parsed. But I think for now just passing that stuff to the constructor is the right call.",
+      "parentUuid": "2b3e9a02_b670f1f7",
+      "range": {
+        "startLine": 2246,
+        "startChar": 0,
+        "endLine": 2246,
+        "endChar": 51
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cbaf585e_47e609ce",
         "filename": "fastboot/fastboot.h",
         "patchSetId": 12
@@ -60,6 +84,23 @@
         "endLine": 2,
         "endChar": 21
       },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d1f64b4_fa4b6f76",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:39:02Z",
+      "side": 1,
+      "message": "I\u0027m conflicted with whether this check should be in the cmdline code or in the task itself. I guess it can go in either, but doesn\u0027t need to be in both.",
       "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
