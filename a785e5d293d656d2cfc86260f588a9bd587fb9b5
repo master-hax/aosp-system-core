@@ -117,6 +117,30 @@
       },
       "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66e626ca_2c0a0d09",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:58:46Z",
+      "side": 1,
+      "message": "I\u0027m not a huge fan of immutable components since it means any time you want to modify something you have to create a new one. But, moving Parse out sounds good regardless. And being able to construct stuff without Parse() is also good. Maybe a static method on Task, like:\n\n    static std::unique_ptr\u003cTask\u003e Task::Parse(...) {\n        if (command \u003d\u003d \"reboot\") {\n            return RebootTask::Parse(...);\n        } else if (...) {\n            ...",
+      "parentUuid": "0913666b_749a857f",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

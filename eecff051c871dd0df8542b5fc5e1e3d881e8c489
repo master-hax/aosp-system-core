@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f305b9ac_065962a5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 2138,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:58:46Z",
+      "side": 1,
+      "message": "unique_ptr constructs with nullptr by default, so you don\u0027t need this assignment",
+      "revId": "eecff051c871dd0df8542b5fc5e1e3d881e8c489",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
