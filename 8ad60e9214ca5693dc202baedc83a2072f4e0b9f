@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea0127f7_3b6a1f07",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-02-08T17:34:26Z",
+      "side": 1,
+      "message": "Should this also reset `start \u003d std::chrono::steady_clock::now();` here to allow lots of output to be sent without being limited to `RESP_TIMEOUT` (30s), as done for `INFO`?",
+      "range": {
+        "startLine": 503,
+        "startChar": 12,
+        "endLine": 503,
+        "endChar": 48
+      },
+      "revId": "8ad60e9214ca5693dc202baedc83a2072f4e0b9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66d70618_f28ae8b9",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-02-08T17:34:26Z",
+      "side": 1,
+      "message": "I can\u0027t see this being used anywhere?",
+      "range": {
+        "startLine": 175,
+        "startChar": 3,
+        "endLine": 175,
+        "endChar": 33
+      },
+      "revId": "8ad60e9214ca5693dc202baedc83a2072f4e0b9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
