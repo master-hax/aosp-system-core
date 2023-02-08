@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6114199c_71386bb9",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2023-02-08T15:32:25Z",
+      "side": 1,
+      "message": "It\u0027s ShutdownThread.java capturing the call trace and call info when system reboot is invoked by any component:\n\nhttps://source.corp.google.com/android-internal/frameworks/base/services/core/java/com/android/server/power/ShutdownThread.java;l\u003d113;bpv\u003d1;bpt\u003d1;rcl\u003d27e246fed597f68b62b7ce3513a496e9250633e6?q\u003dshutdown-checkpoints\n\nAnd will be loaded by dumpstate to save all the files under /data/system/shutdown-checkpoints/ to bugreport:\n\nhttps://source.corp.google.com/android-internal/frameworks/native/cmds/dumpstate/dumpstate.cpp;l\u003d198?q\u003dshutdown-checkpoints\n\nHowever, since ShutdownThread.java is supposed to create it, the mkdir here can be skipped actually, hence I removed this mkdir.",
+      "parentUuid": "47e18bc7_ddacfe73",
+      "range": {
+        "startLine": 929,
+        "startChar": 23,
+        "endLine": 929,
+        "endChar": 43
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd648c72_f1586b22",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-02-08T08:36:28Z",
       "side": 1,
       "message": "the restorecon isn\u0027t necessary. Init\u0027s mkdir already correctly labels the new directory.\n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/init/util.cpp;drc\u003da04fe6afd7436798064d3a0b21a5c7d973295d22;l\u003d270",
+      "range": {
+        "startLine": 930,
+        "startChar": 0,
+        "endLine": 930,
+        "endChar": 48
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7da989b_ee8bc442",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2023-02-08T15:32:25Z",
+      "side": 1,
+      "message": "Since mkdir is removed so the \u0027restorecon\u0027 is required, and it even needs to use \u0027restorecon_recursive\u0027 to fix the label of files under the dir. So in the latest revision it\u0027s \u0027restorecon_recursive\u0027.",
+      "parentUuid": "cd648c72_f1586b22",
       "range": {
         "startLine": 930,
         "startChar": 0,
