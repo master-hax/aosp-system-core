@@ -24,7 +24,7 @@
 class ConnectedDevicesStorage {
   public:
     ConnectedDevicesStorage();
-    void DumpDevices(const std::set<std::string>& devices);
+    void WriteDevices(const std::set<std::string>& devices);
     std::set<std::string> ReadDevices();
     void Clear();
 
