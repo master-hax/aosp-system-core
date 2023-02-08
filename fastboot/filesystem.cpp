@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-#include <android-base/parseint.h>
-#include <sys/file.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <vector>
-
 #ifdef _WIN32
 #include <android-base/utf8.h>
 #include <direct.h>
@@ -28,6 +21,14 @@
 #else
 #include <pwd.h>
 #endif
+
+#include <android-base/logging.h>
+#include <android-base/parseint.h>
+#include <sys/file.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include <vector>
 
 #include "filesystem.h"
 
@@ -109,24 +110,11 @@ bool EnsureDirectoryExists(const std::string& directory_path) {
                        mkdir(directory_path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
 
-    return result == 0 || errno == EEXIST;
+    return result == 0;
 }
 
-FileLock::FileLock(const std::string& path) {
-    fd_ = open(path.c_str(), O_CREAT | O_WRONLY, 0644);
-    const int result = LockFile(fd_);
-    if (result != 0) {
-        close(fd_);
-        fd_ = -1;
+FileLock::FileLock(const std::string& path) : fd_(open(path.c_str(), O_CREAT | O_WRONLY, 0644)) {
+    if (LockFile(fd_.get()) != 0) {
+        LOG(FATAL) << "Failed to acquire a lock on " << path;
     }
-}
-
-FileLock::~FileLock() {
-    if (fd_ != -1) {
-        close(fd_);
-    }
-}
-
-bool FileLock::acquired() const {
-    return fd_ != -1;
 }

@@ -15,6 +15,7 @@
  */
 
 #include <android-base/file.h>
+#include <android-base/logging.h>
 
 #include <fstream>
 
@@ -30,14 +31,14 @@ ConnectedDevicesStorage::ConnectedDevicesStorage() {
     const std::string home_fastboot_path = home_path + kPathSeparator + ".fastboot";
 
     if (!EnsureDirectoryExists(home_fastboot_path)) {
-        die("Cannot create $HOME/.fastboot directory");
+        LOG(FATAL) << "Cannot create directory: " << home_fastboot_path;
     }
 
     devices_path_ = home_fastboot_path + kPathSeparator + "devices";
     devices_lock_path_ = home_fastboot_path + kPathSeparator + "devices.lock";
 }
 
-void ConnectedDevicesStorage::DumpDevices(const std::set<std::string>& devices) {
+void ConnectedDevicesStorage::WriteDevices(const std::set<std::string>& devices) {
     std::ofstream devices_stream(devices_path_);
     std::copy(devices.begin(), devices.end(),
               std::ostream_iterator<std::string>(devices_stream, "\n"));
@@ -52,7 +53,7 @@ std::set<std::string> ConnectedDevicesStorage::ReadDevices() {
 
 void ConnectedDevicesStorage::Clear() {
     if (!android::base::RemoveFileIfExists(devices_path_)) {
-        die("Cannot disconnect the devices due to devices file delition problem");
+        LOG(FATAL) << "Failed to clear connected device list: " << devices_path_;
     }
 }
 

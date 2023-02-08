@@ -16,7 +16,11 @@
 
 #pragma once
 
+#include <android-base/unique_fd.h>
+
 #include <string>
+
+using android::base::unique_fd;
 
 // TODO(b/175635923): remove after enabling libc++fs for windows
 const char kPathSeparator =
@@ -34,10 +38,7 @@ class FileLock {
   public:
     FileLock() = delete;
     FileLock(const std::string& path);
-    ~FileLock();
-
-    bool acquired() const;
 
   private:
-    int fd_;
+    unique_fd fd_;
 };
