@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "71ddc02c_ce80115c",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-08T16:42:05Z",
+      "side": 1,
+      "message": "You\u0027re right. Got rid of it.",
+      "parentUuid": "66643dbe_103bde55",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a43c391_bc85f373",
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e3f9dfa_6eede5e7",
+        "filename": "fastboot/filesystem.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-08T16:42:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a43c391_bc85f373",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0db0746b_e716c1d7",
@@ -65,6 +101,24 @@
       "writtenOn": "2023-02-08T03:30:15Z",
       "side": 1,
       "message": "LOG(FATAL) \u003c\u003c \"Cannot create directory: \" \u003c\u003c home_fastboot_path;",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31dea17a_92646061",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-08T16:42:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0db0746b_e716c1d7",
       "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -103,6 +157,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dbeec48e_715cb39f",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-08T16:42:05Z",
+      "side": 1,
+      "message": "\u003e ReadDevices\n\nI think you meant \"WriteDevices\". Renamed.",
+      "parentUuid": "fc9f37ba_d2b888af",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "74f6102f_c211b855",
@@ -116,6 +188,24 @@
       "writtenOn": "2023-02-08T03:30:15Z",
       "side": 1,
       "message": "PLOG(FATAL) \u003c\u003c \"Failed to clear connected device list: \" \u003c\u003c devices_path_;",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfcd0b7a_683987ce",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-08T16:42:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74f6102f_c211b855",
       "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
