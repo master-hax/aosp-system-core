@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "3520423f_552051a8",
+        "filename": "fastboot/filesystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-08T03:33:03Z",
+      "side": 1,
+      "message": "btw, you can avoid the manual wchar translation by calling SHGetFolderPathA()",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "66643dbe_103bde55",
         "filename": "fastboot/filesystem.cpp",
         "patchSetId": 7
