@@ -16,6 +16,52 @@
       "message": "First part of go/fastboot-line-length\nAndroid First to update trusty-ut-ctrl in particular. Then trusty/abl.\n\nThanks for the review 😊",
       "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3aee913_b0d5e40f",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 9
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-02-08T17:37:12Z",
+      "side": 1,
+      "message": "Can this check be combined with the one on line :629?",
+      "range": {
+        "startLine": 631,
+        "startChar": 8,
+        "endLine": 631,
+        "endChar": 44
+      },
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea0821a4_a96f5276",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 9
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-02-08T17:37:12Z",
+      "side": 1,
+      "message": "This can be combined with line 125.",
+      "range": {
+        "startLine": 127,
+        "startChar": 8,
+        "endLine": 127,
+        "endChar": 44
+      },
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
