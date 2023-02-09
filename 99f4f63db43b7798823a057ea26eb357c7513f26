@@ -127,6 +127,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c11318b2_009d2d5e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-09T19:20:54Z",
+      "side": 1,
+      "message": "After talking to mwills some more about this, we think there needs to be a really high bar for fastboot protocol changes, given the age and prevalence of the tooling, and the difficulty of detecting host tool compatibility. I don\u0027t think this clears the bar since the use case is very specific.\n\nI\u0027m not super convinced of the difficulty of resolving these issues in ABL, either. If we\u0027re adding code to pivot/re-render data, is that any less complex than buffering? If complexity in ABL is an issue, wouldn\u0027t it be better to send this data in a concise, parseable format, and have the host decide how to render it?\n\nI\u0027d say these are my preferences for moving forward, in order:\n\n1) Change the fastboot host tool, so that if an INFO message ends in a backslash (\u0027\\\\\u0027), it will append the next INFO message into that line. That roughly aligns with how other line-based processors work, and doesn\u0027t risk any serious compatibility issues.\n\n2) Change the maximum fastboot response size from 256 to 4096 or something. mwills@ should sign off on that too though, since it is a subtle compatibility change.",
+      "parentUuid": "5593a786_ef2266ad",
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c3aee913_b0d5e40f",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 9
