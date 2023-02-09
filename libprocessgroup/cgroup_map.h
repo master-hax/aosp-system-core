@@ -57,13 +57,18 @@ class CgroupController {
 
 class CgroupMap {
   public:
+    enum class Result {
+        kSuccess,
+        kError,
+    };
+
     // Selinux policy ensures only init process can successfully use this function
     static bool SetupCgroups();
 
     static CgroupMap& GetInstance();
     CgroupController FindController(const std::string& name) const;
     CgroupController FindControllerByPath(const std::string& path) const;
-    int ActivateControllers(const std::string& path) const;
+    Result ActivateControllers(const std::string& path) const;
 
   private:
     bool loaded_ = false;

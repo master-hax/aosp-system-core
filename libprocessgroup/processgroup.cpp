@@ -563,8 +563,8 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
         return -errno;
     }
     if (activate_controllers) {
-        ret = CgroupMap::GetInstance().ActivateControllers(uid_path);
-        if (ret) {
+        CgroupMap::Result result = CgroupMap::GetInstance().ActivateControllers(uid_path);
+        if (result == CgroupMap::Result::kError) {
             LOG(ERROR) << "Failed to activate controllers in " << uid_path;
             return ret;
         }
