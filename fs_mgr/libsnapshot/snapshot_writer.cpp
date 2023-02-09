@@ -96,6 +96,7 @@ std::unique_ptr<FileDescriptor> CompressedSnapshotWriter::OpenReader() {
     if (cow == nullptr) {
         return nullptr;
     }
+    LOG(INFO) << "cow reader: " << cow;
 
     auto reader = std::make_unique<CompressedSnapshotReader>();
     if (!reader->SetCow(std::move(cow))) {
