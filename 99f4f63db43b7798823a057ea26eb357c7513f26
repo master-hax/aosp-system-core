@@ -109,6 +109,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5593a786_ef2266ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-09T08:49:34Z",
+      "side": 1,
+      "message": "The original problem came from running crypto hardware benchmarks in fastboot/abl because this is a much more controlled environment than linux.\n\nFrom there once benchmark run is initiated, what happens is a three entity communication. Trusty (Device) --\u003e ABL(Device) --\u003e Fastboot(Host). For every call to trusty_unittest_printf, an IPC message is sent to ABL. ABL then forwards it to the host over USB. Fastboot then prints one line \"(bootloader) INFO: [...]\\n\". \n\nWhile I could perform buffering on trusty side. Only sending line by line, it is not very convenient. For example, when printing columns, Each column gets its own call to printf, with appropriated sizing and formatting.\n\nAlso, there are different formatting options: Horizontal Table, Vertical Table (those are just pivoted tables from one another), JSON, and more may come. Both trusty IPC and Fastboot on the hosts use a 256 Bytes buffer, Few characters of which are used for other things, such as message types in the first byte(s). ABL fastboot implementation uses a 64 Bytes Buffer, the 4 first bytes being used for the type header. It is hard for me to guarantee that 250+ bytes will be enough to hold any full line. In fact it is pretty much guaranteed that horizontal printing will nearly always go beyond that.\n\nSo if on Fastboot/ABL side, I only pop up buffer size and nothing else, I need to:\n - Perform buffering on trusty side to only send line by line irrespective of printing logic and buffer sizes.\n - Make sure that no lines ever goes over 252 BYTES (due to 4bytes header size).",
+      "parentUuid": "0c0625aa_ead7d5d6",
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c3aee913_b0d5e40f",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 9
