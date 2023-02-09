@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3af0caab_ff0cbbe4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-09T09:08:13Z",
+      "side": 1,
+      "message": "Updated design Doc with suggestions. \nAll code comments done.\n\nThanks for the review. Cheers.",
+      "revId": "678625de53c34d9a353e3e1a1327cdf3a55941be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

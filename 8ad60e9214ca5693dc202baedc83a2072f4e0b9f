@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d623cb71_ad75b4bd",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-09T09:08:13Z",
+      "side": 1,
+      "message": "Oh right, Actually I had to pop up the RESP_TIMEOUT for some tests. Nice Catch.",
+      "parentUuid": "ea0127f7_3b6a1f07",
+      "range": {
+        "startLine": 503,
+        "startChar": 12,
+        "endLine": 503,
+        "endChar": 48
+      },
+      "revId": "8ad60e9214ca5693dc202baedc83a2072f4e0b9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "66d70618_f28ae8b9",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-02-08T17:34:26Z",
       "side": 1,
       "message": "I can\u0027t see this being used anywhere?",
+      "range": {
+        "startLine": 175,
+        "startChar": 3,
+        "endLine": 175,
+        "endChar": 33
+      },
+      "revId": "8ad60e9214ca5693dc202baedc83a2072f4e0b9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9696f6af_e254761f",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-09T09:08:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66d70618_f28ae8b9",
       "range": {
         "startLine": 175,
         "startChar": 3,
