@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dca575ff_ab61aef8",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-09T21:39:44Z",
+      "side": 1,
+      "message": "A new enum has been introduced with the following three values: kSuccess, kError and kNoSuchController.",
+      "parentUuid": "6a294a33_6788551b",
+      "range": {
+        "startLine": 259,
+        "startChar": 21,
+        "endLine": 259,
+        "endChar": 38
+      },
+      "revId": "ecbde10920dfc5c7ebfd4fec6a6e991320c5bb37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "93613c67_a7828847",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "See comments in the next CL. Maybe we should simplify the code here.",
       "parentUuid": "93613c67_a7828847",
+      "range": {
+        "startLine": 288,
+        "startChar": 8,
+        "endLine": 288,
+        "endChar": 18
+      },
+      "revId": "ecbde10920dfc5c7ebfd4fec6a6e991320c5bb37",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1048ba74_d4284d03",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-09T21:39:44Z",
+      "side": 1,
+      "message": "This \"return -1\" has been changed into \"return kError\".",
+      "parentUuid": "74354807_a75563e3",
       "range": {
         "startLine": 288,
         "startChar": 8,
