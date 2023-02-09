@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a56cc79f_780bc385",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-09T01:50:24Z",
+      "side": 1,
+      "message": "should we issue a warning when optional activation failed?",
+      "range": {
+        "startLine": 237,
+        "startChar": 20,
+        "endLine": 237,
+        "endChar": 65
+      },
+      "revId": "fe302f90c0686a00d28896b3846c75115cfa5605",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7587ccda_cc7532c1",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-09T01:50:24Z",
+      "side": 1,
+      "message": "Later on we check for `optional \u0026\u0026 errno \u003d\u003d EINVAL`. Are you sure errno will be EINVAL? Otherwise SetupCgroup will still return false.\n\nMaybe we should bite the bullet and simplify the whole logic here... I think we should just have 3 results in these functions: Success/Error/CriticalError. And we ignore the Error and issue a warning if the controller is optional.",
+      "range": {
+        "startLine": 310,
+        "startChar": 19,
+        "endLine": 310,
+        "endChar": 22
+      },
+      "revId": "fe302f90c0686a00d28896b3846c75115cfa5605",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
