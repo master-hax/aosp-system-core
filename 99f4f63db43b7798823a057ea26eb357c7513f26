@@ -145,6 +145,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "47cdf332_abe947e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-09T20:45:13Z",
+      "side": 1,
+      "message": "You preference (1) was my initial implementation that sparked the whole discussion, Mike Specs and then this implementation. You can see it in Patchset 1 with \u0027@\u0027 rather than \u0027\\\u0027... So there is no particular difficulty as it was what was initially done. \n\nAlso backward \"host tool compatibility\" was given as the main reason not to change the INFO message.",
+      "parentUuid": "c11318b2_009d2d5e",
+      "revId": "99f4f63db43b7798823a057ea26eb357c7513f26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c3aee913_b0d5e40f",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 9
