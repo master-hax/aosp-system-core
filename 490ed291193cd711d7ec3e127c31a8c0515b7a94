@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ae48c6d_615a65ed",
+        "filename": "libstats/expresslog/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-02-09T21:22:09Z",
+      "side": 1,
+      "message": "these `-Wno-xxxx` arguments are used to suppress warnings - my intention is to catch all warnings and treat them as errors",
+      "parentUuid": "8da8d1ba_f34eb778",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 100,
+        "endChar": 34
+      },
+      "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "23849010_cbca90c8",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-02-09T19:20:53Z",
       "side": 1,
       "message": "Should we have a factory method for creating UniformOptions objects? This way, all input/argument validation can shift to the factory method and this will allow all fields in the class to be const members and be initialized in the initializer list. WDYT?",
+      "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f96323a4_5aa39162",
+        "filename": "libstats/expresslog/Histogram.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-02-09T21:22:09Z",
+      "side": 1,
+      "message": "Thank you! Great suggestion!",
+      "parentUuid": "23849010_cbca90c8",
       "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a960a578_5e61087b",
+        "filename": "libstats/expresslog/include/Histogram.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-02-09T21:22:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7955815e_db5b82dd",
+      "range": {
+        "startLine": 37,
+        "startChar": 10,
+        "endLine": 37,
+        "endChar": 16
+      },
+      "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "820fa86b_8013cbdb",
@@ -81,6 +147,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fed3272c_c499ac70",
+        "filename": "libstats/expresslog/include/Histogram.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-02-09T21:22:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "820fa86b_8013cbdb",
+      "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b9079263_2a67f32f",
@@ -94,6 +178,24 @@
       "writtenOn": "2023-02-09T19:20:53Z",
       "side": 1,
       "message": "can this be `const std::shared_ptr`?",
+      "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77087fc5_b72ddef9",
+        "filename": "libstats/expresslog/include/Histogram.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2023-02-09T21:22:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9079263_2a67f32f",
       "revId": "490ed291193cd711d7ec3e127c31a8c0515b7a94",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
