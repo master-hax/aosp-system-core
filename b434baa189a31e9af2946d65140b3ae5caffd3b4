@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a701cc89_1712f927",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-09T23:02:06Z",
+      "side": 1,
+      "message": "How about this:\n```\nif (result \u003d\u003d ActivationResult::kSuccess)\n    return true;\n\nif (result \u003d\u003d ActivationResult::kNoSuchController) {\n    bool optional \u003d controller-\u003eflags() \u0026 CGROUPRC_CONTROLLER_FLAG_OPTIONAL;\n    if (optional) {\n        // Optional controllers are allowed to fail to mount if kernel does not support them\n        LOG(INFO) \u003c\u003c \"Optional \" \u003c\u003c controller-\u003ename() \u003c\u003c \" cgroup controller is not mounted\";\n        return true;\n    }\n\n    PLOG(ERROR) \u003c\u003c \"Failed to mount \" \u003c\u003c controller-\u003ename() \u003c\u003c \" cgroup\";\n}\nreturn false;\n```\na bit easier to follow IMO.",
+      "range": {
+        "startLine": 360,
+        "startChar": 1,
+        "endLine": 377,
+        "endChar": 17
+      },
+      "revId": "b434baa189a31e9af2946d65140b3ae5caffd3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
