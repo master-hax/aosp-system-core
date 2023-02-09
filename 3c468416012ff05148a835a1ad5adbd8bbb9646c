@@ -214,6 +214,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "13fc4397_040243e7",
+        "filename": "fastboot/storage.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-09T02:04:57Z",
+      "side": 1,
+      "message": "Added comment why using separate .lock makes things easier here",
+      "parentUuid": "c443db57_509dcd6b",
+      "revId": "3c468416012ff05148a835a1ad5adbd8bbb9646c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "fc9f37ba_d2b888af",
         "filename": "fastboot/storage.cpp",
         "patchSetId": 7
