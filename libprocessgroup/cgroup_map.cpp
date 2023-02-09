@@ -224,7 +224,7 @@ CgroupController CgroupMap::FindControllerByPath(const std::string& path) const 
     return CgroupController(nullptr);
 }
 
-int CgroupMap::ActivateControllers(const std::string& path) const {
+CgroupMap::Result CgroupMap::ActivateControllers(const std::string& path) const {
     if (__builtin_available(android 30, *)) {
         auto controller_count = ACgroupFile_getControllerCount();
         for (uint32_t i = 0; i < controller_count; ++i) {
@@ -234,11 +234,11 @@ int CgroupMap::ActivateControllers(const std::string& path) const {
                 std::string str("+");
                 str.append(ACgroupController_getName(controller));
                 if (!WriteStringToFile(str, path + "/cgroup.subtree_control")) {
-                    return -errno;
+                    return Result::kError;
                 }
             }
         }
-        return 0;
+        return Result::kSuccess;
     }
-    return -ENOSYS;
+    return Result::kError;
 }
