@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "715881eb_28c215e2",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-09T23:32:58Z",
+      "side": 1,
+      "message": "How about checking for controller to be optional here and returning just true/false in all these functions? IOW doing\n```\n    if (res \u003d\u003d 0) return true;\n\n    bool optional \u003d controller-\u003eflags() \u0026 CGROUPRC_CONTROLLER_FLAG_OPTIONAL;\n    if (optional) {\n        // Optional controllers are allowed to fail to mount if kernel does not support them\n        LOG(INFO) \u003c\u003c \"Optional \" \u003c\u003c controller-\u003ename() \u003c\u003c \" cgroup controller is not mounted\";\n        return true;\n    }\n    return false;\n```\nin here.\nI want to simplify the logic here.",
+      "parentUuid": "dbd83441_60a62ec5",
+      "range": {
+        "startLine": 343,
+        "startChar": 69,
+        "endLine": 343,
+        "endChar": 86
+      },
+      "revId": "b434baa189a31e9af2946d65140b3ae5caffd3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a701cc89_1712f927",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 4
