@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5fcc5dc_89de5a56",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-09T23:25:06Z",
+      "side": 1,
+      "message": "If it\u0027s an optional controller we should not terminate this loop I think. How about issuing a warning and continuing the loop in case of the optional controller?\nThis way we also won\u0027t need an enum as result, just a bool.",
+      "range": {
+        "startLine": 237,
+        "startChar": 28,
+        "endLine": 237,
+        "endChar": 70
+      },
+      "revId": "958763cefb7825d7738279ee8a0697c4d9f9fd3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
