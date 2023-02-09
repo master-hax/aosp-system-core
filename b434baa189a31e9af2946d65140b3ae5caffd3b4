@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dbd83441_60a62ec5",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-09T23:12:47Z",
+      "side": 1,
+      "message": "Failure of the mount() system call can have multiple causes. The mount() system call will fail if the cgroup controller has not been enabled in the kernel configuration. It will also fail if invalid flags have been specified or if another process would have removed the mountpoint after the Mkdir() call returned and before mount() is called. Do you perhaps want me to inspect errno and to translate errno into a status code?",
+      "parentUuid": "3445d4d0_4f50504d",
+      "range": {
+        "startLine": 343,
+        "startChar": 69,
+        "endLine": 343,
+        "endChar": 86
+      },
+      "revId": "b434baa189a31e9af2946d65140b3ae5caffd3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a701cc89_1712f927",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 4
