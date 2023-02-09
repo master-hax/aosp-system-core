@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa0c69b3_0cce12bb",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1182f1f_2653d2d7",
+      "range": {
+        "startLine": 2246,
+        "startChar": 0,
+        "endLine": 2246,
+        "endChar": 51
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cbaf585e_47e609ce",
@@ -65,6 +89,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd1f87e8_db43da2e",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cbaf585e_47e609ce",
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4ee84098_757876d5",
@@ -78,6 +120,30 @@
       "writtenOn": "2023-02-07T20:50:24Z",
       "side": 1,
       "message": "2023",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b27fc19b_b359c59f",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ee84098_757876d5",
       "range": {
         "startLine": 2,
         "startChar": 17,
@@ -107,6 +173,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "77812631_b1805421",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "would it make sense to keep it in task since we would want to check if partitions are flashed in the right space for flashall too? (eg: if somehow fastboot-info.txt has wrong partition ordering)",
+      "parentUuid": "2d1f64b4_fa4b6f76",
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d7547f6_5ec99d48",
         "filename": "fastboot/task.cpp",
         "patchSetId": 12
@@ -118,6 +202,24 @@
       "writtenOn": "2023-02-07T20:50:24Z",
       "side": 1,
       "message": "new line at end of file",
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fc9bfb8_f589c9bb",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d7547f6_5ec99d48",
       "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -135,6 +237,30 @@
       "writtenOn": "2023-02-07T20:50:24Z",
       "side": 1,
       "message": "why do we need mutable ref here? Use const ref if you want to copy, and move ref if you want to take inputs by moving.",
+      "range": {
+        "startLine": 35,
+        "startChar": 14,
+        "endLine": 35,
+        "endChar": 32
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b1977d5_18b617a9",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35d77c80_1b829103",
       "range": {
         "startLine": 35,
         "startChar": 14,
@@ -181,6 +307,54 @@
       "writtenOn": "2023-02-07T20:50:24Z",
       "side": 1,
       "message": "same here, const ref if you can, move ref if you have to",
+      "range": {
+        "startLine": 36,
+        "startChar": 14,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9bc7434_68c8c34c",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c68a0cd_b4b59ed3",
+      "range": {
+        "startLine": 36,
+        "startChar": 34,
+        "endLine": 36,
+        "endChar": 52
+      },
+      "revId": "89e707cacd3a830e3c7adc70f437f70bc51a26d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96389875_9db2daac",
+        "filename": "fastboot/task.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-02-09T17:55:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f149fe8f_5331b8f8",
       "range": {
         "startLine": 36,
         "startChar": 14,
