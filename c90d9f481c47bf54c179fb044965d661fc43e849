@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7d3492f_39d138e0",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T21:29:44Z",
+      "side": 1,
+      "message": "That sounds like a security risk to me. Why should failure to change the ownership and/or mode only be treated as an error if the cgroupv2 controller is not optional?",
+      "parentUuid": "9b351b56_118925db",
+      "range": {
+        "startLine": 285,
+        "startChar": 8,
+        "endLine": 285,
+        "endChar": 21
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "25fb0bba_7d08fbb9",
