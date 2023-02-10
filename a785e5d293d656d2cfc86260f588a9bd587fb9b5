@@ -141,6 +141,30 @@
       },
       "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6793d7d5_51d4ccec",
+        "filename": "fastboot/task.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-10T21:51:18Z",
+      "side": 1,
+      "message": "On second though... if immutable works, let\u0027s go for it. As long as Tasks remain pretty lightweight, I can\u0027t see any reason it wouldn\u0027t.",
+      "parentUuid": "66e626ca_2c0a0d09",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "a785e5d293d656d2cfc86260f588a9bd587fb9b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
