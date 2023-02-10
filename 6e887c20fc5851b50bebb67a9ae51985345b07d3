@@ -88,6 +88,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f2700ac9_66ee209b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-10T21:58:31Z",
+      "side": 1,
+      "message": "Following adb API which is `adb disconnect` to disconnect all the connected devices.",
+      "parentUuid": "646c2841_c69e7eda",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d9b3c47b_f6be9baf",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
