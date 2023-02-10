@@ -22,6 +22,30 @@
       },
       "revId": "934f6cd61197411c66b3da1d28a23212776df7ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c17b186_0880389a",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T22:21:40Z",
+      "side": 1,
+      "message": "Different messages are now logged depending on whether or not the controller has been declared optional.",
+      "parentUuid": "9f8c45af_b29f98fc",
+      "range": {
+        "startLine": 343,
+        "startChar": 8,
+        "endLine": 344,
+        "endChar": 48
+      },
+      "revId": "934f6cd61197411c66b3da1d28a23212776df7ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
