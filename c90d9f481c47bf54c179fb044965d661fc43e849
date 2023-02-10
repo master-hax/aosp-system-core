@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ddebf007_522a2112",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T22:01:37Z",
+      "side": 1,
+      "message": "Ah, I see you added that check in `MountV2CgroupController` already 😊\n\nTo answer your original concern about security, if we fail to change the ownership, that means that controller will not be usable by the system. But since the controller is optional, it should not be treated as a critical error. So, I think having an `IsOptionalController` here would be consistent with that logic.",
+      "parentUuid": "61e45e53_063de1c1",
+      "range": {
+        "startLine": 285,
+        "startChar": 8,
+        "endLine": 285,
+        "endChar": 21
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "25fb0bba_7d08fbb9",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 6
