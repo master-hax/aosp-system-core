@@ -22,6 +22,30 @@
       },
       "revId": "958763cefb7825d7738279ee8a0697c4d9f9fd3a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a07034b_a88c052f",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T01:02:32Z",
+      "side": 1,
+      "message": "The loop has been modified such that it continues if activating an optional controller fails.\n\nIf the return type of CgroupMap::ActivateControllers() would be changed into bool, how can the caller tell whether activating a mandatory controller failed or whether activating an optional controller failed without duplicating the loop that occurs in CgroupMap::ActivateControllers()?",
+      "parentUuid": "e5fcc5dc_89de5a56",
+      "range": {
+        "startLine": 237,
+        "startChar": 28,
+        "endLine": 237,
+        "endChar": 70
+      },
+      "revId": "958763cefb7825d7738279ee8a0697c4d9f9fd3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
