@@ -865,7 +865,16 @@ static void load_override_properties() {
 static void property_initialize_ro_product_props() {
     const char* RO_PRODUCT_PROPS_PREFIX = "ro.product.";
     const char* RO_PRODUCT_PROPS[] = {
-            "brand", "device", "manufacturer", "model", "name",
+            "brand",
+            "device",
+            "manufacturer",
+            "model",
+            "name",
+            "brand_for_attestation",
+            "device_for_attestation",
+            "manufacturer_for_attestation",
+            "model_for_attestation",
+            "name_for_attestation",
     };
     const char* RO_PRODUCT_PROPS_ALLOWED_SOURCES[] = {
             "odm", "product", "system_ext", "system", "vendor",
