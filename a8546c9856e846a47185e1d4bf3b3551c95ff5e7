@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a38b0579_8370451d",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-02-10T02:46:26Z",
+      "side": 1,
+      "message": "could you explain a bit why nominal or unknown means we should fallback to the legacy path?",
+      "range": {
+        "startLine": 422,
+        "startChar": 8,
+        "endLine": 422,
+        "endChar": 58
+      },
+      "revId": "a8546c9856e846a47185e1d4bf3b3551c95ff5e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
