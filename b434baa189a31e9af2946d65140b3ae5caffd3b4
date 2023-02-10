@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "112bd0fd_f9720fdc",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T00:55:35Z",
+      "side": 1,
+      "message": "I think that would result in duplication of the loop in CgroupMap::ActivateControllers(). CgroupMap::ActivateControllers() would have to iterate over all controllers to activate them and the caller of that function would have to iterate a second time over all controllers to check whether any of these controllers are optional. Is that what you want me to do?",
+      "parentUuid": "d230c791_c2179f10",
+      "range": {
+        "startLine": 343,
+        "startChar": 69,
+        "endLine": 343,
+        "endChar": 86
+      },
+      "revId": "b434baa189a31e9af2946d65140b3ae5caffd3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a701cc89_1712f927",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 4
