@@ -122,6 +122,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "10499dce_cbfa6d31",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T02:07:36Z",
+      "side": 1,
+      "message": "Something like this:\n```\nstatic bool IsOpionalController(const format::CgroupController* controller)\n{\n    return (controller-\u003eflags() \u0026 CGROUPRC_CONTROLLER_FLAG_OPTIONAL) !\u003d 0;\n}\n\nstatic bool MountV1CgroupController(const CgroupDescriptor\u0026 descriptor) {\n    ...\n    res \u003d mount(...)\n    if (res \u003d\u003d 0)\n        return true;\n\n    if (IsOpionalController(controller)) {\n        LOG(INFO) \u003c\u003c \"Optional \" \u003c\u003c controller-\u003ename() \u003c\u003c \" cgroup controller is not mounted\";\n        return true;\n    }\n    return false;\n}\n\nstatic bool ActivateV2CgroupController(const CgroupDescriptor\u0026 descriptor) {\n    const format::CgroupController* controller \u003d descriptor.controller();\n\n    if (!Mkdir(controller-\u003epath(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {\n        LOG(ERROR) \u003c\u003c \"Failed to create directory for \" \u003c\u003c controller-\u003ename() \u003c\u003c \" cgroup\";\n        return false;\n    }\n\n    if (controller-\u003eflags() \u0026 CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION) {\n        std::string str \u003d \"+\";\n        str +\u003d controller-\u003ename();\n        std::string path \u003d controller-\u003epath();\n        path +\u003d \"/cgroup.subtree_control\";\n\n        if (!base::WriteStringToFile(str, path)) {\n            if (!IsOpionalController(controller))\n                return false;\n            LOG(INFO) \u003c\u003c \"Failed to activate optional controller \" \u003c\u003c controller-\u003ename();\n        }\n    }\n\n    return true;\n}\n```",
+      "parentUuid": "112bd0fd_f9720fdc",
+      "range": {
+        "startLine": 343,
+        "startChar": 69,
+        "endLine": 343,
+        "endChar": 86
+      },
+      "revId": "b434baa189a31e9af2946d65140b3ae5caffd3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a701cc89_1712f927",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 4
