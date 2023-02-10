@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "057e3f16_ac8a36b8",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-02-10T10:55:17Z",
+      "side": 1,
+      "message": "\u003e However, since ShutdownThread.java is supposed to create it, the mkdir here can be skipped actually, hence I removed this mkdir.\n\nIt\u0027s cleaner to just have init do the mkdir. Otherwise you\u0027re sometimes going to write to it when it\u0027s labeled one way, other times when it has the new label. That can be fragile. Having init do the mkdir on boot results in a consistent state for this file. You can remove the mkdir from ShutdownThread.java and leave a comment that init create the directory during boot.",
+      "parentUuid": "6114199c_71386bb9",
+      "range": {
+        "startLine": 929,
+        "startChar": 23,
+        "endLine": 929,
+        "endChar": 43
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd648c72_f1586b22",
