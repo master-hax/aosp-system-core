@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "240cbaf0_8747b711",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1990650
+      },
+      "writtenOn": "2023-02-10T20:03:53Z",
+      "side": 1,
+      "message": "2428472: [TeX] Introduced Telemetry Express Histogram metric Native API | https://android-review.googlesource.com/c/platform/system/core/+/2428472",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
