@@ -22,6 +22,30 @@
       },
       "revId": "a8546c9856e846a47185e1d4bf3b3551c95ff5e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90de4cae_a5628463",
+        "filename": "healthd/BatteryMonitor.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2023-02-10T07:40:13Z",
+      "side": 1,
+      "message": "unknown: the information is not available.\nnominal: the same as BATTERY_HEALTH_GOOD.\n\nBut some parts of the android framework (such as using android.hardware.health V1, 3P app...) still use BatteryHealth as a health status, in order to avoid broken legacy cases, nominal case also need to fallback to the legacy path.",
+      "parentUuid": "a38b0579_8370451d",
+      "range": {
+        "startLine": 422,
+        "startChar": 8,
+        "endLine": 422,
+        "endChar": 58
+      },
+      "revId": "a8546c9856e846a47185e1d4bf3b3551c95ff5e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
