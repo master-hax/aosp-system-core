@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f94fab1_5af3c636",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T22:41:28Z",
+      "side": 1,
+      "message": "the only difference between kSuccess and kNoSuchController is that we issue a warning `PLOG(WARNING) \u003c\u003c \"Cgroup controller activation failed for path \" \u003c\u003c uid_path;` in the `createProcessGroupInternal`. How about leaving the return value as `int` and instead of changing `createProcessGroupInternal` just issue that warning here and keep going, returning kSuccess in the end?\nThis would simplify this patch and aosp/2429117 can be dropped completely.",
+      "range": {
+        "startLine": 240,
+        "startChar": 24,
+        "endLine": 240,
+        "endChar": 59
+      },
+      "revId": "bd2606c05a94cd34032e2d65e31b1d3c72f4ed4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
