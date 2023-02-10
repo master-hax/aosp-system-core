@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b351b56_118925db",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T20:13:47Z",
+      "side": 1,
+      "message": "Here we should do:\n\n```\nif (!IsOpionalController(controller))\n   return false;\nLOG(INFO) \u003c\u003c \"Failed to activate optional controller \" \u003c\u003c controller-\u003ename();\n```",
+      "range": {
+        "startLine": 285,
+        "startChar": 8,
+        "endLine": 285,
+        "endChar": 21
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25fb0bba_7d08fbb9",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T20:13:47Z",
+      "side": 1,
+      "message": "same here:\n```\nif (res !\u003d 0) {\n    if (!IsOpionalController(controller))\n        return false;\n    LOG(INFO) \u003c\u003c \"Failed to mount optional controller \" \u003c\u003c controller-\u003ename();\n}\nreturn true;\n```",
+      "range": {
+        "startLine": 338,
+        "startChar": 4,
+        "endLine": 338,
+        "endChar": 19
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52f683b1_7295c1a2",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T20:13:47Z",
+      "side": 1,
+      "message": "with proposed changes this becomes simply `return success;`",
+      "range": {
+        "startLine": 355,
+        "startChar": 4,
+        "endLine": 361,
+        "endChar": 17
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
