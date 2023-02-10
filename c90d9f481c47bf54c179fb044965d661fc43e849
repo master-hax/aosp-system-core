@@ -71,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5134184_3e391ff0",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T21:34:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25fb0bba_7d08fbb9",
+      "range": {
+        "startLine": 338,
+        "startChar": 4,
+        "endLine": 338,
+        "endChar": 19
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "52f683b1_7295c1a2",
@@ -84,6 +108,30 @@
       "writtenOn": "2023-02-10T20:13:47Z",
       "side": 1,
       "message": "with proposed changes this becomes simply `return success;`",
+      "range": {
+        "startLine": 355,
+        "startChar": 4,
+        "endLine": 361,
+        "endChar": 17
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa5a8587_d4d3e4e8",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-10T21:34:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "52f683b1_7295c1a2",
       "range": {
         "startLine": 355,
         "startChar": 4,
