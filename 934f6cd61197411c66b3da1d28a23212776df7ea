@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f8c45af_b29f98fc",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T22:07:21Z",
+      "side": 1,
+      "message": "It would still be good to distinguish between optional vs mandatory controller failures. Let\u0027s have unique messages:\n```\nif (!IsOptionalController(controller)) {\n    PLOG(ERROR) \u003c\u003c \"Failed to mount controller \" \u003c\u003c controller-\u003ename();\n    return false;\n}\nPLOG(WARNING) \u003c\u003c \"Failed to mount optional controller \" \u003c\u003c controller-\u003ename();\n```",
+      "range": {
+        "startLine": 343,
+        "startChar": 8,
+        "endLine": 344,
+        "endChar": 48
+      },
+      "revId": "934f6cd61197411c66b3da1d28a23212776df7ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
