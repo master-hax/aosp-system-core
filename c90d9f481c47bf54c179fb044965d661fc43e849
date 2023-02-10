@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "61e45e53_063de1c1",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T21:58:22Z",
+      "side": 1,
+      "message": "Ah, I missed this comment. The idea of optional controller is that designers consider failure to bring it up as non-critical, therefore we do not fail if that happens. That\u0027s what the original code is doing and I\u0027m trying to preserve that behavior.\nHowever now I realize that `MountV2CgroupController` should also not fail if the controller is optional to be consistent with that logic. Original version was just issuing `PLOG(ERROR) \u003c\u003c \"Failed to mount cgroup v2\"` and not failing  but that should also be wrong. I think we need the same check for `IsOpionalController` in `MountV2CgroupController`.",
+      "parentUuid": "c7d3492f_39d138e0",
+      "range": {
+        "startLine": 285,
+        "startChar": 8,
+        "endLine": 285,
+        "endChar": 21
+      },
+      "revId": "c90d9f481c47bf54c179fb044965d661fc43e849",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "25fb0bba_7d08fbb9",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 6
