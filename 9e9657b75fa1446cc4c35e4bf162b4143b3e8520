@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "81f56ce0_7f9f5cd0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "please fix this",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 52
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "be39aec8_b1f2e8ba",
         "filename": "debuggerd/Android.bp",
         "patchSetId": 2
@@ -14,6 +37,109 @@
       "writtenOn": "2023-02-06T18:11:10Z",
       "side": 1,
       "message": "|sort",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af24d4a8_f1bedcbb",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "style: `static bool is_microdroid`?",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 19
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8492d0b5_baa8ec19",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "static?",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96233bae_2c908865",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "Should this be really FATAL? It can abort the program depending on the aborter configured.",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 13
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "349a6c54_0261d739",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "document this. consider adding a link to the place where this has to be in sync.",
+      "range": {
+        "startLine": 59,
+        "startChar": 18,
+        "endLine": 59,
+        "endChar": 22
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "007098a0_dcf15e50",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-10T04:42:54Z",
+      "side": 1,
+      "message": "static?",
       "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
