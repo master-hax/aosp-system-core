@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7acecd3f_39cd0fee",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-10T21:24:44Z",
+      "side": 0,
+      "message": "nit: at least in system/core, it\u0027s normal to put the main header first. It ensures that the header is #including everything it\u0027s supposed to, rather than relying on the .cpp file for complete coverage.",
+      "revId": "91297172eb3528c129e20a3d34e03692e1c8ab01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
