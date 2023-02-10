@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf3c74af_ccb5df8e",
+        "filename": "libprocessgroup/cgroup_map.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T20:17:30Z",
+      "side": 1,
+      "message": "yep, this is much better logic IMO.",
+      "range": {
+        "startLine": 239,
+        "startChar": 20,
+        "endLine": 244,
+        "endChar": 21
+      },
+      "revId": "7daca071ce740cf44649baad520eb5abf2ac320e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7333c3b8_f52092d8",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-02-10T20:17:30Z",
+      "side": 1,
+      "message": "You changed the current behavior in aosp/2424612 and restored it here. Let\u0027s avoid that. See my comments in aosp/2424612",
+      "range": {
+        "startLine": 306,
+        "startChar": 12,
+        "endLine": 312,
+        "endChar": 13
+      },
+      "revId": "7daca071ce740cf44649baad520eb5abf2ac320e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
