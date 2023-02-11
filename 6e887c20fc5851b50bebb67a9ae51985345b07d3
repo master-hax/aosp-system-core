@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "f2db355c_76db9a6c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-11T00:03:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66770bcc_e3df9c9e",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "038ec6a7_80e94c1b",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
@@ -48,6 +66,24 @@
       "writtenOn": "2023-02-10T21:24:44Z",
       "side": 1,
       "message": "Consider requiring a |const FileLock\u0026| to Clear, WriteDevices, etc. This prevents callers from making some basic locking mistakes.",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d9fd61a_63e6ff92",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-11T00:03:15Z",
+      "side": 1,
+      "message": "Interesting idea",
+      "parentUuid": "038ec6a7_80e94c1b",
       "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -65,6 +101,24 @@
       "writtenOn": "2023-02-10T21:24:44Z",
       "side": 1,
       "message": "\"arguments\"",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12794fd1_93ff1f90",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-11T00:03:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8263fb1_2bd23fc1",
       "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -135,6 +189,24 @@
       "writtenOn": "2023-02-10T21:24:44Z",
       "side": 1,
       "message": "Did clang-format run? There should be a space in between switch and parens.",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecec3116_1a7a93ec",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2124,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-02-11T00:03:15Z",
+      "side": 1,
+      "message": "Didn\u0027t know about it, now run it over all new files (including the last CL)",
+      "parentUuid": "d9b3c47b_f6be9baf",
       "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
