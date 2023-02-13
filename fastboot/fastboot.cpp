@@ -128,11 +128,6 @@ struct fastboot_buffer {
     int64_t image_size;
 };
 
-static std::vector<std::string> kernel_partitions = {"boot",   "dtbo",          "pvmfw",
-                                                     "vbmeta", "vbmeta_system", "vendor_boot"};
-static std::vector<std::string> os_partitions = {"product", "system", "system_ext",
-                                                 "system system_other.img"};
-
 static std::vector<Image> images = {
         // clang-format off
     { "boot",     "boot.img",         "boot.sig",     "boot",     false, ImageType::BootCritical },
@@ -1577,19 +1572,6 @@ std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot)
     return entry.first->part_name + "_" + slot;
 }
 
-// static std::unique_ptr<FlashTask> FormFlashTask(std::string& slot_override, std::string& text) {
-//     std::string pname, fname;
-//     std::stringstream ss(text);
-//     ss >> pname;
-//     if (!ss.eof()) {
-//         ss >> fname;
-//     } else {
-//         fname = find_item(pname);
-//         if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
-//     }
-//     return std::make_unique<FlashTask>(slot_override, true, pname, fname);
-// }
-
 class FlashAllTool {
   public:
     FlashAllTool(FlashingPlan* fp);
@@ -1607,10 +1589,10 @@ class FlashAllTool {
     // If the image uses the default slot, or the user specified "all", then
     // the paired string will be empty. If the image requests a specific slot
     // (for example, system_other) it is specified instead.
-    using ImageEntry = std::pair<const Image*, std::string>;
 
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
+    std::vector<std::unique_ptr<Task>> tasks_;
     FlashingPlan* fp_;
 };
 
@@ -1635,7 +1617,9 @@ void FlashAllTool::Flash() {
 
     // First flash boot partitions. We allow this to happen either in userspace
     // or in bootloader fastboot.
-    FlashImages(boot_images_);
+    for (auto& i : tasks_) {
+        i->Run();
+    }
 
     std::unique_ptr<FlashSuperLayoutTask> flash_super_task =
             FlashSuperLayoutTask::Initialize(fp_, os_images_);
@@ -2337,17 +2321,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
             FlashTask task(slot_override, pname, fname);
             task.Run();
-        } else if (command == FB_CMD_FLASH_KERNEL) {
-            std::vector<std::unique_ptr<FlashTask>> tasks;
-            for (auto part : kernel_partitions) {
-                std::unique_ptr<FlashTask> flash_task =
-                        std::make_unique<FlashTask>(slot_override, force_flash);
-                // flash_task->Parse(part);
-                tasks.emplace_back(std::move(flash_task));
-            }
-            for (auto& i : tasks) {
-                i->Run();
-            }
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
