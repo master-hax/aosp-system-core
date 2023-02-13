@@ -1579,6 +1579,19 @@ static void CancelSnapshotIfNeeded() {
     }
 }
 
+static std::unique_ptr<FlashTask> FormFlashTask(std::string& slot_override, std::string& text) {
+    std::string pname, fname;
+    std::stringstream ss(text);
+    ss >> pname;
+    if (!ss.eof()) {
+        ss >> fname;
+    } else {
+        fname = find_item(pname);
+        if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
+    }
+    return std::make_unique<FlashTask>(slot_override, true, pname, fname);
+}
+
 class FlashAllTool {
   public:
     FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary,
@@ -1610,6 +1623,9 @@ class FlashAllTool {
     std::string current_slot_;
     std::string secondary_slot_;
 
+    std::vector<std::unique_ptr<FlashTask>> flash_kernel_tasks_;
+    std::vector<std::unique_ptr<FlashTask>> flash_os_tasks_;
+
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
 };
@@ -1639,28 +1655,27 @@ void FlashAllTool::Flash() {
 
     CancelSnapshotIfNeeded();
 
-    // First flash boot partitions. We allow this to happen either in userspace
-    // or in bootloader fastboot.
-    FlashImages(boot_images_);
-
-    if (!OptimizedFlashSuper()) {
-        // Sync the super partition. This will reboot to userspace fastboot if needed.
-        UpdateSuperPartition();
-
-        // Resize any logical partition to 0, so each partition is reset to 0
-        // extents, and will achieve more optimal allocation.
-        for (const auto& [image, slot] : os_images_) {
-            auto resize_partition = [](const std::string& partition) -> void {
-                if (is_logical(partition)) {
-                    fb->ResizePartition(partition, "0");
-                }
-            };
-            do_for_partitions(image->part_name, slot, resize_partition, false);
-        }
+    for (auto& task : flash_kernel_tasks_) {
+        task->Run();
     }
 
-    // Flash OS images, resizing logical partitions as needed.
-    FlashImages(os_images_);
+    // Sync the super partition. This will reboot to userspace fastboot if needed.
+    UpdateSuperPartition();
+
+    // Resize any logical partition to 0, so each partition is reset to 0
+    // extents, and will achieve more optimal allocation.
+    for (const auto& [image, slot] : os_images_) {
+        auto resize_partition = [](const std::string& partition) -> void {
+            if (is_logical(partition)) {
+                fb->ResizePartition(partition, "0");
+            }
+        };
+        do_for_partitions(image->part_name, slot, resize_partition, false);
+    }
+
+    for (auto& task : flash_os_tasks_) {
+        task->Run();
+    }
 }
 
 bool FlashAllTool::OptimizedFlashSuper() {
@@ -1761,19 +1776,11 @@ void FlashAllTool::DetermineSlot() {
 }
 
 void FlashAllTool::CollectImages() {
-    for (size_t i = 0; i < images.size(); ++i) {
-        std::string slot = slot_override_;
-        if (images[i].IsSecondary()) {
-            if (skip_secondary_) {
-                continue;
-            }
-            slot = secondary_slot_;
-        }
-        if (images[i].type == ImageType::BootCritical) {
-            boot_images_.emplace_back(&images[i], slot);
-        } else if (images[i].type == ImageType::Normal) {
-            os_images_.emplace_back(&images[i], slot);
-        }
+    for (size_t i = 0; i < kernel_partitions.size(); i++) {
+        flash_kernel_tasks_.emplace_back(FormFlashTask(slot_override_, kernel_partitions[i]));
+    }
+    for (size_t i = 0; i < os_partitions.size(); i++) {
+        flash_os_tasks_.emplace_back(FormFlashTask(slot_override_, os_partitions[i]));
     }
 }
 
