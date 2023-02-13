@@ -209,6 +209,24 @@
       "parentUuid": "d9b3c47b_f6be9baf",
       "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcddd634_d55aa899",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2124,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-13T18:14:21Z",
+      "side": 1,
+      "message": "Usually it runs automatically when using \"repo upload\" (unless you pass --no-verify)",
+      "parentUuid": "ecec3116_1a7a93ec",
+      "revId": "6e887c20fc5851b50bebb67a9ae51985345b07d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
