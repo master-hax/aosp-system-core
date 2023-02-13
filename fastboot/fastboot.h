@@ -73,8 +73,7 @@ struct FlashingPlan {
           force_flash_(force_flash),
           slot_(_slot_override),
           fb_(_fb),
-          helper_(_source),
-          s_({nullptr, nullptr}) {}
+          helper_(source_) {}
     // If the image uses the default slot, or the user specified "all", then
     // the paired string will be empty. If the image requests a specific slot
     // (for example, system_other) it is specified instead.
@@ -86,7 +85,6 @@ struct FlashingPlan {
     fastboot::FastBootDriver* fb_;
     std::vector<ImageEntry> os_images_;
     SuperFlashHelper helper_;
-    SparsePtr s_;
     std::string super_name_;
     ~FlashingPlan(){};
 };
