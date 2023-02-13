@@ -120,6 +120,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "81e45251_fbdbb718",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-02-13T12:31:05Z",
+      "side": 1,
+      "message": "Can you provide cs.android.com links of what you\u0027re talking about to this comment thread?",
+      "parentUuid": "f0fa9d27_66c60b9e",
+      "range": {
+        "startLine": 929,
+        "startChar": 23,
+        "endLine": 929,
+        "endChar": 43
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd648c72_f1586b22",
