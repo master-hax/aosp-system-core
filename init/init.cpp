@@ -1134,8 +1134,20 @@ int SecondStageMain(int argc, char** argv) {
         }
 
         if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
-            // If there's more work to do, wake up again immediately.
-            if (am.HasMoreCommands()) epoll_timeout = 0ms;
+            if (am.HasMoreCommands()) {
+                epoll_timeout = 0ms;
+            } else {
+                auto action = [&am, &epoll]() {
+                    if (!(prop_waiter_state.MightBeWaiting() ||
+                          Service::is_exec_service_running())) {
+                        epoll.UnregisterHandler(am.EventFd());
+                    }
+                };
+                Result<void> result = epoll.RegisterHandler(am.EventFd(), action, EPOLLIN);
+                if (!result.ok()) {
+                    LOG(ERROR) << result.error();
+                }
+            }
         }
 
         auto epoll_result = epoll.Wait(epoll_timeout);

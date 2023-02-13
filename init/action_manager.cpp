@@ -18,10 +18,17 @@
 
 #include <android-base/logging.h>
 
+#include <sys/eventfd.h>
+
 namespace android {
 namespace init {
 
-ActionManager::ActionManager() : current_command_(0) {}
+ActionManager::ActionManager()
+    : current_command_(0), eventfd_(eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK)) {
+    if (eventfd_ == -1) {
+        PLOG(FATAL) << "Failed to create eventfd for ActionManager";
+    }
+}
 
 size_t ActionManager::CheckAllCommands() {
     size_t failures = 0;
@@ -40,14 +47,25 @@ void ActionManager::AddAction(std::unique_ptr<Action> action) {
     actions_.emplace_back(std::move(action));
 }
 
+void ActionManager::SignalHasMoreCommands() const {
+    uint64_t counter = 1;
+    const int written = write(eventfd_.get(), &counter, sizeof(counter));
+    CHECK(written <= 0 || written == sizeof(counter));
+    if (written < 0) {
+        PLOG(ERROR) << "ActionManager: writing into eventfd failed";
+    }
+}
+
 void ActionManager::QueueEventTrigger(const std::string& trigger) {
     auto lock = std::lock_guard{event_queue_lock_};
     event_queue_.emplace(trigger);
+    SignalHasMoreCommands();
 }
 
 void ActionManager::QueuePropertyChange(const std::string& name, const std::string& value) {
     auto lock = std::lock_guard{event_queue_lock_};
     event_queue_.emplace(std::make_pair(name, value));
+    SignalHasMoreCommands();
 }
 
 void ActionManager::QueueAllPropertyActions() {
@@ -62,6 +80,7 @@ void ActionManager::QueueBuiltinAction(BuiltinFunction func, const std::string& 
 
     event_queue_.emplace(action.get());
     actions_.emplace_back(std::move(action));
+    SignalHasMoreCommands();
 }
 
 void ActionManager::ExecuteOneCommand() {

@@ -21,6 +21,7 @@
 #include <vector>
 
 #include <android-base/thread_annotations.h>
+#include <android-base/unique_fd.h>
 
 #include "action.h"
 #include "builtins.h"
@@ -50,10 +51,12 @@ class ActionManager {
     void DumpState() const;
     void ClearQueue();
     auto size() const { return actions_.size(); }
+    int EventFd() const { return eventfd_.get(); }
 
   private:
     ActionManager(ActionManager const&) = delete;
     void operator=(ActionManager const&) = delete;
+    void SignalHasMoreCommands() const REQUIRES(event_queue_lock_);
 
     std::vector<std::unique_ptr<Action>> actions_;
     std::queue<std::variant<EventTrigger, PropertyChange, BuiltinAction>> event_queue_
@@ -61,6 +64,7 @@ class ActionManager {
     mutable std::mutex event_queue_lock_;
     std::queue<const Action*> current_executing_actions_;
     std::size_t current_command_;
+    android::base::unique_fd eventfd_;
 };
 
 }  // namespace init
