@@ -2334,17 +2334,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
             FlashTask task(slot_override, fp->force_flash_, pname, fname);
             task.Run();
-        } else if (command == FB_CMD_FLASH_KERNEL) {
-            std::vector<std::unique_ptr<FlashTask>> tasks;
-            for (auto part : kernel_partitions) {
-                std::unique_ptr<FlashTask> flash_task =
-                        std::make_unique<FlashTask>(slot_override, force_flash);
-                // flash_task->Parse(part);
-                tasks.emplace_back(std::move(flash_task));
-            }
-            for (auto& i : tasks) {
-                i->Run();
-            }
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
