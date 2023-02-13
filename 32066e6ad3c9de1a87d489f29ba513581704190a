@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0fa9d27_66c60b9e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2023-02-13T12:13:30Z",
+      "side": 1,
+      "message": "Added mkdir to init.rc; however looks like the mkdir in framework side might not be trivial to remove, since the path to shutdown-checkpoints path is maintained by ShutdownThread.java, but mkdir is done by ShutdownCheckPoints.java. Remove the mkdir in ShutdownCheckPoints.java might be unexpected to another users of this class.",
+      "parentUuid": "b7313738_15813d53",
+      "range": {
+        "startLine": 929,
+        "startChar": 23,
+        "endLine": 929,
+        "endChar": 43
+      },
+      "revId": "32066e6ad3c9de1a87d489f29ba513581704190a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd648c72_f1586b22",
