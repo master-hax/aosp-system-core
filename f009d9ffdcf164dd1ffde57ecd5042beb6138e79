@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2544138d_8536cdfd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2023-02-13T23:45:16Z",
+      "side": 1,
+      "message": "Retry presubmit; the previous error is \"no space left on device\".",
+      "revId": "f009d9ffdcf164dd1ffde57ecd5042beb6138e79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
