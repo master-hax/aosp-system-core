@@ -133,11 +133,6 @@ static std::vector<std::string> kernel_partitions = {"boot",   "dtbo",          
 static std::vector<std::string> os_partitions = {"product", "system", "system_ext",
                                                  "system system_other.img"};
 
-static std::vector<std::string> kernel_partitions = {"boot",   "dtbo",          "pvmfw",
-                                                     "vbmeta", "vbmeta_system", "vendor_boot"};
-static std::vector<std::string> os_partitions = {"product", "system", "system_ext",
-                                                 "system system_other.img"};
-
 static std::vector<Image> images = {
         // clang-format off
     { "boot",     "boot.img",         "boot.sig",     "boot",     false, ImageType::BootCritical },
@@ -1589,6 +1584,20 @@ struct FlashingPlan {
     ~FlashingPlan(){};
 };
 
+std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot_) {
+    auto slot = entry.second;
+    if (slot.empty()) {
+        slot = current_slot_;
+    }
+    if (slot.empty()) {
+        return entry.first->part_name;
+    }
+    if (slot == "all") {
+        LOG(FATAL) << "Cannot retrieve a singular name when using all slots";
+    }
+    return entry.first->part_name + "_" + slot;
+}
+
 static std::unique_ptr<FlashTask> FormFlashTask(std::string& slot_override, std::string& text) {
     std::string pname, fname;
     std::stringstream ss(text);
@@ -1622,8 +1631,6 @@ class FlashAllTool {
     // the paired string will be empty. If the image requests a specific slot
     // (for example, system_other) it is specified instead.
     using ImageEntry = std::pair<const Image*, std::string>;
-
-    std::string GetPartitionName(const ImageEntry& entry);
 
     bool skip_secondary_;
     bool wipe_;
@@ -1721,7 +1728,7 @@ bool FlashAllTool::OptimizedFlashSuper() {
     }
 
     for (const auto& entry : os_images_) {
-        auto partition = GetPartitionName(entry);
+        auto partition = GetPartitionName(entry, current_slot_);
         auto image = entry.first;
 
         if (!helper.AddPartition(partition, image->img_name, image->optional_if_no_image)) {
@@ -1746,7 +1753,7 @@ bool FlashAllTool::OptimizedFlashSuper() {
 
     // Remove images that we already flashed, just in case we have non-dynamic OS images.
     auto remove_if_callback = [&, this](const ImageEntry& entry) -> bool {
-        return helper.WillFlash(GetPartitionName(entry));
+        return helper.WillFlash(GetPartitionName(entry, current_slot_));
     };
     os_images_.erase(std::remove_if(os_images_.begin(), os_images_.end(), remove_if_callback),
                      os_images_.end());
@@ -2423,17 +2430,6 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
             FlashTask task(slot_override, force_flash, pname, fname);
             task.Run();
-        } else if (command == FB_CMD_FLASH_KERNEL) {
-            std::vector<std::unique_ptr<FlashTask>> tasks;
-            for (auto part : kernel_partitions) {
-                std::unique_ptr<FlashTask> flash_task =
-                        std::make_unique<FlashTask>(slot_override, force_flash);
-                // flash_task->Parse(part);
-                tasks.emplace_back(std::move(flash_task));
-            }
-            for (auto& i : tasks) {
-                i->Run();
-            }
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
             std::string kernel = next_arg(&args);
