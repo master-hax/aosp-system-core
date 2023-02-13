@@ -74,11 +74,13 @@ FlashSuperLayoutTask::FlashSuperLayoutTask(std::shared_ptr<FlashingPlan> flashin
     : flashing_plan_(flashing_plan) {}
 
 void FlashSuperLayoutTask::Run() {
+    auto s = flashing_plan_->helper_.GetSparseLayout();
+
     std::vector<SparsePtr> files;
-    if (int limit = get_sparse_limit(sparse_file_len(flashing_plan_->s_.get(), false, false))) {
-        files = resparse_file(flashing_plan_->s_.get(), limit);
+    if (int limit = get_sparse_limit(sparse_file_len(s.get(), false, false))) {
+        files = resparse_file(s.get(), limit);
     } else {
-        files.emplace_back(std::move(flashing_plan_->s_));
+        files.emplace_back(std::move(s));
     }
 
     // Send the data to the device.
@@ -88,13 +90,13 @@ void FlashSuperLayoutTask::Run() {
     auto remove_if_callback = [&, this](const ImageEntry& entry) -> bool {
         return flashing_plan_->helper_.WillFlash(GetPartitionName(entry, flashing_plan_->slot_));
     };
+
     flashing_plan_->os_images_.erase(
             std::remove_if(flashing_plan_->os_images_.begin(), flashing_plan_->os_images_.end(),
                            remove_if_callback),
             flashing_plan_->os_images_.end());
 }
 bool FlashSuperLayoutTask::Initialize() {
-
     if (!supports_AB()) {
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return false;
@@ -135,11 +137,6 @@ bool FlashSuperLayoutTask::Initialize() {
                                                   image->optional_if_no_image)) {
             return false;
         }
-    }
-    flashing_plan_->s_ = flashing_plan_->helper_.GetSparseLayout();
-
-    if (!flashing_plan_->s_) {
-        return false;
     }
     return true;
 }
