@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8afc9d0_bfc91a75",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2023-02-14T23:16:44Z",
+      "side": 1,
+      "message": "Might as well make this an absolute path here at the same time.",
+      "range": {
+        "startLine": 698,
+        "startChar": 26,
+        "endLine": 698,
+        "endChar": 28
+      },
+      "revId": "6a057393bebed3400cd41538a9ea707a97c506e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
