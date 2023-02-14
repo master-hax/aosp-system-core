@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d20bda7_255f7019",
+        "filename": "fastboot/README.md",
+        "patchSetId": 15
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-14T19:02:55Z",
+      "side": 1,
+      "message": "Let\u0027s clarify that it\u0027s null terminated.",
+      "revId": "a2174e93106201879a05c734f2b74cc5a00b721b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e0a5dec_c0a014d7",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-14T19:02:55Z",
+      "side": 1,
+      "message": "Let\u0027s not change this (at least in this CL), since existing tooling may be relying on short timeouts.\n\nMaking the response timeout configurable on the command line or via env var may be a better approach.",
+      "revId": "a2174e93106201879a05c734f2b74cc5a00b721b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
