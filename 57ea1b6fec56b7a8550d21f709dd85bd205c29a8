@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e67e2f5_3e09b6fc",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2023-02-14T21:58:41Z",
+      "side": 1,
+      "message": "Neat. I didn\u0027t know you could see when strace was connected here.",
+      "range": {
+        "startLine": 670,
+        "startChar": 46,
+        "endLine": 670,
+        "endChar": 56
+      },
+      "revId": "57ea1b6fec56b7a8550d21f709dd85bd205c29a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "baceb87b_c9b4fe36",
+        "filename": "init/init_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 719,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2023-02-14T21:58:41Z",
+      "side": 1,
+      "message": "Should we have a max timeout here? If for whatever reason strace fails to connect, the test would hang.",
+      "range": {
+        "startLine": 719,
+        "startChar": 8,
+        "endLine": 719,
+        "endChar": 42
+      },
+      "revId": "57ea1b6fec56b7a8550d21f709dd85bd205c29a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
