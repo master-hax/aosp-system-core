@@ -29,6 +29,7 @@
 
 #include <string>
 #include "fastboot_driver.h"
+#include "super_flash_helper.h"
 #include "util.h"
 
 #include <bootimg.h>
@@ -71,7 +72,9 @@ struct FlashingPlan {
           wipe_(wipe),
           force_flash_(force_flash),
           slot_(_slot_override),
-          fb_(_fb) {}
+          fb_(_fb),
+          helper_(_source),
+          s_({nullptr, nullptr}) {}
     // If the image uses the default slot, or the user specified "all", then
     // the paired string will be empty. If the image requests a specific slot
     // (for example, system_other) it is specified instead.
@@ -79,12 +82,12 @@ struct FlashingPlan {
     bool skip_secondary_;
     const bool wipe_;
     const bool force_flash_;
-    const std::string slot_;
+    std::string slot_;
     fastboot::FastBootDriver* fb_;
     std::vector<ImageEntry> os_images_;
-    // SuperFlashHelper helper_;
-    // SparsePtr s_;
-    const std::string super_name_;
+    SuperFlashHelper helper_;
+    SparsePtr s_;
+    std::string super_name_;
     ~FlashingPlan(){};
 };
 
@@ -96,3 +99,8 @@ void do_for_partitions(const std::string& part, const std::string& slot,
 std::string find_item(const std::string& item);
 void reboot_to_userspace_fastboot();
 void syntax_error(const char* fmt, ...);
+bool supports_AB();
+std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot_);
+void flash_partition_files(const std::string& partition, const std::vector<SparsePtr>& files);
+int64_t get_sparse_limit(int64_t size);
+std::vector<SparsePtr> resparse_file(sparse_file* s, int64_t max_size);
