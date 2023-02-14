@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85b8278f_302a558e",
+        "filename": "fastboot/usb.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-02-14T14:17:06Z",
+      "side": 1,
+      "message": "We have `struct usb_handle` with a `ifc_match_func` field (https://android.googlesource.com/platform/system/core/+/refs/heads/master/fastboot/usb_osx.cpp#59) and we have code that performs a `memcpy` of a `usb_handle` (https://android.googlesource.com/platform/system/core/+/refs/heads/master/fastboot/usb_osx.cpp#460).\n\nNow that this type has changed from a pointer to a `std::function`, I don\u0027t think that `memcpy` is safe/valid anymore, so I think we need to also change the `fastboot/usb_osx.cpp` code to handle this change.",
+      "revId": "0ee285aa68c23a6a2b8caac20de858c308171c27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
