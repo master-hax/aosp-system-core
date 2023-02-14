@@ -171,6 +171,30 @@
       },
       "revId": "2a825a634415c8730e854f42511f09217b74d73c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fac2621a_bba79300",
+        "filename": "libutils/include/utils/Mutex.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2023-02-14T01:00:20Z",
+      "side": 1,
+      "message": "But that\u0027s only a check at the end, right? ts may end up looking valid (and in the past) or not. So you could get either ETIMEDOUT or EINVAL, with the former technically not really meeting the current spec. And the Posix spec actually seems to say that it succeeds if the lock is not currently held, which also technically doesn\u0027t meet spec.\n\nThese are clearly nits, which we could fix, but what\u0027s the added value over the standard one?",
+      "parentUuid": "e78ce827_bc7daca8",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 5
+      },
+      "revId": "2a825a634415c8730e854f42511f09217b74d73c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
