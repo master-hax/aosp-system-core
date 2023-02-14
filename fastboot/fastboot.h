@@ -29,6 +29,7 @@
 
 #include <string>
 #include "fastboot_driver.h"
+#include "super_flash_helper.h"
 #include "util.h"
 
 #include <bootimg.h>
@@ -81,8 +82,8 @@ struct FlashingPlan {
 
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
-
-    const std::string super_name_;
+    SuperFlashHelper* helper_ = nullptr;
+    std::string super_name_;
 };
 
 bool should_flash_in_userspace(const std::string& partition_name);
@@ -93,3 +94,8 @@ void do_for_partitions(const std::string& part, const std::string& slot,
 std::string find_item(const std::string& item);
 void reboot_to_userspace_fastboot();
 void syntax_error(const char* fmt, ...);
+bool supports_AB();
+std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot_);
+void flash_partition_files(const std::string& partition, const std::vector<SparsePtr>& files);
+int64_t get_sparse_limit(int64_t size);
+std::vector<SparsePtr> resparse_file(sparse_file* s, int64_t max_size);
