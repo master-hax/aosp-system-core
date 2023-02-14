@@ -14,11 +14,10 @@
 // limitations under the License.
 //
 #include "task.h"
+#include <iostream>
 #include "fastboot.h"
-#include "util.h"
-
-#include "fastboot.h"
-#include "util.h"
+#include "filesystem.h"
+#include "super_flash_helper.h"
 
 FlashTask::FlashTask(const std::string& _slot, const std::string& _pname)
     : pname_(_pname), fname_(find_item(_pname)), slot_(_slot) {
@@ -51,18 +50,86 @@ void RebootTask::Run() {
     if ((reboot_target_ == "userspace" || reboot_target_ == "fastboot")) {
         if (!is_userspace_fastboot()) {
             reboot_to_userspace_fastboot();
-            fp_->fb_->WaitForDisconnect();
+            fp_->fb->WaitForDisconnect();
         }
     } else if (reboot_target_ == "recovery") {
-        fp_->fb_->RebootTo("recovery");
-        fp_->fb_->WaitForDisconnect();
+        fp_->fb->RebootTo("recovery");
+        fp_->fb->WaitForDisconnect();
     } else if (reboot_target_ == "bootloader") {
-        fp_->fb_->RebootTo("bootloader");
-        fp_->fb_->WaitForDisconnect();
+        fp_->fb->RebootTo("bootloader");
+        fp_->fb->WaitForDisconnect();
     } else if (reboot_target_ == "") {
-        fp_->fb_->Reboot();
-        fp_->fb_->WaitForDisconnect();
+        fp_->fb->Reboot();
+        fp_->fb->WaitForDisconnect();
     } else {
         syntax_error("unknown reboot target %s", reboot_target_.c_str());
     }
+}
+
+FlashSuperLayoutTask::FlashSuperLayoutTask(FlashingPlan* _fp) : fp_(_fp) {}
+
+void FlashSuperLayoutTask::Run() {
+    auto s = fp_->helper->GetSparseLayout();
+
+    std::vector<SparsePtr> files;
+    if (int limit = get_sparse_limit(sparse_file_len(s.get(), false, false))) {
+        files = resparse_file(s.get(), limit);
+    } else {
+        files.emplace_back(std::move(s));
+    }
+
+    // Send the data to the device.
+    flash_partition_files(fp_->super_name, files);
+}
+
+std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
+        FlashingPlan* _fp, std::vector<ImageEntry>& os_images) {
+    if (!supports_AB()) {
+        LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
+        return nullptr;
+    }
+    if (_fp->slot == "all") {
+        LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
+        return nullptr;
+    }
+
+    // Does this device use dynamic partitions at all?
+    unique_fd fd = _fp->source->OpenFile("super_empty.img");
+
+    if (fd < 0) {
+        LOG(VERBOSE) << "could not open super_empty.img";
+        return nullptr;
+    }
+
+    // Try to find whether there is a super partition.
+    if (_fp->fb->GetVar("super-partition-name", &_fp->super_name) != fastboot::SUCCESS) {
+        _fp->super_name = "super";
+    }
+    std::string partition_size_str;
+
+    if (_fp->fb->GetVar("partition-size:" + _fp->super_name, &partition_size_str) !=
+        fastboot::SUCCESS) {
+        LOG(VERBOSE) << "Cannot optimize super flashing: could not determine super partition";
+        return nullptr;
+    }
+    _fp->helper = new SuperFlashHelper(*_fp->source);
+    if (!_fp->helper->Open(fd)) {
+        return nullptr;
+    }
+
+    for (const auto& entry : os_images) {
+        auto partition = GetPartitionName(entry, _fp->current_slot);
+        auto image = entry.first;
+
+        if (!_fp->helper->AddPartition(partition, image->img_name, image->optional_if_no_image)) {
+            return nullptr;
+        }
+    }
+    // Remove images that we already flashed, just in case we have non-dynamic OS images.
+    auto remove_if_callback = [&](const ImageEntry& entry) -> bool {
+        return _fp->helper->WillFlash(GetPartitionName(entry, _fp->current_slot));
+    };
+    os_images.erase(std::remove_if(os_images.begin(), os_images.end(), remove_if_callback),
+                    os_images.end());
+    return std::make_unique<FlashSuperLayoutTask>(_fp);
 }
