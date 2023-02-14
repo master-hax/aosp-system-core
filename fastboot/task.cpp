@@ -14,11 +14,12 @@
 // limitations under the License.
 //
 #include "task.h"
+#include <iostream>
 #include "fastboot.h"
-#include "util.h"
+#include "filesystem.h"
+#include "super_flash_helper.h"
 
-#include "fastboot.h"
-#include "util.h"
+using namespace std::string_literals;
 
 FlashTask::FlashTask(const std::string& _slot, const std::string& _pname)
     : pname_(_pname), fname_(find_item(_pname)), slot_(_slot) {
@@ -64,5 +65,117 @@ void RebootTask::Run() {
         fp_->fb->WaitForDisconnect();
     } else {
         syntax_error("unknown reboot target %s", reboot_target_.c_str());
+    }
+}
+
+FlashSuperLayoutTask::FlashSuperLayoutTask(const std::string& _super_name,
+                                           SuperFlashHelper* _helper)
+    : super_name_(_super_name), helper_(_helper) {}
+
+void FlashSuperLayoutTask::Run() {
+    auto s = helper_->GetSparseLayout();
+
+    std::vector<SparsePtr> files;
+    if (int limit = get_sparse_limit(sparse_file_len(s.get(), false, false))) {
+        files = resparse_file(s.get(), limit);
+    } else {
+        files.emplace_back(std::move(s));
+    }
+
+    // Send the data to the device.
+    flash_partition_files(super_name_, files);
+}
+
+std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
+        FlashingPlan* fp, std::vector<ImageEntry>& os_images) {
+    if (!supports_AB()) {
+        LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
+        return nullptr;
+    }
+    if (fp->slot == "all") {
+        LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
+        return nullptr;
+    }
+
+    // Does this device use dynamic partitions at all?
+    unique_fd fd = fp->source->OpenFile("super_empty.img");
+
+    if (fd < 0) {
+        LOG(VERBOSE) << "could not open super_empty.img";
+        return nullptr;
+    }
+
+    std::string super_name;
+    // Try to find whether there is a super partition.
+    if (fp->fb->GetVar("super-partition-name", &super_name) != fastboot::SUCCESS) {
+        super_name = "super";
+    }
+    std::string partition_size_str;
+
+    if (fp->fb->GetVar("partition-size:" + super_name, &partition_size_str) != fastboot::SUCCESS) {
+        LOG(VERBOSE) << "Cannot optimize super flashing: could not determine super partition";
+        return nullptr;
+    }
+    SuperFlashHelper* helper = new SuperFlashHelper(*fp->source);
+    if (!helper->Open(fd)) {
+        return nullptr;
+    }
+
+    for (const auto& entry : os_images) {
+        auto partition = GetPartitionName(entry, fp->current_slot);
+        auto image = entry.first;
+
+        if (!helper->AddPartition(partition, image->img_name, image->optional_if_no_image)) {
+            return nullptr;
+        }
+    }
+    auto s = helper->GetSparseLayout();
+    if (!s) {
+        return nullptr;
+    }
+    // Remove images that we already flashed, just in case we have non-dynamic OS images.
+    auto remove_if_callback = [&](const ImageEntry& entry) -> bool {
+        return helper->WillFlash(GetPartitionName(entry, fp->current_slot));
+    };
+    os_images.erase(std::remove_if(os_images.begin(), os_images.end(), remove_if_callback),
+                    os_images.end());
+    return std::make_unique<FlashSuperLayoutTask>(super_name, helper);
+}
+
+UpdateSuperTask::UpdateSuperTask(FlashingPlan* _fp, std::vector<ImageEntry>& _os_images)
+    : fp_(_fp), os_images_(_os_images) {}
+
+void UpdateSuperTask::Run() {
+    unique_fd fd = fp_->source->OpenFile("super_empty.img");
+    if (fd < 0) {
+        return;
+    }
+    if (!is_userspace_fastboot()) {
+        reboot_to_userspace_fastboot();
+    }
+
+    std::string super_name;
+    if (fp_->fb->GetVar("super-partition-name", &super_name) != fastboot::RetCode::SUCCESS) {
+        super_name = "super";
+    }
+    fp_->fb->Download(super_name, fd, get_file_size(fd));
+
+    std::string command = "update-super:" + super_name;
+    if (fp_->wants_wipe) {
+        command += ":wipe";
+    }
+    fp_->fb->RawCommand(command, "Updating super partition");
+
+    // Retrofit devices have two super partitions, named super_a and super_b.
+    // On these devices, secondary slots must be flashed as physical
+    // partitions (otherwise they would not mount on first boot). To enforce
+    // this, we delete any logical partitions for the "other" slot.
+    if (is_retrofit_device()) {
+        for (const auto& [image, slot] : os_images_) {
+            std::string partition_name = image->part_name + "_"s + slot;
+            if (image->IsSecondary() && is_logical(partition_name)) {
+                fp_->fb->DeletePartition(partition_name);
+            }
+        }
     }
 }
