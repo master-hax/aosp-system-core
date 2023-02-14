@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "19304caa_d8b7d763",
+        "filename": "fastboot/README.md",
+        "patchSetId": 15
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-14T20:00:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d20bda7_255f7019",
+      "revId": "a2174e93106201879a05c734f2b74cc5a00b721b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e0a5dec_c0a014d7",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-02-14T19:02:55Z",
       "side": 1,
       "message": "Let\u0027s not change this (at least in this CL), since existing tooling may be relying on short timeouts.\n\nMaking the response timeout configurable on the command line or via env var may be a better approach.",
+      "revId": "a2174e93106201879a05c734f2b74cc5a00b721b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "774ca913_b37e7c3a",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2023-02-14T20:00:00Z",
+      "side": 1,
+      "message": "Sorry, Of course, This if forgotten revert...",
+      "parentUuid": "8e0a5dec_c0a014d7",
       "revId": "a2174e93106201879a05c734f2b74cc5a00b721b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
