@@ -15,10 +15,8 @@
 //
 #include "task.h"
 #include "fastboot.h"
-#include "util.h"
-
-#include "fastboot.h"
-#include "util.h"
+#include "filesystem.h"
+#include "super_flash_helper.h"
 
 FlashTask::FlashTask(const std::string& _slot) : slot_(_slot){};
 FlashTask::FlashTask(const std::string& _slot, bool _force_flash)
@@ -69,4 +67,76 @@ void RebootTask::Run() {
     } else {
         syntax_error("unknown reboot target %s", reboot_target_.c_str());
     }
+}
+
+FlashSuperLayoutTask::FlashSuperLayoutTask(const ImageSource& _source,
+                                           const std::string& _slot_override,
+                                           fastboot::FastBootDriver* _fb)
+    : source_(_source),
+      slot_(_slot_override),
+      fb_(_fb),
+      helper_(source_),
+      s_(helper_.GetSparseLayout()) {}
+
+void FlashSuperLayoutTask::Run() {
+    std::vector<SparsePtr> files;
+    if (int limit = get_sparse_limit(sparse_file_len(s_.get(), false, false))) {
+        files = resparse_file(s_.get(), limit);
+    } else {
+        files.emplace_back(std::move(s_));
+    }
+
+    // Send the data to the device.
+    flash_partition_files(super_name_, files);
+
+    // Remove images that we already flashed, just in case we have non-dynamic OS images.
+    auto remove_if_callback = [&, this](const ImageEntry& entry) -> bool {
+        return helper_.WillFlash(GetPartitionName(entry, slot_));
+    };
+    os_images_.erase(std::remove_if(os_images_.begin(), os_images_.end(), remove_if_callback),
+                     os_images_.end());
+}
+bool FlashSuperLayoutTask::Initialize() {
+    if (!supports_AB()) {
+        LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
+        return false;
+    }
+    if (slot_ == "all") {
+        LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
+        return false;
+    }
+
+    // Does this device use dynamic partitions at all?
+    unique_fd fd = source_.OpenFile("super_empty.img");
+    if (fd < 0) {
+        LOG(VERBOSE) << "could not open super_empty.img";
+        return false;
+    }
+
+    // Try to find whether there is a super partition.
+    if (fb_->GetVar("super-partition-name", &super_name_) != fastboot::SUCCESS) {
+        super_name_ = "super";
+    }
+    std::string partition_size_str;
+    if (fb_->GetVar("partition-size:" + super_name_, &partition_size_str) != fastboot::SUCCESS) {
+        LOG(VERBOSE) << "Cannot optimize super flashing: could not determine super partition";
+        return false;
+    }
+
+    if (!helper_.Open(fd)) {
+        return false;
+    }
+
+    for (const auto& entry : os_images_) {
+        auto partition = GetPartitionName(entry, slot_);
+        auto image = entry.first;
+
+        if (!helper_.AddPartition(partition, image->img_name, image->optional_if_no_image)) {
+            return false;
+        }
+    }
+    if (!s_) {
+        return false;
+    }
+    return true;
 }

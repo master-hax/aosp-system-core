@@ -128,24 +128,10 @@ struct fastboot_buffer {
     int64_t image_size;
 };
 
-enum class ImageType {
-    // Must be flashed for device to boot into the kernel.
-    BootCritical,
-    // Normal partition to be flashed during "flashall".
-    Normal,
-    // Partition that is never flashed during "flashall".
-    Extra
-};
-
-struct Image {
-    std::string nickname;
-    std::string img_name;
-    std::string sig_name;
-    std::string part_name;
-    bool optional_if_no_image;
-    ImageType type;
-    bool IsSecondary() const { return nickname.empty(); }
-};
+static std::vector<std::string> kernel_partitions = {"boot",   "dtbo",          "pvmfw",
+                                                     "vbmeta", "vbmeta_system", "vendor_boot"};
+static std::vector<std::string> os_partitions = {"product", "system", "system_ext",
+                                                 "system system_other.img"};
 
 static std::vector<Image> images = {
         // clang-format off
@@ -998,7 +984,7 @@ static void DumpInfo() {
     fprintf(stderr, "--------------------------------------------\n");
 }
 
-static std::vector<SparsePtr> resparse_file(sparse_file* s, int64_t max_size) {
+std::vector<SparsePtr> resparse_file(sparse_file* s, int64_t max_size) {
     if (max_size <= 0 || max_size > std::numeric_limits<uint32_t>::max()) {
         die("invalid max size %" PRId64, max_size);
     }
@@ -1043,7 +1029,7 @@ static uint64_t get_uint_var(const char* var_name) {
     return value;
 }
 
-static int64_t get_sparse_limit(int64_t size) {
+int64_t get_sparse_limit(int64_t size) {
     int64_t limit = sparse_limit;
     if (limit == 0) {
         // Unlimited, so see what the target device's limit is.
@@ -1259,8 +1245,7 @@ static void copy_avb_footer(const std::string& partition, struct fastboot_buffer
     lseek(buf->fd.get(), 0, SEEK_SET);
 }
 
-static void flash_partition_files(const std::string& partition,
-                                  const std::vector<SparsePtr>& files) {
+void flash_partition_files(const std::string& partition, const std::vector<SparsePtr>& files) {
     for (size_t i = 0; i < files.size(); i++) {
         sparse_file* s = files[i].get();
         int64_t sz = sparse_file_len(s, true, false);
@@ -1319,7 +1304,7 @@ static int get_slot_count() {
     return count;
 }
 
-static bool supports_AB() {
+bool supports_AB() {
     return get_slot_count() >= 2;
 }
 
@@ -1599,6 +1584,19 @@ struct FlashingPlan {
     ~FlashingPlan(){};
 };
 
+static std::unique_ptr<FlashTask> FormFlashTask(std::string& slot_override, std::string& text) {
+    std::string pname, fname;
+    std::stringstream ss(text);
+    ss >> pname;
+    if (!ss.eof()) {
+        ss >> fname;
+    } else {
+        fname = find_item(pname);
+        if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
+    }
+    return std::make_unique<FlashTask>(slot_override, true, pname, fname);
+}
+
 class FlashAllTool {
   public:
     FlashAllTool(const ImageSource& source, const std::string& slot_override, bool skip_secondary,
@@ -1627,6 +1625,9 @@ class FlashAllTool {
     bool force_flash_;
     std::string current_slot_;
     std::string secondary_slot_;
+
+    std::vector<std::unique_ptr<FlashTask>> flash_kernel_tasks_;
+    std::vector<std::unique_ptr<FlashTask>> flash_os_tasks_;
 
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
@@ -1657,10 +1658,9 @@ void FlashAllTool::Flash() {
 
     CancelSnapshotIfNeeded();
 
-    // First flash boot partitions. We allow this to happen either in userspace
-    // or in bootloader fastboot.
-    FlashImages(boot_images_);
-
+    for (auto& task : flash_kernel_tasks_) {
+        task->Run();
+    }
     if (!OptimizedFlashSuper()) {
         // Sync the super partition. This will reboot to userspace fastboot if needed.
         UpdateSuperPartition();
@@ -1677,8 +1677,9 @@ void FlashAllTool::Flash() {
         }
     }
 
-    // Flash OS images, resizing logical partitions as needed.
-    FlashImages(os_images_);
+    for (auto& task : flash_os_tasks_) {
+        task->Run();
+    }
 }
 
 bool FlashAllTool::OptimizedFlashSuper() {
@@ -1779,19 +1780,12 @@ void FlashAllTool::DetermineSlot() {
 }
 
 void FlashAllTool::CollectImages() {
-    for (size_t i = 0; i < images.size(); ++i) {
-        std::string slot = flashing_plan_->slot_;
-        if (images[i].IsSecondary()) {
-            if (skip_secondary_) {
-                continue;
-            }
-            slot = secondary_slot_;
-        }
-        if (images[i].type == ImageType::BootCritical) {
-            boot_images_.emplace_back(&images[i], slot);
-        } else if (images[i].type == ImageType::Normal) {
-            os_images_.emplace_back(&images[i], slot);
-        }
+    for (size_t i = 0; i < kernel_partitions.size(); i++) {
+        flash_kernel_tasks_.emplace_back(
+                FormFlashTask(flashing_plan_->slot_, kernel_partitions[i]));
+    }
+    for (size_t i = 0; i < os_partitions.size(); i++) {
+        flash_os_tasks_.emplace_back(FormFlashTask(flashing_plan_->slot_, os_partitions[i]));
     }
 }
 
@@ -1858,20 +1852,6 @@ void FlashAllTool::UpdateSuperPartition() {
             }
         }
     }
-}
-
-std::string FlashAllTool::GetPartitionName(const ImageEntry& entry) {
-    auto slot = entry.second;
-    if (slot.empty()) {
-        slot = current_slot_;
-    }
-    if (slot.empty()) {
-        return entry.first->part_name;
-    }
-    if (slot == "all") {
-        LOG(FATAL) << "Cannot retrieve a singular name when using all slots";
-    }
-    return entry.first->part_name + "_" + slot;
 }
 
 class ZipImageSource final : public ImageSource {

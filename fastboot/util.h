@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include <android-base/logging.h>
 #include <android-base/result.h>
 #include <android-base/unique_fd.h>
 #include <bootimg.h>

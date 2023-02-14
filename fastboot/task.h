@@ -18,7 +18,10 @@
 #include <sstream>
 #include <string>
 
+#include "fastboot.h"
 #include "fastboot_driver.h"
+#include "super_flash_helper.h"
+#include "util.h"
 
 class Task {
   public:
@@ -55,4 +58,23 @@ class RebootTask : public Task {
   private:
     std::string reboot_target_ = "";
     fastboot::FastBootDriver* fb_;
+};
+
+class FlashSuperLayoutTask : public Task {
+  public:
+    FlashSuperLayoutTask(const ImageSource& _source, const std::string& _slot_override,
+                         fastboot::FastBootDriver* _fb);
+    bool Initialize();
+    using ImageEntry = std::pair<const Image*, std::string>;
+    void Run() override;
+    ~FlashSuperLayoutTask() {};
+
+  private:
+    const ImageSource& source_;
+    std::string slot_;
+    fastboot::FastBootDriver* fb_;
+    std::vector<ImageEntry> os_images_;
+    SuperFlashHelper helper_;
+    SparsePtr s_;
+    std::string super_name_;
 };
