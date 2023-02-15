@@ -98,7 +98,7 @@ class SnapshotTest : public ::testing::Test {
   protected:
     void SetUp() override {
         SKIP_IF_NON_VIRTUAL_AB();
-
+        SKIP_IF_LAUNCH_BEFORE_ANDROID_R();
         SnapshotTestPropertyFetcher::SetUp();
         InitializeState();
         CleanupTestArtifacts();
@@ -108,8 +108,8 @@ class SnapshotTest : public ::testing::Test {
     }
 
     void TearDown() override {
+        RETURN_IF_LAUNCH_BEFORE_ANDROID_R();
         RETURN_IF_NON_VIRTUAL_AB();
-
         lock_ = nullptr;
 
         CleanupTestArtifacts();
@@ -845,7 +845,7 @@ class SnapshotUpdateTest : public SnapshotTest {
   public:
     void SetUp() override {
         SKIP_IF_NON_VIRTUAL_AB();
-
+        SKIP_IF_LAUNCH_BEFORE_ANDROID_R();
         SnapshotTest::SetUp();
         Cleanup();
 
@@ -914,6 +914,7 @@ class SnapshotUpdateTest : public SnapshotTest {
     }
     void TearDown() override {
         RETURN_IF_NON_VIRTUAL_AB();
+        RETURN_IF_LAUNCH_BEFORE_ANDROID_R();
 
         Cleanup();
         SnapshotTest::TearDown();

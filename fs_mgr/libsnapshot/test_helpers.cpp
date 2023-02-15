@@ -320,5 +320,15 @@ bool IsVirtualAbEnabled() {
     return android::base::GetBoolProperty("ro.virtual_ab.enabled", false);
 }
 
+bool IsLaunchBeforceAndroidR() {
+
+    if (android::base::GetIntProperty("ro.product.first_api_level", 0) < 30) {
+
+        return true;
+    }
+
+    return false;
+}
+
 }  // namespace snapshot
 }  // namespace android

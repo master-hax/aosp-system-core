@@ -189,6 +189,7 @@ class LowSpaceUserdata {
 };
 
 bool IsVirtualAbEnabled();
+bool IsLaunchBeforceAndroidR();
 
 #define SKIP_IF_NON_VIRTUAL_AB()                                                        \
     do {                                                                                \
@@ -204,6 +205,21 @@ bool IsVirtualAbEnabled();
     } while (0)
 
 #define RETURN_IF_NON_VIRTUAL_AB() RETURN_IF_NON_VIRTUAL_AB_MSG("")
+
+#define SKIP_IF_LAUNCH_BEFORE_ANDROID_R()                                                        \
+    do {                                                                                \
+        if (IsLaunchBeforceAndroidR()) GTEST_SKIP() << "Test for Launch with Android R and higher"; \
+    } while (0)
+
+#define RETURN_LAUNCH_BEFORE_ANDROID_R_MSG(msg) \
+    do {                                  \
+        if (IsLaunchBeforceAndroidR()) {      \
+            std::cerr << (msg);           \
+            return;                       \
+        }                                 \
+    } while (0)
+
+#define RETURN_IF_LAUNCH_BEFORE_ANDROID_R() RETURN_LAUNCH_BEFORE_ANDROID_R_MSG("")
 
 }  // namespace snapshot
 }  // namespace android
