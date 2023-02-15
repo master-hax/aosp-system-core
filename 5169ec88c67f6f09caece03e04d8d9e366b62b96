@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a052bc72_d352234a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-15T01:01:23Z",
+      "side": 1,
+      "message": "Most of this is renaming TEST to TEST_F (to use the fixture), renaming SnapuserTest to SnapuserdTest (so printed test names are normalized), and eliminating the \"harness\" variable.",
+      "revId": "5169ec88c67f6f09caece03e04d8d9e366b62b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
