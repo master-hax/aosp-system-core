@@ -29,6 +29,7 @@
 #include <libsnapshot/cow_writer.h>
 #include <lz4.h>
 #include <zlib.h>
+#include <zstd.h>
 
 namespace android {
 namespace snapshot {
@@ -95,6 +96,17 @@ std::basic_string<uint8_t> CompressWorker::Compress(CowCompressionAlgorithm comp
             } else {
                 buffer.resize(compressed_size);
             }
+            return buffer;
+        }
+        case kCowCompressZstd: {
+            std::basic_string<uint8_t> buffer(ZSTD_compressBound(length), '\0');
+            const auto compressed_size =
+                    ZSTD_compress(buffer.data(), buffer.size(), data, length, 20);
+            if (compressed_size <= 0) {
+                LOG(ERROR) << "ZSTD compression failed " << compressed_size;
+                return {};
+            }
+            buffer.resize(compressed_size);
             return buffer;
         }
         default:
