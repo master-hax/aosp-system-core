@@ -200,6 +200,8 @@ bool CowWriter::ParseOptions() {
         compression_ = kCowCompressBrotli;
     } else if (options_.compression == "lz4") {
         compression_ = kCowCompressLz4;
+    } else if (options_.compression == "zstd") {
+        compression_ = kCowCompressZstd;
     } else if (options_.compression == "none") {
         compression_ = kCowCompressNone;
     } else if (!options_.compression.empty()) {
