@@ -163,6 +163,7 @@ cc_defaults {
         "libbrotli",
         "libz",
         "liblz4",
+        "libzstd",
     ],
     export_include_dirs: ["include"],
 }
@@ -501,6 +502,7 @@ cc_binary {
         "libxz",
         "libz",
         "liblz4",
+        "libzstd",
         "libziparchive",
         "update_metadata-protos",
     ],
