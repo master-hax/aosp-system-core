@@ -30,6 +30,7 @@
 #include <zlib.h>
 
 #include "cow_decompress.h"
+#include "libsnapshot/cow_format.h"
 
 namespace android {
 namespace snapshot {
@@ -784,6 +785,9 @@ bool CowReader::ReadData(const CowOperation& op, IByteSink* sink) {
             break;
         case kCowCompressLz4:
             decompressor = IDecompressor::Lz4();
+            break;
+        case kCowCompressZstd:
+            decompressor = IDecompressor::Zstd();
             break;
         default:
             LOG(ERROR) << "Unknown compression type: " << op.compression;
