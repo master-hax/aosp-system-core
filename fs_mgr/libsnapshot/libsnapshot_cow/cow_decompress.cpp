@@ -22,6 +22,7 @@
 #include <brotli/decode.h>
 #include <lz4.h>
 #include <zlib.h>
+#include <zstd.h>
 
 namespace android {
 namespace snapshot {
@@ -307,8 +308,54 @@ class Lz4Decompressor final : public IDecompressor {
     }
 };
 
+class ZstdDecompressor final : public IDecompressor {
+  public:
+    bool Decompress(const size_t output_size) override {
+        size_t actual_buffer_size = 0;
+        auto&& output_buffer = sink_->GetBuffer(output_size, &actual_buffer_size);
+        if (actual_buffer_size != output_size) {
+            LOG(ERROR) << "Failed to allocate buffer of size " << output_size << " only got "
+                       << actual_buffer_size << " bytes";
+            return false;
+        }
+        if (stream_->Size() == output_size) {
+            size_t bytes_read = 0;
+            stream_->Read(output_buffer, output_size, &bytes_read);
+            if (bytes_read != output_size) {
+                LOG(ERROR) << "Failed to read all input at once. Expected: " << output_size
+                           << " actual: " << bytes_read;
+                return false;
+            }
+            sink_->ReturnData(output_buffer, output_size);
+            return true;
+        }
+        std::string input_buffer;
+        input_buffer.resize(stream_->Size());
+        size_t bytes_read = 0;
+        stream_->Read(input_buffer.data(), input_buffer.size(), &bytes_read);
+        if (bytes_read != input_buffer.size()) {
+            LOG(ERROR) << "Failed to read all input at once. Expected: " << input_buffer.size()
+                       << " actual: " << bytes_read;
+            return false;
+        }
+        const auto bytes_decompressed = ZSTD_decompress(output_buffer, output_size,
+                                                        input_buffer.data(), input_buffer.size());
+        if (bytes_decompressed != output_size) {
+            LOG(ERROR) << "Failed to decompress ZSTD block, expected output size: " << output_size
+                       << ", actual: " << bytes_decompressed;
+            return false;
+        }
+        sink_->ReturnData(output_buffer, output_size);
+        return true;
+    }
+};
+
 std::unique_ptr<IDecompressor> IDecompressor::Lz4() {
     return std::make_unique<Lz4Decompressor>();
+}
+
+std::unique_ptr<IDecompressor> IDecompressor::Zstd() {
+    return std::make_unique<ZstdDecompressor>();
 }
 
 }  // namespace snapshot
