@@ -247,16 +247,16 @@ static class ShutdownState {
         WakeMainInitThread();
     }
 
-    std::optional<std::string> CheckShutdown() {
+    std::optional<std::string> CheckShutdown() __attribute__((warn_unused_result)) {
         auto lock = std::lock_guard{shutdown_command_lock_};
         if (do_shutdown_ && !IsShuttingDown()) {
+            do_shutdown_ = false;
             return shutdown_command_;
         }
         return {};
     }
 
     bool do_shutdown() const { return do_shutdown_; }
-    void set_do_shutdown(bool value) { do_shutdown_ = value; }
 
   private:
     std::mutex shutdown_command_lock_;
@@ -1118,7 +1118,6 @@ int SecondStageMain(int argc, char** argv) {
             LOG(INFO) << "Got shutdown_command '" << *shutdown_command
                       << "' Calling HandlePowerctlMessage()";
             HandlePowerctlMessage(*shutdown_command);
-            shutdown_state.set_do_shutdown(false);
         }
 
         if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
