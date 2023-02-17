@@ -174,11 +174,6 @@ static class PropWaiterState {
         return true;
     }
 
-    void ResetWaitForProp() {
-        auto lock = std::lock_guard{lock_};
-        ResetWaitForPropLocked();
-    }
-
     void CheckAndResetWait(const std::string& name, const std::string& value) {
         auto lock = std::lock_guard{lock_};
         // We always record how long init waited for ueventd to tell us cold boot finished.
@@ -227,10 +222,6 @@ static class PropWaiterState {
 
 bool start_waiting_for_property(const char* name, const char* value) {
     return prop_waiter_state.StartWaiting(name, value);
-}
-
-void ResetWaitForProp() {
-    prop_waiter_state.ResetWaitForProp();
 }
 
 static class ShutdownState {
