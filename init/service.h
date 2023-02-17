@@ -96,10 +96,6 @@ class Service {
     void DumpState() const;
     void SetShutdownCritical() { flags_ |= SVC_SHUTDOWN_CRITICAL; }
     bool IsShutdownCritical() const { return (flags_ & SVC_SHUTDOWN_CRITICAL) != 0; }
-    void UnSetExec() {
-        is_exec_service_running_ = false;
-        flags_ &= ~SVC_EXEC;
-    }
     void AddReapCallback(std::function<void(const siginfo_t& siginfo)> callback) {
         reap_callbacks_.emplace_back(std::move(callback));
     }
@@ -158,6 +154,11 @@ class Service {
     void RunService(const std::vector<Descriptor>& descriptors, InterprocessFifo cgroups_activated,
                     InterprocessFifo setsid_finished);
     void SetMountNamespace();
+    void UnSetExec() {
+        is_exec_service_running_ = false;
+        flags_ &= ~SVC_EXEC;
+    }
+
     static unsigned long next_start_order_;
     static bool is_exec_service_running_;
 
