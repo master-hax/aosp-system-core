@@ -1110,7 +1110,8 @@ int SecondStageMain(int argc, char** argv) {
     setpriority(PRIO_PROCESS, 0, 0);
     while (true) {
         // By default, sleep until something happens.
-        std::optional<std::chrono::milliseconds> epoll_timeout;
+        boot_clock::time_point now = boot_clock::now();
+        boot_clock::time_point next_action_time = now + 100 * 365 * 24h;
 
         auto shutdown_command = shutdown_state.CheckShutdown();
         if (shutdown_command) {
@@ -1122,23 +1123,25 @@ int SecondStageMain(int argc, char** argv) {
 
         if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
             am.ExecuteOneCommand();
+            // If there's more work to do, wake up again immediately.
+            if (am.HasMoreCommands()) {
+                next_action_time = now;
+            }
         }
+        // Since the above code examined pending actions, no new actions must be
+        // queued by the code between this line and the Epoll::Wait() call below
+        // without calling WakeMainInitThread().
         if (!IsShuttingDown()) {
             auto next_process_action_time = HandleProcessActions();
 
             // If there's a process that needs restarting, wake up in time for that.
             if (next_process_action_time) {
-                epoll_timeout = std::chrono::ceil<std::chrono::milliseconds>(
-                        *next_process_action_time - boot_clock::now());
-                if (epoll_timeout < 0ms) epoll_timeout = 0ms;
+                next_action_time = *next_process_action_time;
             }
         }
 
-        if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
-            // If there's more work to do, wake up again immediately.
-            if (am.HasMoreCommands()) epoll_timeout = 0ms;
-        }
-
+        now = boot_clock::now();
+        const auto epoll_timeout = std::chrono::ceil<std::chrono::milliseconds>(std::max(next_action_time, now) - now);
         auto epoll_result = epoll.Wait(epoll_timeout);
         if (!epoll_result.ok()) {
             LOG(ERROR) << epoll_result.error();
