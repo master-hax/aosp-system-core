@@ -804,10 +804,6 @@ static void EnterShutdown() {
     shutting_down = true;
     // Skip wait for prop if it is in progress
     ResetWaitForProp();
-    // Clear EXEC flag if there is one pending
-    for (const auto& s : ServiceList::GetInstance()) {
-        s->UnSetExec();
-    }
 }
 
 static void LeaveShutdown() {
