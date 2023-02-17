@@ -1122,7 +1122,14 @@ int SecondStageMain(int argc, char** argv) {
 
         if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
             am.ExecuteOneCommand();
+            // If there's more work to do, wake up again immediately.
+            if (am.HasMoreCommands()) {
+                epoll_timeout = 0ms;
+            }
         }
+        // Since the above code examined pending actions, no new actions must be
+        // queued by the code between this line and the Epoll::Wait() call below
+        // without calling WakeMainInitThread().
         if (!IsShuttingDown()) {
             auto next_process_action_time = HandleProcessActions();
 
@@ -1132,11 +1139,6 @@ int SecondStageMain(int argc, char** argv) {
                         *next_process_action_time - boot_clock::now());
                 if (epoll_timeout < 0ms) epoll_timeout = 0ms;
             }
-        }
-
-        if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
-            // If there's more work to do, wake up again immediately.
-            if (am.HasMoreCommands()) epoll_timeout = 0ms;
         }
 
         auto epoll_result = epoll.Wait(epoll_timeout);
