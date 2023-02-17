@@ -1119,7 +1119,8 @@ int SecondStageMain(int argc, char** argv) {
             HandlePowerctlMessage(*shutdown_command);
         }
 
-        if (!(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
+        if (IsShuttingDown() ||
+            !(prop_waiter_state.MightBeWaiting() || Service::is_exec_service_running())) {
             am.ExecuteOneCommand();
             // If there's more work to do, wake up again immediately.
             if (am.HasMoreCommands()) {
