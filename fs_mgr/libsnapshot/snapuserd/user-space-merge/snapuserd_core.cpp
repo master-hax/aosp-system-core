@@ -39,7 +39,7 @@ SnapshotHandler::SnapshotHandler(std::string misc_name, std::string cow_device,
     backing_store_device_ = std::move(backing_device);
     control_device_ = "/dev/dm-user/" + misc_name_;
     base_path_merge_ = std::move(base_path_merge);
-    num_worker_threads_ = num_workers;
+    num_worker_threads_ = num_worker_threads;
     is_io_uring_enabled_ = use_iouring;
     perform_verification_ = perform_verification;
 }
