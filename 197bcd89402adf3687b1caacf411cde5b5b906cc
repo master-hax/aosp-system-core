@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72348d5b_67df143d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-18T00:29:22Z",
+      "side": 1,
+      "message": "is there actually a bug being worked around here, or is this just convenient for your testing?",
+      "revId": "197bcd89402adf3687b1caacf411cde5b5b906cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
