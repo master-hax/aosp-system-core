@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6e37b0eb_657a0877",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1941790
+      },
+      "writtenOn": "2023-02-20T03:43:07Z",
+      "side": 1,
+      "message": "I have not done that before. Could you tell me the command to run?",
+      "parentUuid": "3da16c9b_590d6421",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "39556f24_87db06fd",
         "filename": "init/selinux.cpp",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2023-02-20T00:45:30Z",
       "side": 1,
       "message": "Please fix this warning.",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07118d60_7a3e7244",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 917,
+      "author": {
+        "id": 1941790
+      },
+      "writtenOn": "2023-02-20T03:43:07Z",
+      "side": 1,
+      "message": "I cann\u0027t see what the warning is. Is it the line length problem?",
+      "parentUuid": "39556f24_87db06fd",
       "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
