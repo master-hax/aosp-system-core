@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3c335f6_e252b1fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-20T00:45:30Z",
+      "side": 1,
+      "message": "This looks fine, but as David introduced this at aosp/1264148, I\u0027d like let him decide.",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39556f24_87db06fd",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 917,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-20T00:45:30Z",
+      "side": 1,
+      "message": "Please fix this warning.",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
