@@ -16,6 +16,23 @@
       "message": "Hi Bart,\n\nWe see this change(patch set 1) is causing boottime regression.\n\nhttps://screenshot.googleplex.com/ByFmcZCQnuJJTFi\n\nhttps://crystalball-presubmit.corp.google.com/dashboard/I58300010133043706\n\nPlease fix this regression before merging this change.",
       "revId": "68a59e1c720871277b01131edb3b64908ad03cbf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d70b559e_029ae7e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-20T00:50:40Z",
+      "side": 1,
+      "message": "Nice! I didn\u0027t know that we turn -Wthread-safety on.",
+      "revId": "68a59e1c720871277b01131edb3b64908ad03cbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
