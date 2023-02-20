@@ -86,6 +86,24 @@
       "parentUuid": "39556f24_87db06fd",
       "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "742534f0_c8cc06ad",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 917,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-20T04:49:03Z",
+      "side": 1,
+      "message": "Oh, didn\u0027t know that the warning is not readable by external contributors. Sorry for that. Yes, it was a line length issue. The exact message was this:\n\n```\nLines longer than 100 characters should be wrapped to improve readability; see https://source.android.com/setup/contribute/code-style#limit-line-length for more details.\n```",
+      "parentUuid": "07118d60_7a3e7244",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
