@@ -16,6 +16,24 @@
       "message": "is there actually a bug being worked around here, or is this just convenient for your testing?",
       "revId": "197bcd89402adf3687b1caacf411cde5b5b906cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8e42f77_d1ba9214",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 1293738
+      },
+      "writtenOn": "2023-02-21T18:14:48Z",
+      "side": 1,
+      "message": "Right, adbd isn\u0027t starting yet so we need a root shell to start it (\"start adbd\")",
+      "parentUuid": "72348d5b_67df143d",
+      "revId": "197bcd89402adf3687b1caacf411cde5b5b906cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
