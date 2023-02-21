@@ -53,6 +53,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a896ba64_273d0863",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-21T01:30:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3c335f6_e252b1fa",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1103c5c_22d54fe5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-21T01:30:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e37b0eb_657a0877",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "39556f24_87db06fd",
@@ -120,6 +156,24 @@
       "side": 1,
       "message": "Thank you. I will fix it in new patch.",
       "parentUuid": "742534f0_c8cc06ad",
+      "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99938c46_fbe659b6",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 917,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-21T01:30:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "78b9ee4a_305fd7ca",
       "revId": "c9cfd7f729ec908cbb84ed1d37a5017ee5109f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
