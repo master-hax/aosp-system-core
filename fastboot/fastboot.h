@@ -28,6 +28,8 @@
 #pragma once
 
 #include <string>
+#include "fastboot_driver.h"
+#include "util.h"
 
 #include <bootimg.h>
 
@@ -38,6 +40,52 @@ class FastBootTool {
     void ParseOsPatchLevel(boot_img_hdr_v1*, const char*);
     void ParseOsVersion(boot_img_hdr_v1*, const char*);
     unsigned ParseFsOption(const char*);
+};
+
+enum class ImageType {
+    // Must be flashed for device to boot into the kernel.
+    BootCritical,
+    // Normal partition to be flashed during "flashall".
+    Normal,
+    // Partition that is never flashed during "flashall".
+    Extra
+};
+
+struct Image {
+    std::string nickname;
+    std::string img_name;
+    std::string sig_name;
+    std::string part_name;
+    bool optional_if_no_image;
+    ImageType type;
+    bool IsSecondary() const { return nickname.empty(); }
+};
+
+using ImageEntry = std::pair<const Image*, std::string>;
+
+struct FlashingPlan {
+    FlashingPlan(const ImageSource& _source, bool skip_secondary, bool wipe, bool force_flash,
+                 const std::string& _slot_override, fastboot::FastBootDriver* _fb)
+        : source_(_source),
+          skip_secondary_(skip_secondary),
+          wipe_(wipe),
+          force_flash_(force_flash),
+          slot_(_slot_override),
+          fb_(_fb) {}
+    // If the image uses the default slot, or the user specified "all", then
+    // the paired string will be empty. If the image requests a specific slot
+    // (for example, system_other) it is specified instead.
+    const ImageSource& source_;
+    bool skip_secondary_;
+    const bool wipe_;
+    const bool force_flash_;
+    const std::string slot_;
+    fastboot::FastBootDriver* fb_;
+    std::vector<ImageEntry> os_images_;
+    // SuperFlashHelper helper_;
+    // SparsePtr s_;
+    const std::string super_name_;
+    ~FlashingPlan(){};
 };
 
 bool should_flash_in_userspace(const std::string& partition_name);
