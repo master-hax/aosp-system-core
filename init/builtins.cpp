@@ -37,6 +37,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
+#include <sys/sysinfo.h>
 #include <sys/system_properties.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -1052,6 +1053,37 @@ static Result<void> do_chmod(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> do_chmod_per_cpu(const BuiltinArguments& args) {
+    bool found = false;
+    for (size_t i = 0; i < args[2].length() - 1; i++) {
+        if (args[2][i] == '%') {
+            if (args[2][i + 1] != 'd' || found) {
+                return Error() << "invalid format string " << args[2];
+            }
+            found = true;
+        }
+    }
+    if (!found) {
+        return Error() << "invalid format string " << args[2];
+    }
+    mode_t mode = get_mode(args[1].c_str());
+    int num_cpus = get_nprocs_conf();
+    char path[256];
+    for (int cpu = 0; cpu < num_cpus; cpu++) {
+        int ret = snprintf(path, 256, args[2].c_str(), cpu);
+        if (ret >= 256) {
+            return Error() << "format string is too big";
+        }
+        if (ret < 0) {
+            return Error() << "sprintf failed";
+        }
+        if (fchmodat(AT_FDCWD, path, mode, AT_SYMLINK_NOFOLLOW) < 0) {
+            return ErrnoErrorIgnoreEnoent() << "fchmodat() for " << path << " failed";
+        }
+    }
+    return {};
+}
+
 static Result<void> do_restorecon(const BuiltinArguments& args) {
     auto restorecon_info = ParseRestorecon(args.args);
     if (!restorecon_info.ok()) {
@@ -1344,6 +1376,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
     static const BuiltinFunctionMap builtin_functions = {
         {"bootchart",               {1,     1,    {false,  do_bootchart}}},
         {"chmod",                   {2,     2,    {true,   do_chmod}}},
+        {"chmod_per_cpu",           {2,     2,    {true,   do_chmod_per_cpu}}},
         {"chown",                   {2,     3,    {true,   do_chown}}},
         {"class_reset",             {1,     1,    {false,  do_class_reset}}},
         {"class_restart",           {1,     2,    {false,  do_class_restart}}},
