@@ -1638,7 +1638,7 @@ TEST_P(GwpAsanCrasherTest, run_gwp_asan_test) {
   StartIntercept(&output_fd);
   FinishCrasher();
   if (recoverable) {
-    AssertDeath(0);
+    AssertDeath(SIGUSR1);
   } else {
     AssertDeath(SIGSEGV);
   }
@@ -1680,6 +1680,24 @@ TEST_P(GwpAsanCrasherTest, DISABLED_run_gwp_asan_test) {
   if (params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
   p[params.access_offset] = 42;
   if (!params.free_before_access) free(static_cast<void*>(const_cast<char*>(p)));
+
+  bool recoverable = std::get<1>(GetParam());
+  ASSERT_TRUE(recoverable);  // Non-recoverable should have crashed.
+
+  // As we're in recoverable mode, trigger another 2x use-after-frees (ensuring
+  // we end with at least one in a different slot), make sure the process still
+  // doesn't crash.
+  p = reinterpret_cast<char* volatile>(malloc(params.alloc_size));
+  char* volatile p2 = reinterpret_cast<char* volatile>(malloc(params.alloc_size));
+  free(static_cast<void*>(const_cast<char*>(p)));
+  free(static_cast<void*>(const_cast<char*>(p2)));
+  *p = 42;
+  *p2 = 42;
+
+  // Use a special signal to indicate that we reached this point, which is expected for recoverable
+  // tests. Without this, under clang coverage, the recoverable+seccomp tests fail because the
+  // minijail prevents some atexit syscalls that clang coverage does.
+  raise(SIGUSR1);
 }
 
 TEST_F(CrasherTest, fdsan_warning_abort_message) {
