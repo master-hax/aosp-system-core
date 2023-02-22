@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eafe384a_0628dd55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1345812
+      },
+      "writtenOn": "2023-02-22T07:58:25Z",
+      "side": 1,
+      "message": "+2 is not dropped so I will submit it once presubmit tests are positive, thanks for reviewing it.",
+      "revId": "0bcf0bf8f3d6f76f59384090944add1f2167907c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
