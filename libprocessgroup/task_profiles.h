@@ -224,4 +224,5 @@ class TaskProfiles {
 
     std::map<std::string, std::shared_ptr<TaskProfile>, std::less<>> profiles_;
     std::map<std::string, std::unique_ptr<IProfileAttribute>, std::less<>> attributes_;
+    mutable std::mutex load_mutex_;
 };

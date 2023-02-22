@@ -616,6 +616,7 @@ TaskProfiles::TaskProfiles() {
 }
 
 bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
+    std::lock_guard<std::mutex> lock(load_mutex_);
     std::string json_doc;
 
     if (!android::base::ReadFileToString(file_name, &json_doc)) {
