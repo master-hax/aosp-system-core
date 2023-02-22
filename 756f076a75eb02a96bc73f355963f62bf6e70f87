@@ -22,6 +22,30 @@
       },
       "revId": "756f076a75eb02a96bc73f355963f62bf6e70f87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4577848_52abebd2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-22T00:55:46Z",
+      "side": 1,
+      "message": "There are several possibilities:\n- Either by inspecting that code. It is relatively easy to see that that code does not queue actions to the am object.\n- Or by adding a comment above the code that computes next_process_action_time that explains that that code should not queue actions.\n\nAnother solution would be not to use the singleton pattern for the ActionManager class but that would be a very invasive solution. This would require to pass the ActionManager object to many methods.\n\nDo you perhaps have a preference?",
+      "parentUuid": "db16f9fd_5b51e057",
+      "range": {
+        "startLine": 10,
+        "startChar": 1,
+        "endLine": 10,
+        "endChar": 64
+      },
+      "revId": "756f076a75eb02a96bc73f355963f62bf6e70f87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
