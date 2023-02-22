@@ -46,6 +46,30 @@
       },
       "revId": "756f076a75eb02a96bc73f355963f62bf6e70f87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79575379_be66a872",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-22T01:13:07Z",
+      "side": 1,
+      "message": "I believe that you did the inspection correctly; that wasn\u0027t the question 😊\n\nI just felt like the condition that this CL depends on is easy to be broken in the future, and wondered if there\u0027s a way to prevent that.\n\nAdding a comment sounds fair. I actually wanted a stronger assertion (like breaking the assumption will make the code not compilable), but if that requires a major refactoring like you described, I don\u0027t want to go that far.",
+      "parentUuid": "f4577848_52abebd2",
+      "range": {
+        "startLine": 10,
+        "startChar": 1,
+        "endLine": 10,
+        "endChar": 64
+      },
+      "revId": "756f076a75eb02a96bc73f355963f62bf6e70f87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
