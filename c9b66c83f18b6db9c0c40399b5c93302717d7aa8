@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d930c35_6bc16de2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-22T00:24:46Z",
+      "side": 1,
+      "message": "at a higher level, not my problem any more, but i\u0027m not a fan of this... it seems overly-specific, and i\u0027m struggling to generalize it.\n\nare we sure this really warrants a new init _builtin_, and shouldn\u0027t just be in a shell script instead?",
+      "revId": "c9b66c83f18b6db9c0c40399b5c93302717d7aa8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79b69a00_bb8877f7",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1073,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-02-22T00:24:46Z",
+      "side": 1,
+      "message": "StringPrintf",
+      "revId": "c9b66c83f18b6db9c0c40399b5c93302717d7aa8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
