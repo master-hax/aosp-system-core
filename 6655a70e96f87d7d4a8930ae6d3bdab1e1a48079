@@ -68,6 +68,24 @@
       "parentUuid": "4a85eebb_38680b87",
       "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f3d613b_465a144a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-23T13:23:56Z",
+      "side": 1,
+      "message": "ok but then does that mean that unprivileged processes can use this directory to fill up the entire disk? I hope to prevent that.",
+      "parentUuid": "b4d197ec_d7409fe2",
+      "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
