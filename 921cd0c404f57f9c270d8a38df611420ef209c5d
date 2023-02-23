@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62d20d6e_f5abbf3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-23T21:26:47Z",
+      "side": 1,
+      "message": "also test fastboot update img.zip",
+      "range": {
+        "startLine": 14,
+        "startChar": 6,
+        "endLine": 14,
+        "endChar": 30
+      },
+      "revId": "921cd0c404f57f9c270d8a38df611420ef209c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a93b6699_be761782",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-02-23T21:26:47Z",
+      "side": 1,
+      "message": "No need for a destructor if your struct isn\u0027t doing anything in constructor",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 22
+      },
+      "revId": "921cd0c404f57f9c270d8a38df611420ef209c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
