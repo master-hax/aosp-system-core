@@ -175,6 +175,24 @@
       "parentUuid": "c1efc4f5_96e1519b",
       "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af7aaba6_3d880d50",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1938090
+      },
+      "writtenOn": "2023-02-23T23:18:03Z",
+      "side": 1,
+      "message": "No problem, can you please add the same reviewers to your new CL?",
+      "parentUuid": "92d03df2_b629bb19",
+      "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
