@@ -22,6 +22,30 @@
       },
       "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85691c19_6369faeb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-23T21:29:32Z",
+      "side": 1,
+      "message": "DebugRebootLogging() can only be called concurrently with CheckShutdown() if sys.powerctl is written twice. My understanding is that sys.powerctl is only written once during a reboot. The sequence is as follows:\n* /system/bin/reboot ... is executed.\n* The sys.powerctl property is set. See also https://source.corp.google.com/android-internal/system/core/reboot/reboot.c \n* property_set() is called.\n* __system_property_set() sends a PROP_MSG_SETPROP2 message.\n* /system/bin/reboot executes the following code:\n\n    // Don\u0027t return early. Give the reboot command time to take effect\n    // to avoid messing up scripts which do \"adb shell reboot \u0026\u0026 adb wait-for-device\"\n    if (cmd \u003d\u003d reboot) {\n        while (1) {\n            pause();\n        }\n    }\n\n* The init process received PROP_MSG_SETPROP2 (handle_property_set_fd()).\n* HandlePropertySet() is called.\n* DebugRebootLogging() is called.\n* PropertySet() is called.\n* NotifyPropertyChange() is called.\n* PropertyChanged() is called.\n* For name \u003d\u003d sys.powerctl, trigger_shutdown() is called.\n* ShutdownState::TriggerShutdown(value) is called.\n* shutdown_command_ and do_shutdown_ are set.\n* WakeMainInitThread() is called.\n* if property_triggers_enabled is true:\n* ActionManager::QueuePropertyChange(name, value) is called.\n* WakeMainInitThread() is called.\n* The main loop is woken up and CheckShutdown() is called.",
+      "parentUuid": "848fa2d0_4b958366",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
