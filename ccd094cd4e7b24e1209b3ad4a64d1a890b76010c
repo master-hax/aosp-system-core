@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a968441_ea9b384c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1941790
+      },
+      "writtenOn": "2023-02-23T02:30:15Z",
+      "side": 1,
+      "message": "@jiyong@google.com Could you please show me the warning from presubmit?",
+      "revId": "ccd094cd4e7b24e1209b3ad4a64d1a890b76010c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
