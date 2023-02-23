@@ -16,6 +16,24 @@
       "message": "@jiyong@google.com Could you please show me the warning from presubmit?",
       "revId": "ccd094cd4e7b24e1209b3ad4a64d1a890b76010c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eab113da_4acd856c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-23T03:56:24Z",
+      "side": 1,
+      "message": "It was for the unresolved comments. Let me close the threads and try again.",
+      "parentUuid": "6a968441_ea9b384c",
+      "revId": "ccd094cd4e7b24e1209b3ad4a64d1a890b76010c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
