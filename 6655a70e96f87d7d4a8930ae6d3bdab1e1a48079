@@ -104,6 +104,24 @@
       "parentUuid": "4f3d613b_465a144a",
       "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc003935_fb527635",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-23T13:30:15Z",
+      "side": 1,
+      "message": "Gotcha! I see we have a neverallow rule.\n\nneverallow { domain -init -odrefresh -system_server } odrefresh_data_file:file *;\n\nThanks.",
+      "parentUuid": "d2fb3e7f_3b3b22f2",
+      "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
