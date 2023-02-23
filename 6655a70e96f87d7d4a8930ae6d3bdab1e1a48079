@@ -50,6 +50,24 @@
       "message": "I think reducing the permission is a better approach here. I wonder if the directory has to be writable even to \"others\". So perhaps 774 (or even 770) could work? The answer of course depends on how the directory is actually used by ART. Over to Nicolas.",
       "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4d197ec_d7409fe2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1884045
+      },
+      "writtenOn": "2023-02-23T11:13:51Z",
+      "side": 1,
+      "message": "We only store compilation logs in this dir, so the access doesn\u0027t really matter.",
+      "parentUuid": "4a85eebb_38680b87",
+      "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
