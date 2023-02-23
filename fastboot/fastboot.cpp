@@ -1585,8 +1585,7 @@ class FlashAllTool {
     std::vector<ImageEntry> os_images_;
     FlashingPlan* fp_;
 };
-// const ImageSource& source, const std::string& slot_override,
-//                           bool skip_secondary, bool wipe, bool force_flash
+
 FlashAllTool::FlashAllTool(FlashingPlan* fp) : fp_(fp) {}
 
 void FlashAllTool::Flash() {
@@ -1608,7 +1607,7 @@ void FlashAllTool::Flash() {
 
     // First flash boot partitions. We allow this to happen either in userspace
     // or in bootloader fastboot.
-    FlashImages(boot_images);
+    FlashImages(boot_images_);
 
     if (!OptimizedFlashSuper()) {
         // Sync the super partition. This will reboot to userspace fastboot if needed.
@@ -1616,7 +1615,7 @@ void FlashAllTool::Flash() {
 
         // Resize any logical partition to 0, so each partition is reset to 0
         // extents, and will achieve more optimal allocation.
-        for (const auto& [image, slot] : os_images) {
+        for (const auto& [image, slot] : os_images_) {
             auto resize_partition = [](const std::string& partition) -> void {
                 if (is_logical(partition)) {
                     fb->ResizePartition(partition, "0");
@@ -1627,7 +1626,7 @@ void FlashAllTool::Flash() {
     }
 
     // Flash OS images, resizing logical partitions as needed.
-    FlashImages(os_images);
+    FlashImages(os_images_);
 }
 
 bool FlashAllTool::OptimizedFlashSuper() {
@@ -1663,7 +1662,7 @@ bool FlashAllTool::OptimizedFlashSuper() {
         return false;
     }
 
-    for (const auto& entry : os_images) {
+    for (const auto& entry : os_images_) {
         auto partition = GetPartitionName(entry);
         auto image = entry.first;
 
@@ -1691,9 +1690,9 @@ bool FlashAllTool::OptimizedFlashSuper() {
     auto remove_if_callback = [&, this](const ImageEntry& entry) -> bool {
         return helper.WillFlash(GetPartitionName(entry));
     };
-    os_images.erase(
-            std::remove_if(os_images.begin(), os_images.end(), remove_if_callback),
-            os_images.end());
+    os_images_.erase(
+            std::remove_if(os_images_.begin(), os_images_.end(), remove_if_callback),
+            os_images_.end());
     return true;
 }
 
@@ -1738,9 +1737,9 @@ void FlashAllTool::CollectImages() {
             slot = fp_->secondary_slot;
         }
         if (images[i].type == ImageType::BootCritical) {
-            boot_images.emplace_back(&images[i], slot);
+            boot_images_.emplace_back(&images[i], slot);
         } else if (images[i].type == ImageType::Normal) {
-            os_images.emplace_back(&images[i], slot);
+            os_images_.emplace_back(&images[i], slot);
         }
     }
 }
@@ -1801,7 +1800,7 @@ void FlashAllTool::UpdateSuperPartition() {
     // partitions (otherwise they would not mount on first boot). To enforce
     // this, we delete any logical partitions for the "other" slot.
     if (is_retrofit_device()) {
-        for (const auto& [image, slot] : os_images) {
+        for (const auto& [image, slot] : os_images_) {
             std::string partition_name = image->part_name + "_"s + slot;
             if (image->IsSecondary() && is_logical(partition_name)) {
                 fb->DeletePartition(partition_name);
@@ -2279,6 +2278,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
 
     fastboot::FastBootDriver fastboot_driver(transport, driver_callbacks, false);
     fb = &fastboot_driver;
+    fp->fb = &fastboot_driver;
 
     const double start = now();
 
@@ -2354,17 +2354,17 @@ int FastBootTool::Main(int argc, char* argv[]) {
         } else if (command == FB_CMD_REBOOT) {
             if (args.size() == 1) {
                 std::string reboot_target = next_arg(&args);
-                reboot_task = std::make_unique<RebootTask>(fb, reboot_target);
+                reboot_task = std::make_unique<RebootTask>(fp.get(), reboot_target);
             } else {
-                reboot_task = std::make_unique<RebootTask>(fb);
+                reboot_task = std::make_unique<RebootTask>(fp.get());
             }
             if (!args.empty()) syntax_error("junk after reboot command");
         } else if (command == FB_CMD_REBOOT_BOOTLOADER) {
-            reboot_task = std::make_unique<RebootTask>(fb, "bootloader");
+            reboot_task = std::make_unique<RebootTask>(fp.get(), "bootloader");
         } else if (command == FB_CMD_REBOOT_RECOVERY) {
-            reboot_task = std::make_unique<RebootTask>(fb, "recovery");
+            reboot_task = std::make_unique<RebootTask>(fp.get(), "recovery");
         } else if (command == FB_CMD_REBOOT_FASTBOOT) {
-            reboot_task = std::make_unique<RebootTask>(fb, "fastboot");
+            reboot_task = std::make_unique<RebootTask>(fp.get(), "fastboot");
         } else if (command == FB_CMD_CONTINUE) {
             fb->Continue();
         } else if (command == FB_CMD_BOOT) {
@@ -2385,7 +2385,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 fname = find_item(pname);
             }
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
-            FlashTask task(slot_override, fp->force_flash, pname, fname);
+            FlashTask task(slot_override, pname, fname);
             task.Run();
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
@@ -2409,7 +2409,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             } else {
                 do_flashall(fp.get());
             }
-            reboot_task = std::make_unique<RebootTask>(fb);
+            reboot_task = std::make_unique<RebootTask>(fp.get());
         } else if (command == "update") {
             bool slot_all = (slot_override == "all");
             if (slot_all) {
@@ -2421,7 +2421,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 filename = next_arg(&args);
             }
             do_update(filename.c_str(), fp.get());
-            reboot_task = std::make_unique<RebootTask>(fb);
+            reboot_task = std::make_unique<RebootTask>(fp.get());
         } else if (command == FB_CMD_SET_ACTIVE) {
             std::string slot = verify_slot(next_arg(&args), false);
             fb->SetActive(slot);
