@@ -139,6 +139,24 @@
       "message": "oh, wait, Bryan, why is this uploaded to the android12-qpr3-release branch, not the master branch or the android12-dev branch?\n\nThis release branch doesn\u0027t seem to accept new changes.",
       "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1efc4f5_96e1519b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1938090
+      },
+      "writtenOn": "2023-02-23T17:27:54Z",
+      "side": 1,
+      "message": "I will have Bryan answer as well, but that\u0027s the branch General Motors is currently on and planning to launch with.",
+      "parentUuid": "5a9642f1_4b29aad7",
+      "revId": "6655a70e96f87d7d4a8930ae6d3bdab1e1a48079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
