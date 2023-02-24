@@ -94,6 +94,30 @@
       },
       "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d193482b_5ec48acb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-02-24T05:22:19Z",
+      "side": 1,
+      "message": "Thanks for the answer, Tom!",
+      "parentUuid": "a35506dc_a8ea0a92",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
