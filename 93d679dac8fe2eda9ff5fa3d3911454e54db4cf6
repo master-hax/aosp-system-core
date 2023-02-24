@@ -118,6 +118,30 @@
       },
       "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "726f653e_1e84c66f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-24T23:53:31Z",
+      "side": 1,
+      "message": "I think that `DebugRebootLogging()` is used. I was trying to explain that `DebugRebootLogging()` is not called concurrently with the code modified by this CL.",
+      "parentUuid": "d193482b_5ec48acb",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
