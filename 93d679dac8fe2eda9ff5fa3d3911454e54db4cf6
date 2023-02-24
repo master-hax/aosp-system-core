@@ -70,6 +70,30 @@
       },
       "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a35506dc_a8ea0a92",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-02-24T05:20:55Z",
+      "side": 1,
+      "message": "IIRC, `set_do_shutdown` wasn\u0027t added for safety, but rather to have clearer message in the logs for debugging b/150863651, so this is fine. If no one is using `DebugRebootLogging()`, which I suspect is the case, I\u0027d even recommend reverting all of the changes related to `DebugRebootLogging()` as it\u0027s essentially dead code.",
+      "parentUuid": "a1ba4c56_75301d2d",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
