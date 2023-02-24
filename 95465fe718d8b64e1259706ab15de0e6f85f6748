@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a241c89_2a79e87f",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1139,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-02-24T05:26:59Z",
+      "side": 0,
+      "message": "These lines are here so that they execute after the `next_process_action_time` lines.\n\nThe code after this change would have a bug: if there are commands in the queue waiting to be run and there is a process that is waiting to restart, `epoll_timeout` would be set to the timeout for `next_process_action_time` and not 0ms as expected.\n\nI think you could do `if (next_process_action_time \u0026\u0026 epoll_timeout !\u003d 0ms)` to avoid that issue.",
+      "revId": "95465fe718d8b64e1259706ab15de0e6f85f6748",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
