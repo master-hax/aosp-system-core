@@ -16,6 +16,23 @@
       "message": "Wow! Great improvement! Thanks!",
       "revId": "667b1efadd8ce8d8cf19d0684a871125cce203d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2342c572_94626b89",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080303
+      },
+      "writtenOn": "2023-02-26T19:48:55Z",
+      "side": 1,
+      "message": "There is BUG with this commit, please check it.\nhttps://issuetracker.google.com/issues/268872725",
+      "revId": "667b1efadd8ce8d8cf19d0684a871125cce203d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
