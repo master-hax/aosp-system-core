@@ -16,6 +16,23 @@
       "message": "By the time this line executes, L1113 could be few ms before?",
       "revId": "8f9a7da1ad24cced37ca30d02357441f07380efd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84df677e_1ccf14d9",
+        "filename": "init/init.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1146,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-02-27T23:48:34Z",
+      "side": 1,
+      "message": "There is a case not handled in the new code. The original code has epoll_timeout initialized as an empty optional, which epoll.Wait() treats as an indefinite timeout. This code doesn\u0027t preserve that behavior.\n\nCan you help us understand why this code needs to be changed? I don\u0027t think either of the two iterations are more readable or less fragile.",
+      "revId": "8f9a7da1ad24cced37ca30d02357441f07380efd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
