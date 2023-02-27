@@ -166,6 +166,30 @@
       },
       "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70e83254_23ce1e7b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-02-27T17:38:35Z",
+      "side": 1,
+      "message": "Yes that\u0027s what I\u0027m saying. The question is directed to you and dvander@ as the OWNERS of init. If you don\u0027t use that function anymore, then it\u0027s likely worth killing and would make the shutdown code cleaner. \n\nIn either case, this change seems fine.",
+      "parentUuid": "39c471a0_906d76b7",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 13,
+        "endChar": 33
+      },
+      "revId": "93d679dac8fe2eda9ff5fa3d3911454e54db4cf6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
