@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c3d06ecd_54ac2101",
+        "filename": "init/init.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1128,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-27T23:55:32Z",
+      "side": 1,
+      "message": "If \u0027now\u0027 would be behind the current time then the max() call on line 1145 will return the value of now assigned on line 1143 and epoll_timeout will be assigned the value zero.",
+      "parentUuid": "3694b2da_1ba68c38",
+      "revId": "8f9a7da1ad24cced37ca30d02357441f07380efd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84df677e_1ccf14d9",
