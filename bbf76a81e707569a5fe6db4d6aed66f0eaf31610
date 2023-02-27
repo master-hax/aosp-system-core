@@ -16,6 +16,24 @@
       "message": "This looks correct to me now.\n\nIs it clearer with these statements combined? The additional warning to not queue events, since the check for HasMoreCommands() is moved earlier, is more brittle and the `epoll_timeout \u003d ...` conditional is less readable than repeating the if condition.",
       "revId": "bbf76a81e707569a5fe6db4d6aed66f0eaf31610",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65bd4fb4_55e02911",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-27T19:18:25Z",
+      "side": 1,
+      "message": "The code for calculating `epoll_timeout` has been reworked to make it more clear. Please take another look.",
+      "parentUuid": "cd879ae3_22ee3734",
+      "revId": "bbf76a81e707569a5fe6db4d6aed66f0eaf31610",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
