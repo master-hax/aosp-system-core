@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8039cfda_6c603047",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1561,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T19:38:16Z",
+      "side": 1,
+      "message": "nit: no trailing underscore",
+      "revId": "3bab3b41d29592b162fa3cd71477774e37d24f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2dcdc6eb_ed1136b7",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T19:38:16Z",
+      "side": 1,
+      "message": "Is it possible to move this into where we create/finalize the flashing plan? Otherwise, it will make having a task list much more awkward, since the flashing plan will be modified as the tasks run. It should really be immutable since it\u0027s shared. (Or, ideally, os_images_ should not be part of the flashing plan.)",
+      "revId": "3bab3b41d29592b162fa3cd71477774e37d24f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aeb901d_16166b5a",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T19:38:16Z",
+      "side": 1,
+      "message": "nit: newline between methods.\n\nThough, I\u0027d change this to a static method, since if it fails, we don\u0027t want the task to exist at all. Eg,\n\n    static std::unique_ptr\u003cFlashSuperLayoutTask\u003e CreateIfSupported(...);",
+      "revId": "3bab3b41d29592b162fa3cd71477774e37d24f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
