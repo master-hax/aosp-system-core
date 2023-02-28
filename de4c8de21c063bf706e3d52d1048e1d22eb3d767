@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fe7f056_c4741e57",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T21:13:55Z",
+      "side": 1,
+      "message": "+2 to fix breakage but this needs unit tests as a follow-up.",
+      "revId": "de4c8de21c063bf706e3d52d1048e1d22eb3d767",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "19a49d07_ef92423b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1582,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T21:13:55Z",
+      "side": 1,
+      "message": "If \"using namespace std::chrono_literals\" you can do:\n\n    std::this_thread::sleep_for(1s);",
+      "revId": "de4c8de21c063bf706e3d52d1048e1d22eb3d767",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
