@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49f54b21_2f7cf943",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 2115,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T19:14:35Z",
+      "side": 1,
+      "message": "This should be std::unique_ptr/std::make_unique. Though.... since it\u0027s declared in main(), it could really just be a stack variable.",
+      "revId": "3d03af98a186f51bf69de4b2b38332c967a6586f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10299721_51cbe447",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-02-28T19:14:35Z",
+      "side": 1,
+      "message": "Member variables of structs don\u0027t get trailing underscores, only members of classes do (https://google.github.io/styleguide/cppguide.html#Variable_Names)\n\n(I\u0027d keep it as a struct, unless you wanted to add lots of boilerplate getters/setters).",
+      "revId": "3d03af98a186f51bf69de4b2b38332c967a6586f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
