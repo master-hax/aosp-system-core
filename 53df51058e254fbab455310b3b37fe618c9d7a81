@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9635fb91_9d2bcf96",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1113,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-28T01:33:38Z",
+      "side": 1,
+      "message": "I think it is more elegant to initialize `next_action_time` to a time far in the future such that std::min() can be used without having to test first whether or not a time point has already been stored in `next_action_time`.",
+      "parentUuid": "0919b6e0_c3bba209",
+      "revId": "53df51058e254fbab455310b3b37fe618c9d7a81",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "28576a99_2ae69fbd",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-02-28T01:01:29Z",
       "side": 1,
       "message": "may",
+      "range": {
+        "startLine": 1131,
+        "startChar": 73,
+        "endLine": 1131,
+        "endChar": 78
+      },
+      "revId": "53df51058e254fbab455310b3b37fe618c9d7a81",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b74caa0f_7b976748",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1131,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-28T01:33:38Z",
+      "side": 1,
+      "message": "I found another text in which \"no new actions must\" occurs with the similar meaning as here (forbidden): https://apps.legislature.ky.gov/law/kar/titles/502/045/015/10493/.",
+      "parentUuid": "28576a99_2ae69fbd",
       "range": {
         "startLine": 1131,
         "startChar": 73,
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6edde012_f83be190",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1139,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-28T01:33:38Z",
+      "side": 1,
+      "message": "Another solution has been implemented, namely using std::min().",
+      "parentUuid": "dca24639_cf0f3525",
+      "revId": "53df51058e254fbab455310b3b37fe618c9d7a81",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "50cf877b_2a21c37c",
@@ -71,6 +131,30 @@
       "writtenOn": "2023-02-28T01:01:29Z",
       "side": 1,
       "message": "Why not `0ms` ?",
+      "range": {
+        "startLine": 1146,
+        "startChar": 67,
+        "endLine": 1146,
+        "endChar": 91
+      },
+      "revId": "53df51058e254fbab455310b3b37fe618c9d7a81",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db0eabbc_c682dda5",
+        "filename": "init/init.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1146,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-02-28T01:33:38Z",
+      "side": 1,
+      "message": "`0s` is one letter less than `0ms` :-)\n\nI\u0027m open to suggestions for alternatives for `boot_clock::duration{0s}`. One possible alternative is `{}` but I\u0027m not sure any reviewer likes that alternative?",
+      "parentUuid": "50cf877b_2a21c37c",
       "range": {
         "startLine": 1146,
         "startChar": 67,
