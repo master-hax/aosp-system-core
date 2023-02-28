@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "481a4f61_2636fcb3",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1128,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-02-28T02:14:41Z",
+      "side": 1,
+      "message": "This can be an assignment since next_action_time is always 0, right?",
+      "revId": "4a4981c3026071c08746e203feecd99244d2ad58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
