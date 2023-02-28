@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bed4c5c_ea29c8e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2023-02-28T06:07:29Z",
+      "side": 1,
+      "message": "This works well on microdroid",
+      "revId": "304c0f1c14a72fa20bafb4bf7b5b44e6ca1ca01c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
