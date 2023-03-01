@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaa76545_f99513d6",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1584,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-01T21:23:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee7f4d91_ba411fa3",
+      "range": {
+        "startLine": 1584,
+        "startChar": 28,
+        "endLine": 1584,
+        "endChar": 39
+      },
+      "revId": "6ed13270c10d1dfab56e8412daf3aea80558cb3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5bf643c3_600fe418",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "530c4656_d9f014f9",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1585,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-01T21:23:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bf643c3_600fe418",
+      "range": {
+        "startLine": 1585,
+        "startChar": 28,
+        "endLine": 1585,
+        "endChar": 37
+      },
+      "revId": "6ed13270c10d1dfab56e8412daf3aea80558cb3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "deab82f9_79d37afa",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-03-01T18:43:33Z",
       "side": 1,
       "message": "remove unnecessary comment?",
+      "range": {
+        "startLine": 1588,
+        "startChar": 0,
+        "endLine": 1589,
+        "endChar": 77
+      },
+      "revId": "6ed13270c10d1dfab56e8412daf3aea80558cb3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5b2b5fc_62012de3",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1589,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-01T21:23:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "deab82f9_79d37afa",
       "range": {
         "startLine": 1588,
         "startChar": 0,
