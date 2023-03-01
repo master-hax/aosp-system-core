@@ -16,6 +16,24 @@
       "message": "This can be an assignment since next_action_time is always 0, right?",
       "revId": "4a4981c3026071c08746e203feecd99244d2ad58",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6aa98f6a_8d14d714",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1128,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-01T20:36:35Z",
+      "side": 1,
+      "message": "`next_action_time` is always equal to `far_future` here. Yes, this code could be changed into `next_action_time \u003d boot_clock::now();`. I have added `std::min(next_action_time,` to make the code more uniform and to make it easier to add more `next_action_time` assignments in the future.",
+      "parentUuid": "481a4f61_2636fcb3",
+      "revId": "4a4981c3026071c08746e203feecd99244d2ad58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
