@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bb1b2ae_221a8699",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-03-01T21:59:45Z",
+      "side": 1,
+      "message": "There is also a trailing whitespace comment that looks real.",
+      "revId": "b73fa61de90fd9afc0ca5ae2b48152ac4396c3ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42e273bb_5b824d93",
+        "filename": "shell_and_utilities/README.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-03-01T21:59:45Z",
+      "side": 1,
+      "message": "is the\n\nThe current wording is kind of awkward.",
+      "range": {
+        "startLine": 22,
+        "startChar": 27,
+        "endLine": 22,
+        "endChar": 29
+      },
+      "revId": "b73fa61de90fd9afc0ca5ae2b48152ac4396c3ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
