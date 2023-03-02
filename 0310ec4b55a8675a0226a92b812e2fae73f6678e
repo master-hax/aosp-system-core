@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07b5ea24_56cb747c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1307979
+      },
+      "writtenOn": "2023-03-02T00:51:49Z",
+      "side": 1,
+      "message": "The test failures are unrelated (flakes and a timeout).",
+      "revId": "0310ec4b55a8675a0226a92b812e2fae73f6678e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e739ed8_b6daf752",
