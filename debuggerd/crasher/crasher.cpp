@@ -159,7 +159,10 @@ noinline void sigsegv_non_null() {
 }
 
 noinline void fprintf_null() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     fprintf(nullptr, "oops");
+#pragma clang diagnostic pop
 }
 
 noinline void readdir_null() {
