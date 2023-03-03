@@ -159,7 +159,10 @@ noinline void sigsegv_non_null() {
 }
 
 noinline void fprintf_null() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     fprintf(nullptr, "oops");
+#pragma clang diagnostic pop
 }
 
 noinline void readdir_null() {
@@ -167,8 +170,11 @@ noinline void readdir_null() {
 }
 
 noinline int strlen_null() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     char* sneaky_null = nullptr;
     return strlen(sneaky_null);
+#pragma clang diagnostic pop
 }
 
 static int usage() {
