@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85cc39c8_0c912c54",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-03T21:40:20Z",
+      "side": 1,
+      "message": "move definition out of for loop",
+      "range": {
+        "startLine": 188,
+        "startChar": 8,
+        "endLine": 192,
+        "endChar": 10
+      },
+      "revId": "13d958f9b3517711dd4c392866e113da02bc7e1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cf98f96_7e1c7680",
+        "filename": "fastboot/task.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-03T21:40:20Z",
+      "side": 1,
+      "message": "no need to define one if you don\u0027t need to do anything in dtor",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 88,
+        "endChar": 20
+      },
+      "revId": "13d958f9b3517711dd4c392866e113da02bc7e1d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
