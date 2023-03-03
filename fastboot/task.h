@@ -69,3 +69,13 @@ class FlashSuperLayoutTask : public Task {
     std::string super_name_;
     SuperFlashHelper* helper_ = nullptr;
 };
+
+class UpdateSuperTask : public Task {
+  public:
+    UpdateSuperTask(FlashingPlan* _fp, std::vector<ImageEntry>& _os_images);
+    void Run() override;
+
+  private:
+    FlashingPlan* fp_;
+    std::vector<ImageEntry>& os_images_;
+};
