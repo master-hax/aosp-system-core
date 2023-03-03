@@ -1622,21 +1622,15 @@ void FlashAllTool::Flash() {
     std::unique_ptr<FlashSuperLayoutTask> flash_super_task =
             FlashSuperLayoutTask::Initialize(fp_, os_images_);
 
-    if (flash_super_task) {
+    if (!flash_super_task) {
         // Sync the super partition. This will reboot to userspace fastboot if needed.
         std::unique_ptr<UpdateSuperTask> update_super_task =
                 std::make_unique<UpdateSuperTask>(fp_, os_images_);
         update_super_task->Run();
         // Resize any logical partition to 0, so each partition is reset to 0
         // extents, and will achieve more optimal allocation.
-        for (const auto& [image, slot] : os_images_) {
-            auto resize_partition = [](const std::string& partition) -> void {
-                if (is_logical(partition)) {
-                    fb->ResizePartition(partition, "0");
-                }
-            };
-            do_for_partitions(image->part_name, slot, resize_partition, false);
-        }
+        std::unique_ptr<ResizeTask> resize_task = std::make_unique<ResizeTask>(fp_, os_images_);
+        resize_task->Run();
     }
     flash_super_task->Run();
     FlashImages(os_images_);
