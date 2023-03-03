@@ -179,3 +179,17 @@ void UpdateSuperTask::Run() {
         }
     }
 }
+
+ResizeTask::ResizeTask(FlashingPlan* _fp, std::vector<ImageEntry>& _os_images)
+    : fp_(_fp), os_images_(_os_images) {}
+
+void ResizeTask::Run() {
+    for (const auto& [image, slot] : os_images_) {
+        auto resize_partition = [this](const std::string& partition) -> void {
+            if (is_logical(partition)) {
+                fp_->fb->ResizePartition(partition, "0");
+            }
+        };
+        do_for_partitions(image->part_name, slot, resize_partition, false);
+    }
+}
