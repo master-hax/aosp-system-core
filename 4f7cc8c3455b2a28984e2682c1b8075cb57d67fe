@@ -16,6 +16,23 @@
       "message": "Folks, this is a fix for a P0 bug. Could you please review ASAP?",
       "revId": "4f7cc8c3455b2a28984e2682c1b8075cb57d67fe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81ed8d64_4b2742c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-03-03T04:37:52Z",
+      "side": 1,
+      "message": "Is this a complete revert, or a fix forward?",
+      "revId": "4f7cc8c3455b2a28984e2682c1b8075cb57d67fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
