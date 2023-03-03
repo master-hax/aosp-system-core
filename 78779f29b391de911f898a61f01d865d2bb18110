@@ -39,6 +39,23 @@
       "message": "From the backtrace in https://b.corp.google.com/issues/271249018#comment1 looks like a failure inside android::hardware::bluetooth::BtBcmProtocol::Initialize, which has nothing to do with this revert AFAICT.\n\nPlease confirm that this change is the real cause before reverting. -1 for now.",
       "revId": "78779f29b391de911f898a61f01d865d2bb18110",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d99c837_15675468",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-03T16:21:23Z",
+      "side": 1,
+      "message": "aosp/2467504 should be enough to fix the regression.",
+      "revId": "78779f29b391de911f898a61f01d865d2bb18110",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
