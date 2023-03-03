@@ -139,3 +139,41 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
                     os_images.end());
     return std::make_unique<FlashSuperLayoutTask>(super_name, std::move(helper));
 }
+
+UpdateSuperTask::UpdateSuperTask(FlashingPlan* fp, const std::vector<ImageEntry>& os_images)
+    : fp_(fp), os_images_(os_images) {}
+
+void UpdateSuperTask::Run() {
+    unique_fd fd = fp_->source->OpenFile("super_empty.img");
+    if (fd < 0) {
+        return;
+    }
+    if (!is_userspace_fastboot()) {
+        reboot_to_userspace_fastboot();
+    }
+
+    std::string super_name;
+    if (fp_->fb->GetVar("super-partition-name", &super_name) != fastboot::RetCode::SUCCESS) {
+        super_name = "super";
+    }
+    fp_->fb->Download(super_name, fd, get_file_size(fd));
+
+    std::string command = "update-super:" + super_name;
+    if (fp_->wants_wipe) {
+        command += ":wipe";
+    }
+    fp_->fb->RawCommand(command, "Updating super partition");
+
+    // Retrofit devices have two super partitions, named super_a and super_b.
+    // On these devices, secondary slots must be flashed as physical
+    // partitions (otherwise they would not mount on first boot). To enforce
+    // this, we delete any logical partitions for the "other" slot.
+    if (is_retrofit_device()) {
+        for (const auto& [image, slot] : os_images_) {
+            std::string partition_name = image->part_name + "_"s + slot;
+            if (image->IsSecondary() && is_logical(partition_name)) {
+                fp_->fb->DeletePartition(partition_name);
+            }
+        }
+    }
+}
