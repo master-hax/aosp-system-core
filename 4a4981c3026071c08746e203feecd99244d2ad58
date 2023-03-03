@@ -34,6 +34,24 @@
       "parentUuid": "481a4f61_2636fcb3",
       "revId": "4a4981c3026071c08746e203feecd99244d2ad58",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a448f26_1c4d7f90",
+        "filename": "init/init.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1128,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2023-03-03T19:59:20Z",
+      "side": 1,
+      "message": "This feels like go/yagni to me. These timeouts haven\u0027t been meaningfully modified in over a decade [1], so there\u0027s no need to make them easier to modify. A tautological comparison could confuse readers.\n\n1: https://cs.android.com/android/platform/superproject/+/android-5.0.1_r1:system/core/init/init.c;l\u003d1112",
+      "parentUuid": "6aa98f6a_8d14d714",
+      "revId": "4a4981c3026071c08746e203feecd99244d2ad58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
