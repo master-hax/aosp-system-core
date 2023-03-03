@@ -79,3 +79,16 @@ class UpdateSuperTask : public Task {
     FlashingPlan* fp_;
     std::vector<ImageEntry>& os_images_;
 };
+
+class ResizeTask : public Task {
+  public:
+    ResizeTask(FlashingPlan* _fp, const std::string& _pname, const std::string& _size,
+               const std::string& _slot);
+    void Run() override;
+
+  private:
+    FlashingPlan* fp_;
+    const std::string pname_;
+    const std::string size_;
+    const std::string slot_;
+};
