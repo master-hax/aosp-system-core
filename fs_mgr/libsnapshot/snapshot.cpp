@@ -20,7 +20,7 @@
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
-
+#include <sys/resource.h>
 #include <filesystem>
 #include <optional>
 #include <thread>
@@ -392,6 +392,9 @@ Return SnapshotManager::CreateCowImage(LockedFile* lock, const std::string& name
         return Return::Error();
     }
 
+    if (setpriority(PRIO_PROCESS, gettid(), 19)) {
+        LOG(ERROR) << "Failed to set priority for TID: " << gettid();
+    }
     std::string cow_image_name = GetCowImageDeviceName(name);
     int cow_flags = IImageManager::CREATE_IMAGE_DEFAULT;
     return Return(images_->CreateBackingImage(cow_image_name, status.cow_file_size(), cow_flags));
