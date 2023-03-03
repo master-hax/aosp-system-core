@@ -179,3 +179,16 @@ void UpdateSuperTask::Run() {
         }
     }
 }
+
+ResizeTask::ResizeTask(FlashingPlan* _fp, const std::string& _pname, const std::string& _size,
+                       const std::string& _slot)
+    : fp_(_fp), pname_(_pname), size_(_size), slot_(_slot) {}
+
+void ResizeTask::Run() {
+    auto resize_partition = [this](const std::string& partition) -> void {
+        if (is_logical(partition)) {
+            fp_->fb->ResizePartition(partition, size_);
+        }
+    };
+    do_for_partitions(pname_, slot_, resize_partition, false);
+}
