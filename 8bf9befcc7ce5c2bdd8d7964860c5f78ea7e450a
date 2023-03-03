@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dd0acb4_028ddc70",
+        "filename": "debuggerd/crasher/crasher.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-03T23:56:31Z",
+      "side": 1,
+      "message": "(this is the alternative, btw... clang is not very clever :-( )",
+      "revId": "8bf9befcc7ce5c2bdd8d7964860c5f78ea7e450a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
