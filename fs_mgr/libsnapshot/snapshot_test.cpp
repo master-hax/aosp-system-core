@@ -99,7 +99,15 @@ class SnapshotTest : public ::testing::Test {
     void SetUp() override {
         SKIP_IF_NON_VIRTUAL_AB();
 
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
         SnapshotTestPropertyFetcher::SetUp();
+=======
+        SetupProperties();
+        if (!DeviceSupportsMode()) {
+            GTEST_SKIP() << "Mode not supported on this device";
+        }
+
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
         InitializeState();
         CleanupTestArtifacts();
         FormatFakeSuper();
@@ -107,6 +115,47 @@ class SnapshotTest : public ::testing::Test {
         ASSERT_TRUE(sm->BeginUpdate());
     }
 
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
+=======
+    void SetupProperties() {
+        std::unordered_map<std::string, std::string> properties;
+
+        ASSERT_TRUE(android::base::SetProperty("snapuserd.test.dm.snapshots", "0"))
+                << "Failed to disable property: virtual_ab.userspace.snapshots.enabled";
+        ASSERT_TRUE(android::base::SetProperty("snapuserd.test.io_uring.force_disable", "0"))
+                << "Failed to set property: snapuserd.test.io_uring.disabled";
+
+        if (FLAGS_force_mode == "vabc-legacy") {
+            ASSERT_TRUE(android::base::SetProperty("snapuserd.test.dm.snapshots", "1"))
+                    << "Failed to disable property: virtual_ab.userspace.snapshots.enabled";
+            properties["ro.virtual_ab.compression.enabled"] = "true";
+            properties["ro.virtual_ab.userspace.snapshots.enabled"] = "false";
+        } else if (FLAGS_force_mode == "vab-legacy") {
+            properties["ro.virtual_ab.compression.enabled"] = "false";
+            properties["ro.virtual_ab.userspace.snapshots.enabled"] = "false";
+        }
+
+        if (FLAGS_force_iouring_disable == "iouring_disabled") {
+            ASSERT_TRUE(android::base::SetProperty("snapuserd.test.io_uring.force_disable", "1"))
+                    << "Failed to set property: snapuserd.test.io_uring.disabled";
+            properties["ro.virtual_ab.io_uring.enabled"] = "false";
+        }
+
+        auto fetcher = std::make_unique<SnapshotTestPropertyFetcher>("_a", std::move(properties));
+        IPropertyFetcher::OverrideForTesting(std::move(fetcher));
+
+        if (GetLegacyCompressionEnabledProperty() || CanUseUserspaceSnapshots()) {
+            // If we're asked to test the device's actual configuration, then it
+            // may be misconfigured, so check for kernel support as libsnapshot does.
+            if (FLAGS_force_mode.empty()) {
+                snapuserd_required_ = KernelSupportsCompressedSnapshots();
+            } else {
+                snapuserd_required_ = true;
+            }
+        }
+    }
+
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
     void TearDown() override {
         RETURN_IF_NON_VIRTUAL_AB();
 
@@ -114,6 +163,16 @@ class SnapshotTest : public ::testing::Test {
 
         CleanupTestArtifacts();
         SnapshotTestPropertyFetcher::TearDown();
+    }
+
+    bool DeviceSupportsMode() {
+        if (FLAGS_force_mode.empty()) {
+            return true;
+        }
+        if (snapuserd_required_ && !KernelSupportsCompressedSnapshots()) {
+            return false;
+        }
+        return true;
     }
 
     void InitializeState() {
@@ -132,6 +191,11 @@ class SnapshotTest : public ::testing::Test {
         // completing a merge, the snapshot stops existing, so we can't
         // get an accurate list to remove.
         lock_ = nullptr;
+
+        // If there is no image manager, the test was skipped.
+        if (!image_manager_) {
+            return;
+        }
 
         std::vector<std::string> snapshots = {"test-snapshot", "test_partition_a",
                                               "test_partition_b"};
@@ -847,6 +911,11 @@ class SnapshotUpdateTest : public SnapshotTest {
         SKIP_IF_NON_VIRTUAL_AB();
 
         SnapshotTest::SetUp();
+        if (!image_manager_) {
+            // Test was skipped.
+            return;
+        }
+
         Cleanup();
 
         // Cleanup() changes slot suffix, so initialize it again.
@@ -2327,8 +2396,17 @@ class ImageManagerTest : public SnapshotTest, public WithParamInterface<uint64_t
     }
     void TearDown() override {
         RETURN_IF_NON_VIRTUAL_AB();
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
         return;  // BUG(149738928)
 
+=======
+        CleanUp();
+    }
+    void CleanUp() {
+        if (!image_manager_) {
+            return;
+        }
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
         EXPECT_TRUE(!image_manager_->BackingImageExists(kImageName) ||
                     image_manager_->DeleteBackingImage(kImageName));
     }

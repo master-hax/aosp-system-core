@@ -26,6 +26,7 @@
 #include <android-base/strings.h>
 #include <fs_mgr/roots.h>
 
+using android::dm::DeviceMapper;
 using android::dm::kSectorSize;
 using android::fiemap::FiemapStatus;
 using android::fs_mgr::EnsurePathMounted;
@@ -183,8 +184,58 @@ void AppendExtent(RepeatedPtrField<chromeos_update_engine::Extent>* extents, uin
     new_extent->set_num_blocks(num_blocks);
 }
 
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
 bool IsCompressionEnabled() {
     return android::base::GetBoolProperty("ro.virtual_ab.compression.enabled", false);
+=======
+bool GetLegacyCompressionEnabledProperty() {
+    auto fetcher = IPropertyFetcher::GetInstance();
+    return fetcher->GetBoolProperty("ro.virtual_ab.compression.enabled", false);
+}
+
+bool GetUserspaceSnapshotsEnabledProperty() {
+    auto fetcher = IPropertyFetcher::GetInstance();
+    return fetcher->GetBoolProperty("ro.virtual_ab.userspace.snapshots.enabled", false);
+}
+
+bool CanUseUserspaceSnapshots() {
+    if (!GetUserspaceSnapshotsEnabledProperty()) {
+        return false;
+    }
+
+    auto fetcher = IPropertyFetcher::GetInstance();
+
+    const std::string UNKNOWN = "unknown";
+    const std::string vendor_release =
+            fetcher->GetProperty("ro.vendor.build.version.release_or_codename", UNKNOWN);
+
+    // No user-space snapshots if vendor partition is on Android 12
+    if (vendor_release.find("12") != std::string::npos) {
+        LOG(INFO) << "Userspace snapshots disabled as vendor partition is on Android: "
+                  << vendor_release;
+        return false;
+    }
+
+    if (IsDmSnapshotTestingEnabled()) {
+        LOG(INFO) << "Userspace snapshots disabled for testing";
+        return false;
+    }
+    if (!KernelSupportsCompressedSnapshots()) {
+        LOG(ERROR) << "Userspace snapshots requested, but no kernel support is available.";
+        return false;
+    }
+    return true;
+}
+
+bool GetIouringEnabledProperty() {
+    auto fetcher = IPropertyFetcher::GetInstance();
+    return fetcher->GetBoolProperty("ro.virtual_ab.io_uring.enabled", false);
+}
+
+bool GetXorCompressionEnabledProperty() {
+    auto fetcher = IPropertyFetcher::GetInstance();
+    return fetcher->GetBoolProperty("ro.virtual_ab.compression.xor.enabled", false);
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
 }
 
 std::string GetOtherPartitionName(const std::string& name) {
@@ -195,5 +246,18 @@ std::string GetOtherPartitionName(const std::string& name) {
     return name.substr(0, name.size() - suffix.size()) + other_suffix;
 }
 
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
+=======
+bool IsDmSnapshotTestingEnabled() {
+    auto fetcher = IPropertyFetcher::GetInstance();
+    return fetcher->GetBoolProperty("snapuserd.test.dm.snapshots", false);
+}
+
+bool KernelSupportsCompressedSnapshots() {
+    auto& dm = DeviceMapper::Instance();
+    return dm.GetTargetByName("user", nullptr);
+}
+
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
 }  // namespace snapshot
 }  // namespace android

@@ -2805,8 +2805,41 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     LOG(INFO) << " dap_metadata.cow_version(): " << dap_metadata.cow_version()
               << " writer.GetCowVersion(): " << writer.GetCowVersion();
 
+<<<<<<< HEAD   (559eba Merge "Revert "Add group ID for reading tracefs"" into andro)
     bool use_compression = IsCompressionEnabled() && dap_metadata.vabc_enabled() &&
                            !device_->IsRecovery() && cow_format_support;
+=======
+    // Deduce supported features.
+    bool userspace_snapshots = CanUseUserspaceSnapshots();
+    bool legacy_compression = GetLegacyCompressionEnabledProperty();
+
+    std::string vabc_disable_reason;
+    if (!dap_metadata.vabc_enabled()) {
+        vabc_disable_reason = "not enabled metadata";
+    } else if (device_->IsRecovery()) {
+        vabc_disable_reason = "recovery";
+    } else if (!cow_format_support) {
+        vabc_disable_reason = "cow format not supported";
+    } else if (!KernelSupportsCompressedSnapshots()) {
+        vabc_disable_reason = "kernel missing userspace block device support";
+    }
+
+    if (!vabc_disable_reason.empty()) {
+        if (userspace_snapshots) {
+            LOG(INFO) << "Userspace snapshots disabled: " << vabc_disable_reason;
+        }
+        if (legacy_compression) {
+            LOG(INFO) << "Compression disabled: " << vabc_disable_reason;
+        }
+        userspace_snapshots = false;
+        legacy_compression = false;
+    }
+
+    const bool using_snapuserd = userspace_snapshots || legacy_compression;
+    if (!using_snapuserd) {
+        LOG(INFO) << "Using legacy Virtual A/B (dm-snapshot)";
+    }
+>>>>>>> CHANGE (4c17a0 libsnapshot: Fix test failures on certain configurations.)
 
     std::string compression_algorithm;
     if (use_compression) {
