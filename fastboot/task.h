@@ -32,8 +32,8 @@ class Task {
 
 class FlashTask : public Task {
   public:
-    FlashTask(const std::string& _slot, const std::string& _pname);
-    FlashTask(const std::string& _slot, const std::string& _pname, const std::string& _fname);
+    FlashTask(const std::string& slot, const std::string& pname);
+    FlashTask(const std::string& slot, const std::string& pname, const std::string& fname);
 
     void Run() override;
     ~FlashTask() {}
@@ -46,8 +46,8 @@ class FlashTask : public Task {
 
 class RebootTask : public Task {
   public:
-    RebootTask(FlashingPlan* _fp);
-    RebootTask(FlashingPlan* _fp, const std::string& _reboot_target);
+    RebootTask(FlashingPlan* fp);
+    RebootTask(FlashingPlan* fp, const std::string& reboot_target);
     void Run() override;
     ~RebootTask() {}
 
