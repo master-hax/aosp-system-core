@@ -68,8 +68,7 @@ void RebootTask::Run() {
     }
 }
 
-FlashSuperLayoutTask::FlashSuperLayoutTask(const std::string& super_name,
-                                           SuperFlashHelper* helper)
+FlashSuperLayoutTask::FlashSuperLayoutTask(const std::string& super_name, SuperFlashHelper* helper)
     : super_name_(super_name), helper_(helper) {}
 
 void FlashSuperLayoutTask::Run() {
@@ -192,3 +191,5 @@ void ResizeTask::Run() {
     };
     do_for_partitions(pname_, slot_, resize_partition, false);
 }
+
+DeleteTask::DeleteTask(FlashingPlan* fp, const std::string& pname) : fp_(fp), pname_(pname){};
