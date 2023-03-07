@@ -34,6 +34,24 @@
       "parentUuid": "29698b68_ae196f60",
       "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1db9d5ab_f92a4012",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1752,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T18:50:43Z",
+      "side": 0,
+      "message": "It\u0027s a very weird edge case that only affects Pixel 3. If you\u0027re on the \"a\" slot, we\u0027ll delete system_b. But Pixel 3 has a physical \"system_b\" partition, so the is_logical() check will fail, and we\u0027ll skip the resize. So deleting is okay.\n\nHaving delete tasks sounds good.",
+      "parentUuid": "7e501968_eb6185ef",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
