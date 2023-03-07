@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c116aaca_57064fb6",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 1628,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T15:55:33Z",
+      "side": 1,
+      "message": "I think this should be if (!flash_super_task) ?",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ed529e5_cc939742",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T15:55:33Z",
+      "side": 1,
+      "message": "And then this line needs \"if (flash_super_task) {\"",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6e1ebd0_09f7410a",
+        "filename": "fastboot/task.h",
+        "patchSetId": 23
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T15:55:33Z",
+      "side": 1,
+      "message": "nit: no _ prefix needed",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49b374cb_5d92bc52",
+        "filename": "fastboot/task.h",
+        "patchSetId": 23
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T15:55:33Z",
+      "side": 1,
+      "message": "empty dtor not needed",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
