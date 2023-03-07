@@ -16,6 +16,24 @@
       "message": "Can we fold this logic into the \"resize partition\" loop? That seems like a more logical place.",
       "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e501968_eb6185ef",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1752,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-07T18:17:48Z",
+      "side": 0,
+      "message": "I\u0027m thinking we should add a delete task and create task to keep the code consistent. (won\u0027t be used by fastboot-info.txt). In the \"resize partition\" loop we can move this check and add a delete task. My question would be if we delete a partition, do we still want to resize it? or would that fail",
+      "parentUuid": "29698b68_ae196f60",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

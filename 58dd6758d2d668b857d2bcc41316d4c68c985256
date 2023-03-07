@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "44ac65ae_c56fc56b",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-07T18:17:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bdb45ba3_e3413d2e",
+      "revId": "58dd6758d2d668b857d2bcc41316d4c68c985256",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d29027de_a8d66213",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-03-07T16:14:04Z",
       "side": 1,
       "message": "const here",
+      "revId": "58dd6758d2d668b857d2bcc41316d4c68c985256",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f1c4885_68f672ff",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-07T18:17:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d29027de_a8d66213",
       "revId": "58dd6758d2d668b857d2bcc41316d4c68c985256",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
