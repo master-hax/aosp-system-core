@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2244105e_e1d44f94",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-03-07T00:18:53Z",
+      "side": 1,
+      "message": "the max_comp_streams was removed at 4.6 era.\n\nThus, can we simple remove the handling parts?",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 21
+      },
+      "revId": "c7cdaa16cf1638bd1c3cd34cbf8532c38b2fe42d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
