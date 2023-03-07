@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27e1c5fc_84a9404f",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T21:57:51Z",
+      "side": 1,
+      "message": "Pass the sparse layout here, rather than the helper. Then you can put SuperFlashHelper on the stack rather than using new/make_unique.",
+      "revId": "12a0c04928112b21ca1f268344180c6584dc3fb0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
