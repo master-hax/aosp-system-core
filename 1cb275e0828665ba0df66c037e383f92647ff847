@@ -70,6 +70,30 @@
       },
       "revId": "1cb275e0828665ba0df66c037e383f92647ff847",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "834d74a2_39c819d6",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 37
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-07T19:16:53Z",
+      "side": 1,
+      "message": "The SetupCgroup() function decides whether to mount the blkio/io controller in the v1 or in the v2 hierarchy. I am not aware of any device-specific code that uses a mechanism from outside libprocessgroup to mount the bklio/io controller. Hence I think the probability is low that there is code outside libprocessgroup that mounts the blkio controller explicitly in the v1 hierarchy.",
+      "parentUuid": "49723061_98d65f4d",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 41,
+        "endChar": 7
+      },
+      "revId": "1cb275e0828665ba0df66c037e383f92647ff847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
