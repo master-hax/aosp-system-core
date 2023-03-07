@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6de1f84_db721734",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1631,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-07T18:27:17Z",
+      "side": 1,
+      "message": "auto",
+      "range": {
+        "startLine": 1631,
+        "startChar": 8,
+        "endLine": 1631,
+        "endChar": 40
+      },
+      "revId": "38ec3b86d3bc117d9b5c6ae79a77c4d1438a6e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
