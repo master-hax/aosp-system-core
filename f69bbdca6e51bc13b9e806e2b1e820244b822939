@@ -22,6 +22,30 @@
       },
       "revId": "f69bbdca6e51bc13b9e806e2b1e820244b822939",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08069eca_07f2df0d",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 37
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-07T04:54:58Z",
+      "side": 0,
+      "message": "Without this patch, the two v1 blkio cgroups are /dev/blkio and /dev/blkio/background.\n\nWith this patch applied, the unified hierarchy is effective. This means that the cgroup path changes into /sys/fs/cgroup/uid_${uid}/pid_${pid}.",
+      "parentUuid": "ad15c06b_6ffa0b71",
+      "range": {
+        "startLine": 464,
+        "startChar": 12,
+        "endLine": 464,
+        "endChar": 32
+      },
+      "revId": "f69bbdca6e51bc13b9e806e2b1e820244b822939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
