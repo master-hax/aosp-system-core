@@ -16,6 +16,24 @@
       "message": "(this is the alternative, btw... clang is not very clever :-( )",
       "revId": "8bf9befcc7ce5c2bdd8d7964860c5f78ea7e450a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3aac8832_1a5124db",
+        "filename": "debuggerd/crasher/crasher.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-07T01:16:33Z",
+      "side": 1,
+      "message": "no, i meant \"instead of using the pragma in fprintf_null(), you can just \u0027hide\u0027 the pointer like this test does\". basically, the compiler isn\u0027t doing any clever dataflow analysis or anything --- it\u0027s literally [no pun intended] just looking for a _literal_ `nullptr` argument to the function.\n\n_if_ you use the pragma, you can just say `return strlen(nullptr);`. but if you use `FILE* sneaky_null \u003d nullptr;` you don\u0027t need the pragma in fprintf_null(). either\u0027s fine, but we should probably only use one, and we should probably be consistent.\n\n(i think the argument for `sneaky_null` is basically \"it\u0027s less code\", whereas the argument for `#pragma` is \"it\u0027s probably more resilient _if_ the compiler ever gets cleverer (which it probably won\u0027t, because it\u0027s too expensive)\". you can\u0027t have both :-) )",
+      "parentUuid": "4dd0acb4_028ddc70",
+      "revId": "8bf9befcc7ce5c2bdd8d7964860c5f78ea7e450a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
