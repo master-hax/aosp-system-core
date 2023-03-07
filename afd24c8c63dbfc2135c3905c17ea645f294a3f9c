@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9e9624a9_01e4e621",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1637,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-07T18:17:34Z",
+      "side": 1,
+      "message": "how does this syntax? I get \"no matching constructor for initialization of \u0027std::unique_ptr\u003cResizeTask\u003e\u0027\" if I try that.",
+      "parentUuid": "bacf0dc7_c9af3957",
+      "range": {
+        "startLine": 1636,
+        "startChar": 12,
+        "endLine": 1637,
+        "endChar": 84
+      },
+      "revId": "afd24c8c63dbfc2135c3905c17ea645f294a3f9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "86fce75d_e945b90b",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2023-03-07T17:52:31Z",
       "side": 1,
       "message": "remove",
+      "range": {
+        "startLine": 2363,
+        "startChar": 0,
+        "endLine": 2363,
+        "endChar": 52
+      },
+      "revId": "afd24c8c63dbfc2135c3905c17ea645f294a3f9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91c17794_6b4d8aac",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2363,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-07T18:17:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86fce75d_e945b90b",
       "range": {
         "startLine": 2363,
         "startChar": 0,
