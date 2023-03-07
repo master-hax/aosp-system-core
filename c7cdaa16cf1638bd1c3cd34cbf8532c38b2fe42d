@@ -22,6 +22,29 @@
       },
       "revId": "c7cdaa16cf1638bd1c3cd34cbf8532c38b2fe42d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21113089_47a07fde",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2091,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-03-07T01:56:24Z",
+      "side": 1,
+      "message": "This was \"r+\" before and switched to \"re\" in the following CL.\nSo using \"re+\" now is probably fine.\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/776909/2/fs_mgr/fs_mgr.cpp\n\nJust out of curiosity, why this issue is found recently?\n(Given above CL was merged in 2018)",
+      "range": {
+        "startLine": 2091,
+        "startChar": 46,
+        "endLine": 2091,
+        "endChar": 49
+      },
+      "revId": "c7cdaa16cf1638bd1c3cd34cbf8532c38b2fe42d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
