@@ -94,6 +94,30 @@
       },
       "revId": "1cb275e0828665ba0df66c037e383f92647ff847",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "580f2b8d_3c8b3726",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 37
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-07T19:23:41Z",
+      "side": 1,
+      "message": "Ok, I see. So, we expect the controller to be mounted only according to this json file, therefore expect only io controller be mounted after this change. Makes sense.",
+      "parentUuid": "834d74a2_39c819d6",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 41,
+        "endChar": 7
+      },
+      "revId": "1cb275e0828665ba0df66c037e383f92647ff847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
