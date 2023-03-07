@@ -52,6 +52,46 @@
       "parentUuid": "e8240d18_617d6cbd",
       "revId": "ae29d3567e62f2315d67ce651fb91b1ebfac5d69",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00ed3441_bb9c6b15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-03-07T07:03:50Z",
+      "side": 1,
+      "message": "Can this be done by bootloader by not setting `androidboot.load_modules_parallel` to `true` when booting into recovery? Then `want_parallel` will become false.",
+      "revId": "ae29d3567e62f2315d67ce651fb91b1ebfac5d69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f532f5df_74c94dcc",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-03-07T07:03:50Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Check Contents: Lines longer than 100 characters should be wrapped to improve readability; see https://source.android.com/setup/contribute/code-style#limit-line-length for more details.\n\nAnalyzer Description: Validates that changes do not have prohibited expressions in them.\nOwner: ayeaye-team@google.com\n\nLines longer than 100 characters should be wrapped to improve readability; see https://source.android.com/setup/contribute/code-style#limit-line-length for more details.",
+      "range": {
+        "startLine": 215,
+        "startChar": 0,
+        "endLine": 215,
+        "endChar": 107
+      },
+      "revId": "ae29d3567e62f2315d67ce651fb91b1ebfac5d69",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
