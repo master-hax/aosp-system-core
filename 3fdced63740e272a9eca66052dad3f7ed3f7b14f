@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29698b68_ae196f60",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1752,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T16:14:04Z",
+      "side": 0,
+      "message": "Can we fold this logic into the \"resize partition\" loop? That seems like a more logical place.",
+      "revId": "3fdced63740e272a9eca66052dad3f7ed3f7b14f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdb45ba3_e3413d2e",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T16:14:04Z",
+      "side": 1,
+      "message": "const std::vector\u003cImageEntry\u003e\u0026",
+      "revId": "58dd6758d2d668b857d2bcc41316d4c68c985256",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d29027de_a8d66213",
+        "filename": "fastboot/task.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-07T16:14:04Z",
+      "side": 1,
+      "message": "const here",
+      "revId": "58dd6758d2d668b857d2bcc41316d4c68c985256",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
