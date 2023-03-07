@@ -2353,6 +2353,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             fb->CreatePartition(partition, size);
         } else if (command == FB_CMD_DELETE_PARTITION) {
             std::string partition = next_arg(&args);
+            auto delete_task = std::make_unique<DeleteTask>(fp.get(), partition);
             fb->DeletePartition(partition);
         } else if (command == FB_CMD_RESIZE_PARTITION) {
             std::string partition = next_arg(&args);
