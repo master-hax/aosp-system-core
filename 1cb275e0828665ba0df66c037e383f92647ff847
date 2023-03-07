@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd75acfb_68fbe734",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 37
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-07T04:20:44Z",
+      "side": 1,
+      "message": "What if a device mounts and uses blkio cgroup? This change will prevent its use even though it is mounted, no?",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 41,
+        "endChar": 7
+      },
+      "revId": "1cb275e0828665ba0df66c037e383f92647ff847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

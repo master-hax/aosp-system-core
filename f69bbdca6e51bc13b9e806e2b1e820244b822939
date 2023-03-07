@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad15c06b_6ffa0b71",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 37
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-07T04:20:44Z",
+      "side": 0,
+      "message": "IIUC with this patch LowIoPriority, NormalIoPriority, HighIoPriority and MaxIoPriority profiles result in a task being joined into the root cgroup. Then why bother with them at all if the tasks start in the root cgroup anyway?",
+      "range": {
+        "startLine": 464,
+        "startChar": 12,
+        "endLine": 464,
+        "endChar": 32
+      },
+      "revId": "f69bbdca6e51bc13b9e806e2b1e820244b822939",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
