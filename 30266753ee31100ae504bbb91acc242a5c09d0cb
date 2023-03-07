@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca8ca3ed_66aa3e90",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-07T23:51:53Z",
+      "side": 1,
+      "message": "Looks like this overlaps with aosp/2475605. Let\u0027s squash and consolidate them?\nI would also keep the resulting patch at the end of the series as the least important from functionality POV.",
+      "range": {
+        "startLine": 449,
+        "startChar": 0,
+        "endLine": 456,
+        "endChar": 5
+      },
+      "revId": "30266753ee31100ae504bbb91acc242a5c09d0cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
