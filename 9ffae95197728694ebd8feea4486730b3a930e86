@@ -34,6 +34,24 @@
       "parentUuid": "87a22155_9264b6b2",
       "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb7e49ae_9b0f5186",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 26
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-08T21:46:46Z",
+      "side": 1,
+      "message": "D\u0027oh - yeah, good catch. In that case make_unique and pass both.",
+      "parentUuid": "7ad3cd3a_ed063ba0",
+      "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
