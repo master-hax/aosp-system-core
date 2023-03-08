@@ -5,6 +5,9 @@
       },
       {
         "name": "VtsHalRemotelyProvisionedComponentTargetTest"
+      },
+      {
+        "name": "RkpdAppUnitTests"
       }
   ]
 }
