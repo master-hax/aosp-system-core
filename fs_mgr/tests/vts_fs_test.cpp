@@ -27,7 +27,13 @@ using testing::Contains;
 using testing::Not;
 
 static int GetVsrLevel() {
-    return android::base::GetIntProperty("ro.vendor.api_level", -1);
+    int boardFirstApiLevel = android::base::GetIntProperty("ro.board.first_api_level", -1);
+    int boardApiLevel = android::base::GetIntProperty("ro.board.api_level", -1);
+    int vsrLevel = std::max(boardFirstApiLevel, boardApiLevel);
+    if (vsrLevel == -1) {
+        return android::base::GetIntProperty("ro.product.first_api_level", -1);
+    }
+    return vsrLevel;
 }
 
 TEST(fs, ErofsSupported) {
