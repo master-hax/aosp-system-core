@@ -16,6 +16,24 @@
       "message": "This should just be:\n\n    SuperFlashHelper helper(*fp-\u003esource);\n\nAvoid using \"new\" since it requires manual delete.",
       "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ad3cd3a_ed063ba0",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 26
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-08T21:07:59Z",
+      "side": 1,
+      "message": "Actually thinking about this.. you left this comment \n\n// Note: the SparsePtr if non-null should not outlive SuperFlashHelper, since\n    // it depends on open fds and data pointers.\n\nshouldn\u0027t the superflashhelper be passed to the task instead of the sparseptr? since we\u0027ll need superflashhelper to still exist.",
+      "parentUuid": "87a22155_9264b6b2",
+      "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
