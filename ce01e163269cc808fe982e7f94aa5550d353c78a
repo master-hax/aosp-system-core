@@ -22,6 +22,30 @@
       },
       "revId": "ce01e163269cc808fe982e7f94aa5550d353c78a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c689dbc_a6ddb789",
+        "filename": "fastboot/task.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-08T23:09:53Z",
+      "side": 1,
+      "message": "fixed all these together in CL after this one.",
+      "parentUuid": "240e3635_b488bfa3",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "ce01e163269cc808fe982e7f94aa5550d353c78a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
