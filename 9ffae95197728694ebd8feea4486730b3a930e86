@@ -70,6 +70,24 @@
       "parentUuid": "eb7e49ae_9b0f5186",
       "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c78a5b64_fdda57ce",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 26
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-08T23:22:41Z",
+      "side": 1,
+      "message": "Yeah, but SuperFlashHelper should be make_unique\u0027d",
+      "parentUuid": "73aeee1a_0825b050",
+      "revId": "9ffae95197728694ebd8feea4486730b3a930e86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
