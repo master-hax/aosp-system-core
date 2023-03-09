@@ -16,6 +16,23 @@
       "message": "Please let me know if this is an acceptable change of the format. The idea is that parsers that match for \"backtrace:\" will still match, only ones that match for \"backtrace:\\n\" don\u0027t. Chris seems to think it\u0027s fine, but please confirm here again.\n\nAlternatively we could add a new line somewhere to that effect, that would be safer for parser purposes, but less neat.",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0e80a78_d15f9b24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-09T19:12:13Z",
+      "side": 1,
+      "message": "i don\u0027t usually do any testing beyond \"what does cs/ say?\" but it seems like there\u0027s a problematic use in the first few cs/ matches? https://source.corp.google.com/android/platform_testing/libraries/sts-common-util/host-side/src/com/android/sts/common/util/TombstoneParser.java;l\u003d149?q\u003d%5C%22backtrace%5C:%20case:yes\u0026sq\u003dpackage:%5Eandroid$%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F stitches \"backtrace:\" and \"\\n\" (in possibly the most expensive way ever!) and looks like it would break?",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
