@@ -69,6 +69,24 @@
       "parentUuid": "bdfd0cd0_31fd670f",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e930a960_d3fc1cb2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-03-09T21:29:38Z",
+      "side": 1,
+      "message": "Attached bug explains more, but tl;dr: Sometimes, everything of value is missing from the backtraces from HWASan reports, and they are only HWASan-internal frames. In general, unless we hardcode some assumptions about what the lowest frames should be (either main, or start_thread, or whatever), it\u0027s not easy for automation to know whether something is missing or not.",
+      "parentUuid": "0628be79_d8781288",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
