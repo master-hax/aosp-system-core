@@ -123,6 +123,24 @@
       "parentUuid": "fd2cc626_27452b75",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c00448f4_1dd51e5e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-09T22:02:20Z",
+      "side": 1,
+      "message": "yeah, putting the extra bit _before_ the `backtrace:\\n` line seems the suggestion least likely to cause trouble so far, unless cferris has a better one?\n\n(i\u0027m assuming you already had the \"why are you parsing logcat? why aren\u0027t you just looking at the protobufs? or even the _text_ tombstones?! _anything_ but logcat!!!\" conversation?)",
+      "parentUuid": "d7a7620e_a7c6d493",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
