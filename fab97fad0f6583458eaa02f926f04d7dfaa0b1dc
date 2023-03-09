@@ -105,6 +105,24 @@
       "parentUuid": "00c4f275_1f5c4268",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7a7620e_a7c6d493",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-03-09T21:59:36Z",
+      "side": 1,
+      "message": "Interesting. Though that might mess up symbolizers a bit.\n\nWe can add the new line above the backtrace, e.g.\n\n```\nbacktrace-length: 3\nbacktrace:\n\n#0 ...\n#1 ...\n#2 ...\n```\n\nit\u0027s ugly but should hopefully parse gracefully?",
+      "parentUuid": "fd2cc626_27452b75",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
