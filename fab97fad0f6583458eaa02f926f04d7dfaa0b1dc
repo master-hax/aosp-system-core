@@ -33,6 +33,24 @@
       "message": "i don\u0027t usually do any testing beyond \"what does cs/ say?\" but it seems like there\u0027s a problematic use in the first few cs/ matches? https://source.corp.google.com/android/platform_testing/libraries/sts-common-util/host-side/src/com/android/sts/common/util/TombstoneParser.java;l\u003d149?q\u003d%5C%22backtrace%5C:%20case:yes\u0026sq\u003dpackage:%5Eandroid$%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F stitches \"backtrace:\" and \"\\n\" (in possibly the most expensive way ever!) and looks like it would break?",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdfd0cd0_31fd670f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-03-09T20:23:52Z",
+      "side": 1,
+      "message": "Oh, sorry. Probably better to just add a new line for this. Either of you have any preference on what that should read?",
+      "parentUuid": "f0e80a78_d15f9b24",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
