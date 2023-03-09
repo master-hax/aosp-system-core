@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19e48208_40ad62e1",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1629,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-09T20:32:10Z",
+      "side": 1,
+      "message": "Since `flash_super_task` is only used inside this if branch, move the definition of `flash_super_task` after L1628?",
+      "revId": "097ed8c8e59f8db1fedc7b97fa505f96bc5d9e22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
