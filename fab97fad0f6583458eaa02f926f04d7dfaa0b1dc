@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00c4f275_1f5c4268",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-03-09T18:49:37Z",
+      "side": 1,
+      "message": "Please let me know if this is an acceptable change of the format. The idea is that parsers that match for \"backtrace:\" will still match, only ones that match for \"backtrace:\\n\" don\u0027t. Chris seems to think it\u0027s fine, but please confirm here again.\n\nAlternatively we could add a new line somewhere to that effect, that would be safer for parser purposes, but less neat.",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
