@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8503498_256b2b60",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81f56ce0_7f9f5cd0",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 52
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be39aec8_b1f2e8ba",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-02-06T18:11:10Z",
       "side": 1,
       "message": "|sort",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df70962b_19d7d943",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be39aec8_b1f2e8ba",
       "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5086be54_1e89bd08",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af24d4a8_f1bedcbb",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 19
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8492d0b5_baa8ec19",
@@ -81,6 +147,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c99d57c_1a4d95ff",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8492d0b5_baa8ec19",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "96233bae_2c908865",
@@ -94,6 +178,30 @@
       "writtenOn": "2023-02-10T04:42:54Z",
       "side": 1,
       "message": "Should this be really FATAL? It can abort the program depending on the aborter configured.",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 13
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "801bd659_d1672bfa",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "I was trying really hard to get logs from crash_dump, I still dont have that figured. Changed the level to WARNING though",
+      "parentUuid": "96233bae_2c908865",
       "range": {
         "startLine": 39,
         "startChar": 8,
@@ -127,6 +235,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "32aa7488_60a28407",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "349a6c54_0261d739",
+      "range": {
+        "startLine": 59,
+        "startChar": 18,
+        "endLine": 59,
+        "endChar": 22
+      },
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "007098a0_dcf15e50",
@@ -144,6 +276,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0868ac49_1fa8ff69",
+        "filename": "debuggerd/tombstone_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "007098a0_dcf15e50",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e539a61e_f9b5e771",
@@ -157,6 +307,24 @@
       "writtenOn": "2023-02-06T18:11:10Z",
       "side": 1,
       "message": "just one function but make the proto fd optional?\n\nthat said ... i don\u0027t think we want to support that. new code that only supports one should probably only support proto, not text. (since text is a subset of proto _generated from_ proto.)",
+      "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1dbb623_66ca0704",
+        "filename": "debuggerd/tombstone_handler.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-09T16:09:27Z",
+      "side": 1,
+      "message": "Ack, currently crash_dump calls just one of the function anyway so removing the other.\n\nAbout supporting proto - currently, in Android, both types of tombstones are produced.",
+      "parentUuid": "e539a61e_f9b5e771",
       "revId": "9e9657b75fa1446cc4c35e4bf162b4143b3e8520",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
