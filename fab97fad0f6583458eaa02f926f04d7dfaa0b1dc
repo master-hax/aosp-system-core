@@ -87,6 +87,24 @@
       "parentUuid": "0628be79_d8781288",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd2cc626_27452b75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-09T21:57:33Z",
+      "side": 1,
+      "message": "a bogus \"frame\" at the end might be the most compatible way to do it? something like this:\n```\n01-24 13:56:37.383  wifi  4877  4877 F DEBUG   :     #15 0x723ba967f0  (/apex/com.android.runtime/lib64/bionic/libc.so+0x5a7f0) (BuildId: e3082097a3e55f43706610b2702a1a3b)\n01-24 13:56:37.383  wifi  4877  4877 F DEBUG   :     #16 0x0000000000  (end-of-stack) (BuildId: 00000000000000000000000000000000)\n```\notherwise you\u0027re likely to confuse parsers\u0027 existing \"am i at the end?\" logic?",
+      "parentUuid": "00c4f275_1f5c4268",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
