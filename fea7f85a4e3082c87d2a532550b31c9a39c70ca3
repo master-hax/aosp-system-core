@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c637c035_932b8248",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2023-03-09T02:44:55Z",
+      "side": 1,
+      "message": "Now that I think about it, Trusty code isn\u0027t on cuttlefish, so I\u0027m not sure changes here can even be tested in presubmit, unless TEST_MAPPING now does device testing as well.",
+      "revId": "fea7f85a4e3082c87d2a532550b31c9a39c70ca3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
