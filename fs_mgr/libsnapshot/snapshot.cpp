@@ -3759,7 +3759,7 @@ bool SnapshotManager::Dump(std::ostream& os) {
 
     auto update_status = ReadSnapshotUpdateStatus(file.get());
 
-    ss << "Update state: " << ReadUpdateState(file.get()) << std::endl;
+    ss << "Update state: " << update_status.state() << std::endl;
     ss << "Using snapuserd: " << update_status.using_snapuserd() << std::endl;
     ss << "Using userspace snapshots: " << update_status.userspace_snapshots() << std::endl;
     ss << "Using io_uring: " << update_status.io_uring_enabled() << std::endl;
@@ -3773,6 +3773,16 @@ bool SnapshotManager::Dump(std::ostream& os) {
        << (access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0 ? "exists" : strerror(errno))
        << std::endl;
     ss << "Source build fingerprint: " << update_status.source_build_fingerprint() << std::endl;
+
+    if (update_status.state() == UpdateState::Merging) {
+        ss << "Merge completion: ";
+        if (!EnsureSnapuserdConnected()) {
+            ss << "N/A";
+        } else {
+            ss << snapuserd_client_->GetMergePercent() << "%";
+        }
+        ss << std::endl;
+    }
 
     bool ok = true;
     std::vector<std::string> snapshots;
