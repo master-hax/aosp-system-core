@@ -23,10 +23,16 @@
 #include "super_flash_helper.h"
 #include "util.h"
 
+class FlashTask;
+class UpdateSuperTask;
+
 class Task {
   public:
     Task() = default;
     virtual void Run() = 0;
+    virtual FlashTask* AsFlashTask() { return nullptr; }
+    virtual UpdateSuperTask* AsUpdateSuperTask() { return nullptr; }
+
     virtual ~Task() = default;
 };
 
@@ -34,7 +40,12 @@ class FlashTask : public Task {
   public:
     FlashTask(const std::string& slot, const std::string& pname, const std::string& fname,
               const bool apply_vbmeta);
+    virtual FlashTask* AsFlashTask() override { return this; }
 
+    std::string GetPartition() { return pname_; }
+    std::string GetImageName() { return fname_; }
+    std::string GetPartitionName() { return pname_ + "_" + slot_; }
+    std::string GetSlot() { return slot_; }
     void Run() override;
 
   private:
@@ -61,6 +72,8 @@ class FlashSuperLayoutTask : public Task {
                          SparsePtr sparse_layout);
     static std::unique_ptr<FlashSuperLayoutTask> Initialize(FlashingPlan* fp,
                                                             std::vector<ImageEntry>& os_images);
+    static std::unique_ptr<FlashSuperLayoutTask> InitializeFromTasks(
+            FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
     using ImageEntry = std::pair<const Image*, std::string>;
     void Run() override;
 
@@ -73,6 +86,8 @@ class FlashSuperLayoutTask : public Task {
 class UpdateSuperTask : public Task {
   public:
     UpdateSuperTask(FlashingPlan* fp);
+    virtual UpdateSuperTask* AsUpdateSuperTask() override { return this; }
+
     void Run() override;
 
   private:
