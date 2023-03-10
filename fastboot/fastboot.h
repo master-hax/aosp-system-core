@@ -74,6 +74,7 @@ struct FlashingPlan {
     // the paired string will be empty. If the image requests a specific slot
     // (for example, system_other) it is specified instead.
     ImageSource* source;
+    bool wants_resize_logical_partitions = false;
     bool wants_wipe = false;
     bool skip_reboot = false;
     bool wants_set_active = false;
