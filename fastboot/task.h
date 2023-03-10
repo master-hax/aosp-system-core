@@ -23,10 +23,14 @@
 #include "super_flash_helper.h"
 #include "util.h"
 
+class FlashTask;
+
 class Task {
   public:
     Task() = default;
     virtual void Run() = 0;
+    virtual FlashTask* AsFlashTask() { return nullptr; }
+
     virtual ~Task() = default;
 };
 
@@ -35,7 +39,8 @@ class FlashTask : public Task {
     FlashTask(const std::string& slot, const std::string& pname, const bool apply_vbmeta);
     FlashTask(const std::string& slot, const std::string& pname, const std::string& fname,
               const bool apply_vbmeta);
-
+    virtual FlashTask* AsFlashTask() override { return this; }
+    std::string GetPartitionName() { return pname_; }
     void Run() override;
 
   private:
