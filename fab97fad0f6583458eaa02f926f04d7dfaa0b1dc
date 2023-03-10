@@ -141,6 +141,24 @@
       "parentUuid": "d7a7620e_a7c6d493",
       "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "414d94dd_5ee04321",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-03-10T03:13:10Z",
+      "side": 1,
+      "message": "Yeah, I don\u0027t like the bogus line since that will be confusing.\n\nMaybe instead of:\n\n  backtrace: (XX FRAMES)\n\nYou could do:\n\n  XX Total Frames\n  backtrace:\n\nThat looks okay to me and I don\u0027t think it will trip any parsers.",
+      "parentUuid": "c00448f4_1dd51e5e",
+      "revId": "fab97fad0f6583458eaa02f926f04d7dfaa0b1dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
