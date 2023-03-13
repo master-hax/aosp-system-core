@@ -16,6 +16,24 @@
       "message": "IMO it makes more sense to delete/not build the task in the relevant place. Otherwise, this will do nothing:\n\n    fastboot --skip-reboot reboot",
       "revId": "0643b14c869514f01afcc4b739d33b2d667d2050",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d189945_8903ff9a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2538,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-13T20:35:41Z",
+      "side": 0,
+      "message": "what is the correct behavior? I think old behavior WAS to do nothing. (although not sure why anyone would call fastboot --skip-reboot reboot)",
+      "parentUuid": "71dbb5f4_0441b956",
+      "revId": "0643b14c869514f01afcc4b739d33b2d667d2050",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
