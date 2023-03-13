@@ -2535,7 +2535,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
     if (fp->wants_set_active) {
         fb->SetActive(next_active);
     }
-    if (reboot_task && !fp->skip_reboot) {
+    if (reboot_task) {
         reboot_task->Run();
     }
     fprintf(stderr, "Finished. Total time: %.3fs\n", (now() - start));
