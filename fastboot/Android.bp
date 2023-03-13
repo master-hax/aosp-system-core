@@ -376,11 +376,13 @@ cc_test_host {
     defaults: ["fastboot_host_defaults"],
 
     srcs: [
+        "fastboot_driver_mock.cpp", 
         "fastboot_driver_test.cpp",
         "fastboot_test.cpp",
         "socket_mock.cpp",
         "socket_test.cpp",
         "super_flash_helper_test.cpp",
+        "task_test.cpp",
         "tcp_test.cpp",
         "udp_test.cpp",
     ],
