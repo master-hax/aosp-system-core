@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 #include "task.h"
-#include <iostream>
 #include "fastboot.h"
 #include "filesystem.h"
 #include "super_flash_helper.h"
 
 #include <android-base/parseint.h>
+#include <iostream>
 
 using namespace std::string_literals;
 FlashTask::FlashTask(const std::string& _slot, const std::string& _pname, const std::string& _fname,
@@ -47,7 +47,7 @@ RebootTask::RebootTask(FlashingPlan* fp, const std::string& reboot_target)
     : reboot_target_(reboot_target), fp_(fp){};
 
 void RebootTask::Run() {
-    if ((reboot_target_ == "userspace" || reboot_target_ == "fastboot")) {
+    if (reboot_target_ == "fastboot") {
         if (!is_userspace_fastboot()) {
             reboot_to_userspace_fastboot();
             fp_->fb->WaitForDisconnect();

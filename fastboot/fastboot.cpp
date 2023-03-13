@@ -76,6 +76,7 @@
 #include "constants.h"
 #include "diagnose_usb.h"
 #include "fastboot_driver.h"
+#include "flashing_plan.h"
 #include "fs.h"
 #include "storage.h"
 #include "super_flash_helper.h"
@@ -114,19 +115,6 @@ static bool g_disable_verity = false;
 static bool g_disable_verification = false;
 
 fastboot::FastBootDriver* fb = nullptr;
-
-enum fb_buffer_type {
-    FB_BUFFER_FD,
-    FB_BUFFER_SPARSE,
-};
-
-struct fastboot_buffer {
-    enum fb_buffer_type type;
-    std::vector<SparsePtr> files;
-    int64_t sz;
-    unique_fd fd;
-    int64_t image_size;
-};
 
 static std::vector<Image> images = {
         // clang-format off
@@ -1573,24 +1561,6 @@ std::string GetPartitionName(const ImageEntry& entry) {
     }
     return entry.first->part_name + "_" + slot;
 }
-
-class FlashAllTool {
-  public:
-    FlashAllTool(FlashingPlan* fp);
-
-    void Flash();
-
-  private:
-    void CheckRequirements();
-    void DetermineSecondarySlot();
-    void CollectImages();
-    void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
-    void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
-
-    std::vector<ImageEntry> boot_images_;
-    std::vector<ImageEntry> os_images_;
-    FlashingPlan* fp_;
-};
 
 FlashAllTool::FlashAllTool(FlashingPlan* fp) : fp_(fp) {}
 
