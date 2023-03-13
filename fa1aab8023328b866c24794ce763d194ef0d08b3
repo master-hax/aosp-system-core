@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a35c66ae_ad870f26",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2540,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-13T22:03:02Z",
+      "side": 1,
+      "message": "You don\u0027t have to do it now, but... It might useful for Run() to return some status code, so that you can halt the execution of remaining tasks if there\u0027s a failure. This is especially important when you start parsing fastboot-info.txt, because we want the program to stop immediately when there\u0027s an error for ease of debugging.",
+      "range": {
+        "startLine": 2538,
+        "startChar": 4,
+        "endLine": 2540,
+        "endChar": 5
+      },
+      "revId": "fa1aab8023328b866c24794ce763d194ef0d08b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
