@@ -61,7 +61,7 @@ RebootTask::RebootTask(FlashingPlan* fp, const std::string& reboot_target)
     : reboot_target_(reboot_target), fp_(fp){};
 
 void RebootTask::Run() {
-    if ((reboot_target_ == "userspace" || reboot_target_ == "fastboot")) {
+    if (reboot_target_ == "fastboot") {
         if (!is_userspace_fastboot()) {
             reboot_to_userspace_fastboot();
             fp_->fb->WaitForDisconnect();
