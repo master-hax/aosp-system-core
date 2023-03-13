@@ -67,8 +67,7 @@ FastBootDriver::FastBootDriver(Transport* transport, DriverCallbacks driver_call
       text_(std::move(driver_callbacks.text)),
       disable_checks_(no_checks) {}
 
-FastBootDriver::~FastBootDriver() {
-}
+FastBootDriver::~FastBootDriver() {}
 
 RetCode FastBootDriver::Boot(std::string* response, std::vector<std::string>* info) {
     return RawCommand(FB_CMD_BOOT, "Booting", response, info);
