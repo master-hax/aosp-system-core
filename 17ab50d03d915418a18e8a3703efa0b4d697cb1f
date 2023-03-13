@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9be380be_9ab02196",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-13T04:24:22Z",
+      "side": 1,
+      "message": "We need to pass apply_vbmeta as a parameter to flash task to avoid the hardcoded check.",
+      "revId": "17ab50d03d915418a18e8a3703efa0b4d697cb1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
