@@ -39,6 +39,30 @@
       },
       "revId": "17ab50d03d915418a18e8a3703efa0b4d697cb1f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b16180c7_c79b42ed",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1736,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-13T16:12:47Z",
+      "side": 1,
+      "message": "apply_vbmeta is set to true in the if statement -\u003e I can just call the function twice with true or false (is that cleaner code ?)",
+      "parentUuid": "9a4e6f81_4303e41e",
+      "range": {
+        "startLine": 1731,
+        "startChar": 8,
+        "endLine": 1736,
+        "endChar": 9
+      },
+      "revId": "17ab50d03d915418a18e8a3703efa0b4d697cb1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
