@@ -26,13 +26,13 @@
  * SUCH DAMAGE.
  */
 #pragma once
+#include "task.h"
 
+#include <bootimg.h>
 #include <string>
 #include "fastboot_driver.h"
 #include "super_flash_helper.h"
 #include "util.h"
-
-#include <bootimg.h>
 
 #include "result.h"
 #include "socket.h"
@@ -47,46 +47,6 @@ class FastBootTool {
     unsigned ParseFsOption(const char*);
 };
 
-enum class ImageType {
-    // Must be flashed for device to boot into the kernel.
-    BootCritical,
-    // Normal partition to be flashed during "flashall".
-    Normal,
-    // Partition that is never flashed during "flashall".
-    Extra
-};
-
-struct Image {
-    std::string nickname;
-    std::string img_name;
-    std::string sig_name;
-    std::string part_name;
-    bool optional_if_no_image;
-    ImageType type;
-    bool IsSecondary() const { return nickname.empty(); }
-};
-
-using ImageEntry = std::pair<const Image*, std::string>;
-
-struct FlashingPlan {
-    unsigned fs_options = 0;
-    // If the image uses the default slot, or the user specified "all", then
-    // the paired string will be empty. If the image requests a specific slot
-    // (for example, system_other) it is specified instead.
-    ImageSource* source;
-    bool wants_resize_logical_partitions = false;
-    bool wants_wipe = false;
-    bool skip_reboot = false;
-    bool wants_set_active = false;
-    bool skip_secondary = false;
-    bool force_flash = false;
-
-    std::string slot_override;
-    std::string secondary_slot;
-
-    fastboot::FastBootDriver* fb;
-};
-
 bool should_flash_in_userspace(const std::string& partition_name);
 bool is_userspace_fastboot();
 void do_flash(const char* pname, const char* fname, const bool apply_vbmeta);
@@ -96,6 +56,16 @@ std::string find_item(const std::string& item);
 void reboot_to_userspace_fastboot();
 void syntax_error(const char* fmt, ...);
 std::string get_current_slot();
+
+// Code for Parsing fastboot-info.txt
+std::unique_ptr<FlashTask> ParseFlashCommand(FlashingPlan* fp, std::vector<std::string> parts);
+std::unique_ptr<RebootTask> ParseRebootCommand(FlashingPlan* fp,
+                                               const std::vector<std::string>& parts);
+std::unique_ptr<WipeTask> ParseWipeCommand(FlashingPlan* fp, const std::vector<std::string>& parts);
+std::unique_ptr<Task> ParseFastbootInfoLine(FlashingPlan* fp,
+                                            const std::vector<std::string>& command);
+void AddResizeTasks(FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
+std::vector<std::unique_ptr<Task>> ParseFastbootInfo(FlashingPlan* fp, std::ifstream& fs);
 
 struct NetworkSerial {
     Socket::Protocol protocol;
