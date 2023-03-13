@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07b715b3_0b8d193f",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 40
+      },
+      "lineNbr": 1593,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-13T16:08:53Z",
+      "side": 0,
+      "message": "Why is this removed?",
+      "range": {
+        "startLine": 1593,
+        "startChar": 4,
+        "endLine": 1593,
+        "endChar": 60
+      },
+      "revId": "3ee7a336608cf4598553e1893a9960afa58b2d5c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
