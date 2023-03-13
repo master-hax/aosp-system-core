@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28994efa_99aa91f8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-13T17:39:07Z",
+      "side": 1,
+      "message": "We are thinking of adding wipe support for fastboot-info.txt. Preparing a wipe task for this use case.",
+      "revId": "15e77832636f4b0122d2a4c5d7a215fc45e319be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
