@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8235ad6_388f5825",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1853,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-13T16:32:38Z",
+      "side": 1,
+      "message": "define and initialize in 1 line.",
+      "range": {
+        "startLine": 1848,
+        "startChar": 4,
+        "endLine": 1853,
+        "endChar": 5
+      },
+      "revId": "21e294f647e2162517c25a99ef39f1797bdb3b67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98bfd3c0_3ad02f82",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2314,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-13T16:32:38Z",
+      "side": 1,
+      "message": "const bool apply_vbmeta \u003d android::base::EndsWith(pname, \"vbmeta\") ||\n                android::base::EndsWith(pname, \"vbmeta_a\") ||\n                android::base::EndsWith(pname, \"vbmeta_b\");\n                \n                \nbetter to define an apply_vbmeta variable so readers know what these conditions are for",
+      "range": {
+        "startLine": 2309,
+        "startChar": 12,
+        "endLine": 2314,
+        "endChar": 13
+      },
+      "revId": "21e294f647e2162517c25a99ef39f1797bdb3b67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
