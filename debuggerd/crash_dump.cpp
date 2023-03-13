@@ -142,7 +142,8 @@ static bool ptrace_interrupt(pid_t tid, int* received_signal) {
   return false;
 }
 
-static bool activity_manager_notify(pid_t pid, int signal, const std::string& amfd_data) {
+static bool activity_manager_notify(pid_t pid, int signal, const std::string& amfd_data,
+                                    bool recoverable_gwp_asan_crash) {
   ATRACE_CALL();
   android::base::unique_fd amfd(socket_local_client(
       "/data/system/ndebugsocket", ANDROID_SOCKET_NAMESPACE_FILESYSTEM, SOCK_STREAM));
@@ -165,19 +166,53 @@ static bool activity_manager_notify(pid_t pid, int signal, const std::string& am
     return false;
   }
 
-  // Activity Manager protocol: binary 32-bit network-byte-order ints for the
-  // pid and signal number, followed by the raw text of the dump, culminating
-  // in a zero byte that marks end-of-data.
+  // debuggerd is in a non-updateable apex. Thus, the ActivityManager that is on the other end of
+  // this pipe needs to interpret the data on a version-by-version basis.
+  //
+  // Activity Manager protocol prior to Android U:
+  //  - 32-bit network-byte-order: pid
+  //  - 32-bit network-byte-order: signo
+  //  - bytes: raw text of the dump
+  //  - null terminator
+  //
+  // Activity Manager protocol in Android U and beyond:
+  //  - 32-bit network-byte-order: pid
+  //  - 32-bit network-byte-order: signo_or_version_number
+  //    * if signo_or_version_number < 1,000,000, then it's the signal number.
+  //    * if >= 1,000,000, then it's the {version number + 1,000,000}
+  //  - various bytes (see below) based on the version number
+  //  - bytes: raw text of the dump
+  //  - null terminator
+  //
+  // Version 1's (i.e. signo_or_version_number == 1,000,001) various bytes:
+  //  - 32-bit network-byte-order: signo
+  //  - byte: recoverable_gwp_asan_crash
+
   uint32_t datum = htonl(pid);
   if (!android::base::WriteFully(amfd, &datum, 4)) {
     PLOG(ERROR) << "AM pid write failed";
     return false;
   }
-  datum = htonl(signal);
+
+  uint32_t signal_or_version_number = 1000001;
+  datum = htonl(signal_or_version_number);
   if (!android::base::WriteFully(amfd, &datum, 4)) {
-    PLOG(ERROR) << "AM signal write failed";
+    PLOG(ERROR) << "AM signal_or_version_number write failed";
     return false;
   }
+
+  datum = htonl(signal);
+  if (!android::base::WriteFully(amfd, &datum, 4)) {
+    PLOG(ERROR) << "AM signo write failed";
+    return false;
+  }
+
+  uint8_t recoverable_gwp_asan_crash_byte = recoverable_gwp_asan_crash ? 1 : 0;
+  if (!android::base::WriteFully(amfd, &recoverable_gwp_asan_crash_byte, 1)) {
+    PLOG(ERROR) << "AM recoverable_gwp_asan_crash_byte write failed";
+    return false;
+  }
+
   if (!android::base::WriteFully(amfd, amfd_data.c_str(), amfd_data.size() + 1)) {
     PLOG(ERROR) << "AM data write failed";
     return false;
@@ -651,10 +686,10 @@ int main(int argc, char** argv) {
     }
   }
 
-  if (fatal_signal && !recoverable_gwp_asan_crash) {
+  if (fatal_signal) {
     // Don't try to notify ActivityManager if it just crashed, or we might hang until timeout.
     if (thread_info[target_process].thread_name != "system_server") {
-      activity_manager_notify(target_process, signo, amfd_data);
+      activity_manager_notify(target_process, signo, amfd_data, recoverable_gwp_asan_crash);
     }
   }
 
