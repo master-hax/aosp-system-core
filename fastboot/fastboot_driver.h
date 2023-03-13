@@ -41,20 +41,12 @@
 #include <sparse/sparse.h>
 
 #include "constants.h"
+#include "fastboot_driver_interface.h"
 #include "transport.h"
 
 class Transport;
 
 namespace fastboot {
-
-enum RetCode : int {
-    SUCCESS = 0,
-    BAD_ARG,
-    IO_ERROR,
-    BAD_DEV_RESP,
-    DEVICE_FAIL,
-    TIMEOUT,
-};
 
 struct DriverCallbacks {
     std::function<void(const std::string&)> prolog = [](const std::string&) {};
@@ -63,19 +55,16 @@ struct DriverCallbacks {
     std::function<void(const std::string&)> text = [](const std::string&) {};
 };
 
-class FastBootDriver {
+class FastBootDriver : public IFBDriver {
     friend class FastBootTest;
 
   public:
-    static constexpr int RESP_TIMEOUT = 30;  // 30 seconds
-    static constexpr uint32_t MAX_DOWNLOAD_SIZE = std::numeric_limits<uint32_t>::max();
-    static constexpr size_t TRANSPORT_CHUNK_SIZE = 1024;
-
     FastBootDriver(Transport* transport, DriverCallbacks driver_callbacks = {},
                    bool no_checks = false);
     ~FastBootDriver();
 
-    RetCode Boot(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+    RetCode Boot(std::string* response = nullptr,
+                 std::vector<std::string>* info = nullptr) override;
     RetCode Continue(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
     RetCode CreatePartition(const std::string& partition, const std::string& size);
     RetCode DeletePartition(const std::string& partition);
@@ -99,9 +88,10 @@ class FastBootDriver {
     RetCode GetVar(const std::string& key, std::string* val,
                    std::vector<std::string>* info = nullptr);
     RetCode GetVarAll(std::vector<std::string>* response);
-    RetCode Reboot(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+    RetCode Reboot(std::string* response = nullptr,
+                   std::vector<std::string>* info = nullptr) override;
     RetCode RebootTo(std::string target, std::string* response = nullptr,
-                     std::vector<std::string>* info = nullptr);
+                     std::vector<std::string>* info = nullptr) override;
     RetCode ResizePartition(const std::string& partition, const std::string& size);
     RetCode SetActive(const std::string& slot, std::string* response = nullptr,
                       std::vector<std::string>* info = nullptr);
