@@ -33,6 +33,24 @@
       "message": "why can\u0027t you just have something that listens on the usual socket? (that is: why do we need to change this code at all?)",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c827b47_bf96d350",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-13T10:51:33Z",
+      "side": 1,
+      "message": "By usual socket, do you mean the socket tombstoned is listening on \u0026 crash_dump connects to?\n\nWe already have tombstoned.microdroid inside VM that listens on the usual socket. It responds to crash_dump with a fd backed by a file in guest filesystem \u0026 crash_dump writes on it. This file was later transmitted outside the VM.\n\nThe idea behind this change was to remove the tombstoned from VM, \u0026 have crash_dump write directly to virtual socket instead of writing on a guest file. The listener outside VM will then dump the data on a tombstone file in Android. This saves some precious RAM in VM (as we do not need the tombstoned/the transmitter daemon/the files which were backed by tmpfs in the VM)",
+      "parentUuid": "32646261_bb210ecb",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
