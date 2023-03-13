@@ -34,6 +34,24 @@
       "parentUuid": "c637c035_932b8248",
       "revId": "fea7f85a4e3082c87d2a532550b31c9a39c70ca3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fd41fcc_4e54722c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115498
+      },
+      "writtenOn": "2023-03-13T06:24:27Z",
+      "side": 1,
+      "message": "It does not run real devices on post-submit either. Leaving this in here so that when real devices are integrated with TEST_MAPPING these will be automatically picked up.",
+      "parentUuid": "dcd03bd2_13215899",
+      "revId": "fea7f85a4e3082c87d2a532550b31c9a39c70ca3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
