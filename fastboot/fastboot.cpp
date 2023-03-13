@@ -76,6 +76,7 @@
 #include "constants.h"
 #include "diagnose_usb.h"
 #include "fastboot_driver.h"
+#include "flashing_plan.h"
 #include "fs.h"
 #include "storage.h"
 #include "super_flash_helper.h"
