@@ -41,6 +41,7 @@
 #include <sparse/sparse.h>
 
 #include "constants.h"
+#include "fastboot_driver_interface.h"
 #include "transport.h"
 
 class Transport;
@@ -63,14 +64,10 @@ struct DriverCallbacks {
     std::function<void(const std::string&)> text = [](const std::string&) {};
 };
 
-class FastBootDriver {
+class FastBootDriver : public IFBDriver {
     friend class FastBootTest;
 
   public:
-    static constexpr int RESP_TIMEOUT = 30;  // 30 seconds
-    static constexpr uint32_t MAX_DOWNLOAD_SIZE = std::numeric_limits<uint32_t>::max();
-    static constexpr size_t TRANSPORT_CHUNK_SIZE = 1024;
-
     FastBootDriver(Transport* transport, DriverCallbacks driver_callbacks = {},
                    bool no_checks = false);
     ~FastBootDriver();
