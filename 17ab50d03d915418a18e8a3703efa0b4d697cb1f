@@ -16,6 +16,29 @@
       "message": "We need to pass apply_vbmeta as a parameter to flash task to avoid the hardcoded check.",
       "revId": "17ab50d03d915418a18e8a3703efa0b4d697cb1f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a4e6f81_4303e41e",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1736,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-13T16:06:46Z",
+      "side": 1,
+      "message": "const bool apply_vbmeta \u003d android::base::EndsWith(partition_name, \"vbmeta\") ||\n            android::base::EndsWith(partition_name, \"vbmeta_a\") ||\n            android::base::EndsWith(partition_name, \"vbmeta_b\");",
+      "range": {
+        "startLine": 1731,
+        "startChar": 8,
+        "endLine": 1736,
+        "endChar": 9
+      },
+      "revId": "17ab50d03d915418a18e8a3703efa0b4d697cb1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
