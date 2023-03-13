@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0c5c632_3accd840",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1848,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-13T18:07:39Z",
+      "side": 1,
+      "message": "Since this gets duplicated a few times, add a helper, something like \"IsVbmetaPartition\". Then you can add a new gtest for it for kicks.",
+      "revId": "4f541832c01f3cbddaacd7d08082bd8b7b6e415c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
