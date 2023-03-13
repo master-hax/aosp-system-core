@@ -18,6 +18,8 @@
 #include <sstream>
 #include <string>
 
+#include "flashing_plan.h"
+
 #include "fastboot.h"
 #include "fastboot_driver.h"
 #include "super_flash_helper.h"

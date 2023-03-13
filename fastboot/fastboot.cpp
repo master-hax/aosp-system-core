@@ -76,6 +76,7 @@
 #include "constants.h"
 #include "diagnose_usb.h"
 #include "fastboot_driver.h"
+#include "flashing_plan.h"
 #include "fs.h"
 #include "storage.h"
 #include "super_flash_helper.h"
@@ -114,19 +115,6 @@ static bool g_disable_verity = false;
 static bool g_disable_verification = false;
 
 fastboot::FastBootDriver* fb = nullptr;
-
-enum fb_buffer_type {
-    FB_BUFFER_FD,
-    FB_BUFFER_SPARSE,
-};
-
-struct fastboot_buffer {
-    enum fb_buffer_type type;
-    std::vector<SparsePtr> files;
-    int64_t sz;
-    unique_fd fd;
-    int64_t image_size;
-};
 
 static std::vector<Image> images = {
         // clang-format off
@@ -1559,10 +1547,10 @@ static void CancelSnapshotIfNeeded() {
     }
 }
 
-std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot) {
+std::string GetPartitionName(const ImageEntry& entry) {
     auto slot = entry.second;
     if (slot.empty()) {
-        slot = current_slot;
+        slot = get_current_slot();
     }
     if (slot.empty()) {
         return entry.first->part_name;
@@ -1575,7 +1563,7 @@ std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot)
 
 std::unique_ptr<FlashTask> ParseFlashCommand(FlashingPlan* fp, std::vector<std::string> parts) {
     bool apply_vbmeta = false;
-    std::string slot = fp->slot;
+    std::string slot = fp->slot_override;
     std::string partition;
     std::string img_name;
     for (auto& part : parts) {
@@ -1668,7 +1656,7 @@ void AddResizeTasks(FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks)
                     loc = i;
                 }
                 resize_tasks.emplace_back(std::make_unique<ResizeTask>(
-                        fp, flash_task->GetPartition(), "0", fp->slot));
+                        fp, flash_task->GetPartition(), "0", fp->slot_override));
             }
         }
     }
@@ -1750,25 +1738,6 @@ std::vector<std::unique_ptr<Task>> ParseFastbootInfo(FlashingPlan* fp, std::ifst
     return tasks;
 }
 
-class FlashAllTool {
-  public:
-    FlashAllTool(FlashingPlan* fp);
-
-    void Flash();
-
-  private:
-    void CheckRequirements();
-    void DetermineSlot();
-    void CollectImages();
-    void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
-    void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
-    void HardcodedFlash();
-
-    std::vector<ImageEntry> boot_images_;
-    std::vector<ImageEntry> os_images_;
-    FlashingPlan* fp_;
-};
-
 FlashAllTool::FlashAllTool(FlashingPlan* fp) : fp_(fp) {}
 
 void FlashAllTool::Flash() {
@@ -1777,10 +1746,10 @@ void FlashAllTool::Flash() {
 
     // Change the slot first, so we boot into the correct recovery image when
     // using fastbootd.
-    if (fp_->slot == "all") {
+    if (fp_->slot_override == "all") {
         set_active("a");
     } else {
-        set_active(fp_->slot);
+        set_active(fp_->slot_override);
     }
 
     DetermineSlot();
@@ -1815,17 +1784,11 @@ void FlashAllTool::CheckRequirements() {
 }
 
 void FlashAllTool::DetermineSlot() {
-    if (fp_->slot.empty()) {
-        fp_->current_slot = get_current_slot();
-    } else {
-        fp_->current_slot = fp_->slot;
-    }
-
     if (fp_->skip_secondary) {
         return;
     }
-    if (fp_->slot != "" && fp_->slot != "all") {
-        fp_->secondary_slot = get_other_slot(fp_->slot);
+    if (fp_->slot_override != "" && fp_->slot_override != "all") {
+        fp_->secondary_slot = get_other_slot(fp_->slot_override);
     } else {
         fp_->secondary_slot = get_other_slot();
     }
@@ -1839,7 +1802,7 @@ void FlashAllTool::DetermineSlot() {
 
 void FlashAllTool::CollectImages() {
     for (size_t i = 0; i < images.size(); ++i) {
-        std::string slot = fp_->slot;
+        std::string slot = fp_->slot_override;
         if (images[i].IsSecondary()) {
             if (fp_->skip_secondary) {
                 continue;
