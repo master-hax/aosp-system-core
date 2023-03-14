@@ -22,6 +22,23 @@
       },
       "revId": "4446bb093e2cedf1f8fed71b0d32765306b47a22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d0e62b9_ae3be9b0",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2023-03-14T00:40:57Z",
+      "side": 1,
+      "message": "Instead of reusing the second field for a version, I think it\u0027d be easier to understand if you just send 0 or -1 or something for the pid and then sent a version/the rest of your new format.",
+      "revId": "4446bb093e2cedf1f8fed71b0d32765306b47a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
