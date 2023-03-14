@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ad753e6_d7accb61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-14T17:27:46Z",
+      "side": 1,
+      "message": "How do we check that an image ends in an AVB footer ?",
+      "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
