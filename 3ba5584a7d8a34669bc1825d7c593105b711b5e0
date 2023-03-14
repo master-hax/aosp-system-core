@@ -16,6 +16,29 @@
       "message": "How do we check that an image ends in an AVB footer ?",
       "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4a17b80_3f0aa7b7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1262,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-14T18:05:12Z",
+      "side": 1,
+      "message": "doesn\u0027t look like this is performing the right check right now, it\u0027s copying avb footers for different partitions as compared to the hardcoded one before.",
+      "range": {
+        "startLine": 1262,
+        "startChar": 0,
+        "endLine": 1262,
+        "endChar": 93
+      },
+      "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
