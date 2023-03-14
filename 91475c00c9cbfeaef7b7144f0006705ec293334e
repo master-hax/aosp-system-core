@@ -22,6 +22,30 @@
       },
       "revId": "91475c00c9cbfeaef7b7144f0006705ec293334e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9bb3516_29338f8b",
+        "filename": "init/fuzzer/init_devices_fuzzer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2023-03-14T04:08:53Z",
+      "side": 1,
+      "message": "Only valid values for Uevent\u0027s device and path parameter can be sent from fuzzer else we noticed device entering into ram-dump mode.",
+      "parentUuid": "2e0d8af8_b637210d",
+      "range": {
+        "startLine": 44,
+        "startChar": 18,
+        "endLine": 44,
+        "endChar": 29
+      },
+      "revId": "91475c00c9cbfeaef7b7144f0006705ec293334e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
