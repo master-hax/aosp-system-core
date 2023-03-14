@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36d19c9a_ab4d6337",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-03-14T00:28:15Z",
+      "side": 1,
+      "message": "This comment and the protocol and interaction between this and the ActivityManager is confusing. I assume that ActivityManager is in an updateable apex. However, it seems like this new debuggerd will only ever be talking to a new ActivityManager, or do you expect that this debuggerd will have to interact with an older ActivityManager?\n\nIf you never expect this code to talk to an old ActivityManager, then it seems like the protocol might want to be modified to always have a version number as the second value sent.",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 170,
+        "endChar": 73
+      },
+      "revId": "4446bb093e2cedf1f8fed71b0d32765306b47a22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
