@@ -51,6 +51,24 @@
       "parentUuid": "32646261_bb210ecb",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "739ea00b_26597366",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-14T02:08:10Z",
+      "side": 1,
+      "message": "\u003e This saves some precious RAM in VM (as we do not need the tombstoned/the transmitter daemon/the files which were backed by tmpfs in the VM)\n\nhow much? enough to persuade me that it\u0027s worth the extra complexity on our side? (because the current implementation sounds like the better design from our perspective.)",
+      "parentUuid": "8c827b47_bf96d350",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
