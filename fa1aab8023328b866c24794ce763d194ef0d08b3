@@ -70,6 +70,30 @@
       },
       "revId": "fa1aab8023328b866c24794ce763d194ef0d08b3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67e8ad6b_a4b7ae78",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2540,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-14T23:31:12Z",
+      "side": 1,
+      "message": "Be a little careful with die(), it makes sense in CLI code, but in utility code, it\u0027ll make things very difficult to unit test.",
+      "parentUuid": "b6e49c1b_45a3a852",
+      "range": {
+        "startLine": 2538,
+        "startChar": 4,
+        "endLine": 2540,
+        "endChar": 5
+      },
+      "revId": "fa1aab8023328b866c24794ce763d194ef0d08b3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
