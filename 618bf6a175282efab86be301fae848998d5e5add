@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98fcf865_bfa82d84",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-14T16:18:50Z",
+      "side": 1,
+      "message": "I don\u0027t think these are good fuzzing targets. All the inputs being tested here live on signed, readonly partitions. There is no untrusted input to these components.\n\nThe fact that we have to modify the timeout to BlockDevInitializer is indicative of how unlikely we are to find bugs. If the timeout is zero, BlockDevInitializer does not work, and the code depending on it wouldn\u0027t work either.",
+      "revId": "618bf6a175282efab86be301fae848998d5e5add",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
