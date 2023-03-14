@@ -69,6 +69,24 @@
       "parentUuid": "8c827b47_bf96d350",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38bb944d_cfd072a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-14T14:44:02Z",
+      "side": 1,
+      "message": "Atleast 900kB of Microdroid userspace memory. There are other goals of this as well listed in go/vm-tombstone under \u0027Goals of re-architecture\u0027 section (such as removing cascading failure).\n\nBy the way, I don\u0027t follow how this increases the complexity on Android. Infact, nothing changes on Android, the tombstone handling changes only inside Microdroid, which infact is a simplification given we are removing the extra write of tombstones.\n https://docs.google.com/document/d/1_cj1wEsWrvdhYxzvRajTDq3TeDYV9frcwlh9YvYyX5U/edit#bookmark\u003did.r7fyqx9msl5o has the diagram/design.",
+      "parentUuid": "739ea00b_26597366",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
