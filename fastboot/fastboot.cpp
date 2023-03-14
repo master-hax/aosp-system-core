@@ -1259,9 +1259,7 @@ void flash_partition_files(const std::string& partition, const std::vector<Spars
 
 static void flash_buf(const std::string& partition, struct fastboot_buffer* buf,
                       const bool apply_vbmeta) {
-    if (partition == "boot" || partition == "boot_a" || partition == "boot_b" ||
-        partition == "init_boot" || partition == "init_boot_a" || partition == "init_boot_b" ||
-        partition == "recovery" || partition == "recovery_a" || partition == "recovery_b") {
+    if (!is_logical(partition) && int64_t(get_partition_size(partition)) > buf->image_size) {
         copy_avb_footer(partition, buf);
     }
 
