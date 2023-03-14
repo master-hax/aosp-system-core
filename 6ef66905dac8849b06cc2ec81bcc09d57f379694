@@ -16,6 +16,24 @@
       "message": "What is fuzzing this code?",
       "revId": "6ef66905dac8849b06cc2ec81bcc09d57f379694",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54a33053_d4d48327",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1890836
+      },
+      "writtenOn": "2023-03-14T04:09:07Z",
+      "side": 1,
+      "message": "This code is being fuzzed by init_blockDev_fuzzer (link: https://android-review.googlesource.com/c/platform/system/core/+/2027225).\nWe have changed the thread wait time from 10secs to 0secs in this CL. This was necessary as otherwise the fuzzer execution speed would be very slow (\u003c 0 exec/s)",
+      "parentUuid": "131181ec_49c30c15",
+      "revId": "6ef66905dac8849b06cc2ec81bcc09d57f379694",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
