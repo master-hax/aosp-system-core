@@ -39,6 +39,30 @@
       },
       "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0df1cd9a_18694d6c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1262,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T18:25:10Z",
+      "side": 1,
+      "message": "It should be fine. If there is an AVB footer, and the image size \u003c partition size on device, then the footer has to be moved.\n\nWe\u0027ve had bugs where the hardcoded list was incomplete. \"recovery\" used to be missing here and it broke flashing for some devices. So the new check should be strictly better.\n\nNote that the get_partition_size check in copy_avb_footer is now redundant. I think you could just unconditionally call copy_avb_footer and add an is_logical() check there.",
+      "parentUuid": "e4a17b80_3f0aa7b7",
+      "range": {
+        "startLine": 1262,
+        "startChar": 0,
+        "endLine": 1262,
+        "endChar": 93
+      },
+      "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
