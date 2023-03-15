@@ -123,6 +123,24 @@
       "parentUuid": "017c0b7b_b3d98d7d",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3cdc598_0827adda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-15T09:40:17Z",
+      "side": 1,
+      "message": "`why so much? 1MiB sounds unreasonable for accept()?` -\u003e 1MiB comes from tombstoned \u0026 tombstoned_transmit (each contributing to half of it). tombstoned as a process is way more complex. It does accept requests, manages crash queues from different processes, manages intercepts, concurrent dumps, load balancing (max concurrent dumps) etc, appropriate naming of files - we let most of this be handled by tombstoned in host \u0026 hence dont need the daemon in Microdroid.",
+      "parentUuid": "5bcb9160_e2fc032a",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
