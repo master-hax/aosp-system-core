@@ -87,6 +87,24 @@
       "parentUuid": "739ea00b_26597366",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "017c0b7b_b3d98d7d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-15T00:10:31Z",
+      "side": 1,
+      "message": "why so much? 1MiB sounds unreasonable for `accept()`?",
+      "parentUuid": "38bb944d_cfd072a2",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
