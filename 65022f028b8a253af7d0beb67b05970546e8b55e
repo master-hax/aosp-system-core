@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7933da9a_a53bb47a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1598,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "nit: Add } and { to these - Android style always uses braces, unfortunately clang-format doesn\u0027t do this for us.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40128433_7267314d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1605,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "Use LOG(ERROR) for these, and return nullptr on failure. die() makes it difficult to compose or test code.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02929c32_1358f3ac",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "Add a check for !partition.empty()",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7a773ea_0607664a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1612,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "These should be \"ParseRebootCommand\" etc.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b885027_bd4c8ae7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1639,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "The \"return task\" is enough, just propagate the nullptr up.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5e27021_6b7748bf",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1650,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "The peeks and rewrites make the code a lot more complex, as evidenced by how GetPartitionName has to kind of guess as to the command structure, and would need to keep in sync with the logic in ParseFlashCommand.\n\nBetter to just build the task list, scan it for commands that flash dynamic partitions, and insert what you need after the UpdateSuperTask.\n\nThere\u0027s a pattern that can help with this. Add some virtual functions to Task:\n\n    virtual FlashTask* AsFlashTask() { return nullptr; }\n    virtual UpdateSuperTask* AsSuperTask() { return nullptr; }\n\nThen in FlashTask, etc:\n\n    virtual FlashTask* AsFlashTask() override { return this; }\n\nThen you can do:\n\n    if (auto flash_task \u003d task-\u003eAsFlashTask()) {\n        // stuff\n    }",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c914681_5cf1cac7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1675,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:34:10Z",
+      "side": 1,
+      "message": "Here, null check ParseFastbootInfoLine, and return an empty task list. Assuming we\u0027re not going to support an empty fastboot-info.txt... otherwise, change the signature to:\n\n    bool ParseFastbootInfo(FlashingPlan* fp, std::ifstream\u0026 fs, std::vector\u003cstd::unique_ptr\u003cTask\u003e\u003e* tasks);",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
