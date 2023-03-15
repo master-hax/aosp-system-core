@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de723264_5ab627ad",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1596,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:04:00Z",
+      "side": 1,
+      "message": "move or remove comment?",
+      "range": {
+        "startLine": 1596,
+        "startChar": 14,
+        "endLine": 1596,
+        "endChar": 15
+      },
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9fa38d1_86485a17",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1626,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:04:00Z",
+      "side": 1,
+      "message": "Local variable shouldn\u0027t get trailing underscore.",
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2e97993_80a81d45",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-15T19:04:00Z",
+      "side": 1,
+      "message": "This should add to the task list.",
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
