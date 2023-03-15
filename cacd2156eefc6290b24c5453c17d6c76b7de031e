@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4757625_cd01d7ea",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-15T17:15:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "236b3a02_94ce0d1b",
+      "revId": "cacd2156eefc6290b24c5453c17d6c76b7de031e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b7babfd_dc2180d2",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-03-07T23:49:15Z",
       "side": 1,
       "message": "These functions simply build a string, so probably should not interpret the parameters and check for their correctness (their future use might involve cases when pid\u003d\u003d0 might be a legit case for example). I think the checks should be done by their user.",
+      "range": {
+        "startLine": 203,
+        "startChar": 0,
+        "endLine": 212,
+        "endChar": 0
+      },
+      "revId": "cacd2156eefc6290b24c5453c17d6c76b7de031e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9470fe8_439ee339",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-15T17:15:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b7babfd_dc2180d2",
       "range": {
         "startLine": 203,
         "startChar": 0,
