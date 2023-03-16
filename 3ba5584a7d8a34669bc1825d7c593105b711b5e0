@@ -63,6 +63,30 @@
       },
       "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ee0ec76_12f7838b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1262,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-16T16:38:21Z",
+      "side": 1,
+      "message": "it looks like avb footer is getting copied for different partitions with this change. In old code -\u003e boot had avb footer copied, now its pvnmfw, vbmeta, and vbmeta_system. Is this still okay?",
+      "parentUuid": "0df1cd9a_18694d6c",
+      "range": {
+        "startLine": 1262,
+        "startChar": 0,
+        "endLine": 1262,
+        "endChar": 93
+      },
+      "revId": "3ba5584a7d8a34669bc1825d7c593105b711b5e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
