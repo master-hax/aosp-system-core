@@ -133,7 +133,9 @@ void Parser::ParseData(const std::string& filename, std::string* data) {
 
 bool Parser::ParseConfigFileInsecure(const std::string& path) {
     std::string config_contents;
-    if (!android::base::ReadFileToString(path, &config_contents)) {
+    // Follow symlinks as inputs in Bazel's execution root are symlinks, unlike
+    // Soong or Make.
+    if (!android::base::ReadFileToString(path, &config_contents, true)) {
         return false;
     }
 
