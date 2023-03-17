@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd219f8a_4acb725f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-17T20:55:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a6cc1542_dab1e8b3",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d169d02d_8f87b044",
@@ -614,6 +632,24 @@
       "side": 1,
       "message": "Definitely, so maybe we should just ignore `TrustyError` atoms.",
       "parentUuid": "9704fdab_586a4453",
+      "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49c1eb99_e98ed3e6",
+        "filename": "trusty/stats/stats_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-17T20:55:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "393205bb_d9408921",
       "revId": "8ac68bcf57ce27dee8032f12ad4bd7e8f7696c65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
