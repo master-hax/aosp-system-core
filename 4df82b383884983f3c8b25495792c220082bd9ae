@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2632f7a7_c86858e0",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 466,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-17T17:34:11Z",
+      "side": 1,
+      "message": "These and checks above implement the same checks. I thought we decided to keep this patch for testing only and mark it as DO NOT MERGE. Is that changed?",
+      "range": {
+        "startLine": 464,
+        "startChar": 0,
+        "endLine": 466,
+        "endChar": 0
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dcd38c4_e57d706a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-17T17:34:11Z",
+      "side": 1,
+      "message": "KillProcessGroup already checks them, no need to do that multiple times.",
+      "range": {
+        "startLine": 548,
+        "startChar": 0,
+        "endLine": 549,
+        "endChar": 28
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36e7743d_2862ab8a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-17T17:34:11Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 554,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 28
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
