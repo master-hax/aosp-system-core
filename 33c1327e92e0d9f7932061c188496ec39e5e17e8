@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b7efc95_7bd783d0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1072623
+      },
+      "writtenOn": "2023-03-17T19:45:25Z",
+      "side": 1,
+      "message": "I believe this is ready for review, but I can\u0027t change its status from \"Work in Progress\".\n\n@Swapneel: could you mark that CL as ready? Thanks!",
+      "revId": "33c1327e92e0d9f7932061c188496ec39e5e17e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
