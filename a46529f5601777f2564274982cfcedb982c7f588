@@ -213,6 +213,24 @@
       "parentUuid": "7f6a12c7_d14027f4",
       "revId": "a46529f5601777f2564274982cfcedb982c7f588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d03c638f_e8f1feeb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2023-03-20T11:47:09Z",
+      "side": 1,
+      "message": "Those tombstone tests are packaged along with other Microdroid Host tests. I will add them to system/core/debuggerd/TEST_MAPPING",
+      "parentUuid": "eb4d169d_e0efe6a2",
+      "revId": "a46529f5601777f2564274982cfcedb982c7f588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
