@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "2c3f39e4_88a21690",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 45
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-20T15:57:30Z",
+      "side": 1,
+      "message": "I suspect that the root cause is in the kernel and that newer kernels have certain performance optimizations that are not present in older kernels. If this AOSP patch ever lands on a Redfin device and if it is considered important to address this boot time regression then I propose either to switch Redfin devices to a newer kernel version or to backport the relevant performance optimizations to the Redfin kernel.",
+      "parentUuid": "a8f3e654_ef484fe1",
+      "range": {
+        "startLine": 18,
+        "startChar": 11,
+        "endLine": 19,
+        "endChar": 29
+      },
+      "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "54c13d5a_ed83764c",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 45
@@ -54,6 +78,30 @@
       "writtenOn": "2023-03-20T00:37:13Z",
       "side": 1,
       "message": "In the commit message:\n\n\u003e The cgroup mechanism can only\ncontrol background writes if both the blkio and memcg controllers are\nmounted in the v2 cgroup hierarchy.\n\nWill you be moving this to cgroup2?",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1402415_aa4b8137",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 45
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-20T15:57:30Z",
+      "side": 1,
+      "message": "Yes, but at a later time. The current plan is as follows:\n- After this CL has been merged, develop a plan to measure the performance impact of switching the memory cgroup controller from the v1 to the v2 cgroup hierarchy.\n- Discuss the measurements with the people and teams that are interested.\n- Decide whether or not the memcg controller performance needs to be improved.\n- Switch the memory cgroup controller to the v2 hierarchy.",
+      "parentUuid": "a3f2a382_1a3f13bd",
       "range": {
         "startLine": 18,
         "startChar": 0,
