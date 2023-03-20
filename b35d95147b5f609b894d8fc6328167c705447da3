@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "468a39ea_01bde09f",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-03-20T21:02:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "15db46f1_8e1cb2ac",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2d1e991c_c04d2375",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e068adc9_0fe89a5d",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-03-20T21:02:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d1e991c_c04d2375",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "99173bfc_c5d7146b",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-03-20T18:59:42Z",
       "side": 1,
       "message": "We don\u0027t need the hashtags anymore.",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85e29f21_3245a6b3",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-03-20T21:02:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99173bfc_c5d7146b",
       "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

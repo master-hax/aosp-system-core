@@ -16,6 +16,24 @@
       "message": "Should this be here?",
       "revId": "5bb78b4a3eac0640cfd1de046d60ae7cc325f9f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "200437e9_bb2e68de",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 10
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1962190
+      },
+      "writtenOn": "2023-03-20T21:02:38Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "1803f3cc_31717783",
+      "revId": "5bb78b4a3eac0640cfd1de046d60ae7cc325f9f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
