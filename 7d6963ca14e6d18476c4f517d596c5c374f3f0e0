@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cae4cba_f5171d75",
+        "filename": "trusty/stats/test/README.md",
+        "patchSetId": 20
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-20T20:16:16Z",
+      "side": 1,
+      "message": "The path to Android could be shorter and more generic, e.g., `/path/to/android`.",
+      "revId": "7d6963ca14e6d18476c4f517d596c5c374f3f0e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
