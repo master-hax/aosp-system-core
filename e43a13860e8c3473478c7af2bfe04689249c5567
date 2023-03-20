@@ -94,6 +94,30 @@
       },
       "revId": "e43a13860e8c3473478c7af2bfe04689249c5567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "194b642f_c4e84b50",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 40
+      },
+      "lineNbr": 1596,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T16:44:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd5898e8_af9e89ae",
+      "range": {
+        "startLine": 1596,
+        "startChar": 4,
+        "endLine": 1596,
+        "endChar": 46
+      },
+      "revId": "e43a13860e8c3473478c7af2bfe04689249c5567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

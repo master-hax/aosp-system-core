@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6fe7d69_104c7315",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1596,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T16:44:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de723264_5ab627ad",
+      "range": {
+        "startLine": 1596,
+        "startChar": 14,
+        "endLine": 1596,
+        "endChar": 15
+      },
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9fa38d1_86485a17",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a2020e8_a386c85d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1626,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T16:44:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9fa38d1_86485a17",
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b2e97993_80a81d45",
@@ -54,6 +96,24 @@
       "writtenOn": "2023-03-15T19:04:00Z",
       "side": 1,
       "message": "This should add to the task list.",
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bce8001_ab89e125",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T16:44:46Z",
+      "side": 1,
+      "message": "right now we have no way of getting the correct set of flash tasks for a given device from the hardcoded list, (this is because we don\u0027t have a way of encoding optional_if_no_image in our flash task). since we don\u0027t need which partitions are needed for a given device, I think flashing has to be left as is for now? Unless we want default behavior of flashtask to be continue on, if image can\u0027t be found.",
+      "parentUuid": "b2e97993_80a81d45",
       "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
