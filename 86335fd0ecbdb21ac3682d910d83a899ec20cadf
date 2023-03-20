@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b61a8022_0d00c74d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-20T21:47:57Z",
+      "side": 1,
+      "message": "Don\u0027t take big array of strings by copy, take by reference",
+      "range": {
+        "startLine": 1578,
+        "startChar": 63,
+        "endLine": 1578,
+        "endChar": 93
+      },
+      "revId": "86335fd0ecbdb21ac3682d910d83a899ec20cadf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1d489f2_d5827431",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1632,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-20T21:47:57Z",
+      "side": 1,
+      "message": "const ref",
+      "range": {
+        "startLine": 1632,
+        "startChar": 62,
+        "endLine": 1632,
+        "endChar": 87
+      },
+      "revId": "86335fd0ecbdb21ac3682d910d83a899ec20cadf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e4f0857_895fd309",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1672,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-20T21:47:57Z",
+      "side": 1,
+      "message": "never omit {}",
+      "range": {
+        "startLine": 1672,
+        "startChar": 4,
+        "endLine": 1672,
+        "endChar": 21
+      },
+      "revId": "86335fd0ecbdb21ac3682d910d83a899ec20cadf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
