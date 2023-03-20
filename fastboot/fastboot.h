@@ -81,7 +81,9 @@ struct FlashingPlan {
     bool skip_secondary = false;
     bool force_flash = false;
 
-    std::string slot;
+    std::string slot_override;
+    std::string next_active;
+
     std::string current_slot;
     std::string secondary_slot;
 

@@ -56,7 +56,6 @@ std::string FlashTask::GetPartitionAndSlot() {
     }
     return pname_ + "_" + slot;
 }
-
 RebootTask::RebootTask(FlashingPlan* fp) : fp_(fp){};
 RebootTask::RebootTask(FlashingPlan* fp, const std::string& reboot_target)
     : reboot_target_(reboot_target), fp_(fp){};
@@ -110,7 +109,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
-    if (fp->slot == "all") {
+    if (fp->slot_override == "all") {
         LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
         return nullptr;
     }
@@ -174,7 +173,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::InitializeFromTasks(
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
-    if (fp->slot == "all") {
+    if (fp->slot_override == "all") {
         LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
         return nullptr;
     }

@@ -42,7 +42,10 @@ bool SuperFlashHelper::IncludeInSuper(const std::string& partition) {
 
 bool SuperFlashHelper::AddPartition(const std::string& partition, const std::string& image_name,
                                     bool optional) {
+    LOG(INFO) << partition;
     if (!IncludeInSuper(partition)) {
+        LOG(INFO) << "1";
+
         return true;
     }
     auto iter = image_fds_.find(image_name);
@@ -50,6 +53,8 @@ bool SuperFlashHelper::AddPartition(const std::string& partition, const std::str
         unique_fd fd = source_.OpenFile(image_name);
         if (fd < 0) {
             if (!optional) {
+                LOG(INFO) << "2.5";
+
                 LOG(VERBOSE) << "could not find partition image: " << image_name;
                 return false;
             }
@@ -57,15 +62,18 @@ bool SuperFlashHelper::AddPartition(const std::string& partition, const std::str
         }
         if (is_sparse_file(fd)) {
             LOG(VERBOSE) << "cannot optimize dynamic partitions with sparse images";
+            LOG(INFO) << "2";
+
             return false;
         }
         iter = image_fds_.emplace(image_name, std::move(fd)).first;
     }
 
     if (!builder_.AddPartition(partition, image_name, get_file_size(iter->second))) {
+        LOG(INFO) << "3";
+
         return false;
     }
-
     will_flash_.emplace(partition);
     return true;
 }
