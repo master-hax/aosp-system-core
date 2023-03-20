@@ -22,6 +22,30 @@
       },
       "revId": "7ae538406c89eee602310a4ca41a8c25309af372",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9b8284d_e2d6ff57",
+        "filename": "fastboot/util.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T17:10:09Z",
+      "side": 1,
+      "message": "It gets re-assigned in the method body. I\u0027ll fix that up though.",
+      "parentUuid": "d3d6655f_e9aa97f9",
+      "range": {
+        "startLine": 33,
+        "startChar": 31,
+        "endLine": 33,
+        "endChar": 46
+      },
+      "revId": "7ae538406c89eee602310a4ca41a8c25309af372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
