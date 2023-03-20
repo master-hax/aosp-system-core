@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e34360f_ce18e83a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1605,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "Instead of a conditional here, do:\n\n    if (img_name.empty()) {\n        img_name \u003d find_item(partition);\n    }\n\nThen you can remove the first constructor, which shouldn\u0027t have any other callers. This also makes FlashTask more composable since it won\u0027t die() on bad inputs.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8dba6ce_cdac86a7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1611,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "LOG(ERROR), return nullptr",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19237a72_deb69548",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1634,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "We shouldn\u0027t have explicit resizing. The tool does it implicitly.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81c578ab_05a244a6",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "It\u0027d be simpler, I think, to add the list of dynamic partitions to your FlashingPlan, and then UpdateSuperTask can issue resize-to-zero internally. It\u0027ll make it easier to add the optimized super flash path back.\n\nThe route below is fine too, though switch \"int loc\" to ssize_t or better, use std::optional\u003csize_t\u003e. int is 32-bit and size_t can be 64-bit.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "382b0c24_7ef40278",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "LOG(VERBOSE) here.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c24c3aea_ec26b033",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1731,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T20:11:16Z",
+      "side": 1,
+      "message": "LOG(VERBOSE), and you can drop the \"else\" block since there\u0027s a return above.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
