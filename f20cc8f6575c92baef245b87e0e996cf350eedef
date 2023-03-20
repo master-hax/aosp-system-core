@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "09faf86c_de7d440c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1605,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e34360f_ce18e83a",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e8dba6ce_cdac86a7",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6566cad_e5f26fe0",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1611,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8dba6ce_cdac86a7",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19237a72_deb69548",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-03-20T20:11:16Z",
       "side": 1,
       "message": "We shouldn\u0027t have explicit resizing. The tool does it implicitly.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fe5f84e_25234ee9",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1634,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19237a72_deb69548",
       "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cbc5054c_a34548c1",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "I will look into adding the dynamic partitions to the flashing plan. I think we didn\u0027t add it there since it\u0027s used only by the flashall class. Currently seeing how it works with adding back in the optimized_super task.",
+      "parentUuid": "81c578ab_05a244a6",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "382b0c24_7ef40278",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 13
@@ -82,6 +154,24 @@
       "writtenOn": "2023-03-20T20:11:16Z",
       "side": 1,
       "message": "LOG(VERBOSE) here.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8665a19_c5ac02b7",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "382b0c24_7ef40278",
       "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -99,6 +189,24 @@
       "writtenOn": "2023-03-20T20:11:16Z",
       "side": 1,
       "message": "LOG(VERBOSE), and you can drop the \"else\" block since there\u0027s a return above.",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c369f5e_7288d181",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1731,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T21:41:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c24c3aea_ec26b033",
       "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
