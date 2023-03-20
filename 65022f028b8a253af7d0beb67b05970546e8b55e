@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6be60d8d_0afecdec",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1598,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7933da9a_a53bb47a",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "40128433_7267314d",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-03-15T19:34:10Z",
       "side": 1,
       "message": "Use LOG(ERROR) for these, and return nullptr on failure. die() makes it difficult to compose or test code.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "278a80b2_43cea962",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1605,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "40128433_7267314d",
       "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf7bdd4c_fdba938c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02929c32_1358f3ac",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e7a773ea_0607664a",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-03-15T19:34:10Z",
       "side": 1,
       "message": "These should be \"ParseRebootCommand\" etc.",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ff5b9ed_98c6fea9",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1612,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7a773ea_0607664a",
       "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9874fc15_06c1b606",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1639,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b885027_bd4c8ae7",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5e27021_6b7748bf",
@@ -103,6 +193,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee6c6861_dc5cc7f4",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1650,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5e27021_6b7748bf",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c914681_5cf1cac7",
@@ -116,6 +224,24 @@
       "writtenOn": "2023-03-15T19:34:10Z",
       "side": 1,
       "message": "Here, null check ParseFastbootInfoLine, and return an empty task list. Assuming we\u0027re not going to support an empty fastboot-info.txt... otherwise, change the signature to:\n\n    bool ParseFastbootInfo(FlashingPlan* fp, std::ifstream\u0026 fs, std::vector\u003cstd::unique_ptr\u003cTask\u003e\u003e* tasks);",
+      "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79855e6a_5d4be9b4",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1675,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-20T17:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c914681_5cf1cac7",
       "revId": "65022f028b8a253af7d0beb67b05970546e8b55e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
