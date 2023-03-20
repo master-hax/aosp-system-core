@@ -116,6 +116,24 @@
       "parentUuid": "b2e97993_80a81d45",
       "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ed40b14_b5be62ec",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 48
+      },
+      "lineNbr": 1653,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-20T23:14:55Z",
+      "side": 1,
+      "message": "I see - it\u0027d require some refactoring, since FlashImages opens the buffer first. We can come back to it later.",
+      "parentUuid": "3bce8001_ab89e125",
+      "revId": "d914f413b89df5b3d7daa8774d0d3bb8913aaf65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
