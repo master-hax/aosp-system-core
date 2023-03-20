@@ -56,7 +56,6 @@ std::string FlashTask::GetPartitionAndSlot() {
     }
     return pname_ + "_" + slot;
 }
-
 RebootTask::RebootTask(FlashingPlan* fp) : fp_(fp){};
 RebootTask::RebootTask(FlashingPlan* fp, const std::string& reboot_target)
     : reboot_target_(reboot_target), fp_(fp){};

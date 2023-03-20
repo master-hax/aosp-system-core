@@ -84,6 +84,8 @@ struct FlashingPlan {
     std::string slot_override;
     std::string secondary_slot;
 
+    std::string next_active;
+
     fastboot::FastBootDriver* fb;
 };
 
