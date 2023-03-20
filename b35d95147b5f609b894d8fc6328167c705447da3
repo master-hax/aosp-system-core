@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15db46f1_8e1cb2ac",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-20T18:59:42Z",
+      "side": 1,
+      "message": "This really should not be here. Nobody on AOSP can use this.",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d1e991c_c04d2375",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-20T18:59:42Z",
+      "side": 1,
+      "message": "Also should not be here.",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99173bfc_c5d7146b",
+        "filename": "trusty/stats/README.md",
+        "patchSetId": 19
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-20T18:59:42Z",
+      "side": 1,
+      "message": "We don\u0027t need the hashtags anymore.",
+      "revId": "b35d95147b5f609b894d8fc6328167c705447da3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
