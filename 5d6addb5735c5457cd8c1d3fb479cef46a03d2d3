@@ -16,6 +16,24 @@
       "message": "Minor nit: the option is `--skip-tests`.",
       "revId": "5d6addb5735c5457cd8c1d3fb479cef46a03d2d3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d24479a7_0eaa84f3",
+        "filename": "trusty/stats/test/README.md",
+        "patchSetId": 21
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-20T21:09:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d8fb5a1_4198fe18",
+      "revId": "5d6addb5735c5457cd8c1d3fb479cef46a03d2d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
