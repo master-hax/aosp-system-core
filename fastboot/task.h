@@ -24,6 +24,7 @@
 #include "util.h"
 
 class FlashTask;
+class RebootTask;
 class UpdateSuperTask;
 
 class Task {
@@ -31,6 +32,7 @@ class Task {
     Task() = default;
     virtual void Run() = 0;
     virtual FlashTask* AsFlashTask() { return nullptr; }
+    virtual RebootTask* AsRebootTask() { return nullptr; }
     virtual UpdateSuperTask* AsUpdateSuperTask() { return nullptr; }
 
     virtual ~Task() = default;
@@ -44,7 +46,7 @@ class FlashTask : public Task {
 
     std::string GetPartition() { return pname_; }
     std::string GetImageName() { return fname_; }
-    std::string GetPartitionName() { return pname_ + "_" + slot_; }
+    std::string GetPartitionAndSlot();
     std::string GetSlot() { return slot_; }
     void Run() override;
 
@@ -59,6 +61,8 @@ class RebootTask : public Task {
   public:
     RebootTask(FlashingPlan* fp);
     RebootTask(FlashingPlan* fp, const std::string& reboot_target);
+    virtual RebootTask* AsRebootTask() override { return this; }
+
     void Run() override;
 
   private:

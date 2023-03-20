@@ -81,7 +81,9 @@ struct FlashingPlan {
     bool skip_secondary = false;
     bool force_flash = false;
 
-    std::string slot;
+    std::string slot_override;
+    std::string next_active;
+
     std::string current_slot;
     std::string secondary_slot;
 
@@ -96,6 +98,7 @@ void do_for_partitions(const std::string& part, const std::string& slot,
 std::string find_item(const std::string& item);
 void reboot_to_userspace_fastboot();
 void syntax_error(const char* fmt, ...);
+std::string get_current_slot();
 
 struct NetworkSerial {
     Socket::Protocol protocol;
