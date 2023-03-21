@@ -206,6 +206,30 @@
       },
       "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e346ed45_e408a563",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 45
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-21T16:45:01Z",
+      "side": 1,
+      "message": "How about reverting this CL on the udc-dev branch after the automerger merged it to the udc-dev branch? I think that is what is recommended in the automerger user guide (go/automerger-help).",
+      "parentUuid": "8ab18398_44cb8e25",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
