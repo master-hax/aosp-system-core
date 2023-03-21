@@ -16,6 +16,24 @@
       "message": "This change breaks ab/tradefed (https://android-build.googleplex.com/builds/culprit-assistant/run/9f0fbc07-20ac-4dad-84c6-ac94c36ef561).",
       "revId": "2de07e82f2d7af047581eefe9ceac98e7b8f9371",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a83e76a_6fec25ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-03-21T00:16:48Z",
+      "side": 1,
+      "message": "It should be fixed by now in the tradefed build system.",
+      "parentUuid": "f3d01d75_c4b41a6b",
+      "revId": "2de07e82f2d7af047581eefe9ceac98e7b8f9371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
