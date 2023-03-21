@@ -479,6 +479,11 @@ std::string describe_pac_enabled_keys(long value) {
   return describe_end(value, desc);
 }
 
+std::string describe_esr(long value) {
+  std::string desc;
+  return describe_end(value, desc);
+}
+
 void log_backtrace(log_t* log, unwindstack::AndroidUnwinder* unwinder,
                    unwindstack::AndroidUnwinderData& data, const char* prefix) {
   std::set<std::string> unreadable_elf_files;

@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+#include <stdint.h>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,8 +26,9 @@
 
 struct ThreadInfo {
   std::unique_ptr<unwindstack::Regs> registers;
-  long tagged_addr_ctrl = -1;
-  long pac_enabled_keys = -1;
+  uint64_t tagged_addr_ctrl = -1;
+  uint64_t pac_enabled_keys = -1;
+  uint64_t esr = -1;
 
   pid_t uid;
 

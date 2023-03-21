@@ -528,7 +528,7 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   // making a syscall and checking errno.
   ErrnoRestorer restorer;
 
-  auto *ucontext = static_cast<ucontext_t*>(context);
+  auto* ucontext = static_cast<ucontext_t*>(context);
 
   // It's possible somebody cleared the SA_SIGINFO flag, which would mean
   // our "info" arg holds an undefined value.

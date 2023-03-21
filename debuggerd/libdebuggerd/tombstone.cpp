@@ -51,6 +51,17 @@ using android::base::unique_fd;
 
 using namespace std::literals::string_literals;
 
+#if defined(__aarch64__)
+static uint64_t get_aarch64_esr(ucontext_t* ucontext) {
+  _aarch64_ctx* ctx = reinterpret_cast<_aarch64_ctx*>(ucontext->uc_mcontext.__reserved);
+  while (ctx->size != 0) {
+    if (ctx->magic == ESR_MAGIC) return reinterpret_cast<esr_context*>(ctx)->esr;
+    ctx = reinterpret_cast<_aarch64_ctx*>(reinterpret_cast<uint8_t*>(ctx) + ctx->size);
+  }
+  return -1;
+}
+#endif
+
 void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_msg_address,
                                 siginfo_t* siginfo, ucontext_t* ucontext) {
   pid_t uid = getuid();
@@ -79,8 +90,9 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
     .selinux_label = std::move(selinux_label), .siginfo = siginfo,
     // Only supported on aarch64 for now.
 #if defined(__aarch64__)
-    .tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0),
-    .pac_enabled_keys = prctl(PR_PAC_GET_ENABLED_KEYS, 0, 0, 0, 0),
+    .tagged_addr_ctrl = static_cast<uint64_t>(prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0)),
+    .pac_enabled_keys = static_cast<uint64_t>(prctl(PR_PAC_GET_ENABLED_KEYS, 0, 0, 0, 0)),
+    .esr = get_aarch64_esr(ucontext),
 #endif
   };
   const ThreadInfo& thread = threads[pid];

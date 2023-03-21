@@ -93,6 +93,9 @@ static void print_thread_header(CallbackType callback, const Tombstone& tombston
     CB(should_log, "pac_enabled_keys: %016" PRIx64 "%s", thread.pac_enabled_keys(),
        describe_pac_enabled_keys(thread.pac_enabled_keys()).c_str());
   }
+  if (thread.esr() != -1) {
+    CB(should_log, "esr: %016" PRIx64 "%s", thread.esr(), describe_esr(thread.esr()).c_str());
+  }
 }
 
 static void print_register_row(CallbackType callback, int word_size,

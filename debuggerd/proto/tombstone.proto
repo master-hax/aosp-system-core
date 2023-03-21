@@ -138,8 +138,9 @@ message Thread {
   repeated MemoryDump memory_dump = 5;
   int64 tagged_addr_ctrl = 6;
   int64 pac_enabled_keys = 8;
+  int64 esr = 10;
 
-  reserved 10 to 999;
+  reserved 11 to 999;
 }
 
 message BacktraceFrame {
