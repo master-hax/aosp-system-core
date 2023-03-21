@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3d01d75_c4b41a6b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1591737
+      },
+      "writtenOn": "2023-03-21T00:13:19Z",
+      "side": 1,
+      "message": "This change breaks ab/tradefed (https://android-build.googleplex.com/builds/culprit-assistant/run/9f0fbc07-20ac-4dad-84c6-ac94c36ef561).",
+      "revId": "2de07e82f2d7af047581eefe9ceac98e7b8f9371",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
