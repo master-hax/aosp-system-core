@@ -158,6 +158,30 @@
       },
       "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5b9ac7c_5c534de8",
+        "filename": "libprocessgroup/profiles/cgroups.json",
+        "patchSetId": 45
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-21T14:20:53Z",
+      "side": 1,
+      "message": "It is not clear to me which performance regression you are referring to? In case you are referring to the memcg performance regression I mentioned: it will probably take a few months before agreement will be reached about migrating the memcg controller from the v1 to the v2 hierarchy.\n\nOther than the boot time regression for Redfin devices, this CL does not have any measurable performance impact. This CL should not affect the boot time of in-market Redfin devices since I\u0027m not aware of any plans to upgrade Redfin devices to udc-dev.",
+      "parentUuid": "6151c483_d051b3d0",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "bbdd9c388c1c7031379ad1ba9c5e7fdfa0bc45f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
