@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7c676ad_fc1b8c92",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-21T19:49:46Z",
+      "side": 1,
+      "message": "Also, we should have at least one test in this CL, for ParseFastbootInfo, that a string containing a few commands gives us the task list we expect.",
+      "revId": "9b14ee250e0d9bc32a9438667a71e0cfb95cc561",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
