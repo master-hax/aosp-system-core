@@ -1560,10 +1560,10 @@ static void CancelSnapshotIfNeeded() {
     }
 }
 
-std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot) {
+std::string GetPartitionName(const ImageEntry& entry) {
     auto slot = entry.second;
     if (slot.empty()) {
-        slot = current_slot;
+        slot = get_current_slot();
     }
     if (slot.empty()) {
         return entry.first->part_name;
@@ -1576,7 +1576,7 @@ std::string GetPartitionName(const ImageEntry& entry, std::string& current_slot)
 
 std::unique_ptr<FlashTask> ParseFlashCommand(FlashingPlan* fp, std::vector<std::string> parts) {
     bool apply_vbmeta = false;
-    std::string slot = fp->slot;
+    std::string slot = fp->slot_override;
     std::string partition;
     std::string img_name;
     for (auto& part : parts) {
@@ -1669,7 +1669,7 @@ void AddResizeTasks(FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks)
                     loc = i;
                 }
                 resize_tasks.emplace_back(std::make_unique<ResizeTask>(
-                        fp, flash_task->GetPartition(), "0", fp->slot));
+                        fp, flash_task->GetPartition(), "0", fp->slot_override));
             }
         }
     }
@@ -1753,7 +1753,7 @@ class FlashAllTool {
 
   private:
     void CheckRequirements();
-    void DetermineSlot();
+    void DetermineSecondarySlot();
     void CollectImages();
     void FlashImages(const std::vector<std::pair<const Image*, std::string>>& images);
     void FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf);
@@ -1772,14 +1772,13 @@ void FlashAllTool::Flash() {
 
     // Change the slot first, so we boot into the correct recovery image when
     // using fastbootd.
-    if (fp_->slot == "all") {
+    if (fp_->slot_override == "all") {
         set_active("a");
     } else {
-        set_active(fp_->slot);
+        set_active(fp_->slot_override);
     }
 
-    DetermineSlot();
-
+    DetermineSecondarySlot();
     CancelSnapshotIfNeeded();
 
     std::string path = find_item_given_name("fastboot-info.txt");
@@ -1809,18 +1808,12 @@ void FlashAllTool::CheckRequirements() {
     ::CheckRequirements({contents.data(), contents.size()}, fp_->force_flash);
 }
 
-void FlashAllTool::DetermineSlot() {
-    if (fp_->slot.empty()) {
-        fp_->current_slot = get_current_slot();
-    } else {
-        fp_->current_slot = fp_->slot;
-    }
-
+void FlashAllTool::DetermineSecondarySlot() {
     if (fp_->skip_secondary) {
         return;
     }
-    if (fp_->slot != "" && fp_->slot != "all") {
-        fp_->secondary_slot = get_other_slot(fp_->slot);
+    if (fp_->slot_override != "" && fp_->slot_override != "all") {
+        fp_->secondary_slot = get_other_slot(fp_->slot_override);
     } else {
         fp_->secondary_slot = get_other_slot();
     }
@@ -1834,7 +1827,7 @@ void FlashAllTool::DetermineSlot() {
 
 void FlashAllTool::CollectImages() {
     for (size_t i = 0; i < images.size(); ++i) {
-        std::string slot = fp_->slot;
+        std::string slot = fp_->slot_override;
         if (images[i].IsSecondary()) {
             if (fp_->skip_secondary) {
                 continue;
