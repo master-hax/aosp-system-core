@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aac6690f_0fde1c44",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-22T20:23:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72ad1705_886ac87b",
+      "range": {
+        "startLine": 212,
+        "startChar": 4,
+        "endLine": 214,
+        "endChar": 0
+      },
+      "revId": "59af4ee02f8116c25fa3a055d4f52e7bbe60dbd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1f8ab15b_db4fa399",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "116ec487_143a12c7",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-22T20:23:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f8ab15b_db4fa399",
+      "range": {
+        "startLine": 373,
+        "startChar": 4,
+        "endLine": 374,
+        "endChar": 28
+      },
+      "revId": "59af4ee02f8116c25fa3a055d4f52e7bbe60dbd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dec6e2af_286237d3",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-03-22T20:14:25Z",
       "side": 1,
       "message": "Why not check this at the top-level createProcessGroup() function one time and be done with it?",
+      "range": {
+        "startLine": 548,
+        "startChar": 4,
+        "endLine": 549,
+        "endChar": 28
+      },
+      "revId": "59af4ee02f8116c25fa3a055d4f52e7bbe60dbd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e98fdeaa_106d84c7",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-22T20:23:14Z",
+      "side": 1,
+      "message": "It is not clear to me what advantages moving these statements provides? Anyway, these statements have been moved.",
+      "parentUuid": "dec6e2af_286237d3",
       "range": {
         "startLine": 548,
         "startChar": 4,
