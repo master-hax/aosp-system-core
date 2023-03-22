@@ -119,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "150b28f1_ab9a01b3",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-22T20:23:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "067a988b_6ebc0969",
+      "range": {
+        "startLine": 548,
+        "startChar": 0,
+        "endLine": 549,
+        "endChar": 28
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "36e7743d_2862ab8a",
@@ -156,6 +180,30 @@
       "side": 1,
       "message": "KillProcessGroup() returns an error code instead of calling abort() in case of invalid arguments. The latter behavior makes it easier for developers to identify the function that passed the invalid arguments.",
       "parentUuid": "36e7743d_2862ab8a",
+      "range": {
+        "startLine": 554,
+        "startChar": 4,
+        "endLine": 555,
+        "endChar": 28
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3e1a986_fa7c03e0",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-03-22T20:23:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "738f8f64_9db020e4",
       "range": {
         "startLine": 554,
         "startChar": 4,
