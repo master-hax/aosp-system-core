@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "067a988b_6ebc0969",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-22T19:45:20Z",
+      "side": 1,
+      "message": "Then just move the new checks to the top of KillProcessGroup().",
+      "parentUuid": "de1eced0_de06a9a7",
+      "range": {
+        "startLine": 548,
+        "startChar": 0,
+        "endLine": 549,
+        "endChar": 28
+      },
+      "revId": "4df82b383884983f3c8b25495792c220082bd9ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "36e7743d_2862ab8a",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 7
