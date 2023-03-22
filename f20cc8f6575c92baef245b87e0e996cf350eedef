@@ -143,6 +143,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "67050c84_2e8d3ce2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-22T20:16:18Z",
+      "side": 1,
+      "message": "Added in a new Initialize function that takes in the task list and modifies it if Optimize Flash Super can be added",
+      "parentUuid": "cbc5054c_a34548c1",
+      "revId": "f20cc8f6575c92baef245b87e0e996cf350eedef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "382b0c24_7ef40278",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 13

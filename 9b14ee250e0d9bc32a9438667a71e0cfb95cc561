@@ -16,6 +16,24 @@
       "message": "Also, we should have at least one test in this CL, for ParseFastbootInfo, that a string containing a few commands gives us the task list we expect.",
       "revId": "9b14ee250e0d9bc32a9438667a71e0cfb95cc561",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "629f7647_e16feb9f",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-03-22T20:16:18Z",
+      "side": 1,
+      "message": "I added tests in the CL after this one, should they be squashed into one? I\u0027m worried this CL is too big haha",
+      "parentUuid": "f7c676ad_fc1b8c92",
+      "revId": "9b14ee250e0d9bc32a9438667a71e0cfb95cc561",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
