@@ -590,8 +590,6 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
 }
 
 int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
-    std::string cgroup;
-
     if (memControl && !UsePerAppMemcg()) {
         PLOG(ERROR) << "service memory controls are used without per-process memory cgroup support";
         return -EINVAL;
@@ -608,6 +606,7 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
         }
     }
 
+    std::string cgroup;
     CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroup);
     return createProcessGroupInternal(uid, initialPid, cgroup, true);
 }
