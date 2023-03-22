@@ -110,7 +110,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
-    if (fp->slot == "all") {
+    if (fp->slot_override == "all") {
         LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
         return nullptr;
     }
@@ -147,7 +147,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
     }
 
     for (const auto& entry : os_images) {
-        auto partition = GetPartitionName(entry, fp->current_slot);
+        auto partition = GetPartitionName(entry);
         auto image = entry.first;
 
         if (!helper->AddPartition(partition, image->img_name, image->optional_if_no_image)) {
@@ -160,7 +160,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
 
     // Remove images that we already flashed, just in case we have non-dynamic OS images.
     auto remove_if_callback = [&](const ImageEntry& entry) -> bool {
-        return helper->WillFlash(GetPartitionName(entry, fp->current_slot));
+        return helper->WillFlash(GetPartitionName(entry));
     };
     os_images.erase(std::remove_if(os_images.begin(), os_images.end(), remove_if_callback),
                     os_images.end());
@@ -174,7 +174,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::InitializeFromTasks(
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
-    if (fp->slot == "all") {
+    if (fp->slot_override == "all") {
         LOG(VERBOSE) << "Cannot optimize flashing super for all slots";
         return nullptr;
     }
