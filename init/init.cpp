@@ -692,15 +692,20 @@ static void SetUsbController() {
 
 /// Set ro.kernel.version property to contain the major.minor pair as returned
 /// by uname(2).
-static void SetKernelVersion() {
+static void SetKernelVersionAndArch() {
     struct utsname uts;
     unsigned int major, minor;
 
-    if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
+    if (uname(&uts) != 0) {
+        LOG(ERROR) << "Failed to call uname()";
+        return;
+    }
+    if (sscanf(uts.release, "%u.%u", &major, &minor) != 2) {
         LOG(ERROR) << "Could not parse the kernel version from uname";
         return;
     }
     SetProperty("ro.kernel.version", android::base::StringPrintf("%u.%u", major, minor));
+    SetProperty("ro.kernel.arch", uts.machine);
 }
 
 static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
@@ -1018,7 +1023,7 @@ int SecondStageMain(int argc, char** argv) {
     export_oem_lock_status();
     MountHandler mount_handler(&epoll);
     SetUsbController();
-    SetKernelVersion();
+    SetKernelVersionAndArch();
 
     const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
     Action::set_function_map(&function_map);
