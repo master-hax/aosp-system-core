@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae891204_bbafdd7b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 1644,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-23T00:52:59Z",
+      "side": 1,
+      "message": "This should just be \"if-wipe\", since it\u0027s a conditional, and it could be followed by other commands in theory. The full line in fastboot-info.txt would be:\n\n    if-wipe erase userdata",
+      "revId": "a0e1fd3d601880a21bb14b3fb39f5458ca7c10b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
