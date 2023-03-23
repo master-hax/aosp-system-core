@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed31d051_47a3a432",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-03-23T20:38:55Z",
+      "side": 1,
+      "message": "I found this bug while testing https://android-review.git.corp.google.com/q/topic:%22ext2simg-fixes%22",
+      "revId": "ef4507b6c885af7fb3ffd88cb631a005555f6f18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
