@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "992f9bc4_53279c6a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 1608,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-23T19:16:01Z",
+      "side": 1,
+      "message": "log content of `parts` for better debugability.",
+      "range": {
+        "startLine": 1608,
+        "startChar": 0,
+        "endLine": 1608,
+        "endChar": 82
+      },
+      "revId": "a0e1fd3d601880a21bb14b3fb39f5458ca7c10b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f647cbf_53b5c9b2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 1618,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-23T19:16:01Z",
+      "side": 1,
+      "message": "same here, log content of parts",
+      "range": {
+        "startLine": 1618,
+        "startChar": 0,
+        "endLine": 1618,
+        "endChar": 82
+      },
+      "revId": "a0e1fd3d601880a21bb14b3fb39f5458ca7c10b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ae891204_bbafdd7b",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 20

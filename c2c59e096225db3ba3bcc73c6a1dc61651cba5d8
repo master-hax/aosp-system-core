@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b0dc6c3_3f4b8d7b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 1679,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-23T19:16:01Z",
+      "side": 1,
+      "message": "Try `Tokenize` which handles consecutive white spaces",
+      "range": {
+        "startLine": 1679,
+        "startChar": 58,
+        "endLine": 1679,
+        "endChar": 63
+      },
+      "revId": "c2c59e096225db3ba3bcc73c6a1dc61651cba5d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
