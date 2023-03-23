@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f07669b1_21b29b64",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-23T22:38:36Z",
+      "side": 1,
+      "message": "How does CowReader know not to decompress in this case?",
+      "revId": "98e16ce35137365747847fbc07d116500d174722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
