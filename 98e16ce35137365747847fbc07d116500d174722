@@ -16,6 +16,24 @@
       "message": "How does CowReader know not to decompress in this case?",
       "revId": "98e16ce35137365747847fbc07d116500d174722",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef194c5e_6d699bfe",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-23T23:30:55Z",
+      "side": 1,
+      "message": "it\u0027s in cow_decompressor.cpp , CowReader knows the decompressed size and the compressed size, if the two numbers are equal, copy input data as is.",
+      "parentUuid": "f07669b1_21b29b64",
+      "revId": "98e16ce35137365747847fbc07d116500d174722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
