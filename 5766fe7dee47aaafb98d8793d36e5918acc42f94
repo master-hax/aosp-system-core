@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d992878c_9344f9ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-24T18:23:50Z",
+      "side": 1,
+      "message": "(looks like a bogus presubmit failure to me, so just keep kicking \"run presubmit\" until it succeeds... :-( )",
+      "revId": "5766fe7dee47aaafb98d8793d36e5918acc42f94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
