@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "405eddf5_756415fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-03-24T18:30:32Z",
+      "side": 1,
+      "message": "We shouldn\u0027t have any feature UDC where it can be enabled as a backdoor entry; also, we don\u0027t claim this feature in bootcamp as well. Maybe, qpr1 is ok.",
+      "parentUuid": "20e0730d_d62729ae",
+      "revId": "98e16ce35137365747847fbc07d116500d174722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f07669b1_21b29b64",
