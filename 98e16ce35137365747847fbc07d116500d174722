@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "672fd071_19b93cff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-03-24T18:16:03Z",
+      "side": 1,
+      "message": "CL looks good; Let\u0027s hold this until AOSP cut-off please..",
+      "revId": "98e16ce35137365747847fbc07d116500d174722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f07669b1_21b29b64",
