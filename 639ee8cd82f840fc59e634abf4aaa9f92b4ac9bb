@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2660057_1e69d4d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1061007
+      },
+      "writtenOn": "2023-03-24T00:56:16Z",
+      "side": 1,
+      "message": "Hi there - this is the CL you approved for submitting to AOSP - please +2 - thanks!",
+      "revId": "639ee8cd82f840fc59e634abf4aaa9f92b4ac9bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
