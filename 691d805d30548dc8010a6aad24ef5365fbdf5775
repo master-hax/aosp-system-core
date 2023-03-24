@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "964c8e4f_bfc953dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1999190
+      },
+      "writtenOn": "2023-03-24T21:36:33Z",
+      "side": 1,
+      "message": "This patch would allow my team at Square to eliminate our custom reboot reasons, while continuing to express our reboots semantically.  The proposed changes have been designed generically to allow others to benefit who work on devices with similar needs.",
+      "revId": "691d805d30548dc8010a6aad24ef5365fbdf5775",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
