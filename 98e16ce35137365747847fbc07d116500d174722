@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20e0730d_d62729ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-03-24T18:27:33Z",
+      "side": 1,
+      "message": "I think the risk is low, but we probably don\u0027t want to support this in udc-dev yet. Use \"RESTRICT AUTOMERGE\" or \"DO NOT MERGE\" to avoid going into udc-dev.",
+      "revId": "98e16ce35137365747847fbc07d116500d174722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f07669b1_21b29b64",
