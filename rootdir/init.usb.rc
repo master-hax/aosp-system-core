@@ -26,6 +26,12 @@ on property:vendor.sys.usb.adb.disabled=*
 # overridden in `on boot` action of init.hardware.rc.
 on init
     setprop sys.usb.configfs 0
+    setprop sys.usb.mtp.inst mtp.gs0
+    setprop sys.usb.ptp.inst ptp.gs1
+    setprop sys.usb.accessory.inst accessory.gs2
+    setprop sys.usb.audio_source.inst audio_source.gs3
+    setprop sys.usb.rndis.inst rndis.gs4
+    setprop sys.usb.midi.inst midi.gs5
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none && property:sys.usb.configfs=0
