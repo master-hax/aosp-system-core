@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "393608e7_da4166ca",
+        "filename": "trusty/storage/stmigrate/.#stmigrate.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-03-29T20:09:14Z",
+      "side": 1,
+      "message": "What does this point at?  Is it supposed to be submitted?",
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "720cbd28_7be3ec1d",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-03-29T20:09:14Z",
+      "side": 1,
+      "message": "Something about what this does might be useful here.  Or a comment above the main() function.\nI think it copies a file into a block device, then renames the file to .bak and creates a symlink from the original filename to the block device.  \nCould `dd` and a script not do this is a more obvious way?",
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12c15b51_ed857cb4",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-03-29T20:09:14Z",
+      "side": 1,
+      "message": "Isn\u0027t this simply something like `blksize \u003d min(size_file - offset, BLK_SIZE);`\nDo trailing bytes need copying 1 at a time?",
+      "range": {
+        "startLine": 87,
+        "startChar": 8,
+        "endLine": 91,
+        "endChar": 9
+      },
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
