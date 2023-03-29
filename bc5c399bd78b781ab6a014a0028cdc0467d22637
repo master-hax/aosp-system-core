@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e5deb87_a278b30e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-29T22:24:00Z",
+      "side": 1,
+      "message": "otherwise lgtm. (but if i just fix the whitespace for you, then my +2 won\u0027t count... damn you, gerrit acls!)",
+      "revId": "bc5c399bd78b781ab6a014a0028cdc0467d22637",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf7aad51_deafc02a",
+        "filename": "libmodprobe/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-03-29T22:24:00Z",
+      "side": 1,
+      "message": "tab",
+      "revId": "bc5c399bd78b781ab6a014a0028cdc0467d22637",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
