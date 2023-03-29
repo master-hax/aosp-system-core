@@ -46,6 +46,30 @@
       },
       "revId": "c2c59e096225db3ba3bcc73c6a1dc61651cba5d8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cb833e7_9c067a3b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 1679,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-03-29T17:52:51Z",
+      "side": 1,
+      "message": "Yea... for conveience, `flash system` should be treated the same as `flash     system`",
+      "parentUuid": "56d65ea3_47fed2cb",
+      "range": {
+        "startLine": 1679,
+        "startChar": 58,
+        "endLine": 1679,
+        "endChar": 63
+      },
+      "revId": "c2c59e096225db3ba3bcc73c6a1dc61651cba5d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
