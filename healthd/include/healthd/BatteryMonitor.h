@@ -80,9 +80,10 @@ class BatteryMonitor {
     void logValues(void);
     bool isChargerOnline();
 
-    int setChargingPolicy(int value);
+    status_t setChargingPolicy(int value);
     int getChargingPolicy();
     int getBatteryHealthData(int id);
+    status_t setFirstUsageDate(int value);
 
     static void logValues(const android::hardware::health::V2_1::HealthInfo& health_info,
                           const struct healthd_config& healthd_config);

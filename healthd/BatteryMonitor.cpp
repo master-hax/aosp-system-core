@@ -599,6 +599,21 @@ int BatteryMonitor::getBatteryHealthData(int id) {
     return 0;
 }
 
+status_t BatteryMonitor::setFirstUsageDate(int value) {
+    status_t ret = NAME_NOT_FOUND;
+    bool result;
+    if (!mHealthdConfig->batteryFirstUsageDatePath.isEmpty()) {
+        result = writeToFile(mHealthdConfig->batteryFirstUsageDatePath, value);
+        if (!result) {
+            KLOG_WARNING(LOG_TAG, "setFirstUsageDate fail\n");
+            ret = BAD_VALUE;
+        } else {
+            ret = OK;
+        }
+    }
+    return ret;
+}
+
 status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
     status_t ret = BAD_VALUE;
     std::string buf;
