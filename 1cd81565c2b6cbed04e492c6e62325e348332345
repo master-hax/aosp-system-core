@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f86c77b4_82d7bda2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-03-30T12:50:15Z",
+      "side": 1,
+      "message": "I see that David has been on the buganizer thread about this, but he will be OOO for a couple of weeks.\n\nI think this CL has to be reviewed by a usb subsystem owner. Let me invite badhri@ for that.",
+      "revId": "1cd81565c2b6cbed04e492c6e62325e348332345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38acfc7f_2c1382a9",
+        "filename": "rootdir/init.usb.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-03-30T12:50:15Z",
+      "side": 1,
+      "message": "Please add these sysprops to property_contexts in sepolicy so that they are labeled correctly. \n\nIn doing so, please use the \u0027exact\u0027 matching, and specify the possible values that these sysprops accept.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 38
+      },
+      "revId": "1cd81565c2b6cbed04e492c6e62325e348332345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
