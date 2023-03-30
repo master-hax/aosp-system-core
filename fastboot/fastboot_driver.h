@@ -108,7 +108,7 @@ class FastBootDriver : public IFBDriver {
     /* HIGHER LEVEL COMMANDS -- Composed of the commands above */
     RetCode FlashPartition(const std::string& partition, const std::vector<char>& data);
     RetCode FlashPartition(const std::string& partition, android::base::borrowed_fd fd,
-                           uint32_t sz);
+                           uint32_t sz) override;
     RetCode FlashPartition(const std::string& partition, sparse_file* s, uint32_t sz,
                            size_t current, size_t total);
 
