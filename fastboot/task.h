@@ -23,6 +23,11 @@
 #include "super_flash_helper.h"
 #include "util.h"
 
+enum class ImageType;
+struct Image;
+using ImageEntry = std::pair<const Image*, std::string>;
+struct FlashingPlan;
+
 class FlashTask;
 class RebootTask;
 class UpdateSuperTask;
