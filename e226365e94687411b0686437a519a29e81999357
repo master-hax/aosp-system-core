@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a52a0357_f957a225",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-03-30T18:03:42Z",
+      "side": 1,
+      "message": "Do these need to handle short reads / writes?",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
