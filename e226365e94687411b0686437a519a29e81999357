@@ -3,6 +3,86 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "73704c74_32a062a1",
+        "filename": "trusty/storage/stmigrate/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need to add these empty fields, I don\u0027t think.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 6
+      },
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29c8d854_fcfc829e",
+        "filename": "trusty/storage/stmigrate/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "These flags are already default in soong (depending on the project), unless we have a good reason we should not set them for this tool specifically.",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 6
+      },
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91c93e34_79256ffb",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "Document usage here too, what is the filename, blk dev, and their relationship.",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86d4d5c3_1c3c5015",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "If I\u0027m reading the ioctl correctly, this should be a `uint64_t`. (https://elixir.bootlin.com/linux/v4.7/source/block/ioctl.c#L564)",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a52a0357_f957a225",
         "filename": "trusty/storage/stmigrate/stmigrate.c",
         "patchSetId": 4
@@ -32,6 +112,57 @@
       "side": 1,
       "message": "Do you mean read() returning less than tocopy bytes? I know it is supposed to be possible, but the only times I\u0027ve seen it happen would cause another read() call to fail (like file truncated or fs full for write()) And I\u0027m not clear on how else it could happen in a modern system, especially with BLK_SIZE of something small, like 4K.\n\nI think it\u0027s reasonable to fail if read/write doesn\u0027t transfer all the memory requested.",
       "parentUuid": "a52a0357_f957a225",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b564b975_b02b0abd",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "You will close this again, should set this to -1 instead.",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e627cc69_d9d17f1b",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "Probably should have just used a static PATH_MAX sized buffer. You\u0027re missing space for the null terminator. If you want to make this dynamic I would use a separate variable to compute the length so it stays in sync with the snprintf below.",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d86477ed_b20bbeea",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-03-30T21:15:13Z",
+      "side": 1,
+      "message": "Do we want to rename before starting the copy? I\u0027m not sure it really matters, this is a dangerous operation and it really is up to the user to ensure that we are not concurrently accessing the backing file. So the answer is probably not, but I wanted to just mention this in case there was a good reason to.",
       "revId": "e226365e94687411b0686437a519a29e81999357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
