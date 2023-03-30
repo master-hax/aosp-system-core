@@ -70,9 +70,10 @@ class FastBootDriver : public IFBDriver {
     RetCode Boot(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
     RetCode Continue(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
     RetCode CreatePartition(const std::string& partition, const std::string& size);
-    RetCode DeletePartition(const std::string& partition);
+    RetCode DeletePartition(const std::string& partition) override;
     RetCode Download(const std::string& name, android::base::borrowed_fd fd, size_t size,
-                     std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+                     std::string* response = nullptr,
+                     std::vector<std::string>* info = nullptr) override;
     RetCode Download(android::base::borrowed_fd fd, size_t size, std::string* response = nullptr,
                      std::vector<std::string>* info = nullptr);
     RetCode Download(const std::string& name, const std::vector<char>& buf,
@@ -85,16 +86,17 @@ class FastBootDriver : public IFBDriver {
     RetCode Download(sparse_file* s, bool use_crc = false, std::string* response = nullptr,
                      std::vector<std::string>* info = nullptr);
     RetCode Erase(const std::string& partition, std::string* response = nullptr,
-                  std::vector<std::string>* info = nullptr);
+                  std::vector<std::string>* info = nullptr) override;
     RetCode Flash(const std::string& partition, std::string* response = nullptr,
                   std::vector<std::string>* info = nullptr);
     RetCode GetVar(const std::string& key, std::string* val,
-                   std::vector<std::string>* info = nullptr);
+                   std::vector<std::string>* info = nullptr) override;
     RetCode GetVarAll(std::vector<std::string>* response);
-    RetCode Reboot(std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+    RetCode Reboot(std::string* response = nullptr,
+                   std::vector<std::string>* info = nullptr) override;
     RetCode RebootTo(std::string target, std::string* response = nullptr,
-                     std::vector<std::string>* info = nullptr);
-    RetCode ResizePartition(const std::string& partition, const std::string& size);
+                     std::vector<std::string>* info = nullptr) override;
+    RetCode ResizePartition(const std::string& partition, const std::string& size) override;
     RetCode SetActive(const std::string& slot, std::string* response = nullptr,
                       std::vector<std::string>* info = nullptr);
     RetCode Upload(const std::string& outfile, std::string* response = nullptr,
@@ -108,7 +110,7 @@ class FastBootDriver : public IFBDriver {
     /* HIGHER LEVEL COMMANDS -- Composed of the commands above */
     RetCode FlashPartition(const std::string& partition, const std::vector<char>& data);
     RetCode FlashPartition(const std::string& partition, android::base::borrowed_fd fd,
-                           uint32_t sz);
+                           uint32_t sz) override;
     RetCode FlashPartition(const std::string& partition, sparse_file* s, uint32_t sz,
                            size_t current, size_t total);
 
@@ -120,7 +122,7 @@ class FastBootDriver : public IFBDriver {
     void SetInfoCallback(std::function<void(const std::string&)> info);
     static const std::string RCString(RetCode rc);
     std::string Error();
-    RetCode WaitForDisconnect();
+    RetCode WaitForDisconnect() override;
 
     // Note: set_transport will return the previous transport.
     Transport* set_transport(Transport* transport);
