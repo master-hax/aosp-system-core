@@ -16,6 +16,24 @@
       "message": "Do these need to handle short reads / writes?",
       "revId": "e226365e94687411b0686437a519a29e81999357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cf43db9_998d8b70",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-30T19:21:36Z",
+      "side": 1,
+      "message": "Do you mean read() returning less than tocopy bytes? I know it is supposed to be possible, but the only times I\u0027ve seen it happen would cause another read() call to fail (like file truncated or fs full for write()) And I\u0027m not clear on how else it could happen in a modern system, especially with BLK_SIZE of something small, like 4K.\n\nI think it\u0027s reasonable to fail if read/write doesn\u0027t transfer all the memory requested.",
+      "parentUuid": "a52a0357_f957a225",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
