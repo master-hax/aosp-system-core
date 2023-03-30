@@ -18,6 +18,10 @@
 
 namespace fastboot {
 
-class MockFastbootDriver : public IFBDriver {};
+class MockFastbootDriver : public IFBDriver {
+    MOCK_METHOD(RetCode, FlashPartition,
+                (const std::string& partition, android::base::borrowed_fd fd, uint32_t sz),
+                (override));
+};
 
 }  // namespace fastboot

@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 #include <string>
+#include "android-base/unique_fd.h"
 
 class Transport;
 
@@ -28,5 +29,9 @@ enum RetCode : int {
     TIMEOUT,
 };
 
-class IFBDriver {};
+class IFBDriver {
+  public:
+    RetCode virtual FlashPartition(const std::string& partition, android::base::borrowed_fd fd,
+                                   uint32_t sz) = 0;
+};
 }  // namespace fastboot
