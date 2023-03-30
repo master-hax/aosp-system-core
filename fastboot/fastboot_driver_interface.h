@@ -16,6 +16,7 @@
 #pragma once
 
 #include <string>
+#include "android-base/unique_fd.h"
 
 class Transport;
 
@@ -30,5 +31,27 @@ enum RetCode : int {
     TIMEOUT,
 };
 
-class IFBDriver {};
+class IFBDriver {
+  public:
+    RetCode virtual FlashPartition(const std::string& partition, android::base::borrowed_fd fd,
+                                   uint32_t sz) = 0;
+    RetCode virtual DeletePartition(const std::string& partition) = 0;
+    RetCode virtual WaitForDisconnect() = 0;
+    RetCode virtual Reboot(std::string* response = nullptr,
+                           std::vector<std::string>* info = nullptr) = 0;
+
+    RetCode virtual RebootTo(std::string target, std::string* response = nullptr,
+                             std::vector<std::string>* info = nullptr) = 0;
+    RetCode virtual GetVar(const std::string& key, std::string* val,
+                           std::vector<std::string>* info = nullptr) = 0;
+    RetCode virtual Download(const std::string& name, android::base::borrowed_fd fd, size_t size,
+                             std::string* response = nullptr,
+                             std::vector<std::string>* info = nullptr) = 0;
+    RetCode virtual RawCommand(const std::string& cmd, const std::string& message,
+                               std::string* response = nullptr,
+                               std::vector<std::string>* info = nullptr, int* dsize = nullptr) = 0;
+    RetCode virtual ResizePartition(const std::string& partition, const std::string& size) = 0;
+    RetCode virtual Erase(const std::string& partition, std::string* response = nullptr,
+                          std::vector<std::string>* info = nullptr) = 0;
+};
 }  // namespace fastboot
