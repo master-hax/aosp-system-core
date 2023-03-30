@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b8f2232_46012701",
+        "filename": "trusty/storage/stmigrate/.#stmigrate.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-30T17:02:39Z",
+      "side": 1,
+      "message": "Oops. I accidentally added that.",
+      "parentUuid": "393608e7_da4166ca",
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "720cbd28_7be3ec1d",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "24f0ddb5_dee20376",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-30T17:02:39Z",
+      "side": 1,
+      "message": "I added a comment.\n\nI tried to do this as a shell script, but wasn\u0027t able to figure out how to get the build system to install a shell script into the image. Arve claimed shell scripts are rare in android and that a binary was oky.",
+      "parentUuid": "720cbd28_7be3ec1d",
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "12c15b51_ed857cb4",
@@ -48,6 +84,30 @@
       "writtenOn": "2023-03-29T20:09:14Z",
       "side": 1,
       "message": "Isn\u0027t this simply something like `blksize \u003d min(size_file - offset, BLK_SIZE);`\nDo trailing bytes need copying 1 at a time?",
+      "range": {
+        "startLine": 87,
+        "startChar": 8,
+        "endLine": 91,
+        "endChar": 9
+      },
+      "revId": "3c8fb87e01216cabe5adac9e2d21aca291e05f39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9df0e9c9_de096954",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-30T17:02:39Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "12c15b51_ed857cb4",
       "range": {
         "startLine": 87,
         "startChar": 8,
