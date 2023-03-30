@@ -41,20 +41,12 @@
 #include <sparse/sparse.h>
 
 #include "constants.h"
+#include "fastboot_driver_interface.h"
 #include "transport.h"
 
 class Transport;
 
 namespace fastboot {
-
-enum RetCode : int {
-    SUCCESS = 0,
-    BAD_ARG,
-    IO_ERROR,
-    BAD_DEV_RESP,
-    DEVICE_FAIL,
-    TIMEOUT,
-};
 
 struct DriverCallbacks {
     std::function<void(const std::string&)> prolog = [](const std::string&) {};
@@ -63,7 +55,7 @@ struct DriverCallbacks {
     std::function<void(const std::string&)> text = [](const std::string&) {};
 };
 
-class FastBootDriver {
+class FastBootDriver : public IFBDriver {
     friend class FastBootTest;
 
   public:
