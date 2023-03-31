@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90c2973a_e6ccec0a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Thanks for the feedback Stephen.",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "73704c74_32a062a1",
@@ -14,6 +31,30 @@
       "writtenOn": "2023-03-30T21:15:13Z",
       "side": 1,
       "message": "You shouldn\u0027t need to add these empty fields, I don\u0027t think.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 6
+      },
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "280a77a5_118ac70b",
+        "filename": "trusty/storage/stmigrate/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73704c74_32a062a1",
       "range": {
         "startLine": 28,
         "startChar": 0,
@@ -47,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "190d6575_4a1a1a7a",
+        "filename": "trusty/storage/stmigrate/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "29c8d854_fcfc829e",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 6
+      },
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91c93e34_79256ffb",
@@ -64,6 +129,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1da004a5_d58d0f1d",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91c93e34_79256ffb",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "86d4d5c3_1c3c5015",
@@ -77,6 +160,24 @@
       "writtenOn": "2023-03-30T21:15:13Z",
       "side": 1,
       "message": "If I\u0027m reading the ioctl correctly, this should be a `uint64_t`. (https://elixir.bootlin.com/linux/v4.7/source/block/ioctl.c#L564)",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "330a5437_af08383e",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86d4d5c3_1c3c5015",
       "revId": "e226365e94687411b0686437a519a29e81999357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -133,6 +234,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ef15440_209a2af7",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "b564b975_b02b0abd",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e627cc69_d9d17f1b",
@@ -150,6 +269,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c40b45e3_2ec31c54",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "Thanks for catching the missing trailing 0.\n\nPATH_MAX is 4K and that seems like a lot to put on the stack. (On my desktop default stack is 8K). And I try to avoid globals, so I left it as dynamically allocated, but fixed the size.",
+      "parentUuid": "e627cc69_d9d17f1b",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d86477ed_b20bbeea",
@@ -163,6 +300,24 @@
       "writtenOn": "2023-03-30T21:15:13Z",
       "side": 1,
       "message": "Do we want to rename before starting the copy? I\u0027m not sure it really matters, this is a dangerous operation and it really is up to the user to ensure that we are not concurrently accessing the backing file. So the answer is probably not, but I wanted to just mention this in case there was a good reason to.",
+      "revId": "e226365e94687411b0686437a519a29e81999357",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e45a66f7_ae5ca2ef",
+        "filename": "trusty/storage/stmigrate/stmigrate.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1956428
+      },
+      "writtenOn": "2023-03-31T17:51:14Z",
+      "side": 1,
+      "message": "I thought about that and basically came to the same conclusion.\n\nThe key is to ensure that this runs before storageproxyd starts (or anything else that opens the file)\n\nIf something else is accessing the file while this is running, then renaming doesn\u0027t help since the file descriptor will still point to the file regardless of the name.",
+      "parentUuid": "d86477ed_b20bbeea",
       "revId": "e226365e94687411b0686437a519a29e81999357",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
