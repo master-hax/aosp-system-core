@@ -39,6 +39,30 @@
       },
       "revId": "1cd81565c2b6cbed04e492c6e62325e348332345",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8b0556a_d9e2b7d3",
+        "filename": "rootdir/init.usb.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1936867
+      },
+      "writtenOn": "2023-03-31T11:42:43Z",
+      "side": 1,
+      "message": "Hi Jiyong, \nThank you so much for the suggestions, sure will add these to sepolicy.",
+      "parentUuid": "38acfc7f_2c1382a9",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 38
+      },
+      "revId": "1cd81565c2b6cbed04e492c6e62325e348332345",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
