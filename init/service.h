@@ -115,7 +115,7 @@ class Service {
     pid_t pid() const { return pid_; }
     android::base::boot_clock::time_point time_started() const { return time_started_; }
     int crash_count() const { return crash_count_; }
-    uid_t uid() const { return proc_attr_.uid; }
+    uid_t uid() const { return proc_attr_.uid(); }
     gid_t gid() const { return proc_attr_.gid; }
     int namespace_flags() const { return namespaces_.flags; }
     const std::vector<gid_t>& supp_gids() const { return proc_attr_.supp_gids; }
