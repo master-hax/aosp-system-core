@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "595b16e9_69e2f242",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 832,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-04-04T10:01:07Z",
+      "side": 1,
+      "message": "Nit: Use of strnlen suggests we are worried that buf might not be null terminated.\nBut the logging functions below will go badly wrong if that\u0027s true.\nBut vsnprintf always null terminates anyway.",
+      "range": {
+        "startLine": 832,
+        "startChar": 21,
+        "endLine": 832,
+        "endChar": 28
+      },
+      "revId": "dcb4fac3eacb98c5247d7cadb3e4681d61e03c02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
