@@ -43,7 +43,7 @@ struct HalServiceError(String);
 struct TipcChannel(trusty::TipcChannel);
 
 impl SerializedChannel for TipcChannel {
-    const MAX_SIZE: usize = 4000;
+    const MAX_SIZE: usize = 4096 - 16 /* PAGE_SIZE - tipc header */;
     fn execute(&mut self, serialized_req: &[u8]) -> binder::Result<Vec<u8>> {
         self.0.send(serialized_req).map_err(|e| {
             binder::Status::new_exception(
