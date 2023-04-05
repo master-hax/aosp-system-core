@@ -701,7 +701,9 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                     profile->Add(std::make_unique<SetAttributeAction>(iter->second.get(),
                                                                       attr_value, optional));
                 } else {
-                    LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
+                    if (!optional) {
+                        LOG(WARNING) << "SetAttribute: unknown attribute: " << attr_name;
+                    }
                 }
             } else if (action_name == "SetClamps") {
                 std::string boost_value = params_val["Boost"].asString();
