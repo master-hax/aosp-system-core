@@ -703,6 +703,34 @@ static void SetKernelVersion() {
     SetProperty("ro.kernel.version", android::base::StringPrintf("%u.%u", major, minor));
 }
 
+/// Set ro.kernel.bitness to 32 or 64, depending on the contents of /proc/kallsyms:
+///  - on 64-bit kernels, the first line of /proc/kallsyms starts with 16 hex digits, e.g.
+///    "ffffffdbe1e00000 T foo" or "0000000000000000 T bar"
+///  - on 32-bit kernels, it starts with 8 hex digits, e.g.
+///    "c0008000 T foo" or "00000000 T bar".
+static void SetKernelBitness() {
+    const char kKallsymsPath[] = "/proc/kallsyms";
+    android::base::unique_fd fd(open(kKallsymsPath, O_RDONLY));
+    if (fd == -1) {
+        LOG(ERROR) << "Could not open " << kKallsymsPath;
+        return;
+    }
+    // Read the first 9 characters from kallsyms.
+    std::vector<unsigned char> buffer(9);
+    if (!android::base::ReadFully(fd, buffer.data(), buffer.size())) {
+        LOG(ERROR) << "Could not read from " << kKallsymsPath;
+        return;
+    }
+    // Ensure that the leading 8 characters are hex digits.
+    for (int i = 0; i < 8; i++) {
+        // Invalid kallsyms format, bailing out.
+        if (!isxdigit(buffer[i])) return;
+    }
+    // If the ninth character is a hex digit, assume we are running on a 64-bit kernel.
+    SetProperty("ro.kernel.bitness",
+                android::base::StringPrintf("%u", isxdigit(buffer[8]) ? 64 : 32);
+}
+
 static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
     if (siginfo.ssi_pid != 0) {
         // Drop any userspace SIGTERM requests.
@@ -1019,6 +1047,7 @@ int SecondStageMain(int argc, char** argv) {
     MountHandler mount_handler(&epoll);
     SetUsbController();
     SetKernelVersion();
+    SetKernelBitness();
 
     const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
     Action::set_function_map(&function_map);
