@@ -34,6 +34,24 @@
       "parentUuid": "89a6f674_1ea81d0f",
       "revId": "3e6c9dbee8a354d824b89eb54573103594f1cffe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f626cdf5_c251a5c5",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 1974671
+      },
+      "writtenOn": "2023-04-06T09:47:36Z",
+      "side": 1,
+      "message": "Added the change here https://android-review.googlesource.com/c/platform/system/core/+/2527399",
+      "parentUuid": "b4c552cb_1c64155c",
+      "revId": "3e6c9dbee8a354d824b89eb54573103594f1cffe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
