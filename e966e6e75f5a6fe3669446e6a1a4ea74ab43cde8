@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bebd9abe_9765001c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003768
+      },
+      "writtenOn": "2023-04-07T04:21:25Z",
+      "side": 1,
+      "message": "@David,\n\nMay you pls share the patch about how to get b/223076262 fixed? Thanks.\n\n\u003e\u003e\u003e\u003e\n\nhttps://cs.android.com/android/_/android/platform/system/core/+/29d8a42d14544ac81b89243b22e46ce7c5c71701\n\nRevert \"init: Add more diagnostics for signalfd hangs.\"\n\nRevert commit 14f9c15e0560 (\"init: Add more diagnostics for signalfd\nhangs\") because:\n* That commit was intented to help with root-causing b/223076262.\n* The root cause of b/223076262 has been fixed (not blocking SIGCHLD\n  in all threads in the init process).\n\nTest: Treehugger\nChange-Id: I586663ec0588e74a9d58512f7f31155398cf4f52\nSigned-off-by: Bart Van Assche \u003cbvanassche@google.com\u003e",
+      "revId": "e966e6e75f5a6fe3669446e6a1a4ea74ab43cde8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
