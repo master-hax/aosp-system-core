@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b49d38b0_effd4eec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 16
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003768
+      },
+      "writtenOn": "2023-04-07T06:34:48Z",
+      "side": 1,
+      "message": "@Googlers,\n\nMay you pls share the patch about how to get b/223076262 fixed? Thanks.",
+      "revId": "29d8a42d14544ac81b89243b22e46ce7c5c71701",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
