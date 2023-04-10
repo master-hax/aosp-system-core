@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0f3c19d3_d62488ce",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T19:24:10Z",
+      "side": 1,
+      "message": "It\u0027s still a mutable ref?",
+      "parentUuid": "9b31dfd4_501f1526",
+      "range": {
+        "startLine": 1578,
+        "startChar": 45,
+        "endLine": 1578,
+        "endChar": 76
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "97eabefd_604ae366",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 34
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "this all happens in the \"if-wipe\" block. so +1 happens regardless to get rid of \"if-wipe\" and then parsing erase task should only take in the erase target so +1 to get rid of \"erase\".",
       "parentUuid": "97eabefd_604ae366",
+      "range": {
+        "startLine": 1642,
+        "startChar": 0,
+        "endLine": 1642,
+        "endChar": 20
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "328ab8ff_c794c149",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T19:24:10Z",
+      "side": 1,
+      "message": "OK, this is slightly harder to read. Let\u0027s put a it +\u003d1 after L1637, inside the if-wipe check. Then put another it+1 inside the \"erase\" check.",
+      "parentUuid": "70d08d16_e0e1e65d",
       "range": {
         "startLine": 1642,
         "startChar": 0,
