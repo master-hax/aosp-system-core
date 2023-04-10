@@ -55,7 +55,7 @@ using HealthInfo_1_0 = android::hardware::health::V1_0::HealthInfo;
 using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
 using HealthInfo_2_1 = android::hardware::health::V2_1::HealthInfo;
 using aidl::android::hardware::health::BatteryCapacityLevel;
-using aidl::android::hardware::health::BatteryChargingPolicy;
+using aidl::android::hardware::health::BatteryChargingPolicyEnum;
 using aidl::android::hardware::health::BatteryChargingState;
 using aidl::android::hardware::health::BatteryHealth;
 using aidl::android::hardware::health::BatteryHealthData;
@@ -248,16 +248,19 @@ BatteryHealth getBatteryHealthStatus(int status) {
     return value;
 }
 
-BatteryChargingPolicy getBatteryChargingPolicy(const char* chargingPolicy) {
-    static SysfsStringEnumMap<BatteryChargingPolicy> batteryChargingPolicyMap[] = {
-            {"0", BatteryChargingPolicy::INVALID},   {"1", BatteryChargingPolicy::DEFAULT},
-            {"2", BatteryChargingPolicy::LONG_LIFE}, {"3", BatteryChargingPolicy::ADAPTIVE},
-            {NULL, BatteryChargingPolicy::DEFAULT},
+BatteryChargingPolicyEnum getBatteryChargingPolicy(const char* chargingPolicy) {
+    static SysfsStringEnumMap<BatteryChargingPolicyEnum> batteryChargingPolicyMap[] = {
+            {"0", BatteryChargingPolicyEnum::INVALID},
+            {"1", BatteryChargingPolicyEnum::DEFAULT},
+            {"2", BatteryChargingPolicyEnum::ADAPTIVE_AON},
+            {"3", BatteryChargingPolicyEnum::ADAPTIVE_AC},
+            {"4", BatteryChargingPolicyEnum::LONG_LIFE},
+            {NULL, BatteryChargingPolicyEnum::DEFAULT},
     };
 
     auto ret = mapSysfsString(chargingPolicy, batteryChargingPolicyMap);
     if (!ret) {
-        *ret = BatteryChargingPolicy::DEFAULT;
+        *ret = BatteryChargingPolicyEnum::DEFAULT;
     }
 
     return *ret;
@@ -574,7 +577,7 @@ status_t BatteryMonitor::setChargingPolicy(int value) {
 }
 
 int BatteryMonitor::getChargingPolicy() {
-    BatteryChargingPolicy result = BatteryChargingPolicy::DEFAULT;
+    BatteryChargingPolicyEnum result = BatteryChargingPolicyEnum::DEFAULT;
     if (!mHealthdConfig->chargingPolicyPath.isEmpty()) {
         std::string buf;
         if (readFromFile(mHealthdConfig->chargingPolicyPath, &buf) > 0)
