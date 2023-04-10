@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b31dfd4_501f1526",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-10T19:20:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ae97ef7_80077e38",
+      "range": {
+        "startLine": 1578,
+        "startChar": 45,
+        "endLine": 1578,
+        "endChar": 76
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "97eabefd_604ae366",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-04-10T18:05:58Z",
       "side": 1,
       "message": "why do we need to +2 for erase command but only +1 for flash command?",
+      "range": {
+        "startLine": 1642,
+        "startChar": 0,
+        "endLine": 1642,
+        "endChar": 20
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70d08d16_e0e1e65d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-10T19:20:11Z",
+      "side": 1,
+      "message": "this all happens in the \"if-wipe\" block. so +1 happens regardless to get rid of \"if-wipe\" and then parsing erase task should only take in the erase target so +1 to get rid of \"erase\".",
+      "parentUuid": "97eabefd_604ae366",
       "range": {
         "startLine": 1642,
         "startChar": 0,
