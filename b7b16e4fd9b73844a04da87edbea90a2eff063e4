@@ -189,6 +189,30 @@
       },
       "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c0026b6_982732f2",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T20:07:14Z",
+      "side": 1,
+      "message": "\u003e would it be confusing to just initialize it \u003d 1;\n\n\nYea. We don\u0027t really care about performance impact of doing two `it++` vs just one `it +\u003d 2` . It\u0027s better to make your code match actual logical thinking process so that it\u0027s more readable. Initializing it \u003d 1 would be confusing because readers would have to think more to understand why it\u0027s initialized to 1. Versus, if you do an `it +\u003d 1` inside `if-wipe` it\u0027s clear that it increment is related to parsing the if-wipe prefix.",
+      "parentUuid": "b20aed87_719a200c",
+      "range": {
+        "startLine": 1642,
+        "startChar": 0,
+        "endLine": 1642,
+        "endChar": 20
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
