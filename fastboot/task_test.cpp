@@ -16,6 +16,7 @@
 
 #include "task.h"
 #include "fastboot.h"
+#include "fastboot_driver_mock.h"
 
 #include <gtest/gtest.h>
 #include <fstream>
@@ -24,6 +25,7 @@
 #include <unordered_map>
 #include "android-base/strings.h"
 using android::base::Split;
+using testing::_;
 
 class ParseTest : public ::testing ::Test {
   protected:
@@ -117,4 +119,17 @@ TEST_F(ParseTest, BAD_FASTBOOT_INFO_INPUT) {
     for (auto& task : tasks) {
         ASSERT_TRUE(!task);
     }
+}
+
+TEST_F(ParseTest, CORRECT_TASK_FORMED) {
+    std::vector<std::string> commands = {"flash dtbo", "flash --slot-other system system_other.img",
+                                         "reboot bootloader", "update-super"};
+    std::vector<std::unique_ptr<Task>> tasks = collectTasks(GetFP(), commands);
+
+    auto _task1 = tasks[0]->AsFlashTask();
+    auto _task2 = tasks[1]->AsFlashTask();
+    auto _task3 = tasks[2]->AsRebootTask();
+    auto _task4 = tasks[3]->AsUpdateSuperTask();
+
+    ASSERT_TRUE(_task1 && _task2 && _task3 && _task4);
 }
