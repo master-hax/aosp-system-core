@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ae97ef7_80077e38",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T18:05:58Z",
+      "side": 1,
+      "message": "const ref",
+      "range": {
+        "startLine": 1578,
+        "startChar": 45,
+        "endLine": 1578,
+        "endChar": 76
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97eabefd_604ae366",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 34
+      },
+      "lineNbr": 1642,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T18:05:58Z",
+      "side": 1,
+      "message": "why do we need to +2 for erase command but only +1 for flash command?",
+      "range": {
+        "startLine": 1642,
+        "startChar": 0,
+        "endLine": 1642,
+        "endChar": 20
+      },
+      "revId": "b7b16e4fd9b73844a04da87edbea90a2eff063e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6e0cd388_9de57ac1",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 1577,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T18:05:58Z",
+      "side": 1,
+      "message": "If it\u0027s a const ref, you can just initialize it as you pass a parameter to callee. C++ will automatically delete the vector after function call completes.",
+      "parentUuid": "47fecc4a_59d1df2e",
+      "range": {
+        "startLine": 1577,
+        "startChar": 63,
+        "endLine": 1577,
+        "endChar": 87
+      },
+      "revId": "0afe91df1813f62a53628d595de0cd09dccc6629",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3a423cf7_91464709",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 32
@@ -226,6 +250,30 @@
       "side": 1,
       "message": "could you clarify -\u003e do you want a vector as a return type, or a pointer as a parameter.",
       "parentUuid": "26755bca_4334bef1",
+      "range": {
+        "startLine": 1660,
+        "startChar": 38,
+        "endLine": 1660,
+        "endChar": 72
+      },
+      "revId": "0afe91df1813f62a53628d595de0cd09dccc6629",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84ecda0a_1c1a7267",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 1660,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T18:05:58Z",
+      "side": 1,
+      "message": "Use `std::vector\u003cstd::unique_ptr\u003cTask\u003e\u003e* tasks` instead of `std::vector\u003cstd::unique_ptr\u003cTask\u003e\u003e\u0026 tasks`",
+      "parentUuid": "a647da52_6fcf6596",
       "range": {
         "startLine": 1660,
         "startChar": 38,
