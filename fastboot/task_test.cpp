@@ -111,3 +111,34 @@ TEST(PARSE_FLASHTASK_TEST, BAD_FASTBOOT_INFO_INPUT) {
 
     ASSERT_TRUE(!task && !task2 && !task3);
 }
+
+TEST(PARSE_FLASHTASK_TEST, CORRECT_TASK_FORMED) {
+    fp->slot_override = "b";
+    fp->secondary_slot = "a";
+    fp->wants_wipe = true;
+
+    std::string command1 = "flash dtbo";
+    std::string command2 = "flash --slot-other system system_other.img";
+    std::string command3 = "reboot bootloader";
+    std::string command4 = "update-super";
+    std::string command5 = "if-wipe erase cache";
+
+    std::vector<std::string> vec_command1 = android::base::Split(command1, " ");
+    std::vector<std::string> vec_command2 = android::base::Split(command2, " ");
+    std::vector<std::string> vec_command3 = android::base::Split(command3, " ");
+    std::vector<std::string> vec_command4 = android::base::Split(command4, " ");
+    std::vector<std::string> vec_command5 = android::base::Split(command5, " ");
+
+    std::unique_ptr<Task> task1 = ParseFastbootInfoLine(fp.get(), vec_command1);
+    std::unique_ptr<Task> task2 = ParseFastbootInfoLine(fp.get(), vec_command2);
+    std::unique_ptr<Task> task3 = ParseFastbootInfoLine(fp.get(), vec_command3);
+    std::unique_ptr<Task> task4 = ParseFastbootInfoLine(fp.get(), vec_command4);
+    std::unique_ptr<Task> task5 = ParseFastbootInfoLine(fp.get(), vec_command5);
+
+    auto _task1 = task1->AsFlashTask();
+    auto _task2 = task2->AsFlashTask();
+    auto _task3 = task3->AsRebootTask();
+    auto _task4 = task4->AsUpdateSuperTask();
+    auto _task5 = task5->AsWipeTask();
+    ASSERT_TRUE(_task1 && _task2 && _task3 && _task4 && _task5);
+}
