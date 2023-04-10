@@ -250,14 +250,17 @@ BatteryHealth getBatteryHealthStatus(int status) {
 
 BatteryChargingPolicy getBatteryChargingPolicy(const char* chargingPolicy) {
     static SysfsStringEnumMap<BatteryChargingPolicy> batteryChargingPolicyMap[] = {
-            {"0", BatteryChargingPolicy::INVALID},   {"1", BatteryChargingPolicy::DEFAULT},
-            {"2", BatteryChargingPolicy::LONG_LIFE}, {"3", BatteryChargingPolicy::ADAPTIVE},
-            {NULL, BatteryChargingPolicy::DEFAULT},
+            {"0", BatteryChargingPolicy::CHARGING_POLICY_INVALID},
+            {"1", BatteryChargingPolicy::CHARGING_POLICY_DEFAULT},
+            {"2", BatteryChargingPolicy::CHARGING_POLICY_ADAPTIVE_AON},
+            {"3", BatteryChargingPolicy::CHARGING_POLICY_ADAPTIVE_AC},
+            {"4", BatteryChargingPolicy::CHARGING_POLICY_ADAPTIVE_LONGLIFE},
+            {NULL, BatteryChargingPolicy::CHARGING_POLICY_DEFAULT},
     };
 
     auto ret = mapSysfsString(chargingPolicy, batteryChargingPolicyMap);
     if (!ret) {
-        *ret = BatteryChargingPolicy::DEFAULT;
+        *ret = BatteryChargingPolicy::CHARGING_POLICY_DEFAULT;
     }
 
     return *ret;
@@ -574,7 +577,7 @@ status_t BatteryMonitor::setChargingPolicy(int value) {
 }
 
 int BatteryMonitor::getChargingPolicy() {
-    BatteryChargingPolicy result = BatteryChargingPolicy::DEFAULT;
+    BatteryChargingPolicy result = BatteryChargingPolicy::CHARGING_POLICY_DEFAULT;
     if (!mHealthdConfig->chargingPolicyPath.isEmpty()) {
         std::string buf;
         if (readFromFile(mHealthdConfig->chargingPolicyPath, &buf) > 0)
