@@ -16,6 +16,7 @@
 
 #include "task.h"
 #include "fastboot.h"
+#include "fastboot_driver_mock.h"
 
 #include <gtest/gtest.h>
 #include <fstream>
@@ -24,6 +25,7 @@
 #include <unordered_map>
 #include "android-base/strings.h"
 using android::base::Split;
+using testing::_;
 
 std::unique_ptr<FlashingPlan> fp = std::make_unique<FlashingPlan>();
 
@@ -105,17 +107,32 @@ TEST(PARSE_TEST, BAD_FASTBOOT_INFO_INPUT) {
             "flash system system.img system",
             "reboot bootloader fastboot",
             "flash --slot-other --apply-vbmeta system system_other.img system"};
-    std::vector<std::vector<std::string>> vec_commands;
-    for (auto& command : badcommands) {
-        vec_commands.emplace_back(android::base::Split(command, " "));
-    }
 
-    std::vector<std::unique_ptr<Task>> tasks;
-    for (auto& command : vec_commands) {
-        tasks.emplace_back(ParseFastbootInfoLine(fp.get(), command));
-    }
+    std::vector<std::unique_ptr<Task>> tasks = collectTasks(badcommands);
 
     for (auto& task : tasks) {
         ASSERT_TRUE(!task);
     }
+}
+
+TEST(PARSE_TEST, CORRECT_TASK_FORMED) {
+    fp->slot_override = "b";
+    fp->secondary_slot = "a";
+    fp->wants_wipe = true;
+
+    std::vector<std::string> commands = {"flash dtbo", "flash --slot-other system system_other.img",
+                                         "reboot bootloader", "update-super",
+                                         "if-wipe erase cache"};
+    std::vector<std::unique_ptr<Task>> tasks = collectTasks(commands);
+
+    fp->wants_wipe = false;
+    tasks.emplace_back(ParseFastbootInfoLine(fp.get(), {"if-wipe", "flash", "system"}));
+
+    auto _task1 = tasks[0]->AsFlashTask();
+    auto _task2 = tasks[1]->AsFlashTask();
+    auto _task3 = tasks[2]->AsRebootTask();
+    auto _task4 = tasks[3]->AsUpdateSuperTask();
+    auto _task5 = tasks[4]->AsWipeTask();
+
+    ASSERT_TRUE(_task1 && _task2 && _task3 && _task4 && _task5 && !tasks[5]);
 }
