@@ -16,6 +16,29 @@
       "message": "thank you",
       "revId": "ff46af880169a4a420b5f9c813fe93ab2eada34c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e11eff97_d0d7ec29",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-04-10T08:20:24Z",
+      "side": 1,
+      "message": "This is actually just the definition of ro.vendor.api_level? https://cs.android.com/android/platform/superproject/+/master:system/core/init/property_service.cpp;l\u003d1094\n\nI think the whole point of ro.vendor.api_level is that test writers don\u0027t have to open code this sequence of property read order every time in every test module, which is prone to error.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 30
+      },
+      "revId": "ff46af880169a4a420b5f9c813fe93ab2eada34c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
