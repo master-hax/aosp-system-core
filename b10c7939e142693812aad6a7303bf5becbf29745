@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "824035aa_0c07ee04",
+        "filename": "fastboot/fastboot_driver_mock.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-10T19:12:44Z",
+      "side": 1,
+      "message": "The convention is `MockFastbootDriver`",
+      "range": {
+        "startLine": 21,
+        "startChar": 6,
+        "endLine": 21,
+        "endChar": 24
+      },
+      "revId": "b10c7939e142693812aad6a7303bf5becbf29745",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
