@@ -58,6 +58,8 @@ using android::base::StartsWith;
 
 static const struct fs_path_config android_dirs[] = {
         // clang-format off
+    { 0750,  AID_ROOT, AID_SYSTEM,               0, "apex/com.android.tethering/bin/for-system" },
+
     { 00770, AID_SYSTEM,       AID_CACHE,        0, "cache" },
     { 00555, AID_ROOT,         AID_ROOT,         0, "config" },
     { 00771, AID_SYSTEM,       AID_SYSTEM,       0, "data/app" },
@@ -224,6 +226,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "system/apex/*/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system_ext/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "system_ext/apex/*/bin/*" },
+    { 06755, AID_CLAT,      AID_CLAT,      0, "apex/com.android.tethering/bin/for-system/clatd" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/apex/*bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
