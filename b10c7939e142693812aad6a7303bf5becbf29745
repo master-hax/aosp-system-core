@@ -22,6 +22,30 @@
       },
       "revId": "b10c7939e142693812aad6a7303bf5becbf29745",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63b9b1f4_140a5837",
+        "filename": "fastboot/fastboot_driver_mock.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-11T16:51:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "824035aa_0c07ee04",
+      "range": {
+        "startLine": 21,
+        "startChar": 6,
+        "endLine": 21,
+        "endChar": 24
+      },
+      "revId": "b10c7939e142693812aad6a7303bf5becbf29745",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
