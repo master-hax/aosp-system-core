@@ -99,7 +99,7 @@ struct FlashingPlan {
     std::string current_slot;
     std::string secondary_slot;
 
-    fastboot::FastBootDriver* fb;
+    fastboot::IFBDriver* fb;
 };
 
 class FlashAllTool {
