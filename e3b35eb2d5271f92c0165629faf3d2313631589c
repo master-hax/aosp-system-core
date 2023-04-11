@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d0ad002_960a9691",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-04-11T05:59:32Z",
+      "side": 1,
+      "message": "Let\u0027s wait for CL:2529072 to settle down",
+      "revId": "e3b35eb2d5271f92c0165629faf3d2313631589c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
