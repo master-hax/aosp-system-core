@@ -46,6 +46,30 @@
       },
       "revId": "3868413532e3596807f5547aa3f25caba7ab988a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9761f88a_fd4f6d33",
+        "filename": "fastboot/fastboot_driver_interface.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-11T17:14:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd60bee6_e0757b16",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 19
+      },
+      "revId": "3868413532e3596807f5547aa3f25caba7ab988a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
