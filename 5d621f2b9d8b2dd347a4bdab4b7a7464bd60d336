@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48989715_de4a1eb1",
+        "filename": "healthd/healthd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-04-11T17:53:49Z",
+      "side": 1,
+      "message": "This file is not used anywhere -- you may drop it",
+      "revId": "5d621f2b9d8b2dd347a4bdab4b7a7464bd60d336",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
