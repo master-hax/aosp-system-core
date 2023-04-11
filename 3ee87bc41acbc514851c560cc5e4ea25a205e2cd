@@ -16,6 +16,23 @@
       "message": "I don\u0027t know how to test this...\nare these the right paths?",
       "revId": "3ee87bc41acbc514851c560cc5e4ea25a205e2cd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9acb22e4_5a6b3372",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-04-11T10:28:00Z",
+      "side": 1,
+      "message": "Testing via:\n\naosp$ export OVERRIDE_TARGET_FLATTEN_APEX\u003dtrue\naosp$ a_make_target aosp_cf_x86_phone-userdebug\n\n$ sudo mkdir /mnt/point \u0026\u0026 sudo mount -o loop,ro /aosp/out/target/product/vsoc_x86/system.img /mnt/point \u0026\u0026 egrep /mnt/point /proc/mounts \u0026\u0026 sudo ls -dlnZ /mnt/point/system/apex/com.android.tethering/bin/for-system{,/clatd} \u0026\u0026 sudo umount /mnt/point \u0026\u0026 sudo rmdir /mnt/point\n\n/dev/loop0 /mnt/point erofs ro,relatime,user_xattr,acl,cache_strategy\u003dreadaround 0 0\n\ndrwxr-x---. 2    0 1000 u:object_r:system_file:s0    44 Apr 11 03:12 /mnt/point/system/apex/com.android.tethering/bin/for-system\n-rwsr-sr-x. 1 1029 1029 u:object_r:clatd_exec:s0  18876 Apr 11 03:12 /mnt/point/system/apex/com.android.tethering/bin/for-system/clatd\n\nwhile without this patch it showed:\n\ndrwxr-x--x. 2 0 2000 u:object_r:system_file:s0    44 Apr 11 01:53 /mnt/point/system/apex/com.android.tethering/bin/for-system\n-rwxr-xr-x. 1 0 2000 u:object_r:clatd_exec:s0  18876 Apr 11 01:53 /mnt/point/system/apex/com.android.tethering/bin/for-system/clatd",
+      "revId": "3ee87bc41acbc514851c560cc5e4ea25a205e2cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
