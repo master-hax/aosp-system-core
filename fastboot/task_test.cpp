@@ -24,6 +24,7 @@
 #include <memory>
 #include "android-base/strings.h"
 using android::base::Split;
+using testing::_;
 
 std::unique_ptr<FlashingPlan> fp = std::make_unique<FlashingPlan>();
 
@@ -173,4 +174,19 @@ TEST(PARSE_TEST, CORRECT_TASK_FORMED) {
     auto _task5 = task5->AsWipeTask();
 
     ASSERT_TRUE(_task1 && _task2 && _task3 && _task4 && _task5 && !task6);
+}
+
+TEST(MOCK_TESTS, EXPECT_NUM_CALLS) {
+    fp->slot_override = "b";
+    fp->secondary_slot = "a";
+
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+    EXPECT_CALL(fb, FlashPartition(_, _, _)).Times(1);
+
+    std::string command1 = "flash dtbo";
+    std::vector<std::string> vec_command1 = android::base::Split(command1, " ");
+    std::unique_ptr<Task> task1 = ParseFastbootInfoLine(fp.get(), vec_command1);
+
+    task1->Run();
 }
