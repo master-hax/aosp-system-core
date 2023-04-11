@@ -137,3 +137,19 @@ TEST_F(ParseTest, CORRECT_TASK_FORMED) {
 
     ASSERT_TRUE(task1 && task2 && task3 && task4 && task5);
 }
+
+TEST_F(ParseTest, CORRECT_CALLS) {
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+
+    EXPECT_CALL(fb, RebootTo(_, _, _)).Times(1);
+    EXPECT_CALL(fb, Reboot(_, _)).Times(1);
+    EXPECT_CALL(fb, WaitForDisconnect()).Times(2);
+
+    std::vector<std::string> commands = {"reboot bootloader", "reboot"};
+    std::vector<std::unique_ptr<Task>> tasks = collectTasks(fp.get(), commands);
+
+    for (auto& task : tasks) {
+        task->Run();
+    }
+}
