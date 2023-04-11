@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43e7f848_d6f86fed",
+        "filename": "fastboot/fastboot_driver_interface.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-11T17:15:00Z",
+      "side": 1,
+      "message": "`IFastBootDriver` to be more readable",
+      "range": {
+        "startLine": 34,
+        "startChar": 6,
+        "endLine": 34,
+        "endChar": 15
+      },
+      "revId": "824c2efee0e28603ce14cbd175864d37100f7547",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
