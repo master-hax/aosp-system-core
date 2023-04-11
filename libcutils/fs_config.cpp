@@ -58,6 +58,15 @@ using android::base::StartsWith;
 
 static const struct fs_path_config android_dirs[] = {
         // clang-format off
+
+    // from packages/modules/Connectivity/Tethering/apex/canned_fs_config
+    //   /bin/for-system 0 1000 0750
+    //   /bin/for-system/clatd 1029 1029 06755
+    // the Tethering apex mounts at /apex/com.android.tethering
+    fs_canned_config
+    { 0750,  AID_ROOT, AID_SYSTEM,               0, "apex/com.android.tethering/bin/for-system" },
+    // { AID_CLAT, AID_CLAT,   0, "apex/com.android.tethering/bin/for-system/clatd" },
+
     { 00770, AID_SYSTEM,       AID_CACHE,        0, "cache" },
     { 00555, AID_ROOT,         AID_ROOT,         0, "config" },
     { 00771, AID_SYSTEM,       AID_SYSTEM,       0, "data/app" },
