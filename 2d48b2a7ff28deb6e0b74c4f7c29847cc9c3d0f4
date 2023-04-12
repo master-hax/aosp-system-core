@@ -57,6 +57,24 @@
       "parentUuid": "848ac9d5_9c618bc4",
       "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "552e7fa7_ab086817",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-12T23:23:15Z",
+      "side": 1,
+      "message": "It\u0027s not really much bookkeeping, is it? And why would they go out of sync? It\u0027s separate pieces of information: \"effective uid\" and \"was the uid explicit\". Also, this is the only place that cares about the new state.",
+      "parentUuid": "55b2d5a8_6fff6470",
+      "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
