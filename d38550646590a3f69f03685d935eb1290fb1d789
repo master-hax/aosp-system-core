@@ -16,6 +16,23 @@
       "message": "duplicated code",
       "revId": "d38550646590a3f69f03685d935eb1290fb1d789",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4bfaff7_1f9d915b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-04-12T05:43:37Z",
+      "side": 1,
+      "message": "Ah, of course...\n\nThere are too many configs. :-(",
+      "revId": "d38550646590a3f69f03685d935eb1290fb1d789",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
