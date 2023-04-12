@@ -75,6 +75,24 @@
       "parentUuid": "55b2d5a8_6fff6470",
       "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31864e94_2c587907",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-12T23:45:56Z",
+      "side": 1,
+      "message": "Sure it can be thought of as two pieces of information, but it\u0027s not what\u0027s important. The reason to use std::optional is that if the UID is set, we\u0027ll know it\u0027s explicit. It\u0027s going to be encoded as two separate fields underneath std::optional, but the API contract of std::optional limits what combinations of states can occur. With a uid + a bool, it\u0027s possible to express the state \"UID \u003d 400\" and \"not explicitly set\". This combination of states is not expressible using std::optional.\n\nI also agree it\u0027ll be a smaller patch. Though - if someone sets uid\u003d400 somewhere else and forgets to set the bit, they won\u0027t have a reminder. This could be an existing downstream patch, unlikely as you say it would be. The real risk is that if the code says \"has_uid ? uid : 0\". In this case, a patch which sets uid explicitly (uid\u003d400) but forgets to set the bool would silently set the process to be root. It could be avoided (has_uid || uid !\u003d 0 ? uid : 0) - maybe with a log when it\u0027s inconsistent - b/c we don\u0027t abort in init), but I don\u0027t see how to make the boolean super great either.\n\nI imagine you know all that though, and you just don\u0027t like the combo uid_/uid(), and you don\u0027t like how big this patch is - and I agree with you on both counts - this patch leaves something to be desired.\n\nSo - I\u0027d like your opinion on two other approaches to implementation:\n1. exposing has_uid()/uid() and forcing proc_attr_ to hide uid_\n2. removing this from touching service.h/cpp, and implement this as a feature on GetParserMap by adding additional min/max counts for fields there - this is generic and could also be used to solve b/277628515 by encoding additional information.",
+      "parentUuid": "552e7fa7_ab086817",
+      "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
