@@ -39,6 +39,24 @@
       "message": "It\u0027s a little unwieldy to have both uid() and uid_ exposed, and it\u0027d be the only member exposed that way. At least in one iteration of the style guide, if not the current one, that\u0027s not recommended.\n\nSince most callers just want the uid-or-zero, I\u0027d add a second boolean, something like \"has_uid\" or \"specified_uid\". It\u0027ll make this patch significantly smaller too.",
       "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55b2d5a8_6fff6470",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-12T22:19:04Z",
+      "side": 1,
+      "message": "It would also introduce the possibility of having an inconsistent data structure, since manual bookkeeping is required - which is why I did\u0027t go with the boolean.\n\nI assume you\u0027re okay with the patch if I make \u0027uid_\u0027 private and introduce an API - \u0027has_explicit_uid\u0027? I\u0027ll also finish cleaning up the Service constructor in that case.",
+      "parentUuid": "848ac9d5_9c618bc4",
+      "revId": "2d48b2a7ff28deb6e0b74c4f7c29847cc9c3d0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
