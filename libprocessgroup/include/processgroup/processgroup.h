@@ -96,6 +96,10 @@ void removeAllEmptyProcessGroups(void);
 // Returns false in case of error, true in case of success
 bool getAttributePathForTask(const std::string& attr_name, int tid, std::string* path);
 
+// Check if the profile actions are valid or not
+// Returns false if the profile is invalid, true if it's valid
+bool isProfileValidForProcess(const std::string& profile_name, int uid, int pid);
+
 #endif // __ANDROID_VNDK__
 
 __END_DECLS
