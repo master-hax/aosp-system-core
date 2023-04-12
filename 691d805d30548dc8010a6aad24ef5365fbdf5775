@@ -16,6 +16,23 @@
       "message": "This patch would allow my team at Square to eliminate our custom reboot reasons, while continuing to express our reboots semantically.  The proposed changes have been designed generically to allow others to benefit who work on devices with similar needs.",
       "revId": "691d805d30548dc8010a6aad24ef5365fbdf5775",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "555b76d2_c028385f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-12T21:30:13Z",
+      "side": 1,
+      "message": "LGTM but I\u0027m not super familiar with this code so someone else should sign off as well.",
+      "revId": "691d805d30548dc8010a6aad24ef5365fbdf5775",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
