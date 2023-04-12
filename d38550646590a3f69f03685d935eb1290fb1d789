@@ -50,6 +50,24 @@
       "message": "It\u0027ll bind mount in the same spot... but I guess the source of the bind mount lives in a different location in the /system partition.",
       "revId": "d38550646590a3f69f03685d935eb1290fb1d789",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a016704_1714a3eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1358804
+      },
+      "writtenOn": "2023-04-12T05:46:30Z",
+      "side": 1,
+      "message": "That\u0027s right\nSrc:  /system/apex/com.android.tethering.inprocess/bin/for-system/clatd\nDest: /apex/com.android.tethering/bin/for-system/clatd",
+      "parentUuid": "da94a678_bb730774",
+      "revId": "d38550646590a3f69f03685d935eb1290fb1d789",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
