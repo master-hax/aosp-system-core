@@ -88,6 +88,24 @@
       "parentUuid": "bce89faa_4c385e05",
       "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1a27b66_813fedc0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2023-04-12T23:56:11Z",
+      "side": 1,
+      "message": "Thanks for clarifying. Since C++ keymint has used the header size as 16 bytes without issue, I think that the change in this CL is fine.\n\nI think this CL needs to be accompanied by another similar change in\nipc_manager.rs in trusty keymint ta, because we define the same constant (`KEYMINT_MAX_MESSAGE_CONTENT_SIZE`) there as well.",
+      "parentUuid": "a1028d5e_a8b03e62",
+      "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
