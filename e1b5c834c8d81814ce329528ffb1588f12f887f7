@@ -16,6 +16,24 @@
       "message": "Do you remember why this was 4000 in the first place?",
       "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "396e35a3_5a778cd0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2023-04-12T14:25:28Z",
+      "side": 1,
+      "message": "When I was implementing the fix for the issue where the messages were dropped if the size was larger than the buffer size, Tri suggested to use 4000 as the payload size as some number of bytes are used for the tipc headers. I do not have any reference to the discussion as it was on 1:1 chat and the history is deleted. Tri, do you remember that discussion and if so, can you please clarify whether leaving 16 bytes for the tipc header (as per this CL) is sufficient?",
+      "parentUuid": "e254d96f_2886d51a",
+      "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
