@@ -52,6 +52,24 @@
       "parentUuid": "396e35a3_5a778cd0",
       "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bce89faa_4c385e05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1678423
+      },
+      "writtenOn": "2023-04-12T14:40:29Z",
+      "side": 1,
+      "message": "Ok, then it should be correct (as C++ keymint didn\u0027t have such issues).\nAlso, in the above link I noticed C++ keymint was using two different tipc buffer sizes: \n1. `TRUSTY_KEYMASTER_RECV_BUF_SIZE` (2 * PAGE_SIZE) and \n2. `TRUSTY_KEYMASTER_SEND_BUF_SIZE` (PAGE_SIZE - sizeof(struct keymaster_message) - 16 /* tipc header */)\n\nI wonder what is the reason for the significant difference between the two numbers (2*page size vs ~page size)",
+      "parentUuid": "2dc32217_3a32aea6",
+      "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
