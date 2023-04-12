@@ -34,6 +34,24 @@
       "parentUuid": "e254d96f_2886d51a",
       "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2dc32217_3a32aea6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-04-12T14:27:45Z",
+      "side": 1,
+      "message": "BTW, I got the 16 byte value from here: https://cs.android.com/android/platform/superproject/+/master:system/core/trusty/keymaster/include/trusty_keymaster/ipc/trusty_keymaster_ipc.h;l\u003d27",
+      "parentUuid": "396e35a3_5a778cd0",
+      "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
