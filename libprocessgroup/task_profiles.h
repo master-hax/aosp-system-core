@@ -70,11 +70,13 @@ class ProfileAction {
     virtual const char* Name() const = 0;
 
     // Default implementations will fail
-    virtual bool ExecuteForProcess(uid_t, pid_t) const { return false; };
-    virtual bool ExecuteForTask(int) const { return false; };
+    virtual bool ExecuteForProcess(uid_t, pid_t) const { return false; }
+    virtual bool ExecuteForTask(int) const { return false; }
 
     virtual void EnableResourceCaching(ResourceCacheType) {}
     virtual void DropResourceCaching(ResourceCacheType) {}
+    virtual bool IsValidForProcess(uid_t uid, pid_t pid) const { return false; }
+    virtual bool IsValidForTask(int tid) const { return false; }
 
   protected:
     enum CacheUseResult { SUCCESS, FAIL, UNUSED };
@@ -100,6 +102,8 @@ class SetTimerSlackAction : public ProfileAction {
 
     const char* Name() const override { return "SetTimerSlack"; }
     bool ExecuteForTask(int tid) const override;
+    bool IsValidForProcess(uid_t uid, pid_t pid) const override { return true; }
+    bool IsValidForTask(int tid) const override { return true; }
 
   private:
     unsigned long slack_;
@@ -116,6 +120,8 @@ class SetAttributeAction : public ProfileAction {
     const char* Name() const override { return "SetAttribute"; }
     bool ExecuteForProcess(uid_t uid, pid_t pid) const override;
     bool ExecuteForTask(int tid) const override;
+    bool IsValidForProcess(uid_t uid, pid_t pid) const override;
+    bool IsValidForTask(int tid) const override;
 
   private:
     const IProfileAttribute* attribute_;
@@ -133,6 +139,8 @@ class SetCgroupAction : public ProfileAction {
     bool ExecuteForTask(int tid) const override;
     void EnableResourceCaching(ResourceCacheType cache_type) override;
     void DropResourceCaching(ResourceCacheType cache_type) override;
+    bool IsValidForProcess(uid_t uid, pid_t pid) const override;
+    bool IsValidForTask(int tid) const override;
 
     const CgroupController* controller() const { return &controller_; }
 
@@ -157,6 +165,8 @@ class WriteFileAction : public ProfileAction {
     bool ExecuteForTask(int tid) const override;
     void EnableResourceCaching(ResourceCacheType cache_type) override;
     void DropResourceCaching(ResourceCacheType cache_type) override;
+    bool IsValidForProcess(uid_t uid, pid_t pid) const override;
+    bool IsValidForTask(int tid) const override;
 
   private:
     std::string task_path_, proc_path_, value_;
@@ -181,6 +191,8 @@ class TaskProfile {
     bool ExecuteForTask(int tid) const;
     void EnableResourceCaching(ProfileAction::ResourceCacheType cache_type);
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type);
+    bool IsValidForProcess(uid_t uid, pid_t pid) const;
+    bool IsValidForTask(int tid) const;
 
   private:
     const std::string name_;
@@ -199,6 +211,8 @@ class ApplyProfileAction : public ProfileAction {
     bool ExecuteForTask(int tid) const override;
     void EnableResourceCaching(ProfileAction::ResourceCacheType cache_type) override;
     void DropResourceCaching(ProfileAction::ResourceCacheType cache_type) override;
+    bool IsValidForProcess(uid_t uid, pid_t pid) const override;
+    bool IsValidForTask(int tid) const override;
 
   private:
     std::vector<std::shared_ptr<TaskProfile>> profiles_;
