@@ -70,6 +70,24 @@
       "parentUuid": "2dc32217_3a32aea6",
       "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1028d5e_a8b03e62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2023-04-12T17:22:39Z",
+      "side": 1,
+      "message": "TIPC message header size isn\u0027t advertised anywhere. So max TIPC message size is ill defined. IIRC 4000 was cargo culted from somewhere else.",
+      "parentUuid": "bce89faa_4c385e05",
+      "revId": "e1b5c834c8d81814ce329528ffb1588f12f887f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
