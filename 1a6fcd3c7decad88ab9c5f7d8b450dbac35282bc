@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b03e72b6_a40f8453",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-13T22:59:04Z",
+      "side": 1,
+      "message": "nit: should be moved to the other android-base include block\n\n(The preferred order is: task.h, then libc/kernel includes, then C++ STL includes, then Android includes)",
+      "revId": "1a6fcd3c7decad88ab9c5f7d8b450dbac35282bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
