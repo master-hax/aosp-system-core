@@ -98,3 +98,23 @@ TEST_F(ParseTest, VERSION_CHECK_CORRRECT) {
         ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(version, " "))) << version;
     }
 }
+
+TEST_F(ParseTest, BAD_FASTBOOT_INFO_INPUT) {
+    std::vector<std::string> badcommands = {
+            "flash",
+            "flash --slot-other --apply-vbmeta",
+            "flash --apply-vbmeta",
+            "if-wipe",
+            "if-wipe flash",
+            "wipe dtbo",
+            "update-super dtbo",
+            "flash system system.img system",
+            "reboot bootloader fastboot",
+            "flash --slot-other --apply-vbmeta system system_other.img system"};
+
+    std::vector<std::unique_ptr<Task>> tasks = collectTasks(fp.get(), badcommands);
+
+    for (auto& task : tasks) {
+        ASSERT_TRUE(!task);
+    }
+}
