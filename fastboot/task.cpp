@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 #include "task.h"
+#include <android-base/logging.h>
 #include <iostream>
 #include "fastboot.h"
 #include "filesystem.h"
