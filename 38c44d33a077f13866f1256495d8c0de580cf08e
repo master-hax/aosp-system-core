@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1959ec2_39c2d930",
+        "filename": "fastboot/fastboot_driver.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-13T16:24:26Z",
+      "side": 1,
+      "message": "try not to include logging headers in header files",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 33
+      },
+      "revId": "38c44d33a077f13866f1256495d8c0de580cf08e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
