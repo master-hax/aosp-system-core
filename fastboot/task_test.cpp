@@ -93,3 +93,27 @@ TEST(PARSE_FLASHTASK_TEST, CORRECT_FlASH_TASK_FORMED) {
     ASSERT_EQ(flash_task4->GetImageName(), img_name4);
     ASSERT_EQ(flash_task4->GetSlot(), fp->slot_override);
 }
+
+TEST(PARSE_TEST, VERSION_CHECK_CORRRECT) {
+    std::string correctversion1 = "version 1.0";
+    std::string correctversion2 = "version 22.00";
+
+    std::string badversion1 = "version";
+    std::string badversion2 = "version .01";
+    std::string badversion3 = "version x1";
+    std::string badversion4 = "version 1.0.1";
+    std::string badversion5 = "version 1.";
+    std::string badversion6 = "s 1.0";
+    std::string badversion7 = "version 1.0 2.0";
+
+    ASSERT_TRUE(CheckFastbootInfoRequirements(android::base::Split(correctversion1, " ")));
+    ASSERT_TRUE(CheckFastbootInfoRequirements(android::base::Split(correctversion2, " ")));
+
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion1, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion2, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion3, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion4, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion5, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion6, " ")));
+    ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(badversion7, " ")));
+}
