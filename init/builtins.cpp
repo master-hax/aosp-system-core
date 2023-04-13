@@ -506,29 +506,47 @@ static Result<void> do_mount(const BuiltinArguments& args) {
 
     if (android::base::StartsWith(source, "loop@")) {
         int mode = (flags & MS_RDONLY) ? O_RDONLY : O_RDWR;
-        unique_fd fd(TEMP_FAILURE_RETRY(open(source + 5, mode | O_CLOEXEC)));
-        if (fd < 0) return ErrnoError() << "open(" << source + 5 << ", " << mode << ") failed";
+        const char* file_path = source + strlen("loop@");
 
-        for (size_t n = 0;; n++) {
-            std::string tmp = android::base::StringPrintf("/dev/block/loop%zu", n);
-            unique_fd loop(TEMP_FAILURE_RETRY(open(tmp.c_str(), mode | O_CLOEXEC)));
-            if (loop < 0) return ErrnoError() << "open(" << tmp << ", " << mode << ") failed";
-
-            loop_info info;
-            /* if it is a blank loop device */
-            if (ioctl(loop.get(), LOOP_GET_STATUS, &info) < 0 && errno == ENXIO) {
-                /* if it becomes our loop device */
-                if (ioctl(loop.get(), LOOP_SET_FD, fd.get()) >= 0) {
-                    if (mount(tmp.c_str(), target, system, flags, options) < 0) {
-                        ioctl(loop.get(), LOOP_CLR_FD, 0);
-                        return ErrnoError() << "mount() failed";
-                    }
-                    return {};
-                }
-            }
+        // Open source file
+        if (wait) {
+            wait_for_file(file_path, kCommandRetryTimeout);
         }
 
-        return Error() << "out of loopback devices";
+        unique_fd fd(TEMP_FAILURE_RETRY(open(file_path, mode | O_CLOEXEC)));
+        if (fd < 0) {
+            return ErrnoError() << "open(" << file_path << ", " << mode << ") failed";
+        }
+
+        // Open loop control device
+        std::string loop_control_dev = "/dev/loop-control";
+        unique_fd ctrl_fd(TEMP_FAILURE_RETRY(open(loop_control_dev.c_str(), O_RDWR | O_CLOEXEC)));
+        if (ctrl_fd < 0) {
+            return ErrnoError() << "open(" << loop_control_dev.c_str() << ", " << O_RDWR
+                                << ") failed";
+        }
+
+        // Get free loop device
+        int rc = ioctl(ctrl_fd.get(), LOOP_CTL_GET_FREE);
+        if (rc < 0) {
+            return ErrnoError() << "ioctl(" << ctrl_fd << ", " <<  LOOP_CTL_GET_FREE
+                                << ") failed";
+        }
+
+        // Open loop device
+        std::string tmp = android::base::StringPrintf("/dev/block/loop%d", rc);
+        unique_fd loop(TEMP_FAILURE_RETRY(open(tmp.c_str(), mode | O_CLOEXEC)));
+        if (loop < 0) {
+            return ErrnoError() << "open(" << tmp << ", " << mode << ") failed";
+        }
+
+        // If it becomes our loop device
+        if (ioctl(loop.get(), LOOP_SET_FD, fd.get()) >= 0) {
+            if (mount(tmp.c_str(), target, system, flags, options) < 0) {
+                ioctl(loop.get(), LOOP_CLR_FD, 0);
+                return ErrnoError() << "mount() failed";
+            }
+        }
     } else {
         if (wait)
             wait_for_file(source, kCommandRetryTimeout);
