@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fea4665b_6f370820",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 40
+      },
+      "lineNbr": 1747,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-13T18:39:42Z",
+      "side": 1,
+      "message": "There\u0027s no way to indicate a parsing error here, so a stream with invalid commands will wind up flashing. Probably the easiest thing to do is factor out the empty/commented line checks into an \"IsIgnoreLine\" function and call that here. Then any nullptr return from ParseFastbootInfoLine is an error.",
+      "revId": "51b320281d512a7dde7fd6fcb89b86773ecb9e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
