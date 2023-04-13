@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b39c78cf_9fa160a8",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-13T19:07:44Z",
+      "side": 1,
+      "message": "If adding task.h, do you still need the forward declares below?",
+      "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
