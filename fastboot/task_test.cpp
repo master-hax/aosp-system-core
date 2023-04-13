@@ -93,3 +93,29 @@ TEST(PARSE_FLASHTASK_TEST, CORRECT_FlASH_TASK_FORMED) {
     ASSERT_EQ(flash_task4->GetImageName(), img_name4);
     ASSERT_EQ(flash_task4->GetSlot(), fp->slot_override);
 }
+
+TEST(PARSE_TEST, BAD_FASTBOOT_INFO_INPUT) {
+    fp->slot_override = "b";
+    fp->secondary_slot = "a";
+    fp->wants_wipe = true;
+
+    std::string badcommand = "flash";
+    std::string badcommand2 = "flash --slot-other --apply-vbmeta";
+    std::string badcommand3 = "flash --apply-vbmeta";
+    std::string badcommand4 = "if-wipe";
+    std::string badcommand5 = "if-wipe flash";
+
+    std::vector<std::string> vec_command1 = android::base::Split(badcommand, " ");
+    std::vector<std::string> vec_command2 = android::base::Split(badcommand2, " ");
+    std::vector<std::string> vec_command3 = android::base::Split(badcommand3, " ");
+    std::vector<std::string> vec_command4 = android::base::Split(badcommand4, " ");
+    std::vector<std::string> vec_command5 = android::base::Split(badcommand5, " ");
+
+    std::unique_ptr<Task> task = ParseFastbootInfoLine(fp.get(), vec_command1);
+    std::unique_ptr<Task> task2 = ParseFastbootInfoLine(fp.get(), vec_command2);
+    std::unique_ptr<Task> task3 = ParseFastbootInfoLine(fp.get(), vec_command3);
+    std::unique_ptr<Task> task4 = ParseFastbootInfoLine(fp.get(), vec_command4);
+    std::unique_ptr<Task> task5 = ParseFastbootInfoLine(fp.get(), vec_command5);
+
+    ASSERT_TRUE(!task && !task2 && !task3 && !task4 && !task5);
+}
