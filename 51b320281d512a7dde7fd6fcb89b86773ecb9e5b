@@ -34,6 +34,24 @@
       "parentUuid": "fea4665b_6f370820",
       "revId": "51b320281d512a7dde7fd6fcb89b86773ecb9e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a006d01_fe528140",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 40
+      },
+      "lineNbr": 1747,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-13T22:47:30Z",
+      "side": 1,
+      "message": "You can process the \"if-wipe\" prefix in the main loop, then do:\n\n    parts.erase(parts.begin());\n\nIf it matches \u0026 we\u0027re getting a wipe request, and otherwise just continue.",
+      "parentUuid": "4ad84a63_333dcd55",
+      "revId": "51b320281d512a7dde7fd6fcb89b86773ecb9e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
