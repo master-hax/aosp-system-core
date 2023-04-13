@@ -16,6 +16,23 @@
       "message": "Pete for boringssl, suggested by enh",
       "revId": "bded07afe7354d53f3d7b8db5079bc890ddb37ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c30d040_0b0a8c13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-04-13T20:18:55Z",
+      "side": 1,
+      "message": "(defer to prb/elsk for real review, but +1 from me for OWNERS...)",
+      "revId": "bded07afe7354d53f3d7b8db5079bc890ddb37ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
