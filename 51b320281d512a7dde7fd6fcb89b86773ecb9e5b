@@ -16,6 +16,24 @@
       "message": "There\u0027s no way to indicate a parsing error here, so a stream with invalid commands will wind up flashing. Probably the easiest thing to do is factor out the empty/commented line checks into an \"IsIgnoreLine\" function and call that here. Then any nullptr return from ParseFastbootInfoLine is an error.",
       "revId": "51b320281d512a7dde7fd6fcb89b86773ecb9e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ad84a63_333dcd55",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 40
+      },
+      "lineNbr": 1747,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-13T20:33:42Z",
+      "side": 1,
+      "message": "the problem is that if-wipe when wants_wipe \u003d false will return nullptr as a valid return.Right now I have checks in the layer below to log an error and continue parsing (we can change this to crash the program or fallback on hardcoded list, although not sure if thats the behavior we want)",
+      "parentUuid": "fea4665b_6f370820",
+      "revId": "51b320281d512a7dde7fd6fcb89b86773ecb9e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
