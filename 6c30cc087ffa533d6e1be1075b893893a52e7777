@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "739edeab_0743bc91",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-14T00:25:42Z",
+      "side": 1,
+      "message": "oops - accidentally restarted presubmit. I think this is great, but I\u0027m wondering if the client which calls registerCmd should also delete it. The API is not so nice.",
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
