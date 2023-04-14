@@ -43,6 +43,13 @@ FrameworkListener::FrameworkListener(int sock) :
     init(nullptr, false);
 }
 
+FrameworkListener::~FrameworkListener() {
+    for (auto command : mCommands) {
+        delete command;
+    }
+    mCommands.clear();
+}
+
 void FrameworkListener::init(const char* /*socketName*/, bool withSeq) {
     errorRate = 0;
     mCommandCount = 0;

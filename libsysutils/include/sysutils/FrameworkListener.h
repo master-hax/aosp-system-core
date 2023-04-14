@@ -40,7 +40,7 @@ public:
     FrameworkListener(const char *socketName);
     FrameworkListener(const char *socketName, bool withSeq);
     FrameworkListener(int sock);
-    ~FrameworkListener() override {}
+    ~FrameworkListener() override;
 
   protected:
     void registerCmd(FrameworkCommand *cmd);
