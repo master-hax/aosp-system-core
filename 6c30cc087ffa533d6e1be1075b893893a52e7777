@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "68906e7a_5c51ddd8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-14T20:07:14Z",
+      "side": 1,
+      "message": "Probably best to fix the test first.",
+      "parentUuid": "e02dbf13_e3d43bc7",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 7
+      },
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "739edeab_0743bc91",
@@ -97,6 +121,24 @@
       "side": 1,
       "message": "Clients of this API basically creating a new objects while calling and they don\u0027t hold the pointer to these command objects anywhere. All uses are in similar way.\nhttps://source.corp.google.com/android-internal/packages/modules/DnsResolver/DnsProxyListener.cpp;bpv\u003d1;bpt\u003d1;rcl\u003deeae447b7baf32568765801cb304d72dadfcd739;l\u003d662",
       "parentUuid": "012bd5ea_90efede6",
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcc5101b_dba14240",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-14T20:07:14Z",
+      "side": 1,
+      "message": "I think the code there may be wrong, and the API actually really is bad here (you could make a new API which has this class own things, and deprecate the existing one).\n\nThere are only 8 users of this API as well that I can see, so maybe we can fix all of them.",
+      "parentUuid": "060af600_c51e3786",
       "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
