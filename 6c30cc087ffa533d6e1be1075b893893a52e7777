@@ -57,6 +57,24 @@
       "parentUuid": "739edeab_0743bc91",
       "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "060af600_c51e3786",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-14T01:45:48Z",
+      "side": 1,
+      "message": "Clients of this API basically creating a new objects while calling and they don\u0027t hold the pointer to these command objects anywhere. All uses are in similar way.\nhttps://source.corp.google.com/android-internal/packages/modules/DnsResolver/DnsProxyListener.cpp;bpv\u003d1;bpt\u003d1;rcl\u003deeae447b7baf32568765801cb304d72dadfcd739;l\u003d662",
+      "parentUuid": "012bd5ea_90efede6",
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
