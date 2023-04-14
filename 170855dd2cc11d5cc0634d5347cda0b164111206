@@ -16,6 +16,24 @@
       "message": "Hello, Dear. maintainers\nThis patch nitpick. Could you please review it?",
       "revId": "170855dd2cc11d5cc0634d5347cda0b164111206",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e51e5507_8f8f7ec1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-04-14T06:52:51Z",
+      "side": 1,
+      "message": "\u003e Hello, Dear. maintainers\n\u003e This patch nitpick. Could you please review it?",
+      "parentUuid": "f7f6cc7d_e7cf6b4d",
+      "revId": "170855dd2cc11d5cc0634d5347cda0b164111206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
