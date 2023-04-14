@@ -19,6 +19,7 @@
 #include <stdlib.h>
 
 #include <string>
+#include <thread>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -32,6 +33,7 @@ namespace {
 
 enum modprobe_mode {
     AddModulesMode,
+    AddModulesModeParallel,
     RemoveModulesMode,
     ListModulesMode,
     ShowDependenciesMode,
@@ -41,6 +43,7 @@ void print_usage(void) {
     LOG(INFO) << "Usage:";
     LOG(INFO);
     LOG(INFO) << "  modprobe [options] [-d DIR] [--all=FILE|MODULE]...";
+    LOG(INFO) << "  modprobe [options] [-d DIR] [--parallel=FILE]...";
     LOG(INFO) << "  modprobe [options] [-d DIR] MODULE [symbol=value]...";
     LOG(INFO);
     LOG(INFO) << "Options:";
@@ -52,6 +55,8 @@ void print_usage(void) {
     LOG(INFO) << "  -l, --list: List modules matching pattern";
     LOG(INFO) << "  -r, --remove: Remove MODULE (multiple modules may be specified)";
     LOG(INFO) << "  -s, --syslog: print to syslog also";
+    LOG(INFO) << "  -p, --parallel=FILE: load all modules of the given FILE"
+            " (\"modules.load\" as default) in parallel";
     LOG(INFO) << "  -q, --quiet: disable messages";
     LOG(INFO) << "  -v, --verbose: enable more messages, even more with a second -v";
     LOG(INFO);
@@ -94,6 +99,8 @@ extern "C" int modprobe_main(int argc, char** argv) {
     std::vector<std::string> modules;
     std::string module_parameters;
     std::string mods;
+    // Default filename to load
+    std::string module_filename("modules.load");
     std::vector<std::string> mod_dirs;
     modprobe_mode mode = AddModulesMode;
     bool blocklist = false;
@@ -105,19 +112,21 @@ extern "C" int modprobe_main(int argc, char** argv) {
     // OEMs to transition from toybox.
     // clang-format off
     static struct option long_options[] = {
-        { "all",                 optional_argument, 0, 'a' },
-        { "use-blocklist",       no_argument,       0, 'b' },
-        { "dirname",             required_argument, 0, 'd' },
-        { "show-depends",        no_argument,       0, 'D' },
-        { "help",                no_argument,       0, 'h' },
-        { "list",                no_argument,       0, 'l' },
-        { "quiet",               no_argument,       0, 'q' },
-        { "remove",              no_argument,       0, 'r' },
-        { "syslog",              no_argument,       0, 's' },
-        { "verbose",             no_argument,       0, 'v' },
+        { "all",                 optional_argument,     0, 'a' },
+        { "use-blocklist",       no_argument,           0, 'b' },
+        { "dirname",             required_argument,     0, 'd' },
+        { "show-depends",        no_argument,           0, 'D' },
+        { "help",                no_argument,           0, 'h' },
+        { "list",                no_argument,           0, 'l' },
+        { "parallel",            optional_argument,     0, 'p' },
+        { "quiet",               no_argument,           0, 'q' },
+        { "remove",              no_argument,           0, 'r' },
+        { "syslog",              no_argument,           0, 's' },
+        { "verbose",             no_argument,           0, 'v' },
     };
     // clang-format on
-    while ((opt = getopt_long(argc, argv, "a::bd:Dhlqrsv", long_options, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "a::bd:Dhl:p::qrsv",
+                              long_options, &option_index)) != -1) {
         switch (opt) {
             case 'a':
                 // toybox modprobe supported -a to load multiple modules, this
@@ -153,6 +162,21 @@ extern "C" int modprobe_main(int argc, char** argv) {
                 check_mode();
                 mode = ListModulesMode;
                 break;
+            case 'p':
+                check_mode();
+                if (!modules.empty()) {
+                    LOG(ERROR) << "multiple mode flags specified with '--all' option";
+                    print_usage();
+                    return EXIT_FAILURE;
+                }
+                if (optarg == NULL && optind < argc && argv[optind][0] != '-') {
+                    optarg = argv[optind++];
+                }
+                if (optarg && module_filename.compare(optarg) != 0) {
+                    module_filename = optarg;
+                }
+                mode = AddModulesModeParallel;
+                break;
             case 'q':
                 android::base::SetMinimumLogSeverity(android::base::WARNING);
                 break;
@@ -177,6 +201,31 @@ extern "C" int modprobe_main(int argc, char** argv) {
         }
     }
 
+    if (mod_dirs.empty()) {
+        utsname uts;
+        uname(&uts);
+        mod_dirs.emplace_back(android::base::StringPrintf("/lib/modules/%s", uts.release));
+    }
+
+    LOG(DEBUG) << "mode is " << mode;
+    LOG(DEBUG) << "mod_dirs is: " << android::base::Join(mod_dirs, " ");
+
+    Modprobe m(mod_dirs, module_filename, blocklist);
+
+    if (mode == AddModulesModeParallel) {
+        if (!m.LoadModulesParallel(std::thread::hardware_concurrency())) {
+            PLOG(ERROR) << "Failed to load modules in dir: " <<
+                    android::base::Join(mod_dirs, " ");
+            rv = EXIT_FAILURE;
+        } else if (m.GetModuleCount() == 0) {
+            PLOG(ERROR) << "No modules are loaded in dir: \"" <<
+                    android::base::Join(mod_dirs, " ") <<
+                    "\" error";
+            rv = EXIT_FAILURE;
+        }
+        return rv;
+    }
+
     int parameter_count = 0;
     for (opt = optind; opt < argc; opt++) {
         if (!strchr(argv[opt], '=')) {
@@ -191,14 +240,6 @@ extern "C" int modprobe_main(int argc, char** argv) {
         }
     }
 
-    if (mod_dirs.empty()) {
-        utsname uts;
-        uname(&uts);
-        mod_dirs.emplace_back(android::base::StringPrintf("/lib/modules/%s", uts.release));
-    }
-
-    LOG(DEBUG) << "mode is " << mode;
-    LOG(DEBUG) << "mod_dirs is: " << android::base::Join(mod_dirs, " ");
     LOG(DEBUG) << "modules is: " << android::base::Join(modules, " ");
     LOG(DEBUG) << "module parameters is: " << android::base::Join(module_parameters, " ");
 
@@ -212,18 +253,12 @@ extern "C" int modprobe_main(int argc, char** argv) {
             return EXIT_FAILURE;
         }
     }
-    if (mod_dirs.empty()) {
-        LOG(ERROR) << "No module configuration directories given.";
-        print_usage();
-        return EXIT_FAILURE;
-    }
+
     if (parameter_count && modules.size() > 1) {
         LOG(ERROR) << "Only one module may be loaded when specifying module parameters.";
         print_usage();
         return EXIT_FAILURE;
     }
-
-    Modprobe m(mod_dirs, "modules.load", blocklist);
 
     for (const auto& module : modules) {
         switch (mode) {
