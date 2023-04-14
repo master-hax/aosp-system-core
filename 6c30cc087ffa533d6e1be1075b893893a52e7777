@@ -39,6 +39,24 @@
       "message": "oops - accidentally restarted presubmit. I think this is great, but I\u0027m wondering if the client which calls registerCmd should also delete it. The API is not so nice.",
       "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "012bd5ea_90efede6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-14T01:10:36Z",
+      "side": 1,
+      "message": "yeah - I think the idea is that the client is supposed to own these.",
+      "parentUuid": "739edeab_0743bc91",
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
