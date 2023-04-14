@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c6b3e56_19bb98ea",
+        "filename": "fastboot/fastboot_driver_interface.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-14T20:05:20Z",
+      "side": 1,
+      "message": "nit: newline in between include blocks",
+      "revId": "bb88de599e91d347a5b01e7a3231c0e12856aca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
