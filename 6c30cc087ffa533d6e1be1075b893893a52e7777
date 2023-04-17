@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "aad2046a_0a0d0333",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-17T22:42:10Z",
+      "side": 1,
+      "message": "atest libsysutils_test is failing because of permission issue. Directly running the libsysutils_test in nativetest64 passes.",
+      "parentUuid": "68906e7a_5c51ddd8",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 7
+      },
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "739edeab_0743bc91",
@@ -139,6 +163,24 @@
       "side": 1,
       "message": "I think the code there may be wrong, and the API actually really is bad here (you could make a new API which has this class own things, and deprecate the existing one).\n\nThere are only 8 users of this API as well that I can see, so maybe we can fix all of them.",
       "parentUuid": "060af600_c51e3786",
+      "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd7c36f8_93b50ea8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-17T22:42:10Z",
+      "side": 1,
+      "message": "I updated one of the clients to hold pointers to command objects here: https://android-review.git.corp.google.com/c/platform/packages/modules/DnsResolver/+/2542070.",
+      "parentUuid": "fcc5101b_dba14240",
       "revId": "6c30cc087ffa533d6e1be1075b893893a52e7777",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
