@@ -1,5 +1,108 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7ed8620_282d45c5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "Should we also remove \"block_offset\" and clean up some of its usages?  Now this always has the value 0...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef493022_9ecefd37",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "...so this check is always `false`...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96757ad0_41212e35",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "...and this check is always `false` as well.",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b27b96e_aaf08e18",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "Similarly, do we also want to remove `source_offset` and associated code?  It\u0027s always 0 now...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "489f36b2_43a92071",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "...so this is always `false`...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5b54e9c_dc925c12",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-04-17T16:22:07Z",
+      "side": 1,
+      "message": "...and this is always `false`.",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
