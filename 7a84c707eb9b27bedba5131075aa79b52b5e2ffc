@@ -88,6 +88,24 @@
       "parentUuid": "8580a92e_d71a3060",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88dec9e6_b4d1977e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-04-17T18:37:27Z",
+      "side": 1,
+      "message": "The build doesn\u0027t know the kernel architecture, it\u0027s just a prebuilt blob to the build system.  I don\u0027t think the build system should be in the business of determining the kernel architecture either, kernels can be packaged and/or compressed in a variety of ways, including as a prebuilt boot image.\n\nRather than making assumptions based on 32-bit vs. 64-bit kernels though would it be better for whatever is setting up kfence reports to probe if kfence is enabled and disable itself if not?",
+      "parentUuid": "51a7751a_f821fffd",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
