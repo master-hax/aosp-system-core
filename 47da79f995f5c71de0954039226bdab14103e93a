@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66a48fad_5a589ea1",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-17T22:04:28Z",
+      "side": 1,
+      "message": "BadFastbootInfoInput",
+      "range": {
+        "startLine": 102,
+        "startChar": 18,
+        "endLine": 102,
+        "endChar": 41
+      },
+      "revId": "47da79f995f5c71de0954039226bdab14103e93a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad4b0760_0e1fbd44",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-17T22:04:28Z",
+      "side": 1,
+      "message": "by doing this you wouldn\u0027t know which line failed to parse when test failed. Better to put the assert in `collectTasks` itself , or write a loop in this test and assert in each iteration of the loop.",
+      "range": {
+        "startLine": 119,
+        "startChar": 8,
+        "endLine": 119,
+        "endChar": 27
+      },
+      "revId": "47da79f995f5c71de0954039226bdab14103e93a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
