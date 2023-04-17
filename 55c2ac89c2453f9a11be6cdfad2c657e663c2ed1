@@ -16,6 +16,24 @@
       "message": "This will wind up being problematic if you have multiple tests, since it won\u0027t get reset each time. Luckily there\u0027s an easy way to do this in gtest:\n\n    class ParseTest : public ::testing:Test {\n      protected:\n        void SetUp() override {\n            fp \u003d std::make_unique\u003cFlashingPlan\u003e();\n        }\n        void TearDown() override {}\n\n      private:\n        std::unique_ptr\u003cFlashingPlan\u003e fp;\n    };\n\n    TEST_F(ParseTest, CorrectFlashTask) {\n        ...\n    }\n\nEach test will get its own instance of ParseTest so there\u0027s no state being shared between each run.",
       "revId": "55c2ac89c2453f9a11be6cdfad2c657e663c2ed1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7473db0a_0f4ecba2",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-17T17:20:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d105f1f_bba0c8af",
+      "revId": "55c2ac89c2453f9a11be6cdfad2c657e663c2ed1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
