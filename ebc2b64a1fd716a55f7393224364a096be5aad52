@@ -34,6 +34,24 @@
       "parentUuid": "b39c78cf_9fa160a8",
       "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc28218f_5c0fe2f4",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T17:41:38Z",
+      "side": 1,
+      "message": "Oh, it\u0027s due to a circular dependency - fastboot.h includes task.h which includes fastboot.h, so one of them will always do nothing. Just drop one of them from the other (ideally fastboot.h from task.h).",
+      "parentUuid": "c6379f9e_528eb2fa",
+      "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
