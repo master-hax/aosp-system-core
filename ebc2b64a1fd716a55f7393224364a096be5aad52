@@ -52,6 +52,24 @@
       "parentUuid": "c6379f9e_528eb2fa",
       "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8fc05ee_6ed96f05",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-17T18:43:12Z",
+      "side": 1,
+      "message": "ahh so reading up on this, typical solution is to have one file include the other -\u003e and then forward declare for other file?",
+      "parentUuid": "dc28218f_5c0fe2f4",
+      "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
