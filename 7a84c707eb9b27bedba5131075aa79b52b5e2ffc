@@ -34,6 +34,24 @@
       "parentUuid": "fdfbe189_56ccce5a",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dfefc3f_bdbc639b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-04-17T14:14:06Z",
+      "side": 1,
+      "message": "is this worth doing in init at all? just check if TARGET_ARCH is arm or x86 in the build system instead? (i don\u0027t remember exactly, but there\u0027s a way to add system properties in the build --- we do it for ro.debuggable. yeah, `ADDITIONAL_SYSTEM_PROPERTIES +\u003d ` should do it?)",
+      "parentUuid": "b1e804d6_e5457c37",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
