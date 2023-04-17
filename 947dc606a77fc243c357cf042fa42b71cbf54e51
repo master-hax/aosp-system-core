@@ -16,6 +16,24 @@
       "message": "Can we move this to ParseFastbootInfoLine? Will look a little cleaner, and if someone wants an unconditional \"erase\" operation, no reason to forbid that.",
       "revId": "947dc606a77fc243c357cf042fa42b71cbf54e51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "451ab5b2_d89f5f4b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 44
+      },
+      "lineNbr": 1748,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-17T18:42:04Z",
+      "side": 1,
+      "message": "Initially had it there, but was under the impression we didn\u0027t want an unconditional erase.",
+      "parentUuid": "c993caf6_50177ef2",
+      "revId": "947dc606a77fc243c357cf042fa42b71cbf54e51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
