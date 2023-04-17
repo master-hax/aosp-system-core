@@ -34,6 +34,24 @@
       "parentUuid": "0063f684_6a804af0",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7d86118_8ca98d57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-04-17T09:44:40Z",
+      "side": 1,
+      "message": "Thanks for review about it.\n\nI understand that you think it\u0027s good to handle it in libavb. (use build-time flag or something else)\n\nWhen i read a link you send, I\u0027m not sure exactly which part you\u0027re considering. I\u0027d appreciate it if you could explain a little more.",
+      "parentUuid": "f803ed7b_2b31c764",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
