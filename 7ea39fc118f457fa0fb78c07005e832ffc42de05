@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0063f684_6a804af0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-04-17T06:40:42Z",
+      "side": 1,
+      "message": "Hello, Maintainers\n\nCould you please review this patch?\n\nI suggested it to `libavb` with a different patch.\nBut it looks better to use `dup2`\n\nIf you want to see the history, please refer this link [aosp/2493379](https://android-review.googlesource.com/c/platform/external/avb/+/2493379)",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
