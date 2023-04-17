@@ -16,6 +16,24 @@
       "message": "Hi, Alexander\n\nJust curious what different actions would be taken between the 32bit and 64bit platforms in the future, there is one x15 devboard which is a arm32 bit platform, not sure if that will be affected in the the future.",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1e804d6_e5457c37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2023-04-17T12:49:34Z",
+      "side": 1,
+      "message": "\u003e Hi, Alexander\n\u003e \n\u003e Just curious what different actions would be taken between the 32bit and 64bit platforms in the future, there is one x15 devboard which is a arm32 bit platform, not sure if that will be affected in the the future.\n\nHi Yongqin,\n\nThe use-case for this property is KFENCE, which is only supported by 64-bit kernels. 32-bit platforms do not want to set up the collection of KFENCE error reports in the userspace to save memory, so they can use ro.kernel.bitness to decide.",
+      "parentUuid": "fdfbe189_56ccce5a",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
