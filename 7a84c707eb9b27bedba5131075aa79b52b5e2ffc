@@ -70,6 +70,24 @@
       "parentUuid": "8dfefc3f_bdbc639b",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51a7751a_f821fffd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-04-17T14:38:15Z",
+      "side": 1,
+      "message": "ah, +ccross because that might be something the build system doesn\u0027t even know.\n\ndoes the header of the kernel image tell you whether it\u0027s 32- or 64-bit? (in case you end up looking at that at build time.)",
+      "parentUuid": "8580a92e_d71a3060",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
