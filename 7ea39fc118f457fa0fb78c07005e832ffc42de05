@@ -52,6 +52,24 @@
       "parentUuid": "f803ed7b_2b31c764",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c910f9e0_6ae0e99e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-17T12:41:57Z",
+      "side": 1,
+      "message": "Sorry. Nevermind. I thought this change may break the first stage console, but it\u0027s not. \n\nBy the way, my argument remains the same. I feel uncomfortable with init being dependent on the implementation detail of libavb where logs are always sent to stderr.",
+      "parentUuid": "b7d86118_8ca98d57",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
