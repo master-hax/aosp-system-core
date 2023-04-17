@@ -16,6 +16,24 @@
       "message": "Hello, Maintainers\n\nCould you please review this patch?\n\nI suggested it to `libavb` with a different patch.\nBut it looks better to use `dup2`\n\nIf you want to see the history, please refer this link [aosp/2493379](https://android-review.googlesource.com/c/platform/external/avb/+/2493379)",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f803ed7b_2b31c764",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-17T08:41:11Z",
+      "side": 1,
+      "message": "Thanks for the context. \n\nBy the way, I think there\u0027s a reason for redirecting stdio/stdout/stderr to /dev/null for most of the time while the first stage init is running. See https://cs.android.com/android/platform/superproject/+/master:system/core/init/util.cpp;drc\u003dec18f508f9934fc9548fff6b0532452200defdbe;l\u003d700\n\nSo I believe that init (and its dependencies like libavb as well) should distinguish logging and sending something to stdout.\n\nI wish libavb provides a mechanism to configure (either statically as a build-time flag or dynamically by calling an api, which I personally prefer) to select the log target. It could default to stderr, but could be set to /dev/kmsg, or something else.",
+      "parentUuid": "0063f684_6a804af0",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
