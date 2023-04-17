@@ -70,6 +70,24 @@
       "parentUuid": "b7d86118_8ca98d57",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78af3297_26f4c36d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2023-04-17T14:13:38Z",
+      "side": 1,
+      "message": "\u003e I wish libavb provides a mechanism to configure (either statically as a build-time flag or dynamically by calling an api, which I personally prefer) to select the log target.\n\n+1, defaulting to `stderr` and introducing `avb_set_log_file()` behind a build flag for the POSIX reference implementation would be cleaner. IMO, the static option would be less invasive (no API change) but also less robust as, unlike `stderr`, the file might need to be `open`-ed first.\n\nAlternatively, `init_first_stage` could implement this through its own `avb_sysdeps.h` (including `avb_print{,f,v}()`) when statically linking against `libavb`.",
+      "parentUuid": "c910f9e0_6ae0e99e",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
