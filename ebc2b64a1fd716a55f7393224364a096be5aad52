@@ -70,6 +70,24 @@
       "parentUuid": "dc28218f_5c0fe2f4",
       "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11295541_3d3ce745",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T19:03:58Z",
+      "side": 1,
+      "message": "Yeah, indeed. You can also break up headers into smaller pieces but it\u0027s not always desirable/feasible.",
+      "parentUuid": "b8fc05ee_6ed96f05",
+      "revId": "ebc2b64a1fd716a55f7393224364a096be5aad52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
