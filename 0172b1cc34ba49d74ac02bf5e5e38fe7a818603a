@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "187461ff_cffdb361",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Thanks for the suggestions. I\u0027ll put up a CL.\n\n(For the record, this is all legacy code. It\u0027s for compatibility with S-frozen devices and will get removed in Android W).",
+      "parentUuid": "a7ed8620_282d45c5",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ef493022_9ecefd37",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-04-17T16:22:07Z",
       "side": 1,
       "message": "...so this check is always `false`...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3af9cf0_fae0a7c5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ef493022_9ecefd37",
       "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "19f64031_75603160",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "96757ad0_41212e35",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7b27b96e_aaf08e18",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-04-17T16:22:07Z",
       "side": 1,
       "message": "Similarly, do we also want to remove `source_offset` and associated code?  It\u0027s always 0 now...",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0e9206f_58961d7e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b27b96e_aaf08e18",
       "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "01e523e7_12cb3d36",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "489f36b2_43a92071",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5b54e9c_dc925c12",
@@ -99,6 +189,24 @@
       "writtenOn": "2023-04-17T16:22:07Z",
       "side": 1,
       "message": "...and this is always `false`.",
+      "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88936240_d60ec0e8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T22:02:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5b54e9c_dc925c12",
       "revId": "0172b1cc34ba49d74ac02bf5e5e38fe7a818603a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
