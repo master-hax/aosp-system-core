@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67af2f88_708d5a59",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-17T17:24:57Z",
+      "side": 1,
+      "message": "no need for this accessor, you can just make fp \"protected\" instead of private.",
+      "revId": "5ba48948d51d0a98f255c7008a592ed3cb04fcad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
