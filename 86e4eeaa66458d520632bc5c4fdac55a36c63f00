@@ -45,6 +45,23 @@
       },
       "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65e45a32_e4cc8a00",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-18T18:05:15Z",
+      "side": 1,
+      "message": "do we want to keep uncompressed here as an option?",
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
