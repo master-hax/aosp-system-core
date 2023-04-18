@@ -33,6 +33,23 @@
       "message": "+2 as a build cop.",
       "revId": "93c9dfcd335e3c06ac52b5a8e9ed25260efe5e45",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a5fd1e0_a68535f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-04-18T23:20:54Z",
+      "side": 1,
+      "message": "This is confirmed to fix gsi_magpie boot (without it, it bootloops).\n\nThis is failing TH with infra errors on 4 cheetah targets \u0026 1 bramble, but those devices (at least cheetah-userdebug build, less certain about aosp_bramble_hwasan-userdebug) should be using updateable mainline modules - incl. tethering - and thus are not even affected by this change (updatable apex uses the packages/modules/Connectivity/Tethering/apex/canned_fs_config file).\n\nAs such the TH failures appear to be spurious/unrelated infrastructure failures.",
+      "revId": "93c9dfcd335e3c06ac52b5a8e9ed25260efe5e45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
