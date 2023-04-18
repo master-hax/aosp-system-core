@@ -88,6 +88,24 @@
       "parentUuid": "c910f9e0_6ae0e99e",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e973658_20b27348",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-04-18T00:32:49Z",
+      "side": 1,
+      "message": "@jiyong@google.com\nThank you for more explain. I agreed with your opinion that looks better without dependence `libavb` and `init`\n\n\n@ptosi@google.com\n\u003e defaulting to stderr and introducing avb_set_log_file() behind a build flag for the POSIX reference implementation would be cleaner.\n\nYes, I think so. I thought build-time flag and make it a function in the first patch I made. [patch link](https://android-review.googlesource.com/c/platform/external/avb/+/2493379/1/libavb/avb_sysdeps_posix.c)\n\nCurrently, there is lots of patch you submitted, so need a patch that fits it.\nHow about this? or Do you have a good idea?",
+      "parentUuid": "78af3297_26f4c36d",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
