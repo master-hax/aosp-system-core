@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "131fe319_ffcae0e9",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1901791
+      },
+      "writtenOn": "2023-04-18T10:28:18Z",
+      "side": 1,
+      "message": "Removed! Thanks",
+      "parentUuid": "f8901394_ec638395",
+      "revId": "058be42fdcf56f6a88fdd44bd2944cb0601f84e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d0cb431a_2d091347",
@@ -81,6 +99,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2b0ca53_0645fdb2",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1901791
+      },
+      "writtenOn": "2023-04-18T10:28:18Z",
+      "side": 1,
+      "message": "Removed. Thanks!",
+      "parentUuid": "2f4694cf_73e287b9",
+      "range": {
+        "startLine": 141,
+        "startChar": 16,
+        "endLine": 141,
+        "endChar": 35
+      },
+      "revId": "058be42fdcf56f6a88fdd44bd2944cb0601f84e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f88f9b85_b58f9b49",
@@ -94,6 +136,24 @@
       "writtenOn": "2023-04-17T20:57:34Z",
       "side": 1,
       "message": "there\u0027s no better way to report _which_ one(s) failed? is this a sign that error reporting should be moved to the _library_ instead?",
+      "revId": "058be42fdcf56f6a88fdd44bd2944cb0601f84e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f0faa13_304c1d84",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1901791
+      },
+      "writtenOn": "2023-04-18T10:28:18Z",
+      "side": 1,
+      "message": "Use `m.GetModuleCount()` to check if there are no modules to be loaded.\n\nError message will be like bellow: `modprobe: No modules are loaded in dir: \"/vendor/lib/modules\" error: File exists`",
+      "parentUuid": "f88f9b85_b58f9b49",
       "revId": "058be42fdcf56f6a88fdd44bd2944cb0601f84e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
