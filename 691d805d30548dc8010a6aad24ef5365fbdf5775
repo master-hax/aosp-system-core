@@ -51,6 +51,23 @@
       "parentUuid": "555b76d2_c028385f",
       "revId": "691d805d30548dc8010a6aad24ef5365fbdf5775",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e647826_413428dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-04-18T20:51:07Z",
+      "side": 1,
+      "message": "+\"mr ota\" since he\u0027s most likely to care about ota-related boot reasons...\n\n(periodic seems uncontentious.)",
+      "revId": "691d805d30548dc8010a6aad24ef5365fbdf5775",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
