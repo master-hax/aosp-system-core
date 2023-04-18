@@ -124,6 +124,24 @@
       "parentUuid": "88dec9e6_b4d1977e",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f45e449_5cf1e30f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-04-18T19:38:52Z",
+      "side": 1,
+      "message": "I\u0027m not suggesting adding more specific properties, I\u0027m suggesting moving the complicated conditionals out of the init.rc file.  For example, you could have a oneshot service started by init that does the configuration on devices that support it or skips it on devices that don\u0027t support it.  Then you can remove all the complicated init.rc logic for kernel versions, 64-bit, etc.",
+      "parentUuid": "d2e0d63d_b88d140c",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
