@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2c9648f_135b37be",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-18T17:11:32Z",
+      "side": 1,
+      "message": "`std::string_view` unless you need c_str()",
+      "range": {
+        "startLine": 202,
+        "startChar": 70,
+        "endLine": 202,
+        "endChar": 93
+      },
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91c5efc7_6d5fb60a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-18T17:11:32Z",
+      "side": 1,
+      "message": "const size_t",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 14
+      },
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
