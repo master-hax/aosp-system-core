@@ -802,5 +802,42 @@ bool CowReader::ReadData(const CowOperation& op, IByteSink* sink) {
     return decompressor->Decompress(header_.block_size);
 }
 
+bool CowReader::ReadData(const CowOperation& op, void* buffer, size_t buffer_size) {
+    std::unique_ptr<IDecompressor> decompressor;
+    switch (op.compression) {
+        case kCowCompressNone:
+            break;
+        case kCowCompressGz:
+            decompressor = IDecompressor::Gz();
+            break;
+        case kCowCompressBrotli:
+            decompressor = IDecompressor::Brotli();
+            break;
+        case kCowCompressLz4:
+            if (header_.block_size != op.data_length) {
+                decompressor = IDecompressor::Lz4();
+            }
+            break;
+        default:
+            LOG(ERROR) << "Unknown compression type: " << op.compression;
+            return false;
+    }
+
+    uint64_t offset;
+    if (op.type == kCowXorOp) {
+        offset = data_loc_->at(op.new_block);
+    } else {
+        offset = op.source;
+    }
+
+    CowDataStream stream(this, offset, op.data_length);
+    if (!decompressor) {
+        return stream.ReadFully(buffer, buffer_size);
+    }
+
+    decompressor->set_stream(&stream);
+    return decompressor->Decompress(buffer, buffer_size);
+}
+
 }  // namespace snapshot
 }  // namespace android

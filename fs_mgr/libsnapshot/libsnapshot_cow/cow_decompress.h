@@ -31,6 +31,8 @@ class IByteStream {
 
     // Size of the stream.
     virtual size_t Size() const = 0;
+
+    bool ReadFully(void* buffer, size_t length);
 };
 
 class IDecompressor {
@@ -43,8 +45,11 @@ class IDecompressor {
     static std::unique_ptr<IDecompressor> Brotli();
     static std::unique_ptr<IDecompressor> Lz4();
 
+    static std::unique_ptr<IDecompressor> FromString(const std::string& compressor);
+
     // |output_bytes| is the expected total number of bytes to sink.
     virtual bool Decompress(size_t output_bytes) = 0;
+    virtual bool Decompress(void* buffer, size_t buffer_size) = 0;
 
     void set_stream(IByteStream* stream) { stream_ = stream; }
     void set_sink(IByteSink* sink) { sink_ = sink; }

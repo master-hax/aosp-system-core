@@ -15,6 +15,8 @@
 #pragma once
 
 #include <stdint.h>
+
+#include <optional>
 #include <string>
 
 namespace android {
@@ -195,6 +197,9 @@ int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_size);
 bool IsMetadataOp(const CowOperation& op);
 // Ops that have dependencies on old blocks, and must take care in their merge order
 bool IsOrderedOp(const CowOperation& op);
+
+// Convert compression name to internal value.
+std::optional<CowCompressionAlgorithm> CompressionAlgorithmFromString(const std::string& name);
 
 }  // namespace snapshot
 }  // namespace android

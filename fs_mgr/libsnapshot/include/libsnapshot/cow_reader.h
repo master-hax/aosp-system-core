@@ -85,6 +85,7 @@ class ICowReader {
     // Get decoded bytes from the data section, handling any decompression.
     // All retrieved data is passed to the sink.
     virtual bool ReadData(const CowOperation& op, IByteSink* sink) = 0;
+    virtual bool ReadData(const CowOperation& op, void* buffer, size_t buffer_size) = 0;
 };
 
 // Iterate over a sequence of COW operations.
@@ -140,6 +141,7 @@ class CowReader final : public ICowReader {
     std::unique_ptr<ICowOpIter> GetMergeOpIter(bool ignore_progress = false) override;
 
     bool ReadData(const CowOperation& op, IByteSink* sink) override;
+    bool ReadData(const CowOperation& op, void* buffer, size_t buffer_size) override;
 
     bool GetRawBytes(uint64_t offset, void* buffer, size_t len, size_t* read);
 

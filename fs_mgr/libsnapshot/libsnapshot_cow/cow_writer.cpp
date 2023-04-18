@@ -194,18 +194,13 @@ void CowWriter::SetupHeaders() {
 }
 
 bool CowWriter::ParseOptions() {
-    if (options_.compression == "gz") {
-        compression_ = kCowCompressGz;
-    } else if (options_.compression == "brotli") {
-        compression_ = kCowCompressBrotli;
-    } else if (options_.compression == "lz4") {
-        compression_ = kCowCompressLz4;
-    } else if (options_.compression == "none") {
-        compression_ = kCowCompressNone;
-    } else if (!options_.compression.empty()) {
+    auto algorithm = CompressionAlgorithmFromString(options_.compression);
+    if (!algorithm) {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
     }
+    compression_ = *algorithm;
+
     if (options_.cluster_ops == 1) {
         LOG(ERROR) << "Clusters must contain at least two operations to function.";
         return false;
