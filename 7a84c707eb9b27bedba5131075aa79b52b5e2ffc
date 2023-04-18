@@ -106,6 +106,24 @@
       "parentUuid": "51a7751a_f821fffd",
       "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2e0d63d_b88d140c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1084624
+      },
+      "writtenOn": "2023-04-18T09:20:02Z",
+      "side": 1,
+      "message": "\u003e Rather than making assumptions based on 32-bit vs. 64-bit kernels though would it be better for whatever is setting up kfence reports to probe if kfence is enabled and disable itself if not?\n\nWe need to check for both KFENCE and KASAN (because KASAN uses the same reporting logic), and KFENCE is STRONGLY RECOMMENDED for all new 64-bit kernels anyway, so it\u0027s a good heuristic.\nWe could instead introduce ro.kernel.has_kfence (true if CONFIG_KFENCE\u003dy) and ro.kernel.has_kasan (true if CONFIG_KASAN\u003dy), but I thought those are too specific to be supported in the long term.\n\nRight now systems with 32-bit userspace have reporting collection disabled, and those with 64-bit userspace have it enabled (this is based on the `ro.product.cpu.abilist` here: https://cs.android.com/android/platform/superproject/+/master:system/core/rootdir/init.rc;l\u003d648)\nThe problem we are trying to solve is that systems with 64-bit kernels and 32-bit userspace also want the reporting to work, so having it depend on the kernel bitness makes more sense.",
+      "parentUuid": "88dec9e6_b4d1977e",
+      "revId": "7a84c707eb9b27bedba5131075aa79b52b5e2ffc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
