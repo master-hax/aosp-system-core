@@ -106,6 +106,24 @@
       "parentUuid": "78af3297_26f4c36d",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d26900e7_98788398",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-18T01:31:13Z",
+      "side": 1,
+      "message": "The patch you shared doesn\u0027t seem to be using any conditions. Below is what I expected.\n\nOption 1 (static config):\n```\nFILE* get_log_file() {\n#ifdef USE_KMSG_AS_LOG_TARGET\n    static FILE* fp \u003d NULL;\n    if (fp \u003d\u003d NULL) {\n        fp \u003d fopen(\"/dev/kmsg\", \"a\");\n        if (fp \u003d\u003d NULL) {\n           // do some error reporting\n           fp \u003d stderr; //fall back to stderr\n        }        \n    }\n    return fp;\n#else\n    return stderr; // the default\n#endif\n}\n\nvoid avb_printv(const char* message, ...) {\n    ...\n    fprintf(get_log_file(), \"%s\", ...);\n    ...\n}\n```\n\nOption 2 (dynamic config)\n```\nstatic FILE* log_file \u003d stderr; // the default\n\nvoid avb_set_log_file(FILE* log_file) {\n    log_file \u003d log_file; // do we need to be thread-safe??\n}\n\nvoid avb_printv(const char* message, ...) {\n    ...\n    fprintf(log_file, \"%s\", ...);\n    ...\n}\n```",
+      "parentUuid": "3e973658_20b27348",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
