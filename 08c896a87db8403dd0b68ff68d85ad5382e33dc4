@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69a50292_cc741814",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 47
+      },
+      "lineNbr": 1643,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T19:22:34Z",
+      "side": 1,
+      "message": "Need a command.size() \u003d\u003d 2 check here I think?",
+      "revId": "08c896a87db8403dd0b68ff68d85ad5382e33dc4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
