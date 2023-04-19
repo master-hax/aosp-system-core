@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a7d543c_0e46ba12",
+        "filename": "fs_mgr/libsnapshot/snapshot_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T21:09:04Z",
+      "side": 1,
+      "message": "This warning is pretty aggressive IMO. This is the last in a sequence of operations to write to the buffer, and keeping the final increment is consistent and future proof.\n\nI\u0027ll just add some CHECKs to make the variables look used.",
+      "parentUuid": "45cf7adc_c3afa450",
+      "range": {
+        "startLine": 167,
+        "startChar": 9,
+        "endLine": 167,
+        "endChar": 22
+      },
+      "revId": "791b78465f18b97a2cd5c4f1c0704b14db1b208a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aa5afda9_c84d724d",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-04-19T17:20:52Z",
       "side": 1,
       "message": "Please fix this WARNING reported by Build Warnings: Value stored to \u0027buf_remaining\u0027 is never read [clang-analyzer-deadcode.DeadStores]\n\nAnalyzer Description: Reports warnings that originate from build.log in the build artifacts.\nOwner: farivar@google.com\n\n    Value stored to \u0027buf_remaining\u0027 is never read [clang-analyzer-deadcode.DeadStores]\n            buf_remaining -\u003d rv;\n            ^                ~~\n    /b/f/w/system/core/fs_mgr/libsnapshot/snapshot_reader.cpp:168:9: note: Value stored to \u0027buf_remaining\u0027 is never read\n            buf_remaining -\u003d rv;\n            ^                ~~\n\nThis finding was found on https://android-build.googleplex.com/builds/build-details/P54813969/targets/aosp_arm64-userdebug_tidy, but may also be present on other builds.",
+      "range": {
+        "startLine": 168,
+        "startChar": 9,
+        "endLine": 168,
+        "endChar": 28
+      },
+      "revId": "791b78465f18b97a2cd5c4f1c0704b14db1b208a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab3889de_bcddbd06",
+        "filename": "fs_mgr/libsnapshot/snapshot_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T21:09:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa5afda9_c84d724d",
       "range": {
         "startLine": 168,
         "startChar": 9,
