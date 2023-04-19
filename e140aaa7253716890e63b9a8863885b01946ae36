@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7b8064b_e7c7617b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-19T16:57:29Z",
+      "side": 1,
+      "message": "move outside of while loop to avoid repeated construction/deconstruction",
+      "range": {
+        "startLine": 147,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 56
+      },
+      "revId": "e140aaa7253716890e63b9a8863885b01946ae36",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
