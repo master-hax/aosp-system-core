@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef74be98_619bfee6",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T04:04:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2c9648f_135b37be",
+      "range": {
+        "startLine": 202,
+        "startChar": 70,
+        "endLine": 202,
+        "endChar": 93
+      },
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91c5efc7_6d5fb60a",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f2cfb00_a04d92cc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T04:04:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91c5efc7_6d5fb60a",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 14
+      },
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "65e45a32_e4cc8a00",
@@ -60,6 +108,24 @@
       "writtenOn": "2023-04-18T18:05:15Z",
       "side": 1,
       "message": "do we want to keep uncompressed here as an option?",
+      "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d38a286_ac7b0ea3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T04:04:18Z",
+      "side": 1,
+      "message": "I initially had it in, but NoDecompressor interacts weirdly with the new API. Between \"special case it in two lines of code elsewhere\" or \"add a bunch of complex logic to handle it generically\", I went with the former. If I can find a way to keep it I will, for now I\u0027ll leave it out.",
+      "parentUuid": "65e45a32_e4cc8a00",
       "revId": "86e4eeaa66458d520632bc5c4fdac55a36c63f00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
