@@ -64,11 +64,9 @@ class IDecompressor {
                                size_t ignore_bytes = 0) = 0;
 
     void set_stream(IByteStream* stream) { stream_ = stream; }
-    void set_sink(IByteSink* sink) { sink_ = sink; }
 
   protected:
     IByteStream* stream_ = nullptr;
-    IByteSink* sink_ = nullptr;
 };
 
 }  // namespace snapshot
