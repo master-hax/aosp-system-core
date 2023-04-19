@@ -74,9 +74,6 @@ class StreamDecompressor : public IDecompressor {
     bool OutputFull() const { return !ignore_bytes_ && !output_buffer_remaining_; }
 
   protected:
-    bool GetFreshBuffer();
-
-    size_t output_bytes_;
     size_t stream_remaining_;
     uint8_t* output_buffer_ = nullptr;
     size_t output_buffer_remaining_ = 0;
@@ -127,17 +124,6 @@ ssize_t StreamDecompressor::Decompress(void* buffer, size_t buffer_size, size_t,
         return -1;
     }
     return buffer_size - output_buffer_remaining_;
-}
-
-bool StreamDecompressor::GetFreshBuffer() {
-    size_t request_size = std::min(output_bytes_, kChunkSize);
-    output_buffer_ =
-            reinterpret_cast<uint8_t*>(sink_->GetBuffer(request_size, &output_buffer_remaining_));
-    if (!output_buffer_) {
-        LOG(ERROR) << "Could not acquire buffer from sink";
-        return false;
-    }
-    return true;
 }
 
 class GzDecompressor final : public StreamDecompressor {
@@ -288,45 +274,6 @@ std::unique_ptr<IDecompressor> IDecompressor::Brotli() {
 class Lz4Decompressor final : public IDecompressor {
   public:
     ~Lz4Decompressor() override = default;
-
-    bool Decompress(const size_t output_size) override {
-        size_t actual_buffer_size = 0;
-        auto&& output_buffer = sink_->GetBuffer(output_size, &actual_buffer_size);
-        if (actual_buffer_size != output_size) {
-            LOG(ERROR) << "Failed to allocate buffer of size " << output_size << " only got "
-                       << actual_buffer_size << " bytes";
-            return false;
-        }
-        // If input size is same as output size, then input is uncompressed.
-        if (stream_->Size() == output_size) {
-            ssize_t bytes_read = stream_->ReadFully(output_buffer, output_size);
-            if (bytes_read != output_size) {
-                LOG(ERROR) << "Failed to read all input at once. Expected: " << output_size
-                           << " actual: " << bytes_read;
-                return false;
-            }
-            sink_->ReturnData(output_buffer, output_size);
-            return true;
-        }
-        std::string input_buffer;
-        input_buffer.resize(stream_->Size());
-        ssize_t bytes_read = stream_->ReadFully(input_buffer.data(), input_buffer.size());
-        if (bytes_read != input_buffer.size()) {
-            LOG(ERROR) << "Failed to read all input at once. Expected: " << input_buffer.size()
-                       << " actual: " << bytes_read;
-            return false;
-        }
-        const int bytes_decompressed =
-                LZ4_decompress_safe(input_buffer.data(), static_cast<char*>(output_buffer),
-                                    input_buffer.size(), output_size);
-        if (bytes_decompressed != output_size) {
-            LOG(ERROR) << "Failed to decompress LZ4 block, expected output size: " << output_size
-                       << ", actual: " << bytes_decompressed;
-            return false;
-        }
-        sink_->ReturnData(output_buffer, output_size);
-        return true;
-    }
 
     ssize_t Decompress(void* buffer, size_t buffer_size, size_t decompressed_size,
                        size_t ignore_bytes) override {
