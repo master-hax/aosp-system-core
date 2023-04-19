@@ -35,6 +35,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <modprobe/modprobe.h>
 #include <private/android_filesystem_config.h>
 
@@ -49,6 +50,8 @@
 
 using android::base::boot_clock;
 
+using android::base::GetProperty;
+
 using namespace std::literals;
 
 namespace fs = std::filesystem;
@@ -57,6 +60,19 @@ namespace android {
 namespace init {
 
 namespace {
+
+enum boot_mode {
+    BOOT_MODE_NORMAL,
+    BOOT_MODE_RECOVERY,
+    BOOT_MODE_CHARGER,
+    BOOT_MODE_MAX
+};
+
+static const char *module_load_files[BOOT_MODE_MAX] = {
+    [BOOT_MODE_NORMAL] = "modules.load",
+    [BOOT_MODE_RECOVERY] = "modules.load.recovery",
+    [BOOT_MODE_CHARGER] = "modules.load.charger"
+};
 
 void FreeRamdisk(DIR* dir, dev_t dev) {
     int dfd = dirfd(dir);
@@ -149,13 +165,13 @@ void PrepareSwitchRoot() {
 }
 }  // namespace
 
-std::string GetModuleLoadList(bool recovery, const std::string& dir_path) {
+std::string GetModuleLoadList(enum boot_mode mode, const std::string& dir_path) {
     auto module_load_file = "modules.load";
-    if (recovery) {
+    if (mode != BOOT_MODE_NORMAL) {
         struct stat fileStat;
-        std::string recovery_load_path = dir_path + "/modules.load.recovery";
+        std::string recovery_load_path = dir_path + "/" + module_load_files[mode];
         if (!stat(recovery_load_path.c_str(), &fileStat)) {
-            module_load_file = "modules.load.recovery";
+            module_load_file = module_load_files[mode];
         }
     }
 
@@ -163,7 +179,8 @@ std::string GetModuleLoadList(bool recovery, const std::string& dir_path) {
 }
 
 #define MODULE_BASE_DIR "/lib/modules"
-bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int& modules_loaded) {
+bool LoadKernelModules(enum boot_mode mode, bool want_console, bool want_parallel,
+		       int& modules_loaded) {
     struct utsname uts;
     if (uname(&uts)) {
         LOG(FATAL) << "Failed to get kernel version.";
@@ -203,7 +220,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
     for (const auto& module_dir : module_dirs) {
         std::string dir_path = MODULE_BASE_DIR "/";
         dir_path.append(module_dir);
-        Modprobe m({dir_path}, GetModuleLoadList(recovery, dir_path));
+        Modprobe m({dir_path}, GetModuleLoadList(mode, dir_path));
         bool retval = m.LoadListedModules(!want_console);
         modules_loaded = m.GetModuleCount();
         if (modules_loaded > 0) {
@@ -211,7 +228,7 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
         }
     }
 
-    Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(recovery, MODULE_BASE_DIR));
+    Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(mode, MODULE_BASE_DIR));
     bool retval = (want_parallel) ? m.LoadModulesParallel(std::thread::hardware_concurrency())
                                   : m.LoadListedModules(!want_console);
     modules_loaded = m.GetModuleCount();
@@ -219,6 +236,17 @@ bool LoadKernelModules(bool recovery, bool want_console, bool want_parallel, int
         return retval;
     }
     return true;
+}
+
+static enum boot_mode GetBootMode(const std::string& cmdline, const std::string& bootconfig)
+{
+    if (ForceNormalBoot(cmdline, bootconfig))
+        return BOOT_MODE_NORMAL;
+    else if (IsRecoveryMode())
+        return BOOT_MODE_RECOVERY;
+    else if (GetProperty("ro.bootmode", "") == "charger")
+        return BOOT_MODE_CHARGER;
+    return BOOT_MODE_NORMAL;
 }
 
 int FirstStageMain(int argc, char** argv) {
@@ -328,7 +356,8 @@ int FirstStageMain(int argc, char** argv) {
 
     boot_clock::time_point module_start_time = boot_clock::now();
     int module_count = 0;
-    if (!LoadKernelModules(IsRecoveryMode() && !ForceNormalBoot(cmdline, bootconfig), want_console,
+    enum boot_mode mode = GetBootMode(cmdline, bootconfig);
+    if (!LoadKernelModules(mode, want_console,
                            want_parallel, module_count)) {
         if (want_console != FirstStageConsoleParam::DISABLED) {
             LOG(ERROR) << "Failed to load kernel modules, starting console";
@@ -346,7 +375,7 @@ int FirstStageMain(int argc, char** argv) {
 
     bool created_devices = false;
     if (want_console == FirstStageConsoleParam::CONSOLE_ON_FAILURE) {
-        if (!IsRecoveryMode()) {
+        if (mode != BOOT_MODE_RECOVERY) {
             created_devices = DoCreateDevices();
             if (!created_devices) {
                 LOG(ERROR) << "Failed to create device nodes early";
