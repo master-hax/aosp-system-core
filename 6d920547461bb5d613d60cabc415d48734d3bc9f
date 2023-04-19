@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48f9a3b5_396a2cb3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-19T04:06:11Z",
+      "side": 1,
+      "message": "New version of this CL changes the API quite a bit. It now adds an \"ignore_bytes\" parameter which allows discarding of initial decoded bytes. It also allows throwing away tail end bytes by under-sizing the buffer. This is useful for implementing misaligned and partial reads in CowReader consumers.",
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
