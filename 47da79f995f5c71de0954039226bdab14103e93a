@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "92740974_fba0594a",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-20T21:14:45Z",
+      "side": 1,
+      "message": "fixing in follow up CL",
+      "parentUuid": "66a48fad_5a589ea1",
+      "range": {
+        "startLine": 102,
+        "startChar": 18,
+        "endLine": 102,
+        "endChar": 41
+      },
+      "revId": "47da79f995f5c71de0954039226bdab14103e93a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ad4b0760_0e1fbd44",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "Or better, write a \"ParseCommand\" helper, and unroll it\n\n    ASSERT_EQ(ParseCommand(\"flash\"), nullptr);\n    ASSERT_EQ(ParseCommand(\"flash --slot-other --apply-vbmeta\"), nullptr);\n\netc... I think this is similar to the first CL, but avoids all of the temporary variables.",
       "parentUuid": "ad4b0760_0e1fbd44",
+      "range": {
+        "startLine": 119,
+        "startChar": 8,
+        "endLine": 119,
+        "endChar": 27
+      },
+      "revId": "47da79f995f5c71de0954039226bdab14103e93a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "189db07e_c884be64",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-20T21:14:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7c013c6_d79af795",
       "range": {
         "startLine": 119,
         "startChar": 8,
