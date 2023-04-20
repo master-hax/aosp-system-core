@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56a4bc6e_d5c76927",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:26:34Z",
+      "side": 1,
+      "message": "Do we still need these subclasses if the ByteSink API is completely removed?",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 16
+      },
+      "revId": "5e4ac86d76df7f2d945361de2320bf7d600c61a6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
