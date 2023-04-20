@@ -16,6 +16,190 @@
       "message": "New version of this CL changes the API quite a bit. It now adds an \"ignore_bytes\" parameter which allows discarding of initial decoded bytes. It also allows throwing away tail end bytes by under-sizing the buffer. This is useful for implementing misaligned and partial reads in CowReader consumers.",
       "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc219fbf_54a75454",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "CHECK_LE",
+      "range": {
+        "startLine": 45,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 13
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98e230f2_6c8d00f6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "std::array\u003cuint8_t, kChunkSize\u003e",
+      "range": {
+        "startLine": 146,
+        "startChar": 4,
+        "endLine": 146,
+        "endChar": 30
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44f80eac_f09cd9b0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "`chunk.size()` after switching to std::array",
+      "range": {
+        "startLine": 148,
+        "startChar": 54,
+        "endLine": 148,
+        "endChar": 67
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b99b1fdb_fc1ef9ac",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "Move before L148 and remove the stream_remaining_ check",
+      "range": {
+        "startLine": 163,
+        "startChar": 0,
+        "endLine": 166,
+        "endChar": 9
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2871f9cc_66ec5c80",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "same, prefer std::array",
+      "range": {
+        "startLine": 186,
+        "startChar": 4,
+        "endLine": 186,
+        "endChar": 30
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a60c58ed_24709024",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "Took me a while to convince myself that by the time we reach this line, stream_remaining_ \u003d\u003d false. I had to look at L209 and L187 together to figure out. Maybe we could structure this whole if statement like this\n\n```\n\nif (stream_remaining_) {\n    if (decompressor_ended_) { print(\"Input stream has more bytes but decompressor isn\u0027t expecting more bytes\"); return -1;}\n    if (OutputFull()) { print(\"Not enough space for output!\"); return -1; }\n    return buffer_size - output_buffer_remaining_;\n} else {\n    if (!decompressor_ended_) { print(\"Input stream ended but decompressor expected more bytes\"); return -1; }\n    return buffer_size - output_buffer_remaining_;\n}\n\n```",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 76
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a6d5d2a_37f21d6d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "std::array, move out of while loop",
+      "range": {
+        "startLine": 304,
+        "startChar": 0,
+        "endLine": 304,
+        "endChar": 34
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3ee40bb_2b788c5c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T17:22:29Z",
+      "side": 1,
+      "message": "CHECK_LE, as it will print value of both sides on failure",
+      "range": {
+        "startLine": 316,
+        "startChar": 8,
+        "endLine": 316,
+        "endChar": 13
+      },
+      "revId": "6d920547461bb5d613d60cabc415d48734d3bc9f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
