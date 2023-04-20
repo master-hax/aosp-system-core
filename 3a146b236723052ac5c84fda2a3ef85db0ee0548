@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc2a823f_49d66266",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T21:46:35Z",
+      "side": 1,
+      "message": "`class [[nodiscard]] AutoNotifyReadAheadFailed`\n\nso that you can\u0027t accidentally construct an unnamed temporary `AutoNotifyReadAheadFailed` object",
+      "range": {
+        "startLine": 117,
+        "startChar": 6,
+        "endLine": 117,
+        "endChar": 31
+      },
+      "revId": "3a146b236723052ac5c84fda2a3ef85db0ee0548",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
