@@ -22,6 +22,30 @@
       },
       "revId": "5e4ac86d76df7f2d945361de2320bf7d600c61a6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d45b2d0d_a179faa2",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-20T18:05:04Z",
+      "side": 1,
+      "message": "Yeah, they\u0027re used all over the place in snapuserd. Safest to leave it be for now.",
+      "parentUuid": "56a4bc6e_d5c76927",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 16
+      },
+      "revId": "5e4ac86d76df7f2d945361de2320bf7d600c61a6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
