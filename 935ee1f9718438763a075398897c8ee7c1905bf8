@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c6ce0dd_fcdb136c",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-20T21:16:37Z",
+      "side": 1,
+      "message": "Usual naming convension is `BadFastbootInfoInput`",
+      "range": {
+        "startLine": 107,
+        "startChar": 18,
+        "endLine": 107,
+        "endChar": 41
+      },
+      "revId": "935ee1f9718438763a075398897c8ee7c1905bf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
