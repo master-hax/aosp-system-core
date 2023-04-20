@@ -69,6 +69,7 @@ using android::fiemap::IImageManager;
 namespace {
 
 constexpr char kDataScratchSizeMbProp[] = "fs_mgr.overlayfs.data_scratch_size_mb";
+constexpr char kDataScratchSizePercentageProp[] = "fs_mgr.overlayfs.data_scratch_size_percentage";
 constexpr char kPreferCacheBackingStorageProp[] = "fs_mgr.overlayfs.prefer_cache_backing_storage";
 
 bool fs_mgr_access(const std::string& path) {
@@ -1083,7 +1084,10 @@ static inline uint64_t GetIdealDataScratchSize() {
         return 0;
     }
 
-    auto ideal_size = std::min(super_info.size, (uint64_t(s.f_frsize) * s.f_bfree) / 2);
+    // Try to took half of available storage in case percentage property isn't presented
+    auto percentage = android::base::GetUintProperty<uint8_t>(kDataScratchSizePercentageProp, 50);
+    auto ideal_size = std::min(super_info.size,
+                               (uint64_t(s.f_frsize) * s.f_bfree) / 100 * percentage);
 
     // Align up to the filesystem block size.
     if (auto remainder = ideal_size % s.f_bsize; remainder > 0) {
