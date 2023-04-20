@@ -150,6 +150,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "699595d3_2a0b5e11",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1901791
+      },
+      "writtenOn": "2023-04-20T10:39:53Z",
+      "side": 1,
+      "message": "From manpage of getopt_long():  https://www.man7.org/linux/man-pages/man3/getopt_long.3.html\n```\nTwo colons mean an option takes an optional arg; if there is text in the\ncurrent argv-element (i.e., in the same word as the option name\nitself, for example, \"-oarg\"), then it is returned in optarg,\notherwise optarg is set to zero. \n```\n\nSo, I added bellow code to allow using `-p file_name`:\n```\nif (optarg \u003d\u003d NULL \u0026\u0026 optind \u003c argc \u0026\u0026 argv[optind][0] !\u003d \u0027-\u0027) {\n    optarg \u003d argv[optind++];\n}\n```\n\nNot sure if we also need this for `-a file_name`.",
+      "parentUuid": "edbb415a_cf627956",
+      "range": {
+        "startLine": 134,
+        "startChar": 43,
+        "endLine": 134,
+        "endChar": 47
+      },
+      "revId": "058be42fdcf56f6a88fdd44bd2944cb0601f84e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2f4694cf_73e287b9",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 3
