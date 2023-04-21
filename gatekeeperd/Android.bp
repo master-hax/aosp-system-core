@@ -18,16 +18,13 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-cc_binary {
-    name: "gatekeeperd",
+cc_defaults {
+    name: "gatekeeperd_defaults",
     cflags: [
         "-Wall",
         "-Wextra",
         "-Werror",
         "-Wunused",
-    ],
-    srcs: [
-        "gatekeeperd.cpp",
     ],
     defaults: [
         "keymint_use_latest_hal_aidl_ndk_shared",
@@ -52,6 +49,16 @@ cc_binary {
 
     static_libs: ["libscrypt_static"],
     include_dirs: ["external/scrypt/lib/crypto"],
+}
+
+cc_binary {
+    name: "gatekeeperd",
+    defaults: [
+        "gatekeeperd_defaults",
+    ],
+    srcs: [
+        "gatekeeperd.cpp",
+    ],
     init_rc: ["gatekeeperd.rc"],
 }
 
@@ -87,4 +94,20 @@ cc_library_shared {
     export_shared_lib_headers: [
         "libbinder",
     ],
+}
+
+cc_fuzz {
+    name: "gatekeeperd_service_fuzzer",
+    defaults: [
+        "gatekeeperd_defaults",
+        "service_fuzzer_defaults"
+    ],
+    srcs: [
+        "fuzzer/GateKeeperServiceFuzzer.cpp",
+    ],
+    fuzz_config: {
+        cc: [
+            "subrahmanyaman@google.com",
+        ],
+    },
 }
