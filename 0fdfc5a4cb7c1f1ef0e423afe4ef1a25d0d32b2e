@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c34b230_65e0f887",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1961490
+      },
+      "writtenOn": "2023-04-22T14:52:05Z",
+      "side": 1,
+      "message": "Do DeviceHandler::HandleUevent process module and firmware event?",
+      "revId": "0fdfc5a4cb7c1f1ef0e423afe4ef1a25d0d32b2e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
