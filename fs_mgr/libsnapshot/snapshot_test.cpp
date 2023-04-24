@@ -196,6 +196,14 @@ class SnapshotTest : public ::testing::Test {
         return true;
     }
 
+    bool ShouldSkipLegacyMerging() {
+        int api_level = android::base::GetIntProperty("ro.board.api_level", -1);
+        if (api_level == -1) {
+            api_level = android::base::GetIntProperty("ro.product.first_api_level", -1);
+        }
+        return api_level != __ANDROID_API_S__;
+    }
+
     void InitializeState() {
         ASSERT_TRUE(sm->EnsureImageManager());
         image_manager_ = sm->image_manager();
@@ -1344,6 +1352,10 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
     }
 
     // Initiate the merge and wait for it to be completed.
+    if (ShouldSkipLegacyMerging()) {
+        LOG(INFO) << "Skipping legacy merge in test";
+        return;
+    }
     ASSERT_TRUE(init->InitiateMerge());
     ASSERT_EQ(init->IsSnapuserdRequired(), snapuserd_required_);
     {
@@ -1407,6 +1419,10 @@ TEST_F(SnapshotUpdateTest, DuplicateOps) {
     ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
 
     // Initiate the merge and wait for it to be completed.
+    if (ShouldSkipLegacyMerging()) {
+        LOG(INFO) << "Skipping legacy merge in test";
+        return;
+    }
     ASSERT_TRUE(init->InitiateMerge());
     ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
 }
@@ -1476,6 +1492,10 @@ TEST_F(SnapshotUpdateTest, SpaceSwapUpdate) {
     }
 
     // Initiate the merge and wait for it to be completed.
+    if (ShouldSkipLegacyMerging()) {
+        LOG(INFO) << "Skipping legacy merge in test";
+        return;
+    }
     ASSERT_TRUE(init->InitiateMerge());
     ASSERT_EQ(init->IsSnapuserdRequired(), snapuserd_required_);
     {
@@ -1584,6 +1604,10 @@ TEST_F(SnapshotUpdateTest, ConsistencyCheckResume) {
             });
 
     // Initiate the merge and wait for it to be completed.
+    if (ShouldSkipLegacyMerging()) {
+        LOG(INFO) << "Skipping legacy merge in test";
+        return;
+    }
     ASSERT_TRUE(init->InitiateMerge());
     ASSERT_EQ(init->IsSnapuserdRequired(), snapuserd_required_);
     {
@@ -2136,6 +2160,10 @@ TEST_F(SnapshotUpdateTest, DataWipeAfterRollback) {
 
 // Test update package that requests data wipe.
 TEST_F(SnapshotUpdateTest, DataWipeRequiredInPackage) {
+    if (ShouldSkipLegacyMerging()) {
+        GTEST_SKIP() << "Skipping legacy merge in test";
+    }
+
     AddOperationForPartitions();
     // Execute the update.
     ASSERT_TRUE(sm->BeginUpdate());
@@ -2175,6 +2203,10 @@ TEST_F(SnapshotUpdateTest, DataWipeRequiredInPackage) {
 
 // Test update package that requests data wipe.
 TEST_F(SnapshotUpdateTest, DataWipeWithStaleSnapshots) {
+    if (ShouldSkipLegacyMerging()) {
+        GTEST_SKIP() << "Skipping legacy merge in test";
+    }
+
     AddOperationForPartitions();
 
     // Execute the update.
@@ -2397,6 +2429,10 @@ TEST_F(SnapshotUpdateTest, AddPartition) {
     }
 
     // Initiate the merge and wait for it to be completed.
+    if (ShouldSkipLegacyMerging()) {
+        LOG(INFO) << "Skipping legacy merge in test";
+        return;
+    }
     ASSERT_TRUE(init->InitiateMerge());
     ASSERT_EQ(UpdateState::MergeCompleted, init->ProcessUpdateState());
 
