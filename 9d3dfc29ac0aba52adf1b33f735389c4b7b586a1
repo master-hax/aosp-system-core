@@ -71,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ff922ab_447c4506",
+        "filename": "gatekeeperd/gatekeeperd.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-25T23:34:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59508c2b_2b57f91b",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 63,
+        "endChar": 71
+      },
+      "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8eff900_ebf10d6d",
@@ -84,6 +108,30 @@
       "writtenOn": "2023-04-25T22:05:48Z",
       "side": 1,
       "message": "#include \u003cbinder/IPCThreadState.h\u003e\n#include \u003cbinder/IServiceManager.h\u003e\n#include \u003clog/log.h\u003e\n\n#include \"gatekeeperd.h\"",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 24
+      },
+      "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "524b912b_4aed5b97",
+        "filename": "gatekeeperd/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-25T23:34:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8eff900_ebf10d6d",
       "range": {
         "startLine": 16,
         "startChar": 0,
