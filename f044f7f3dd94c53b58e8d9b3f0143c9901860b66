@@ -22,6 +22,30 @@
       },
       "revId": "f044f7f3dd94c53b58e8d9b3f0143c9901860b66",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bfc09cb1_0cf6fc1f",
+        "filename": "storaged/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-25T17:18:07Z",
+      "side": 1,
+      "message": "Static libs are just recommended for higher execution speed but shared libs work too.",
+      "parentUuid": "b95c3ce6_4d7776e4",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 15
+      },
+      "revId": "f044f7f3dd94c53b58e8d9b3f0143c9901860b66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
