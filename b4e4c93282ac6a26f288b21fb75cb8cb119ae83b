@@ -34,6 +34,24 @@
       "parentUuid": "c4c9b325_b31ea09a",
       "revId": "b4e4c93282ac6a26f288b21fb75cb8cb119ae83b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7acbeab4_d9d8cd3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-25T16:29:49Z",
+      "side": 1,
+      "message": "It\u0027s fine to land changes here, but they don\u0027t \"go\" anywhere after. T is already released, and there is nothing downstream of this branch.",
+      "parentUuid": "38404b15_cb9e55f0",
+      "revId": "b4e4c93282ac6a26f288b21fb75cb8cb119ae83b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
