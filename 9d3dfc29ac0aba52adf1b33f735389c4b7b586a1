@@ -46,6 +46,29 @@
       },
       "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a14b7e14_83545c65",
+        "filename": "gatekeeperd/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-25T22:04:27Z",
+      "side": 1,
+      "message": "nit: this should be 1, also L43 should be \u0027return 1;\u0027 - maybe we can follow-up or gatekeeper team could follow-up?",
+      "range": {
+        "startLine": 35,
+        "startChar": 16,
+        "endLine": 35,
+        "endChar": 18
+      },
+      "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
