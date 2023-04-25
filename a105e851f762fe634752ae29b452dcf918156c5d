@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd160253_b06b53f8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-25T23:28:50Z",
+      "side": 1,
+      "message": "I\u0027m not a huge fan of this, since these heuristics are always running into corner cases and needing adjustments.\n\nMaybe it\u0027s better to think in terms of the absolute amount of space we want to leave *free* on /data? And then remount can take whatever\u0027s left.",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
