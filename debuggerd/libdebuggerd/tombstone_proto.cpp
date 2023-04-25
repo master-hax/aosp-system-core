@@ -690,7 +690,14 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
 
   // Only dump logs on debuggable devices.
   if (android::base::GetBoolProperty("ro.debuggable", false)) {
-    dump_logcat(&result, main_thread.pid);
+    // Get the thread that corresponds to the main pid of the process.
+    const ThreadInfo& thread = threads.at(main_thread.pid);
+
+    // Blacklist logd because if this process is crashing, then trying to
+    // get the logs will hang until a timeout occurs.
+    if (thread.thread_name != "logd") {
+      dump_logcat(&result, main_thread.pid);
+    }
   }
 
   dump_open_fds(&result, open_files);
