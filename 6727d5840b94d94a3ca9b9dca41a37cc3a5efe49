@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f832dda1_3527924c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-25T23:52:07Z",
+      "side": 1,
+      "message": "Hi Ross, looking for Dr. No, this fixes VTS test failures on android12-gsi.",
+      "revId": "6727d5840b94d94a3ca9b9dca41a37cc3a5efe49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
