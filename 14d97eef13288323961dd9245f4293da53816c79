@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87ee4ef9_6ee7b839",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 682,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-25T00:03:27Z",
+      "side": 1,
+      "message": "note - there is precedence for checking this in ueventd.cpp, but there the older and harsher (from compatibility perspective) property \u0027first_api_level\u0027 is used.",
+      "range": {
+        "startLine": 682,
+        "startChar": 43,
+        "endLine": 682,
+        "endChar": 62
+      },
+      "revId": "14d97eef13288323961dd9245f4293da53816c79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
