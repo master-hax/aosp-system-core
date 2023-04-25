@@ -16,6 +16,24 @@
       "message": "May I ask why you need this change cherry-picked here? AFAIK, this branch is not for development use.",
       "revId": "b4e4c93282ac6a26f288b21fb75cb8cb119ae83b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38404b15_cb9e55f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970380
+      },
+      "writtenOn": "2023-04-25T13:12:50Z",
+      "side": 1,
+      "message": "AFAIK, this is a dev branch for Android T. Could you help to correct and share right branch for Android T to get this fix by partners",
+      "parentUuid": "c4c9b325_b31ea09a",
+      "revId": "b4e4c93282ac6a26f288b21fb75cb8cb119ae83b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
