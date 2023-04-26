@@ -47,7 +47,7 @@ class ISnapshotWriter : public ICowWriter {
     virtual bool InitializeAppend(uint64_t label) = 0;
 
     virtual std::unique_ptr<FileDescriptor> OpenReader() = 0;
-    virtual bool VerifyMergeOps() const noexcept = 0;
+    virtual bool VerifyMergeOpSequencing() const noexcept = 0;
 
   protected:
     android::base::borrowed_fd GetSourceFd();
@@ -71,7 +71,7 @@ class CompressedSnapshotWriter final : public ISnapshotWriter {
     bool Finalize() override;
     uint64_t GetCowSize() override;
     std::unique_ptr<FileDescriptor> OpenReader() override;
-    bool VerifyMergeOps() const noexcept;
+    bool VerifyMergeOpSequencing() const noexcept;
 
   protected:
     bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
@@ -106,7 +106,7 @@ class OnlineKernelSnapshotWriter final : public ISnapshotWriter {
 
     // Online kernel snapshot writer doesn't care about merge sequences.
     // So ignore.
-    bool VerifyMergeOps() const noexcept override { return true; }
+    bool VerifyMergeOpSequencing() const noexcept override { return true; }
 
   protected:
     bool EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;

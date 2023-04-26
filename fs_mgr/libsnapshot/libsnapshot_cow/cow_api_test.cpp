@@ -1469,13 +1469,13 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_TRUE(writer->AddLabel(1));
     ASSERT_TRUE(writer->Finalize());
     ASSERT_TRUE(reader.Parse(cow_->fd));
-    ASSERT_TRUE(reader.VerifyMergeOps());
+    ASSERT_TRUE(VerifyMergeOpSequencing(&reader));
 
     ASSERT_TRUE(writer->InitializeAppend(cow_->fd, 1));
     ASSERT_TRUE(writer->AddCopy(4, 2));
     ASSERT_TRUE(writer->Finalize());
     ASSERT_TRUE(reader.Parse(cow_->fd));
-    ASSERT_FALSE(reader.VerifyMergeOps());
+    ASSERT_FALSE(VerifyMergeOpSequencing(&reader));
 
     writer = std::make_unique<CowWriter>(options);
     ASSERT_TRUE(writer->Initialize(cow_->fd));
@@ -1483,7 +1483,7 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_TRUE(writer->AddXorBlocks(3, &data, data.size(), 1, 1));
     ASSERT_TRUE(writer->Finalize());
     ASSERT_TRUE(reader.Parse(cow_->fd));
-    ASSERT_FALSE(reader.VerifyMergeOps());
+    ASSERT_FALSE(VerifyMergeOpSequencing(&reader));
 }
 
 }  // namespace snapshot

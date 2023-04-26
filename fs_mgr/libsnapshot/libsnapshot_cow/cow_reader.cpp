@@ -506,8 +506,8 @@ bool CowReader::PrepMergeOps() {
     return true;
 }
 
-bool CowReader::VerifyMergeOps() {
-    auto itr = GetMergeOpIter(true);
+bool VerifyMergeOpSequencing(ICowReader* reader) {
+    auto itr = reader->GetMergeOpIter(true);
     std::unordered_map<uint64_t, CowOperation> overwritten_blocks;
     while (!itr->AtEnd()) {
         CowOperation op = itr->Get();

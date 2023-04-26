@@ -39,7 +39,6 @@ class ICowReader {
 
     // Return the file footer.
     virtual bool GetFooter(CowFooter* footer) = 0;
-    virtual bool VerifyMergeOps() = 0;
 
     // Return the last valid label
     virtual bool GetLastLabel(uint64_t* label) = 0;
@@ -66,6 +65,9 @@ class ICowReader {
     virtual ssize_t ReadData(const CowOperation& op, void* buffer, size_t buffer_size,
                              size_t ignore_bytes = 0) = 0;
 };
+
+// Helper function to verify that merge operations are sequenced correctly.
+bool VerifyMergeOpSequencing(ICowReader* reader);
 
 // Iterate over a sequence of COW operations. The iterator is bidirectional.
 class ICowOpIter {
@@ -107,7 +109,6 @@ class CowReader final : public ICowReader {
     bool Parse(android::base::borrowed_fd fd, std::optional<uint64_t> label = {});
 
     bool InitForMerge(android::base::unique_fd&& fd);
-    bool VerifyMergeOps() override;
 
     bool GetFooter(CowFooter* footer) override;
 
