@@ -70,6 +70,24 @@
       "parentUuid": "2fe663ed_b0476473",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc682085_cc3f3009",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-04-26T12:04:16Z",
+      "side": 1,
+      "message": "oh sorry, I meant the opposite. \"ensure 10 or 15% of free space\" (now we retain 50%)",
+      "parentUuid": "7d9660bf_50dfe0cd",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
