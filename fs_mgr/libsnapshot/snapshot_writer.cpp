@@ -82,13 +82,13 @@ std::unique_ptr<CowReader> CompressedSnapshotWriter::OpenCowReader() const {
     return cow;
 }
 
-bool CompressedSnapshotWriter::VerifyMergeOps() const noexcept {
+bool CompressedSnapshotWriter::VerifyMergeOpSequencing() const noexcept {
     auto cow_reader = OpenCowReader();
     if (cow_reader == nullptr) {
         LOG(ERROR) << "Couldn't open CowReader";
         return false;
     }
-    return cow_reader->VerifyMergeOps();
+    return android::snapshot::VerifyMergeOpSequencing(cow_reader.get());
 }
 
 std::unique_ptr<FileDescriptor> CompressedSnapshotWriter::OpenReader() {
