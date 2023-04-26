@@ -116,7 +116,7 @@ static bool Inspect(const std::string& path, Options opt) {
     }
 
     if (opt.verify_sequence) {
-        if (reader.VerifyMergeOps()) {
+        if (VerifyMergeOpSequencing(&reader)) {
             std::cout << "\nMerge sequence is consistent.\n";
         } else {
             std::cout << "\nMerge sequence is inconsistent!\n";
