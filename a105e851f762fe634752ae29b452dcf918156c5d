@@ -88,6 +88,24 @@
       "parentUuid": "7d9660bf_50dfe0cd",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1eb84a7_2ac67b93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-04-26T12:09:11Z",
+      "side": 1,
+      "message": "What do you think about taking 75% of available `data` instead of 50% by default then? I assume that users would like to have more overlay rather then `data` when partitions are remounted. So we can keep the logic simple and just modify the param.",
+      "parentUuid": "cc682085_cc3f3009",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
