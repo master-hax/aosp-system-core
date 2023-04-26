@@ -45,6 +45,30 @@
       },
       "revId": "c7cdaa16cf1638bd1c3cd34cbf8532c38b2fe42d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e19129cf_371dbccb",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2091,
+      "author": {
+        "id": 1994931
+      },
+      "writtenOn": "2023-04-26T01:52:52Z",
+      "side": 1,
+      "message": "The problem was discovered when testing earlier firmware versions and the kernel where support for \"max_comp_streams\" is present.\nYes. In 4.6+ removes support for this param.",
+      "parentUuid": "21113089_47a07fde",
+      "range": {
+        "startLine": 2091,
+        "startChar": 46,
+        "endLine": 2091,
+        "endChar": 49
+      },
+      "revId": "c7cdaa16cf1638bd1c3cd34cbf8532c38b2fe42d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
