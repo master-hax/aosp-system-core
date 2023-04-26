@@ -52,6 +52,24 @@
       "parentUuid": "6562d530_e90e41f1",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d9660bf_50dfe0cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-04-26T12:00:28Z",
+      "side": 1,
+      "message": "Let me provide an example to make sure we\u0027re on the same page. The original problem is not enough scratch space allocated for local development cases. Currently, the default flow is used where we allocate 50% of free data for scratch (about 2.7g per CVD by default).\n\nFollowing the logic you proposed (make sure 85-90% of data is available after scratch allocation) we will allocate even less, so probably we need to use a different number (probably 60-40% of available `data` after scratch cut).\n\nAlso, I cannot see the benefits of using `% of available data after scratch cut` (proposed) versus `% of available data` (existing) approach.",
+      "parentUuid": "2fe663ed_b0476473",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
