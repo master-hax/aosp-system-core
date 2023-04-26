@@ -106,6 +106,24 @@
       "parentUuid": "cc682085_cc3f3009",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93944989_082cc535",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-04-26T12:22:39Z",
+      "side": 1,
+      "message": "\u003e 75%\n\nIf that works for you then sure? but I\u0027d recommend to go even further and try to snatch something like 90%, so you get as large scratch size as possible. Do keep in mind that we won\u0027t take more than the size of super, so \"over allocating\" scratch is less of a concern, IMO.\n\n---\nregarding \"% of available free space left\" vs \"% of available free space\"\n\nI just think the former would be more deterministic in terms of the space we take?\n\nThe former we ensure the entire /data is at least 25% free,\n\nThe latter we ensure the entire /data is at least \"free size at the time of calculation\" * 25% free, which can be anywhere from 0~25% free?",
+      "parentUuid": "cc682085_cc3f3009",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
