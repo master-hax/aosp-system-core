@@ -163,6 +163,30 @@
       },
       "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71bc4724_07b58d55",
+        "filename": "gatekeeperd/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-26T19:37:05Z",
+      "side": 1,
+      "message": "I will follow up with change.",
+      "parentUuid": "a14b7e14_83545c65",
+      "range": {
+        "startLine": 35,
+        "startChar": 16,
+        "endLine": 35,
+        "endChar": 18
+      },
+      "revId": "9d3dfc29ac0aba52adf1b33f735389c4b7b586a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
