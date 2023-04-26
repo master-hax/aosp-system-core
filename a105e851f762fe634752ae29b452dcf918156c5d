@@ -16,6 +16,24 @@
       "message": "I\u0027m not a huge fan of this, since these heuristics are always running into corner cases and needing adjustments.\n\nMaybe it\u0027s better to think in terms of the absolute amount of space we want to leave *free* on /data? And then remount can take whatever\u0027s left.",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6562d530_e90e41f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-04-26T06:06:34Z",
+      "side": 1,
+      "message": "I see what you meant about percentage heuristics and agree with that.\nProviding amount of space we want to leave free actually can solve the problem for us.\n\n**Proposal:** We introduce `fs_mgr.overlayfs.free_data_with_scratch_mb` property alongside with existing `fs_mgr.overlayfs.data_scratch_size_mb` so the logic will be\nfollowing:\n\n1. In case `data_scratch_size_mb` is provided and valid, we use this value to calculate data/scratch size\n2. In case `free_data_with_scratch_mb` is provided and valid we use this one\n3. Otherwise we take 50% of free data storage\n\nBy \"valid\" for `data_scratch_size_mb` and `free_data_with_scratch_mb` I meant we have enough free data space to meet the request (currently we\u0027re not checking data_scratch_size_mb on being valid)\n\nWhat do you think about this approach?",
+      "parentUuid": "dd160253_b06b53f8",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
