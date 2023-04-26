@@ -34,6 +34,24 @@
       "parentUuid": "dd160253_b06b53f8",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fe663ed_b0476473",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-04-26T10:22:46Z",
+      "side": 1,
+      "message": "If the problem is just that _free space in userdata is under utilized_\nhow about we just do:\n\n1. If `data_scratch_size_mb` is provided, use it to calculate. Otherwise use the size of `super`.\n2. Clamp size by ensuring userdata is at least say 85% or 90% free after allocating scratch.\n3. Last verify that the size is at least say 256MiB. So we ensure the allocated scratch is not too tiny to be useful.\n\nMy main motivation is to keep the implementation simple, and not introduce more heuristics that only solve some very specific situations (like what `data_scratch_size_mb` is).",
+      "parentUuid": "6562d530_e90e41f1",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
