@@ -46,6 +46,30 @@
       },
       "revId": "14d97eef13288323961dd9245f4293da53816c79",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "452e1a60_885d8b12",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 682,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-04-26T00:46:49Z",
+      "side": 1,
+      "message": "ro.vendor.api_level was added a few years ago by Justin Yun, and it is meant to be the \"Treble\" API level. It is already the minimum of several API level variables, including first_api_level and also the BSP API level. There is no public doc on this (pending b/254343764), but you can see what will be published there. For ro.build.api_level specifically, see also historical bug b/69638851 which requires that a device api level property is set.",
+      "parentUuid": "d9cf9d64_3f823302",
+      "range": {
+        "startLine": 682,
+        "startChar": 43,
+        "endLine": 682,
+        "endChar": 62
+      },
+      "revId": "14d97eef13288323961dd9245f4293da53816c79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
