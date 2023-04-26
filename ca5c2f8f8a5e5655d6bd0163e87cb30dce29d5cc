@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16bb62d5_2a0f6493",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2023-04-26T20:54:56Z",
+      "side": 1,
+      "message": "Following up on https://android-review.git.corp.google.com/c/platform/system/core/+/2555911/comment/a14b7e14_83545c65/",
+      "revId": "ca5c2f8f8a5e5655d6bd0163e87cb30dce29d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
