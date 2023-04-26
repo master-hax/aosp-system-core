@@ -133,6 +133,10 @@ class SnapshotTest : public ::testing::Test {
         sm->set_use_first_stage_snapuserd(false);
     }
 
+    bool DeviceSupportsCompression() {
+        return IsCompressionEnabled() && KernelSupportsCompressedSnapshots();
+    }
+
     void CleanupTestArtifacts() {
         // Normally cancelling inside a merge is not allowed. Since these
         // are tests, we don't care, destroy everything that might exist.
@@ -357,7 +361,7 @@ class SnapshotTest : public ::testing::Test {
         DeltaArchiveManifest manifest;
 
         auto dynamic_partition_metadata = manifest.mutable_dynamic_partition_metadata();
-        dynamic_partition_metadata->set_vabc_enabled(IsCompressionEnabled());
+        dynamic_partition_metadata->set_vabc_enabled(DeviceSupportsCompression());
         dynamic_partition_metadata->set_cow_version(android::snapshot::kCowVersionMajor);
 
         auto group = dynamic_partition_metadata->add_groups();
@@ -396,7 +400,7 @@ class SnapshotTest : public ::testing::Test {
             if (!res) {
                 return res;
             }
-        } else if (!IsCompressionEnabled()) {
+        } else if (!DeviceSupportsCompression()) {
             std::string ignore;
             if (!MapUpdateSnapshot("test_partition_b", &ignore)) {
                 return AssertionFailure() << "Failed to map test_partition_b";
@@ -455,7 +459,11 @@ TEST_F(SnapshotTest, CreateSnapshot) {
     ASSERT_TRUE(AcquireLock());
 
     PartitionCowCreator cow_creator;
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     cow_creator.compression_enabled = ShouldUseCompression();
+=======
+    cow_creator.compression_enabled = DeviceSupportsCompression();
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
     if (cow_creator.compression_enabled) {
         cow_creator.compression_algorithm = "gz";
     } else {
@@ -496,7 +504,11 @@ TEST_F(SnapshotTest, MapSnapshot) {
     ASSERT_TRUE(AcquireLock());
 
     PartitionCowCreator cow_creator;
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     cow_creator.compression_enabled = ShouldUseCompression();
+=======
+    cow_creator.compression_enabled = DeviceSupportsCompression();
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
 
     static const uint64_t kDeviceSize = 1024 * 1024;
     SnapshotStatus status;
@@ -623,7 +635,11 @@ TEST_F(SnapshotTest, FirstStageMountAndMerge) {
     SnapshotStatus status;
     ASSERT_TRUE(init->ReadSnapshotStatus(lock_.get(), "test_partition_b", &status));
     ASSERT_EQ(status.state(), SnapshotState::CREATED);
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     if (ShouldUseCompression()) {
+=======
+    if (DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         ASSERT_EQ(status.compression_algorithm(), "gz");
     } else {
         ASSERT_EQ(status.compression_algorithm(), "none");
@@ -897,7 +913,11 @@ class SnapshotUpdateTest : public SnapshotTest {
         opener_ = std::make_unique<TestPartitionOpener>(fake_super);
 
         auto dynamic_partition_metadata = manifest_.mutable_dynamic_partition_metadata();
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
         dynamic_partition_metadata->set_vabc_enabled(ShouldUseCompression());
+=======
+        dynamic_partition_metadata->set_vabc_enabled(DeviceSupportsCompression());
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         dynamic_partition_metadata->set_cow_version(android::snapshot::kCowVersionMajor);
 
         // Create a fake update package metadata.
@@ -1030,7 +1050,11 @@ class SnapshotUpdateTest : public SnapshotTest {
     }
 
     AssertionResult MapOneUpdateSnapshot(const std::string& name) {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
         if (ShouldUseCompression()) {
+=======
+        if (DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
             std::unique_ptr<ISnapshotWriter> writer;
             return MapUpdateSnapshot(name, &writer);
         } else {
@@ -1040,7 +1064,11 @@ class SnapshotUpdateTest : public SnapshotTest {
     }
 
     AssertionResult WriteSnapshotAndHash(const std::string& name) {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
         if (ShouldUseCompression()) {
+=======
+        if (DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
             std::unique_ptr<ISnapshotWriter> writer;
             auto res = MapUpdateSnapshot(name, &writer);
             if (!res) {
@@ -1208,7 +1236,11 @@ TEST_F(SnapshotUpdateTest, FullUpdateFlow) {
 
     // Initiate the merge and wait for it to be completed.
     ASSERT_TRUE(init->InitiateMerge());
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     ASSERT_EQ(init->IsSnapuserdRequired(), IsDaemonRequired());
+=======
+    ASSERT_EQ(init->IsSnapuserdRequired(), DeviceSupportsCompression());
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
     {
         // We should have started in SECOND_PHASE since nothing shrinks.
         ASSERT_TRUE(AcquireLock());
@@ -1279,7 +1311,11 @@ TEST_F(SnapshotUpdateTest, DuplicateOps) {
 // Test that shrinking and growing partitions at the same time is handled
 // correctly in VABC.
 TEST_F(SnapshotUpdateTest, SpaceSwapUpdate) {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     if (!ShouldUseCompression()) {
+=======
+    if (!DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         // b/179111359
         GTEST_SKIP() << "Skipping Virtual A/B Compression test";
     }
@@ -1342,7 +1378,11 @@ TEST_F(SnapshotUpdateTest, SpaceSwapUpdate) {
 
     // Initiate the merge and wait for it to be completed.
     ASSERT_TRUE(init->InitiateMerge());
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     ASSERT_EQ(init->IsSnapuserdRequired(), IsDaemonRequired());
+=======
+    ASSERT_EQ(init->IsSnapuserdRequired(), DeviceSupportsCompression());
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
     {
         // Check that the merge phase is FIRST_PHASE until at least one call
         // to ProcessUpdateState() occurs.
@@ -2062,8 +2102,13 @@ TEST_F(SnapshotUpdateTest, DataWipeWithStaleSnapshots) {
         ASSERT_TRUE(AcquireLock());
 
         PartitionCowCreator cow_creator = {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
                 .compression_enabled = ShouldUseCompression(),
                 .compression_algorithm = ShouldUseCompression() ? "gz" : "none",
+=======
+                .compression_enabled = DeviceSupportsCompression(),
+                .compression_algorithm = DeviceSupportsCompression() ? "gz" : "none",
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         };
         SnapshotStatus status;
         status.set_name("sys_a");
@@ -2159,7 +2204,11 @@ TEST_F(SnapshotUpdateTest, Hashtree) {
 
 // Test for overflow bit after update
 TEST_F(SnapshotUpdateTest, Overflow) {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     if (ShouldUseCompression()) {
+=======
+    if (DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         GTEST_SKIP() << "No overflow bit set for userspace COWs";
     }
 
@@ -2294,7 +2343,11 @@ class AutoKill final {
 };
 
 TEST_F(SnapshotUpdateTest, DaemonTransition) {
+<<<<<<< HEAD   (cb6ea9 Merge "libsnapshot: Disable 32-bit VTS tests on 64-bit syste)
     if (!ShouldUseCompression()) {
+=======
+    if (!DeviceSupportsCompression()) {
+>>>>>>> BRANCH (5141ea Merge "Merge "libsnapshot: Fix test failures on certain conf)
         GTEST_SKIP() << "Skipping Virtual A/B Compression test";
     }
 
