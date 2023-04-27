@@ -160,6 +160,24 @@
       "parentUuid": "93944989_082cc535",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1accbe2e_eef5ee26",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-04-27T10:49:46Z",
+      "side": 1,
+      "message": "\u003e  here since they behave similarly,\n\nyeah agree, let\u0027s not focus on this as it\u0027s not the point here\n\n\u003e What do you think about using linear scale between 20% and 90% so we will take about 20-25% of available storage when device is almost full and about 85-90% when device is fresh and doesn\u0027t have much data.\n\nyeah but what I\u0027m suggesting is to use 85-90% (6g *0.9 \u003d 5.4g) when device is fresh and not full.\nIf device is full (say 70% full, so 6*0.3\u003d1.8g of free disk space), then instead of tweaking the percentage (50% of 1.8g is 0.9g; 80% of 1.8g is 1.44g; an increase of 0.9 -\u003e 1.44 barely helps?), just error out and ask user to free up their userdata?",
+      "parentUuid": "900048e9_c0c376fb",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
