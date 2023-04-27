@@ -160,6 +160,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d62058b4_c5159c20",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-27T06:45:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "409237b2_9f1055ca",
+      "range": {
+        "startLine": 113,
+        "startChar": 11,
+        "endLine": 113,
+        "endChar": 22
+      },
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cc3a8dc4_97f1f11f",
