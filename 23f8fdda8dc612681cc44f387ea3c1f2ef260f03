@@ -266,6 +266,24 @@
       "message": "To read apexd.status, https://android-review.googlesource.com/c/platform/system/sepolicy/+/1933081 is required.",
       "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ab5456c_a0c858e0",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-27T04:51:27Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "3257d269_72719461",
+      "revId": "23f8fdda8dc612681cc44f387ea3c1f2ef260f03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -175,6 +175,24 @@
       "message": "If ueventd can access apexd.status property, it can save about 500ms waiting time on my galaxy device.",
       "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "409cbce2_8291dbdd",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-04-27T04:51:27Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "cc3a8dc4_97f1f11f",
+      "revId": "1fc949157cb002e0590ff622ce55005b7600be07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
