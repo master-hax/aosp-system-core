@@ -124,6 +124,42 @@
       "parentUuid": "cc682085_cc3f3009",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f7ee1b9_d0784725",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-04-27T10:23:25Z",
+      "side": 1,
+      "message": "\u003e regarding \"% of available free space left\" vs \"% of available free space\"\n\nI\u0027m agree that `% of available free space left` is more deterministic, but it can be tricky on the edges, so imagine we have a fresh device (pretty common situation for remount case), so only about 300mb `data` is used. In this case we will leave only 75mb of storage for `data` which is definitely too aggressive. From the other side, 20% may be too much of storage when 70% of `data` is used.\n\nWhat do you think about using linear scale between 20% and 90% so we will take about 20-25% of available storage when device is almost full and about 85-90% when device is fresh and doesn\u0027t have much data.\n\nI think this should be an improvement over existing (always take 50%) approach.\n\nCheck the green columns where I shared the numbers for 8gb device and 20-90% scale depending on current userdata usage (https://docs.google.com/spreadsheets/d/1FQYkPc93BRrXOlps95c1IeOOahhfWW5Z8e6XFrf3sRs/edit#gid\u003d0)",
+      "parentUuid": "93944989_082cc535",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "900048e9_c0c376fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-04-27T10:23:25Z",
+      "side": 1,
+      "message": "regarding \"% of available free space left\" vs \"% of available free space\"\n\nI think it doesn\u0027t really matter what we choose here since they behave similarly, but",
+      "parentUuid": "93944989_082cc535",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
