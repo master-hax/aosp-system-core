@@ -22,6 +22,30 @@
       },
       "revId": "7c546ed5a4ac9eafa289064086ed3217017e8529",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9b4c0d8_23eba1ab",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_api_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-04-28T22:32:05Z",
+      "side": 0,
+      "message": "The old API returned a reference, but most callers wanted a pointer, usually to store in maps or for variable re-assignment. That\u0027s the main motivation for this CL.\n\nAn ancillary reason is the v3 format will support paired ops, so it\u0027s useful to be able to go back or forward one if you have one half of the pair. It\u0027d require more boilerplate with a reference. Some pseudocode:\n\n   bool CowReader::ReadData(const CowOperation* op, void* buffer, ...) {\n       // Must be owned by the reader.\n       CHECK(op \u003e\u003d ops_.front() \u0026\u0026 op \u003c\u003d ops_.back());\n       if (op-\u003etype \u003d\u003d kCowXorSource) {\n           CHECK_NE(op, ops_.back());\n           op++;\n           CHECK_EQ(op-\u003etype \u003d\u003d kCowXorData);\n       }\n       ...\n\n(Granted, it\u0027s not a lot of extra boilerplate with the reference, but almost ever caller is just using pointers anyway.)",
+      "parentUuid": "b58bfc2f_3fab8eb1",
+      "range": {
+        "startLine": 83,
+        "startChar": 18,
+        "endLine": 83,
+        "endChar": 31
+      },
+      "revId": "7c546ed5a4ac9eafa289064086ed3217017e8529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
