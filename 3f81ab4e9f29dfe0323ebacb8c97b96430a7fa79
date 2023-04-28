@@ -16,6 +16,24 @@
       "message": "Should this be changed to something like FASTBOOT_INFO_VERSION with value \"1.0\"?",
       "revId": "3f81ab4e9f29dfe0323ebacb8c97b96430a7fa79",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4cc9941_bf8ad022",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-04-28T23:19:56Z",
+      "side": 1,
+      "message": "fastboot_info_version is going to be {command} here, we want to compare it to platform_tools_version I believe",
+      "parentUuid": "1e91b624_63d31bd3",
+      "revId": "3f81ab4e9f29dfe0323ebacb8c97b96430a7fa79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
