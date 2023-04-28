@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d20e4cb_d94eb134",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1741425
+      },
+      "writtenOn": "2023-04-28T03:09:45Z",
+      "side": 1,
+      "message": "Tested with outdated freezer cgroup configuration",
+      "revId": "2193f9a45fccfade8d059db8937ff7c084eb9938",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
