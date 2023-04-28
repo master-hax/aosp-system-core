@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e91b624_63d31bd3",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1959770
+      },
+      "writtenOn": "2023-04-28T21:26:35Z",
+      "side": 1,
+      "message": "Should this be changed to something like FASTBOOT_INFO_VERSION with value \"1.0\"?",
+      "revId": "3f81ab4e9f29dfe0323ebacb8c97b96430a7fa79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
