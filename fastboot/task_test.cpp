@@ -89,20 +89,29 @@ TEST_F(ParseTest, CorrectFlashTaskFormed) {
 }
 
 TEST_F(ParseTest, VersionCheckCorrect) {
-    std::vector<std::string> correct_versions = {
-            "version 1.0",
-            "version 22.00",
-    };
+    std::vector<std::string> bad_version_numbers = {"1", "21.0.", "32.1.3.4", "100.0", "1.000"};
+    for (auto& version : bad_version_numbers) {
+        ASSERT_FALSE(IsVersionNumber(version)) << version;
+    }
+    std::vector<std::string> correct_versions = {"version 1.00", "version 22.10", "version 5.05",
+                                                 "version 17.2"};
 
-    std::vector<std::string> bad_versions = {"version",        "version .01", "version x1",
-                                             "version 1.0.1",  "version 1.",  "s 1.0",
-                                             "version 1.0 2.0"};
+    std::vector<std::string> bad_versions = {"version",         "version .01",    "version x1",
+                                             "version 1.0.1",   "version 1.",     "s 1.0",
+                                             "version 1.0 2.0", "version 100.00", "version 1"};
 
     for (auto& version : correct_versions) {
-        ASSERT_TRUE(CheckFastbootInfoRequirements(android::base::Split(version, " "))) << version;
+        ASSERT_TRUE(CheckFastbootInfoRequirements(android::base::Split(version, " "), "26.0"))
+                << version;
     }
+    for (auto& version : correct_versions) {
+        ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(version, " "), "0.05"))
+                << version;
+    }
+    // returning False for bad format
     for (auto& version : bad_versions) {
-        ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(version, " "))) << version;
+        ASSERT_FALSE(CheckFastbootInfoRequirements(android::base::Split(version, " "), "5.0"))
+                << version;
     }
 }
 
