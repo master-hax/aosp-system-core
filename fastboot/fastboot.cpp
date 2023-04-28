@@ -1663,16 +1663,17 @@ void AddResizeTasks(const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>* 
     return;
 }
 
-static bool IsNumber(const std::string& s) {
-    bool period = false;
-    for (size_t i = 0; i < s.length(); i++) {
-        if (!isdigit(s[i])) {
-            if (!period && s[i] == '.' && i != 0 && i != s.length() - 1) {
-                period = true;
-            } else {
-                return false;
-            }
-        }
+bool IsVersionNumber(const std::string& s) {
+    std::vector<std::string> parts = android::base::Split(s, ".");
+    if (parts.size() != 2) {
+        return false;
+    }
+    if (parts[0].empty() || parts[1].empty()) {
+        return false;
+    }
+    if (parts[0].size() > 2 || parts[1].size() > 2) {
+        LOG(ERROR) << "MAJOR and MINOR versions should be less than 2 numerical characters";
+        return false;
     }
     return true;
 }
@@ -1684,7 +1685,8 @@ static bool IsIgnore(const std::vector<std::string>& command) {
     return false;
 }
 
-bool CheckFastbootInfoRequirements(const std::vector<std::string>& command) {
+bool CheckFastbootInfoRequirements(const std::vector<std::string>& command,
+                                   const std::string& version) {
     if (command.size() != 2) {
         LOG(ERROR) << "unknown characters in version info in fastboot-info.txt -> "
                    << android::base::Join(command, " ");
@@ -1696,18 +1698,19 @@ bool CheckFastbootInfoRequirements(const std::vector<std::string>& command) {
         return false;
     }
 
-    if (!IsNumber(command[1])) {
-        LOG(ERROR) << "version number contains non-numeric values in fastboot-info.txt -> "
-                   << android::base::Join(command, " ");
+    if (!IsVersionNumber(command[1])) {
+        LOG(ERROR) << "version number format incorrect in fastboot-info.txt -> "
+                   << android::base::Join(command, " ")
+                   << "\n Correct format should be in the form of MAJOR_VERSION.MINOR_VERSION";
         return false;
     }
 
     LOG(VERBOSE) << "Checking 'fastboot-info.txt version'";
-    if (command[1] < PLATFORM_TOOLS_VERSION) {
+    if (std::stod(command[1]) < std::stod(version)) {
         return true;
     }
     LOG(ERROR) << "fasboot-info.txt version: " << command[1]
-               << " not compatible with host tool version --> " << PLATFORM_TOOLS_VERSION;
+               << " not compatible with host tool version --> " << version;
     return false;
 }
 
@@ -1721,7 +1724,7 @@ std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const FlashingPlan* fp,
             continue;
         }
         if (command.size() > 1 && command[0] == "version") {
-            if (!CheckFastbootInfoRequirements(command)) {
+            if (!CheckFastbootInfoRequirements(command, PLATFORM_TOOLS_VERSION)) {
                 return {};
             }
             continue;
