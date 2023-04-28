@@ -70,6 +70,24 @@
       "parentUuid": "3d64156a_5e444523",
       "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d39ab166_7d0d72d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-04-28T22:19:24Z",
+      "side": 1,
+      "message": "yeah, should be... but maybe there\u0027s even a kernel config option we could add in GKI instead? +adelva...",
+      "parentUuid": "bcefaeb5_6c424cd5",
+      "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
