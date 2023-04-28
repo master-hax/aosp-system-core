@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b58bfc2f_3fab8eb1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_api_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-04-28T22:13:40Z",
+      "side": 0,
+      "message": "I didn\u0027t quite understand.. why do we need to do `\u0026iter-\u003eGet()` in the first place?",
+      "range": {
+        "startLine": 83,
+        "startChar": 18,
+        "endLine": 83,
+        "endChar": 31
+      },
+      "revId": "7c546ed5a4ac9eafa289064086ed3217017e8529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
