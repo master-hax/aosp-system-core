@@ -42,6 +42,7 @@
 #include <android-base/parsebool.h>
 #include <android-base/properties.h>
 #include <android-base/unique_fd.h>
+#include <android-base/file.h>
 #include <async_safe/log.h>
 #include <bionic/reserved_signals.h>
 
@@ -664,6 +665,12 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   // Restore PR_SET_PTRACER to its original value.
   if (restore_orig_ptracer && prctl(PR_SET_PTRACER, 0) != 0) {
     fatal_errno("failed to restore traceable");
+  }
+
+  // for init, enable exception-trace so that kernel could print err log and
+  // userspace register, which can help analyze init abnormal exit issue
+  if (__getpid() == 1) {
+    android::base::WriteStringToFile("1", "/proc/sys/debug/exception-trace");
   }
 
   if (info->si_signo == BIONIC_SIGNAL_DEBUGGER) {
