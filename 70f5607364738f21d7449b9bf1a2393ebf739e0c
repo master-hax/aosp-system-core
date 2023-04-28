@@ -52,6 +52,24 @@
       "parentUuid": "34f3092f_4febab4a",
       "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcefaeb5_6c424cd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-04-28T20:41:45Z",
+      "side": 1,
+      "message": "\u003e i actually meant that we don\u0027t use /proc/sys/debug/exception-trace...\n\nI had to google it. Seems OK to me.\n\n\u003e (though if we do enable that, i think it should be init rather than here!)\n\nYeah, this is  just a line in an init.rc file, right?",
+      "parentUuid": "3d64156a_5e444523",
+      "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
