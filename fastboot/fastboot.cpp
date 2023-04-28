@@ -95,6 +95,8 @@ using android::base::unique_fd;
 using namespace std::string_literals;
 using namespace std::placeholders;
 
+#define FASTBOOT_INFO_VERSION "1.0"
+
 static const char* serial = nullptr;
 
 static bool g_long_listing = false;
@@ -1718,7 +1720,7 @@ std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const FlashingPlan* fp,
             continue;
         }
         if (command.size() > 1 && command[0] == "version") {
-            if (!CheckFastbootInfoRequirements(command, PLATFORM_TOOLS_VERSION)) {
+            if (!CheckFastbootInfoRequirements(command, FASTBOOT_INFO_VERSION)) {
                 return {};
             }
             continue;
