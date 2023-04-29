@@ -21,6 +21,7 @@
 #include <snapuserd/snapuserd_client.h>
 
 #include "snapuserd_daemon.h"
+#include "snapuserd_logging.h"
 
 DEFINE_string(socket, android::snapshot::kSnapuserdSocket, "Named socket or socket path.");
 DEFINE_bool(no_socket, false,
@@ -238,7 +239,7 @@ void Daemon::SignalHandler(int signal) {
 }  // namespace android
 
 int main(int argc, char** argv) {
-    android::base::InitLogging(argv, &android::base::KernelLogger);
+    android::snapshot::SetupLogging(argv);
 
     android::snapshot::Daemon& daemon = android::snapshot::Daemon::Instance();
 
