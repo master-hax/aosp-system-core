@@ -94,6 +94,7 @@ cc_defaults {
     srcs: [
         "dm-snapshot-merge/snapuserd_server.cpp",
         "snapuserd_daemon.cpp",
+        "snapuserd_logging.cpp",
         "user-space-merge/snapuserd_server.cpp",
     ],
 
