@@ -16,6 +16,24 @@
       "message": "Replace IsNumber and atof() with android::base::ParseUint",
       "revId": "ca2948c6a566afe7030dfc2ba311d8a583562a49",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86a4f208_2795a29a",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1702,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-05-01T20:16:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cb457e23_79a4a4ab",
+      "revId": "ca2948c6a566afe7030dfc2ba311d8a583562a49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
