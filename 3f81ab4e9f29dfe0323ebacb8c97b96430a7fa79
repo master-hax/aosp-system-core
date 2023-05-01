@@ -34,6 +34,24 @@
       "parentUuid": "1e91b624_63d31bd3",
       "revId": "3f81ab4e9f29dfe0323ebacb8c97b96430a7fa79",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28e0b099_e5d01d76",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-05-01T18:05:49Z",
+      "side": 1,
+      "message": "update: changing to fastboot_info_version in follow up cl",
+      "parentUuid": "c4cc9941_bf8ad022",
+      "revId": "3f81ab4e9f29dfe0323ebacb8c97b96430a7fa79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
