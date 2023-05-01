@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3386c49_0c6abf32",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-01T17:44:07Z",
+      "side": 1,
+      "message": "Can we replace most of this code with LoopControl::Attach/Detach instead?\n\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/fs_mgr/libdm/include/libdm/loop_control.h;l\u003d40?q\u003dloop_control.h",
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
