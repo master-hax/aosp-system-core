@@ -34,6 +34,24 @@
       "parentUuid": "83d293ba_b0cb1a74",
       "revId": "9eba6a379b3ff4c35db9b13e193c824b3924c73b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7eb38fe7_f4483fb4",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1667,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-05-01T18:03:36Z",
+      "side": 1,
+      "message": "Update: don\u0027t think the parsing is needed since we\u0027re switching version number to just a single number",
+      "parentUuid": "318e1710_e4d8cc78",
+      "revId": "9eba6a379b3ff4c35db9b13e193c824b3924c73b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
