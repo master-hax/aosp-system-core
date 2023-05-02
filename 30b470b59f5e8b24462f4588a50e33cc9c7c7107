@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcefa217_7f4e911f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-02T01:40:10Z",
+      "side": 1,
+      "message": "Can we move all of this to \"init\" process ? Post-OTA reboot, we have subtle steps done by \"init\" where logging is critical. If we can do this in \"init\" only for post-OTA reboot phase (since init spawns snapuserd process using fork-exec and not through .rc scripts) all of this logic should apply for snapuserd as well.\n\nAlso, it sounds like the logic can be inherited by any other subsystem. Can we just plug this out to an existing library ?",
+      "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
