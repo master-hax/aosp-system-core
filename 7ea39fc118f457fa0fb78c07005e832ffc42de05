@@ -160,6 +160,24 @@
       "parentUuid": "a5b511a0_9cc0c939",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f58d536_ec0d072e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-05-02T08:45:26Z",
+      "side": 1,
+      "message": "Could you explain why the panic occurred, and why you had to call the close function every time?",
+      "parentUuid": "72f70a20_8c2604d1",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
