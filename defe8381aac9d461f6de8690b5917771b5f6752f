@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c28d4cb_94afe9ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-02T20:49:52Z",
+      "side": 1,
+      "message": "The current failures are on udc-dev, since I forgot to cp the temporary cludges over there. This sounds good but we\u0027ll need a cp to udc-dev as well.",
+      "revId": "defe8381aac9d461f6de8690b5917771b5f6752f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
