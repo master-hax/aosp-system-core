@@ -16,6 +16,23 @@
       "message": "Can we move all of this to \"init\" process ? Post-OTA reboot, we have subtle steps done by \"init\" where logging is critical. If we can do this in \"init\" only for post-OTA reboot phase (since init spawns snapuserd process using fork-exec and not through .rc scripts) all of this logic should apply for snapuserd as well.\n\nAlso, it sounds like the logic can be inherited by any other subsystem. Can we just plug this out to an existing library ?",
       "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c0f8cb5_4ef9c5ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-02T01:45:03Z",
+      "side": 1,
+      "message": "Although this solves the problem of capturing logs to /data, it doesn\u0027t solve OTA rollback case when /data is still not mounted. \n\nCan we do something like this ?\n\n1: Capture all the \"init\" and \"snapuserd\" logs in memory (you already have this logic - Move this to \"init\" process as I mentioned in other comment)\n\n2: Flush the memory to /metadata until /data is mounted.\n\n3: If there is a rollback, logs are still captured in /metadata. Before we wipe the snapshot related information in /metadata, if there are any persisted logs, persist them in /data so that it can be captured in bug-report.\n\n4: If there is no rollback and once /data is mounted, move the logs from /metadata to /data and continue to persist the logs in /data.\n\nThis will solve the rollback case wherein we can truly point out what\u0027s going on and why it rolled back.",
+      "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
