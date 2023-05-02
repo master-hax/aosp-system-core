@@ -178,6 +178,24 @@
       "parentUuid": "72f70a20_8c2604d1",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ed75aa1_166e5af5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-05-02T09:10:05Z",
+      "side": 1,
+      "message": "I think system_server native crash occurred.\nI can\u0027t find the root cause.\nBecause I can\u0027t get a log at the time of the problem.\n```\n[   11.783032] [3:   crash_dump64: 2849] !@*** system_server native crash occurred\n[   15.416927] [7:   crash_dump64: 3340] !@*** system_server native crash occurred\n[   20.658100] [5:   crash_dump64: 3942] !@*** system_server native crash occurred\n// -- snip -- \n[   40.582343] [3:   crash_dump64: 5028] !@*** system_server native crash occurred\n[   45.542648] [7:   crash_dump64: 5291] !@*** system_server native crash occurred\n[   50.383627] [7:   crash_dump64: 5553] !@*** system_server native crash occurred\n[   55.381665] [7:   crash_dump64: 5833] !@*** system_server native crash occurred\n\n```\n\nI know that `fprintf` function write message to buffer not directly file. \nThen when meet a `fclose` function, write a message in buffer to file at this time. If it\u0027s wrong, please never mind.\n\nSo I called `fcloes`, the log was printed normally, and the Panic did not occur.\n\nThis code is work well. I just wrote it for testing.\n```c\nstatic FILE* get_log_file() {\n#ifdef USE_KMSG_AS_LOG_TARGET\n  static FILE* fp \u003d NULL;\n  if (fp \u003d\u003d NULL) {\n    fp \u003d fopen(\"/dev/kmsg\", \"a\");\n\n    // fall back to stderr\n    if (fp \u003d\u003d NULL) {\n      fp \u003d stderr;\n    }\n  }\n  return fp;\n#else\n  return stderr; // the default\n#endif\n}\n\nvoid avb_printv(const char* message, ...) {\n  va_list ap;\n  const char* m;\n  FILE* test \u003d get_log_file();\n \n  va_start(ap, message);\n  for (m \u003d message; m !\u003d NULL; m \u003d va_arg(ap, const char*)) {\n    fprintf(test, \"%s\", m);\n  }\n  va_end(ap);\n  \n  if (test !\u003d stderr \u0026\u0026 test !\u003d NULL) {\n    fclose(test);\n  }\n}\n\n```",
+      "parentUuid": "8f58d536_ec0d072e",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
