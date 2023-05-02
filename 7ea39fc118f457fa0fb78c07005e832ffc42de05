@@ -142,6 +142,24 @@
       "parentUuid": "d26900e7_98788398",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72f70a20_8c2604d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-05-02T08:28:35Z",
+      "side": 1,
+      "message": "I tried to have a File Pointer as a static variable.\nAs a result, the log is not output, and the PANIC occurs around 60 seconds of Booting.\n\nIf want to do that, need to call `close` function every time.\nDo you have a any good ideas or something else?",
+      "parentUuid": "a5b511a0_9cc0c939",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
