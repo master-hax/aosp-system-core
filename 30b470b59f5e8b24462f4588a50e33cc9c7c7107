@@ -51,6 +51,24 @@
       "parentUuid": "3c0f8cb5_4ef9c5ad",
       "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9762bb0a_aa3dc236",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-02T04:31:24Z",
+      "side": 1,
+      "message": "Recovery has a binary to persist the last few kernel logs. We can easily retarget that to save kernel logs on /data . \n\n\nI don\u0027t think we could \"move\" this to init though. How would init capture logs from snapuserd? snapuserd doesn\u0027t write to stdout/stderr at all. We can of course add similar logic to init(maybe use a shared library so we don\u0027t duplicate code), but we still need to write /data . I\u0027m not familiar with ramifications of using /metadata partition, so I can\u0027t speak to that.",
+      "parentUuid": "496e22f0_d125da2f",
+      "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
