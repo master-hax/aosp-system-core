@@ -33,6 +33,24 @@
       "message": "Although this solves the problem of capturing logs to /data, it doesn\u0027t solve OTA rollback case when /data is still not mounted. \n\nCan we do something like this ?\n\n1: Capture all the \"init\" and \"snapuserd\" logs in memory (you already have this logic - Move this to \"init\" process as I mentioned in other comment)\n\n2: Flush the memory to /metadata until /data is mounted.\n\n3: If there is a rollback, logs are still captured in /metadata. Before we wipe the snapshot related information in /metadata, if there are any persisted logs, persist them in /data so that it can be captured in bug-report.\n\n4: If there is no rollback and once /data is mounted, move the logs from /metadata to /data and continue to persist the logs in /data.\n\nThis will solve the rollback case wherein we can truly point out what\u0027s going on and why it rolled back.",
       "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "496e22f0_d125da2f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-02T03:11:13Z",
+      "side": 1,
+      "message": "How would init capture logs from snapuserd?\n\nTo use /metadata we\u0027d have to use encryption (probably), not clear how to do that in first-stage init. If there\u0027s any kind of interface to dump persistent dmesg, that could help on rollbacks - an automatic bugreport on rollbacks might even be a very good idea.",
+      "parentUuid": "3c0f8cb5_4ef9c5ad",
+      "revId": "30b470b59f5e8b24462f4588a50e33cc9c7c7107",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
