@@ -178,6 +178,24 @@
       "parentUuid": "900048e9_c0c376fb",
       "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "801461c2_1d277f6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-05-03T04:48:32Z",
+      "side": 1,
+      "message": "Discussed the topic with Yi-yo in the spreadsheet https://docs.google.com/spreadsheets/d/1FQYkPc93BRrXOlps95c1IeOOahhfWW5Z8e6XFrf3sRs and direct messages and agreed just to increase current scratch portion from 50% to 85% for all devices to keep it simple.\n\n@dvander@google.com what do you think about it? Do you have any concerns?",
+      "parentUuid": "1accbe2e_eef5ee26",
+      "revId": "a105e851f762fe634752ae29b452dcf918156c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
