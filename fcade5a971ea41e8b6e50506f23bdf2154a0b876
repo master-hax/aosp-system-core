@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e159fadb_cc0d1d06",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v2.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T16:32:49Z",
+      "side": 1,
+      "message": "this method is const, but the returned map as actually mutable. Is this intended?",
+      "range": {
+        "startLine": 37,
+        "startChar": 71,
+        "endLine": 37,
+        "endChar": 76
+      },
+      "revId": "fcade5a971ea41e8b6e50506f23bdf2154a0b876",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
