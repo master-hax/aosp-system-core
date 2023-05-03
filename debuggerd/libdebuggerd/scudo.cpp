@@ -22,6 +22,7 @@
 
 #include <android-base/macros.h>
 #include <bionic/macros.h>
+#include <unistd.h>
 
 #include "tombstone.pb.h"
 
@@ -54,21 +55,22 @@ ScudoCrashData::ScudoCrashData(unwindstack::Memory* process_memory,
   }
 
   untagged_fault_addr_ = process_info.untagged_fault_address;
-  uintptr_t fault_page = untagged_fault_addr_ & ~(PAGE_SIZE - 1);
+  const auto page_size = getpagesize();
+  uintptr_t fault_page = untagged_fault_addr_ & ~(page_size - 1);
 
-  uintptr_t memory_begin = fault_page - PAGE_SIZE * 16;
+  uintptr_t memory_begin = fault_page - page_size * 16;
   if (memory_begin > fault_page) {
     return;
   }
 
-  uintptr_t memory_end = fault_page + PAGE_SIZE * 16;
+  uintptr_t memory_end = fault_page + page_size * 16;
   if (memory_end < fault_page) {
     return;
   }
 
   auto memory = std::make_unique<char[]>(memory_end - memory_begin);
-  for (auto i = memory_begin; i != memory_end; i += PAGE_SIZE) {
-    process_memory->ReadFully(i, memory.get() + i - memory_begin, PAGE_SIZE);
+  for (auto i = memory_begin; i != memory_end; i += page_size) {
+    process_memory->ReadFully(i, memory.get() + i - memory_begin, page_size);
   }
 
   auto memory_tags = std::make_unique<char[]>((memory_end - memory_begin) / kTagGranuleSize);
