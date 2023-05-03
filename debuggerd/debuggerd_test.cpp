@@ -57,6 +57,7 @@
 #include <cutils/sockets.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <log/log.h>
 
 #include <unwindstack/Elf.h>
 #include <unwindstack/Memory.h>
@@ -2758,4 +2759,28 @@ TEST_F(CrasherTest, logd_skips_reading_logs_not_main_thread) {
   ConsumeFd(std::move(output_fd), &result);
   ASSERT_BACKTRACE_FRAME(result, "raise_debugger_signal");
   ASSERT_NOT_MATCH(result, kLogMessage);
+}
+
+// Verify that the logging non-utf8 data works.
+TEST_F(CrasherTest, log_non_utf8_message) {
+  StartProcess([]() {
+    LOG(INFO) << "First message";
+    LOG(INFO) << "Contains bad data \x99";
+    LOG(INFO) << "Last message";
+    abort();
+  });
+
+  unique_fd output_fd;
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  int intercept_result;
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, "First message");
+  ASSERT_MATCH(result, "Last message");
+  ASSERT_MATCH(result, "Contains bad data");
 }

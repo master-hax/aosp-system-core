@@ -213,7 +213,9 @@ message LogMessage {
   uint32 tid = 3;
   uint32 priority = 4;
   string tag = 5;
-  string message = 6;
+  // Deprecated: use message_data instead.
+  string message = 6 [deprecated = true];
+  bytes message_data = 7;
 
-  reserved 7 to 999;
+  reserved 8 to 999;
 }

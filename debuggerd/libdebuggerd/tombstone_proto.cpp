@@ -554,7 +554,7 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
       log_msg->set_tid(log_entry.entry.tid);
       log_msg->set_priority(prio);
       log_msg->set_tag(tag);
-      log_msg->set_message(msg);
+      log_msg->set_message_data(msg);
     } while ((msg = nl));
   }
   android_logger_list_free(logger_list);

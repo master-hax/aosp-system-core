@@ -292,7 +292,7 @@ noinline int do_action(const char* arg) {
     } else if (!strcasecmp(arg, "LOG(FATAL)")) {
       LOG(FATAL) << "hello " << 123;
     } else if (!strcasecmp(arg, "LOG_ALWAYS_FATAL")) {
-      LOG_ALWAYS_FATAL("hello %s", "world");
+      LOG_ALWAYS_FATAL("hello \xff%s", "world");
     } else if (!strcasecmp(arg, "LOG_ALWAYS_FATAL_IF")) {
       LOG_ALWAYS_FATAL_IF(true, "hello %s", "world");
     } else if (!strcasecmp(arg, "SIGFPE")) {
