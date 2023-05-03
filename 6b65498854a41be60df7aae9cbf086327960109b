@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3667bc28_3d7570b8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-03T19:54:42Z",
+      "side": 1,
+      "message": "nit: const void*?",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c690fe2_0be6a4de",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-03T19:54:42Z",
+      "side": 1,
+      "message": "I had a few thoughts reading through this, although it all looks ok:\n\n(1) Given that log messages with newlines are (or should be) rare, and don\u0027t really pose any real problems, do we need the string splitting? If so, I\u0027d advocate some gtests for it, in snapuserd_test, since StringSplitter is a non-trivial amount of code.\n(2) The buffer management is a little complex, I was wondering if an std::deque\u003cstd::string\u003e capped at say N entries, where N \u003d 2MB / 100 bytes-per-string would work. You\u0027d have extra allocations but if we\u0027re logging a lot, something is wrong anyway.\n(3) Is any of this shareable with update_engine?",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8f5830d_369a3251",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-03T19:54:42Z",
+      "side": 1,
+      "message": "nit: size_t.",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96d7515d_99311cb7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-03T19:54:42Z",
+      "side": 1,
+      "message": "PLOG(ERROR) on failure, and maybe use android::base::RemoveFileIfExists to hide ENOENT.",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
