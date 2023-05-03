@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e965e1f_9d9e211d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "We still write all logs to kernel log. After opening /data files, we write logs to two places:\n\n1. kernel log\n2. /data logs\n\nI believe you can view kernel logs via logcat. Not /data logs though. We can also write logs to logd so that logcat can see it.",
+      "parentUuid": "0c5cb3e7_8515d529",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d675277e_4cab82ac",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-05-03T20:28:48Z",
       "side": 1,
       "message": "What happens in recovery ? I presume logs will just be in memory as /data is never mounted",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26a3d838_0c13fb31",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "All logs will go though KernelLog. If /data is available then we will store a copy of logs in /data as well. This CL adds an extra logging path, it does not remove any existing logs.",
+      "parentUuid": "d675277e_4cab82ac",
       "revId": "6b65498854a41be60df7aae9cbf086327960109b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "027e9050_11b0833d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69a3e4f4_52018e9c",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c690fe2_0be6a4de",
@@ -82,6 +136,24 @@
       "writtenOn": "2023-05-03T19:54:42Z",
       "side": 1,
       "message": "I had a few thoughts reading through this, although it all looks ok:\n\n(1) Given that log messages with newlines are (or should be) rare, and don\u0027t really pose any real problems, do we need the string splitting? If so, I\u0027d advocate some gtests for it, in snapuserd_test, since StringSplitter is a non-trivial amount of code.\n(2) The buffer management is a little complex, I was wondering if an std::deque\u003cstd::string\u003e capped at say N entries, where N \u003d 2MB / 100 bytes-per-string would work. You\u0027d have extra allocations but if we\u0027re logging a lot, something is wrong anyway.\n(3) Is any of this shareable with update_engine?",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05c7b807_9b68f1e1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "1. We can probably remove it, KernelLogger does it so I did it here to match feature parity.\n\n2. It\u0027s done this way to avoid any latencies in I/O path during boot.\n\n3. The delete old log logic maybe? But where would we put it? libbase requires 3 independent callers. Other functions involving static variables are best not to be shared",
+      "parentUuid": "3c690fe2_0be6a4de",
       "revId": "6b65498854a41be60df7aae9cbf086327960109b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -120,6 +192,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "be4a8fd0_8d286060",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a8f5830d_369a3251",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e9421fb_350e10ad",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "We store 5 update_engine logs. But I feel like it\u0027s not enough. Planning on bumping update_engine count as well.",
+      "parentUuid": "81a3d97a_e19718bc",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "96d7515d_99311cb7",
@@ -133,6 +241,24 @@
       "writtenOn": "2023-05-03T19:54:42Z",
       "side": 1,
       "message": "PLOG(ERROR) on failure, and maybe use android::base::RemoveFileIfExists to hide ENOENT.",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f402003_fd36af59",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-03T21:20:52Z",
+      "side": 1,
+      "message": "We can\u0027t really use LOG macros inside logging functions... Otherwise it\u0027s easily a recursion",
+      "parentUuid": "96d7515d_99311cb7",
       "revId": "6b65498854a41be60df7aae9cbf086327960109b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
