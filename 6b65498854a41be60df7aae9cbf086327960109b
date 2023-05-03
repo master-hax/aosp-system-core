@@ -1,6 +1,40 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c5cb3e7_8515d529",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-03T20:28:48Z",
+      "side": 1,
+      "message": "Once we open the file, we can\u0027t view the logs through logcat ?",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d675277e_4cab82ac",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-03T20:28:48Z",
+      "side": 1,
+      "message": "What happens in recovery ? I presume logs will just be in memory as /data is never mounted",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "3667bc28_3d7570b8",
@@ -14,6 +48,23 @@
       "writtenOn": "2023-05-03T19:54:42Z",
       "side": 1,
       "message": "nit: const void*?",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69a3e4f4_52018e9c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-03T20:28:48Z",
+      "side": 1,
+      "message": "Maybe 1MB is sufficient.. We shouldn\u0027t have that many logs until /data is mounted.",
       "revId": "6b65498854a41be60df7aae9cbf086327960109b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -48,6 +99,23 @@
       "writtenOn": "2023-05-03T19:54:42Z",
       "side": 1,
       "message": "nit: size_t.",
+      "revId": "6b65498854a41be60df7aae9cbf086327960109b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81a3d97a_e19718bc",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_logging.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-05-03T20:28:48Z",
+      "side": 1,
+      "message": "This should be in sync with update-engine logs so that we can tie this with a given update. How many update-engine logs do we store ?",
       "revId": "6b65498854a41be60df7aae9cbf086327960109b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
