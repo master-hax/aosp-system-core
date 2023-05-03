@@ -505,7 +505,7 @@ void print_logs(CallbackType callback, const Tombstone& tombstone, int tail) {
       static const char* kPrioChars = "!.VDIWEFS";
       char priority = (msg.priority() < strlen(kPrioChars) ? kPrioChars[msg.priority()] : '?');
       CBS("%s %5u %5u %c %-8s: %s", msg.timestamp().c_str(), msg.pid(), msg.tid(), priority,
-          msg.tag().c_str(), msg.message().c_str());
+          msg.tag().c_str(), msg.message_data().c_str());
     }
   }
 }
