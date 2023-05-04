@@ -1724,7 +1724,7 @@ std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const FlashingPlan* fp,
         }
         auto task = ParseFastbootInfoLine(fp, command);
         if (!task) {
-            LOG(ERROR) << "Error when parsing fastboot-info.txt, falling back on Hardcoded list: "
+            LOG(FATAL) << "Error when parsing fastboot-info.txt. Unknown/unsupported command:  "
                        << text;
             return {};
         }
