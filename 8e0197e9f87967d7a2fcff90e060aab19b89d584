@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0828b7e2_200b30d9",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2784,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-04T21:06:27Z",
+      "side": 1,
+      "message": "I was originally not going to change the protobuf type, so I thought I shouldn\u0027t check it. But now that this is actually changes the type, I changed this to check for the data.",
+      "parentUuid": "161cb655_302e5ed1",
+      "range": {
+        "startLine": 2784,
+        "startChar": 37,
+        "endLine": 2784,
+        "endChar": 41
+      },
+      "revId": "8e0197e9f87967d7a2fcff90e060aab19b89d584",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82276c82_859132f7",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-05-04T15:13:58Z",
       "side": 1,
       "message": "can a caller write something like \"if (message_data exists) { ... } else { ...}\"? (if not, does making message_data `optional` help with that?)\n\ni\u0027m trying to think how we can make it easiest for folks like crashlytics to cope with the change.\n\n+mitchp",
+      "revId": "8e0197e9f87967d7a2fcff90e060aab19b89d584",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f18444da_81a628cf",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-04T21:06:27Z",
+      "side": 1,
+      "message": "All protobuf fields are optional by default now. I believe you should be able to do that check. I did find the google3 code copy of the protobuf definition and I\u0027m checking to see if this will cause problems.",
+      "parentUuid": "82276c82_859132f7",
       "revId": "8e0197e9f87967d7a2fcff90e060aab19b89d584",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
