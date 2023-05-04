@@ -250,6 +250,24 @@
       "parentUuid": "81fab1dd_85c303f6",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "711a3ef7_3ad4c0e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-05-04T06:54:50Z",
+      "side": 1,
+      "message": "I think this is happening because zygote can\u0027t stat /dev/kmsg (due to sepolicy). It must have inherited the FD for /dev/kmsg when it was forked from init. I think you need to open /dev/kmsg with O_CLOEXEC so that it is closed in the children of init.",
+      "parentUuid": "b036062f_35349160",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
