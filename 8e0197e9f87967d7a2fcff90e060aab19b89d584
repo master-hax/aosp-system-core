@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "161cb655_302e5ed1",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2784,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-04T15:13:58Z",
+      "side": 1,
+      "message": "you don\u0027t want to check that the non-utf8 byte isn\u0027t mangled?",
+      "range": {
+        "startLine": 2784,
+        "startChar": 37,
+        "endLine": 2784,
+        "endChar": 41
+      },
+      "revId": "8e0197e9f87967d7a2fcff90e060aab19b89d584",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82276c82_859132f7",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-04T15:13:58Z",
+      "side": 1,
+      "message": "can a caller write something like \"if (message_data exists) { ... } else { ...}\"? (if not, does making message_data `optional` help with that?)\n\ni\u0027m trying to think how we can make it easiest for folks like crashlytics to cope with the change.\n\n+mitchp",
+      "revId": "8e0197e9f87967d7a2fcff90e060aab19b89d584",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
