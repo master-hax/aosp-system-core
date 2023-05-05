@@ -16,6 +16,24 @@
       "message": "Putting the LOG(FATAL) here means you can\u0027t write negative tests for ParseFastbootInfo(). Since all the error paths return {}, and it\u0027s never valid for a task list to be empty, I think the best thing is to check for an empty task list in the caller and do something like:\n\n    LOG(FATAL) \u003c\u003c \"Invalid fastboot-info.txt file.\";",
       "revId": "0037844280db84375ecbf95422ae97792332daef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c9a3ae4_e4bbea66",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1727,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-05-05T17:51:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d0ceb07_e1803947",
+      "revId": "0037844280db84375ecbf95422ae97792332daef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
