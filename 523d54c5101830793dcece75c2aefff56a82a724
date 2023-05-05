@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8091866_0e090b80",
+        "filename": "fs_mgr/libsnapshot/test_helpers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-05T17:07:16Z",
+      "side": 1,
+      "message": "spurious newline",
+      "revId": "523d54c5101830793dcece75c2aefff56a82a724",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07d8f9ac_db7c48d6",
+        "filename": "fs_mgr/libsnapshot/test_helpers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-05T17:07:16Z",
+      "side": 1,
+      "message": "__ANDROID_API_R__\n\nBut, I don\u0027t think it\u0027s right to disable the entire test suite here. At the very least, it should check to see whether metadata encryption is not enabled.\n\nWhy is it not possible, though, to backport the selinux fix to this branch?",
+      "revId": "523d54c5101830793dcece75c2aefff56a82a724",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b85318a_d30371b6",
+        "filename": "fs_mgr/libsnapshot/test_helpers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-05T17:07:16Z",
+      "side": 1,
+      "message": "spurious newline",
+      "revId": "523d54c5101830793dcece75c2aefff56a82a724",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
