@@ -142,6 +142,24 @@
       "parentUuid": "c0d6ca69_5ac48914",
       "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a46f93b_7906885d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2023-05-05T03:31:27Z",
+      "side": 1,
+      "message": "One way would be to have init register a signal handler that sets /proc/sys/debug/exception-trace, reraises the signal, unregisters itself, and then returns.",
+      "parentUuid": "a5ae4f65_c8c017f4",
+      "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
