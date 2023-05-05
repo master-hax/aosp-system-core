@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b301a5f_c580afd2",
+        "filename": "storaged/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-05-05T23:20:08Z",
+      "side": 1,
+      "message": "https://android-review.git.corp.google.com/c/platform/system/netd/+/2579280/2/server/Android.bp#274",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 6
+      },
+      "revId": "7fe9763855a863a46a8b604720b8c50d30bedbdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
