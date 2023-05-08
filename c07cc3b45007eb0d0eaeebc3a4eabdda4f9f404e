@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af300090_3c323414",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-08T17:38:52Z",
+      "side": 1,
+      "message": "You are changing the behavior here. I think we should keep the original fallback path that doesn\u0027t use `dir_path` first. Then if that doesn\u0027t exist, you could fallback to `modules.load`.",
+      "range": {
+        "startLine": 176,
+        "startChar": 1,
+        "endLine": 179,
+        "endChar": 0
+      },
+      "revId": "c07cc3b45007eb0d0eaeebc3a4eabdda4f9f404e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
