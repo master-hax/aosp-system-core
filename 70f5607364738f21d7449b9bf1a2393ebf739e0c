@@ -160,6 +160,24 @@
       "parentUuid": "a5ae4f65_c8c017f4",
       "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "437b26b1_08f463fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2005503
+      },
+      "writtenOn": "2023-05-08T10:19:46Z",
+      "side": 1,
+      "message": "The signal handler of dynamic linked init is debuggerd_signal_handler, so I think maybe we can turn on the exception-trace in this function for init.\nAfter returning from the signal handler, the kernel will panic and restart, so there should be no other side effects.",
+      "parentUuid": "1a46f93b_7906885d",
+      "revId": "70f5607364738f21d7449b9bf1a2393ebf739e0c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
