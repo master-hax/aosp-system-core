@@ -15,18 +15,21 @@
 //
 
 #include <gmock/gmock.h>
-#include <libsnapshot/snapshot_writer.h>
+#include <libsnapshot/cow_writer.h>
 
 namespace android::snapshot {
 
-class MockSnapshotWriter : public ISnapshotWriter {
+class MockCowWriter : public ICowWriter {
   public:
-    using FileDescriptor = ISnapshotWriter::FileDescriptor;
+    using FileDescriptor = ICowWriter::FileDescriptor;
 
     MOCK_METHOD(bool, Finalize, (), (override));
 
-    // Return number of bytes the cow image occupies on disk.
     MOCK_METHOD(uint64_t, GetCowSize, (), (override));
+    MOCK_METHOD(uint32_t, GetBlockSize, (), (const, override));
+    MOCK_METHOD(std::optional<uint32_t>, GetMaxBlocks, (), (const, override));
+
+    MOCK_METHOD(bool, SupportsCopyOperation, (), (const override));
 
     MOCK_METHOD(bool, AddCopy, (uint64_t, uint64_t, uint64_t), (override));
     MOCK_METHOD(bool, AddRawBlocks, (uint64_t, const void*, size_t), (override));
@@ -35,10 +38,10 @@ class MockSnapshotWriter : public ISnapshotWriter {
     MOCK_METHOD(bool, AddZeroBlocks, (uint64_t, uint64_t), (override));
     MOCK_METHOD(bool, AddLabel, (uint64_t), (override));
     MOCK_METHOD(bool, AddSequenceData, (size_t, const uint32_t*), (override));
-    MOCK_METHOD(bool, Initialize, (), (override));
-    MOCK_METHOD(bool, InitializeAppend, (uint64_t), (override));
-    MOCK_METHOD(bool, VerifyMergeOps, (), (override, const, noexcept));
-    MOCK_METHOD(std::unique_ptr<FileDescriptor>, OpenReader, (), (override));
-    MOCK_METHOD(uint32_t, GetBlockSize, (), (override, const));
+
+    MOCK_METHOD(std::unique_ptr<FileDescriptor>, OpenFileDescriptor,
+                (const std::optional<std::string>&), (override));
+    MOCK_METHOD(std::unique_ptr<ICowReader>, OpenReader, (), (override));
 };
+
 }  // namespace android::snapshot
