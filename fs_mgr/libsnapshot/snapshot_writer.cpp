@@ -19,6 +19,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <payload_consumer/file_descriptor.h>
+#include "libsnapshot_cow/writer_v2.h"
 #include "snapshot_reader.h"
 
 namespace android {
@@ -27,8 +28,6 @@ namespace snapshot {
 using android::base::borrowed_fd;
 using android::base::unique_fd;
 using chromeos_update_engine::FileDescriptor;
-
-ISnapshotWriter::ISnapshotWriter(const CowOptions& options) : ICowWriter(options) {}
 
 void ISnapshotWriter::SetSourceDevice(const std::string& source_device) {
     source_device_ = {source_device};
@@ -51,11 +50,10 @@ borrowed_fd ISnapshotWriter::GetSourceFd() {
 }
 
 CompressedSnapshotWriter::CompressedSnapshotWriter(const CowOptions& options)
-    : ISnapshotWriter(options) {}
+    : CowWriterBase(options) {}
 
 bool CompressedSnapshotWriter::SetCowDevice(android::base::unique_fd&& cow_device) {
     cow_device_ = std::move(cow_device);
-    cow_ = std::make_unique<CowWriter>(options_);
     return true;
 }
 
@@ -142,15 +140,25 @@ bool CompressedSnapshotWriter::EmitSequenceData(size_t num_ops, const uint32_t* 
 }
 
 bool CompressedSnapshotWriter::Initialize() {
-    return cow_->Initialize(cow_device_);
+    auto cow = std::make_unique<CowWriterV2>(options_);
+    if (!cow->Initialize(cow_device_)) {
+        return false;
+    }
+    cow_ = std::move(cow);
+    return true;
 }
 
 bool CompressedSnapshotWriter::InitializeAppend(uint64_t label) {
-    return cow_->InitializeAppend(cow_device_, label);
+    auto cow = std::make_unique<CowWriterV2>(options_);
+    if (!cow->InitializeAppend(cow_device_, label)) {
+        return false;
+    }
+    cow_ = std::move(cow);
+    return true;
 }
 
 OnlineKernelSnapshotWriter::OnlineKernelSnapshotWriter(const CowOptions& options)
-    : ISnapshotWriter(options) {}
+    : CowWriterBase(options) {}
 
 void OnlineKernelSnapshotWriter::SetSnapshotDevice(android::base::unique_fd&& snapshot_fd,
                                                    uint64_t cow_size) {

@@ -53,7 +53,7 @@ static inline bool ReadData(CowReader& reader, const CowOperation* op, void* buf
 TEST_F(CowTest, CopyContiguous) {
     CowOptions options;
     options.cluster_ops = 0;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -96,7 +96,7 @@ TEST_F(CowTest, CopyContiguous) {
 TEST_F(CowTest, ReadWrite) {
     CowOptions options;
     options.cluster_ops = 0;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -175,7 +175,7 @@ TEST_F(CowTest, ReadWrite) {
 TEST_F(CowTest, ReadWriteXor) {
     CowOptions options;
     options.cluster_ops = 0;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -256,7 +256,7 @@ TEST_F(CowTest, CompressGz) {
     CowOptions options;
     options.cluster_ops = 0;
     options.compression = "gz";
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -296,7 +296,7 @@ TEST_P(CompressionTest, ThreadedBatchWrites) {
     options.compression = GetParam();
     options.num_compress_threads = 2;
 
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -374,7 +374,7 @@ TEST_P(CompressionTest, NoBatchWrites) {
     options.num_compress_threads = 1;
     options.cluster_ops = 0;
 
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -497,7 +497,7 @@ TEST_F(CowTest, ClusterCompressGz) {
     CowOptions options;
     options.compression = "gz";
     options.cluster_ops = 2;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -562,7 +562,7 @@ TEST_F(CowTest, CompressTwoBlocks) {
     CowOptions options;
     options.compression = "gz";
     options.cluster_ops = 0;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
@@ -595,7 +595,7 @@ TEST_F(CowTest, CompressTwoBlocks) {
 TEST_F(CowTest, GetSize) {
     CowOptions options;
     options.cluster_ops = 0;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
     if (ftruncate(cow_->fd, 0) < 0) {
         perror("Fails to set temp file size");
         FAIL();
@@ -1255,7 +1255,7 @@ TEST_F(CowTest, DeleteMidCluster) {
 
 TEST_F(CowTest, BigSeqOp) {
     CowOptions options;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
     const int seq_len = std::numeric_limits<uint16_t>::max() / sizeof(uint32_t) + 1;
     uint32_t sequence[seq_len];
     for (int i = 0; i < seq_len; i++) {
@@ -1287,7 +1287,7 @@ TEST_F(CowTest, BigSeqOp) {
 
 TEST_F(CowTest, MissingSeqOp) {
     CowOptions options;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
     const int seq_len = 10;
     uint32_t sequence[seq_len];
     for (int i = 0; i < seq_len; i++) {
@@ -1358,7 +1358,7 @@ TEST_F(CowTest, RevMergeOpItrTest) {
     CowOptions options;
     options.cluster_ops = 5;
     options.num_merge_ops = 1;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
     uint32_t sequence[] = {2, 10, 6, 7, 3, 5};
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
@@ -1408,7 +1408,7 @@ TEST_F(CowTest, LegacyRevMergeOpItrTest) {
     CowOptions options;
     options.cluster_ops = 5;
     options.num_merge_ops = 1;
-    CowWriter writer(options);
+    CowWriterV2 writer(options);
 
     ASSERT_TRUE(writer.Initialize(cow_->fd));
 
