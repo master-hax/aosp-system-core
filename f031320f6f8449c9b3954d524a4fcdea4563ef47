@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e599802a_89632c73",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-09T22:51:11Z",
+      "side": 1,
+      "message": "I think we should move this check to CowReader::ReadData, since it already has a path to handle this for lz4.\n\nA quick look, and I think there *might* be compatibility issues doing it for Gz/Brotli, since those don\u0027t actually do this optimization. Otherwise I\u0027d say we should not have it be compressor-specific at all.",
+      "revId": "f031320f6f8449c9b3954d524a4fcdea4563ef47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
