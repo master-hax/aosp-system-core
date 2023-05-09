@@ -45,6 +45,7 @@
 #include <android/snapshot/snapshot.pb.h>
 #include <libsnapshot/snapshot_stats.h>
 #include "device_info.h"
+#include "libsnapshot_cow/writer_v2.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
 #include "snapshot_reader.h"
@@ -3557,7 +3558,7 @@ Return SnapshotManager::InitializeUpdateSnapshots(
             }
             options.compression = it->second.compression_algorithm();
 
-            CowWriter writer(options);
+            CowWriterV2 writer(options);
             if (!writer.Initialize(fd) || !writer.Finalize()) {
                 LOG(ERROR) << "Could not initialize COW device for " << target_partition->name();
                 return Return::Error();
