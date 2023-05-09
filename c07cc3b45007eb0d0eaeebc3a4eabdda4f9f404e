@@ -22,6 +22,30 @@
       },
       "revId": "c07cc3b45007eb0d0eaeebc3a4eabdda4f9f404e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ea87edb_93634ce4",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2023-05-09T13:18:51Z",
+      "side": 1,
+      "message": "Isn\u0027t the behavior the end result the same?\n\nPreviously, you start with `modules.load`, and use `modules.load.recovery` if it exists, otherwise, use `modules.load`. With the proposed changes, you\u0027ll still check to see if `modules.load.recovery` exists, and if so, you\u0027ll use that one, and otherwise, you\u0027ll use `modules.load`. Similar argument for `modules.load.charger`.",
+      "parentUuid": "af300090_3c323414",
+      "range": {
+        "startLine": 176,
+        "startChar": 1,
+        "endLine": 179,
+        "endChar": 0
+      },
+      "revId": "c07cc3b45007eb0d0eaeebc3a4eabdda4f9f404e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
