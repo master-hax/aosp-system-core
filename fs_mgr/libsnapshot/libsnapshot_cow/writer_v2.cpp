@@ -293,41 +293,28 @@ void CowWriterV2::InitWorkers() {
     LOG_INFO << num_compress_threads_ << " thread used for compression";
 }
 
-bool CowWriterV2::Initialize(unique_fd&& fd) {
+bool CowWriterV2::Initialize(unique_fd&& fd, std::optional<uint64_t> label) {
     owned_fd_ = std::move(fd);
-    return Initialize(borrowed_fd{owned_fd_});
+    return Initialize(borrowed_fd{owned_fd_}, label);
 }
 
-bool CowWriterV2::Initialize(borrowed_fd fd) {
+bool CowWriterV2::Initialize(borrowed_fd fd, std::optional<uint64_t> label) {
     if (!SetFd(fd) || !ParseOptions()) {
         return false;
     }
 
-    if (!OpenForWrite()) {
-        return false;
+    if (label) {
+        if (!OpenForAppend(*label)) {
+            return false;
+        }
+    } else {
+        if (!OpenForWrite()) {
+            return false;
+        }
     }
 
     InitWorkers();
     return true;
-}
-
-bool CowWriterV2::InitializeAppend(android::base::unique_fd&& fd, uint64_t label) {
-    owned_fd_ = std::move(fd);
-    return InitializeAppend(android::base::borrowed_fd{owned_fd_}, label);
-}
-
-bool CowWriterV2::InitializeAppend(android::base::borrowed_fd fd, uint64_t label) {
-    if (!SetFd(fd) || !ParseOptions()) {
-        return false;
-    }
-
-    bool ret = OpenForAppend(label);
-
-    if (ret && !compress_threads_.size()) {
-        InitWorkers();
-    }
-
-    return ret;
 }
 
 void CowWriterV2::InitPos() {
