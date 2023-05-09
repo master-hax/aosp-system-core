@@ -27,11 +27,11 @@ class FileDescriptor;
 namespace android {
 namespace snapshot {
 
-class ISnapshotWriter : public ICowWriter {
+class ISnapshotWriter : virtual public ICowWriter {
   public:
     using FileDescriptor = chromeos_update_engine::FileDescriptor;
 
-    explicit ISnapshotWriter(const CowOptions& options);
+    virtual ~ISnapshotWriter() {}
 
     // Set the source device. This is used for AddCopy() operations, if the
     // underlying writer needs the original bytes (for example if backed by
@@ -47,6 +47,7 @@ class ISnapshotWriter : public ICowWriter {
     virtual bool InitializeAppend(uint64_t label) = 0;
 
     virtual std::unique_ptr<FileDescriptor> OpenReader() = 0;
+
     virtual bool VerifyMergeOps() const noexcept = 0;
 
   protected:
@@ -59,7 +60,7 @@ class ISnapshotWriter : public ICowWriter {
 };
 
 // Send writes to a COW or a raw device directly, based on a threshold.
-class CompressedSnapshotWriter final : public ISnapshotWriter {
+class CompressedSnapshotWriter final : public CowWriterBase, public ISnapshotWriter {
   public:
     CompressedSnapshotWriter(const CowOptions& options);
 
@@ -86,11 +87,11 @@ class CompressedSnapshotWriter final : public ISnapshotWriter {
     std::unique_ptr<CowReader> OpenCowReader() const;
     android::base::unique_fd cow_device_;
 
-    std::unique_ptr<CowWriter> cow_;
+    std::unique_ptr<ICowWriter> cow_;
 };
 
 // Write directly to a dm-snapshot device.
-class OnlineKernelSnapshotWriter final : public ISnapshotWriter {
+class OnlineKernelSnapshotWriter final : public CowWriterBase, public ISnapshotWriter {
   public:
     OnlineKernelSnapshotWriter(const CowOptions& options);
 
