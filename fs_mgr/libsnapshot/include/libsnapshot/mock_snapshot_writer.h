@@ -35,8 +35,6 @@ class MockSnapshotWriter : public ISnapshotWriter {
     MOCK_METHOD(bool, AddZeroBlocks, (uint64_t, uint64_t), (override));
     MOCK_METHOD(bool, AddLabel, (uint64_t), (override));
     MOCK_METHOD(bool, AddSequenceData, (size_t, const uint32_t*), (override));
-    MOCK_METHOD(bool, Initialize, (), (override));
-    MOCK_METHOD(bool, InitializeAppend, (uint64_t), (override));
     MOCK_METHOD(bool, VerifyMergeOps, (), (override, const, noexcept));
     MOCK_METHOD(std::unique_ptr<FileDescriptor>, OpenReader, (), (override));
     MOCK_METHOD(uint32_t, GetBlockSize, (), (override, const));

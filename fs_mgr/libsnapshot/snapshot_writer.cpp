@@ -29,9 +29,10 @@ using android::base::borrowed_fd;
 using android::base::unique_fd;
 using chromeos_update_engine::FileDescriptor;
 
-void CompressedSnapshotWriter::SetSourceDevice(const std::string& source_device) {
-    source_device_ = {source_device};
-}
+CompressedSnapshotWriter::CompressedSnapshotWriter(const CowOptions& options,
+                                                   unique_fd&& cow_device,
+                                                   const std::optional<std::string>& source_device)
+    : options_(options), cow_device_(std::move(cow_device)), source_device_(source_device) {}
 
 borrowed_fd CompressedSnapshotWriter::GetSourceFd() {
     if (!source_device_) {
@@ -47,13 +48,6 @@ borrowed_fd CompressedSnapshotWriter::GetSourceFd() {
         }
     }
     return source_fd_;
-}
-
-CompressedSnapshotWriter::CompressedSnapshotWriter(const CowOptions& options) : options_(options) {}
-
-bool CompressedSnapshotWriter::SetCowDevice(android::base::unique_fd&& cow_device) {
-    cow_device_ = std::move(cow_device);
-    return true;
 }
 
 bool CompressedSnapshotWriter::Finalize() {
@@ -137,16 +131,7 @@ bool CompressedSnapshotWriter::AddSequenceData(size_t num_ops, const uint32_t* d
     return cow_->AddSequenceData(num_ops, data);
 }
 
-bool CompressedSnapshotWriter::Initialize() {
-    auto cow = std::make_unique<CowWriterV2>(options_, std::move(cow_device_));
-    if (!cow->Initialize(std::nullopt)) {
-        return false;
-    }
-    cow_ = std::move(cow);
-    return true;
-}
-
-bool CompressedSnapshotWriter::InitializeAppend(uint64_t label) {
+bool CompressedSnapshotWriter::Initialize(std::optional<uint64_t> label) {
     auto cow = std::make_unique<CowWriterV2>(options_, std::move(cow_device_));
     if (!cow->Initialize(label)) {
         return false;

@@ -41,7 +41,10 @@ class CowWriterBase : public ICowWriter {
     bool AddZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
     bool AddLabel(uint64_t label) override;
     bool AddSequenceData(size_t num_ops, const uint32_t* data) override;
-    virtual uint32_t GetBlockSize() const override { return options_.block_size; }
+    uint32_t GetBlockSize() const override { return options_.block_size; }
+    std::unique_ptr<ICowReader> OpenReader() override;
+    std::unique_ptr<FileDescriptor> OpenFileDescriptor(
+            const std::optional<std::string>& source_device) override;
 
     const CowOptions& options() const { return options_; }
 
