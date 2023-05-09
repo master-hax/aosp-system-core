@@ -34,6 +34,24 @@
       "parentUuid": "e599802a_89632c73",
       "revId": "f031320f6f8449c9b3954d524a4fcdea4563ef47",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02f361cc_a666265d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-09T23:05:38Z",
+      "side": 1,
+      "message": "Makes sense. Let\u0027s put it on the todo list for v3 then, but for now, having the check in ReadData will be less code (since it can just avoid creating a decompressor)",
+      "parentUuid": "c8d4ab46_ad4997c7",
+      "revId": "f031320f6f8449c9b3954d524a4fcdea4563ef47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
