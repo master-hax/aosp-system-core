@@ -29,13 +29,11 @@ class CowWriterV2 : public CowWriterBase {
     //
     // If fd is < 0, the CowWriter will be opened against /dev/null. This is for
     // computing COW sizes without using storage space.
-    bool Initialize(android::base::unique_fd&& fd);
-    bool Initialize(android::base::borrowed_fd fd);
-    // Set up a writer, assuming that the given label is the last valid label.
-    // This will result in dropping any labels that occur after the given on, and will fail
-    // if the given label does not appear.
-    bool InitializeAppend(android::base::unique_fd&&, uint64_t label);
-    bool InitializeAppend(android::base::borrowed_fd fd, uint64_t label);
+    //
+    // If a label is given, open the writer in append mode and drop any data/ops after the given
+    // label. If the label is not found, Initialize will fail.
+    bool Initialize(android::base::unique_fd&& fd, std::optional<uint64_t> label);
+    bool Initialize(android::base::borrowed_fd fd, std::optional<uint64_t> label);
 
     bool Finalize() override;
 

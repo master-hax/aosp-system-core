@@ -33,13 +33,6 @@ class ISnapshotWriter : public ICowWriter {
 
     virtual ~ISnapshotWriter() {}
 
-    // Open the writer in write mode (no append).
-    virtual bool Initialize() = 0;
-
-    // Open the writer in append mode, with the last label to resume
-    // from. See CowWriter::InitializeAppend.
-    virtual bool InitializeAppend(uint64_t label) = 0;
-
     virtual std::unique_ptr<FileDescriptor> OpenReader() = 0;
 
     virtual bool VerifyMergeOps() const noexcept = 0;
@@ -48,15 +41,10 @@ class ISnapshotWriter : public ICowWriter {
 // Send writes to a COW or a raw device directly, based on a threshold.
 class CompressedSnapshotWriter final : public ISnapshotWriter {
   public:
-    CompressedSnapshotWriter(const CowOptions& options);
+    CompressedSnapshotWriter(const CowOptions& options, android::base::unique_fd&& cow_device,
+                             const std::optional<std::string>& source_device);
 
-    void SetSourceDevice(const std::string& source_device);
-
-    // Sets the COW device; this is required.
-    bool SetCowDevice(android::base::unique_fd&& cow_device);
-
-    bool Initialize() override;
-    bool InitializeAppend(uint64_t label) override;
+    bool Initialize(std::optional<uint64_t> label);
     bool Finalize() override;
     uint64_t GetCowSize() override;
     std::unique_ptr<FileDescriptor> OpenReader() override;
@@ -78,15 +66,15 @@ class CompressedSnapshotWriter final : public ISnapshotWriter {
 
     CowOptions options_;
 
+    android::base::unique_fd cow_device_;
+    std::unique_ptr<ICowWriter> cow_;
+
     // Set the source device. This is used for AddCopy() operations, if the
     // underlying writer needs the original bytes (for example if backed by
     // dm-snapshot or if writing directly to an unsnapshotted region). The
     // device is only opened on the first operation that requires it.
     std::optional<std::string> source_device_;
     android::base::unique_fd source_fd_;
-
-    android::base::unique_fd cow_device_;
-    std::unique_ptr<ICowWriter> cow_;
 };
 
 }  // namespace snapshot

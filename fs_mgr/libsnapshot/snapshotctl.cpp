@@ -141,13 +141,9 @@ bool CreateTestUpdate(SnapshotManager* sm) {
             .partition_opener = &opener,
             .timeout_ms = 10s,
     };
-    auto writer = sm->OpenSnapshotWriter(clpp, {source_device});
+    auto writer = sm->OpenSnapshotWriter(clpp, {source_device}, std::nullopt);
     if (!writer) {
         std::cerr << "Could not open snapshot writer.\n";
-        return false;
-    }
-    if (!writer->Initialize()) {
-        std::cerr << "Could not initialize snapshot for writing.\n";
         return false;
     }
 
