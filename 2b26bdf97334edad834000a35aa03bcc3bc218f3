@@ -16,6 +16,23 @@
       "message": "Thanks. This LGTM. Let me trigger presubmit tests to see if this breaks anything.",
       "revId": "2b26bdf97334edad834000a35aa03bcc3bc218f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78a745c9_dd3d44ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-05-10T08:26:21Z",
+      "side": 1,
+      "message": "The test failures seem to be unrelated; test infra outage? Let me try again when the issue is resolved.",
+      "revId": "2b26bdf97334edad834000a35aa03bcc3bc218f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
