@@ -47,6 +47,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1438bc90_6fb0dac3",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-05-10T01:41:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67a0f578_fade2b82",
+      "range": {
+        "startLine": 512,
+        "startChar": 26,
+        "endLine": 512,
+        "endChar": 36
+      },
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc09e4f4_d377a5e9",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-05-10T01:41:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36c3234f_e21f05ec",
+      "range": {
+        "startLine": 511,
+        "startChar": 0,
+        "endLine": 512,
+        "endChar": 60
+      },
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ed9efb4b_c7bf6bb8",
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cd5a3b3_eea9617a",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-05-10T01:41:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed9efb4b_c7bf6bb8",
+      "range": {
+        "startLine": 518,
+        "startChar": 79,
+        "endLine": 518,
+        "endChar": 83
+      },
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b3915a06_c049a46f",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-05-02T00:38:08Z",
       "side": 1,
       "message": "To make it more stable, you may want to LOOP_CTL_ADD in case you run out of free loop devices.",
+      "range": {
+        "startLine": 525,
+        "startChar": 0,
+        "endLine": 529,
+        "endChar": 9
+      },
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f9628b3_355182cd",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-05-10T01:41:54Z",
+      "side": 1,
+      "message": "Even if there is an idle loop device, using LOOP_CTL_ADD will add a new one.\n\nWhen there is no free loop device, LOOP_CTL_GET_FREE will automatically add a new loop device",
+      "parentUuid": "b3915a06_c049a46f",
       "range": {
         "startLine": 525,
         "startChar": 0,
@@ -124,6 +220,24 @@
       "side": 1,
       "message": "+1",
       "parentUuid": "f3386c49_0c6abf32",
+      "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d33e7833_40b189ac",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-05-10T01:41:54Z",
+      "side": 1,
+      "message": "Thanks for your suggestion, I will try this way now。",
+      "parentUuid": "6319774a_f05e8b31",
       "revId": "8406d0e91a6b751ae757dc66dc2f4801e8f88e98",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
