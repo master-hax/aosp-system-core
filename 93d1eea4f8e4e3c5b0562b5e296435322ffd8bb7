@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3abb4e0_34f5f84b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-05-12T23:18:17Z",
+      "side": 1,
+      "message": "It turned out one test was relying on OnlineKernelSnapshotWriter. I did a one-off fix for that test.",
+      "revId": "93d1eea4f8e4e3c5b0562b5e296435322ffd8bb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
