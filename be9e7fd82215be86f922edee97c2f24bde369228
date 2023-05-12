@@ -33,6 +33,46 @@
       "message": "I regened the policy files, and riscv changed the most. enh can you verify that this is correct?",
       "revId": "be9e7fd82215be86f922edee97c2f24bde369228",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf83c385_efef1587",
+        "filename": "debuggerd/seccomp_policy/crash_dump.riscv64.policy",
+        "patchSetId": 13
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-12T22:42:34Z",
+      "side": 1,
+      "message": "yeah, looks like this _should_ have been in the riscv64 already (because it\u0027s in crash_dump.policy.def).",
+      "revId": "be9e7fd82215be86f922edee97c2f24bde369228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40199817_47cd3a69",
+        "filename": "debuggerd/seccomp_policy/crash_dump.riscv64.policy",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-12T22:42:34Z",
+      "side": 1,
+      "message": "yeah, this is legit (it\u0027s PR_SET_VMA, and the PR_PAC_RESET_KEYS that\u0027s being removed was a copy-and-paste mistake from arm64, rather than running the script!)",
+      "range": {
+        "startLine": 29,
+        "startChar": 46,
+        "endLine": 29,
+        "endChar": 56
+      },
+      "revId": "be9e7fd82215be86f922edee97c2f24bde369228",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
