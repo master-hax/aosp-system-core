@@ -400,6 +400,11 @@ class SnapshotManager final : public ISnapshotManager {
         DM_USER,
     };
 
+    bool ListSnapshots(std::vector<std::string>* snapshots);
+
+    // Return the suffix we expect snapshots to have.
+    std::string GetSnapshotSlotSuffix();
+
     // Add new public entries above this line.
 
     // Helpers for failure injection.
@@ -757,9 +762,6 @@ class SnapshotManager final : public ISnapshotManager {
     enum class Slot { Unknown, Source, Target };
     friend std::ostream& operator<<(std::ostream& os, SnapshotManager::Slot slot);
     Slot GetCurrentSlot();
-
-    // Return the suffix we expect snapshots to have.
-    std::string GetSnapshotSlotSuffix();
 
     std::string ReadUpdateSourceSlotSuffix();
 

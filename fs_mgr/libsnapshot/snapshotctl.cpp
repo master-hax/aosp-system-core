@@ -14,17 +14,21 @@
 // limitations under the License.
 //
 
+#include <getopt.h>
 #include <sysexits.h>
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <map>
 #include <sstream>
+#include <unordered_set>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/strings.h>
 #include <android-base/unique_fd.h>
-
+#include <fs_avb/fs_avb.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
 #include <fstab/fstab.h>
@@ -40,10 +44,15 @@
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 using namespace android::storage_literals;
+using android::fs_mgr::AvbHandle;
+using android::fs_mgr::AvbHashtreeResult;
 using android::fs_mgr::CreateLogicalPartitionParams;
 using android::fs_mgr::FindPartition;
+using android::fs_mgr::Fstab;
+using android::fs_mgr::FstabEntry;
 using android::fs_mgr::GetPartitionSize;
 using android::fs_mgr::PartitionOpener;
+using android::fs_mgr::ReadDefaultFstab;
 using android::fs_mgr::ReadMetadata;
 using android::fs_mgr::SlotNumberForSlotSuffix;
 
@@ -55,7 +64,7 @@ int Usage() {
                  "    Print snapshot states.\n"
                  "  merge\n"
                  "    Deprecated.\n"
-                 "  map\n"
+                 "  map [--verity]\n"
                  "    Map all partitions at /dev/block/mapper\n";
     return EX_USAGE;
 }
@@ -63,15 +72,118 @@ int Usage() {
 namespace android {
 namespace snapshot {
 
+using namespace std::chrono_literals;
+using namespace std::string_literals;
+
 bool DumpCmdHandler(int /*argc*/, char** argv) {
     android::base::InitLogging(argv, &android::base::StderrLogger);
     return SnapshotManager::New()->Dump(std::cout);
 }
 
-bool MapCmdHandler(int, char** argv) {
+bool MapCmdHandler(int argc, char** argv) {
     android::base::InitLogging(argv, &android::base::StderrLogger);
-    using namespace std::chrono_literals;
-    return SnapshotManager::New()->MapAllSnapshots(5000ms);
+
+    bool map_verity = false;
+    for (int i = 2; i < argc; i++) {
+        if (argv[i] == "--verity"s) {
+            map_verity = true;
+        } else {
+            std::cerr << "Invalid argument: " << argv[i] << "\n";
+            return false;
+        }
+    }
+
+    auto sm = SnapshotManager::New();
+    if (!sm->MapAllSnapshots(5s)) {
+        std::cerr << "Failed to map all snapshots.\n";
+        return false;
+    }
+    if (!map_verity) {
+        return true;
+    }
+
+    std::vector<std::string> snapshots;
+    std::unordered_set<std::string> unverified;
+    if (!sm->ListSnapshots(&snapshots)) {
+        std::cerr << "Failed to list snapshots.\n";
+        return false;
+    }
+    for (const auto& snapshot : snapshots) {
+        unverified.emplace(snapshot);
+    }
+
+    Fstab fstab;
+    if (!ReadDefaultFstab(&fstab)) {
+        std::cerr << "Could not read default fstab.\n";
+        return false;
+    }
+
+    auto avb_handle = AvbHandle::LoadAndVerifyVbmeta(sm->GetSnapshotSlotSuffix());
+    if (!avb_handle) {
+        std::cerr << "Failed to open AvbHandle.\n";
+        return false;
+    }
+
+    for (auto& entry : fstab) {
+        // Only logical, updateable partitions are supported here.
+        std::cout << "Partition: " << entry.mount_point << ": " << entry.blk_device << ": "
+                  << entry.logical_partition_name << "\n";
+        if (!entry.fs_mgr_flags.logical || !entry.fs_mgr_flags.slot_select) {
+            continue;
+        }
+        // Do not bother with system_other which would not be updated.
+        if (entry.fs_mgr_flags.slot_select_other) {
+            continue;
+        }
+        if (!entry.fs_mgr_flags.avb && entry.avb_keys.empty()) {
+            continue;
+        }
+
+        // Replace the slot suffix.
+        auto slot_suffix = fs_mgr_get_slot_suffix();
+        auto partition_name = entry.logical_partition_name;
+        if (!android::base::EndsWith(partition_name, slot_suffix)) {
+            continue;
+        }
+
+        partition_name = partition_name.substr(0, partition_name.size() - slot_suffix.size());
+        partition_name += sm->GetSnapshotSlotSuffix();
+
+        // Partitions can appear multiple times in fstab; only use the first entry.
+        if (unverified.find(partition_name) == unverified.end()) {
+            continue;
+        }
+
+        // Update the logical partition name and path.
+        entry.logical_partition_name = partition_name;
+        entry.blk_device = partition_name;
+        if (!fs_mgr_update_logical_partition(&entry)) {
+            std::cout << "Could not update logical partition entry.\n";
+            return false;
+        }
+
+        // Make sure we get a different -verity device name to not clash with
+        // the default one.
+        entry.mount_point += sm->GetSnapshotSlotSuffix();
+
+        if (entry.fs_mgr_flags.avb) {
+            if (avb_handle->SetUpAvbHashtree(&entry, true) == AvbHashtreeResult::kFail) {
+                std::cerr << "Failed to set up AVB on partition: " << entry.mount_point << "\n";
+                return false;
+            }
+        } else if (!entry.avb_keys.empty()) {
+            if (avb_handle->SetUpStandaloneAvbHashtree(&entry) == AvbHashtreeResult::kFail) {
+                std::cerr << "Failed to set up AVB on partition: " << entry.mount_point << "\n";
+                return false;
+            }
+        }
+
+        unverified.erase(partition_name);
+
+        std::cout << "Verity for " << partition_name << " mapped as " << GetVerityDeviceName(entry)
+                  << "\n";
+    }
+    return true;
 }
 
 bool UnmapCmdHandler(int, char** argv) {

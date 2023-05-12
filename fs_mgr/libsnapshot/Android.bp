@@ -346,14 +346,17 @@ cc_binary {
         "snapshotctl.cpp",
     ],
     static_libs: [
+        "libavb",
         "libbrotli",
         "libc++fs",
+        "libfs_avb",
         "libfstab",
         "libz",
         "update_metadata-protos",
     ],
     shared_libs: [
         "libbase",
+        "libcrypto",
         "libext2_uuid",
         "libext4_utils",
         "libfs_mgr_binder",
