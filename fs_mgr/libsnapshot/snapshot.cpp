@@ -2164,6 +2164,13 @@ bool SnapshotManager::UpdateUsesUserSnapshots(LockedFile* lock) {
     return is_snapshot_userspace_.value();
 }
 
+bool SnapshotManager::ListSnapshots(std::vector<std::string>* snapshots) {
+    auto lock = LockShared();
+    if (!lock) return false;
+
+    return ListSnapshots(lock.get(), snapshots);
+}
+
 bool SnapshotManager::ListSnapshots(LockedFile* lock, std::vector<std::string>* snapshots,
                                     const std::string& suffix) {
     CHECK(lock);
