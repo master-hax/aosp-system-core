@@ -130,5 +130,8 @@ std::set<std::string> GetBootDevices();
 // expected name.
 std::string GetVerityDeviceName(const FstabEntry& entry);
 
+// Return the "other" slot for the given slot suffix.
+std::string OtherSlotSuffix(const std::string& suffix);
+
 }  // namespace fs_mgr
 }  // namespace android
