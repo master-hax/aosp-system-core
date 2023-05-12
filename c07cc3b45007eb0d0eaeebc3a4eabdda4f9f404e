@@ -70,6 +70,30 @@
       },
       "revId": "c07cc3b45007eb0d0eaeebc3a4eabdda4f9f404e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b7c12a8_93400fe3",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-12T17:27:11Z",
+      "side": 1,
+      "message": "I\u0027m saying that you are removing this fallback path altogether -- the one that checks for the `module_load_file` without pre-pending `dir_path + \"/\"`. Idk why it\u0027s there, but maybe some vendor out there that depends on it.",
+      "parentUuid": "57966b06_9f7c8b24",
+      "range": {
+        "startLine": 176,
+        "startChar": 1,
+        "endLine": 179,
+        "endChar": 0
+      },
+      "revId": "c07cc3b45007eb0d0eaeebc3a4eabdda4f9f404e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
