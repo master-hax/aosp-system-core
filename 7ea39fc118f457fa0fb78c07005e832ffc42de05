@@ -286,6 +286,24 @@
       "parentUuid": "711a3ef7_3ad4c0e8",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c47fdfd_5210b258",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-05-15T11:09:07Z",
+      "side": 1,
+      "message": "I believe it\u0027s a glibc extension which bionic doesn\u0027t support. See [1]. You may use open and then use fdopen to convert the file descriptor to a file stream.\n\n[1] https://source.corp.google.com/android/bionic/tests/stdio_test.cpp;rcl\u003d2fe5e06f818e92f0bf2504f89262a36cebe63fb2;l\u003d2868",
+      "parentUuid": "5c46a3b3_ee710629",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
