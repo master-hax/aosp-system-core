@@ -268,6 +268,24 @@
       "parentUuid": "b036062f_35349160",
       "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c46a3b3_ee710629",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1863406
+      },
+      "writtenOn": "2023-05-15T06:50:18Z",
+      "side": 1,
+      "message": "I\u0027m sorry for the late reply. \nBecuase I\u0027m looking for a better way, but it\u0027s not easy to solve.\n\nThe current situation is as follows.\nWhen \u0027e\u0027, which is the option of fopen, is used, an error occurs.\nErrno is 22(EINVAL 22 /* Invalid argument */ )\nI think that android system is not support this option.",
+      "parentUuid": "711a3ef7_3ad4c0e8",
+      "revId": "7ea39fc118f457fa0fb78c07005e832ffc42de05",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
