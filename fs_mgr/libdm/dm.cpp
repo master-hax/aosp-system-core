@@ -200,6 +200,8 @@ bool DeviceMapper::WaitForDevice(const std::string& name,
         }
     }
 
+    LOG(ERROR) << "WAITING FOR UNIQUE PATH: " << unique_path;
+
     if (!WaitForFile(unique_path, timeout_ms)) {
         LOG(ERROR) << "Failed waiting for device path: " << unique_path;
         DeleteDevice(name);

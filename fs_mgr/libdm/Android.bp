@@ -64,6 +64,7 @@ cc_defaults {
     defaults: ["fs_mgr_defaults"],
     static_libs: [
         "libcutils",
+        "libc++fs",
         "libdm",
         "libext2_uuid",
         "libfs_mgr",

@@ -28,6 +28,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <ctime>
+#include <filesystem>
 #include <iostream>
 #include <map>
 #include <mutex>
@@ -48,6 +49,7 @@
 using namespace std;
 using namespace std::chrono_literals;
 using namespace android::dm;
+namespace fs = std::filesystem;
 using unique_fd = android::base::unique_fd;
 
 class DmTest : public ::testing::Test {
@@ -771,6 +773,48 @@ TEST_F(DmTest, CreateEmptyDevice) {
     ASSERT_EQ(DmDeviceState::SUSPENDED, dm.GetState("empty-device"));
 }
 
+static void DumpDmDiagnostics(const std::string& dev_name) {
+    DeviceMapper& dm = DeviceMapper::Instance();
+    std::string path;
+    ASSERT_TRUE(dm.GetDmDevicePathByName(dev_name, &path));
+
+    auto node = ExtractBlockDeviceName(path);
+    ASSERT_TRUE(node);
+
+    auto sysfs_dir = "/sys/devices/virtual/block/" + *node + "/dm";
+    auto sysfs_uuid = sysfs_dir + "/uuid";
+    auto sysfs_name = sysfs_dir + "/name";
+
+    std::string content;
+    if (!android::base::ReadFileToString(sysfs_uuid, &content)) {
+        PLOG(ERROR) << "failed to read UUID";
+    } else {
+        LOG(INFO) << sysfs_uuid << ": " << content;
+    }
+    if (!android::base::ReadFileToString(sysfs_name, &content)) {
+        PLOG(ERROR) << "failed to read name";
+    } else {
+        LOG(INFO) << sysfs_name << ": " << content;
+    }
+
+    std::vector<std::string> dirs = {"/dev/block", "/dev/block/mapper", "/dev/block/mapper/by-uuid"};
+    for (const auto& dir : dirs) {
+        std::error_code ec;
+        for (const auto& entry : fs::directory_iterator(dir, ec)) {
+            if (fs::is_symlink(entry, ec)) {
+                std::string link;
+                if (!android::base::Readlink(entry.path(), &link)) {
+                    LOG(ERROR) << "Could not read symlink for: " << entry.path();
+                } else {
+                    LOG(INFO) << entry.path() << ": " << link;
+                }
+            } else if (fs::is_block_file(entry, ec)) {
+                LOG(INFO) << entry.path();
+            }
+        }
+    }
+}
+
 TEST_F(DmTest, UeventAfterLoadTable) {
     EnableUeventDiagnostics();
 
@@ -794,7 +838,9 @@ TEST_F(DmTest, UeventAfterLoadTable) {
     ASSERT_TRUE(dm.LoadTable(kDeviceName, table));
 
     std::string ignore_path;
-    ASSERT_TRUE(dm.WaitForDevice(kDeviceName, 5s, &ignore_path));
+    bool ok = dm.WaitForDevice(kDeviceName, 5s, &ignore_path);
+    DumpDmDiagnostics(kDeviceName);
+    ASSERT_TRUE(ok);
 
     auto info = dm.GetDetailedInfo(kDeviceName);
     ASSERT_TRUE(info.has_value());
