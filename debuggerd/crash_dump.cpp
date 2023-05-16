@@ -640,6 +640,8 @@ int main(int argc, char** argv) {
 
   // TODO: Use seccomp to lock ourselves down.
 
+  LOG(INFO) << "Creating unwinder object of pid " << vm_pid;
+
   unwindstack::AndroidRemoteUnwinder unwinder(vm_pid, unwindstack::Regs::CurrentArch());
   unwindstack::ErrorData error_data;
   if (!unwinder.Initialize(error_data)) {
@@ -653,16 +655,19 @@ int main(int argc, char** argv) {
     dump_backtrace(std::move(g_output_fd), &unwinder, thread_info, g_target_thread);
   } else {
     {
+      LOG(INFO) << "Populating fdsan table";
       ATRACE_NAME("fdsan table dump");
       populate_fdsan_table(&open_files, unwinder.GetProcessMemory(),
                            process_info.fdsan_table_address);
     }
 
     {
+      LOG(INFO) << "Engraving tombstone";
       ATRACE_NAME("engrave_tombstone");
       engrave_tombstone(std::move(g_output_fd), std::move(g_proto_fd), &unwinder, thread_info,
                         g_target_thread, process_info, &open_files, &amfd_data);
     }
+    LOG(INFO) << "Engraving complete";
   }
 
   if (fatal_signal) {

@@ -496,7 +496,8 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
 
   LogBuffer buffer;
 
-  while (true) {
+  size_t num_log_messages = 0;
+  for (; num_log_messages < 1000;) {
     log_msg log_entry;
     ssize_t actual = android_logger_list_read(logger_list, &log_entry);
 
@@ -556,12 +557,14 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
       log_msg->set_tag(tag);
       log_msg->set_message(msg);
     } while ((msg = nl));
+    num_log_messages++;
   }
   android_logger_list_free(logger_list);
 
   if (!buffer.logs().empty()) {
     buffer.set_name(logger);
     *tombstone->add_log_buffers() = std::move(buffer);
+    LOG(INFO) << "  Contains " << num_log_messages << " entries from log";
   }
 }
 
@@ -631,6 +634,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   // The main thread must have a valid siginfo.
   CHECK(main_thread.siginfo != nullptr);
 
+  LOG(INFO) << "Getting information for pid " << main_thread.pid;
   struct sysinfo si;
   sysinfo(&si);
   android::procinfo::ProcessInfo proc_info;
@@ -675,17 +679,22 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
 
   dump_abort_message(&result, unwinder->GetProcessMemory(), process_info);
 
+  LOG(INFO) << "Total threads to dump: " << threads.size();
+
+  LOG(INFO) << "Dumping main thread: " << main_thread.tid;
   // Dump the main thread, but save the memory around the registers.
   dump_thread(&result, unwinder, main_thread, /* memory_dump */ true);
 
   for (const auto& [tid, thread_info] : threads) {
     if (tid != target_thread) {
+      LOG(INFO) << "Dumping thread: " << thread_info.tid;
       dump_thread(&result, unwinder, thread_info);
     }
   }
 
   dump_probable_cause(&result, unwinder, process_info, main_thread);
 
+  LOG(INFO) << "Dumping mappings";
   dump_mappings(&result, unwinder->GetMaps(), unwinder->GetProcessMemory());
 
   // Only dump logs on debuggable devices.
@@ -696,10 +705,12 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
     // Do not attempt to dump logs of the logd process because the gathering
     // of logs can hang until a timeout occurs.
     if (thread.thread_name != "logd") {
+      LOG(INFO) << "Dumping logs";
       dump_logcat(&result, main_thread.pid);
     }
   }
 
+  LOG(INFO) << "Dumping open fds";
   dump_open_fds(&result, open_files);
 
   *tombstone = std::move(result);
