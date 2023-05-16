@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e0f64f8_4e6e3a1b",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-05-16T21:49:03Z",
+      "side": 1,
+      "message": "it might be reasonable to make this a crash, and keep the ones below a crash, but the current CL behavior, given this is an error only, makes sense to me",
+      "range": {
+        "startLine": 72,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 83
+      },
+      "revId": "d2d320ab0b442a887a0ef2457d28ab4cdd214f28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
