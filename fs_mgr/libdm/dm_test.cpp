@@ -17,22 +17,28 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/eventfd.h>
 #include <sys/ioctl.h>
+#include <sys/poll.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <time.h>
 #include <unistd.h>
 
 #include <chrono>
+#include <condition_variable>
 #include <ctime>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <thread>
 
 #include <android-base/file.h>
+#include <android-base/logging.h>
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <cutils/uevent.h>
 #include <gtest/gtest.h>
 #include <libdm/dm.h>
 #include <libdm/loop_control.h>
@@ -44,14 +50,87 @@ using namespace std::chrono_literals;
 using namespace android::dm;
 using unique_fd = android::base::unique_fd;
 
-TEST(libdm, HasMinimumTargets) {
+class DmTest : public ::testing::Test {
+  protected:
+    void SetUp() override {
+        const testing::TestInfo* const test_info =
+                testing::UnitTest::GetInstance()->current_test_info();
+        test_name_ = test_info->test_suite_name() + "/"s + test_info->name();
+
+        LOG(INFO) << "Starting test: " << test_name_;
+    }
+
+    void TearDown() override {
+        LOG(INFO) << "Teardown complete for test: " << test_name_;
+        if (uevent_diag_.joinable()) {
+            uint64_t val = 1;
+            ASSERT_TRUE(android::base::WriteFully(uevent_wakeup_, &val, sizeof(val)));
+            uevent_diag_.join();
+        }
+    }
+
+    void EnableUeventDiagnostics() {
+        uevent_wakeup_.reset(eventfd(0, 0));
+        ASSERT_GE(uevent_wakeup_, 0);
+
+        uevent_socket_.reset(uevent_open_socket(64 * 1024, true));
+        ASSERT_GE(uevent_socket_, 0);
+
+        uevent_diag_ = std::thread(&DmTest::UeventDiagnosticThread, this);
+    }
+
+    void UeventDiagnosticThread() {
+        std::vector<struct pollfd> fds;
+        fds.push_back({.fd = uevent_wakeup_.get(), .events = POLLIN, .revents = 0});
+        fds.push_back({.fd = uevent_socket_.get(), .events = POLLIN, .revents = 0});
+
+        char msg[1024];
+
+        while (true) {
+            int rv = TEMP_FAILURE_RETRY(poll(fds.data(), fds.size(), -1));
+            if (rv < 0) {
+                PLOG(ERROR) << "poll failed";
+                break;
+            }
+            if (fds[0].revents) {
+                break;
+            }
+            if (fds[1].revents & POLLIN) {
+                auto n = uevent_kernel_multicast_recv(uevent_socket_.get(), msg, sizeof(msg));
+                if (n > 0) {
+                    LogUevent(std::string(msg, n));
+                }
+            }
+        }
+
+        LOG(INFO) << "Exiting uevent diagnostic thread";
+    }
+
+    void LogUevent(const std::string& msg) {
+        std::string delim(1, '\0');
+        auto parts = android::base::Split(msg, delim);
+        while (!parts.empty() && parts.back().empty()) {
+            parts.pop_back();
+        }
+
+        auto text = android::base::Join(parts, ", ");
+        LOG(INFO) << "Uevent detected: " << text;
+    }
+
+    std::string test_name_;
+    std::thread uevent_diag_;
+    unique_fd uevent_wakeup_;
+    unique_fd uevent_socket_;
+};
+
+TEST_F(DmTest, HasMinimumTargets) {
     DmTargetTypeInfo info;
 
     DeviceMapper& dm = DeviceMapper::Instance();
     ASSERT_TRUE(dm.GetTargetByName("linear", &info));
 }
 
-TEST(libdm, DmLinear) {
+TEST_F(DmTest, DmLinear) {
     unique_fd tmp1(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp1, 0);
     unique_fd tmp2(CreateTempFile("file_2", 4096));
@@ -127,7 +206,7 @@ TEST(libdm, DmLinear) {
     ASSERT_TRUE(dev.Destroy());
 }
 
-TEST(libdm, DmSuspendResume) {
+TEST_F(DmTest, DmSuspendResume) {
     unique_fd tmp1(CreateTempFile("file_suspend_resume", 512));
     ASSERT_GE(tmp1, 0);
 
@@ -156,7 +235,7 @@ TEST(libdm, DmSuspendResume) {
     ASSERT_EQ(dm.GetState(dev.name()), DmDeviceState::ACTIVE);
 }
 
-TEST(libdm, DmVerityArgsAvb2) {
+TEST_F(DmTest, DmVerityArgsAvb2) {
     std::string device = "/dev/block/platform/soc/1da4000.ufshc/by-name/vendor_a";
     std::string algorithm = "sha1";
     std::string digest = "4be7e823b8c40f7bd5c8ccd5123f0722c5baca21";
@@ -178,7 +257,7 @@ TEST(libdm, DmVerityArgsAvb2) {
     EXPECT_EQ(target.GetParameterString(), expected);
 }
 
-TEST(libdm, DmSnapshotArgs) {
+TEST_F(DmTest, DmSnapshotArgs) {
     DmTargetSnapshot target1(0, 512, "base", "cow", SnapshotStorageMode::Persistent, 8);
     if (DmTargetSnapshot::ReportsOverflow("snapshot")) {
         EXPECT_EQ(target1.GetParameterString(), "base cow PO 8");
@@ -200,7 +279,7 @@ TEST(libdm, DmSnapshotArgs) {
     EXPECT_EQ(target3.name(), "snapshot-merge");
 }
 
-TEST(libdm, DmSnapshotOriginArgs) {
+TEST_F(DmTest, DmSnapshotOriginArgs) {
     DmTargetSnapshotOrigin target(0, 512, "base");
     EXPECT_EQ(target.GetParameterString(), "base");
     EXPECT_EQ(target.name(), "snapshot-origin");
@@ -330,7 +409,7 @@ bool CheckSnapshotAvailability() {
     return true;
 }
 
-TEST(libdm, DmSnapshot) {
+TEST_F(DmTest, DmSnapshot) {
     if (!CheckSnapshotAvailability()) {
         return;
     }
@@ -374,7 +453,7 @@ TEST(libdm, DmSnapshot) {
     ASSERT_EQ(read, data);
 }
 
-TEST(libdm, DmSnapshotOverflow) {
+TEST_F(DmTest, DmSnapshotOverflow) {
     if (!CheckSnapshotAvailability()) {
         return;
     }
@@ -421,7 +500,7 @@ TEST(libdm, DmSnapshotOverflow) {
     }
 }
 
-TEST(libdm, ParseStatusText) {
+TEST_F(DmTest, ParseStatusText) {
     DmTargetSnapshot::Status status;
 
     // Bad inputs
@@ -448,7 +527,7 @@ TEST(libdm, ParseStatusText) {
     EXPECT_TRUE(DmTargetSnapshot::ParseStatusText("Overflow", &status));
 }
 
-TEST(libdm, DmSnapshotMergePercent) {
+TEST_F(DmTest, DmSnapshotMergePercent) {
     DmTargetSnapshot::Status status;
 
     // Correct input
@@ -502,7 +581,7 @@ TEST(libdm, DmSnapshotMergePercent) {
     EXPECT_LE(DmTargetSnapshot::MergePercent(status, 0), 0.0);
 }
 
-TEST(libdm, CryptArgs) {
+TEST_F(DmTest, CryptArgs) {
     DmTargetCrypt target1(0, 512, "sha1", "abcdefgh", 50, "/dev/loop0", 100);
     ASSERT_EQ(target1.name(), "crypt");
     ASSERT_TRUE(target1.Valid());
@@ -518,7 +597,7 @@ TEST(libdm, CryptArgs) {
               "iv_large_sectors sector_size:64");
 }
 
-TEST(libdm, DefaultKeyArgs) {
+TEST_F(DmTest, DefaultKeyArgs) {
     DmTargetDefaultKey target(0, 4096, "aes-xts-plain64", "abcdef0123456789", "/dev/loop0", 0);
     target.SetSetDun();
     ASSERT_EQ(target.name(), "default-key");
@@ -529,7 +608,7 @@ TEST(libdm, DefaultKeyArgs) {
               "iv_large_sectors");
 }
 
-TEST(libdm, DefaultKeyLegacyArgs) {
+TEST_F(DmTest, DefaultKeyLegacyArgs) {
     DmTargetDefaultKey target(0, 4096, "AES-256-XTS", "abcdef0123456789", "/dev/loop0", 0);
     target.SetUseLegacyOptionsFormat();
     ASSERT_EQ(target.name(), "default-key");
@@ -537,7 +616,7 @@ TEST(libdm, DefaultKeyLegacyArgs) {
     ASSERT_EQ(target.GetParameterString(), "AES-256-XTS abcdef0123456789 /dev/loop0 0");
 }
 
-TEST(libdm, DeleteDeviceWithTimeout) {
+TEST_F(DmTest, DeleteDeviceWithTimeout) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -561,7 +640,7 @@ TEST(libdm, DeleteDeviceWithTimeout) {
     ASSERT_EQ(ENOENT, errno);
 }
 
-TEST(libdm, IsDmBlockDevice) {
+TEST_F(DmTest, IsDmBlockDevice) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -580,7 +659,7 @@ TEST(libdm, IsDmBlockDevice) {
     ASSERT_FALSE(dm.IsDmBlockDevice(loop.device()));
 }
 
-TEST(libdm, GetDmDeviceNameByPath) {
+TEST_F(DmTest, GetDmDeviceNameByPath) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -601,7 +680,7 @@ TEST(libdm, GetDmDeviceNameByPath) {
     ASSERT_EQ("libdm-test-dm-linear", *name);
 }
 
-TEST(libdm, GetParentBlockDeviceByPath) {
+TEST_F(DmTest, GetParentBlockDeviceByPath) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -621,7 +700,7 @@ TEST(libdm, GetParentBlockDeviceByPath) {
     ASSERT_EQ(loop.device(), *sub_block_device);
 }
 
-TEST(libdm, DeleteDeviceDeferredNoReferences) {
+TEST_F(DmTest, DeleteDeviceDeferredNoReferences) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -647,7 +726,7 @@ TEST(libdm, DeleteDeviceDeferredNoReferences) {
     ASSERT_EQ(ENOENT, errno);
 }
 
-TEST(libdm, DeleteDeviceDeferredWaitsForLastReference) {
+TEST_F(DmTest, DeleteDeviceDeferredWaitsForLastReference) {
     unique_fd tmp(CreateTempFile("file_1", 4096));
     ASSERT_GE(tmp, 0);
     LoopDevice loop(tmp, 10s);
@@ -682,7 +761,7 @@ TEST(libdm, DeleteDeviceDeferredWaitsForLastReference) {
     ASSERT_EQ(ENOENT, errno);
 }
 
-TEST(libdm, CreateEmptyDevice) {
+TEST_F(DmTest, CreateEmptyDevice) {
     DeviceMapper& dm = DeviceMapper::Instance();
     ASSERT_TRUE(dm.CreateEmptyDevice("empty-device"));
     auto guard =
@@ -692,7 +771,9 @@ TEST(libdm, CreateEmptyDevice) {
     ASSERT_EQ(DmDeviceState::SUSPENDED, dm.GetState("empty-device"));
 }
 
-TEST(libdm, UeventAfterLoadTable) {
+TEST_F(DmTest, UeventAfterLoadTable) {
+    EnableUeventDiagnostics();
+
     static const char* kDeviceName = "libdm-test-uevent-load-table";
 
     struct utsname u;
