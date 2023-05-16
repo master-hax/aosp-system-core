@@ -63,6 +63,7 @@ cc_defaults {
     name: "libdm_test_defaults",
     defaults: ["fs_mgr_defaults"],
     static_libs: [
+        "libcutils",
         "libdm",
         "libext2_uuid",
         "libfs_mgr",
@@ -70,6 +71,9 @@ cc_defaults {
     shared_libs: [
         "libbase",
         "liblog",
+    ],
+    header_libs: [
+        "libstorage_literals_headers",
     ],
     srcs: [":libdm_test_srcs"],
     auto_gen_config: true,
