@@ -128,6 +128,10 @@ void AppendExtent(google::protobuf::RepeatedPtrField<chromeos_update_engine::Ext
                   uint64_t start_block, uint64_t num_blocks);
 
 bool KernelSupportsCompressedSnapshots();
+<<<<<<< HEAD   (c51ed4 Merge "Return error from gatekeeperd")
+=======
+bool IsCompressionEnabled();
+>>>>>>> BRANCH (3f9605 DO NOT MERGE: libsnapshot: Fix test failures on certain conf)
 
 bool GetLegacyCompressionEnabledProperty();
 bool GetUserspaceSnapshotsEnabledProperty();
