@@ -249,6 +249,17 @@ cc_defaults {
             ],
         },
     },
+    arch: {
+        // TODO(b/282584808): Init fails with cfi
+        riscv64: {
+            sanitize: {
+                cfi: false,
+                diag: {
+                    cfi: false,
+                },
+            },
+        },
+    },
 }
 
 cc_library_static {
