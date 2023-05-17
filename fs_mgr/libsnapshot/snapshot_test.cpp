@@ -2937,7 +2937,37 @@ void KillSnapuserd() {
     if (!snapuserd_client) {
         return;
     }
+<<<<<<< TARGET BRANCH (c51ed4 Merge "Return error from gatekeeperd")
     snapuserd_client->DetachSnapuserd();
+=======
+
+    const std::string UNKNOWN = "unknown";
+    const std::string vendor_release =
+            android::base::GetProperty("ro.vendor.build.version.release_or_codename", UNKNOWN);
+
+    // No userspace snapshots if vendor partition is on Android 12
+    // However, for GRF devices, snapuserd daemon will be on
+    // vendor ramdisk in Android 12.
+    if (vendor_release.find("12") != std::string::npos) {
+        return true;
+    }
+
+    if (!FLAGS_force_config.empty()) {
+        return true;
+    }
+
+    return IsUserspaceSnapshotsEnabled() && KernelSupportsCompressedSnapshots();
+}
+
+bool ShouldUseCompression() {
+    if (FLAGS_force_config == "vab" || FLAGS_force_config == "dmsnap") {
+        return false;
+    }
+    if (FLAGS_force_config == "vabc") {
+        return true;
+    }
+    return IsCompressionEnabled() && KernelSupportsCompressedSnapshots();
+>>>>>>> SOURCE BRANCH (3f9605 DO NOT MERGE: libsnapshot: Fix test failures on certain conf)
 }
 
 }  // namespace snapshot
