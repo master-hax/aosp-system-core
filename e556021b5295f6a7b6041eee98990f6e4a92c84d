@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8539f76_20b874e8",
+        "filename": "trusty/keymaster/set_attestation_ids/set_attestation_ids.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1124693
+      },
+      "writtenOn": "2023-05-17T18:54:51Z",
+      "side": 1,
+      "message": "lol",
+      "range": {
+        "startLine": 146,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 57
+      },
+      "revId": "e556021b5295f6a7b6041eee98990f6e4a92c84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
