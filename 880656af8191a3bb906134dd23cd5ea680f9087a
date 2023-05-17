@@ -16,6 +16,41 @@
       "message": "Does this corpus contain records from keymaster, should it include them?",
       "revId": "880656af8191a3bb906134dd23cd5ea680f9087a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21aef254_934f68d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-05-17T06:13:52Z",
+      "side": 1,
+      "message": "(",
+      "revId": "880656af8191a3bb906134dd23cd5ea680f9087a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "daa95f25_714f501c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-05-17T06:13:52Z",
+      "side": 1,
+      "message": "No, it\u0027s a different corpus.  The C++ and Rust implementations use a different set of messages over tipc, and so need different corpuses.  \n\nThey also use different tipc ports, which means that it\u0027s pointless to run the C++ fuzzer against a Rust device and vice versa.   I couldn\u0027t immediately see anything in the Haiku config that would allow fuzzers to be limited to specific device types, but maybe there\u0027s other config elsewhere.",
+      "parentUuid": "8b6fb0b3_851ddf80",
+      "revId": "880656af8191a3bb906134dd23cd5ea680f9087a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
