@@ -3220,6 +3220,7 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     LOG(INFO) << " dap_metadata.cow_version(): " << dap_metadata.cow_version()
               << " writer.GetCowVersion(): " << writer.GetCowVersion();
 
+<<<<<<< HEAD   (c51ed4 Merge "Return error from gatekeeperd")
     // Deduce supported features.
     bool userspace_snapshots = CanUseUserspaceSnapshots();
     bool legacy_compression = GetLegacyCompressionEnabledProperty();
@@ -3250,6 +3251,11 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     if (!using_snapuserd) {
         LOG(INFO) << "Using legacy Virtual A/B (dm-snapshot)";
     }
+=======
+    bool use_compression = IsCompressionEnabled() && dap_metadata.vabc_enabled() &&
+                           !device_->IsRecovery() && cow_format_support &&
+                           KernelSupportsCompressedSnapshots();
+>>>>>>> BRANCH (3f9605 DO NOT MERGE: libsnapshot: Fix test failures on certain conf)
 
     std::string compression_algorithm;
     if (using_snapuserd) {
