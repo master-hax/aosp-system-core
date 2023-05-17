@@ -27,7 +27,11 @@
 #include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <fs_mgr/roots.h>
+<<<<<<< TARGET BRANCH (c51ed4 Merge "Return error from gatekeeperd")
 #include <liblp/property_fetcher.h>
+=======
+#include <libdm/dm.h>
+>>>>>>> SOURCE BRANCH (3f9605 DO NOT MERGE: libsnapshot: Fix test failures on certain conf)
 
 using android::dm::DeviceMapper;
 using android::dm::kSectorSize;
@@ -280,6 +284,11 @@ std::string GetOtherPartitionName(const std::string& name) {
 bool IsDmSnapshotTestingEnabled() {
     auto fetcher = IPropertyFetcher::GetInstance();
     return fetcher->GetBoolProperty("snapuserd.test.dm.snapshots", false);
+}
+
+bool KernelSupportsCompressedSnapshots() {
+    auto& dm = DeviceMapper::Instance();
+    return dm.GetTargetByName("user", nullptr);
 }
 
 bool KernelSupportsCompressedSnapshots() {
