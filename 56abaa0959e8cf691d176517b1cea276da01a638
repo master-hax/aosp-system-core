@@ -34,6 +34,23 @@
       "parentUuid": "9b32adc8_bacb5d6e",
       "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cda289ff_cf7d3269",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1894651
+      },
+      "writtenOn": "2023-05-19T22:38:56Z",
+      "side": 1,
+      "message": "IIRC, the reason that this didn\u0027t originally just pass a copy of STDOUT_FILENO directly is because of selinux restrictions that prevent you from piping the output of `debuggerd -b \u003cpid\u003e` to files that crash_dump (or the crashing process, for the media processes) aren\u0027t allowed to access.",
+      "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
