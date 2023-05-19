@@ -123,6 +123,24 @@
       "parentUuid": "0f0affe0_db55af96",
       "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "243d5788_a5c2e58a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-19T23:12:43Z",
+      "side": 1,
+      "message": "Yep, both locations work fine for the media.swcodec and other media processes.",
+      "parentUuid": "1ec7036d_3a8d982b",
+      "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
