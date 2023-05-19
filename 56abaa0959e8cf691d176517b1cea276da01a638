@@ -69,6 +69,24 @@
       "parentUuid": "5f02568c_f583b983",
       "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "421205fb_d768d080",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-19T22:45:43Z",
+      "side": 1,
+      "message": "I can confirm that running debuggerd on all of the media processes does work. Because I\u0027m paranoid I usually run on those processes just in case.",
+      "parentUuid": "cda289ff_cf7d3269",
+      "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
