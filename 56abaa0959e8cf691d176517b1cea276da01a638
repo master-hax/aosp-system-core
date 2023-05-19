@@ -87,6 +87,24 @@
       "parentUuid": "cda289ff_cf7d3269",
       "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ec7036d_3a8d982b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2023-05-19T22:50:27Z",
+      "side": 1,
+      "message": "Does `debuggerd -b \u003cpid\u003e \u003e /data/local/tmp/foo` or /sdcard/foo work?",
+      "parentUuid": "421205fb_d768d080",
+      "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
