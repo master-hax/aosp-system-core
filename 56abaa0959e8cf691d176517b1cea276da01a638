@@ -159,6 +159,24 @@
       "parentUuid": "9e1852e4_359f71cc",
       "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7f66a57_396a158d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944400
+      },
+      "writtenOn": "2023-05-20T04:31:45Z",
+      "side": 1,
+      "message": "I might be missing something and also `debuggerd_trigger_dump`\u0027s implementation might have changed since then, but I think it is going to be making roughly the same syscalls from the same process as `spawn_redirect_thread` was, so it shouldn\u0027t run afoul of selinux policies in new ways.",
+      "parentUuid": "243d5788_a5c2e58a",
+      "revId": "56abaa0959e8cf691d176517b1cea276da01a638",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
