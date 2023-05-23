@@ -1780,32 +1780,10 @@ void FlashAllTool::Flash() {
     }
 
     DetermineSlot();
-    CollectImages();
-
     CancelSnapshotIfNeeded();
 
-    std::vector<char> contents;
-    if (!fp_->source->ReadFile("fastboot-info.txt", &contents)) {
-        LOG(VERBOSE) << "Flashing from hardcoded images. fastboot-info.txt is empty or does not "
-                        "exist";
-        HardcodedFlash();
-        return;
-    }
-
-    std::vector<std::unique_ptr<Task>> tasks =
-            ParseFastbootInfo(fp_, Split({contents.data(), contents.size()}, "\n"));
-
-    if (tasks.empty()) {
-        LOG(FATAL) << "Invalid fastboot-info.txt file.";
-    }
-    LOG(VERBOSE) << "Flashing from fastboot-info.txt";
-    for (auto& task : tasks) {
-        task->Run();
-    }
-    if (fp_->wants_wipe) {
-        // avoid adding duplicate wipe tasks in fastboot main code.
-        fp_->wants_wipe = false;
-    }
+    CollectTasks();
+    RunTasks();
 }
 
 void FlashAllTool::CheckRequirements() {
@@ -1839,88 +1817,28 @@ void FlashAllTool::DetermineSlot() {
     }
 }
 
-void FlashAllTool::CollectImages() {
-    for (size_t i = 0; i < images.size(); ++i) {
-        std::string slot = fp_->slot_override;
-        if (images[i].IsSecondary()) {
-            if (fp_->skip_secondary) {
-                continue;
-            }
-            slot = fp_->secondary_slot;
-        }
-        if (images[i].type == ImageType::BootCritical) {
-            boot_images_.emplace_back(&images[i], slot);
-        } else if (images[i].type == ImageType::Normal) {
-            os_images_.emplace_back(&images[i], slot);
-        }
+void FlashAllTool::CollectTasks() {
+    std::vector<char> contents;
+    if (!fp_->source->ReadFile("fastboot-info.txt", &contents)) {
+        LOG(FATAL) << "fastboot-info.txt is doesn't exist";
+    }
+
+    tasks_ = ParseFastbootInfo(fp_, Split({contents.data(), contents.size()}, "\n"));
+
+    if (tasks_.empty()) {
+        LOG(FATAL) << "Invalid fastboot-info.txt file.";
     }
 }
 
-void FlashAllTool::HardcodedFlash() {
-    CollectImages();
-    // First flash boot partitions. We allow this to happen either in userspace
-    // or in bootloader fastboot.
-    FlashImages(boot_images_);
-
-    std::vector<std::unique_ptr<Task>> tasks;
-
-    if (auto flash_super_task = FlashSuperLayoutTask::Initialize(fp_, os_images_)) {
-        tasks.emplace_back(std::move(flash_super_task));
-    } else {
-        // Sync the super partition. This will reboot to userspace fastboot if needed.
-        tasks.emplace_back(std::make_unique<UpdateSuperTask>(fp_));
-        // Resize any logical partition to 0, so each partition is reset to 0
-        // extents, and will achieve more optimal allocation.
-        for (const auto& [image, slot] : os_images_) {
-            // Retrofit devices have two super partitions, named super_a and super_b.
-            // On these devices, secondary slots must be flashed as physical
-            // partitions (otherwise they would not mount on first boot). To enforce
-            // this, we delete any logical partitions for the "other" slot.
-            if (is_retrofit_device()) {
-                std::string partition_name = image->part_name + "_"s + slot;
-                if (image->IsSecondary() && should_flash_in_userspace(partition_name)) {
-                    fp_->fb->DeletePartition(partition_name);
-                }
-                tasks.emplace_back(std::make_unique<DeleteTask>(fp_, partition_name));
-            }
-            tasks.emplace_back(std::make_unique<ResizeTask>(fp_, image->part_name, "0", slot));
-        }
+void FlashAllTool::RunTasks() {
+    LOG(VERBOSE) << "Flashing from fastboot-info.txt";
+    for (auto& task : tasks_) {
+        task->Run();
     }
-    for (auto& i : tasks) {
-        i->Run();
+    if (fp_->wants_wipe) {
+        // avoid adding duplicate wipe tasks in fastboot main code.
+        fp_->wants_wipe = false;
     }
-    FlashImages(os_images_);
-}
-
-void FlashAllTool::FlashImages(const std::vector<std::pair<const Image*, std::string>>& images) {
-    for (const auto& [image, slot] : images) {
-        fastboot_buffer buf;
-        unique_fd fd = fp_->source->OpenFile(image->img_name);
-        if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
-            if (image->optional_if_no_image) {
-                continue;
-            }
-            die("could not load '%s': %s", image->img_name.c_str(), strerror(errno));
-        }
-        FlashImage(*image, slot, &buf);
-    }
-}
-
-void FlashAllTool::FlashImage(const Image& image, const std::string& slot, fastboot_buffer* buf) {
-    auto flash = [&, this](const std::string& partition_name) {
-        std::vector<char> signature_data;
-        if (fp_->source->ReadFile(image.sig_name, &signature_data)) {
-            fb->Download("signature", signature_data);
-            fb->RawCommand("signature", "installing signature");
-        }
-
-        if (is_logical(partition_name)) {
-            fb->ResizePartition(partition_name, std::to_string(buf->image_size));
-        }
-
-        flash_buf(partition_name.c_str(), buf, is_vbmeta_partition(partition_name));
-    };
-    do_for_partitions(image.part_name, slot, flash, false);
 }
 
 class ZipImageSource final : public ImageSource {
