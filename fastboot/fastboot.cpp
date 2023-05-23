@@ -1487,13 +1487,20 @@ static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf
     return partition;
 }
 
-void do_flash(const char* pname, const char* fname, const bool apply_vbmeta) {
+void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
+              const FlashingPlan* fp) {
     verbose("Do flash %s %s", pname, fname);
     struct fastboot_buffer buf;
 
-    if (!load_buf(fname, &buf)) {
+    if (fp->source) {
+        unique_fd fd = fp->source->OpenFile(fname);
+        if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
+            die("could not load '%s': %s", fname, strerror(errno));
+        }
+    } else if (!load_buf(fname, &buf)) {
         die("cannot load '%s': %s", fname, strerror(errno));
     }
+
     if (is_logical(pname)) {
         fb->ResizePartition(pname, std::to_string(buf.image_size));
     }
@@ -1592,7 +1599,7 @@ std::unique_ptr<FlashTask> ParseFlashCommand(const FlashingPlan* fp,
     if (img_name.empty()) {
         img_name = partition + ".img";
     }
-    return std::make_unique<FlashTask>(slot, partition, img_name, apply_vbmeta);
+    return std::make_unique<FlashTask>(slot, partition, img_name, apply_vbmeta, fp);
 }
 
 std::unique_ptr<RebootTask> ParseRebootCommand(const FlashingPlan* fp,
@@ -1777,7 +1784,10 @@ void FlashAllTool::Flash() {
 
     CancelSnapshotIfNeeded();
 
-    std::string path = find_item_given_name("fastboot-info.txt");
+    std::string path;
+    if (LocalImageSource* zp = fp_->source->AsLocalImageSource()) {
+        path = find_item_given_name("fastboot-info.txt");
+    }
     std::ifstream stream(path);
     if (!stream || stream.eof()) {
         LOG(VERBOSE) << "Flashing from hardcoded images. fastboot-info.txt is empty or does not "
@@ -1920,6 +1930,7 @@ class ZipImageSource final : public ImageSource {
     explicit ZipImageSource(ZipArchiveHandle zip) : zip_(zip) {}
     bool ReadFile(const std::string& name, std::vector<char>* out) const override;
     unique_fd OpenFile(const std::string& name) const override;
+    ZipImageSource* AsZipImageSource() override { return this; }
 
   private:
     ZipArchiveHandle zip_;
@@ -1952,6 +1963,7 @@ class LocalImageSource final : public ImageSource {
   public:
     bool ReadFile(const std::string& name, std::vector<char>* out) const override;
     unique_fd OpenFile(const std::string& name) const override;
+    LocalImageSource* AsLocalImageSource() override { return this; }
 };
 
 bool LocalImageSource::ReadFile(const std::string& name, std::vector<char>* out) const {
@@ -2115,7 +2127,7 @@ bool should_flash_in_userspace(const std::string& partition_name) {
 }
 
 static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::string& slot,
-                       std::string* message) {
+                       std::string* message, const FlashingPlan* fp) {
     auto super_device = GetMetadataSuperBlockDevice(metadata);
     auto block_size = metadata.geometry.logical_block_size;
     auto super_bdev_name = android::fs_mgr::GetBlockDevicePartitionName(*super_device);
@@ -2155,7 +2167,7 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
 
         auto image_path = temp_dir.path + "/"s + image_name;
         auto flash = [&](const std::string& partition_name) {
-            do_flash(partition_name.c_str(), image_path.c_str(), false);
+            do_flash(partition_name.c_str(), image_path.c_str(), false, fp);
         };
         do_for_partitions(partition, slot, flash, force_slot);
 
@@ -2164,7 +2176,8 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
     return true;
 }
 
-static void do_wipe_super(const std::string& image, const std::string& slot_override) {
+static void do_wipe_super(const std::string& image, const std::string& slot_override,
+                          const FlashingPlan* fp) {
     if (access(image.c_str(), R_OK) != 0) {
         die("Could not read image: %s", image.c_str());
     }
@@ -2179,7 +2192,7 @@ static void do_wipe_super(const std::string& image, const std::string& slot_over
     }
 
     std::string message;
-    if (!wipe_super(*metadata.get(), slot, &message)) {
+    if (!wipe_super(*metadata.get(), slot, &message, fp)) {
         die(message);
     }
 }
@@ -2476,7 +2489,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             }
             if (fname.empty()) die("cannot determine image filename for '%s'", pname.c_str());
 
-            FlashTask task(fp->slot_override, pname, fname, is_vbmeta_partition(pname));
+            FlashTask task(fp->slot_override, pname, fname, is_vbmeta_partition(pname), fp.get());
             task.Run();
         } else if (command == "flash:raw") {
             std::string partition = next_arg(&args);
@@ -2571,7 +2584,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             } else {
                 image = next_arg(&args);
             }
-            do_wipe_super(image, fp->slot_override);
+            do_wipe_super(image, fp->slot_override, fp.get());
         } else if (command == "snapshot-update") {
             std::string arg;
             if (!args.empty()) {
