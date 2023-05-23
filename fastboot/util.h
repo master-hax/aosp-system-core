@@ -13,6 +13,8 @@
 
 using SparsePtr = std::unique_ptr<sparse_file, decltype(&sparse_file_destroy)>;
 
+class ZipImageSource;
+class LocalImageSource;
 /* util stuff */
 double now();
 void set_verbose();
@@ -35,6 +37,8 @@ std::string fb_fix_numeric_var(std::string var);
 class ImageSource {
   public:
     virtual ~ImageSource(){};
+    virtual ZipImageSource* AsZipImageSource() { return nullptr; }
+    virtual LocalImageSource* AsLocalImageSource() { return nullptr; }
     virtual bool ReadFile(const std::string& name, std::vector<char>* out) const = 0;
     virtual android::base::unique_fd OpenFile(const std::string& name) const = 0;
 };
