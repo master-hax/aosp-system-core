@@ -97,8 +97,8 @@ public:
  */
 
 template <typename T>
-class Flattenable {
-public:
+class [[deprecated("Errorprone, use AIDL/Parcelable instead")]] Flattenable {
+  public:
     // size in bytes of the flattened object
     inline size_t getFlattenedSize() const;
 
@@ -151,8 +151,8 @@ inline status_t Flattenable<T>::unflatten(
  * LightFlattenable objects must implement this protocol.
  */
 template <typename T>
-class LightFlattenable {
-public:
+class [[deprecated("Errorprone, use AIDL/Parcelable instead")]] LightFlattenable {
+  public:
     // returns whether this object always flatten into the same size.
     // for efficiency, this should always be inline.
     inline bool isFixedSize() const;
@@ -194,10 +194,8 @@ inline status_t LightFlattenable<T>::unflatten(void const* buffer, size_t size) 
  * need to implement any methods; obviously Foo must be a POD structure.
  */
 template <typename T>
-class LightFlattenablePod : public LightFlattenable<T> {
-public:
-    inline bool isFixedSize() const {
-        return true;
+class [[deprecated("Errorprone, use AIDL/Parcelable instead")]] LightFlattenablePod
+    : public LightFlattenable<T>{public : inline bool isFixedSize() const {return true;
     }
 
     inline size_t getFlattenedSize() const {
