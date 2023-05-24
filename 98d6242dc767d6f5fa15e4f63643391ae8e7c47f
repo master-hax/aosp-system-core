@@ -34,6 +34,24 @@
       "parentUuid": "c8e0c901_f269361e",
       "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76bfbf74_d9de8caa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-24T20:44:02Z",
+      "side": 1,
+      "message": "heh, yeah, true. i\u0027d argue that even if that does become a problem, we should probably deal with it on the logd end anyway? (your change lgtm.)",
+      "parentUuid": "3763e5fa_fbfdc566",
+      "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
