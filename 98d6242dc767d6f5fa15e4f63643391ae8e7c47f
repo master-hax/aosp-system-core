@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8e0c901_f269361e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-24T20:34:36Z",
+      "side": 1,
+      "message": "(i don\u0027t think you could abuse that even if you tried, right, because the logd message limit is 1024[ish] bytes?)",
+      "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
