@@ -16,6 +16,24 @@
       "message": "(i don\u0027t think you could abuse that even if you tried, right, because the logd message limit is 1024[ish] bytes?)",
       "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3763e5fa_fbfdc566",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-24T20:37:30Z",
+      "side": 1,
+      "message": "If you wanted to do something malicious, you could create something like a\\na\\n etc and that one message would fill things if you only allowed 500 messages total, not 500 messages from the log.\n\nI\u0027m not sure if I\u0027m being too paranoid though.",
+      "parentUuid": "c8e0c901_f269361e",
+      "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
