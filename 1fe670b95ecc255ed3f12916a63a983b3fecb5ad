@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2adb614d_a5f43538",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1955624
+      },
+      "writtenOn": "2023-05-24T09:11:59Z",
+      "side": 1,
+      "message": "Hey Kristen, the branch is wrong. Can you cherry-pick this to the android12L-tests-dev branch?\n\nThank you!",
+      "revId": "1fe670b95ecc255ed3f12916a63a983b3fecb5ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
