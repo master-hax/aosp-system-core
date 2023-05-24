@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "314462d8_0bae0383",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1931937
+      },
+      "writtenOn": "2023-05-24T03:50:54Z",
+      "side": 1,
+      "message": "Please review this case for merge on 12l-dev",
+      "revId": "e9ac9a201594cad4a434efabfba611155e640aba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
