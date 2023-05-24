@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41f9fc66_b2af4073",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1931937
+      },
+      "writtenOn": "2023-05-24T03:49:59Z",
+      "side": 1,
+      "message": "Please review this ticket for cherry-pick on 12L-dev",
+      "revId": "9648a2da3b47f775b0588369158af0cb81c37a28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
