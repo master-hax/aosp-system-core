@@ -52,6 +52,24 @@
       "parentUuid": "3763e5fa_fbfdc566",
       "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc58e249_50f507e2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-25T00:27:42Z",
+      "side": 1,
+      "message": "Yep, we should probably just break newlines when logging already, but something to look at in the future.",
+      "parentUuid": "76bfbf74_d9de8caa",
+      "revId": "98d6242dc767d6f5fa15e4f63643391ae8e7c47f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
