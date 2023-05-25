@@ -85,6 +85,26 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
     }
 }
 
+// Find directories in format of "/lib/modules/x.y.z-*".
+static int KernelVersionNameFilter(const dirent* de) {
+    std::vector<std::string> lines;
+    std::string kernel_version;
+    utsname uts;
+
+    // Grab the kernel major version (x) and minor version (y), e.g. x.y.z
+    uname(&uts);
+    lines = android::base::Split(uts.release, ".");
+    if (lines.size() < 3) {
+        return 0;
+    }
+    kernel_version = std::string(lines[0] + "." + lines[1]);
+
+    if (android::base::StartsWith(de->d_name, kernel_version)) {
+        return 1;
+    }
+    return 0;
+}
+
 }  // anonymous namespace
 
 extern "C" int modprobe_main(int argc, char** argv) {
@@ -192,9 +212,19 @@ extern "C" int modprobe_main(int argc, char** argv) {
     }
 
     if (mod_dirs.empty()) {
-        utsname uts;
-        uname(&uts);
-        mod_dirs.emplace_back(android::base::StringPrintf("/lib/modules/%s", uts.release));
+        static constexpr auto LIB_MODULES_PREFIX = "/lib/modules/";
+        dirent** kernel_dirs = NULL;
+        int n;
+
+        n = scandir(LIB_MODULES_PREFIX, &kernel_dirs, KernelVersionNameFilter, NULL);
+        if (n == -1) {
+            LOG(ERROR) << "Failed to scan dir " << LIB_MODULES_PREFIX;
+        } else if (n > 0) {
+            while (n--) {
+                mod_dirs.emplace_back(LIB_MODULES_PREFIX + std::string(kernel_dirs[n]->d_name));
+            }
+        }
+        free(kernel_dirs);
     }
 
     LOG(DEBUG) << "mode is " << mode;
