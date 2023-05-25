@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ecf6f7b_ef8eb24d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1931937
+      },
+      "writtenOn": "2023-05-25T00:36:12Z",
+      "side": 1,
+      "message": "Cherry pick to \tandroid12L-tests-dev branch",
+      "revId": "ae315f0494cb506edaae7290fd37c81c731aa830",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
