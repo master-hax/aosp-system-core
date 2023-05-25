@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee99c869_656e7c18",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-05-25T11:40:40Z",
+      "side": 1,
+      "message": "Thanks for handling this. Still setting up my ZRH workstation + getting devices so I can\u0027t flash Android right now :(",
+      "revId": "5a0ca6974d8cb8b1c121214aa7c63e90fa584594",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ad367de_2418b108",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-05-25T11:40:40Z",
+      "side": 1,
+      "message": "probably confusing because `debuggerd_handle_signal` is just for handling recoverable gwp-asan (maybe we should rename to `debuggerd_handle_libsigchain_signal` or something that is \"we\u0027re doing first-chance signal handling from libsigchain\"). we can fast-return here.\n\ntechnically, we don\u0027t need to update this as the pointers should *never* be null here, as it\u0027s only from sigchain, which will always call the apexed libc. but heck, let\u0027s be safe\n\n```suggestion\n  if (g_callbacks.get_gwp_asan_callbacks \u003d\u003d nullptr) return false;\n  gwp_asan_callbacks_t gwp_asan_callbacks \u003d g_callbacks.get_gwp_asan_callbacks();\n  if (gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery \u003d\u003d nullptr ||\n      gwp_asan_callbacks.debuggerd_gwp_asan_pre_crash_report \u003d\u003d nullptr ||\n      gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report \u003d\u003d nullptr ||\n      !gwp_asan_callbacks.debuggerd_needs_gwp_asan_recovery(info-\u003esi_addr)) {\n    return false;\n  }\n```",
+      "range": {
+        "startLine": 770,
+        "startChar": 2,
+        "endLine": 781,
+        "endChar": 3
+      },
+      "revId": "5a0ca6974d8cb8b1c121214aa7c63e90fa584594",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99e847ed_6ffe5cad",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-05-25T11:40:40Z",
+      "side": 1,
+      "message": "not necessary with fast-return\n\n```suggestion\n  } else {\n```",
+      "range": {
+        "startLine": 803,
+        "startChar": 0,
+        "endLine": 803,
+        "endChar": 43
+      },
+      "revId": "5a0ca6974d8cb8b1c121214aa7c63e90fa584594",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
