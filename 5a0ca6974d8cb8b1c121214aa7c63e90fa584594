@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc7584e5_baa5590d",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-25T19:48:31Z",
+      "side": 1,
+      "message": "I changed the code.\n\nAnd, yes this function name is very confusing. I\u0027ll fix the name in a follow-up cl.",
+      "parentUuid": "0ad367de_2418b108",
+      "range": {
+        "startLine": 770,
+        "startChar": 2,
+        "endLine": 781,
+        "endChar": 3
+      },
+      "revId": "5a0ca6974d8cb8b1c121214aa7c63e90fa584594",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "99e847ed_6ffe5cad",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-05-25T11:40:40Z",
       "side": 1,
       "message": "not necessary with fast-return\n\n```suggestion\n  } else {\n```",
+      "range": {
+        "startLine": 803,
+        "startChar": 0,
+        "endLine": 803,
+        "endChar": 43
+      },
+      "revId": "5a0ca6974d8cb8b1c121214aa7c63e90fa584594",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be8a5eef_6bb89ed1",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-25T19:48:31Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "99e847ed_6ffe5cad",
       "range": {
         "startLine": 803,
         "startChar": 0,
