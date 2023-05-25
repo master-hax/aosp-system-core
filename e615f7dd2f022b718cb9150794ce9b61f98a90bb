@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24fec78b_183baf49",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-05-25T02:16:38Z",
+      "side": 1,
+      "message": "If you use the linker64 from /system/bin/bootstrap you can reproduce the crash when running something like crasher64 abort.",
+      "revId": "e615f7dd2f022b718cb9150794ce9b61f98a90bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
