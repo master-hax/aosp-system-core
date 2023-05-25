@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33607a99_b48e86d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-25T15:10:58Z",
+      "side": 1,
+      "message": "this matches what i get if i run generate.sh locally, so lgtm.\n\nccross: generate.sh looks like this:\n```\nCPP\u003d\u0027cpp -undef -E -P crash_dump.policy.def\u0027\n$CPP -D__arm__ -o crash_dump.arm.policy\n$CPP -D__aarch64__ -D__LP64__ -o crash_dump.arm64.policy\n$CPP -D__riscv -D__LP64__ -o crash_dump.riscv64.policy\n$CPP -D__i386__ -o crash_dump.x86.policy\n$CPP -D__x86_64__ -D__LP64__ -o crash_dump.x86_64.policy\n```\ncan i call the c preprocessor from a genrule (and get rid of this manual step)?",
+      "revId": "4d8f37edae8e471e8524a3bd3b88f46700200d4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
