@@ -16,6 +16,24 @@
       "message": "this matches what i get if i run generate.sh locally, so lgtm.\n\nccross: generate.sh looks like this:\n```\nCPP\u003d\u0027cpp -undef -E -P crash_dump.policy.def\u0027\n$CPP -D__arm__ -o crash_dump.arm.policy\n$CPP -D__aarch64__ -D__LP64__ -o crash_dump.arm64.policy\n$CPP -D__riscv -D__LP64__ -o crash_dump.riscv64.policy\n$CPP -D__i386__ -o crash_dump.x86.policy\n$CPP -D__x86_64__ -D__LP64__ -o crash_dump.x86_64.policy\n```\ncan i call the c preprocessor from a genrule (and get rid of this manual step)?",
       "revId": "4d8f37edae8e471e8524a3bd3b88f46700200d4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a52bb635_13b56254",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-05-25T16:45:42Z",
+      "side": 1,
+      "message": "You can use something like https://cs.android.com/android/platform/superproject/+/master:bionic/libc/Android.bp;l\u003d2495;drc\u003d52541eea33fd8622d191b9ef0451c644ec22f7c3 to run the preprocessor in a cc_object, and then feed it to a cc_genrule.",
+      "parentUuid": "33607a99_b48e86d6",
+      "revId": "4d8f37edae8e471e8524a3bd3b88f46700200d4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
