@@ -26,20 +26,10 @@ struct FlashingPlan;
 struct Image;
 using ImageEntry = std::pair<const Image*, std::string>;
 
-class FlashTask;
-class RebootTask;
-class UpdateSuperTask;
-class WipeTask;
-
 class Task {
   public:
     Task() = default;
     virtual void Run() = 0;
-    virtual FlashTask* AsFlashTask() { return nullptr; }
-    virtual RebootTask* AsRebootTask() { return nullptr; }
-    virtual UpdateSuperTask* AsUpdateSuperTask() { return nullptr; }
-    virtual WipeTask* AsWipeTask() { return nullptr; }
-
     virtual ~Task() = default;
 };
 
@@ -47,12 +37,7 @@ class FlashTask : public Task {
   public:
     FlashTask(const std::string& slot, const std::string& pname, const std::string& fname,
               const bool apply_vbmeta);
-    virtual FlashTask* AsFlashTask() override { return this; }
 
-    std::string GetPartition() { return pname_; }
-    std::string GetImageName() { return fname_; }
-    std::string GetPartitionAndSlot();
-    std::string GetSlot() { return slot_; }
     void Run() override;
 
   private:
@@ -66,7 +51,6 @@ class RebootTask : public Task {
   public:
     RebootTask(const FlashingPlan* fp);
     RebootTask(const FlashingPlan* fp, const std::string& reboot_target);
-    virtual RebootTask* AsRebootTask() override { return this; }
     void Run() override;
 
   private:
@@ -78,10 +62,8 @@ class FlashSuperLayoutTask : public Task {
   public:
     FlashSuperLayoutTask(const std::string& super_name, std::unique_ptr<SuperFlashHelper> helper,
                          SparsePtr sparse_layout, uint64_t super_size);
-    static std::unique_ptr<FlashSuperLayoutTask> Initialize(const FlashingPlan* fp,
+    static std::unique_ptr<FlashSuperLayoutTask> Initialize(FlashingPlan* fp,
                                                             std::vector<ImageEntry>& os_images);
-    static std::unique_ptr<FlashSuperLayoutTask> InitializeFromTasks(
-            const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
     using ImageEntry = std::pair<const Image*, std::string>;
     void Run() override;
 
@@ -95,8 +77,6 @@ class FlashSuperLayoutTask : public Task {
 class UpdateSuperTask : public Task {
   public:
     UpdateSuperTask(const FlashingPlan* fp);
-    virtual UpdateSuperTask* AsUpdateSuperTask() override { return this; }
-
     void Run() override;
 
   private:
@@ -129,8 +109,6 @@ class DeleteTask : public Task {
 class WipeTask : public Task {
   public:
     WipeTask(const FlashingPlan* fp, const std::string& pname);
-    virtual WipeTask* AsWipeTask() override { return this; }
-
     void Run() override;
 
   private:
