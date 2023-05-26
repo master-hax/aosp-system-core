@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "107247e1_784c53e7",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-26T00:01:55Z",
+      "side": 1,
+      "message": "sscanf() is your friend.\n\nsee https://source.corp.google.com/android/system/core/init/init.cpp;l\u003d699?q\u003duname%20sscanf\u0026sq\u003dpackage:%5Eandroid$%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F for example.",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3142194a_2aefdfeb",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-26T00:01:55Z",
+      "side": 1,
+      "message": "(how many directory entries are we likely to be called for? should we cache this rather than recompute it for every comparison?)",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a21f02d_8d7dcbc3",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-26T00:01:55Z",
+      "side": 1,
+      "message": "don\u0027t declare until you can initialize",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4eb802a6_b4d16019",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-05-26T00:01:55Z",
+      "side": 1,
+      "message": "PLOG?\n\nshould we exit here?",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
