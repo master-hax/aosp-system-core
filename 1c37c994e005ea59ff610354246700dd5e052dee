@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6911b973_86c36727",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-26T18:01:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cd8630c4_6047f2b3",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3142194a_2aefdfeb",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "Since it\u0027s possible to put the modules directly under `/lib/modules` and not `/lib/modules/\u003cuname\u003e`, there technically could be 10+ files under this directory. So I agree it would be good to cache the kernel version.",
       "parentUuid": "3142194a_2aefdfeb",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dfaff6c0_7b411058",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-26T18:01:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2abd7d86_c190b99c",
       "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -106,6 +142,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eae0ce0e_15081bd7",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-26T18:01:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a391b4ab_076ec825",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4eb802a6_b4d16019",
@@ -137,6 +191,24 @@
       "side": 1,
       "message": "thanks, I wasn\u0027t sure the difference between LOG vs PLOG. Just looked and it and agree I should be using PLOG.\n\nExiting here would be fine as well. For (n \u003d\u003d 0) I was wanting to keep the same error flow to show the below debug logs.",
       "parentUuid": "4eb802a6_b4d16019",
+      "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "120fec28_e0a69706",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-26T18:01:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b6db38a_675fac96",
       "revId": "1c37c994e005ea59ff610354246700dd5e052dee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
