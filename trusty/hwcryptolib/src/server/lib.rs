@@ -25,6 +25,7 @@ mod hwcrypto_key_generation;
 mod hwcrypto_key_manipulation;
 mod hwcrypto_rsa_operations;
 mod hwcrypto_symmetric_operations;
+mod key_processing;
 mod rsa_decrypt_operation;
 mod rsa_sign_operation;
 mod symmetric_aead_operation;
