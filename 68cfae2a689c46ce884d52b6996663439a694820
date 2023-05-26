@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "407d1ad0_6b222619",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2023-05-26T07:48:41Z",
+      "side": 1,
+      "message": "As we are here and we align with how the first stage loads modules, could we also look for modules in /lib/modules/ ? This would remove that burden on the kernel",
+      "revId": "68cfae2a689c46ce884d52b6996663439a694820",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
