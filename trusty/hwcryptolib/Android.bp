@@ -53,4 +53,20 @@ rust_library_host {
     defaults: [
         "libhwcrypto_defaults",
     ],
+    rustlibs: [
+        "libhwcryptocommon",
+    ],
+}
+
+rust_test_host {
+    name: "libhwcryptoserver_test",
+    crate_name: "hwcryptoserver_test",
+    srcs: ["src/server/lib.rs"],
+    defaults: [
+        "libhwcrypto_defaults",
+    ],
+    rustlibs: [
+        "libhwcryptocommon",
+    ],
+    test_suites: ["general-tests"],
 }
