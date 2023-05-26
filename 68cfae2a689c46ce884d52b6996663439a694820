@@ -16,6 +16,24 @@
       "message": "As we are here and we align with how the first stage loads modules, could we also look for modules in /lib/modules/ ? This would remove that burden on the kernel",
       "revId": "68cfae2a689c46ce884d52b6996663439a694820",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77c8f5e7_7f2d0e12",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-05-26T16:25:07Z",
+      "side": 1,
+      "message": "yeah that\u0027s should be okay as well. I can include that",
+      "parentUuid": "407d1ad0_6b222619",
+      "revId": "68cfae2a689c46ce884d52b6996663439a694820",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
