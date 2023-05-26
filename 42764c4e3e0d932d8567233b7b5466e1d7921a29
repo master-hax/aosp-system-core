@@ -16,6 +16,24 @@
       "message": "Instead of shutting down system , print the reboot_on_failure and that informs us its reboot / shutdown",
       "revId": "42764c4e3e0d932d8567233b7b5466e1d7921a29",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9f25568_8c561864",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1970380
+      },
+      "writtenOn": "2023-05-26T09:50:36Z",
+      "side": 1,
+      "message": "I mean print on_failure_reboot_target_ this tells us that its reboot or shutdown",
+      "parentUuid": "5aff0919_52887b61",
+      "revId": "42764c4e3e0d932d8567233b7b5466e1d7921a29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
