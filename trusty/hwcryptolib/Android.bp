@@ -17,14 +17,40 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-rust_library {
-    name: "libhwcrypto",
-    crate_name: "hwcrypto",
+rust_defaults {
+    name: "libhwcrypto_defaults",
+    edition: "2021",
+    lints: "android",
+    rustlibs: [
+        "android.hardware.security.see-rust",
+        "libciborium",
+        "libcoset",
+        "libbinder_rs",
+        "libkmr_common",
+        "libkmr_crypto_boring",
+        "libkmr_wire",
+        "libzeroize",
+    ],
+}
+
+rust_library_host {
+    name: "libhwcryptocommon",
+    crate_name: "hwcryptocommon",
+    srcs: [
+        "src/common/lib.rs"
+    ],
+    defaults: [
+        "libhwcrypto_defaults",
+    ],
+}
+
+rust_library_host {
+    name: "libhwcryptoserver",
+    crate_name: "hwcryptoserver",
     srcs: [
         "src/server/lib.rs"
     ],
-    rustlibs: [
-        "android.hardware.security.see-rust",
-        "libbinder_rs",
+    defaults: [
+        "libhwcrypto_defaults",
     ],
 }
