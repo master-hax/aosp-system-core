@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcdfd89c_6d50cfdf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-05-30T18:23:17Z",
+      "side": 1,
+      "message": "rename() requires a `fsync()` on the parent directory to guarantee that writes hit disk. This change breaks atomicity promises.",
+      "revId": "f1f74fd8bc74500ce0e8d6e4d94c6fa5dd53ce4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
