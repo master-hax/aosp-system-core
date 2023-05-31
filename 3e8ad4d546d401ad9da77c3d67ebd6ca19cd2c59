@@ -52,6 +52,23 @@
       "parentUuid": "51f88188_75f2d048",
       "revId": "3e8ad4d546d401ad9da77c3d67ebd6ca19cd2c59",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f909007_9fc09c9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2023-05-31T22:59:57Z",
+      "side": 1,
+      "message": "Failure due to b/285148075 .",
+      "revId": "3e8ad4d546d401ad9da77c3d67ebd6ca19cd2c59",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
