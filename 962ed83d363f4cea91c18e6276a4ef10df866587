@@ -16,6 +16,23 @@
       "message": "Hi Yifan, DAvid and Alessio,\n\nCan you help to review this CL?",
       "revId": "962ed83d363f4cea91c18e6276a4ef10df866587",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41b8cd57_4da502a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2023-05-31T10:35:05Z",
+      "side": 1,
+      "message": "Hi Jeff and Jie, I don\u0027t have a strong negative opinion against this change, although:\n- the commit message should be rewritten to specify what this change does, why and what is the outcome. Otherwise it would be a nightmare to bisect this change in case we need to revert it. My first question would be if the ANR happening in the top-app? If so, how can it be that the problem would be solved by just increasing the niceness of the snapshot creation? All of this should be explained in the commit message.\n- I am not a fan of programs changing their own scheduling settings (although this one is lowering the nice level, which is not too bad). Even worse if, as in this case, it\u0027s a library which unexpectedly (no documentation) changes the behavior of the programs that are using it.\n\nI think it would be much better to let the scheduling policy be decided by some upper layers, such as .rc file, activity manager, or maybe is some tuning in update engine, even better using existing cgroups if possible.\n\nAdding Akilesh here who has done some prior investigation on possible performance issues in this area.",
+      "revId": "962ed83d363f4cea91c18e6276a4ef10df866587",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
