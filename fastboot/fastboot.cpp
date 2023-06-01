@@ -428,6 +428,7 @@ static Transport* NetworkDeviceConnected(bool print = false) {
 // The returned Transport is a singleton, so multiple calls to this function will return the same
 // object, and the caller should not attempt to delete the returned Transport.
 static Transport* open_device() {
+    verbose("Detecting fastboot device %s", serial);
     if (serial != nullptr) {
         return open_device(serial);
     }
@@ -1529,7 +1530,10 @@ bool is_userspace_fastboot() {
 }
 
 void reboot_to_userspace_fastboot() {
-    fb->RebootTo("fastboot");
+    auto ret = fb->RebootTo("fastboot");
+    if (fb->RebootTo("fastboot") != fastboot::SUCCESS) {
+        verbose("Failed to reboot; error %d.", ret);
+    }
 
     auto* old_transport = fb->set_transport(nullptr);
     delete old_transport;
