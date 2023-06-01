@@ -96,6 +96,8 @@ static int try_interfaces(IOUSBDeviceInterface500** dev, usb_handle* handle) {
     HRESULT result;
     SInt32 score;
     UInt8 interfaceNumEndpoints;
+    int i = 0;
+    ERR("try_interfaces\n");
 
     request.bInterfaceClass = 0xff;
     request.bInterfaceSubClass = 0x42;
@@ -111,6 +113,7 @@ static int try_interfaces(IOUSBDeviceInterface500** dev, usb_handle* handle) {
     }
 
     while ((usbInterface = IOIteratorNext(iterator))) {
+        ERR("try_interfaces loop %d\n", i++);
         // Create an intermediate plugin
         kr = IOCreatePlugInInterfaceForService(
                 usbInterface,
@@ -276,6 +279,7 @@ static int try_device(io_service_t device, usb_handle *handle) {
     UInt8 serialIndex;
     UInt32 locationId;
 
+    ERR("try_device\n");
     // Create an intermediate plugin.
     kr = IOCreatePlugInInterfaceForService(device,
             kIOUSBDeviceUserClientTypeID,
@@ -399,6 +403,9 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
     h.success = 0;
     h.callback = callback;
 
+    int i = 0;
+    ERR("Enter init_usb\n");
+
     /*
      * Create our matching dictionary to find appropriate devices.
      * IOServiceAddMatchingNotification consumes the reference, so we
@@ -420,12 +427,14 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
     }
 
     for (;;) {
+        ERR("init_usb loop %d\n", i++);
         if (! IOIteratorIsValid(iterator)) {
             /*
              * Apple documentation advises resetting the iterator if
              * it should become invalid during iteration.
              */
             IOIteratorReset(iterator);
+            ERR("init_usb IOIteratorIsValid is false\n");
             continue;
         }
 
@@ -436,9 +445,12 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
         }
 
         if (try_device(device, &h) != 0) {
+            ERR("init_usb try_device fail\n");
             IOObjectRelease(device);
             continue;
         }
+
+        ERR("init_usb h.success %d\n", h.success);
 
         if (h.success) {
             handle->reset(new usb_handle);
@@ -452,6 +464,7 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
 
     IOObjectRelease(iterator);
 
+    ERR("init_usb done\n");
     return ret;
 }
 
@@ -463,6 +476,8 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
 
 UsbTransport* usb_open(ifc_match_func callback, uint32_t timeout_ms) {
     std::unique_ptr<usb_handle> handle;
+
+    ERR("Enter usb_open\n");
 
     if (init_usb(callback, &handle) < 0) {
         /* Something went wrong initializing USB. */
