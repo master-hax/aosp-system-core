@@ -414,6 +414,8 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
     h.success = 0;
     h.callback = callback;
 
+    ERR("Enter init_usb\n");
+
     /*
      * Create our matching dictionary to find appropriate devices.
      * IOServiceAddMatchingNotification consumes the reference, so we
@@ -434,6 +436,7 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
         return -1;
     }
 
+    ERR("init_usb loop\n");
     for (;;) {
         if (! IOIteratorIsValid(iterator)) {
             /*
@@ -466,6 +469,7 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
 
     IOObjectRelease(iterator);
 
+    ERR("init_usb done\n");
     return ret;
 }
 
@@ -477,6 +481,8 @@ static int init_usb(ifc_match_func callback, std::unique_ptr<usb_handle>* handle
 
 UsbTransport* usb_open(ifc_match_func callback, uint32_t timeout_ms) {
     std::unique_ptr<usb_handle> handle;
+
+    ERR("Enter usb_open\n");
 
     if (init_usb(callback, &handle) < 0) {
         /* Something went wrong initializing USB. */
