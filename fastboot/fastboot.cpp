@@ -349,6 +349,7 @@ Result<NetworkSerial, FastbootError> ParseNetworkSerial(const std::string& seria
 static Transport* open_device(const char* local_serial, bool wait_for_device = true,
                               bool announce = true) {
     const Result<NetworkSerial, FastbootError> network_serial = ParseNetworkSerial(local_serial);
+    int i = 0;
 
     Transport* transport = nullptr;
     while (true) {
@@ -384,9 +385,10 @@ static Transport* open_device(const char* local_serial, bool wait_for_device = t
 
         if (announce) {
             announce = false;
-            LOG(ERROR) << "< waiting for " << local_serial << ">";
+            LOG(ERROR) << "< waiting for " << local_serial << " >";
         }
         std::this_thread::sleep_for(std::chrono::seconds(1));
+        fprintf(stderr, "Attempt %d\n", i++);
     }
 }
 
@@ -428,10 +430,12 @@ static Transport* NetworkDeviceConnected(bool print = false) {
 // The returned Transport is a singleton, so multiple calls to this function will return the same
 // object, and the caller should not attempt to delete the returned Transport.
 static Transport* open_device() {
+    fprintf(stderr, "Polling for fastboot device %s\n", serial);
     if (serial != nullptr) {
         return open_device(serial);
     }
 
+    int i = 0;
     bool announce = true;
     Transport* transport = nullptr;
     while (true) {
@@ -450,6 +454,7 @@ static Transport* open_device() {
             LOG(ERROR) << "< waiting for any device >";
         }
         std::this_thread::sleep_for(std::chrono::seconds(1));
+        fprintf(stderr, "Atemmpt %d\n", i++);
     }
 }
 
