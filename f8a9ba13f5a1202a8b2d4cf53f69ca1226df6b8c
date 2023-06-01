@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d69bd629_9c489826",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-06-01T22:32:43Z",
+      "side": 1,
+      "message": "But you might consider changing the KernelLibcutilsTest.xml so it puts the files in /data/local/tests/unrestricted. Otherwise, you won\u0027t get good data if the test crashes.",
+      "revId": "f8a9ba13f5a1202a8b2d4cf53f69ca1226df6b8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
