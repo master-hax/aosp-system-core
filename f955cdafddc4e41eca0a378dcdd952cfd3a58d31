@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6256c04_6286c2c0",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-06-01T14:18:46Z",
+      "side": 1,
+      "message": "Where do these values come from? Can we provide a spec reference in the comment message or in comments?",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 24
+      },
+      "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
