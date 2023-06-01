@@ -319,6 +319,8 @@ static int list_devices_callback(usb_ifc_info* info) {
 static Transport* open_device() {
     bool announce = true;
 
+    fprintf(stderr, "Polling for fastboot device %s\n", serial);
+
     Socket::Protocol protocol = Socket::Protocol::kTcp;
     std::string host;
     int port = 0;
@@ -369,6 +371,7 @@ static Transport* open_device() {
             fprintf(stderr, "< waiting for %s >\n", serial ? serial : "any device");
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        fprintf(stderr, "Atemmpt %d\n", i++);
     }
 }
 
