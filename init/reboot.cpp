@@ -680,8 +680,6 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
                            << "': " << result.error();
             }
             s->SetShutdownCritical();
-        } else if (do_shutdown_animation) {
-            continue;
         } else if (s->IsShutdownCritical()) {
             // Start shutdown critical service if not started.
             if (auto result = s->Start(); !result.ok()) {
@@ -720,6 +718,7 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
                 service->Start();
             }
             service->SetShutdownCritical();  // will not check animation class separately
+            stop_first.erase(service->name());
         }
 
         if (do_shutdown_animation) {
