@@ -16,6 +16,24 @@
       "message": "But you might consider changing the KernelLibcutilsTest.xml so it puts the files in /data/local/tests/unrestricted. Otherwise, you won\u0027t get good data if the test crashes.",
       "revId": "f8a9ba13f5a1202a8b2d4cf53f69ca1226df6b8c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "742e86e5_a43f521c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1942356
+      },
+      "writtenOn": "2023-06-02T19:28:13Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll open another CL for that.",
+      "parentUuid": "d69bd629_9c489826",
+      "revId": "f8a9ba13f5a1202a8b2d4cf53f69ca1226df6b8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
