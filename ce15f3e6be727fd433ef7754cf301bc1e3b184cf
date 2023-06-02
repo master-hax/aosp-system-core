@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a36913e1_f49d2ee6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-02T03:57:32Z",
+      "side": 1,
+      "message": "Yeah, we can\u0027t do this, since old builds won\u0027t have fastboot-info.txt.",
+      "revId": "ce15f3e6be727fd433ef7754cf301bc1e3b184cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
