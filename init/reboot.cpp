@@ -680,14 +680,14 @@ static void DoReboot(unsigned int cmd, const std::string& reason, const std::str
                            << "': " << result.error();
             }
             s->SetShutdownCritical();
-        } else if (do_shutdown_animation) {
-            continue;
         } else if (s->IsShutdownCritical()) {
             // Start shutdown critical service if not started.
             if (auto result = s->Start(); !result.ok()) {
                 LOG(ERROR) << "Could not start shutdown critical service '" << s->name()
                            << "': " << result.error();
             }
+        } else if (do_shutdown_animation && s->classnames().count("animation") > 0) {
+            // Need these for shutdown animations.
         } else {
             stop_first.insert(s->name());
         }
