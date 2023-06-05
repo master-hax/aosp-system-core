@@ -71,8 +71,12 @@ int __android_get_control_from_env(const char* prefix, const char* name) {
     if ((fd < 0) || (fd > INT_MAX)) return -1;
 
     // Still open?
-    if (TEMP_FAILURE_RETRY(fcntl(fd, F_GETFD)) < 0) return -1;
+    int flags = TEMP_FAILURE_RETRY(fcntl(fd, F_GETFD));
+    if (flags < 0) return -1;
 
+    if (!(flags & FD_CLOEXEC)) {
+        fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
+    }
     return static_cast<int>(fd);
 }
 
