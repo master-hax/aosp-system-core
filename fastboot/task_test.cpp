@@ -21,6 +21,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <unordered_map>
 #include "android-base/strings.h"
@@ -58,6 +59,22 @@ static std::vector<std::unique_ptr<Task>> collectTasks(FlashingPlan* fp,
 std::unique_ptr<Task> ParseCommand(FlashingPlan* fp, std::string command) {
     std::vector<std::string> vec_command = android::base::Split(command, " ");
     return ParseFastbootInfoLine(fp, vec_command);
+}
+
+static bool compareTaskLists(std::vector<std::unique_ptr<Task>> hardcoded_tasks,
+                             std::vector<std::unique_ptr<Task>> fastboot_info_tasks) {
+    std::set<std::string> list;
+    for (auto& task : fastboot_info_tasks) {
+        list.insert(task->ToString());
+    }
+    for (auto& task : hardcoded_tasks) {
+        if (list.find(task->ToString()) == list.end()) {
+            std::cout << "ERROR: " << task->ToString()
+                      << " not found in task list created by fastboot-info.txt";
+            return false;
+        }
+    }
+    return true;
 }
 
 TEST_F(ParseTest, CorrectFlashTaskFormed) {
@@ -147,7 +164,6 @@ TEST_F(ParseTest, CorrectTaskFormed) {
 TEST_F(ParseTest, CorrectDriverCalls) {
     fastboot::MockFastbootDriver fb;
     fp->fb = &fb;
-    fp->sparse_limit = 50;
 
     EXPECT_CALL(fb, RebootTo(_, _, _)).Times(1);
     EXPECT_CALL(fb, Reboot(_, _)).Times(1);
@@ -159,4 +175,20 @@ TEST_F(ParseTest, CorrectDriverCalls) {
     for (auto& task : tasks) {
         task->Run();
     }
+}
+
+TEST_F(ParseTest, CorrectTaskLists) {
+    if (!get_android_product_out()) {
+        GTEST_SKIP();
+    }
+    LocalImageSource s = LocalImageSource();
+    fp->source = &s;
+    fp->sparse_limit = std::numeric_limits<int64_t>::max();
+
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+    fp->should_optimize = false;
+
+    FlashAllTool tool(fp.get());
+    ASSERT_TRUE(compareTaskLists(tool.CollectTasks(false, true), tool.CollectTasks(true, true)));
 }
