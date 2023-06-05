@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc3cf0cd_d3df8537",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-05T13:37:53Z",
+      "side": 1,
+      "message": "(Previous CL for background: aosp/2615173)\n\nThis could cause unexpected breakage, although anything relying on the current behavior probably shouldn\u0027t.\n\nThis might mask errors too - really we should set the flag as early as possible, and an exec might occasionally happen before we call this function.\n\nBut maybe now is a good time to make a change?\n\nI prefer these semantics, anyway.",
+      "revId": "4915806b718d72b86e411f75618ca0442beb80be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9fdabbe_7eee5cb9",
+        "filename": "libcutils/android_get_control_file.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-05T13:37:53Z",
+      "side": 1,
+      "message": "Error check on this?",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 47
+      },
+      "revId": "4915806b718d72b86e411f75618ca0442beb80be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
