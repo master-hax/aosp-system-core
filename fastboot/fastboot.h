@@ -111,6 +111,8 @@ class FlashAllTool {
     FlashAllTool(FlashingPlan* fp);
 
     void Flash();
+    // used for testing purposes
+    bool CompareTaskLists();
 
   private:
     void CheckRequirements();
@@ -119,6 +121,8 @@ class FlashAllTool {
     void AddFlashTasks(const std::vector<std::pair<const Image*, std::string>>& images,
                        std::vector<std::unique_ptr<Task>>& tasks);
     std::vector<std::unique_ptr<Task>> CollectTasksFromImageList();
+    std::vector<std::unique_ptr<Task>> CollectTasksFromFastbootInfo();
+
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
     std::vector<std::unique_ptr<Task>> tasks_;
