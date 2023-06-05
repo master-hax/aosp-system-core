@@ -63,6 +63,30 @@
       },
       "revId": "4915806b718d72b86e411f75618ca0442beb80be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25690155_64612add",
+        "filename": "libcutils/android_get_control_file.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-05T13:49:31Z",
+      "side": 1,
+      "message": "It should never fail, and if it does something very wrong is going on, and we\u0027d not be honoring the documented contract.\n\nIt\u0027s harmless in Microdroid, partly because we know the exact selinux config, but I\u0027d happily make it fatal there too.",
+      "parentUuid": "ad22fd8b_90e9dbbd",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 47
+      },
+      "revId": "4915806b718d72b86e411f75618ca0442beb80be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
