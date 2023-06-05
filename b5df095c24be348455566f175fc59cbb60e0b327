@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f92317a_9747cbda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2023-06-05T13:25:26Z",
+      "side": 1,
+      "message": "Hi,\n\nI moved the CLOEXEC flag set to the c library. Could you please take a look?",
+      "revId": "b5df095c24be348455566f175fc59cbb60e0b327",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
