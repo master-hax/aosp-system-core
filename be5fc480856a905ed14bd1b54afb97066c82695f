@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36a69530_cbe7db2b",
+        "filename": "fastboot/task.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-05T21:16:35Z",
+      "side": 1,
+      "message": "Maybe \"ToString()\" instead?",
+      "revId": "be5fc480856a905ed14bd1b54afb97066c82695f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
