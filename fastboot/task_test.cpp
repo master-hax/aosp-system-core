@@ -159,3 +159,13 @@ TEST_F(ParseTest, CorrectDriverCalls) {
         task->Run();
     }
 }
+
+TEST_F(ParseTest, CorrectTaskLists) {
+    LocalImageSource s = LocalImageSource();
+    fp->source = &s;
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+
+    FlashAllTool tool(fp.get());
+    ASSERT_TRUE(tool.CompareTaskLists());
+}
