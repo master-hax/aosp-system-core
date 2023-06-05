@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d0ba87b_ca15c486",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 721,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-05T01:17:24Z",
+      "side": 1,
+      "message": "I think this is hard to spot. If this service is supposed to be removed, it shouldn\u0027t have added to the set in the first place. How about adding something like the below at L683?\n\n```\nelse if (do_shutdown_animation \u0026\u0026 service-\u003eclassnames().count(\"animation\") !\u003d 0) {\n    // these services are needed for animation. shouldn\u0027t be stopped\n    continue;  \n}\n```",
+      "range": {
+        "startLine": 721,
+        "startChar": 12,
+        "endLine": 721,
+        "endChar": 46
+      },
+      "revId": "06cdc3f4ed1cb3f7c8f3f00d8db6dcdc2829a90d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
