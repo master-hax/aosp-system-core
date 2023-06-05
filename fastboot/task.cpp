@@ -340,8 +340,9 @@ std::unique_ptr<InstallSignatureTask> InstallSignatureTask::GetSignatureTask(
     if (fp->source->ReadFile(sig_name, &signature_data)) {
         fp->fb->Download("signature", signature_data);
         fp->fb->RawCommand("signature", "installing signature");
+        return std::make_unique<InstallSignatureTask>(fp, sig_name, signature_data);
     }
-    return std::make_unique<InstallSignatureTask>(fp, sig_name, signature_data);
+    return nullptr;
 }
 
 void InstallSignatureTask::Run() {
