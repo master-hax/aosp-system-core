@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22b0a53c_205c23f9",
+        "filename": "fastboot/task.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-05T18:57:58Z",
+      "side": 1,
+      "message": "Having the individual functions is much better, since you can document what each one means and statically find their dependencies. And there\u0027s no room for mispelling the function name, whereas there is with a string key.",
+      "revId": "a72e45a192457c9a01a011e7f1c9c4275488c8fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
