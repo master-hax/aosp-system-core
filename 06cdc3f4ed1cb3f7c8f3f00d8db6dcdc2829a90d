@@ -22,6 +22,30 @@
       },
       "revId": "06cdc3f4ed1cb3f7c8f3f00d8db6dcdc2829a90d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0507472d_8728aec1",
+        "filename": "init/reboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 721,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-05T20:00:43Z",
+      "side": 1,
+      "message": "I didn\u0027t do this initially because it spreads the animation logic around. But they\u0027re pretty close together, so it seems fine.",
+      "parentUuid": "2d0ba87b_ca15c486",
+      "range": {
+        "startLine": 721,
+        "startChar": 12,
+        "endLine": 721,
+        "endChar": 46
+      },
+      "revId": "06cdc3f4ed1cb3f7c8f3f00d8db6dcdc2829a90d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
