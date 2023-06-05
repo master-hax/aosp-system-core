@@ -108,17 +108,18 @@ class FlashAllTool {
     FlashAllTool(FlashingPlan* fp);
 
     void Flash();
-
+    
   private:
     void CheckRequirements();
     void DetermineSlot();
     void CollectImages();
     void AddFlashTasks(const std::vector<std::pair<const Image*, std::string>>& images,
                        std::vector<std::unique_ptr<Task>>& tasks);
-    void HardcodedFlash();
+    std::vector<std::unique_ptr<Task>> CollectTasksFromImageList();
 
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
+    std::vector<std::unique_ptr<Task>> tasks_;
     FlashingPlan* fp_;
 };
 
