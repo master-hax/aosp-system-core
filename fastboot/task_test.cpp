@@ -21,6 +21,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <unordered_map>
 #include "android-base/strings.h"
@@ -147,7 +148,6 @@ TEST_F(ParseTest, CorrectTaskFormed) {
 TEST_F(ParseTest, CorrectDriverCalls) {
     fastboot::MockFastbootDriver fb;
     fp->fb = &fb;
-    fp->sparse_limit = 50;
 
     EXPECT_CALL(fb, RebootTo(_, _, _)).Times(1);
     EXPECT_CALL(fb, Reboot(_, _)).Times(1);
@@ -159,4 +159,20 @@ TEST_F(ParseTest, CorrectDriverCalls) {
     for (auto& task : tasks) {
         task->Run();
     }
+}
+
+TEST_F(ParseTest, CorrectTaskLists) {
+    if (!get_android_product_out()) {
+        GTEST_SKIP();
+    }
+    LocalImageSource s = LocalImageSource();
+    fp->source = &s;
+    fp->sparse_limit = std::numeric_limits<uint64_t>::max();
+
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+    fp->should_optimize = false;
+
+    FlashAllTool tool(fp.get());
+    ASSERT_TRUE(tool.CompareTaskLists());
 }
