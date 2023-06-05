@@ -1896,16 +1896,6 @@ void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::
     }
 }
 
-class ZipImageSource final : public ImageSource {
-  public:
-    explicit ZipImageSource(ZipArchiveHandle zip) : zip_(zip) {}
-    bool ReadFile(const std::string& name, std::vector<char>* out) const override;
-    unique_fd OpenFile(const std::string& name) const override;
-
-  private:
-    ZipArchiveHandle zip_;
-};
-
 bool ZipImageSource::ReadFile(const std::string& name, std::vector<char>* out) const {
     return UnzipToMemory(zip_, name, out);
 }
@@ -1928,12 +1918,6 @@ static void do_update(const char* filename, FlashingPlan* fp) {
 
     CloseArchive(zip);
 }
-
-class LocalImageSource final : public ImageSource {
-  public:
-    bool ReadFile(const std::string& name, std::vector<char>* out) const override;
-    unique_fd OpenFile(const std::string& name) const override;
-};
 
 bool LocalImageSource::ReadFile(const std::string& name, std::vector<char>* out) const {
     auto path = find_item_given_name(name);
