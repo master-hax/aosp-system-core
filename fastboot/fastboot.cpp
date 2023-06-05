@@ -174,7 +174,7 @@ static std::vector<Image> images = {
         // clang-format on
 };
 
-static char* get_android_product_out() {
+char* get_android_product_out() {
     char* dir = getenv("ANDROID_PRODUCT_OUT");
     if (dir == nullptr || dir[0] == '\0') {
         return nullptr;
@@ -1794,6 +1794,36 @@ void FlashAllTool::Flash() {
     return;
 }
 
+bool FlashAllTool::CompareTaskLists() {
+    std::vector<std::unique_ptr<Task>> t1, t2;
+    CollectImages();
+    AddFlashTasks(boot_images_, t1);
+    AddFlashTasks(os_images_, t1);
+    t2 = CollectTasksFromFastbootInfo();
+    auto remove_if_not_flash = [&](const auto& task) -> bool {
+        if (auto flash_task = task->AsFlashTask()) {
+            return false;
+        }
+        return true;
+    };
+    t2.erase(std::remove_if(t2.begin(), t2.end(), remove_if_not_flash), t2.end());
+    std::set<std::string> list;
+    for (auto& task : t2) {
+        list.insert(task->ToString());
+    }
+    for (auto& task : t1) {
+        if (list.find(task->ToString()) == list.end()) {
+            LOG(INFO) << task->ToString()
+                      << " not found in task list created from fastboot-info.txt";
+            for (auto& t : t2) {
+                LOG(INFO) << t->ToString();
+            }
+            return false;
+        }
+    }
+    return true;
+}
+
 void FlashAllTool::CheckRequirements() {
     std::vector<char> contents;
     if (!fp_->source->ReadFile("android-info.txt", &contents)) {
@@ -1876,6 +1906,16 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
     return tasks;
 }
 
+std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromFastbootInfo() {
+    std::vector<char> contents;
+    if (!fp_->source->ReadFile("fastboot-info.txt", &contents)) {
+        LOG(VERBOSE) << "Flashing from hardcoded images. fastboot-info.txt is empty or does not "
+                        "exist";
+        return CollectTasksFromImageList();
+    }
+    return ParseFastbootInfo(fp_, Split({contents.data(), contents.size()}, "\n"));
+}
+
 void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::string>>& images,
                                  std::vector<std::unique_ptr<Task>>& tasks) {
     for (const auto& [image, slot] : images) {
@@ -1933,6 +1973,13 @@ static void do_flashall(FlashingPlan* fp) {
     fp->source = &s;
     FlashAllTool tool(fp);
     tool.Flash();
+}
+
+static void do_task_list_compare(FlashingPlan* fp) {
+    LocalImageSource s = LocalImageSource();
+    fp->source = &s;
+    FlashAllTool tool(fp);
+    tool.CompareTaskLists();
 }
 
 static std::string next_arg(std::vector<std::string>* args) {
@@ -2481,6 +2528,14 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (!fp->skip_reboot) {
                 tasks.emplace_back(std::make_unique<RebootTask>(fp.get()));
             }
+        } else if (command == "task-list-compare") {
+            if (fp->slot_override == "all") {
+                fprintf(stderr,
+                        "Warning: slot set to 'all'. Secondary slots will not be flashed.\n");
+                fp->skip_secondary = true;
+            }
+            do_task_list_compare(fp.get());
+
         } else if (command == FB_CMD_SET_ACTIVE) {
             std::string slot = verify_slot(next_arg(&args), false);
             fb->SetActive(slot);
