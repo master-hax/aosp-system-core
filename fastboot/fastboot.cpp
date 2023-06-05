@@ -1784,7 +1784,11 @@ void FlashAllTool::Flash() {
 
     CancelSnapshotIfNeeded();
 
-    HardcodedFlash();
+    tasks_ = CollectTasksFromImageList();
+
+    for (auto& task : tasks_) {
+        task->Run();
+    }
     return;
 }
 
@@ -1836,7 +1840,7 @@ void FlashAllTool::CollectImages() {
     }
 }
 
-void FlashAllTool::HardcodedFlash() {
+std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
     CollectImages();
     // First flash boot partitions. We allow this to happen either in userspace
     // or in bootloader fastboot.
@@ -1867,10 +1871,7 @@ void FlashAllTool::HardcodedFlash() {
         }
     }
     AddFlashTasks(os_images_, tasks);
-
-    for (auto& i : tasks) {
-        i->Run();
-    }
+    return tasks;
 }
 
 void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::string>>& images,
