@@ -45,6 +45,7 @@ TEST(SocketsTest, android_get_control_socket) {
     int flags;
     ASSERT_GE(flags = fcntl(fd, F_GETFL), 0);
     ASSERT_GE(fcntl(fd, F_SETFL, flags | O_NONBLOCK), 0);
+    ASSERT_EQ(FD_CLOEXEC, (fcntl(fd, F_GETFD) & FD_CLOEXEC));
 #endif
     EXPECT_EQ(android_get_control_socket(name), -1);
 

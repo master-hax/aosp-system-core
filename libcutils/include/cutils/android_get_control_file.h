@@ -27,6 +27,7 @@ extern "C" {
  * android_get_control_file - simple helper function to get the file
  * descriptor of our init-managed file. `path' is the filename path as
  * given in init.rc. Returns -1 on error.
+ * The returned file descriptor has CLOEXEC set.
  */
 int android_get_control_file(const char* path);
 
