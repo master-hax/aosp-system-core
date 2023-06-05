@@ -1661,12 +1661,13 @@ bool AddResizeTasks(const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>* 
     }
     for (size_t i = 0; i < tasks->size(); i++) {
         if (auto flash_task = tasks->at(i)->AsFlashTask()) {
-            if (should_flash_in_userspace(*metadata.get(), flash_task->GetPartitionAndSlot())) {
+            if (should_flash_in_userspace(*metadata.get(),
+                                          flash_task->GetInfo("partition_and_slot"))) {
                 if (!loc) {
                     loc = i;
                 }
                 resize_tasks.emplace_back(std::make_unique<ResizeTask>(
-                        fp, flash_task->GetPartition(), "0", fp->slot_override));
+                        fp, flash_task->GetInfo("partition_name"), "0", fp->slot_override));
             }
         }
     }
@@ -1747,7 +1748,7 @@ std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const FlashingPlan* fp,
         auto it = tasks.begin();
         for (size_t i = 0; i < tasks.size(); i++) {
             if (auto flash_task = tasks[i]->AsFlashTask()) {
-                if (should_flash_in_userspace(flash_task->GetPartitionAndSlot())) {
+                if (should_flash_in_userspace(flash_task->GetInfo("partition_and_slot"))) {
                     break;
                 }
             }

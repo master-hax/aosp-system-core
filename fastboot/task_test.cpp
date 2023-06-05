@@ -81,10 +81,10 @@ TEST_F(ParseTest, CorrectFlashTaskFormed) {
     for (size_t i = 0; i < tasks.size(); i++) {
         auto task = tasks[i]->AsFlashTask();
         ASSERT_TRUE(task != nullptr);
-        ASSERT_EQ(task->GetPartition(), expected_values[i][0]);
-        ASSERT_EQ(task->GetPartitionAndSlot(), expected_values[i][1]);
-        ASSERT_EQ(task->GetSlot(), expected_values[i][2]);
-        ASSERT_EQ(task->GetImageName(), expected_values[i][3]);
+        ASSERT_EQ(task->GetInfo("partition_name"), expected_values[i][0]);
+        ASSERT_EQ(task->GetInfo("partition_and_slot"), expected_values[i][1]);
+        ASSERT_EQ(task->GetInfo("slot"), expected_values[i][2]);
+        ASSERT_EQ(task->GetInfo("image_name"), expected_values[i][3]);
     }
 }
 

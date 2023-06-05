@@ -46,18 +46,27 @@ void FlashTask::Run() {
     do_for_partitions(pname_, slot_, flash, true);
 }
 
-std::string FlashTask::GetPartitionAndSlot() {
-    auto slot = slot_;
-    if (slot.empty()) {
-        slot = get_current_slot();
-    }
-    if (slot.empty()) {
+std::string FlashTask::GetInfo(std::optional<std::string> key) {
+    if (key == "partition_and_slot") {
+        auto slot = slot_;
+        if (slot.empty()) {
+            slot = get_current_slot();
+        }
+        if (slot.empty()) {
+            return pname_;
+        }
+        if (slot == "all") {
+            LOG(FATAL) << "Cannot retrieve a singular name when using all slots";
+        }
+        return pname_ + "_" + slot;
+    } else if (key == "partition_name") {
         return pname_;
+    } else if (key == "image_name") {
+        return fname_;
+    } else if (key == "slot") {
+        return slot_;
     }
-    if (slot == "all") {
-        LOG(FATAL) << "Cannot retrieve a singular name when using all slots";
-    }
-    return pname_ + "_" + slot;
+    return "";
 }
 
 RebootTask::RebootTask(const FlashingPlan* fp) : fp_(fp){};
@@ -83,6 +92,9 @@ void RebootTask::Run() {
         syntax_error("unknown reboot target %s", reboot_target_.c_str());
     }
 }
+std::string RebootTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
+}
 
 FlashSuperLayoutTask::FlashSuperLayoutTask(const std::string& super_name,
                                            std::unique_ptr<SuperFlashHelper> helper,
@@ -105,6 +117,9 @@ void FlashSuperLayoutTask::Run() {
 
     // Send the data to the device.
     flash_partition_files(super_name_, files);
+}
+std::string FlashSuperLayoutTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
 }
 
 std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
@@ -214,8 +229,8 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::InitializeFromTasks(
 
     for (const auto& task : tasks) {
         if (auto flash_task = task->AsFlashTask()) {
-            auto partition = flash_task->GetPartitionAndSlot();
-            if (!helper->AddPartition(partition, flash_task->GetImageName(), false)) {
+            auto partition = flash_task->GetInfo("partition_and_slot");
+            if (!helper->AddPartition(partition, flash_task->GetInfo("image_name"), false)) {
                 return nullptr;
             }
         }
@@ -226,7 +241,7 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::InitializeFromTasks(
     // Remove images that we already flashed, just in case we have non-dynamic OS images.
     auto remove_if_callback = [&](const auto& task) -> bool {
         if (auto flash_task = task->AsFlashTask()) {
-            return helper->WillFlash(flash_task->GetPartitionAndSlot());
+            return helper->WillFlash(flash_task->GetInfo("partition_and_slot"));
         } else if (auto update_super_task = task->AsUpdateSuperTask()) {
             return true;
         } else if (auto reboot_task = task->AsRebootTask()) {
@@ -263,6 +278,9 @@ void UpdateSuperTask::Run() {
     }
     fp_->fb->RawCommand(command, "Updating super partition");
 }
+std::string UpdateSuperTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
+}
 
 ResizeTask::ResizeTask(const FlashingPlan* fp, const std::string& pname, const std::string& size,
                        const std::string& slot)
@@ -277,10 +295,18 @@ void ResizeTask::Run() {
     do_for_partitions(pname_, slot_, resize_partition, false);
 }
 
+std::string ResizeTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
+}
+
 DeleteTask::DeleteTask(const FlashingPlan* fp, const std::string& pname) : fp_(fp), pname_(pname){};
 
 void DeleteTask::Run() {
     fp_->fb->DeletePartition(pname_);
+}
+
+std::string DeleteTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
 }
 
 WipeTask::WipeTask(const FlashingPlan* fp, const std::string& pname) : fp_(fp), pname_(pname){};
@@ -297,4 +323,8 @@ void WipeTask::Run() {
         return;
     }
     fb_perform_format(pname_, 1, partition_type, "", fp_->fs_options);
+}
+
+std::string WipeTask::GetInfo(std::optional<std::string> key) {
+    return key.value();
 }
