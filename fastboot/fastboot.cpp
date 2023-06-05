@@ -1792,6 +1792,51 @@ void FlashAllTool::Flash() {
     return;
 }
 
+bool FlashAllTool::CompareTaskLists() {
+    CheckRequirements();
+    // Change the slot first, so we boot into the correct recovery image when
+    // using fastbootd.
+    if (fp_->slot_override == "all") {
+        set_active("a");
+    } else {
+        set_active(fp_->slot_override);
+    }
+
+    DetermineSlot();
+    CancelSnapshotIfNeeded();
+    std::vector<std::unique_ptr<Task>> t1, t2;
+    t1 = CollectTasksFromImageList();
+    t2 = CollecTasksFromFastbootInfo();
+
+    LOG(INFO) << '\n' << "----COMPARING TASK LISTS----";
+    LOG(INFO) << "LIST 1: task list generated from image list";
+    for (auto& task : t1) {
+        LOG(INFO) << task->GetInfo();
+    }
+    LOG(INFO) << "--------------";
+
+    LOG(INFO) << "LIST 2: task list generated from fastboot-info.txt";
+    for (auto& task : t2) {
+        LOG(INFO) << task->GetInfo();
+    }
+
+    if (t1.size() != t2.size()) {
+        LOG(INFO) << "\n!!!TASK LISTS NOT EQUAL!!!";
+
+        return false;
+    }
+    for (size_t i = 0; i < t1.size(); i++) {
+        if (t1[i]->GetInfo() != t2[i]->GetInfo()) {
+            LOG(INFO) << "task equality expected: " << t1[i]->GetInfo() << " " << t2[i]->GetInfo();
+            LOG(INFO) << "\n!!!TASK LISTS NOT EQUAL!!!";
+
+            return false;
+        }
+    }
+    LOG(INFO) << "\n---TASK LISTS ARE EQUAL---";
+    return true;
+}
+
 void FlashAllTool::CheckRequirements() {
     std::vector<char> contents;
     if (!fp_->source->ReadFile("android-info.txt", &contents)) {
@@ -1874,6 +1919,16 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
     return tasks;
 }
 
+std::vector<std::unique_ptr<Task>> FlashAllTool::CollecTasksFromFastbootInfo() {
+    std::vector<char> contents;
+    if (!fp_->source->ReadFile("fastboot-info.txt", &contents)) {
+        LOG(VERBOSE) << "Flashing from hardcoded images. fastboot-info.txt is empty or does not "
+                        "exist";
+        return CollectTasksFromImageList();
+    }
+    return ParseFastbootInfo(fp_, Split({contents.data(), contents.size()}, "\n"));
+}
+
 void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::string>>& images,
                                  std::vector<std::unique_ptr<Task>>& tasks) {
     for (const auto& [image, slot] : images) {
@@ -1889,7 +1944,6 @@ void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::
                                                        is_vbmeta_partition(image->part_name), fp_));
     }
 }
-
 
 bool ZipImageSource::ReadFile(const std::string& name, std::vector<char>* out) const {
     return UnzipToMemory(zip_, name, out);
@@ -1932,6 +1986,13 @@ static void do_flashall(FlashingPlan* fp) {
     fp->source = &s;
     FlashAllTool tool(fp);
     tool.Flash();
+}
+
+static void do_task_list_compare(FlashingPlan* fp) {
+    LocalImageSource s = LocalImageSource();
+    fp->source = &s;
+    FlashAllTool tool(fp);
+    tool.CompareTaskLists();
 }
 
 static std::string next_arg(std::vector<std::string>* args) {
@@ -2477,6 +2538,14 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (!fp->skip_reboot) {
                 tasks.emplace_back(std::make_unique<RebootTask>(fp.get()));
             }
+        } else if (command == "task-list-compare") {
+            if (fp->slot_override == "all") {
+                fprintf(stderr,
+                        "Warning: slot set to 'all'. Secondary slots will not be flashed.\n");
+                fp->skip_secondary = true;
+            }
+            do_task_list_compare(fp.get());
+
         } else if (command == FB_CMD_SET_ACTIVE) {
             std::string slot = verify_slot(next_arg(&args), false);
             fb->SetActive(slot);
