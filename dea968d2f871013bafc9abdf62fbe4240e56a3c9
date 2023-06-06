@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "177e788f_82fd4c58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-06T21:01:49Z",
+      "side": 1,
+      "message": "This will make testing harder, since tests will be reading/writing implicit global state, rather than self-contained local state. Was there a problem with the FlashingPlan other than the name being ubiquitous?",
+      "revId": "dea968d2f871013bafc9abdf62fbe4240e56a3c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
