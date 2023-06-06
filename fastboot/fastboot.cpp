@@ -2187,6 +2187,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                                       {"cmdline", required_argument, 0, 0},
                                       {"disable-verification", no_argument, 0, 0},
                                       {"disable-verity", no_argument, 0, 0},
+                                      {"disable-super-optimization", no_argument, 0, 0},
                                       {"force", no_argument, 0, 0},
                                       {"fs-options", required_argument, 0, 0},
                                       {"header-version", required_argument, 0, 0},
@@ -2222,6 +2223,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 g_disable_verification = true;
             } else if (name == "disable-verity") {
                 g_disable_verity = true;
+            } else if (name == "disable-super-optimization") {
+                fp->should_optimize = false;
             } else if (name == "force") {
                 fp->force_flash = true;
             } else if (name == "fs-options") {
