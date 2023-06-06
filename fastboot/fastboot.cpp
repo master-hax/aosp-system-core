@@ -104,7 +104,6 @@ static bool g_long_listing = false;
 // libsparse will support INT_MAX, but this results in large allocations, so
 // let's keep it at 1GB to avoid memory pressure on the host.
 static constexpr int64_t RESPARSE_LIMIT = 1 * 1024 * 1024 * 1024;
-static uint64_t sparse_limit = 0;
 static int64_t target_sparse_limit = -1;
 
 static unsigned g_base_addr = 0x10000000;
@@ -1016,8 +1015,8 @@ static uint64_t get_uint_var(const char* var_name) {
     return value;
 }
 
-int64_t get_sparse_limit(int64_t size) {
-    int64_t limit = sparse_limit;
+int64_t get_sparse_limit(int64_t size, const FlashingPlan* fp) {
+    int64_t limit = int64_t(fp->sparse_limit);
     if (limit == 0) {
         // Unlimited, so see what the target device's limit is.
         // TODO: shouldn't we apply this limit even if you've used -S?
@@ -1038,7 +1037,7 @@ int64_t get_sparse_limit(int64_t size) {
     return 0;
 }
 
-static bool load_buf_fd(unique_fd fd, struct fastboot_buffer* buf) {
+static bool load_buf_fd(unique_fd fd, struct fastboot_buffer* buf, const FlashingPlan* fp) {
     int64_t sz = get_file_size(fd);
     if (sz == -1) {
         return false;
@@ -1056,7 +1055,7 @@ static bool load_buf_fd(unique_fd fd, struct fastboot_buffer* buf) {
     }
 
     lseek(fd.get(), 0, SEEK_SET);
-    int64_t limit = get_sparse_limit(sz);
+    int64_t limit = get_sparse_limit(sz, fp);
     buf->fd = std::move(fd);
     if (limit) {
         buf->files = load_sparse_files(buf->fd.get(), limit);
@@ -1072,7 +1071,7 @@ static bool load_buf_fd(unique_fd fd, struct fastboot_buffer* buf) {
     return true;
 }
 
-static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
+static bool load_buf(const char* fname, struct fastboot_buffer* buf, const FlashingPlan* fp) {
     unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_BINARY)));
 
     if (fd == -1) {
@@ -1088,7 +1087,7 @@ static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
         return false;
     }
 
-    return load_buf_fd(std::move(fd), buf);
+    return load_buf_fd(std::move(fd), buf, fp);
 }
 
 static void rewrite_vbmeta_buffer(struct fastboot_buffer* buf, bool vbmeta_in_boot) {
@@ -1486,16 +1485,16 @@ static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf
 }
 
 void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
-              const ImageSource* source) {
+              const FlashingPlan* fp) {
     verbose("Do flash %s %s", pname, fname);
     struct fastboot_buffer buf;
 
-    if (source) {
-        unique_fd fd = source->OpenFile(fname);
-        if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
+    if (fp->source) {
+        unique_fd fd = fp->source->OpenFile(fname);
+        if (fd < 0 || !load_buf_fd(std::move(fd), &buf, fp)) {
             die("could not load '%s': %s", fname, strerror(errno));
         }
-    } else if (!load_buf(fname, &buf)) {
+    } else if (!load_buf(fname, &buf, fp)) {
         die("cannot load '%s': %s", fname, strerror(errno));
     }
 
@@ -1877,7 +1876,7 @@ void FlashAllTool::AddFlashTasks(const std::vector<std::pair<const Image*, std::
     for (const auto& [image, slot] : images) {
         fastboot_buffer buf;
         unique_fd fd = fp_->source->OpenFile(image->img_name);
-        if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
+        if (fd < 0 || !load_buf_fd(std::move(fd), &buf, fp_)) {
             if (image->optional_if_no_image) {
                 continue;
             }
@@ -1970,7 +1969,7 @@ static unsigned fb_get_flash_block_size(std::string name) {
 
 void fb_perform_format(const std::string& partition, int skip_if_not_supported,
                        const std::string& type_override, const std::string& size_override,
-                       const unsigned fs_options) {
+                       const unsigned fs_options, const FlashingPlan* fp) {
     std::string partition_type, partition_size;
 
     struct fastboot_buffer buf;
@@ -1983,8 +1982,8 @@ void fb_perform_format(const std::string& partition, int skip_if_not_supported,
     if (target_sparse_limit > 0 && target_sparse_limit < limit) {
         limit = target_sparse_limit;
     }
-    if (sparse_limit > 0 && sparse_limit < limit) {
-        limit = sparse_limit;
+    if (fp->sparse_limit > 0 && fp->sparse_limit < limit) {
+        limit = fp->sparse_limit;
     }
 
     if (fb->GetVar("partition-type:" + partition, &partition_type) != fastboot::SUCCESS) {
@@ -2039,7 +2038,7 @@ void fb_perform_format(const std::string& partition, int skip_if_not_supported,
     if (fd == -1) {
         die("Cannot open generated image: %s", strerror(errno));
     }
-    if (!load_buf_fd(std::move(fd), &buf)) {
+    if (!load_buf_fd(std::move(fd), &buf, fp)) {
         die("Cannot read image: %s", strerror(errno));
     }
     flash_buf(partition, &buf, is_vbmeta_partition(partition));
@@ -2072,7 +2071,7 @@ bool should_flash_in_userspace(const std::string& partition_name) {
 }
 
 static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::string& slot,
-                       std::string* message) {
+                       std::string* message, const FlashingPlan* fp) {
     auto super_device = GetMetadataSuperBlockDevice(metadata);
     auto block_size = metadata.geometry.logical_block_size;
     auto super_bdev_name = android::fs_mgr::GetBlockDevicePartitionName(*super_device);
@@ -2112,7 +2111,7 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
 
         auto image_path = temp_dir.path + "/"s + image_name;
         auto flash = [&](const std::string& partition_name) {
-            do_flash(partition_name.c_str(), image_path.c_str(), false);
+            do_flash(partition_name.c_str(), image_path.c_str(), false, fp);
         };
         do_for_partitions(partition, slot, flash, force_slot);
 
@@ -2121,7 +2120,7 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
     return true;
 }
 
-static void do_wipe_super(const std::string& image, const std::string& slot_override) {
+static void do_wipe_super(const std::string& image, const FlashingPlan* fp) {
     if (access(image.c_str(), R_OK) != 0) {
         die("Could not read image: %s", image.c_str());
     }
@@ -2130,13 +2129,13 @@ static void do_wipe_super(const std::string& image, const std::string& slot_over
         die("Could not parse image: %s", image.c_str());
     }
 
-    auto slot = slot_override;
+    auto slot = fp->slot_override;
     if (slot.empty()) {
         slot = get_current_slot();
     }
 
     std::string message;
-    if (!wipe_super(*metadata.get(), slot, &message)) {
+    if (!wipe_super(*metadata.get(), slot, &message, fp)) {
         die(message);
     }
 }
@@ -2271,7 +2270,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                     serial = optarg;
                     break;
                 case 'S':
-                    if (!android::base::ParseByteCount(optarg, &sparse_limit)) {
+                    if (!android::base::ParseByteCount(optarg, &fp->sparse_limit)) {
                         die("invalid sparse limit %s", optarg);
                     }
                     break;
@@ -2389,7 +2388,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
             std::string partition = next_arg(&args);
 
             auto format = [&](const std::string& partition) {
-                fb_perform_format(partition, 0, type_override, size_override, fp->fs_options);
+                fb_perform_format(partition, 0, type_override, size_override, fp->fs_options,
+                                  fp.get());
             };
             do_for_partitions(partition, fp->slot_override, format, true);
         } else if (command == "signature") {
@@ -2483,7 +2483,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             std::string filename = next_arg(&args);
 
             struct fastboot_buffer buf;
-            if (!load_buf(filename.c_str(), &buf) || buf.type != FB_BUFFER_FD) {
+            if (!load_buf(filename.c_str(), &buf, fp.get()) || buf.type != FB_BUFFER_FD) {
                 die("cannot load '%s'", filename.c_str());
             }
             fb->Download(filename, buf.fd.get(), buf.sz);
@@ -2531,7 +2531,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             } else {
                 image = next_arg(&args);
             }
-            do_wipe_super(image, fp->slot_override);
+            do_wipe_super(image, fp.get());
         } else if (command == "snapshot-update") {
             std::string arg;
             if (!args.empty()) {
