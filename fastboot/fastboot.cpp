@@ -1488,12 +1488,12 @@ static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf
 }
 
 void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
-              const FlashingPlan* fp) {
+              const ImageSource* source) {
     verbose("Do flash %s %s", pname, fname);
     struct fastboot_buffer buf;
 
-    if (fp->source) {
-        unique_fd fd = fp->source->OpenFile(fname);
+    if (source) {
+        unique_fd fd = source->OpenFile(fname);
         if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
             die("could not load '%s': %s", fname, strerror(errno));
         }
@@ -2073,7 +2073,7 @@ bool should_flash_in_userspace(const std::string& partition_name) {
 }
 
 static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::string& slot,
-                       std::string* message, const FlashingPlan* fp) {
+                       std::string* message) {
     auto super_device = GetMetadataSuperBlockDevice(metadata);
     auto block_size = metadata.geometry.logical_block_size;
     auto super_bdev_name = android::fs_mgr::GetBlockDevicePartitionName(*super_device);
@@ -2113,7 +2113,7 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
 
         auto image_path = temp_dir.path + "/"s + image_name;
         auto flash = [&](const std::string& partition_name) {
-            do_flash(partition_name.c_str(), image_path.c_str(), false, fp);
+            do_flash(partition_name.c_str(), image_path.c_str(), false);
         };
         do_for_partitions(partition, slot, flash, force_slot);
 
@@ -2122,8 +2122,7 @@ static bool wipe_super(const android::fs_mgr::LpMetadata& metadata, const std::s
     return true;
 }
 
-static void do_wipe_super(const std::string& image, const std::string& slot_override,
-                          const FlashingPlan* fp) {
+static void do_wipe_super(const std::string& image, const std::string& slot_override) {
     if (access(image.c_str(), R_OK) != 0) {
         die("Could not read image: %s", image.c_str());
     }
@@ -2138,7 +2137,7 @@ static void do_wipe_super(const std::string& image, const std::string& slot_over
     }
 
     std::string message;
-    if (!wipe_super(*metadata.get(), slot, &message, fp)) {
+    if (!wipe_super(*metadata.get(), slot, &message)) {
         die(message);
     }
 }
@@ -2533,7 +2532,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
             } else {
                 image = next_arg(&args);
             }
-            do_wipe_super(image, fp->slot_override, fp.get());
+            do_wipe_super(image, fp->slot_override);
         } else if (command == "snapshot-update") {
             std::string arg;
             if (!args.empty()) {
