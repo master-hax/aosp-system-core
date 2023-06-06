@@ -124,6 +124,9 @@ std::string FlashSuperLayoutTask::ToString() {
 
 std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
         const FlashingPlan* fp, std::vector<ImageEntry>& os_images) {
+    if (!fp->should_optimize) {
+        return nullptr;
+    }
     if (!supports_AB()) {
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
@@ -188,6 +191,9 @@ std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::Initialize(
 
 std::unique_ptr<FlashSuperLayoutTask> FlashSuperLayoutTask::InitializeFromTasks(
         const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks) {
+    if (!fp->should_optimize) {
+        return nullptr;
+    }
     if (!supports_AB()) {
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
