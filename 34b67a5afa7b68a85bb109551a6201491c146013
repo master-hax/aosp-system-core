@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e3839c2_666b69f6",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2236,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2023-06-06T18:34:58Z",
+      "side": 1,
+      "message": "should this flag name be specific to super? e.g. disable-super-optimization",
+      "revId": "34b67a5afa7b68a85bb109551a6201491c146013",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
