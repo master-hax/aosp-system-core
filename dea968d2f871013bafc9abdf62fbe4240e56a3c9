@@ -16,6 +16,24 @@
       "message": "This will make testing harder, since tests will be reading/writing implicit global state, rather than self-contained local state. Was there a problem with the FlashingPlan other than the name being ubiquitous?",
       "revId": "dea968d2f871013bafc9abdf62fbe4240e56a3c9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56d3f6e5_46c52774",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-06T21:06:00Z",
+      "side": 1,
+      "message": "yeah I talked to Kelvin about this, and we\u0027re rethinking how we want to clean up the code. Going to abandon this cl",
+      "parentUuid": "177e788f_82fd4c58",
+      "revId": "dea968d2f871013bafc9abdf62fbe4240e56a3c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
