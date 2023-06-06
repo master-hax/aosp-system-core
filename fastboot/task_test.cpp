@@ -147,6 +147,7 @@ TEST_F(ParseTest, CorrectTaskFormed) {
 TEST_F(ParseTest, CorrectDriverCalls) {
     fastboot::MockFastbootDriver fb;
     fp->fb = &fb;
+    fp->sparse_limit = 50;
 
     EXPECT_CALL(fb, RebootTo(_, _, _)).Times(1);
     EXPECT_CALL(fb, Reboot(_, _)).Times(1);
