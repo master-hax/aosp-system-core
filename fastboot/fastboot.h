@@ -97,6 +97,7 @@ struct FlashingPlan {
     bool skip_secondary = false;
     bool force_flash = false;
     bool should_optimize = true;
+    uint64_t sparse_limit = 0;
 
     std::string slot_override;
     std::string current_slot;
@@ -142,7 +143,7 @@ class LocalImageSource final : public ImageSource {
 bool should_flash_in_userspace(const std::string& partition_name);
 bool is_userspace_fastboot();
 void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
-              const ImageSource* source = nullptr);
+              const FlashingPlan* fp);
 void do_for_partitions(const std::string& part, const std::string& slot,
                        const std::function<void(const std::string&)>& func, bool force_slot);
 std::string find_item(const std::string& item);
@@ -175,11 +176,11 @@ Result<NetworkSerial, FastbootError> ParseNetworkSerial(const std::string& seria
 bool supports_AB();
 std::string GetPartitionName(const ImageEntry& entry, const std::string& current_slot_);
 void flash_partition_files(const std::string& partition, const std::vector<SparsePtr>& files);
-int64_t get_sparse_limit(int64_t size);
+int64_t get_sparse_limit(int64_t size, const FlashingPlan* fp);
 std::vector<SparsePtr> resparse_file(sparse_file* s, int64_t max_size);
 
 bool is_retrofit_device();
 bool is_logical(const std::string& partition);
 void fb_perform_format(const std::string& partition, int skip_if_not_supported,
                        const std::string& type_override, const std::string& size_override,
-                       const unsigned fs_options);
+                       const unsigned fs_options, const FlashingPlan* fp);
