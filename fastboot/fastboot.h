@@ -107,8 +107,6 @@ struct FlashingPlan {
 
 class FlashAllTool {
   public:
-    FlashAllTool(FlashingPlan* fp);
-
     void Flash();
     // used for testing purposes
     bool CompareTaskLists();
@@ -125,8 +123,8 @@ class FlashAllTool {
     std::vector<ImageEntry> boot_images_;
     std::vector<ImageEntry> os_images_;
     std::vector<std::unique_ptr<Task>> tasks_;
-    FlashingPlan* fp_;
 };
+
 class ZipImageSource final : public ImageSource {
   public:
     explicit ZipImageSource(ZipArchiveHandle zip) : zip_(zip) {}
@@ -145,8 +143,7 @@ class LocalImageSource final : public ImageSource {
 
 bool should_flash_in_userspace(const std::string& partition_name);
 bool is_userspace_fastboot();
-void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
-              const FlashingPlan* fp);
+void do_flash(const char* pname, const char* fname, const bool apply_vbmeta);
 void do_for_partitions(const std::string& part, const std::string& slot,
                        const std::function<void(const std::string&)>& func, bool force_slot);
 std::string find_item(const std::string& item);
@@ -157,17 +154,12 @@ std::string get_current_slot();
 // Code for Parsing fastboot-info.txt
 bool CheckFastbootInfoRequirements(const std::vector<std::string>& command,
                                    uint32_t host_tool_version);
-std::unique_ptr<FlashTask> ParseFlashCommand(const FlashingPlan* fp,
-                                             const std::vector<std::string>& parts);
-std::unique_ptr<RebootTask> ParseRebootCommand(const FlashingPlan* fp,
-                                               const std::vector<std::string>& parts);
-std::unique_ptr<WipeTask> ParseWipeCommand(const FlashingPlan* fp,
-                                           const std::vector<std::string>& parts);
-std::unique_ptr<Task> ParseFastbootInfoLine(const FlashingPlan* fp,
-                                            const std::vector<std::string>& command);
-bool AddResizeTasks(const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
-std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const FlashingPlan* fp,
-                                                     const std::vector<std::string>& file);
+std::unique_ptr<FlashTask> ParseFlashCommand(const std::vector<std::string>& parts);
+std::unique_ptr<RebootTask> ParseRebootCommand(const std::vector<std::string>& parts);
+std::unique_ptr<WipeTask> ParseWipeCommand(const std::vector<std::string>& parts);
+std::unique_ptr<Task> ParseFastbootInfoLine(const std::vector<std::string>& command);
+bool AddResizeTasks(std::vector<std::unique_ptr<Task>>& tasks);
+std::vector<std::unique_ptr<Task>> ParseFastbootInfo(const std::vector<std::string>& file);
 
 struct NetworkSerial {
     Socket::Protocol protocol;
