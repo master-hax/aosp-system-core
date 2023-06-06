@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0905287e_a2d12b2e",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2117,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-06T23:11:06Z",
+      "side": 1,
+      "message": "this seems like a change to behavior. Do we need to pass in fp-\u003esource ?",
+      "range": {
+        "startLine": 2117,
+        "startChar": 65,
+        "endLine": 2117,
+        "endChar": 72
+      },
+      "revId": "49c0a27fecdcc5fda7f0f9c5f23ebcf620b819a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
