@@ -41,7 +41,7 @@ void FlashTask::Run() {
                 "And try again. If you are intentionally trying to "
                 "overwrite a fixed partition, use --force.");
         }
-        do_flash(partition.c_str(), fname_.c_str(), apply_vbmeta_, fp_);
+        do_flash(partition.c_str(), fname_.c_str(), apply_vbmeta_, fp_->source);
     };
     do_for_partitions(pname_, slot_, flash, true);
 }
