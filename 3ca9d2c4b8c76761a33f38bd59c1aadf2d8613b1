@@ -51,6 +51,24 @@
       "parentUuid": "943ee5bc_72d5e5af",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42e9facb_e8889d1d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2023-06-07T07:12:25Z",
+      "side": 1,
+      "message": "What do you suggest to land this change in this case? Should we consider merge [PS3](https://r.android.com/c/2615469/3) instead to minimize the impact?",
+      "parentUuid": "049b0174_5ba14e4d",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
