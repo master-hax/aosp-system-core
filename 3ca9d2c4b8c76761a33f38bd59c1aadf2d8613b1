@@ -105,6 +105,24 @@
       "parentUuid": "59155978_7298f7ba",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f22ad746_bca353c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-07T08:40:35Z",
+      "side": 1,
+      "message": "CLOEXEC should be the default, but sadly isn\u0027t. (See also immutability etc.)\n\nThe only reason this fd doesn\u0027t have CLOEXEC set is that the process receives it via inheritance when it is exec\u0027d.\n\nIn Rust, functions that give access to fds always set CLOEXEC for that reason. So the Rust version should definitely set CLOEXEC.\n\nSo I\u0027m strongly in favor of aosp/2615173.\n\nI would support this CL if we were creating this function from scratch. Since it exists and has lots of users, there is a risk of backward compatibility.\n\n\u003e Whether to CLOEXEC or not is the decision that client shall made. \n\nWe don\u0027t give the client that option, and we know that initially is is not CLOEXEC, and it probably should be if this client is going to use the handle (and not immediately re-exec).\n\n\u003e Doing it in the library sounds like an opinionated API design.\n\nThe opinion is right though :-)",
+      "parentUuid": "59155978_7298f7ba",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
