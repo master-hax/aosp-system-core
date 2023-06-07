@@ -123,6 +123,24 @@
       "parentUuid": "59155978_7298f7ba",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "455b67b1_9ae9b753",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-07T10:07:01Z",
+      "side": 1,
+      "message": "I know that CLOEXEC is a good practice, but as we all know, this is a breaking change. The only compatible change I can think of is creating another variant of this function which does CLOEXEC, and perhaps deprecate/dis (not delete) the existing one. Does it fulfill your motivation?",
+      "parentUuid": "f22ad746_bca353c5",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
