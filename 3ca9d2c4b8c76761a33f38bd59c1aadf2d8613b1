@@ -69,6 +69,24 @@
       "parentUuid": "049b0174_5ba14e4d",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59155978_7298f7ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-07T07:25:41Z",
+      "side": 1,
+      "message": "PS3 is also a breaking change.\n\nI actually don\u0027t understand how this change got started. Whether to CLOEXEC or not is the decision that client shall made. Doing it in the library sounds like an opinionated API design.",
+      "parentUuid": "42e9facb_e8889d1d",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
