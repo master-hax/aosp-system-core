@@ -87,6 +87,24 @@
       "parentUuid": "42e9facb_e8889d1d",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08a652ff_54c185ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2023-06-07T08:39:34Z",
+      "side": 1,
+      "message": "Here is the context:\n\nWhile working on removing the dependence of init from the current RPC binder API (b/275729094), it was necessary for both callers to set CLOEXEC to the obtained socket file descriptor. So we decided to move this flag set to a higher level [1][2].\n\n[1] https://googleplex-android-review.git.corp.google.com/c/platform/packages/modules/Virtualization/+/23492659/comment/65af71e6_0ccd5874/\n[2] https://android-review.git.corp.google.com/c/platform/system/librustutils/+/2615173/comments/be9a43b9_10a95159",
+      "parentUuid": "59155978_7298f7ba",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
