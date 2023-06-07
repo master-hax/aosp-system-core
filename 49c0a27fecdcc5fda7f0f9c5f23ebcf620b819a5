@@ -22,6 +22,30 @@
       },
       "revId": "49c0a27fecdcc5fda7f0f9c5f23ebcf620b819a5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0754726_65f4f01c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2117,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-07T17:50:51Z",
+      "side": 1,
+      "message": "fp-\u003esource is only set during fastboot flashall/update to take in either local/zip source. for other tasks, it shouldn\u0027t takes in source.",
+      "parentUuid": "0905287e_a2d12b2e",
+      "range": {
+        "startLine": 2117,
+        "startChar": 65,
+        "endLine": 2117,
+        "endChar": 72
+      },
+      "revId": "49c0a27fecdcc5fda7f0f9c5f23ebcf620b819a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
