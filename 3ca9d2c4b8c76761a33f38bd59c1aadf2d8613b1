@@ -159,6 +159,24 @@
       "parentUuid": "455b67b1_9ae9b753",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9db3ac4f_243409a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-07T10:23:32Z",
+      "side": 1,
+      "message": "Yeah, that looks better to me.",
+      "parentUuid": "24741a5b_0efa47ad",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
