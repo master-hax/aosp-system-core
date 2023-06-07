@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a19857fa_ba910e34",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1871253
+      },
+      "writtenOn": "2023-06-07T20:53:06Z",
+      "side": 1,
+      "message": "\u003e This will help preventing pages from being swapped until the app is killed it\u0027s memory will stay resident.\n\nShouldn\u0027t we be clearer here in that we want to maximize the amount of swappable memory?",
+      "revId": "1447120f78bd653ed7d3501f4c1588a1aec15d99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
