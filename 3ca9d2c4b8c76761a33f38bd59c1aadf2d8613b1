@@ -141,6 +141,24 @@
       "parentUuid": "f22ad746_bca353c5",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24741a5b_0efa47ad",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-07T10:16:20Z",
+      "side": 1,
+      "message": "That works for me. Alternatively, aosp/2615173 (change it for the Rust version only - we know all the callers of this) also works.",
+      "parentUuid": "455b67b1_9ae9b753",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
