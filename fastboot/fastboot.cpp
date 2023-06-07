@@ -1156,7 +1156,8 @@ static bool has_vbmeta_partition() {
 static bool is_vbmeta_partition(const std::string& partition) {
     return android::base::EndsWith(partition, "vbmeta") ||
            android::base::EndsWith(partition, "vbmeta_a") ||
-           android::base::EndsWith(partition, "vbmeta_b");
+           android::base::EndsWith(partition, "vbmeta_b") ||
+           android::base::StartsWith(partition, "vbmeta");
 }
 
 // Note: this only works in userspace fastboot. In the bootloader, use
