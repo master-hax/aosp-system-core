@@ -231,6 +231,24 @@
       "parentUuid": "3b9ee093_348dc45f",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5e234c0_793c0b07",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-08T15:05:25Z",
+      "side": 1,
+      "message": "the huge number of vendor uses we can _see_ (in the tiny tiny subset of vendor code available to us) makes me think this isn\u0027t practical without a protracted effort: https://source.corp.google.com/search?q\u003dandroid_get_control_socket%20-file:lsdump\u0026sq\u003dpackage:%5Eandroid$%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F",
+      "parentUuid": "5ffd1f0c_ac1c0b55",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
