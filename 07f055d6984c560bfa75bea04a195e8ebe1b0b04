@@ -124,6 +124,24 @@
       "parentUuid": "e7fb5607_4ed6d2f6",
       "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4c16db2_249d4241",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-06-08T17:01:39Z",
+      "side": 1,
+      "message": "The libcutils APIs currently use ashmem or memfd to back the ashmem APIs, and these APIs are used broadly by the platform, so regardless of whether the kernel interface is removed, a project that will take many years yet (and has had 3 previous owners), what we really depend on is the interaction with people that use the libcutils ashmem API.\n\nIf we really need to though, we probably could remove libcutils from cpp files in libbinder. Removing it from the headers is another story (and oh wait - ashmem and atrace - we need both...).",
+      "parentUuid": "cc51816d_a5f365cd",
+      "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
