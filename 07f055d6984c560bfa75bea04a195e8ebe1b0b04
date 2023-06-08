@@ -70,6 +70,24 @@
       "parentUuid": "55193f69_c44a75e0",
       "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c343fec7_ea8602d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-08T16:37:50Z",
+      "side": 1,
+      "message": "that should \"just work\"; musl\u0027s [effectively] always had gettid, and doesn\u0027t define `__GLIBC__` so you won\u0027t get here anyway.\n\n(but i\u0027d still recommend dropping any libcutils dependencies you don\u0027t need.)",
+      "parentUuid": "e2f7a292_a42fa46b",
+      "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
