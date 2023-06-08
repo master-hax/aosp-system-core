@@ -195,6 +195,24 @@
       "parentUuid": "9db3ac4f_243409a6",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b9ee093_348dc45f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1334152
+      },
+      "writtenOn": "2023-06-08T09:43:42Z",
+      "side": 1,
+      "message": "\u003e I actually don\u0027t understand how this change got started\n\nI nudged Alice in this direction whilst reviewing the Rust part of her CL, as I agree with Alan that the C API should be more opinionated.  And whilst it is a breaking change, I assumed the blast radius would be manageable, or at least become apparent during presubmit.",
+      "parentUuid": "90911df3_cf4aebf1",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
