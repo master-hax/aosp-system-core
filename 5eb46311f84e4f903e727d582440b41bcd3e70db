@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09d9e50c_2371e212",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1047283
+      },
+      "writtenOn": "2023-06-08T00:43:25Z",
+      "side": 1,
+      "message": "See also https://github.com/mattgodbolt/seasocks/issues/138",
+      "revId": "5eb46311f84e4f903e727d582440b41bcd3e70db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
