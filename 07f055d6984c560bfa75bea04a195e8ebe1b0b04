@@ -34,6 +34,24 @@
       "parentUuid": "63ad5fc3_ef731250",
       "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55193f69_c44a75e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-08T15:03:08Z",
+      "side": 1,
+      "message": "can you remove the libcutils dependency instead? i don\u0027t think we want to support that configuration (especially since, like i said, we\u0027re actively moving away from _any_ glibc support, and should finish that work this year).",
+      "parentUuid": "eccbaf61_0544f773",
+      "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
