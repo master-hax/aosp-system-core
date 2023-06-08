@@ -213,6 +213,24 @@
       "parentUuid": "90911df3_cf4aebf1",
       "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ffd1f0c_ac1c0b55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-08T09:48:04Z",
+      "side": 1,
+      "message": "I agree with you in general, but let\u0027s also keep in mind that this library is available to our partners and we don\u0027t have zero visibility on them.\n\nIf we are really going to be opinionated, I think this should break even harder instead of silently changing the behavior. For example, we could remove this function and add a new one which does CLOEXEC.",
+      "parentUuid": "3b9ee093_348dc45f",
+      "revId": "3ca9d2c4b8c76761a33f38bd59c1aadf2d8613b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
