@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63ad5fc3_ef731250",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-08T14:38:07Z",
+      "side": 1,
+      "message": "what are you trying to do here?\n\nwe don\u0027t support building against arbitrary versions of glibc (and in fact intend to _remove_ glibc completely when we switch to musl for the host), so this shouldn\u0027t matter (and, in fact, now we know we\u0027ll never move to a newer glibc, could just be deleted).",
+      "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
