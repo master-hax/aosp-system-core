@@ -88,6 +88,24 @@
       "parentUuid": "e2f7a292_a42fa46b",
       "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7fb5607_4ed6d2f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-06-08T16:42:59Z",
+      "side": 1,
+      "message": "We can\u0027t drop libcutils dependency from libbinder/AIDL, due to ashmem. Everything else has alternatives, but ashmem use doesn\u0027t. Also, this is super frustrating because all of the ashmem use added to Parcel is for things like writeBlob (complete inversion of dependencies, redundant API, and can only be used by hand-written interfaces) OR for getOpenAshmemSize (completely broken and meaningless API because it doesn\u0027t reflect actual memory usage, but I wasn\u0027t able to rip it out of notification tests...). I\u0027ve tried...",
+      "parentUuid": "c343fec7_ea8602d2",
+      "revId": "07f055d6984c560bfa75bea04a195e8ebe1b0b04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
