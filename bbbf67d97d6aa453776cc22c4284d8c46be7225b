@@ -87,6 +87,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb3fb759_61d1e0a7",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-08T15:05:41Z",
+      "side": 1,
+      "message": "The property service isn\u0027t up at this point unfortunately.\n\nI\u0027m not a huge fan of special-casing microdroid like this, so I\u0027d actually argue the opposite direction: just have init check vendor sepolicy first, then fallback to system. That kind of thing is very common in init.\n\nIf using bootconfig is an option, though, we could stick the sepolicy path in a bootconfig property.",
+      "parentUuid": "4d9e20e0_594970df",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
