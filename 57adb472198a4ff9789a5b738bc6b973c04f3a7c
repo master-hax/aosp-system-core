@@ -16,6 +16,23 @@
       "message": "Doesn\u0027t seem like the most elegant solution, but since get_sparse_limit() tries to read from the device, we need to override this to do testing.",
       "revId": "57adb472198a4ff9789a5b738bc6b973c04f3a7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a414d74a_2914e30d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1020,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-08T18:47:48Z",
+      "side": 1,
+      "message": "I was thinking we would remove the \"sparse_limit\" global variable entirely. For the purpose of tests, the limit would be std::numeric_limits\u003cuint64_t\u003e::max(). Otherwise it\u0027d default to 0.",
+      "revId": "57adb472198a4ff9789a5b738bc6b973c04f3a7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
