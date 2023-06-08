@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "662bed56_e6f2c8f3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-08T18:12:28Z",
+      "side": 1,
+      "message": "Doesn\u0027t seem like the most elegant solution, but since get_sparse_limit() tries to read from the device, we need to override this to do testing.",
+      "revId": "57adb472198a4ff9789a5b738bc6b973c04f3a7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
