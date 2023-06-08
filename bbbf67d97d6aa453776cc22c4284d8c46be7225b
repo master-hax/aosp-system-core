@@ -63,6 +63,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d9e20e0_594970df",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-08T12:54:43Z",
+      "side": 1,
+      "message": "\u003e Should we have \"is_microdroid\" sysprop?\n\nHmm. I\u0027m not sure there is anything; a bunch of the more useful properties inside the VM are deliberately set to match the host.\n\n@jiyong@google.com might have opinions.",
+      "parentUuid": "285e166b_fbb63403",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
