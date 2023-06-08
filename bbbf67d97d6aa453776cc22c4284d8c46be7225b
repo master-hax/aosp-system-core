@@ -39,6 +39,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "285e166b_fbb63403",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2023-06-08T11:28:07Z",
+      "side": 1,
+      "message": "\u003e This seems slightly fragile - shouldn\u0027t we do some more robust \"Is Microdroid?\" check here?\n\nMy reasoning was that \"microdroid\" in the \"microdroid_precompiled_policy\" will be enough to prevent accidental misconfiguration on host Android. Having said so, happy to implement a more robust check. Should we have \"is_microdroid\" sysprop? Or IS_MICRODROID preprocessor macro?\n\n\u003e You also need IsSplitPolicyDevice() to return false to get here - but currently plat_policy_cil_file does exist inside Microdroid, so it won\u0027t?\n\n\naosp/2620051 removes the plat_sepolicy.cil",
+      "parentUuid": "4efa335e_84aebaef",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
