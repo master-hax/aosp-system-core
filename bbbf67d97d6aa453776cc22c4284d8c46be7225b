@@ -16,6 +16,29 @@
       "message": "+dvander FYI",
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4efa335e_84aebaef",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-08T10:43:38Z",
+      "side": 1,
+      "message": "This seems slightly fragile - shouldn\u0027t we do some more robust \"Is Microdroid?\" check here?\n\nYou also need IsSplitPolicyDevice() to return false to get here - but currently plat_policy_cil_file does exist inside Microdroid, so it won\u0027t?",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
