@@ -16,6 +16,24 @@
       "message": "Let\u0027s move this code into the task_test.cpp since it\u0027s not used otherwised.",
       "revId": "24b63e19b2d0edaae604c63eb912aae5b665ed15",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "546f3afd_e90570c1",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1796,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-08T21:27:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5dd7ae97_8a84b7d7",
+      "revId": "24b63e19b2d0edaae604c63eb912aae5b665ed15",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
