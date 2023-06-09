@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b382213f_52b0e876",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1069543
+      },
+      "writtenOn": "2023-06-09T21:04:50Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 8
+      },
+      "revId": "be31a8a30fffddbed8d58d5b4cba0bd323d1cd99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15e30aed_6ba29586",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2235,
+      "author": {
+        "id": 1069543
+      },
+      "writtenOn": "2023-06-09T21:04:50Z",
+      "side": 1,
+      "message": "If you need to set ANDROID_SERIAL for adb, how does FASTBOOT_DEVICE help? Shouldn\u0027t this test favor FASTBOOT_DEVICE and fall back to ANDROID_SERIAL?",
+      "revId": "be31a8a30fffddbed8d58d5b4cba0bd323d1cd99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
