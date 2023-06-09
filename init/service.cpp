@@ -308,6 +308,7 @@ void Service::Reap(const siginfo_t& siginfo) {
     pid_ = 0;
     flags_ &= (~SVC_RUNNING);
     start_order_ = 0;
+    was_last_exit_ok_ = siginfo.si_code == CLD_EXITED && siginfo.si_status == 0;
 
     // Oneshot processes go into the disabled state on exit,
     // except when manually restarted.
