@@ -57,6 +57,24 @@
       "parentUuid": "15e30aed_6ba29586",
       "revId": "be31a8a30fffddbed8d58d5b4cba0bd323d1cd99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41942ca5_c744bd56",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2235,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-06-09T22:58:00Z",
+      "side": 1,
+      "message": "So at least in the case I\u0027m working with (one device connected via pontis), you don\u0027t have to specify anything with adb (as pontis does the adb connect command for you). So `adb shell` just works.\n\nBut with multiple adb devices specifying the environment variable would be useful, so I see your point.  I was hesitant to tweak existing behavior if ANDROID_SERIAL as set, but it\u0027s identical if FASTBOOT_DEVICE is unset, so that\u0027s reasonable.\n\nI\u0027ll swap it around. Thanks for the suggestion",
+      "parentUuid": "0f7a326d_bc0b16d3",
+      "revId": "be31a8a30fffddbed8d58d5b4cba0bd323d1cd99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
