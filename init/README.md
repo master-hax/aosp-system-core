@@ -344,11 +344,12 @@ runs the service.
   intended to be used with the `exec_start` builtin for any must-have checks during boot.
 
 `restart_period <seconds>`
-> If a non-oneshot service exits, it will be restarted at its start time plus
-  this period. It defaults to 5s to rate limit crashing services.
-  This can be increased for services that are meant to run periodically. For
-  example, it may be set to 3600 to indicate that the service should run every hour
-  or 86400 to indicate that the service should run every day.
+> If a non-oneshot service crashes or exits due to timeout (see `timeout_period`), it will be
+  restarted at its start time plus this period. It defaults to 5s to rate limit crashing services.
+  This can be increased for services that are meant to run periodically. For example, it may be set
+  to 3600 to indicate that the service should run every hour or 86400 to indicate that the service
+  should run every day. Note that if the service exited by itself and the exit was successful (i.e.
+  status code is 0), this period is ignored. In other words, the service restarts immediately.
 
 `rlimit <resource> <cur> <max>`
 > This applies the given rlimit to the service. rlimits are inherited by child
