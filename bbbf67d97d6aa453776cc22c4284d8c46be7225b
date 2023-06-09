@@ -111,6 +111,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd463898_fcc6392a",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-09T05:46:00Z",
+      "side": 1,
+      "message": "Ok. I actually think existing code around here needs a major refactoring. For example, I wonder if OpenMonolithPolicy has been used recently given that Treble has been mandatory for a long time. I wish we can remove that path.\n\nIn addition, Microdroid really is a special case. It\u0027s NOT Android and therefore lots of features in init are actually not needed there. However, since we don\u0027t do something like `-DMICRODROID`, everything is included and we branch at runtime. I think we may want to conditionally compile init for Microdroid.\n\nAnyway, this refactoring is out of scope of this change, and therefore I don\u0027t have a strong feeling that this CL should look good to everyone.",
+      "parentUuid": "cb3fb759_61d1e0a7",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
