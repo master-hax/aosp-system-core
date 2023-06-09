@@ -135,6 +135,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ce89ae8_216669d5",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-09T14:14:03Z",
+      "side": 1,
+      "message": "(depending on how little init you actually need, note that toybox has a tiny init.)",
+      "parentUuid": "dd463898_fcc6392a",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
