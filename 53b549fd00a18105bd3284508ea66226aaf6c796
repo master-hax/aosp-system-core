@@ -22,6 +22,30 @@
       },
       "revId": "53b549fd00a18105bd3284508ea66226aaf6c796",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e84233c_2f7687b9",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1494,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-12T20:25:01Z",
+      "side": 1,
+      "message": "Having a default ImageSource will make it so users can\u0027t specify a specific .img file since it will always look in the $OUT directory. So if a user calls fastboot flash boot boot.img, it will use $OUT/boot.img rather than boot.img\n\nWe could just enforce that FlashingPlan is passed into do_flash, or I can null check fp first?",
+      "parentUuid": "35ebd05a_3882d298",
+      "range": {
+        "startLine": 1494,
+        "startChar": 9,
+        "endLine": 1494,
+        "endChar": 21
+      },
+      "revId": "53b549fd00a18105bd3284508ea66226aaf6c796",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
