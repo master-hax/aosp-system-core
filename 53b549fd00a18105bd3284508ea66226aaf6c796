@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35ebd05a_3882d298",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1494,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-12T17:03:15Z",
+      "side": 1,
+      "message": "There\u0027s a build warning here that looks real to me. \"fastboot wipe-super\" will null deref on fp-\u003esource.\n\nI would change FlashingPlan::source to be a unique_ptr\u003cImageSource\u003e instead, and always assign a default one on startup. Then if the command is \"update\" we can switch it to a ZipImageSource.",
+      "range": {
+        "startLine": 1494,
+        "startChar": 9,
+        "endLine": 1494,
+        "endChar": 21
+      },
+      "revId": "53b549fd00a18105bd3284508ea66226aaf6c796",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
