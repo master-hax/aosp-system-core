@@ -159,6 +159,30 @@
       },
       "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5f2d587_621708a4",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-12T04:42:22Z",
+      "side": 1,
+      "message": "Thanks, but I think the init is too small even for Microdroid use case and is too exotic (from the perspective of Android programmers). For example, system properties is essential.",
+      "parentUuid": "3ce89ae8_216669d5",
+      "range": {
+        "startLine": 503,
+        "startChar": 0,
+        "endLine": 505,
+        "endChar": 65
+      },
+      "revId": "bbbf67d97d6aa453776cc22c4284d8c46be7225b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
