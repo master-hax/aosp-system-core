@@ -46,6 +46,30 @@
       },
       "revId": "53b549fd00a18105bd3284508ea66226aaf6c796",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9834e117_2dc3ddca",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1494,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-12T21:06:27Z",
+      "side": 1,
+      "message": "Ack, I think this works. I\u0027d test \"fastboot wipe-super\" just to be safe.",
+      "parentUuid": "4e84233c_2f7687b9",
+      "range": {
+        "startLine": 1494,
+        "startChar": 9,
+        "endLine": 1494,
+        "endChar": 21
+      },
+      "revId": "53b549fd00a18105bd3284508ea66226aaf6c796",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
