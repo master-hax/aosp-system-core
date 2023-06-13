@@ -70,3 +70,31 @@ rust_test_host {
     ],
     test_suites: ["general-tests"],
 }
+
+rust_library_host {
+    name: "libhwcryptoclient",
+    crate_name: "hwcryptoclient",
+    srcs: [
+        "src/client/lib.rs"
+    ],
+    defaults: [
+        "libhwcrypto_defaults",
+    ],
+    rustlibs: [
+        "libhwcryptocommon",
+    ],
+}
+
+rust_test_host {
+    name: "libhwcryptoclient_test",
+    crate_name: "hwcryptoclient_test",
+    srcs: ["src/client/lib.rs"],
+    defaults: [
+        "libhwcrypto_defaults",
+    ],
+    rustlibs: [
+        "libhwcryptocommon",
+    ],
+    test_suites: ["general-tests"],
+}
+
