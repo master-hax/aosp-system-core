@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "92c7f6ce_4a2e4a1e",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-06-13T23:54:07Z",
+      "side": 1,
+      "message": "This is trying to get a handle to the HIDL HAL even if the AIDL HAL is supported.  This is confusing, since only one version of the HAL should be present, and it\u0027s maybe inefficient too.  Other code that supports both HIDL and AIDL versions of a  HAL, such as `LockSettingsService#getAuthSecretHal()`, works differently: it first tries to get a handle to the AIDL HAL, and if only that fails does it try to get a handle to get the HIDL HAL.  Have you considered taking the same approach here?",
+      "range": {
+        "startLine": 66,
+        "startChar": 4,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "444df056_a3da8be6",
         "filename": "gatekeeperd/gatekeeperd.cpp",
         "patchSetId": 2
@@ -20,6 +43,23 @@
         "endLine": 68,
         "endChar": 62
       },
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26284c8e_6521b0de",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-06-13T23:54:07Z",
+      "side": 1,
+      "message": "There\u0027s an existing compiler warning here about `AServiceManager_getService()` being deprecated:\n\n```\nsystem/core/gatekeeperd/gatekeeperd.cpp:68:37: warning: \u0027AServiceManager_getService\u0027 is deprecated: this polls 5s, use AServiceManager_waitForService or AServi\nceManager_checkService [-Wdeprecated-declarations]\n        ::ndk::SpAIBinder ks2Binder(AServiceManager_getService(gatekeeperServiceName));\n                                    ^\nframeworks/native/libs/binder/ndk/include_platform/android/binder_manager.h:98:3: note: \u0027AServiceManager_getService\u0027 has been explicitly marked deprecated here\n[[deprecated(\"this polls 5s, use AServiceManager_waitForService or AServiceManager_checkService\")]]\n  ^\n```\n\nThis would be a good time to fix that warning by switching to `AServiceManager_waitForService()`.",
       "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
