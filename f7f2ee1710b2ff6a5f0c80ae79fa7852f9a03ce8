@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "444df056_a3da8be6",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-06-13T23:51:59Z",
+      "side": 1,
+      "message": "nit: or use waitForService (maybe?) or checkService (if it isn\u0027t needed)",
+      "range": {
+        "startLine": 68,
+        "startChar": 36,
+        "endLine": 68,
+        "endChar": 62
+      },
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
