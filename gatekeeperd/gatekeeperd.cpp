@@ -64,7 +64,7 @@ constexpr const char gatekeeperServiceName[] = "android.hardware.gatekeeper.IGat
 GateKeeperProxy::GateKeeperProxy() {
     clear_state_if_needed_done = false;
     hw_device = IGatekeeper::getService();
-    ::ndk::SpAIBinder ks2Binder(AServiceManager_getService(gatekeeperServiceName));
+    ::ndk::SpAIBinder ks2Binder(AServiceManager_checkService(gatekeeperServiceName));
     aidl_hw_device = AidlIGatekeeper::fromBinder(ks2Binder);
     is_running_gsi = android::base::GetBoolProperty(android::gsi::kGsiBootedProp, false);
 
