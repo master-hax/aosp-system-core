@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffcadac2_1e9e9eb5",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2023-06-14T02:51:54Z",
+      "side": 1,
+      "message": "I have updated the code to get the AIDL service first and if it fails then move to HIDL service.",
+      "parentUuid": "92c7f6ce_4a2e4a1e",
+      "range": {
+        "startLine": 66,
+        "startChar": 4,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "444df056_a3da8be6",
@@ -60,6 +84,48 @@
       "writtenOn": "2023-06-13T23:54:07Z",
       "side": 1,
       "message": "There\u0027s an existing compiler warning here about `AServiceManager_getService()` being deprecated:\n\n```\nsystem/core/gatekeeperd/gatekeeperd.cpp:68:37: warning: \u0027AServiceManager_getService\u0027 is deprecated: this polls 5s, use AServiceManager_waitForService or AServi\nceManager_checkService [-Wdeprecated-declarations]\n        ::ndk::SpAIBinder ks2Binder(AServiceManager_getService(gatekeeperServiceName));\n                                    ^\nframeworks/native/libs/binder/ndk/include_platform/android/binder_manager.h:98:3: note: \u0027AServiceManager_getService\u0027 has been explicitly marked deprecated here\n[[deprecated(\"this polls 5s, use AServiceManager_waitForService or AServiceManager_checkService\")]]\n  ^\n```\n\nThis would be a good time to fix that warning by switching to `AServiceManager_waitForService()`.",
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f946b4f9_16925113",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2023-06-14T02:51:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "444df056_a3da8be6",
+      "range": {
+        "startLine": 68,
+        "startChar": 36,
+        "endLine": 68,
+        "endChar": 62
+      },
+      "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43ac57f3_7e244ac6",
+        "filename": "gatekeeperd/gatekeeperd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1887766
+      },
+      "writtenOn": "2023-06-14T02:51:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26284c8e_6521b0de",
       "revId": "f7f2ee1710b2ff6a5f0c80ae79fa7852f9a03ce8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
