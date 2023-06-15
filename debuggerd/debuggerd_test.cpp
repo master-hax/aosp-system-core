@@ -300,21 +300,22 @@ void CrasherTest::AssertDeath(int signo) {
 }
 
 static void ConsumeFd(unique_fd fd, std::string* output) {
-  constexpr size_t read_length = PAGE_SIZE;
+  const size_t page_size = getpagesize();
+  const size_t read_length = page_size;
   std::string result;
 
   while (true) {
     size_t offset = result.size();
-    result.resize(result.size() + PAGE_SIZE);
+    result.resize(result.size() + page_size);
     ssize_t rc = TEMP_FAILURE_RETRY(read(fd.get(), &result[offset], read_length));
     if (rc == -1) {
       FAIL() << "read failed: " << strerror(errno);
     } else if (rc == 0) {
-      result.resize(result.size() - PAGE_SIZE);
+      result.resize(result.size() - page_size);
       break;
     }
 
-    result.resize(result.size() - PAGE_SIZE + rc);
+    result.resize(result.size() - page_size + rc);
   }
 
   *output = std::move(result);
