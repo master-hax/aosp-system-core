@@ -937,9 +937,12 @@ bool MakeScratchFilesystem(const std::string& scratch_device) {
     // thus do not rely on fsck to correct problems that could creep in.
     auto fs_type = ""s;
     auto command = ""s;
+    static const auto page_size_str = std::to_string(getpagesize());
     if (!access(kMkF2fs.c_str(), X_OK) && fs_mgr_filesystem_available("f2fs")) {
         fs_type = "f2fs";
-        command = kMkF2fs + " -w 4096 -f -d1 -l" + android::base::Basename(kScratchMountPoint);
+        command = kMkF2fs + " -w ";
+        command += page_size_str;
+        command += " -f -d1 -l" + android::base::Basename(kScratchMountPoint);
     } else if (!access(kMkExt4.c_str(), X_OK) && fs_mgr_filesystem_available("ext4")) {
         fs_type = "ext4";
         command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -M " + kScratchMountPoint;
