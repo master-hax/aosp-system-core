@@ -230,7 +230,7 @@ bool CowReader::PrepMergeOps() {
             size_t seq_len = current_op.data_length / sizeof(uint32_t);
 
             merge_op_blocks->resize(merge_op_blocks->size() + seq_len);
-            if (!GetRawBytes(current_op.source, &merge_op_blocks->data()[num_seqs],
+            if (!GetRawBytes(&current_op, &merge_op_blocks->data()[num_seqs],
                              current_op.data_length, &read)) {
                 PLOG(ERROR) << "Failed to read sequence op!";
                 return false;
