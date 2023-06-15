@@ -32,6 +32,7 @@
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
+#include <string>
 
 #include "fs_mgr_priv.h"
 
@@ -68,6 +69,8 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
 
     /* Format the partition using the calculated length */
 
+    // ext4 supports block 4K block size on 16K page sizes. So using a hardcoded 4K block size is
+    // fine
     std::string size_str = std::to_string(dev_sz / 4096);
 
     std::vector<const char*> mke2fs_args = {"/system/bin/mke2fs", "-t", "ext4", "-b", "4096"};
@@ -127,7 +130,7 @@ static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs
 
     /* Format the partition using the calculated length */
 
-    std::string size_str = std::to_string(dev_sz / 4096);
+    const auto size_str = std::to_string(dev_sz / getpagesize());
 
     std::vector<const char*> args = {"/system/bin/make_f2fs", "-g", "android"};
     if (needs_projid) {
