@@ -124,12 +124,41 @@ bool CowReader::ParseV2(android::base::borrowed_fd fd, std::optional<uint64_t> l
     data_loc_ = parser.data_loc();
 
     ops_ = std::make_shared<std::vector<CowOperation>>(parser.ops()->size());
-    for (const auto& op : *parser.ops()) {
-        CowOperation new_op;
-        static_assert(sizeof(op) == sizeof(new_op));
 
-        memcpy(&new_op, &op, sizeof(new_op));
-        ops_->emplace_back(new_op);
+    // Translate the operation buffer.
+    for (size_t i = 0; i < parser.ops()->size(); i++) {
+        const auto& v2_op = parser.ops()->at(i);
+
+        auto& new_op = ops_->at(i);
+        new_op.type = v2_op.type;
+        new_op.data_length = v2_op.data_length;
+
+        if (v2_op.new_block > std::numeric_limits<uint32_t>::max()) {
+            LOG(ERROR) << "Out-of-range new block in COW op: " << v2_op;
+            return false;
+        }
+        new_op.new_block = v2_op.new_block;
+
+        uint64_t source_info = v2_op.source;
+        if (new_op.type != kCowLabelOp) {
+            source_info &= kCowOpSourceInfoDataMask;
+            if (source_info != v2_op.source) {
+                LOG(ERROR) << "Out-of-range source value in COW op: " << v2_op;
+                return false;
+            }
+        }
+        if (v2_op.compression != kCowCompressNone) {
+            if (compression_type_ == kCowCompressNone) {
+                compression_type_ = v2_op.compression;
+            } else if (compression_type_ != v2_op.compression) {
+                LOG(ERROR) << "COW has mixed compression types which is not supported;"
+                           << " previously saw " << compression_type_ << ", got "
+                           << v2_op.compression << ", op: " << v2_op;
+                return false;
+            }
+            source_info |= kCowOpSourceInfoCompressBit;
+        }
+        new_op.source_info = source_info;
     }
     return true;
 }
@@ -598,7 +627,10 @@ class CowDataStream final : public IByteStream {
 };
 
 uint8_t CowReader::GetCompressionType(const CowOperation* op) {
-    return op->compression;
+    if (op->source_info & kCowOpSourceInfoCompressBit) {
+        return compression_type_;
+    }
+    return kCowCompressNone;
 }
 
 ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_size,

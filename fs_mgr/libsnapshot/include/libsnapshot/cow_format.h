@@ -107,9 +107,8 @@ struct CowFooterOperation {
     uint64_t num_ops;
 } __attribute__((packed));
 
-// Cow operations are currently fixed-size entries, but this may change if
-// needed.
-struct CowOperation {
+// V2 version of the on-disk CowOperation.
+struct CowOperationV2 {
     // The operation code (see the constants and structures below).
     uint8_t type;
 
@@ -143,18 +142,34 @@ struct CowOperation {
     uint64_t source;
 } __attribute__((packed));
 
-// See CowOperation for the definitions of these fields. The layout is
-// identical to CowOperation. We use two types to ensure that the parser
-// structure does not leak into the library API.
-struct CowOperationV2 {
+// In memory-version of the on-disk CowOperation.
+struct CowOperation {
+    // The operation code (see the constants and structures below).
     uint8_t type;
-    uint8_t compression;
+
+    // If this operation reads from the data section of the COW,
+    // this contains the length.
+    //
+    // Unused for Copy and Zero ops.
     uint16_t data_length;
-    uint64_t new_block;
-    uint64_t source;
+
+    // The block of data in the new image that this operation modifies.
+    uint32_t new_block;
+
+    // The value of |source| depends on the operation code.
+    //
+    // CopyOp: a 32-bit block location in the source image.
+    // ReplaceOp: an absolute byte offset within the COW's data section.
+    // XorOp: an absolute byte offset in the source image.
+    // ZeroOp: unused
+    // LabelOp: a 64-bit opaque identifier.
+    //
+    // For ops other than Label:
+    //  Bits 47-62 are reserved and must be zero.
+    //  Bit 63 indicates compressed data, if applicable.
+    uint64_t source_info;
 } __attribute__((packed));
 
-static_assert(sizeof(CowOperationV2) == sizeof(CowOperation));
 static_assert(sizeof(CowOperationV2) == sizeof(CowFooterOperation));
 
 static constexpr uint8_t kCowCopyOp = 1;
@@ -178,11 +193,14 @@ static constexpr uint8_t kCowReadAheadNotStarted = 0;
 static constexpr uint8_t kCowReadAheadInProgress = 1;
 static constexpr uint8_t kCowReadAheadDone = 2;
 
+static constexpr uint64_t kCowOpSourceInfoDataMask = (1ULL << 48) - 1;
+static constexpr uint64_t kCowOpSourceInfoCompressBit = (1ULL << 63);
+
 static inline uint64_t GetCowOpSourceInfoData(const CowOperation* op) {
-    return op->source;
+    return op->source_info & kCowOpSourceInfoDataMask;
 }
 static inline bool GetCowOpSourceInfoCompression(const CowOperation* op) {
-    return op->compression != kCowCompressNone;
+    return !!(op->source_info & kCowOpSourceInfoCompressBit);
 }
 
 struct CowFooter {
