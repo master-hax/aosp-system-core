@@ -143,7 +143,19 @@ struct CowOperation {
     uint64_t source;
 } __attribute__((packed));
 
-static_assert(sizeof(CowOperation) == sizeof(CowFooterOperation));
+// See CowOperation for the definitions of these fields. The layout is
+// identical to CowOperation. We use two types to ensure that the parser
+// structure does not leak into the library API.
+struct CowOperationV2 {
+    uint8_t type;
+    uint8_t compression;
+    uint16_t data_length;
+    uint64_t new_block;
+    uint64_t source;
+} __attribute__((packed));
+
+static_assert(sizeof(CowOperationV2) == sizeof(CowOperation));
+static_assert(sizeof(CowOperationV2) == sizeof(CowFooterOperation));
 
 static constexpr uint8_t kCowCopyOp = 1;
 static constexpr uint8_t kCowReplaceOp = 2;
@@ -194,10 +206,11 @@ struct BufferState {
 // 2MB Scratch space used for read-ahead
 static constexpr uint64_t BUFFER_REGION_DEFAULT_SIZE = (1ULL << 21);
 
+std::ostream& operator<<(std::ostream& os, CowOperationV2 const& arg);
 std::ostream& operator<<(std::ostream& os, CowOperation const& arg);
 
-int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_size);
-int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_size);
+int64_t GetNextOpOffset(const CowOperationV2& op, uint32_t cluster_size);
+int64_t GetNextDataOffset(const CowOperationV2& op, uint32_t cluster_size);
 
 // Ops that are internal to the Cow Format and not OTA data
 bool IsMetadataOp(const CowOperation& op);

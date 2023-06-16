@@ -95,6 +95,24 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
+    switch (header_.prefix.major_version) {
+        case 1:
+        case 2:
+            if (!ParseV2(fd, label)) {
+                return false;
+            }
+            break;
+        default:
+            LOG(ERROR) << "Unknown version in CowReader::Parse: " << header_.prefix.major_version;
+            return false;
+    }
+
+    // If we're resuming a write, we're not ready to merge
+    if (label.has_value()) return true;
+    return PrepMergeOps();
+}
+
+bool CowReader::ParseV2(android::base::borrowed_fd fd, std::optional<uint64_t> label) {
     CowParserV2 parser;
     if (!parser.Parse(fd, header_, label)) {
         return false;
@@ -103,12 +121,17 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     footer_ = parser.footer();
     fd_size_ = parser.fd_size();
     last_label_ = parser.last_label();
-    ops_ = std::move(parser.ops());
     data_loc_ = parser.data_loc();
 
-    // If we're resuming a write, we're not ready to merge
-    if (label.has_value()) return true;
-    return PrepMergeOps();
+    ops_ = std::make_shared<std::vector<CowOperation>>(parser.ops()->size());
+    for (const auto& op : *parser.ops()) {
+        CowOperation new_op;
+        static_assert(sizeof(op) == sizeof(new_op));
+
+        memcpy(&new_op, &op, sizeof(new_op));
+        ops_->emplace_back(new_op);
+    }
+    return true;
 }
 
 //
