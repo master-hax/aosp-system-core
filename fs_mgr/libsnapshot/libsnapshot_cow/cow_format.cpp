@@ -14,11 +14,13 @@
 // limitations under the License.
 //
 
-#include <libsnapshot/cow_format.h>
+#include <inttypes.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <android-base/logging.h>
+#include <android-base/stringprintf.h>
+#include <libsnapshot/cow_format.h>
 #include "writer_v2.h"
 
 namespace android {
@@ -77,14 +79,28 @@ std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
 }
 
 std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
-    union {
-        CowOperationV2 v2;
-        CowOperation op;
-    } u;
-    static_assert(sizeof(u) == sizeof(op));
-
-    u.op = op;
-    return os << u.v2;
+    os << "CowOperation(";
+    EmitCowTypeString(os, op.type);
+    if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowSequenceOp) {
+        if (op.source_info & kCowOpSourceInfoCompressBit) {
+            os << ", compressed";
+        } else {
+            os << ", uncompressed";
+        }
+        os << ", data_length:" << op.data_length;
+    }
+    if (op.type != kCowClusterOp && op.type != kCowSequenceOp && op.type != kCowLabelOp) {
+        os << ", new_block:" << op.new_block;
+    }
+    if (op.type == kCowXorOp || op.type == kCowReplaceOp || op.type == kCowCopyOp) {
+        os << ", source:" << (op.source_info & kCowOpSourceInfoDataMask);
+    } else if (op.type == kCowClusterOp) {
+        os << ", cluster_data:" << (op.source_info & kCowOpSourceInfoDataMask);
+    } else {
+        os << ", label:0x" << android::base::StringPrintf("%" PRIx64, op.source_info);
+    }
+    os << ")";
+    return os;
 }
 
 int64_t GetNextOpOffset(const CowOperationV2& op, uint32_t cluster_ops) {
