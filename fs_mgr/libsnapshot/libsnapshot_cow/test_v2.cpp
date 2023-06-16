@@ -86,10 +86,9 @@ TEST_F(CowTest, CopyContiguous) {
     while (!iter->AtEnd()) {
         auto op = iter->Get();
         ASSERT_EQ(op->type, kCowCopyOp);
-        ASSERT_EQ(op->compression, kCowCompressNone);
         ASSERT_EQ(op->data_length, 0);
         ASSERT_EQ(op->new_block, 10 + i);
-        ASSERT_EQ(op->source, 1000 + i);
+        ASSERT_EQ(op->source_info, 1000 + i);
         iter->Next();
         i += 1;
     }
@@ -133,10 +132,9 @@ TEST_F(CowTest, ReadWrite) {
     auto op = iter->Get();
 
     ASSERT_EQ(op->type, kCowCopyOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 10);
-    ASSERT_EQ(op->source, 20);
+    ASSERT_EQ(op->source_info, 20);
 
     std::string sink(data.size(), '\0');
 
@@ -157,20 +155,18 @@ TEST_F(CowTest, ReadWrite) {
 
     // Note: the zero operation gets split into two blocks.
     ASSERT_EQ(op->type, kCowZeroOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 51);
-    ASSERT_EQ(op->source, 0);
+    ASSERT_EQ(op->source_info, 0);
 
     iter->Next();
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
 
     ASSERT_EQ(op->type, kCowZeroOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 52);
-    ASSERT_EQ(op->source, 0);
+    ASSERT_EQ(op->source_info, 0);
 
     iter->Next();
     ASSERT_TRUE(iter->AtEnd());
@@ -212,10 +208,9 @@ TEST_F(CowTest, ReadWriteXor) {
     auto op = iter->Get();
 
     ASSERT_EQ(op->type, kCowCopyOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 10);
-    ASSERT_EQ(op->source, 20);
+    ASSERT_EQ(op->source_info, 20);
 
     std::string sink(data.size(), '\0');
 
@@ -237,20 +232,18 @@ TEST_F(CowTest, ReadWriteXor) {
 
     // Note: the zero operation gets split into two blocks.
     ASSERT_EQ(op->type, kCowZeroOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 51);
-    ASSERT_EQ(op->source, 0);
+    ASSERT_EQ(op->source_info, 0);
 
     iter->Next();
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
 
     ASSERT_EQ(op->type, kCowZeroOp);
-    ASSERT_EQ(op->compression, kCowCompressNone);
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 52);
-    ASSERT_EQ(op->source, 0);
+    ASSERT_EQ(op->source_info, 0);
 
     iter->Next();
     ASSERT_TRUE(iter->AtEnd());
@@ -675,7 +668,7 @@ TEST_F(CowTest, AppendLabelSmall) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 3);
+    ASSERT_EQ(op->source_info, 3);
 
     iter->Next();
 
@@ -728,7 +721,7 @@ TEST_F(CowTest, AppendLabelMissing) {
     ASSERT_FALSE(iter->AtEnd());
     auto op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 0);
+    ASSERT_EQ(op->source_info, 0);
 
     iter->Next();
 
@@ -786,7 +779,7 @@ TEST_F(CowTest, AppendExtendedCorrupted) {
     ASSERT_FALSE(iter->AtEnd());
     auto op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 5);
+    ASSERT_EQ(op->source_info, 5);
 
     iter->Next();
     ASSERT_TRUE(iter->AtEnd());
@@ -855,7 +848,7 @@ TEST_F(CowTest, AppendbyLabel) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 4);
+    ASSERT_EQ(op->source_info, 4);
 
     iter->Next();
 
@@ -873,7 +866,7 @@ TEST_F(CowTest, AppendbyLabel) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 5);
+    ASSERT_EQ(op->source_info, 5);
 
     iter->Next();
 
@@ -926,7 +919,7 @@ TEST_F(CowTest, ClusterTest) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 4);
+    ASSERT_EQ(op->source_info, 4);
 
     iter->Next();
 
@@ -951,7 +944,7 @@ TEST_F(CowTest, ClusterTest) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 5);
+    ASSERT_EQ(op->source_info, 5);
 
     iter->Next();
 
@@ -970,7 +963,7 @@ TEST_F(CowTest, ClusterTest) {
     ASSERT_FALSE(iter->AtEnd());
     op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 6);
+    ASSERT_EQ(op->source_info, 6);
 
     iter->Next();
 
@@ -1017,7 +1010,7 @@ TEST_F(CowTest, ClusterAppendTest) {
     ASSERT_FALSE(iter->AtEnd());
     auto op = iter->Get();
     ASSERT_EQ(op->type, kCowLabelOp);
-    ASSERT_EQ(op->source, 50);
+    ASSERT_EQ(op->source_info, 50);
 
     iter->Next();
 

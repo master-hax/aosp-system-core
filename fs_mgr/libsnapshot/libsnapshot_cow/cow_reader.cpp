@@ -95,6 +95,24 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
+    switch (header_.prefix.major_version) {
+        case 1:
+        case 2:
+            if (!ParseV2(fd, label)) {
+                return false;
+            }
+            break;
+        default:
+            LOG(ERROR) << "Unknown version in CowReader::Parse: " << header_.prefix.major_version;
+            return false;
+    }
+
+    // If we're resuming a write, we're not ready to merge
+    if (label.has_value()) return true;
+    return PrepMergeOps();
+}
+
+bool CowReader::ParseV2(android::base::borrowed_fd fd, std::optional<uint64_t> label) {
     CowParserV2 parser;
     if (!parser.Parse(fd, header_, label)) {
         return false;
@@ -103,12 +121,47 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     footer_ = parser.footer();
     fd_size_ = parser.fd_size();
     last_label_ = parser.last_label();
-    ops_ = std::move(parser.ops());
     data_loc_ = parser.data_loc();
 
-    // If we're resuming a write, we're not ready to merge
-    if (label.has_value()) return true;
-    return PrepMergeOps();
+    ops_ = std::make_shared<std::vector<CowOperation>>();
+    ops_->resize(parser.ops()->size());
+
+    // Translate the operation buffer.
+    for (size_t i = 0; i < parser.ops()->size(); i++) {
+        const auto& v2_op = parser.ops()->at(i);
+
+        auto& new_op = ops_->at(i);
+        new_op.type = v2_op.type;
+        new_op.data_length = v2_op.data_length;
+
+        if (v2_op.new_block > std::numeric_limits<uint32_t>::max()) {
+            LOG(ERROR) << "Out-of-range new block in COW op: " << v2_op;
+            return false;
+        }
+        new_op.new_block = v2_op.new_block;
+
+        uint64_t source_info = v2_op.source;
+        if (new_op.type != kCowLabelOp) {
+            source_info &= kCowOpSourceInfoDataMask;
+            if (source_info != v2_op.source) {
+                LOG(ERROR) << "Out-of-range source value in COW op: " << v2_op;
+                return false;
+            }
+        }
+        if (v2_op.compression != kCowCompressNone) {
+            if (compression_type_ == kCowCompressNone) {
+                compression_type_ = v2_op.compression;
+            } else if (compression_type_ != v2_op.compression) {
+                LOG(ERROR) << "COW has mixed compression types which is not supported;"
+                           << " previously saw " << compression_type_ << ", got "
+                           << v2_op.compression << ", op: " << v2_op;
+                return false;
+            }
+            source_info |= kCowOpSourceInfoCompressBit;
+        }
+        new_op.source_info = source_info;
+    }
+    return true;
 }
 
 //
@@ -575,7 +628,10 @@ class CowDataStream final : public IByteStream {
 };
 
 uint8_t CowReader::GetCompressionType(const CowOperation* op) {
-    return op->compression;
+    if (op->source_info & kCowOpSourceInfoCompressBit) {
+        return compression_type_;
+    }
+    return kCowCompressNone;
 }
 
 ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
