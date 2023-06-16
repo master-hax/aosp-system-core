@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a41112b9_9bf23775",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-16T23:04:06Z",
+      "side": 1,
+      "message": "explicitly mention that `GetSourceOffset` returns byte offset, not block offset.",
+      "range": {
+        "startLine": 77,
+        "startChar": 24,
+        "endLine": 77,
+        "endChar": 30
+      },
+      "revId": "9e8ed602f78cc7972a96c9c207ae09e1704253b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
