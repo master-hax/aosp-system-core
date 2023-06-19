@@ -51,6 +51,24 @@
       "parentUuid": "41b8cd57_4da502a6",
       "revId": "962ed83d363f4cea91c18e6276a4ef10df866587",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99d2d1e2_bdb7bf98",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1728502
+      },
+      "writtenOn": "2023-06-19T01:39:19Z",
+      "side": 1,
+      "message": "yes, we will abandon the cl, thanks",
+      "parentUuid": "000095d2_c7029dcf",
+      "revId": "962ed83d363f4cea91c18e6276a4ef10df866587",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
