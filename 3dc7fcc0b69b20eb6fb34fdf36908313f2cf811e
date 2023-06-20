@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae0162b8_c7163ba5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1892,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-20T19:28:21Z",
+      "side": 0,
+      "message": "On second look, I think we should probably keep this. Pixel doesn\u0027t use it but older devices might. Maybe add a new \"InstallSignatureTask\" that gets added if the source file exists?",
+      "revId": "3dc7fcc0b69b20eb6fb34fdf36908313f2cf811e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
