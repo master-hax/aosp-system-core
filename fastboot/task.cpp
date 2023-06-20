@@ -328,3 +328,27 @@ void WipeTask::Run() {
 std::string WipeTask::ToString() {
     return "erase " + pname_;
 }
+
+InstallSignatureTask::InstallSignatureTask(const FlashingPlan* fp, const std::string& sig_name,
+                                           const std::vector<char> signature_data)
+    : fp_(fp), sig_name_(sig_name), signature_data_(signature_data){};
+
+std::unique_ptr<InstallSignatureTask> InstallSignatureTask::GetSignatureTask(
+        const FlashingPlan* fp, const std::unique_ptr<FlashTask>& task) {
+    std::string sig_name = task->GetImageName().substr(0, task->GetImageName().find('.')) + ".sig";
+    std::vector<char> signature_data;
+    if (fp->source->ReadFile(sig_name, &signature_data)) {
+        fp->fb->Download("signature", signature_data);
+        fp->fb->RawCommand("signature", "installing signature");
+    }
+    return std::make_unique<InstallSignatureTask>(fp, sig_name, signature_data);
+}
+
+void InstallSignatureTask::Run() {
+    fp_->fb->Download("signature", signature_data_);
+    fp_->fb->RawCommand("signature", "installing signature");
+}
+
+std::string InstallSignatureTask::ToString() {
+    return "installing signature " + sig_name_;
+}

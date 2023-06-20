@@ -45,6 +45,9 @@ class IFastBootDriver {
                              std::vector<std::string>* info = nullptr) = 0;
     RetCode virtual GetVar(const std::string& key, std::string* val,
                            std::vector<std::string>* info = nullptr) = 0;
+    RetCode virtual Download(const std::string& name, const std::vector<char>& buf,
+                             std::string* response = nullptr,
+                             std::vector<std::string>* info = nullptr) = 0;
     RetCode virtual Download(const std::string& name, android::base::borrowed_fd fd, size_t size,
                              std::string* response = nullptr,
                              std::vector<std::string>* info = nullptr) = 0;

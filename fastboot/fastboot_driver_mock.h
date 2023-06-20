@@ -33,6 +33,11 @@ class MockFastbootDriver : public IFastBootDriver {
                 (override));
 
     MOCK_METHOD(RetCode, Download,
+                (const std::string&, const std::vector<char>&, std::string*,
+                 std::vector<std::string>*),
+                (override));
+
+    MOCK_METHOD(RetCode, Download,
                 (const std::string&, android::base::borrowed_fd, size_t, std::string*,
                  std::vector<std::string>*),
                 (override));

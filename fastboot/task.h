@@ -146,3 +146,18 @@ class WipeTask : public Task {
     const FlashingPlan* fp_;
     const std::string pname_;
 };
+
+class InstallSignatureTask : public Task {
+  public:
+    InstallSignatureTask(const FlashingPlan* fp, const std::string& sig_name,
+                         const std::vector<char> signature_data);
+    static std::unique_ptr<InstallSignatureTask> GetSignatureTask(
+            const FlashingPlan* fp, const std::unique_ptr<FlashTask>& task);
+    void Run() override;
+    std::string ToString() override;
+
+  private:
+    const FlashingPlan* fp_;
+    const std::string sig_name_;
+    std::vector<char> signature_data_;
+};

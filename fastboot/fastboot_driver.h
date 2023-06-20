@@ -76,7 +76,8 @@ class FastBootDriver : public IFastBootDriver {
     RetCode Download(android::base::borrowed_fd fd, size_t size, std::string* response = nullptr,
                      std::vector<std::string>* info = nullptr);
     RetCode Download(const std::string& name, const std::vector<char>& buf,
-                     std::string* response = nullptr, std::vector<std::string>* info = nullptr);
+                     std::string* response = nullptr,
+                     std::vector<std::string>* info = nullptr) override;
     RetCode Download(const std::vector<char>& buf, std::string* response = nullptr,
                      std::vector<std::string>* info = nullptr);
     RetCode Download(const std::string& partition, struct sparse_file* s, uint32_t sz,
