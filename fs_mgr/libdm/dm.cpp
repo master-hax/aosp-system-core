@@ -114,9 +114,12 @@ bool DeviceMapper::DeleteDevice(const std::string& name,
         return false;
     }
 
+    // Expect to have uevent generated if the unique path actually exists. This may not exist
+    // if the device was created but has never been activated before it gets deleted.
+    bool need_uevent = !unique_path.empty() && access(unique_path.c_str(), F_OK) == 0;
     // Check to make sure appropriate uevent is generated so ueventd will
     // do the right thing and remove the corresponding device node and symlinks.
-    if ((io.flags & DM_UEVENT_GENERATED_FLAG) == 0) {
+    if (need_uevent && (io.flags & DM_UEVENT_GENERATED_FLAG) == 0) {
         LOG(ERROR) << "Didn't generate uevent for [" << name << "] removal";
         return false;
     }
