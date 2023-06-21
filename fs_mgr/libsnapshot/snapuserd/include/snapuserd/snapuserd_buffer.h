@@ -36,6 +36,7 @@ class BufferSink final {
     struct dm_user_header* GetHeaderPtr();
     void ResetBufferOffset() { buffer_offset_ = 0; }
     void* GetPayloadBufPtr();
+    size_t GetBufferOffset() { return buffer_offset_; }
 
   private:
     std::unique_ptr<uint8_t[]> buffer_;

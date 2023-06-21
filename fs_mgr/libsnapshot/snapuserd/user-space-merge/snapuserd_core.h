@@ -121,6 +121,7 @@ class Worker {
     // Functions interacting with dm-user
     bool WriteDmUserPayload(size_t size);
     bool DmuserReadRequest();
+    bool SendBufferedIo();
 
     // IO Path
     bool ProcessIORequest();

@@ -377,11 +377,11 @@ bool Worker::ReadAlignedSector(sector_t sector, size_t sz) {
             bufsink_.UpdateBufferOffset(ret);
         }
 
-        if (!WriteDmUserPayload(total_bytes_read)) {
+        if (!SendBufferedIo()) {
             return false;
         }
 
-        SNAP_LOG(DEBUG) << "WriteDmUserPayload success total_bytes_read: " << total_bytes_read
+        SNAP_LOG(DEBUG) << "SendBufferedIo success total_bytes_read: " << total_bytes_read
                         << " remaining_size: " << remaining_size;
         remaining_size -= total_bytes_read;
     } while (remaining_size > 0);
@@ -512,7 +512,7 @@ bool Worker::ReadUnalignedSector(sector_t sector, size_t size) {
         sector += (ret >> SECTOR_SHIFT);
 
         // Send the data back
-        if (!WriteDmUserPayload(total_bytes_read)) {
+        if (!SendBufferedIo()) {
             return false;
         }
 
@@ -536,7 +536,7 @@ bool Worker::ReadUnalignedSector(sector_t sector, size_t size) {
             }
             total_bytes_read += remaining_size;
 
-            if (!WriteDmUserPayload(total_bytes_read)) {
+            if (!SendBufferedIo()) {
                 return false;
             }
         } else {
@@ -546,7 +546,7 @@ bool Worker::ReadUnalignedSector(sector_t sector, size_t size) {
 
             total_bytes_read += diff_size;
 
-            if (!WriteDmUserPayload(total_bytes_read)) {
+            if (!SendBufferedIo()) {
                 return false;
             }
 
@@ -589,6 +589,10 @@ bool Worker::DmuserReadRequest() {
     }
 
     return ReadAlignedSector(header->sector, header->len);
+}
+
+bool Worker::SendBufferedIo() {
+    return WriteDmUserPayload(bufsink_.GetBufferOffset());
 }
 
 bool Worker::ProcessIORequest() {
