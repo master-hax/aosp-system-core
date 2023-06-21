@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2e6484b_3dd2589c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-06-21T21:46:07Z",
+      "side": 1,
+      "message": "Accidentally messed up my local branch commits. This one will have some commits moved around but has the same changes",
+      "revId": "7f8fff0360233e5f8af74ba1715e8d7c07342829",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
