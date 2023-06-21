@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e20ca424_c897729c",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:27:43Z",
+      "side": 1,
+      "message": "log before return",
+      "range": {
+        "startLine": 195,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 23
+      },
+      "revId": "17db121aa86c5dcb4d49c1025fc8c00c6a569a7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
