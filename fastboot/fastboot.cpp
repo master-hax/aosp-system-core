@@ -1076,9 +1076,7 @@ static bool load_buf(const char* fname, struct fastboot_buffer* buf) {
     unique_fd fd(TEMP_FAILURE_RETRY(open(fname, O_RDONLY | O_BINARY)));
 
     if (fd == -1) {
-        auto path = find_item_given_name(fname);
-        fd = unique_fd(TEMP_FAILURE_RETRY(open(path.c_str(), O_RDONLY | O_BINARY)));
-        if (fd == -1) return false;
+        return false;
     }
 
     struct stat s;
@@ -2215,8 +2213,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                                       {0, 0, 0, 0}};
 
     serial = getenv("FASTBOOT_DEVICE");
-    if (!serial)
-        serial = getenv("ANDROID_SERIAL");
+    if (!serial) serial = getenv("ANDROID_SERIAL");
 
     int c;
     while ((c = getopt_long(argc, argv, "a::hls:S:vw", longopts, &longindex)) != -1) {
