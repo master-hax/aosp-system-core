@@ -121,13 +121,14 @@ class Worker {
     // Functions interacting with dm-user
     bool WriteDmUserPayload(size_t size);
     bool DmuserReadRequest();
+    bool SendBufferedIo();
 
     // IO Path
     bool ProcessIORequest();
     bool IsBlockAligned(size_t size) { return ((size & (BLOCK_SZ - 1)) == 0); }
 
-    bool ReadDataFromBaseDevice(sector_t sector, size_t read_size);
-    bool ReadFromSourceDevice(const CowOperation* cow_op);
+    bool ReadDataFromBaseDevice(sector_t sector, void* buffer, size_t read_size);
+    bool ReadFromSourceDevice(const CowOperation* cow_op, void* buffer);
 
     bool ReadAlignedSector(sector_t sector, size_t sz);
     bool ReadUnalignedSector(sector_t sector, size_t size);
@@ -136,14 +137,14 @@ class Worker {
     void RespondIOError();
 
     // Processing COW operations
-    bool ProcessCowOp(const CowOperation* cow_op);
-    bool ProcessReplaceOp(const CowOperation* cow_op);
-    bool ProcessZeroOp();
+    bool ProcessCowOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessReplaceOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessZeroOp(void* buffer);
 
     // Handles Copy and Xor
-    bool ProcessCopyOp(const CowOperation* cow_op);
-    bool ProcessXorOp(const CowOperation* cow_op);
-    bool ProcessOrderedOp(const CowOperation* cow_op);
+    bool ProcessCopyOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessXorOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessOrderedOp(const CowOperation* cow_op, void* buffer);
 
     // Merge related ops
     bool Merge();
@@ -163,7 +164,7 @@ class Worker {
 
     std::unique_ptr<CowReader> reader_;
     BufferSink bufsink_;
-    XorSink xorsink_;
+    std::string xor_buffer_;
 
     std::string cow_device_;
     std::string backing_store_device_;

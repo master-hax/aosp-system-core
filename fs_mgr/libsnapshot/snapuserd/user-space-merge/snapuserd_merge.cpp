@@ -99,20 +99,23 @@ bool Worker::MergeReplaceZeroOps() {
 
         for (size_t i = 0; i < replace_zero_vec.size(); i++) {
             const CowOperation* cow_op = replace_zero_vec[i];
+            void* buffer = bufsink_.AcquireBuffer(BLOCK_SZ);
+            if (!buffer) {
+                SNAP_LOG(ERROR) << "AcquireBuffer failed in MergeReplaceOps";
+                return false;
+            }
             if (cow_op->type == kCowReplaceOp) {
-                if (!ProcessReplaceOp(cow_op)) {
+                if (!ProcessReplaceOp(cow_op, buffer)) {
                     SNAP_LOG(ERROR) << "Merge - ReplaceOp failed for block: " << cow_op->new_block;
                     return false;
                 }
             } else {
                 CHECK(cow_op->type == kCowZeroOp);
-                if (!ProcessZeroOp()) {
+                if (!ProcessZeroOp(buffer)) {
                     SNAP_LOG(ERROR) << "Merge ZeroOp failed.";
                     return false;
                 }
             }
-
-            bufsink_.UpdateBufferOffset(BLOCK_SZ);
         }
 
         size_t io_size = linear_blocks * BLOCK_SZ;
