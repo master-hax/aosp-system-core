@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4eb0806c_598adba5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1900,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:23:12Z",
+      "side": 1,
+      "message": "pass `exclude_non_flash_tasks` ?",
+      "range": {
+        "startLine": 1900,
+        "startChar": 8,
+        "endLine": 1900,
+        "endChar": 43
+      },
+      "revId": "1a942c85a027e1e54d02a78ca8fd905e500892a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9368eff6_0598ffd8",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1904,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:23:12Z",
+      "side": 1,
+      "message": "don\u0027t capture anything unless necessary. And avoid default capturing unless the capture list is long.",
+      "range": {
+        "startLine": 1904,
+        "startChar": 36,
+        "endLine": 1904,
+        "endChar": 37
+      },
+      "revId": "1a942c85a027e1e54d02a78ca8fd905e500892a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "236e409a_bdbe3742",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1908,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:23:12Z",
+      "side": 1,
+      "message": "return task-\u003eAsFlashTask() !\u003d nullptr;",
+      "range": {
+        "startLine": 1905,
+        "startChar": 12,
+        "endLine": 1908,
+        "endChar": 24
+      },
+      "revId": "1a942c85a027e1e54d02a78ca8fd905e500892a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
