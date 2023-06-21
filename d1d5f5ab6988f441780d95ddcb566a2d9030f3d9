@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2928b42e_01caa784",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-21T19:16:07Z",
+      "side": 1,
+      "message": "i don\u0027t know much about this stuff, but i can confirm that the equivalent code in adb _doesn\u0027t_ have this hack, so it\u0027s possible it hasn\u0027t been relevant for a long time...",
+      "revId": "d1d5f5ab6988f441780d95ddcb566a2d9030f3d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
