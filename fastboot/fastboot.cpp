@@ -173,7 +173,7 @@ static std::vector<Image> images = {
         // clang-format on
 };
 
-static char* get_android_product_out() {
+char* get_android_product_out() {
     char* dir = getenv("ANDROID_PRODUCT_OUT");
     if (dir == nullptr || dir[0] == '\0') {
         return nullptr;
@@ -1794,6 +1794,18 @@ void FlashAllTool::Flash() {
     return;
 }
 
+std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasks(bool use_fastboot_info) {
+    std::vector<std::unique_ptr<Task>> tasks;
+    if (use_fastboot_info) {
+        tasks = CollectTasksFromFastbootInfo();
+
+    } else {
+        tasks = CollectTasksFromImageList();
+    }
+
+    return tasks;
+}
+
 void FlashAllTool::CheckRequirements() {
     std::vector<char> contents;
     if (!fp_->source->ReadFile("android-info.txt", &contents)) {
@@ -1848,7 +1860,6 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
     // or in bootloader fastboot.
     std::vector<std::unique_ptr<Task>> tasks;
     AddFlashTasks(boot_images_, tasks);
-
     if (auto flash_super_task = OptimizedFlashSuperTask::Initialize(fp_, os_images_)) {
         tasks.emplace_back(std::move(flash_super_task));
     } else {
@@ -1871,7 +1882,20 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
             tasks.emplace_back(std::make_unique<ResizeTask>(fp_, image->part_name, "0", slot));
         }
     }
+
     AddFlashTasks(os_images_, tasks);
+    return tasks;
+}
+
+std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromFastbootInfo() {
+    std::vector<std::unique_ptr<Task>> tasks;
+    std::vector<char> contents;
+    if (!fp_->source->ReadFile("fastboot-info.txt", &contents)) {
+        LOG(VERBOSE) << "Flashing from hardcoded images. fastboot-info.txt is empty or does not "
+                        "exist";
+        return CollectTasksFromImageList();
+    }
+    tasks = ParseFastbootInfo(fp_, Split({contents.data(), contents.size()}, "\n"));
     return tasks;
 }
 
