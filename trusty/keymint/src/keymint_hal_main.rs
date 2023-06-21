@@ -158,7 +158,5 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     info!("Successfully registered KeyMint HAL services.");
     info!("Joining thread pool now.");
-    binder::ProcessState::join_thread_pool();
-    info!("KeyMint HAL service is terminating."); // should not reach here
-    Ok(())
+    binder::ProcessState::join_thread_pool()
 }
