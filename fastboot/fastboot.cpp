@@ -1497,6 +1497,13 @@ void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
         if (fd < 0 || !load_buf_fd(std::move(fd), &buf)) {
             die("could not load '%s': %s", fname, strerror(errno));
         }
+        std::vector<char> signature_data;
+        std::string file_string(fname);
+        if (fp->source->ReadFile(file_string.substr(0, file_string.find('.')) + ".sig",
+                                 &signature_data)) {
+            fb->Download("signature", signature_data);
+            fb->RawCommand("signature", "installing signature");
+        }
     } else if (!load_buf(fname, &buf)) {
         die("cannot load '%s': %s", fname, strerror(errno));
     }
