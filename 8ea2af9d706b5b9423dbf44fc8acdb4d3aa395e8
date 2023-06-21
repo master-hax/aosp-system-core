@@ -72,6 +72,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcfe7687_06524f61",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-21T16:16:25Z",
+      "side": 1,
+      "message": "Hmm, I may be reading the code wrong, but it looks like `CreatePlaceholderDevice` does not generate uevent either. Calls to `dm_kobject_uevent` in `dm-ioctl.c` are only when (1) device is resumed, (2) device is removed, and (3) device is renamed. I am looking at kernel 6.1.\n\nAnd `CreatePlaceholderDevice` does NOT resume the device.",
+      "parentUuid": "b9954802_3ce84be1",
+      "revId": "8ea2af9d706b5b9423dbf44fc8acdb4d3aa395e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "2dfdf50b_89d0c5f1",
