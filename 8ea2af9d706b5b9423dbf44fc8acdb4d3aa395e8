@@ -90,6 +90,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e65d4ec0_fcb495a1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-21T16:26:29Z",
+      "side": 1,
+      "message": "When the first table is loaded on a dm device [1] it sets up a queue, which adds a disk [2] which creates the earliest uevent we can get. At that point, sysfs is not fully populated, but it\u0027s good enough for init to do stuff.\n\n[1] https://cs.android.com/android/kernel/superproject/+/common-android-mainline:common/drivers/md/dm-ioctl.c;l\u003d1486?q\u003ddm-ioctl.c\n[2] https://cs.android.com/android/kernel/superproject/+/refs/heads/common-android-mainline:common/drivers/md/dm.c;l\u003d2371;drc\u003d986ad2300152c08626cb65c84829c1c45bcbecd9",
+      "parentUuid": "bcfe7687_06524f61",
+      "revId": "8ea2af9d706b5b9423dbf44fc8acdb4d3aa395e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "2dfdf50b_89d0c5f1",
