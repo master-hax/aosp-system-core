@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a2ad517_908a153d",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:24:18Z",
+      "side": 1,
+      "message": "use .append() to avoid intermediate strings being created",
+      "range": {
+        "startLine": 83,
+        "startChar": 8,
+        "endLine": 83,
+        "endChar": 50
+      },
+      "revId": "3cbcff778b34f8ccd27447ca4e8b4238cc67ef53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
