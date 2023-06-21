@@ -16,6 +16,24 @@
       "message": "This change just introduces new soong modules. Will add a bunch of #ifdefs in a follow up changes",
       "revId": "55dd32538f16e498465eb7fb49407e5754ee68f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceae8e23_7d0bafc3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-21T16:20:13Z",
+      "side": 1,
+      "message": "You\u0027ve scared me now with \"a bunch of #ifdefs\" :)\n\nDepending on the number incoming... readability/maintainability can take a big hit. That\u0027s especially true if microdroid is not built as part of a normal aosp build.\n\nAlternatives: break up files/functions/libraries to create large cut-off points for a small number of #ifdefs. Refactor init so it\u0027s more like a library and microdroid\u0027s init can include a minimalist set of components. Use a global constant (like kIsMicrodroid) that is set at compile-time.\n\nOtherwise, it\u0027ll be easy to break the microdroid build and not realize it until presubmit.",
+      "parentUuid": "d0e91af6_925ddcce",
+      "revId": "55dd32538f16e498465eb7fb49407e5754ee68f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
