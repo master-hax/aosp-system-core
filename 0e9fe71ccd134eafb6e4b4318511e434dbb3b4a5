@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0536959e_54804fef",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-21T22:14:09Z",
+      "side": 1,
+      "message": "use something more specific, like \"use_optimized_flash_super\"",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 99,
+        "endChar": 24
+      },
+      "revId": "0e9fe71ccd134eafb6e4b4318511e434dbb3b4a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
