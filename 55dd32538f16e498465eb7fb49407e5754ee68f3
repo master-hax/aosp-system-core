@@ -34,6 +34,24 @@
       "parentUuid": "d0e91af6_925ddcce",
       "revId": "55dd32538f16e498465eb7fb49407e5754ee68f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1a9ce77_4bc5b6af",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-06-21T16:25:11Z",
+      "side": 1,
+      "message": "\u003e if microdroid is not built as part of a normal aosp build.\n\nMicrodroid will always be built at least for Cuttlefish in AOSP.\n\nAnd yes, I definitely am all in for reducing the number of ifdefs. File-level separation should be the most appropriate.",
+      "parentUuid": "ceae8e23_7d0bafc3",
+      "revId": "55dd32538f16e498465eb7fb49407e5754ee68f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
