@@ -33,6 +33,23 @@
       "message": "Looks like this code is probably quite ancient too.",
       "revId": "d1d5f5ab6988f441780d95ddcb566a2d9030f3d9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fa3193e_0ddb384a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-21T20:23:08Z",
+      "side": 1,
+      "message": "shaju: did the next platform tools get built yet? this seems like something for the release notes...",
+      "revId": "d1d5f5ab6988f441780d95ddcb566a2d9030f3d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
