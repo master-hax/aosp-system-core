@@ -1410,9 +1410,9 @@ void do_for_partitions(const std::string& part, const std::string& slot,
     }
 }
 
-bool is_retrofit_device() {
+bool is_retrofit_device(const FlashingPlan* fp) {
     std::string value;
-    if (fb->GetVar("super-partition-name", &value) != fastboot::SUCCESS) {
+    if (fp->fb->GetVar("super-partition-name", &value) != fastboot::SUCCESS) {
         return false;
     }
     return android::base::StartsWith(value, "system_");
@@ -1872,7 +1872,7 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
             // On these devices, secondary slots must be flashed as physical
             // partitions (otherwise they would not mount on first boot). To enforce
             // this, we delete any logical partitions for the "other" slot.
-            if (is_retrofit_device()) {
+            if (is_retrofit_device(fp_)) {
                 std::string partition_name = image->part_name + "_"s + slot;
                 if (image->IsSecondary() && should_flash_in_userspace(partition_name)) {
                     fp_->fb->DeletePartition(partition_name);
