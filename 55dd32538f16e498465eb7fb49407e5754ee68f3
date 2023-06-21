@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0e91af6_925ddcce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2023-06-21T16:08:07Z",
+      "side": 1,
+      "message": "This change just introduces new soong modules. Will add a bunch of #ifdefs in a follow up changes",
+      "revId": "55dd32538f16e498465eb7fb49407e5754ee68f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
