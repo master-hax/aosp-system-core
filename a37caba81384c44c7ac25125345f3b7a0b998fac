@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10303e8a_7e8e6516",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-22T19:45:48Z",
+      "side": 1,
+      "message": "https://android-review.googlesource.com/c/platform/bootable/recovery/+/2606292 should already provide enough logging for us. I can restore this change if pstore isn\u0027t as reliable as needed.",
+      "revId": "a37caba81384c44c7ac25125345f3b7a0b998fac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
