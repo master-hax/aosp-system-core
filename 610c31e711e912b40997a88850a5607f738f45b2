@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ff6d811_9fc255d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-23T03:57:15Z",
+      "side": 1,
+      "message": "This is not passing tests yet. Still investigating why.\n\nI was on the fence whether to make this CL smaller by adding a \"rollback some bytes\" function to BufferSink (which would allow for ReadUnalignedSector special cases without most of the other changes). But I suspect this is cleaner.",
+      "revId": "610c31e711e912b40997a88850a5607f738f45b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
