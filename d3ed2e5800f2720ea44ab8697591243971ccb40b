@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c158b8a_d9cba7bf",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 724,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-23T17:57:30Z",
+      "side": 1,
+      "message": "factor this out rather than call it three times in code that runs in every process\u0027 startup?",
+      "range": {
+        "startLine": 724,
+        "startChar": 48,
+        "endLine": 724,
+        "endChar": 61
+      },
+      "revId": "d3ed2e5800f2720ea44ab8697591243971ccb40b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "506e9df0_e5c568c6",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-23T17:57:30Z",
+      "side": 1,
+      "message": "(and maybe use `grep -r` to make sure you\u0027ve done them all :-) )",
+      "range": {
+        "startLine": 736,
+        "startChar": 40,
+        "endLine": 736,
+        "endChar": 49
+      },
+      "revId": "d3ed2e5800f2720ea44ab8697591243971ccb40b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
