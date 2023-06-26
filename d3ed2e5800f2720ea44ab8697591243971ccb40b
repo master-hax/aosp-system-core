@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "93e89cb5_b87f1c85",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 724,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:25:00Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1eca5682_8bf43006",
+      "range": {
+        "startLine": 724,
+        "startChar": 48,
+        "endLine": 724,
+        "endChar": 61
+      },
+      "revId": "d3ed2e5800f2720ea44ab8697591243971ccb40b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "506e9df0_e5c568c6",
@@ -85,6 +109,30 @@
       "writtenOn": "2023-06-23T17:57:30Z",
       "side": 1,
       "message": "(and maybe use `grep -r` to make sure you\u0027ve done them all :-) )",
+      "range": {
+        "startLine": 736,
+        "startChar": 40,
+        "endLine": 736,
+        "endChar": 49
+      },
+      "revId": "d3ed2e5800f2720ea44ab8697591243971ccb40b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "367131e0_59965a6e",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:25:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "506e9df0_e5c568c6",
       "range": {
         "startLine": 736,
         "startChar": 40,
