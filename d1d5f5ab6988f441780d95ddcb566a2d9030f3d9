@@ -50,6 +50,24 @@
       "message": "shaju: did the next platform tools get built yet? this seems like something for the release notes...",
       "revId": "d1d5f5ab6988f441780d95ddcb566a2d9030f3d9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e223f0c5_e24c5379",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-06-26T18:05:19Z",
+      "side": 1,
+      "message": "@enh : I\u0027ve been remiss about sending out a release notes CL for review (you + dvander@) - I shall kick off another coastguard build this week and send out the release notes for review, pl stay tuned.",
+      "parentUuid": "6fa3193e_0ddb384a",
+      "revId": "d1d5f5ab6988f441780d95ddcb566a2d9030f3d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
