@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fd0858e_235f3c85",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:39:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f23861e5_dcb2472c",
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5c948bd_2dd8364a",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a585576f_1b766947",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:39:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5c948bd_2dd8364a",
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a8962030_e152c55e",
@@ -48,6 +84,30 @@
       "writtenOn": "2023-06-26T20:33:16Z",
       "side": 1,
       "message": "f2fs block size matches page size, so f2fs filesystems can only be read on systems with the same page size?",
+      "range": {
+        "startLine": 630,
+        "startChar": 56,
+        "endLine": 630,
+        "endChar": 69
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "edaf0086_a1713223",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:39:10Z",
+      "side": 1,
+      "message": "Correct, f2fs does not support mismatching block/page size. So it should be safe to use `getpagesize()` as super block size.",
+      "parentUuid": "a8962030_e152c55e",
       "range": {
         "startLine": 630,
         "startChar": 56,
@@ -81,6 +141,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38c5773c_9c09f8a1",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:39:10Z",
+      "side": 1,
+      "message": "I meant support. EXT4 supports 16K block size as well. If we want userspace to work on both 4k/16k kernels, using 4K block size should be safe.",
+      "parentUuid": "6a013622_97f31ca7",
+      "range": {
+        "startLine": 72,
+        "startChar": 21,
+        "endLine": 72,
+        "endChar": 26
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "460f4700_c9dff94b",
@@ -94,6 +178,30 @@
       "writtenOn": "2023-06-26T20:33:16Z",
       "side": 1,
       "message": "why the local?",
+      "range": {
+        "startLine": 940,
+        "startChar": 15,
+        "endLine": 940,
+        "endChar": 28
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "30a8ff80_4c7f7de4",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 940,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:39:10Z",
+      "side": 1,
+      "message": "Done, turned into a static variable.",
+      "parentUuid": "460f4700_c9dff94b",
       "range": {
         "startLine": 940,
         "startChar": 15,
