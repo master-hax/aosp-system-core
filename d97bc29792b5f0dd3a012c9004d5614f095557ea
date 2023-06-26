@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1d3effb_3390d17f",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 855,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-26T14:09:25Z",
+      "side": 1,
+      "message": "Comment?",
+      "range": {
+        "startLine": 855,
+        "startChar": 8,
+        "endLine": 855,
+        "endChar": 38
+      },
+      "revId": "d97bc29792b5f0dd3a012c9004d5614f095557ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93891cf9_dc3e5838",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-06-26T14:09:25Z",
+      "side": 1,
+      "message": "Can this be LoadSelinuxPolicyAndroid(), if only for symmetry?",
+      "range": {
+        "startLine": 1011,
+        "startChar": 0,
+        "endLine": 1043,
+        "endChar": 9
+      },
+      "revId": "d97bc29792b5f0dd3a012c9004d5614f095557ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
