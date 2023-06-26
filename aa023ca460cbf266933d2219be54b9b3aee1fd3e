@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "92c206cb_9280b4ec",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T22:42:00Z",
+      "side": 1,
+      "message": "except _anything_ you do here changes this already confusing function. if you want to change this function at all, you need to resolve the \"why were read_length and PAGE_SIZE kept separate before?\" question for us to be confident this is right.\n\ni think the _easiest_ way to do that is probably just remove this function and use the libbase one that everything else uses instead. (alternatively, doing that will break something in a way that shows we do care about the difference here.)\n\nbut we shouldn\u0027t change this function (and _further_ obscure its already obscure implementation) otherwise.",
+      "parentUuid": "68a73e46_fc339cd8",
+      "revId": "aa023ca460cbf266933d2219be54b9b3aee1fd3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cdc60a68_984538a9",
         "filename": "debuggerd/libdebuggerd/scudo.cpp",
         "patchSetId": 6
