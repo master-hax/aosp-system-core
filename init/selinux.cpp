@@ -300,8 +300,6 @@ bool GetVendorMappingVersion(std::string* plat_vers) {
 }
 
 constexpr const char plat_policy_cil_file[] = "/system/etc/selinux/plat_sepolicy.cil";
-constexpr const char kMicrodroidPrecompiledSepolicy[] =
-        "/system/etc/selinux/microdroid_precompiled_sepolicy";
 
 bool IsSplitPolicyDevice() {
     return access(plat_policy_cil_file, R_OK) != -1;
@@ -499,19 +497,14 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
 
 bool OpenMonolithicPolicy(PolicyFile* policy_file) {
     static constexpr char kSepolicyFile[] = "/sepolicy";
-    // In Microdroid the precompiled sepolicy is located on /system, since there is no vendor code.
-    // TODO(b/287206497): refactor once we start conditionally compiling init for Microdroid.
-    std::string monolithic_policy_file = access(kMicrodroidPrecompiledSepolicy, R_OK) == 0
-                                                 ? kMicrodroidPrecompiledSepolicy
-                                                 : kSepolicyFile;
 
-    LOG(INFO) << "Opening SELinux policy from monolithic file " << monolithic_policy_file;
-    policy_file->fd.reset(open(monolithic_policy_file.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
+    LOG(INFO) << "Opening SELinux policy from monolithic file " << kSepolicyFile;
+    policy_file->fd.reset(open(kSepolicyFile, O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
     if (policy_file->fd < 0) {
         PLOG(ERROR) << "Failed to open monolithic SELinux policy";
         return false;
     }
-    policy_file->path = monolithic_policy_file;
+    policy_file->path = kSepolicyFile;
     return true;
 }
 
@@ -858,6 +851,9 @@ void SelinuxSetupKernelLogging() {
 }
 
 int SelinuxGetVendorAndroidVersion() {
+    if (IsMicrodroid()) {
+        return __ANDROID_API_FUTURE__;
+    }
     static int vendor_android_version = [] {
         if (!IsSplitPolicyDevice()) {
             // If this device does not split sepolicy files, it's not a Treble device and therefore,
@@ -961,6 +957,26 @@ static void LoadSelinuxPolicy(std::string& policy) {
     }
 }
 
+// Encapsulates steps to load SELinux policy in Microdroid.
+// So far the process is very straightforward - just load the precompiled policy from /system.
+void LoadSelinuxPolicyMicrodroid() {
+    constexpr const char kMicrodroidPrecompiledSepolicy[] =
+            "/system/etc/selinux/microdroid_precompiled_sepolicy";
+
+    LOG(INFO) << "Opening SELinux policy from " << kMicrodroidPrecompiledSepolicy;
+    unique_fd policy_fd(open(kMicrodroidPrecompiledSepolicy, O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
+    if (policy_fd < 0) {
+        PLOG(FATAL) << "Failed to open " << kMicrodroidPrecompiledSepolicy;
+    }
+
+    std::string policy;
+    if (!android::base::ReadFdToString(policy_fd, &policy)) {
+        PLOG(FATAL) << "Failed to read policy file: " << kMicrodroidPrecompiledSepolicy;
+    }
+
+    LoadSelinuxPolicy(policy);
+}
+
 // The SELinux setup process is carefully orchestrated around snapuserd. Policy
 // must be loaded off dynamic partitions, and during an OTA, those partitions
 // cannot be read without snapuserd. But, with kernel-privileged snapuserd
@@ -986,40 +1002,45 @@ int SetupSelinux(char** argv) {
 
     boot_clock::time_point start_time = boot_clock::now();
 
-    MountMissingSystemPartitions();
-
     SelinuxSetupKernelLogging();
 
-    LOG(INFO) << "Opening SELinux policy";
+    // TODO(b/287206497): refactor into different headers to only include what we need.
+    if (IsMicrodroid()) {
+        LoadSelinuxPolicyMicrodroid();
+    } else {
+        MountMissingSystemPartitions();
 
-    PrepareApexSepolicy();
+        LOG(INFO) << "Opening SELinux policy";
 
-    // Read the policy before potentially killing snapuserd.
-    std::string policy;
-    ReadPolicy(&policy);
-    CleanupApexSepolicy();
+        PrepareApexSepolicy();
 
-    auto snapuserd_helper = SnapuserdSelinuxHelper::CreateIfNeeded();
-    if (snapuserd_helper) {
-        // Kill the old snapused to avoid audit messages. After this we cannot
-        // read from /system (or other dynamic partitions) until we call
-        // FinishTransition().
-        snapuserd_helper->StartTransition();
-    }
+        // Read the policy before potentially killing snapuserd.
+        std::string policy;
+        ReadPolicy(&policy);
+        CleanupApexSepolicy();
 
-    LoadSelinuxPolicy(policy);
+        auto snapuserd_helper = SnapuserdSelinuxHelper::CreateIfNeeded();
+        if (snapuserd_helper) {
+            // Kill the old snapused to avoid audit messages. After this we cannot
+            // read from /system (or other dynamic partitions) until we call
+            // FinishTransition().
+            snapuserd_helper->StartTransition();
+        }
 
-    if (snapuserd_helper) {
-        // Before enforcing, finish the pending snapuserd transition.
-        snapuserd_helper->FinishTransition();
-        snapuserd_helper = nullptr;
-    }
+        LoadSelinuxPolicy(policy);
 
-    // This restorecon is intentionally done before SelinuxSetEnforcement because the permissions
-    // needed to transition files from tmpfs to *_contexts_file context should not be granted to
-    // any process after selinux is set into enforcing mode.
-    if (selinux_android_restorecon("/dev/selinux/", SELINUX_ANDROID_RESTORECON_RECURSE) == -1) {
-        PLOG(FATAL) << "restorecon failed of /dev/selinux failed";
+        if (snapuserd_helper) {
+            // Before enforcing, finish the pending snapuserd transition.
+            snapuserd_helper->FinishTransition();
+            snapuserd_helper = nullptr;
+        }
+
+        // This restorecon is intentionally done before SelinuxSetEnforcement because the
+        // permissions needed to transition files from tmpfs to *_contexts_file context should not
+        // be granted to any process after selinux is set into enforcing mode.
+        if (selinux_android_restorecon("/dev/selinux/", SELINUX_ANDROID_RESTORECON_RECURSE) == -1) {
+            PLOG(FATAL) << "restorecon failed of /dev/selinux failed";
+        }
     }
 
     SelinuxSetEnforcement();
