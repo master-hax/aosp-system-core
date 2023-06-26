@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "68a73e46_fc339cd8",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:54:21Z",
+      "side": 1,
+      "message": "That\u0027s beyond the scope of this CL. I would rather not make functional changes in a refactoring CL. We can start a new change for that.",
+      "parentUuid": "8ec0605f_ca060f67",
+      "revId": "aa023ca460cbf266933d2219be54b9b3aee1fd3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cdc60a68_984538a9",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-06-26T20:48:47Z",
       "side": 1,
       "message": "unnecessary, right?",
+      "revId": "aa023ca460cbf266933d2219be54b9b3aee1fd3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bea32266_e982fb76",
+        "filename": "debuggerd/libdebuggerd/scudo.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-26T20:54:21Z",
+      "side": 1,
+      "message": "We could just call getpagesize() everytime... sure",
+      "parentUuid": "cdc60a68_984538a9",
       "revId": "aa023ca460cbf266933d2219be54b9b3aee1fd3e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
