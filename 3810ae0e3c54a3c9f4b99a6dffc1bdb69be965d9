@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f23861e5_dcb2472c",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T20:33:16Z",
+      "side": 1,
+      "message": "(no need to factor this out (a) because we fixed that and (b) because this is only a test anyway.)",
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5c948bd_2dd8364a",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T20:33:16Z",
+      "side": 1,
+      "message": "why aren\u0027t all of these just read_length anyway? was there a reason in the history for keeping these separate?",
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8962030_e152c55e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T20:33:16Z",
+      "side": 1,
+      "message": "f2fs block size matches page size, so f2fs filesystems can only be read on systems with the same page size?",
+      "range": {
+        "startLine": 630,
+        "startChar": 56,
+        "endLine": 630,
+        "endChar": 69
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a013622_97f31ca7",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T20:33:16Z",
+      "side": 1,
+      "message": "stray \"block\"\n\nis this comment right though? do you really mean \"supports\"+\"fine\", or should this say \"// ext4 uses 4KiB blocks regardless of page size, so this should be 4096.\"?",
+      "range": {
+        "startLine": 72,
+        "startChar": 21,
+        "endLine": 72,
+        "endChar": 26
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "460f4700_c9dff94b",
+        "filename": "fs_mgr/fs_mgr_overlayfs.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 940,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-26T20:33:16Z",
+      "side": 1,
+      "message": "why the local?",
+      "range": {
+        "startLine": 940,
+        "startChar": 15,
+        "endLine": 940,
+        "endChar": 28
+      },
+      "revId": "3810ae0e3c54a3c9f4b99a6dffc1bdb69be965d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
