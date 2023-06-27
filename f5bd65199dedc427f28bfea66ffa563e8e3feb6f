@@ -33,6 +33,24 @@
       "message": "that doesn\u0027t explain why you changed the others to getpagesize() but not this... in fact, this comment makes me think you _should_ change this one? or are you saying it _doesn\u0027t_ support 16KiB blocks with 4KiB pages?",
       "revId": "f5bd65199dedc427f28bfea66ffa563e8e3feb6f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "864d1053_9521bdbd",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-27T17:38:29Z",
+      "side": 1,
+      "message": "Added more explanation for clarity",
+      "parentUuid": "6a8e15e9_6c209cd6",
+      "revId": "f5bd65199dedc427f28bfea66ffa563e8e3feb6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
