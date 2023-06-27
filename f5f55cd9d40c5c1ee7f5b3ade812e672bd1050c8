@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2eba8de_f7496003",
+        "filename": "libmodprobe/libmodprobe_ext.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-27T20:37:56Z",
+      "side": 1,
+      "message": "(s/ because/;/ would be a bit more grammatical.)",
+      "range": {
+        "startLine": 98,
+        "startChar": 67,
+        "endLine": 98,
+        "endChar": 75
+      },
+      "revId": "f5f55cd9d40c5c1ee7f5b3ade812e672bd1050c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
