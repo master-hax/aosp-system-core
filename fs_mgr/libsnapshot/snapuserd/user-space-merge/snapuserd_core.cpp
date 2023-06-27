@@ -23,6 +23,7 @@
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 
+#include "../block_server_dm_user.h"
 #include "read_worker.h"
 #include "snapuserd_merge.h"
 
@@ -48,9 +49,10 @@ SnapshotHandler::SnapshotHandler(std::string misc_name, std::string cow_device,
 }
 
 bool SnapshotHandler::InitializeWorkers() {
+    auto opener = std::make_shared<DmUserBlockServerOpener>(misc_name_, control_device_);
     for (int i = 0; i < num_worker_threads_; i++) {
-        auto wt = std::make_unique<ReadWorker>(cow_device_, backing_store_device_, control_device_,
-                                               misc_name_, base_path_merge_, GetSharedPtr());
+        auto wt = std::make_unique<ReadWorker>(cow_device_, backing_store_device_, misc_name_,
+                                               base_path_merge_, GetSharedPtr(), opener);
         if (!wt->Init()) {
             SNAP_LOG(ERROR) << "Thread initialization failed";
             return false;
