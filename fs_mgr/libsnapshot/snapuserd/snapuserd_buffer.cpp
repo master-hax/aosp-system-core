@@ -15,6 +15,8 @@
  */
 
 #include <snapuserd/snapuserd_buffer.h>
+
+#include <android-base/logging.h>
 #include <snapuserd/snapuserd_kernel.h>
 
 namespace android {
