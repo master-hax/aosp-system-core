@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b575cac_0fd5d58f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-06-27T22:43:35Z",
+      "side": 1,
+      "message": "Hi Elliott, this is primarily a \"question CL\" (code says more than just words).\n\nSo, android::Vector defines operator\u003d const, which as I understand is not supposed to modify the object (btw, how does it make sense for assignment operator?). But we use it to call VectorImpl::operator\u003d which doesn\u0027t have const variant (so really we should cast this to non-const). Is there something I\u0027m missing?\n\nIf there is not, then proposed change at least makes it clear we\u0027re modifying a const object here.",
+      "revId": "b34e90c2612fd8c18a85908c54c8e2c8b7bed31e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
