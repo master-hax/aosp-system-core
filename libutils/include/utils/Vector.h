@@ -256,7 +256,7 @@ Vector<TYPE>& Vector<TYPE>::operator = (const Vector<TYPE>& rhs) {
 
 template<class TYPE> inline
 const Vector<TYPE>& Vector<TYPE>::operator = (const Vector<TYPE>& rhs) const {
-    VectorImpl::operator = (static_cast<const VectorImpl&>(rhs));
+    (const_cast<VectorImpl*>(this))->VectorImpl::operator=(static_cast<const VectorImpl&>(rhs));
     return *this;
 }
 
@@ -268,7 +268,7 @@ Vector<TYPE>& Vector<TYPE>::operator = (const SortedVector<TYPE>& rhs) {
 
 template<class TYPE> inline
 const Vector<TYPE>& Vector<TYPE>::operator = (const SortedVector<TYPE>& rhs) const {
-    VectorImpl::operator = (rhs);
+    (const_cast<VectorImpl*>(this))->VectorImpl::operator=(rhs);
     return *this;
 }
 
