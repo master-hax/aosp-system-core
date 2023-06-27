@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aea92fae_55cd4c03",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-27T17:44:41Z",
+      "side": 1,
+      "message": "if (!) FAIL(), no?",
+      "revId": "9940bb7cc44a182a0b8fd9d0a77f77294e729d28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

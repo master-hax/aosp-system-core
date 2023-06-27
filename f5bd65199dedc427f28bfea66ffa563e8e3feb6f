@@ -51,6 +51,24 @@
       "parentUuid": "6a8e15e9_6c209cd6",
       "revId": "f5bd65199dedc427f28bfea66ffa563e8e3feb6f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "456016ed_d9bdd4ce",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-27T17:44:41Z",
+      "side": 1,
+      "message": "i think you\u0027re still missing \"but doesn\u0027t support 16KiB block size on a 4KiB page system\", right? i\u0027m assuming _that\u0027s_ the reason why you\u0027ve gone with 4096 rather than getpagesize()? (the comment as it stands still doesn\u0027t explain \"why 4096\", nor \"why _not_ getpagesize()?\", and seems to conflict with the change\u0027s overall commit message!)",
+      "parentUuid": "864d1053_9521bdbd",
+      "revId": "f5bd65199dedc427f28bfea66ffa563e8e3feb6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
