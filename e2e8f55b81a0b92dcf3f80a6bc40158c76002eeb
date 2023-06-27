@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a897f96_cdcff8bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-06-27T05:30:00Z",
+      "side": 1,
+      "message": "Original CL passed snapuserd_test but is failing incremental OTAs for some reason.",
+      "revId": "e2e8f55b81a0b92dcf3f80a6bc40158c76002eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
