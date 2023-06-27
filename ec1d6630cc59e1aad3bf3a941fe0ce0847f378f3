@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "14ebe93c_70053198",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-27T19:21:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc7c526a_30c3bd8a",
+      "range": {
+        "startLine": 425,
+        "startChar": 25,
+        "endLine": 425,
+        "endChar": 30
+      },
+      "revId": "ec1d6630cc59e1aad3bf3a941fe0ce0847f378f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf396117_9f195d92",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-06-27T18:13:57Z",
       "side": 1,
       "message": "is `\" can\u0027t be loaded because \" \u003c\u003c deps.front() \u003c\u003c \" does not exist\"` clearer?",
+      "range": {
+        "startLine": 98,
+        "startChar": 51,
+        "endLine": 98,
+        "endChar": 87
+      },
+      "revId": "ec1d6630cc59e1aad3bf3a941fe0ce0847f378f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbc30d7a_f56abdf6",
+        "filename": "libmodprobe/libmodprobe_ext.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-06-27T19:21:26Z",
+      "side": 1,
+      "message": "access might fail for different reasons, changed this to a PLOG() .",
+      "parentUuid": "bf396117_9f195d92",
       "range": {
         "startLine": 98,
         "startChar": 51,
