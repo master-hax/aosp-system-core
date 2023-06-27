@@ -39,6 +39,30 @@
       },
       "revId": "b34e90c2612fd8c18a85908c54c8e2c8b7bed31e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "919e06c8_4009ef39",
+        "filename": "libutils/include/utils/Vector.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-06-27T23:08:22Z",
+      "side": 1,
+      "message": "Let treehugger tell us: https://r.android.com/2640836",
+      "parentUuid": "2680f1e8_73c9d6c7",
+      "range": {
+        "startLine": 258,
+        "startChar": 71,
+        "endLine": 258,
+        "endChar": 76
+      },
+      "revId": "b34e90c2612fd8c18a85908c54c8e2c8b7bed31e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
