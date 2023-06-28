@@ -16,6 +16,29 @@
       "message": "(same comment as on the libbase change)",
       "revId": "3fd0d1bcb3de1fc2f591370223e5472b1a199bdd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d823a18_6d2e3308",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2023-06-28T04:29:17Z",
+      "side": 1,
+      "message": "This enables the check for platform variant. Please move these properties to \"vendor\" and \"product\" at line 219.",
+      "range": {
+        "startLine": 253,
+        "startChar": 8,
+        "endLine": 253,
+        "endChar": 22
+      },
+      "revId": "3fd0d1bcb3de1fc2f591370223e5472b1a199bdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
