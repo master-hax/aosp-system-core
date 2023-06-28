@@ -63,6 +63,30 @@
       },
       "revId": "3fd0d1bcb3de1fc2f591370223e5472b1a199bdd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7f8e2b3_93ee2ef1",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2023-06-28T08:56:06Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "7cdb3472_ceaa0e04",
+      "range": {
+        "startLine": 253,
+        "startChar": 8,
+        "endLine": 253,
+        "endChar": 22
+      },
+      "revId": "3fd0d1bcb3de1fc2f591370223e5472b1a199bdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
