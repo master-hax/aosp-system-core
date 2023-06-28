@@ -212,6 +212,7 @@ cc_test {
     ],
     srcs: [
         "user-space-merge/snapuserd_test.cpp",
+        "user-space-merge/testing/dm_user_harness.cpp",
     ],
     shared_libs: [
         "libbase",
