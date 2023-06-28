@@ -58,5 +58,10 @@ class DmUserBlockServerOpener : public IBlockServerOpener {
     std::string dm_user_path_;
 };
 
+class DmUserBlockServerFactory : public IBlockServerFactory {
+  public:
+    std::shared_ptr<IBlockServerOpener> CreateOpener(const std::string& misc_name) override;
+};
+
 }  // namespace snapshot
 }  // namespace android
