@@ -16,6 +16,23 @@
       "message": "Ouch, I was finally able to make this pass TH - had to massage in some NOLINT comments there and make code style checker happy. +2\u0027s have carried over, but I\u0027ll refrain from submitting until tomorrow morning in case you\u0027d find any of changes between PS1-PS6 wrong.",
       "revId": "aab4105ef617c9bc806d14a585e59ec7546ff25d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d9aaf3e_42dfdf40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-28T22:30:00Z",
+      "side": 1,
+      "message": "(seems fine to me. ideally we\u0027d have a comment explaining the NOLINTs, but having that comment in the commit message is probably the right place, rather than having to copy \u0026 paste it on every line?)",
+      "revId": "aab4105ef617c9bc806d14a585e59ec7546ff25d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
