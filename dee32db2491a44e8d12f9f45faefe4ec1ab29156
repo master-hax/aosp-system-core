@@ -16,6 +16,23 @@
       "message": "GA+1 as code cleanup",
       "revId": "dee32db2491a44e8d12f9f45faefe4ec1ab29156",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b829ba59_b7989ae1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010056
+      },
+      "writtenOn": "2023-06-28T18:45:41Z",
+      "side": 1,
+      "message": "BP+2 to work around existing failing tests.",
+      "revId": "dee32db2491a44e8d12f9f45faefe4ec1ab29156",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
