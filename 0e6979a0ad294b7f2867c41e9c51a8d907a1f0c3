@@ -70,6 +70,24 @@
       "parentUuid": "adfeae42_31b8f2ac",
       "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6157354e_d7470c26",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T19:29:24Z",
+      "side": 1,
+      "message": "you\u0027re saying the declaration in trace.h doesn\u0027t get the implicit `extern \"C\"` because it\u0027s inside a function? if that\u0027s the case, just lift the declaration out --- we\u0027re lying to ourselves pretending this isn\u0027t ABI. \"private\" headers never really are anyway, but _especially_ not if we\u0027re calling into them _from inline code in a public header_ :-)",
+      "parentUuid": "37e2eddd_459a366e",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
