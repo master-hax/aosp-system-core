@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bae29fb3_8909fafd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T20:16:22Z",
+      "side": 1,
+      "message": "otherwise lgtm.",
+      "revId": "1028bf88137f4e0b3e27d7c0fc1d4dbc03b59dc3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc3f13d7_cf7f12b3",
+        "filename": "libcutils/include/cutils/trace.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T20:16:22Z",
+      "side": 1,
+      "message": "i think something like \"Implementation detail. Do not use.\" is our preferred wording. (we\u0027ve used things along those lines in bionic and libbase already.)",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 55
+      },
+      "revId": "1028bf88137f4e0b3e27d7c0fc1d4dbc03b59dc3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
