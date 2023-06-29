@@ -16,6 +16,24 @@
       "message": "i don\u0027t think this makes much sense in .cpp files --- what are you actually trying to do here?\n\n(most of my guesses as to what you\u0027re trying to do make me think you actually want to add a .map.txt file for libcutils, which seems reasonable?)",
       "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0edb5a72_c015addc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-06-29T17:41:59Z",
+      "side": 1,
+      "message": "There are two parts - first I removed `atrace_set_debuggable` symbol that used to be a C symbol, but https://r.android.com/1581672 left it behind and turned into C++ symbol.\n\nSecond, I wanted to prevent this from happening to other symbols in these files. Specifically, there is `atrace_begin_body`/`atrace_end_body` that\u0027s not defined in the global scope (just inside `atrace_begin`). I was thinking about adding trace-private.h which could hold all of these hidden definitions, but figured just adding `__BEGIN_DECLS` block in `trace-*.cpp` would be a lighter change.\n\n.map.txt would help enforce this, but... this requires a full NDK API review (which I just went through for a different library)!",
+      "parentUuid": "7e04b9e3_81ee9894",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
