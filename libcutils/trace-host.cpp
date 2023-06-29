@@ -20,7 +20,8 @@ atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(true);
 int                     atrace_marker_fd     = -1;
 uint64_t                atrace_enabled_tags  = 0;
 
-void atrace_set_debuggable(bool /*debuggable*/) {}
+__BEGIN_DECLS
+
 void atrace_set_tracing_enabled(bool /*enabled*/) {}
 void atrace_update_tags() { }
 void atrace_setup() { }
@@ -40,3 +41,5 @@ uint64_t atrace_get_enabled_tags()
 {
     return ATRACE_TAG_NOT_READY;
 }
+
+__END_DECLS

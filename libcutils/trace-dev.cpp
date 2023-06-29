@@ -20,6 +20,8 @@
 
 static pthread_once_t atrace_once_control = PTHREAD_ONCE_INIT;
 
+__BEGIN_DECLS
+
 // Set whether tracing is enabled in this process.  This is used to prevent
 // the Zygote process from tracing.
 void atrace_set_tracing_enabled(bool enabled)
@@ -114,3 +116,5 @@ void atrace_int64_body(const char* name, int64_t value)
 {
     WRITE_MSG("C|%d|", "|%" PRId64, "", name, value);
 }
+
+__END_DECLS

@@ -39,6 +39,8 @@ static int              atrace_container_sock_fd     = -1;
 static pthread_mutex_t  atrace_enabling_mutex        = PTHREAD_MUTEX_INITIALIZER;
 static pthread_rwlock_t atrace_container_sock_rwlock = PTHREAD_RWLOCK_INITIALIZER;
 
+__BEGIN_DECLS
+
 static void atrace_seq_number_changed(uint32_t, uint32_t seq_no) {
     pthread_once(&atrace_once_control, atrace_init_once);
     atomic_store_explicit(&last_sequence_number, seq_no, memory_order_relaxed);
@@ -296,3 +298,5 @@ void atrace_int64_body(const char* name, int64_t value)
 
     WRITE_MSG("C|%d|", "|%" PRId64, "", name, value);
 }
+
+__END_DECLS
