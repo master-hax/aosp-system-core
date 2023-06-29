@@ -88,6 +88,24 @@
       "parentUuid": "37e2eddd_459a366e",
       "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ff84de9_0dab3fd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-06-29T20:07:15Z",
+      "side": 1,
+      "message": "That\u0027s much more straightforward, thanks!",
+      "parentUuid": "6157354e_d7470c26",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
