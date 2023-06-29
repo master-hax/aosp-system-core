@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e04b9e3_81ee9894",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T17:06:23Z",
+      "side": 1,
+      "message": "i don\u0027t think this makes much sense in .cpp files --- what are you actually trying to do here?\n\n(most of my guesses as to what you\u0027re trying to do make me think you actually want to add a .map.txt file for libcutils, which seems reasonable?)",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
