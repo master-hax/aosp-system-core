@@ -52,6 +52,24 @@
       "parentUuid": "0edb5a72_c015addc",
       "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37e2eddd_459a366e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-06-29T18:34:29Z",
+      "side": 1,
+      "message": "Okay, but what about `atrace_begin_body`? It\u0027s not there in global namespace - would you be fine with `trace-private.h` containing the nested ones?",
+      "parentUuid": "adfeae42_31b8f2ac",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
