@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dd9e79c_e23e57b9",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 752,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-06-29T07:41:09Z",
+      "side": 1,
+      "message": "s//kProcMountsPath",
+      "range": {
+        "startLine": 752,
+        "startChar": 35,
+        "endLine": 752,
+        "endChar": 49
+      },
+      "revId": "b88242c253887e20ebf601802cb93c104ce00678",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
