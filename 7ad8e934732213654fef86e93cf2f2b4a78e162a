@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fe859ca_b0a2dbee",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T14:36:17Z",
+      "side": 1,
+      "message": "can we please stop copying this struct around? either wait for me to clean up the existing mess so i can merge https://android-review.git.corp.google.com/c/platform/bionic/+/2640694/ or just #include the uapi header directly...",
+      "revId": "7ad8e934732213654fef86e93cf2f2b4a78e162a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
