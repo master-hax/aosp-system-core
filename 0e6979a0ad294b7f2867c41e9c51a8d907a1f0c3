@@ -34,6 +34,24 @@
       "parentUuid": "7e04b9e3_81ee9894",
       "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "adfeae42_31b8f2ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-06-29T18:27:37Z",
+      "side": 1,
+      "message": "\u003e .map.txt would help enforce this, but... this requires a full NDK API review (which I just went through for a different library)!\n\nyes, but that\u0027s the right thing to do. using `__BEGIN_DECLS`/`__END_DECLS` in _source_ is clearly wrong --- that\u0027s for headers. and i\u0027d argue that \"these should not have mangled names\" isn\u0027t a problem we care about --- \"these shouldn\u0027t exist [and if they do, shouldn\u0027t be exported]\" is the problem we care about. and the _only_ thing that addresses that is a .map.txt file?\n\n(for libraries like this that are _owned_ by people with ndk-api-review, there\u0027s no practical overhead. in theory OWNERS are thinking about that when they CR+2 anyway!)",
+      "parentUuid": "0edb5a72_c015addc",
+      "revId": "0e6979a0ad294b7f2867c41e9c51a8d907a1f0c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
