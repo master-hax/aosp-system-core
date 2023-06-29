@@ -32,7 +32,8 @@ extern "C" {
 // Deprecated: use android::base::GetThreadId instead, which doesn't truncate on Mac/Windows.
 //
 #if !defined(__GLIBC__) || __GLIBC__ >= 2 && __GLIBC_MINOR__ < 32
-extern pid_t gettid();
+// NOTE: gcc gets same error as https://bugs.chromium.org/p/chromium/issues/detail?id=1182060
+extern pid_t gettid() __THROW;
 #endif
 
 #ifdef __cplusplus
