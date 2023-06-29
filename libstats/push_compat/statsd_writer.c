@@ -15,9 +15,10 @@
  */
 #include "statsd_writer.h"
 
+#include "thread_compat.h"
+
 #include <cutils/fs.h>
 #include <cutils/sockets.h>
-#include <cutils/threads.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
@@ -188,7 +189,7 @@ static int statsdWrite(struct timespec* ts, struct iovec* vec, size_t nr) {
      *  };
      */
 
-    header.tid = gettid();
+    header.tid = libstats_gettid();
     header.realtime.tv_sec = ts->tv_sec;
     header.realtime.tv_nsec = ts->tv_nsec;
 

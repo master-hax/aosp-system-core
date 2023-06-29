@@ -28,6 +28,7 @@ cc_defaults {
     srcs: [
         "statsd_writer.c",
         "stats_event_list.c",
+        "thread_compat.cpp",
         "StatsEventCompat.cpp"
     ],
     cflags: [
