@@ -498,6 +498,15 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
 
         // Load independent modules in parallel
         auto thread_function = [&] {
+            int pid = getpid();
+            sched_attr attr = {};
+            attr.size = sizeof(attr);
+            attr.sched_flags =
+                (SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_KEEP_ALL | SCHED_FLAG_UTIL_CLAMP_MIN);
+            attr.sched_util_min = 1024;
+
+            syscall(__NR_sched_setattr, pid, attr, 0);
+
             std::unique_lock lk(vector_lock);
             while (!mods_path_to_load.empty()) {
                 auto ret_load = true;
