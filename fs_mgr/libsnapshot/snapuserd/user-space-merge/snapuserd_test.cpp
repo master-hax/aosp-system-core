@@ -17,7 +17,6 @@
 
 #include <fcntl.h>
 #include <linux/fs.h>
-#include <linux/memfd.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
@@ -42,7 +41,9 @@
 #include "handler_manager.h"
 #include "snapuserd_core.h"
 #include "testing/dm_user_harness.h"
+#include "testing/local_harness.h"
 #include "testing/temp_device.h"
+#include "utility.h"
 
 DEFINE_string(force_config, "", "Force testing mode with iouring disabled");
 
@@ -115,24 +116,6 @@ class SnapuserdTest : public ::testing::Test {
     int total_base_size_;
     std::unique_ptr<ITestHarness> harness_;
 };
-
-static unique_fd CreateTempFile(const std::string& name, size_t size) {
-    unique_fd fd(syscall(__NR_memfd_create, name.c_str(), MFD_ALLOW_SEALING));
-    if (fd < 0) {
-        return {};
-    }
-    if (size) {
-        if (ftruncate(fd, size) < 0) {
-            perror("ftruncate");
-            return {};
-        }
-        if (fcntl(fd, F_ADD_SEALS, F_SEAL_GROW | F_SEAL_SHRINK) < 0) {
-            perror("fcntl");
-            return {};
-        }
-    }
-    return fd;
-}
 
 void SnapuserdTest::SetUp() {
     harness_ = std::make_unique<DmUserTestHarness>();
