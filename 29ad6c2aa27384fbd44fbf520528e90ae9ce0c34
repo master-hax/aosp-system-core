@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba234685_03a85312",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1373864
+      },
+      "writtenOn": "2023-06-30T09:20:47Z",
+      "side": 1,
+      "message": "Note that this patch swaps the order between this call and `EnableMandatoryFlags`, so it won\u0027t process the extra entries added here. I don\u0027t know if that\u0027s a problem or not.",
+      "range": {
+        "startLine": 738,
+        "startChar": 12,
+        "endLine": 738,
+        "endChar": 32
+      },
+      "revId": "29ad6c2aa27384fbd44fbf520528e90ae9ce0c34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
