@@ -37,7 +37,7 @@
 #include <libdm/dm.h>
 #include <libdm/loop_control.h>
 #include <libsnapshot/cow_writer.h>
-#include <snapuserd/block_server_dm_user.h>
+#include <snapuserd/dm_user_block_server.h>
 #include <storage_literals/storage_literals.h>
 #include "handler_manager.h"
 #include "snapuserd_core.h"
