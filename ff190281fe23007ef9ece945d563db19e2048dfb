@@ -39,6 +39,30 @@
       },
       "revId": "ff190281fe23007ef9ece945d563db19e2048dfb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00c77a07_4d7ffcd0",
+        "filename": "libnetutils/ifc_utils.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-06-30T16:39:24Z",
+      "side": 1,
+      "message": "I don\u0027t think it\u0027s needed.  But it doesn\u0027t hurt to add support for it.\nMakes things more symmetric.",
+      "parentUuid": "cb92584c_a2c0b39c",
+      "range": {
+        "startLine": 374,
+        "startChar": 69,
+        "endLine": 374,
+        "endChar": 84
+      },
+      "revId": "ff190281fe23007ef9ece945d563db19e2048dfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
