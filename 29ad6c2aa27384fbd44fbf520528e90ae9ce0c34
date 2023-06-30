@@ -22,6 +22,30 @@
       },
       "revId": "29ad6c2aa27384fbd44fbf520528e90ae9ce0c34",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec53dcf2_22a5da4a",
+        "filename": "fs_mgr/fs_mgr_fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 738,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-06-30T10:47:51Z",
+      "side": 1,
+      "message": "I think it\u0027s fine for now. `EnableMandatoryFlags` modifies /data and /metadata mount entries. `TransformFstabForDsu` never touches /metadata, and don\u0027t add new /data entries, it only modifies existing /data entries.",
+      "parentUuid": "ba234685_03a85312",
+      "range": {
+        "startLine": 738,
+        "startChar": 12,
+        "endLine": 738,
+        "endChar": 32
+      },
+      "revId": "29ad6c2aa27384fbd44fbf520528e90ae9ce0c34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
