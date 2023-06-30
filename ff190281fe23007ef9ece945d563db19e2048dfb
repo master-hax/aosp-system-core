@@ -16,6 +16,29 @@
       "message": "Thoughts?",
       "revId": "ff190281fe23007ef9ece945d563db19e2048dfb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb92584c_a2c0b39c",
+        "filename": "libnetutils/ifc_utils.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1349877
+      },
+      "writtenOn": "2023-06-30T16:27:16Z",
+      "side": 1,
+      "message": "Do we also need to consider nodad in deleting? In ifc_act_on_address, the nodad flag is passed through the Netlink message regardless of adding or deleting. I don\u0027t know if it is referenced in Kernel in the del case. (DAD should be unrelated to del address though.)",
+      "range": {
+        "startLine": 374,
+        "startChar": 69,
+        "endLine": 374,
+        "endChar": 84
+      },
+      "revId": "ff190281fe23007ef9ece945d563db19e2048dfb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
