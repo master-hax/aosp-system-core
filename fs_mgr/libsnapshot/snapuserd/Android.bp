@@ -19,7 +19,7 @@ package {
 }
 
 cc_defaults {
-    name: "libsnapshot_snapuserd_defaults",
+    name: "libsnapuserd_client_defaults",
     defaults: [
         "fs_mgr_defaults",
     ],
@@ -33,10 +33,10 @@ cc_defaults {
 }
 
 cc_library_static {
-    name: "libsnapshot_snapuserd",
+    name: "libsnapuserd_client",
     defaults: [
         "fs_mgr_defaults",
-        "libsnapshot_snapuserd_defaults",
+        "libsnapuserd_client_defaults",
     ],
     recovery_available: true,
     static_libs: [
@@ -108,7 +108,6 @@ cc_defaults {
         "libgflags",
         "liblog",
         "libsnapshot_cow",
-        "libsnapshot_snapuserd",
         "libsnapuserd",
         "libz",
         "liblz4",
@@ -143,6 +142,9 @@ cc_binary {
     defaults: ["snapuserd_defaults"],
     init_rc: [
         "snapuserd.rc",
+    ],
+    static_libs: [
+        "libsnapuserd_client",
     ],
     ramdisk_available: false,
     vendor_ramdisk_available: true,
@@ -186,7 +188,7 @@ cc_test {
         "libbrotli",
         "libgtest",
         "libsnapshot_cow",
-        "libsnapshot_snapuserd",
+        "libsnapuserd_client",
         "libcutils_sockets",
         "libz",
         "libfs_mgr",
@@ -229,7 +231,6 @@ cc_test {
         "libgflags",
         "libgtest",
         "libsnapshot_cow",
-        "libsnapshot_snapuserd",
         "libsnapuserd",
         "liburing",
         "libz",
