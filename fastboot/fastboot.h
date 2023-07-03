@@ -97,6 +97,7 @@ struct FlashingPlan {
     bool skip_secondary = false;
     bool force_flash = false;
     bool should_optimize_flash_super = true;
+    bool should_use_fastboot_info = false;
     uint64_t sparse_limit = 0;
 
     std::string slot_override;
@@ -111,8 +112,7 @@ class FlashAllTool {
     FlashAllTool(FlashingPlan* fp);
 
     void Flash();
-    std::vector<std::unique_ptr<Task>> CollectTasks(bool use_fastboot_info = false,
-                                                    bool exclude_non_flash_tasks = false);
+    std::vector<std::unique_ptr<Task>> CollectTasks(bool exclude_non_flash_tasks = false);
 
   private:
     void CheckRequirements();
