@@ -177,6 +177,7 @@ static const struct fs_path_config android_files[] = {
     { 00600, AID_ROOT,      AID_ROOT,      0, "system/build.prop" },
     { 00444, AID_ROOT,      AID_ROOT,      0, sys_conf_dir + 1 },
     { 00444, AID_ROOT,      AID_ROOT,      0, sys_conf_file + 1 },
+    { 00600, AID_SYSTEM,    AID_SYSTEM,    0, "system/etc/font_fallback.xml" },
     { 00440, AID_ROOT,      AID_SHELL,     0, "system/etc/init.goldfish.rc" },
     { 00550, AID_ROOT,      AID_SHELL,     0, "system/etc/init.goldfish.sh" },
     { 00550, AID_ROOT,      AID_SHELL,     0, "system/etc/init.ril" },
