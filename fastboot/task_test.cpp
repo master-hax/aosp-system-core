@@ -199,8 +199,10 @@ TEST_F(ParseTest, CorrectTaskLists) {
 
     FlashAllTool tool(fp.get());
 
-    auto hardcoded_tasks = tool.CollectTasks(false, true);
-    auto fastboot_info_tasks = tool.CollectTasks(true, true);
+    fp->should_use_fastboot_info = false;
+    auto hardcoded_tasks = tool.CollectTasks(true);
+    fp->should_use_fastboot_info = true;
+    auto fastboot_info_tasks = tool.CollectTasks(true);
 
     ASSERT_TRUE(compareTaskLists(hardcoded_tasks, fastboot_info_tasks))
             << tasksToString(hardcoded_tasks) << tasksToString(fastboot_info_tasks);
