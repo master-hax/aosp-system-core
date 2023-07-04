@@ -76,54 +76,6 @@ namespace init {
 
 // Class Declarations
 // ------------------
-class FirstStageMount {
-  public:
-    FirstStageMount(Fstab fstab);
-    virtual ~FirstStageMount() = default;
-
-    // The factory method to create a FirstStageMountVBootV2 instance.
-    static Result<std::unique_ptr<FirstStageMount>> Create();
-    bool DoCreateDevices();    // Creates devices and logical partitions from storage devices
-    bool DoFirstStageMount();  // Mounts fstab entries read from device tree.
-    bool InitDevices();
-
-  protected:
-    bool InitRequiredDevices(std::set<std::string> devices);
-    bool CreateLogicalPartitions();
-    bool CreateSnapshotPartitions(android::snapshot::SnapshotManager* sm);
-    bool MountPartition(const Fstab::iterator& begin, bool erase_same_mounts,
-                        Fstab::iterator* end = nullptr);
-
-    bool MountPartitions();
-    bool TrySwitchSystemAsRoot();
-    bool IsDmLinearEnabled();
-    void GetSuperDeviceName(std::set<std::string>* devices);
-    bool InitDmLinearBackingDevices(const android::fs_mgr::LpMetadata& metadata);
-    void UseDsuIfPresent();
-    // Reads all fstab.avb_keys from the ramdisk for first-stage mount.
-    void PreloadAvbKeys();
-    // Copies /avb/*.avbpubkey used for DSU from the ramdisk to /metadata for key
-    // revocation check by DSU installation service.
-    void CopyDsuAvbKeys();
-
-    // Pure virtual functions.
-    virtual bool GetDmVerityDevices(std::set<std::string>* devices) = 0;
-    virtual bool SetUpDmVerity(FstabEntry* fstab_entry) = 0;
-
-    bool need_dm_verity_;
-    bool dsu_not_on_userdata_ = false;
-    bool use_snapuserd_ = false;
-
-    Fstab fstab_;
-    // The super path is only set after InitDevices, and is invalid before.
-    std::string super_path_;
-    std::string super_partition_name_;
-    BlockDevInitializer block_dev_init_;
-    // Reads all AVB keys before chroot into /system, as they might be used
-    // later when mounting other partitions, e.g., /vendor and /product.
-    std::map<std::string, std::vector<std::string>> preload_avb_key_blobs_;
-};
-
 class FirstStageMountVBootV2 : public FirstStageMount {
   public:
     friend void SetInitAvbVersionInRecovery();
@@ -791,39 +743,6 @@ bool FirstStageMountVBootV2::InitAvbHandle() {
     // Sets INIT_AVB_VERSION here for init to set ro.boot.avb_version in the second stage.
     setenv("INIT_AVB_VERSION", avb_handle_->avb_version().c_str(), 1);
     return true;
-}
-
-// Public functions
-// ----------------
-// Creates devices and logical partitions from storage devices
-bool DoCreateDevices() {
-    auto fsm = FirstStageMount::Create();
-    if (!fsm.ok()) {
-        LOG(ERROR) << "Failed to create FirstStageMount: " << fsm.error();
-        return false;
-    }
-    return (*fsm)->DoCreateDevices();
-}
-
-// Mounts partitions specified by fstab in device tree.
-bool DoFirstStageMount(bool create_devices) {
-    // Skips first stage mount if we're in recovery mode.
-    if (IsRecoveryMode()) {
-        LOG(INFO) << "First stage mount skipped (recovery mode)";
-        return true;
-    }
-
-    auto fsm = FirstStageMount::Create();
-    if (!fsm.ok()) {
-        LOG(ERROR) << "Failed to create FirstStageMount " << fsm.error();
-        return false;
-    }
-
-    if (create_devices) {
-        if (!(*fsm)->DoCreateDevices()) return false;
-    }
-
-    return (*fsm)->DoFirstStageMount();
 }
 
 void SetInitAvbVersionInRecovery() {
