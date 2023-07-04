@@ -16,11 +16,36 @@
 
 #pragma once
 
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
+
+#include <fs_mgr.h>
+#include <liblp/liblp.h>
+#include <libsnapshot/snapshot.h>
+
+#include "block_dev_initializer.h"
+#include "result.h"
+
 namespace android {
 namespace init {
 
-bool DoCreateDevices();
-bool DoFirstStageMount(bool create_devices);
+class FirstStageMount {
+  public:
+    virtual ~FirstStageMount() = default;
+
+    // The factory method to create a FirstStageMount instance.
+    static Result<std::unique_ptr<FirstStageMount>> Create();
+    // Creates devices and logical partitions from storage devices
+    virtual bool DoCreateDevices() = 0;
+    virtual bool DoFirstStageMount() = 0;  // Mounts fstab entries read from device tree.
+
+  protected:
+    FirstStageMount() = default;
+};
+
 void SetInitAvbVersionInRecovery();
 
 }  // namespace init
