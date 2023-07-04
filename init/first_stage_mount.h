@@ -38,7 +38,7 @@ class FirstStageMount {
     virtual ~FirstStageMount() = default;
 
     // The factory method to create a FirstStageMountVBootV2 instance.
-    static Result<std::unique_ptr<FirstStageMount>> Create();
+    static Result<std::unique_ptr<FirstStageMount>> Create(const std::string& cmdline);
     bool DoCreateDevices();    // Creates devices and logical partitions from storage devices
     bool DoFirstStageMount();  // Mounts fstab entries read from device tree.
     bool InitDevices();
