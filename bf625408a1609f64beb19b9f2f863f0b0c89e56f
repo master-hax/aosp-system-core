@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4b77540_2c1ad636",
+        "filename": "trusty/line-coverage/coverage.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-04T21:03:00Z",
+      "side": 1,
+      "message": "These should come from a common header for Trusty and Android.",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 0
+      },
+      "revId": "bf625408a1609f64beb19b9f2f863f0b0c89e56f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4ce1323_2b672dfb",
+        "filename": "trusty/line-coverage/include/trusty/line-coverage/tipc.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-04T21:03:00Z",
+      "side": 1,
+      "message": "We should be able to use the same file via the repo mappings.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 76
+      },
+      "revId": "bf625408a1609f64beb19b9f2f863f0b0c89e56f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
