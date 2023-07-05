@@ -220,7 +220,7 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     bool populate_data_from_cow_ = false;
     bool ra_thread_ = false;
     int total_ra_blocks_merged_ = 0;
-    MERGE_IO_TRANSITION io_state_;
+    MERGE_IO_TRANSITION io_state_ = MERGE_IO_TRANSITION::MERGE_READY;
     std::unique_ptr<ReadAhead> read_ahead_thread_;
     std::unordered_map<uint64_t, void*> read_ahead_buffer_map_;
 
