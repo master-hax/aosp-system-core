@@ -16,6 +16,24 @@
       "message": "+smoreland because i don\u0027t know whether there are ABI stability guarantees here, but i love the idea!",
       "revId": "40e78443e93729c5f5571a4c29b25ad7c7b3cecb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94cceb5e_8be0c568",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-05T20:13:42Z",
+      "side": 1,
+      "message": "I did a code search\n\nhttps://cs.android.com/search?q\u003dlibbinderwrapper%20file:Android.bp\u0026sq\u003d\n\nlibbinderwrapper is only used by update_engine",
+      "parentUuid": "8b5cfd12_4c678e4b",
+      "revId": "40e78443e93729c5f5571a4c29b25ad7c7b3cecb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
