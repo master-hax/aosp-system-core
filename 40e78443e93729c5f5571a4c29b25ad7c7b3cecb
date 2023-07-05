@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b5cfd12_4c678e4b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-05T20:09:28Z",
+      "side": 1,
+      "message": "+smoreland because i don\u0027t know whether there are ABI stability guarantees here, but i love the idea!",
+      "revId": "40e78443e93729c5f5571a4c29b25ad7c7b3cecb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
