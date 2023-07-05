@@ -46,6 +46,30 @@
       },
       "revId": "5b5aad4116efb80ec48c859a3b5040fb5a82d1b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9400008f_95515344",
+        "filename": "init/first_stage_mount.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-05T10:39:45Z",
+      "side": 1,
+      "message": "That is not adding another abstraction layer. This CL actually broke the existing abstraction by exposing this private class to outside.\n\n\nI don\u0027t know the original intention of this header, but I think it anyway is good to keep the intention if possible.",
+      "parentUuid": "7c82852c_781eee79",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 2
+      },
+      "revId": "5b5aad4116efb80ec48c859a3b5040fb5a82d1b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
