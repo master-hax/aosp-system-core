@@ -132,6 +132,7 @@ void SnapuserdTest::Shutdown() {
     ASSERT_TRUE(handlers_.DeleteHandler(system_device_ctrl_name_));
     ASSERT_TRUE(android::fs_mgr::WaitForFileDeleted(misc_device, 10s));
     handlers_.TerminateMergeThreads();
+    handlers_.JoinAllThreads();
 }
 
 bool SnapuserdTest::SetupDefault() {
