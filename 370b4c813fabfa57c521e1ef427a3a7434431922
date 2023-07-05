@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa53dbb5_95a2063c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1865,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-05T18:26:19Z",
+      "side": 1,
+      "message": "Is this exclude parameter only getting used for testing? If so, let\u0027s drop it, and make the test do the filtering. If you need to turn off OptimizedFlashSuperTask then another flag to FlashingPlan could do that.",
+      "revId": "370b4c813fabfa57c521e1ef427a3a7434431922",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
