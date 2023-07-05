@@ -16,6 +16,8 @@
 
 #include "snapuserd_readahead.h"
 
+#include <pthread.h>
+
 #include "snapuserd_core.h"
 #include "utility.h"
 
@@ -428,7 +430,7 @@ bool ReadAhead::ReapIoCompletions(int pending_ios_to_complete) {
         // will fallback to synchronous I/O.
         int ret = io_uring_wait_cqe(ring_.get(), &cqe);
         if (ret) {
-            SNAP_LOG(ERROR) << "Read-ahead - io_uring_wait_cqe failed: " << ret;
+            SNAP_LOG(ERROR) << "Read-ahead - io_uring_wait_cqe failed: " << strerror(-ret);
             status = false;
             break;
         }
@@ -684,13 +686,14 @@ bool ReadAhead::ReadAheadIOStart() {
         }
     }
 
-    SNAP_LOG(DEBUG) << "Read-ahead: total_ra_blocks_merged: " << total_ra_blocks_completed_;
+    SNAP_LOG(INFO) << "Read-ahead: total_ra_blocks_merged: " << total_ra_blocks_completed_;
 
     // Wait for the merge to finish for the previous RA window. We shouldn't
     // be touching the scratch space until merge is complete of previous RA
     // window. If there is a crash during this time frame, merge should resume
     // based on the contents of the scratch space.
     if (!snapuserd_->WaitForMergeReady()) {
+        SNAP_LOG(ERROR) << "ReadAhead failed to wait for merge ready";
         return false;
     }
 
@@ -752,6 +755,10 @@ void ReadAhead::FinalizeIouring() {
 }
 
 bool ReadAhead::RunThread() {
+    SNAP_LOG(INFO) << "ReadAhead thread started.";
+
+    pthread_setname_np(pthread_self(), "ReadAhead");
+
     if (!InitializeFds()) {
         return false;
     }
@@ -770,6 +777,7 @@ bool ReadAhead::RunThread() {
         SNAP_PLOG(ERROR) << "Failed to set thread priority";
     }
 
+    SNAP_LOG(INFO) << "ReadAhead processing.";
     while (!RAIterDone()) {
         if (!ReadAheadIOStart()) {
             break;
@@ -780,7 +788,7 @@ bool ReadAhead::RunThread() {
     CloseFds();
     reader_->CloseCowFd();
 
-    SNAP_LOG(INFO) << " ReadAhead thread terminating....";
+    SNAP_LOG(INFO) << " ReadAhead thread terminating.";
     return true;
 }
 
