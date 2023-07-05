@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c753c97d_f620c22b",
+        "filename": "init/first_stage_mount.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-05T01:22:49Z",
+      "side": 1,
+      "message": "I think the original intention was to hide these from the client, which I\u0027d like to keep.\n\nYou could create another abstract class which has only the needed methods.\n\n\n```\n// first_stage_mount.h\nclass Mounter {\n  public:\n    static Result\u003cstd::unique_ptr\u003cMounter\u003e\u003e Create();  \n    virtual ~Mounter() \u003d default;\n    virtual bool DoCreateDevices() \u003d 0;\n    virtual bool DoFirstStageMount() \u003d 0;\n};\n\n// first_stage_mount.cpp\nclass FirstStageMount : public Mounter {\n   ...\n};\n```",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 2
+      },
+      "revId": "5b5aad4116efb80ec48c859a3b5040fb5a82d1b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
