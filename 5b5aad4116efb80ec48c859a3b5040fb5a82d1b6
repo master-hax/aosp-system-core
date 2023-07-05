@@ -94,6 +94,30 @@
       },
       "revId": "5b5aad4116efb80ec48c859a3b5040fb5a82d1b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79423a6e_f937de6b",
+        "filename": "init/first_stage_mount.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2023-07-05T14:39:47Z",
+      "side": 1,
+      "message": "Marking resolved",
+      "parentUuid": "bd1cd939_741b8858",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 2
+      },
+      "revId": "5b5aad4116efb80ec48c859a3b5040fb5a82d1b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
