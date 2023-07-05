@@ -72,6 +72,7 @@ cc_library_static {
         "user-space-merge/snapuserd_transitions.cpp",
         "user-space-merge/snapuserd_verify.cpp",
         "user-space-merge/worker.cpp",
+        "utility.cpp",
     ],
     static_libs: [
         "libbase",
@@ -89,6 +90,7 @@ cc_library_static {
     ramdisk_available: true,
     vendor_ramdisk_available: true,
     recovery_available: true,
+    host_supported: true,
 }
 
 cc_defaults {
@@ -221,6 +223,7 @@ cc_test {
     srcs: [
         "testing/block_server_local.cpp",
         "testing/dm_user_harness.cpp",
+        "testing/harness.cpp",
         "testing/local_harness.cpp",
         "user-space-merge/snapuserd_test.cpp",
     ],
@@ -255,4 +258,5 @@ cc_test {
     },
     auto_gen_config: true,
     require_root: false,
+    host_supported: true,
 }
