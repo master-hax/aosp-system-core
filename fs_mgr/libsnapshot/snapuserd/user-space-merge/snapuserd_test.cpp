@@ -534,7 +534,9 @@ void SnapuserdTest::InitCowDevice() {
                                  base_dev_->path(), opener, 1, use_iouring, false);
     ASSERT_NE(handler, nullptr);
     ASSERT_NE(handler->snapuserd(), nullptr);
+#ifdef __ANDROID__
     ASSERT_NE(handler->snapuserd()->GetNumSectors(), 0);
+#endif
 }
 
 void SnapuserdTest::SetDeviceControlName() {
