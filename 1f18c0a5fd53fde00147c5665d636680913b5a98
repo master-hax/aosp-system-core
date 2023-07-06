@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ff01049_46347a66",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-07-06T06:13:04Z",
+      "side": 1,
+      "message": "The default should be a INVALID state; We should add a new state \"MERGE_INVALID\" and set it here. That wouldn\u0027t break any of the state transitions.",
+      "revId": "1f18c0a5fd53fde00147c5665d636680913b5a98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
