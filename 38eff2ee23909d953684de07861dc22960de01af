@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72dee1e3_395150ad",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/block_server.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-07-06T05:37:36Z",
+      "side": 1,
+      "message": "This is nicely done; but I think this might need some slight changes when moving to ublk given ProcessRequests() will be Asynchronous API in UBLK world wherein we queue the requests and might need additional API to poll the responses.",
+      "revId": "38eff2ee23909d953684de07861dc22960de01af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
