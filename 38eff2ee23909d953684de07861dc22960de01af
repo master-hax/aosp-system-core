@@ -16,6 +16,24 @@
       "message": "This is nicely done; but I think this might need some slight changes when moving to ublk given ProcessRequests() will be Asynchronous API in UBLK world wherein we queue the requests and might need additional API to poll the responses.",
       "revId": "38eff2ee23909d953684de07861dc22960de01af",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23b0b6f2_77ee34af",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/block_server.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-06T20:12:15Z",
+      "side": 1,
+      "message": "Good to know - once ublk comes along we can figure how out how to change this.",
+      "parentUuid": "72dee1e3_395150ad",
+      "revId": "38eff2ee23909d953684de07861dc22960de01af",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
