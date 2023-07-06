@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbcd1c23_cf48548c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-06T15:20:27Z",
+      "side": 1,
+      "message": "I don\u0027t own these libraries, so I removed myself from reviewers. My comments are nit picks.",
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d9da642_5df6cd05",
+        "filename": "fs_mgr/liblp/fuzzer/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-06T15:20:27Z",
+      "side": 1,
+      "message": "nit: wrong indentation",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 34
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4dcc8b9_91aede34",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_apis_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-06T15:20:27Z",
+      "side": 1,
+      "message": "How are these created? You may want to add some comment about instructions for building these so that others can create/update the images in the future.",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 42
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
