@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65375e36_c1cb9af3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/testing/temp_device.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-07-06T05:40:03Z",
+      "side": 1,
+      "message": "We should probably move this to some library and as this is very generic and could be used in other places.",
+      "revId": "e55cdd408ad1747fe6d3f08f4ba666e9b87d2367",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
