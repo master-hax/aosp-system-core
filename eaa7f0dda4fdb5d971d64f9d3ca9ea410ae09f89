@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "587ec80f_5b06a3da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-06T15:20:45Z",
+      "side": 1,
+      "message": "I don\u0027t own these libraries, so I removed myself from reviewers.",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
