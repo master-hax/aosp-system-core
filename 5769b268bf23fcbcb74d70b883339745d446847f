@@ -1,5 +1,40 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e72e12a7_782c1991",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1019,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-07-06T22:19:43Z",
+      "side": 1,
+      "message": "From a naive drive-by, the \"Build Warnings\" here about a null deference with `fp` seem correct.\n\nSee more details below.",
+      "revId": "5769b268bf23fcbcb74d70b883339745d446847f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "136500ac_91dd6ba1",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1497,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-07-06T22:19:43Z",
+      "side": 1,
+      "message": "We will come through this path if `fp` is null.  `load_buf` will call `load_buf_fd`, which will then call `get_sparse_limit` with the null `fp`.",
+      "revId": "5769b268bf23fcbcb74d70b883339745d446847f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
