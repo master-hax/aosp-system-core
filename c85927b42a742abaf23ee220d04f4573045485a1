@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e281c52_d2853b6c",
+        "filename": "fs_mgr/liblp/fuzzer/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-07-07T06:13:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d9da642_5df6cd05",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 34
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e4dcc8b9_91aede34",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-07-06T15:20:27Z",
       "side": 1,
       "message": "How are these created? You may want to add some comment about instructions for building these so that others can create/update the images in the future.",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 42
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "425d23b5_7562efa6",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_apis_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-07-07T06:13:20Z",
+      "side": 1,
+      "message": "These images are not built or created specifically for the fuzzer\u0027s purpose. These are from AOSP at system/core/fastboot/testdata/\nhttps://cs.android.com/android/platform/superproject/+/master:system/core/fastboot/testdata/;bpv\u003d1;bpt\u003d0",
+      "parentUuid": "e4dcc8b9_91aede34",
       "range": {
         "startLine": 75,
         "startChar": 0,
