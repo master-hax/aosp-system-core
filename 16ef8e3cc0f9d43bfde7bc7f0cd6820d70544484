@@ -16,6 +16,24 @@
       "message": "I am little confused here regarding the update of the buffer_offset_; \n\nWe are acquiring the payload of \u0027size\u0027 but updating the offset by \u0027to_write\u0027. What happens when the next AcquireBuffer(size_t size) is invoked.. \n\nFor ex:\n\n1: AcquireBuffer(4k, 1M)\n\nThis will return payload buffer ptr of 4k but update the buffer_offset_ to 1M.\n\nNow, if the next call is done such as:\n\n2: AcquireBuffer(4k)\n\nWouldn\u0027t this fail ? Perhaps, I am missing something here as I do see that you have put a comment on the function when size !\u003d to_write.",
       "revId": "16ef8e3cc0f9d43bfde7bc7f0cd6820d70544484",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6fe7cad_7d031408",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-07T04:19:39Z",
+      "side": 1,
+      "message": "The AcquireBuffer contract is that to_write must be \u003c\u003d buffer size, so asking for 1MB to write but a 4KB buffer would/should fail a CHECK().",
+      "parentUuid": "0b89ceec_aa6d650e",
+      "revId": "16ef8e3cc0f9d43bfde7bc7f0cd6820d70544484",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
