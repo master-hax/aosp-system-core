@@ -50,3 +50,18 @@ cc_fuzz {
     srcs: ["liblp_builder_fuzzer.cpp"],
     defaults: ["liblp_fuzz_defaults"],
 }
+
+cc_fuzz {
+    name: "liblp_apis_fuzzer",
+    srcs: [
+        "liblp_apis_fuzzer.cpp",
+        ":TestPartitionOpener_group"
+    ],
+    defaults: ["liblp_fuzz_defaults"],
+    shared_libs: [
+        "libsparse",
+    ],
+    data: [
+        "images/*",
+    ],
+}
