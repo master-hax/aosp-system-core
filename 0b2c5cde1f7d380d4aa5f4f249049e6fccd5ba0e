@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "557a5970_88dbc3d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-07T08:22:53Z",
+      "side": 1,
+      "message": "The decision should be from Jeff, I think. Jeff, what\u0027s the status of the work? Is it effectively abandoned, or are you still pursuing it?",
+      "revId": "0b2c5cde1f7d380d4aa5f4f249049e6fccd5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
