@@ -16,6 +16,24 @@
       "message": "The decision should be from Jeff, I think. Jeff, what\u0027s the status of the work? Is it effectively abandoned, or are you still pursuing it?",
       "revId": "0b2c5cde1f7d380d4aa5f4f249049e6fccd5ba0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83de920f_9ebb95fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-07-07T18:51:09Z",
+      "side": 1,
+      "message": "I thought the whole \"APEX sepolicy\" feature is dead, but it might be besides the point.  There actually isn\u0027t any way for fsverity-based verification of `SEPolicy.zip` to be implemented anymore, at least based on how it seems to have been intended to work.  This is because it seems to have been intended to use the \"fsverity builtin signatures\", which Android moved away from in Android 14.  Android no longer sets the sysctl `fs.verity.require_signatures` to 1.  (Users can still use fsverity, but they must check a signature in userspace or just use it for integrity only.)\n\nThere is one caveat, which is that if `SEPolicy.zip` already exists on-disk with a fsverity builtin signature, the signing cert does still need to be loaded into the kernel, otherwise the file cannot be opened.  I doubt this is actually possible here, given the early stage of development this feature seems to have been in, but Jeff can confirm.  We can keep `LoadSepolicyApexCerts()` if really needed, but it would prevent other code from being cleaned up.",
+      "parentUuid": "557a5970_88dbc3d6",
+      "revId": "0b2c5cde1f7d380d4aa5f4f249049e6fccd5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
