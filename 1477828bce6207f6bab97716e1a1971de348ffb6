@@ -16,6 +16,24 @@
       "message": "Why not `for (auto p : mParams) free(p)`",
       "revId": "1477828bce6207f6bab97716e1a1971de348ffb6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e743ee5_1ce99a84",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-10T22:47:24Z",
+      "side": 1,
+      "message": "heh, i was only aiming for C89! but if you want to be fancy... see ps2 :-)",
+      "parentUuid": "867ed566_3b5962a8",
+      "revId": "1477828bce6207f6bab97716e1a1971de348ffb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
