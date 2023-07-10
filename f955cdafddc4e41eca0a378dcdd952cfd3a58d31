@@ -70,6 +70,30 @@
       },
       "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d62a1a2_24bd4f83",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1116349
+      },
+      "writtenOn": "2023-07-10T22:58:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9d1d647_ebfe9131",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 24
+      },
+      "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
