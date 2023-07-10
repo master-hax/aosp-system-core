@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "252c9b82_8525d095",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 999,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-10T23:59:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a58c968_079bd245",
+      "range": {
+        "startLine": 999,
+        "startChar": 51,
+        "endLine": 999,
+        "endChar": 73
+      },
+      "revId": "5b5da717d0ef8e88ffc2844989495920f0752ed7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc40feae_59b81636",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-07-10T23:53:32Z",
       "side": 1,
       "message": "is this intended?",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 9
+      },
+      "revId": "5b5da717d0ef8e88ffc2844989495920f0752ed7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d47adac1_6cb1642e",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-10T23:59:34Z",
+      "side": 1,
+      "message": "ah oops, did a quick read through and thought it wasn\u0027t changed.",
+      "parentUuid": "dc40feae_59b81636",
       "range": {
         "startLine": 101,
         "startChar": 4,
