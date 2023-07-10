@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70858e96_fac036a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1062848
+      },
+      "writtenOn": "2023-07-10T10:58:00Z",
+      "side": 1,
+      "message": "Hi Haoyu, Dan, can you take a look?\n\nThank you.",
+      "revId": "733d7d3f0ad5886c7fa3b9789d91920615a223b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
