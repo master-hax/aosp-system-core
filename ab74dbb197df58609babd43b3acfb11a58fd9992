@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d10ff303_d85d922f",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2023-07-10T19:15:31Z",
+      "side": 1,
+      "message": "Is this comment true in the FS_MGR_MNTALL_DEV_FILE_ENCRYPTED case? The comment there says \"we have device key\"",
+      "revId": "ab74dbb197df58609babd43b3acfb11a58fd9992",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
