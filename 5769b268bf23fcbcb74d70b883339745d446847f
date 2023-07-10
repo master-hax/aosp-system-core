@@ -33,6 +33,24 @@
       "message": "We will come through this path if `fp` is null.  `load_buf` will call `load_buf_fd`, which will then call `get_sparse_limit` with the null `fp`.",
       "revId": "5769b268bf23fcbcb74d70b883339745d446847f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15755795_8fb91e5d",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1497,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-10T22:52:35Z",
+      "side": 1,
+      "message": "flashing plan should theoretically never be null here. But regardless, the whole point of this CL was just for testing purposes. the correct solution should actually be mocking up the fb-\u003egetvar() call inside ofget_uint_var(\"max-download-size\") to return some value rather than this round about way, WIP",
+      "parentUuid": "136500ac_91dd6ba1",
+      "revId": "5769b268bf23fcbcb74d70b883339745d446847f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
