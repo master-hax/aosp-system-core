@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a58c968_079bd245",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 999,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-10T23:53:32Z",
+      "side": 1,
+      "message": "Do we need the entire flashing plan or just the `FastbootDriver*` ?",
+      "range": {
+        "startLine": 999,
+        "startChar": 51,
+        "endLine": 999,
+        "endChar": 73
+      },
+      "revId": "5b5da717d0ef8e88ffc2844989495920f0752ed7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc40feae_59b81636",
+        "filename": "fastboot/fastboot.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-10T23:53:32Z",
+      "side": 1,
+      "message": "is this intended?",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 9
+      },
+      "revId": "5b5da717d0ef8e88ffc2844989495920f0752ed7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
