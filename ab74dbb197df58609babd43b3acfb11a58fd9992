@@ -16,6 +16,24 @@
       "message": "Is this comment true in the FS_MGR_MNTALL_DEV_FILE_ENCRYPTED case? The comment there says \"we have device key\"",
       "revId": "ab74dbb197df58609babd43b3acfb11a58fd9992",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b749e36c_f1b9c230",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-07-10T19:25:20Z",
+      "side": 1,
+      "message": "I think it\u0027s fine for now.  This is just another remnant of FDE: the \"nonencrypted\" trigger event really means \"notUsingFullDiskEncryption\".  We probably should rename it or remove it, or if that isn\u0027t possible, properly document everything related to it (not just this one comment).",
+      "parentUuid": "d10ff303_d85d922f",
+      "revId": "ab74dbb197df58609babd43b3acfb11a58fd9992",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
