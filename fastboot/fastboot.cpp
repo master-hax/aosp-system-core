@@ -996,9 +996,9 @@ static std::vector<SparsePtr> load_sparse_files(int fd, int64_t max_size) {
     return resparse_file(s.get(), max_size);
 }
 
-static uint64_t get_uint_var(const char* var_name) {
+static uint64_t get_uint_var(const char* var_name, const FlashingPlan* fp) {
     std::string value_str;
-    if (fb->GetVar(var_name, &value_str) != fastboot::SUCCESS || value_str.empty()) {
+    if (fp->fb->GetVar(var_name, &value_str) != fastboot::SUCCESS || value_str.empty()) {
         verbose("target didn't report %s", var_name);
         return 0;
     }
@@ -1021,7 +1021,7 @@ int64_t get_sparse_limit(int64_t size, const FlashingPlan* fp) {
         // Unlimited, so see what the target device's limit is.
         // TODO: shouldn't we apply this limit even if you've used -S?
         if (target_sparse_limit == -1) {
-            target_sparse_limit = static_cast<int64_t>(get_uint_var("max-download-size"));
+            target_sparse_limit = static_cast<int64_t>(get_uint_var("max-download-size", fp));
         }
         if (target_sparse_limit > 0) {
             limit = target_sparse_limit;
@@ -1420,8 +1420,9 @@ bool is_retrofit_device(const FlashingPlan* fp) {
 
 // Fetch a partition from the device to a given fd. This is a wrapper over FetchToFd to fetch
 // the full image.
-static uint64_t fetch_partition(const std::string& partition, borrowed_fd fd) {
-    uint64_t fetch_size = get_uint_var(FB_VAR_MAX_FETCH_SIZE);
+static uint64_t fetch_partition(const std::string& partition, borrowed_fd fd,
+                                const FlashingPlan* fp) {
+    uint64_t fetch_size = get_uint_var(FB_VAR_MAX_FETCH_SIZE, fp);
     if (fetch_size == 0) {
         die("Unable to get %s. Device does not support fetch command.", FB_VAR_MAX_FETCH_SIZE);
     }
@@ -1443,17 +1444,18 @@ static uint64_t fetch_partition(const std::string& partition, borrowed_fd fd) {
 }
 
 static void do_fetch(const std::string& partition, const std::string& slot_override,
-                     const std::string& outfile) {
+                     const std::string& outfile, const FlashingPlan* fp) {
     unique_fd fd(TEMP_FAILURE_RETRY(
             open(outfile.c_str(), O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC | O_BINARY, 0644)));
-    auto fetch = std::bind(fetch_partition, _1, borrowed_fd(fd));
+    auto fetch = std::bind(fetch_partition, _1, borrowed_fd(fd), fp);
     do_for_partitions(partition, slot_override, fetch, false /* force slot */);
 }
 
 // Return immediately if not flashing a vendor boot image. If flashing a vendor boot image,
 // repack vendor_boot image with an updated ramdisk. After execution, buf is set
 // to the new image to flash, and return value is the real partition name to flash.
-static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf) {
+static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf,
+                                  const FlashingPlan* fp) {
     std::string_view pname_sv{pname};
 
     if (!android::base::StartsWith(pname_sv, "vendor_boot:") &&
@@ -1471,7 +1473,7 @@ static std::string repack_ramdisk(const char* pname, struct fastboot_buffer* buf
     std::string ramdisk(pname_sv.substr(pname_sv.find(':') + 1));
 
     unique_fd vendor_boot(make_temporary_fd("vendor boot repack"));
-    uint64_t vendor_boot_size = fetch_partition(partition, vendor_boot);
+    uint64_t vendor_boot_size = fetch_partition(partition, vendor_boot, fp);
     auto repack_res = replace_vendor_ramdisk(vendor_boot, vendor_boot_size, ramdisk, buf->fd,
                                              static_cast<uint64_t>(buf->sz));
     if (!repack_res.ok()) {
@@ -1508,7 +1510,7 @@ void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
     if (is_logical(pname)) {
         fb->ResizePartition(pname, std::to_string(buf.image_size));
     }
-    std::string flash_pname = repack_ramdisk(pname, &buf);
+    std::string flash_pname = repack_ramdisk(pname, &buf, fp);
     flash_buf(flash_pname, &buf, apply_vbmeta);
 }
 
@@ -2579,7 +2581,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
         } else if (command == FB_CMD_FETCH) {
             std::string partition = next_arg(&args);
             std::string outfile = next_arg(&args);
-            do_fetch(partition, fp->slot_override, outfile);
+            do_fetch(partition, fp->slot_override, outfile, fp.get());
         } else {
             syntax_error("unknown command %s", command.c_str());
         }
