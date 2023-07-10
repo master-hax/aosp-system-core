@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "867ed566_3b5962a8",
+        "filename": "libsysutils/src/NetlinkEvent.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-07-10T22:12:22Z",
+      "side": 1,
+      "message": "Why not `for (auto p : mParams) free(p)`",
+      "revId": "1477828bce6207f6bab97716e1a1971de348ffb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
