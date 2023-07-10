@@ -34,6 +34,24 @@
       "parentUuid": "d10ff303_d85d922f",
       "revId": "ab74dbb197df58609babd43b3acfb11a58fd9992",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b43ae10_3ae0078d",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1060907
+      },
+      "writtenOn": "2023-07-10T19:27:34Z",
+      "side": 1,
+      "message": "If for some reason you have to submit a new version of this change anyway, might be good to change the comment to say \"nonencrypted\" just means \"no FDE\".",
+      "parentUuid": "b749e36c_f1b9c230",
+      "revId": "ab74dbb197df58609babd43b3acfb11a58fd9992",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
