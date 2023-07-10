@@ -1,0 +1,360 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0421b749_aa8d042f",
+        "filename": "trusty/utils/coverage-controller/Android.bp",
+        "patchSetId": 13
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "just delete it if not used?",
+      "range": {
+        "startLine": 28,
+        "startChar": 8,
+        "endLine": 28,
+        "endChar": 26
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4217d31_d38b4106",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "I think these should be fully qualified with `::`, and ideally in a namespace.\ngo/totw/119 \u0026 go/cstyle#Namespaces",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 53
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37659dec_2d8bc9eb",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Is there a way we can get this in a shared header file?",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 0
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0bb33dd5_68e71735",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "It would possibly be better to split the class declaration into a header, then have the method implementations here.  That would also avoid a lot of the indentation too.",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 18
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "081fc2a6_1a072761",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "If this is the only think using `android::base`, I would probably just use `snprintf()` and avoid the dependency.",
+      "range": {
+        "startLine": 70,
+        "startChar": 40,
+        "endLine": 70,
+        "endChar": 67
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6529ea56_104e443e",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "I don\u0027t think this or the next use of `auto` qualify for making the code more readable and it would be better to have the type.  See go/totw/4",
+      "range": {
+        "startLine": 70,
+        "startChar": 23,
+        "endLine": 70,
+        "endChar": 28
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c424db0_ab81abe8",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "This hardcoded path maybe a problem at some point.  It might be better as an option to the program, or the current directory.",
+      "range": {
+        "startLine": 71,
+        "startChar": 25,
+        "endLine": 71,
+        "endChar": 41
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "687a2f21_49ba33dd",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Trailing \u0027\\`.  Normally `\\` is only needed for macro definitions and escapes.",
+      "range": {
+        "startLine": 75,
+        "startChar": 58,
+        "endLine": 75,
+        "endChar": 59
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0e2b25b_c6f1bccd",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be a bit test rather than an absolute compare and then a set?",
+      "range": {
+        "startLine": 76,
+        "startChar": 20,
+        "endLine": 76,
+        "endChar": 63
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fda3ace_fd752709",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "nit: strange whitespace around ths",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 40
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0bec6cea_53434a9c",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Print `errno`?",
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e00daae_034c37ba",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Blank link confusing with `else`.",
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55cf7c13_1a22cc0c",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "nit: indentation.",
+      "range": {
+        "startLine": 134,
+        "startChar": 20,
+        "endLine": 136,
+        "endChar": 17
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8d693b0_d80e6265",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Unused variable?",
+      "range": {
+        "startLine": 143,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 15
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "118bc022_2b87da14",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "Would be better as a parameter to the `Controller` ctor?",
+      "range": {
+        "startLine": 144,
+        "startChar": 4,
+        "endLine": 144,
+        "endChar": 24
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a67a749_cdb667d2",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-10T13:19:32Z",
+      "side": 1,
+      "message": "This always succeeds?  An `EXIT_FAILURE` case might be useful, especially if used with automation.",
+      "range": {
+        "startLine": 148,
+        "startChar": 11,
+        "endLine": 148,
+        "endChar": 23
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
