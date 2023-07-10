@@ -46,6 +46,30 @@
       },
       "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9d1d647_ebfe9131",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-07-10T11:26:02Z",
+      "side": 1,
+      "message": "Ok, I see them in table 7.35 on page 568. Let\u0027s add a comment to the code or at least to the commit message to indicate the source. Something like:\n\n\"Note: DbC class and subclass values can be found in table 7.35 of the xHCI spec version 1.2. Fetched from: https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/extensible-host-controler-interface-usb-xhci.pdf\"",
+      "parentUuid": "e24b32d3_5f7c2a0b",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 24
+      },
+      "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
