@@ -22,6 +22,30 @@
       },
       "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e24b32d3_5f7c2a0b",
+        "filename": "adb/adb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1948151
+      },
+      "writtenOn": "2023-07-10T04:17:55Z",
+      "side": 1,
+      "message": "https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/extensible-host-controler-interface-usb-xhci.pdf\n\nSection 7.6 is for DbC\n\nRefer TABLE for DbC (Protocol, Class and Subclass) - Table 7-9, 7-26, 7-35",
+      "parentUuid": "a6256c04_6286c2c0",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 24
+      },
+      "revId": "f955cdafddc4e41eca0a378dcdd952cfd3a58d31",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
