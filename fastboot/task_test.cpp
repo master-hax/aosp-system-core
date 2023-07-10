@@ -192,14 +192,19 @@ TEST_F(ParseTest, CorrectTaskLists) {
 
     LocalImageSource s = LocalImageSource();
     fp->source = &s;
-    fp->sparse_limit = std::numeric_limits<int64_t>::max();
 
     fastboot::MockFastbootDriver fb;
     fp->fb = &fb;
     fp->should_optimize_flash_super = false;
 
-    ON_CALL(fb, GetVar("super-partition-name", _, _))
-            .WillByDefault(testing::Return(fastboot::BAD_ARG));
+    EXPECT_CALL(fb, GetVar("max-download-size", _, _))
+            .WillRepeatedly([](const std::string&, std::string* val, std::vector<std::string>*) {
+                std::cout << "WAS CALLED HERE: ";
+                *val = std::to_string(std::numeric_limits<int64_t>::max());
+                return fastboot::SUCCESS;
+            });
+    EXPECT_CALL(fb, GetVar("super-partition-name", _, _))
+            .WillRepeatedly(testing::Return(fastboot::BAD_ARG));
 
     FlashAllTool tool(fp.get());
 
