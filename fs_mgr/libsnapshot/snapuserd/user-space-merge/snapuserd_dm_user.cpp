@@ -397,7 +397,16 @@ int Worker::ReadUnalignedSector(
     SNAP_LOG(DEBUG) << "ReadUnalignedSector: sector " << sector << " size: " << size
                     << " Aligned sector: " << it->first;
 
-    if (!ProcessCowOp(it->second)) {
+    int num_sectors_skip = sector - it->first;
+    size_t skip_size = num_sectors_skip << SECTOR_SHIFT;
+    size_t write_size = BLOCK_SZ - skip_size;
+    void* buffer = block_server_->GetResponseBuffer(BLOCK_SZ, write_size);
+    if (!buffer) {
+        SNAP_LOG(ERROR) << "ProcessCowOp failed to allocate buffer";
+        return -1;
+    }
+
+    if (!ProcessCowOp(it->second, buffer)) {
         SNAP_LOG(ERROR) << "ReadUnalignedSector: " << sector << " failed of size: " << size
                         << " Aligned sector: " << it->first;
         return -1;
@@ -470,7 +479,7 @@ bool Worker::ReadUnalignedSector(sector_t sector, size_t size) {
             --it;
         }
     } else {
-        return ReadAlignedSector(sector, size);
+        return ReadAlignedSector(sector, size) > 0;
     }
 
     loff_t requested_offset = sector << SECTOR_SHIFT;
