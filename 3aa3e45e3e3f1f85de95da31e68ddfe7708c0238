@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "859a48b4_7f5f2eff",
+        "filename": "libstats/push_compat/thread_compat.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-11T20:54:38Z",
+      "side": 1,
+      "message": "why this extra level of indirection, given that they already link to libbase?",
+      "revId": "3aa3e45e3e3f1f85de95da31e68ddfe7708c0238",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
