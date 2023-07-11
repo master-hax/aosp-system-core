@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2952c74_d9ca1090",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1448,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T00:01:32Z",
+      "side": 1,
+      "message": "change this to fastboot driver as well?",
+      "range": {
+        "startLine": 1448,
+        "startChar": 55,
+        "endLine": 1448,
+        "endChar": 67
+      },
+      "revId": "e12871c1721dd4f9cde776ee825bd9586464cb94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f17d3086_7901e674",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1459,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T00:01:32Z",
+      "side": 1,
+      "message": "change this to fastboot driver",
+      "range": {
+        "startLine": 1459,
+        "startChar": 40,
+        "endLine": 1459,
+        "endChar": 52
+      },
+      "revId": "e12871c1721dd4f9cde776ee825bd9586464cb94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
