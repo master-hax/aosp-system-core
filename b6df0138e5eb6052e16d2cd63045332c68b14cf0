@@ -1,5 +1,57 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6908b8f2_ed56a7b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-07-11T12:21:42Z",
+      "side": 1,
+      "message": "Naive post-submit drive-by.",
+      "revId": "b6df0138e5eb6052e16d2cd63045332c68b14cf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7f35aee_420be9fc",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-07-11T12:21:42Z",
+      "side": 1,
+      "message": "It looks like Worker::ReadUnalignedSector returns a `bool`...",
+      "revId": "b6df0138e5eb6052e16d2cd63045332c68b14cf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7cf08c9_5a164d6f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_dm_user.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 618,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-07-11T12:21:42Z",
+      "side": 1,
+      "message": "...so it seems like this comparison will always be `true`, since our return value will automatically cast to either a `0` or `1`.",
+      "revId": "b6df0138e5eb6052e16d2cd63045332c68b14cf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
