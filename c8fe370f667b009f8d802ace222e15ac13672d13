@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e6e6599_4b90d73e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-11T05:15:03Z",
+      "side": 1,
+      "message": "Elliott has SGTM\u0027ed on the bug!! :)",
+      "revId": "c8fe370f667b009f8d802ace222e15ac13672d13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
