@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f09d068_0747436f",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T19:32:03Z",
+      "side": 1,
+      "message": "this function is a generic function for comparing two vectors of tasks. Use more generic names like `tasks_a` and `tasks_b`",
+      "range": {
+        "startLine": 64,
+        "startChar": 65,
+        "endLine": 64,
+        "endChar": 80
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8a6e0d1_6cc69590",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T19:32:03Z",
+      "side": 1,
+      "message": "this ignores the sequencing of tasks. Do we want to consider order of tasks?",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee4f206b_da3dd5d1",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T19:32:03Z",
+      "side": 1,
+      "message": "``\nLocalImageSource s;\n```\n\nShould be sufficient",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 44
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ccf5fe8_73336458",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T19:32:03Z",
+      "side": 1,
+      "message": "is_non_flash_task",
+      "range": {
+        "startLine": 211,
+        "startChar": 9,
+        "endLine": 211,
+        "endChar": 28
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
