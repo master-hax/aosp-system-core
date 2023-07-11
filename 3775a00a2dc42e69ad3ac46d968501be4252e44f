@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "419c2407_8ef0bdcc",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-11T19:50:29Z",
+      "side": 1,
+      "message": "\u003e Although this makes me think: should we add some test to check the fastboot-info.txt artifact correctness in that bootloader partitions are flashed in bootloader and dynamic partitions are flashed in userspace ?\n\nSure we could add correctness check in a separate CL, just make sure we take optimized super flashing into account.",
+      "parentUuid": "4e540fa6_eb48b854",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ee4f206b_da3dd5d1",
