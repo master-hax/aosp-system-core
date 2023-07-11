@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1b761527_dabe3af6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-07-11T01:37:45Z",
+      "side": 1,
+      "message": "As we discussed from b/289139250, can we move forward with this CL?",
+      "parentUuid": "2ccf3444_56532ca1",
+      "revId": "3fd0d1bcb3de1fc2f591370223e5472b1a199bdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2d823a18_6d2e3308",
         "filename": "libcutils/Android.bp",
         "patchSetId": 4
