@@ -16,6 +16,40 @@
       "message": "I don\u0027t own these libraries, so I removed myself from reviewers.",
       "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "622a8c00_69305e94",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-07-11T16:46:20Z",
+      "side": 1,
+      "message": "Why is the block size an odd number ?",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc662197_3b8a57e7",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-07-11T16:46:20Z",
+      "side": 1,
+      "message": "How does the fuzzer ensure the overlapping copy operations. This sounds like it is randomly picking blocks and calling the API\u0027s; wouldn\u0027t this fail at L149 during VerifyMergeOps ?",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
