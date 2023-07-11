@@ -257,12 +257,13 @@ cc_library_static {
             cflags: ["-DROOT_POSSIBLE"],
         },
 
-        malloc_not_svelte: {
-            cflags: ["-DUSE_SCUDO"],
-            whole_static_libs: ["libscudo"],
-            srcs: ["libdebuggerd/scudo.cpp"],
-            header_libs: ["scudo_headers"],
-        },
+// Use jemalloc.
+//      malloc_not_svelte: {
+//          cflags: ["-DUSE_SCUDO"],
+//          whole_static_libs: ["libscudo"],
+//          srcs: ["libdebuggerd/scudo.cpp"],
+//          header_libs: ["scudo_headers"],
+//      },
     },
 }
 
