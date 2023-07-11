@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1b32df3_daf71180",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-11T19:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f09d068_0747436f",
+      "range": {
+        "startLine": 64,
+        "startChar": 65,
+        "endLine": 64,
+        "endChar": 80
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a8a6e0d1_6cc69590",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-07-11T19:32:03Z",
       "side": 1,
       "message": "this ignores the sequencing of tasks. Do we want to consider order of tasks?",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e540fa6_eb48b854",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-11T19:45:09Z",
+      "side": 1,
+      "message": "the order of flashing partitions shouldn\u0027t matter (this test only compares to see if all flash tasks in hardcoded_list is present in new list). As long as bootloader partitions are flashed in bootloader, and dynamic partitions are flashed in fastbootd -\u003e the order within each shouldn\u0027t matter ? \n\nAlthough this makes me think: should we add some test to check the fastboot-info.txt artifact correctness in that bootloader partitions are flashed in bootloader and dynamic partitions are flashed in userspace ?",
+      "parentUuid": "a8a6e0d1_6cc69590",
       "range": {
         "startLine": 66,
         "startChar": 0,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc033b65_16856279",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-11T19:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee4f206b_da3dd5d1",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 44
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6ccf5fe8_73336458",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-07-11T19:32:03Z",
       "side": 1,
       "message": "is_non_flash_task",
+      "range": {
+        "startLine": 211,
+        "startChar": 9,
+        "endLine": 211,
+        "endChar": 28
+      },
+      "revId": "3775a00a2dc42e69ad3ac46d968501be4252e44f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8e36eea_6dd289c7",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-07-11T19:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6ccf5fe8_73336458",
       "range": {
         "startLine": 211,
         "startChar": 9,
