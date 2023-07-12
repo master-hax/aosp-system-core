@@ -16,6 +16,24 @@
       "message": "why is this arm_arm64? i was expecting \"arm\" or \"arm32\" vs \"arm64\"? what does \"arm_arm64\" mean? (in particular --- will this work for Go/TV/Wear, which are the only things still using arm32, and are 32-_only_ rather than 32/64?)\n\nwhich also makes me wonder why we don\u0027t have x86/x86-64/riscv64 ... is the intent here to just have \"a representative 32-bit abi\" and \"a representative 64-bit abi\" rather than actually all the supported abis? is that a good idea? (it certainly wasn\u0027t for bionic --- many of the historical abi mistakes there were because folks weren\u0027t paying attention to all the abis. though, yes, the 32 vs 64 split was the _biggest_ cause of mistakes. but we definitely had intel vs arm too. riscv64 mistakes haven\u0027t been possible yet :-) )",
       "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eed35b27_cdf5508d",
+        "filename": "libcutils/abi-dumps/arm_arm64/source-based/libcutils.so.lsdump",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2023-07-12T02:41:08Z",
+      "side": 0,
+      "message": "\"arm_arm64\" means arm libraries in an arm64 build target;\n\"arm64\" means arm64 libraries in an arm64 target.\n\nWhen developers update the ABI dumps, they need to run a script that builds the targets. The execution time increases with the number of builds. It would take a lot of time to dump all supported ABIs, so we selected one representative target.",
+      "parentUuid": "5d7e16d2_ff53f69a",
+      "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
