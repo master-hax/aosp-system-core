@@ -470,7 +470,7 @@ bool Worker::ReadUnalignedSector(sector_t sector, size_t size) {
             --it;
         }
     } else {
-        return ReadAlignedSector(sector, size);
+        return ReadAlignedSector(sector, size) > 0;
     }
 
     loff_t requested_offset = sector << SECTOR_SHIFT;
