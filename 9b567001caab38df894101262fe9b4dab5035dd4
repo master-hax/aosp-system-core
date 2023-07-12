@@ -34,6 +34,24 @@
       "parentUuid": "5d7e16d2_ff53f69a",
       "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da274238_db14a350",
+        "filename": "libcutils/abi-dumps/arm_arm64/source-based/libcutils.so.lsdump",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-12T18:07:11Z",
+      "side": 0,
+      "message": "can we fix that? that seems like a bug. (unless you actually want to make a point that it\u0027s armv8 rather than armv7, but (a) i don\u0027t think you do and (b) that seems like it would be the wrong choice anyway?)",
+      "parentUuid": "eed35b27_cdf5508d",
+      "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
