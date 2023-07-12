@@ -400,6 +400,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a11b2ad_4d81e33e",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-07-12T09:49:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0e2b25b_c6f1bccd",
+      "range": {
+        "startLine": 76,
+        "startChar": 20,
+        "endLine": 76,
+        "endChar": 63
+      },
+      "revId": "889481fd126c70ae5fd11b601040aecda3a40fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2fda3ace_fd752709",
