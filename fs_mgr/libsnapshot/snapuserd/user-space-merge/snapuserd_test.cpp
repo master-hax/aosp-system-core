@@ -80,7 +80,7 @@ class SnapuserdTest : public ::testing::Test {
     void SetUp() override;
     void TearDown() override { Shutdown(); }
 
-  private:
+  protected:
     void SetupImpl();
 
     void SimulateDaemonRestart();
@@ -680,13 +680,26 @@ void SnapuserdTest::MergeInterrupt() {
 TEST_F(SnapuserdTest, Snapshot_IO_TEST) {
     ASSERT_TRUE(SetupDefault());
     // I/O before merge
-    ReadSnapshotDeviceAndValidate();
+    ASSERT_NO_FATAL_FAILURE(ReadSnapshotDeviceAndValidate());
     ASSERT_TRUE(Merge());
     ValidateMerge();
     // I/O after merge - daemon should read directly
     // from base device
-    ReadSnapshotDeviceAndValidate();
+    ASSERT_NO_FATAL_FAILURE(ReadSnapshotDeviceAndValidate());
     Shutdown();
+}
+
+TEST_F(SnapuserdTest, UnalignedAccess) {
+    // We can't force unaligned accesses when the kernel is issuing reads.
+    harness_ = std::make_unique<LocalUserTestHarness>();
+    ASSERT_TRUE(SetupDefault());
+
+    auto fd = dmuser_dev_->OpenFd();
+    ASSERT_NE(fd, nullptr);
+
+    std::string buffer(1024, '\0');
+    ASSERT_EQ(fd->ReadFullyAtOffset(buffer.data(), buffer.size(), 1024), true);
+    ASSERT_EQ(memcmp(buffer.data(), orig_buffer_.get() + 1024, buffer.size()), 0);
 }
 
 TEST_F(SnapuserdTest, Snapshot_MERGE_IO_TEST) {
