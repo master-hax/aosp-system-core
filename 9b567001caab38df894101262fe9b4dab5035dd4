@@ -52,6 +52,24 @@
       "parentUuid": "eed35b27_cdf5508d",
       "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8145e775_5803b011",
+        "filename": "libcutils/abi-dumps/arm_arm64/source-based/libcutils.so.lsdump",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2023-07-13T03:16:10Z",
+      "side": 0,
+      "message": "It is not a bug. \"arm64\" and \"arm_arm64\" are generated from a generic armv8 target.\n\"arm\" (not included in this CL) is from an armv7 target.\n\nI intentionally ignore the arch variants so that the prebuilt VNDK libraries have compatible ABI with the variants. We can change the naming after we retire the prebuilt VNDK.",
+      "parentUuid": "da274238_db14a350",
+      "revId": "9b567001caab38df894101262fe9b4dab5035dd4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
