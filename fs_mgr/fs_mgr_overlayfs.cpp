@@ -1010,21 +1010,7 @@ static bool CreateDynamicScratch(std::string* scratch_device, bool* partition_ex
         auto partition_size =
                 builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
         if ((partition_size > kMinimumSize) || !partition->size()) {
-            // Leave some space for free space jitter of a few erase
-            // blocks, in case they are needed for any individual updates
-            // to any other partition that needs to be flashed while
-            // overlayfs is in force.  Of course if margin_size is not
-            // enough could normally get a flash failure, so
-            // ResizePartition() will delete the scratch partition in
-            // order to fulfill.  Deleting scratch will destroy all of
-            // the adb remount overrides :-( .
-            auto margin_size = uint64_t(3 * 256 * 1024);
-            BlockDeviceInfo info;
-            if (builder->GetBlockDeviceInfo(fs_mgr_get_super_partition_name(slot_number), &info)) {
-                margin_size = 3 * info.logical_block_size;
-            }
-            partition_size = std::max(std::min(kMinimumSize, partition_size - margin_size),
-                                      partition_size / 2);
+            partition_size = std::max(std::min(kMinimumSize, partition_size), partition_size / 2);
             if (partition_size > partition->size()) {
                 if (!builder->ResizePartition(partition, partition_size)) {
                     // Try to free up space by deallocating partitions in the other slot.
@@ -1032,8 +1018,8 @@ static bool CreateDynamicScratch(std::string* scratch_device, bool* partition_ex
 
                     partition_size =
                             builder->AllocatableSpace() - builder->UsedSpace() + partition->size();
-                    partition_size = std::max(std::min(kMinimumSize, partition_size - margin_size),
-                                              partition_size / 2);
+                    partition_size =
+                            std::max(std::min(kMinimumSize, partition_size), partition_size / 2);
                     if (!builder->ResizePartition(partition, partition_size)) {
                         LERROR << "resize " << partition_name;
                         return false;
