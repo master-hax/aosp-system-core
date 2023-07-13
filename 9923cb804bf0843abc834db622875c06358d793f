@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0eddaf94_7d42b44a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-13T17:05:49Z",
+      "side": 1,
+      "message": "Actually, I think all of this logic needs to be tossed. I\u0027ll post a different CL.",
+      "revId": "9923cb804bf0843abc834db622875c06358d793f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
