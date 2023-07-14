@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a28f366_5f5ee8cd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-07-14T07:48:49Z",
+      "side": 1,
+      "message": "FYI those functions were already in an anonymous namespace, so were already effectively \"static\" before",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 46
+      },
+      "revId": "f8f3b627aed47167b2a5d557601c8fa06367eaee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
