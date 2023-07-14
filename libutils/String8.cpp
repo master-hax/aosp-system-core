@@ -393,6 +393,9 @@ ssize_t String8::find(const char* other, size_t start) const
 }
 
 bool String8::removeAll(const char* other) {
+    if (other == NULL || strlen(other) == 0)
+        return true;
+
     ssize_t index = find(other);
     if (index < 0) return false;
 
