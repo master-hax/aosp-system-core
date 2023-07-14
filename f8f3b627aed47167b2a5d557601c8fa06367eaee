@@ -22,6 +22,30 @@
       },
       "revId": "f8f3b627aed47167b2a5d557601c8fa06367eaee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3afde99f_f53f1fdd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-14T15:55:55Z",
+      "side": 1,
+      "message": "It was that or move half of the functions out of the anonymous namespace, making the diff a lot more unpleasant.",
+      "parentUuid": "0a28f366_5f5ee8cd",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 46
+      },
+      "revId": "f8f3b627aed47167b2a5d557601c8fa06367eaee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
