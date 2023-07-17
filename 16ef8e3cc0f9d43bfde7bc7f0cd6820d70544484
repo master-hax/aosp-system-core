@@ -34,6 +34,24 @@
       "parentUuid": "0b89ceec_aa6d650e",
       "revId": "16ef8e3cc0f9d43bfde7bc7f0cd6820d70544484",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "725204f1_f52df209",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-07-17T22:39:08Z",
+      "side": 1,
+      "message": "There\u0027s now a CHECK() for this.",
+      "parentUuid": "f6fe7cad_7d031408",
+      "revId": "16ef8e3cc0f9d43bfde7bc7f0cd6820d70544484",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
