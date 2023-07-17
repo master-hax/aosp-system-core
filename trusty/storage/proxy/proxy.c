@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <android/binder_process.h>
 #include <cutils/android_filesystem_config.h>
 
 #include "checkpoint_handling.h"
@@ -249,6 +250,13 @@ int main(int argc, char* argv[]) {
     /* connect to Trusty secure storage server */
     rc = ipc_connect(trusty_devname, ss_srv_name);
     if (rc < 0) return EXIT_FAILURE;
+
+    /*
+     * Start binder threadpool. Binder threads are needed to connect to the
+     * wakelock service without relying on polling, which can result in a 1s
+     * delay even if the service starts faster.
+     */
+    ABinderProcess_startThreadPool();
 
     /* enter main loop */
     rc = proxy_loop();
