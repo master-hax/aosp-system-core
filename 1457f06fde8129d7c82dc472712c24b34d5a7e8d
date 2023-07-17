@@ -52,6 +52,24 @@
       "parentUuid": "87fba21c_818e17cc",
       "revId": "1457f06fde8129d7c82dc472712c24b34d5a7e8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c061846_ba1caaf9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-17T21:49:43Z",
+      "side": 1,
+      "message": "i think the \"if\" in smoreland\u0027s earlier comment is doing a lot of heavy lifting --- we don\u0027t know that it is, right? and i\u0027d assume that it isn\u0027t.\n\npersonally i\u0027d rather turn already-broken stuff into hard errors (as i looked at in [unsubmitted] https://android-review.git.corp.google.com/c/platform/system/core/+/1709086 and https://android-review.git.corp.google.com/c/platform/system/core/+/2063129).\n\nin particular, passing null to removeAll() fells like a logic error in the caller to me that _should_ abort (though perhaps with a clearer message)?",
+      "parentUuid": "afaa54a7_ecaba8c4",
+      "revId": "1457f06fde8129d7c82dc472712c24b34d5a7e8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
