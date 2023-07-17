@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <android/binder_process.h>
 #include <cutils/android_filesystem_config.h>
 
 #include "checkpoint_handling.h"
@@ -237,6 +238,13 @@ int main(int argc, char* argv[]) {
 
     /* parse arguments */
     parse_args(argc, argv);
+
+    /*
+     * Start binder threadpool. Binder threads are needed to connect to the
+     * wakelock service without relying on polling, which can result in a 1s
+     * delay even if the service starts faster.
+     */
+    ABinderProcess_startThreadPool();
 
     /* initialize secure storage directory */
     rc = storage_init(ss_data_root);
