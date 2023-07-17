@@ -52,6 +52,24 @@
       "parentUuid": "83de920f_9ebb95fd",
       "revId": "0b2c5cde1f7d380d4aa5f4f249049e6fccd5ba0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8689959_286dc675",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2023-07-17T16:18:43Z",
+      "side": 1,
+      "message": "There wasn\u0027t any signature check (and the feature isn\u0027t happening anyway).  See b/249521341 for previous discussion.",
+      "parentUuid": "301d09b8_797f81e2",
+      "revId": "0b2c5cde1f7d380d4aa5f4f249049e6fccd5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
