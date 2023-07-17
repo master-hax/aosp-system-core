@@ -16,6 +16,24 @@
       "message": "add the missing tests?",
       "revId": "1457f06fde8129d7c82dc472712c24b34d5a7e8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87fba21c_818e17cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-07-17T20:54:52Z",
+      "side": 1,
+      "message": "I posted http://r.android.com/2656902 for this instead (though I did not see this CL).\n\nIf people haven\u0027t needed removeAll(\"\") in the past, keeping it a deadlock may be good for app compat (since if it shows up behind an SDK API within an app process, this would make it appear to work, so new apps relying on that behavior could fail on old devices) and it\u0027s a wasted operation, so it might indicate a bug.",
+      "parentUuid": "b57b384f_969c4536",
+      "revId": "1457f06fde8129d7c82dc472712c24b34d5a7e8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
