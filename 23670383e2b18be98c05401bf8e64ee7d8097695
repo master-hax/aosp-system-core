@@ -22,6 +22,30 @@
       },
       "revId": "23670383e2b18be98c05401bf8e64ee7d8097695",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b3a5f0f_ea1505bc",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2023-07-18T17:00:30Z",
+      "side": 1,
+      "message": "Fair enough, I was thinking the other direction of not wanting an extra binder thread hanging around to interfere with those initialization operations, but who knows what happens in the future underneath us that may require binder threads like the wakelock call.",
+      "parentUuid": "90ae4c04_ce9bb2fe",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 37
+      },
+      "revId": "23670383e2b18be98c05401bf8e64ee7d8097695",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
