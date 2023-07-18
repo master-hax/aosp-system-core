@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a1b13c1_d04eb66d",
+        "filename": "libutils/String8_fuzz.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-18T18:40:14Z",
+      "side": 1,
+      "message": "remove the comment?",
+      "revId": "f7c2a1454a64ce99f21fb14ebc07a9cc44ac6555",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
