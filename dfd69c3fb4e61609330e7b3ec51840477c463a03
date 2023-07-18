@@ -50,6 +50,24 @@
       "message": "though ALOG_ASSERT would break the fuzzer, so we would need both actually...",
       "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d775f041_6c37958d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2023-07-18T18:33:25Z",
+      "side": 1,
+      "message": "Agree, I think the fix to String8_fuzz is necessary.",
+      "parentUuid": "cd57bb53_af7f20e6",
+      "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
