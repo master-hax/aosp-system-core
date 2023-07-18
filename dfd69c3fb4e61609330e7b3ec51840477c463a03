@@ -33,6 +33,23 @@
       "message": "I\u0027ll leave it up to Elliott to approve this or http://r.android.com/2656902, and we can abandon the other.",
       "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd57bb53_af7f20e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-07-18T18:31:03Z",
+      "side": 1,
+      "message": "though ALOG_ASSERT would break the fuzzer, so we would need both actually...",
+      "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
