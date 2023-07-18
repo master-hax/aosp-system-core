@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67bd68c0_1eed5c9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2023-07-18T18:23:27Z",
+      "side": 1,
+      "message": "Updated the code as well as the CL description, ^^ @enh @smoreland",
+      "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
