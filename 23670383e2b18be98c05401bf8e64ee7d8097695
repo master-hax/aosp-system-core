@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90ae4c04_ce9bb2fe",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-18T10:59:25Z",
+      "side": 1,
+      "message": "nit: would there be any value in moving this a little earlier in` main()`, just to ensure that if something like `storage_init()` or `rpmb_open()` ended up trying to take a wakelock (or use some other to-be-started service) at some point in the future, we don\u0027t hit the horrible polling behaviour again?",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 37
+      },
+      "revId": "23670383e2b18be98c05401bf8e64ee7d8097695",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
