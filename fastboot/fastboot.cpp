@@ -1794,6 +1794,22 @@ void FlashAllTool::Flash() {
     CancelSnapshotIfNeeded();
 
     tasks_ = CollectTasks();
+
+    if (fp_->exclude_dynamic_partitions) {
+        auto is_non_static_flash_task = [](const auto& task) -> bool {
+            if (auto flash_task = task->AsFlashTask()) {
+                if (should_flash_in_userspace(flash_task->GetPartitionAndSlot())) {
+                    return true;
+                }
+                return false;
+            } else {
+                return true;
+            }
+        };
+        tasks_.erase(std::remove_if(tasks_.begin(), tasks_.end(), is_non_static_flash_task),
+                     tasks_.end());
+    }
+
     for (auto& task : tasks_) {
         task->Run();
     }
@@ -2213,6 +2229,7 @@ int FastBootTool::Main(int argc, char* argv[]) {
                                       {"disable-verification", no_argument, 0, 0},
                                       {"disable-verity", no_argument, 0, 0},
                                       {"disable-super-optimization", no_argument, 0, 0},
+                                      {"exclude-dynamic-partitions", no_argument, 0, 0},
                                       {"disable-fastboot-info", no_argument, 0, 0},
                                       {"force", no_argument, 0, 0},
                                       {"fs-options", required_argument, 0, 0},
@@ -2254,6 +2271,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
                 g_disable_verity = true;
             } else if (name == "disable-super-optimization") {
                 fp->should_optimize_flash_super = false;
+            } else if (name == "exclude-dynamic-partitions") {
+                fp->exclude_dynamic_partitions = true;
             } else if (name == "disable-fastboot-info") {
                 fp->should_use_fastboot_info = false;
             } else if (name == "force") {
