@@ -22,6 +22,30 @@
       },
       "revId": "0a3919b315c7275cd39cb6b07b81515e02d2a445",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5a307ec_64cfa811",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-18T21:09:56Z",
+      "side": 1,
+      "message": "I\u0027m not sure that is correct.  The default _max_ threads is 15, but the docs lead me to believe they are started on demand as needed.\nhttps://cs.android.com/android/platform/superproject/+/main:frameworks/native/libs/binder/ndk/include_platform/android/binder_process.h;l\u003d32",
+      "parentUuid": "003a0e86_31f15250",
+      "range": {
+        "startLine": 247,
+        "startChar": 4,
+        "endLine": 247,
+        "endChar": 34
+      },
+      "revId": "0a3919b315c7275cd39cb6b07b81515e02d2a445",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
