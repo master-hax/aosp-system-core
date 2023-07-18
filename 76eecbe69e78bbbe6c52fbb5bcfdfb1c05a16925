@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "074860a3_03a98736",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1133963
+      },
+      "writtenOn": "2023-07-18T19:34:07Z",
+      "side": 1,
+      "message": "When I look at the Chrome OS initiated change (https://android-review.git.corp.google.com/c/platform/system/core/+/1612939), I also see a corresponding #ifdef in the .cpp file - do we need the same thing here?",
+      "revId": "76eecbe69e78bbbe6c52fbb5bcfdfb1c05a16925",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
