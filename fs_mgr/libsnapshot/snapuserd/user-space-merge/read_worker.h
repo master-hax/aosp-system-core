@@ -14,10 +14,7 @@
 
 #pragma once
 
-#include <utility>
-#include <vector>
-
-#include "worker.h"
+#include "snapuserd_core.h"
 
 namespace android {
 namespace snapshot {
@@ -47,8 +44,6 @@ class ReadWorker : public Worker {
     bool ReadUnalignedSector(sector_t sector, size_t size);
     int ReadUnalignedSector(sector_t sector, size_t size,
                             std::vector<std::pair<sector_t, const CowOperation*>>::iterator& it);
-    bool ReadFromSourceDevice(const CowOperation* cow_op);
-    bool ReadDataFromBaseDevice(sector_t sector, size_t read_size);
 
     XorSink xorsink_;
     bool header_response_ = false;

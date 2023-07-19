@@ -13,9 +13,7 @@
 // limitations under the License.
 #pragma once
 
-#include "worker.h"
-
-#include <liburing.h>
+#include "snapuserd_core.h"
 
 namespace android {
 namespace snapshot {
