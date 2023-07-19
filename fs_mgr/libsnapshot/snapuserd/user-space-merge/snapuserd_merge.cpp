@@ -106,9 +106,9 @@ bool MergeWorker::MergeReplaceZeroOps() {
         for (size_t i = 0; i < replace_zero_vec.size(); i++) {
             const CowOperation* cow_op = replace_zero_vec[i];
 
-            void* buffer = bufsink_.AcquireBuffer(BLOCK_SZ);
+            void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
             if (!buffer) {
-                SNAP_LOG(ERROR) << "AcquireBuffer failed in MergeReplaceOps";
+                SNAP_LOG(ERROR) << "Failed to acquire buffer in merge";
                 return false;
             }
             if (cow_op->type == kCowReplaceOp) {
@@ -120,6 +120,8 @@ bool MergeWorker::MergeReplaceZeroOps() {
                 CHECK(cow_op->type == kCowZeroOp);
                 memset(buffer, 0, BLOCK_SZ);
             }
+
+            bufsink_.UpdateBufferOffset(BLOCK_SZ);
         }
 
         size_t io_size = linear_blocks * BLOCK_SZ;
