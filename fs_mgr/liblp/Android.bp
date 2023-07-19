@@ -122,3 +122,8 @@ cc_test {
     name: "vts_kernel_liblp_test",
     defaults: ["liblp_test_defaults"],
 }
+
+filegroup {
+   name: "TestPartitionOpener_group",
+   srcs: [ "test_partition_opener.cpp"],
+}
