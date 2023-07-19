@@ -19,7 +19,6 @@
 #include <android-base/logging.h>
 
 #include "snapuserd_core.h"
-#include "snapuserd_merge.h"
 
 namespace android {
 namespace snapshot {
