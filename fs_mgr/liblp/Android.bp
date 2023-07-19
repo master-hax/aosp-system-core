@@ -41,11 +41,11 @@ cc_library {
         "builder.cpp",
         "super_layout_builder.cpp",
         "images.cpp",
-        "partition_opener.cpp",
         "property_fetcher.cpp",
         "reader.cpp",
         "utility.cpp",
         "writer.cpp",
+        ":TestPartitionOpener_group",
     ],
     shared_libs: [
         "libcrypto",
@@ -121,4 +121,9 @@ cc_test {
 cc_test {
     name: "vts_kernel_liblp_test",
     defaults: ["liblp_test_defaults"],
+}
+
+filegroup {
+   name: "TestPartitionOpener_group",
+   srcs: [ "test_partition_opener.cpp"],
 }
