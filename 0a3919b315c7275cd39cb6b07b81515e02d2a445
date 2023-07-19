@@ -70,6 +70,30 @@
       },
       "revId": "0a3919b315c7275cd39cb6b07b81515e02d2a445",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76725aaa_c81ce69c",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-07-19T08:29:06Z",
+      "side": 1,
+      "message": "Ooops 😄 We need the edit then!  Thank you!",
+      "parentUuid": "61e08691_1086b72a",
+      "range": {
+        "startLine": 247,
+        "startChar": 4,
+        "endLine": 247,
+        "endChar": 34
+      },
+      "revId": "0a3919b315c7275cd39cb6b07b81515e02d2a445",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
