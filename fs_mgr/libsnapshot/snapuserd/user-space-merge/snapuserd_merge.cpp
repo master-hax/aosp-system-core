@@ -105,20 +105,17 @@ bool MergeWorker::MergeReplaceZeroOps() {
 
         for (size_t i = 0; i < replace_zero_vec.size(); i++) {
             const CowOperation* cow_op = replace_zero_vec[i];
-
-            void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
-            if (!buffer) {
-                SNAP_LOG(ERROR) << "Failed to acquire buffer in merge";
-                return false;
-            }
             if (cow_op->type == kCowReplaceOp) {
-                if (!reader_->ReadData(cow_op, buffer, BLOCK_SZ)) {
-                    SNAP_LOG(ERROR) << "Failed to read COW in merge";
+                if (!ProcessReplaceOp(cow_op)) {
+                    SNAP_LOG(ERROR) << "Merge - ReplaceOp failed for block: " << cow_op->new_block;
                     return false;
                 }
             } else {
                 CHECK(cow_op->type == kCowZeroOp);
-                memset(buffer, 0, BLOCK_SZ);
+                if (!ProcessZeroOp()) {
+                    SNAP_LOG(ERROR) << "Merge ZeroOp failed.";
+                    return false;
+                }
             }
 
             bufsink_.UpdateBufferOffset(BLOCK_SZ);
