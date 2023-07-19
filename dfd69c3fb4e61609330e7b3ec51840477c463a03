@@ -85,6 +85,42 @@
       "message": "(yeah, both sgtm...)",
       "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b081846_91d0fdbf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2023-07-19T02:03:48Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "852db92a_a8a2a59a",
+      "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c6b1bde_2c106e7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1850729
+      },
+      "writtenOn": "2023-07-19T02:03:48Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "d775f041_6c37958d",
+      "revId": "dfd69c3fb4e61609330e7b3ec51840477c463a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
