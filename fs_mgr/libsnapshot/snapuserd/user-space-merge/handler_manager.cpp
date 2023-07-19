@@ -18,7 +18,6 @@
 
 #include <android-base/logging.h>
 
-#include "read_worker.h"
 #include "snapuserd_core.h"
 #include "snapuserd_merge.h"
 
