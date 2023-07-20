@@ -310,9 +310,29 @@ bool CowReader::PrepMergeOps() {
 bool CowReader::VerifyMergeOps() {
     auto itr = GetMergeOpIter(true);
     std::unordered_map<uint64_t, const CowOperation*> overwritten_blocks;
+    bool non_ordered_op_found = false;
+
     while (!itr->AtEnd()) {
         const auto& op = itr->Get();
         uint64_t offset;
+
+        // Op should not be a metadata
+        CHECK(IsOrderedOp(*op) || op->type == kCowReplaceOp || op->type == kCowZeroOp);
+
+        // Sequence ops should contain all the ordered ops followed
+        // by Replace and Zero ops. If we find the first op which
+        // is not ordered, that means all ordered ops processing
+        // has been completed.
+        if (!IsOrderedOp(*op)) {
+            non_ordered_op_found = true;
+        }
+
+        // Since, all ordered ops processing has been completed,
+        // check that the subsequent ops are not ordered.
+        if (non_ordered_op_found) {
+            CHECK(!IsOrderedOp(*op));
+        }
+
         if (!GetSourceOffset(op, &offset)) {
             itr->Next();
             continue;
