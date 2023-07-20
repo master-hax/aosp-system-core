@@ -829,8 +829,18 @@ static void MountExtraFilesystems() {
     if ((x) != 0) PLOG(FATAL) << #x " failed.";
 
     // /apex is used to mount APEXes
-    CHECKCALL(mount("tmpfs", "/apex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
-                    "mode=0755,uid=0,gid=0"));
+    if (NeedsTwoMountNamespaces()) {
+        // /bootstrapapex is used to mount "bootstrap" APEXes and be bind-mounted to /apex
+        // in bootstrap mount namespace.
+        // When switching to the default mount namespace, /bootstrapapex will be
+        // detached from /apex and /apex will be used to mount APEXes for the default mount
+        // namespace.
+        CHECKCALL(mount("tmpfs", "/bootstrapapex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+                        "mode=0755,uid=0,gid=0"));
+    } else {
+        CHECKCALL(mount("tmpfs", "/apex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+                        "mode=0755,uid=0,gid=0"));
+    }
 
     // /linkerconfig is used to keep generated linker configuration
     CHECKCALL(mount("tmpfs", "/linkerconfig", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
