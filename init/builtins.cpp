@@ -1262,6 +1262,42 @@ static Result<void> MountLinkerConfigForDefaultNamespace() {
 
     return {};
 }
+
+static Result<void> MountApexForDefaultNamespace() {
+    auto mount_namespace_id = GetCurrentMountNamespace();
+    if (!mount_namespace_id.ok()) {
+        return mount_namespace_id.error();
+    }
+    // There's nothing to do if it's still in the bootstrap mount namespace.
+    // This happens when we don't need to update APEXes (e.g. Microdroid).
+    if (mount_namespace_id.value() == NS_BOOTSTRAP) {
+        return {};
+    }
+
+    // Now, we're in the "default" mount namespace and need a fresh /apex for
+    // the default mount namespace. At this point, /apex is bind-mount'ed to
+    // /.apex.bootstrap and contains bootstrap APEXes. So we need to umount it.
+    // /.apex.bootstrap is still visible.
+    //
+    // 1. Make /apex private so that the bootstrap mount namespace won't receive
+    //    further (u)mount events in /apex.
+    if (mount(nullptr, "/apex", nullptr, MS_PRIVATE | MS_REC, nullptr) == -1) {
+        return ErrnoError() << "Failed to remount /apex as private";
+    }
+    // 2. Umount -R /apex
+    if (umount2("/apex", MNT_DETACH) == -1) {
+        return ErrnoError() << "Failed to umount /apex";
+    }
+    // 3. Make /apex writable
+    if (mount("tmpfs", "/apex", "tmpfs", MS_NOEXEC | MS_NOSUID | MS_NODEV,
+              "mode=0755,uid=0,gid=0") == -1) {
+        return ErrnoError() << "Failed to mount tmpfs as /apex";
+    }
+    selinux_android_restorecon("/apex", 0);
+
+    return {};
+}
+
 static Result<void> do_update_linker_config(const BuiltinArguments&) {
     return GenerateLinkerConfiguration();
 }
@@ -1314,6 +1350,11 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     if (auto result = SwitchToMountNamespaceIfNeeded(NS_DEFAULT); !result.ok()) {
         return result.error();
     }
+
+    if (auto result = MountApexForDefaultNamespace(); !result.ok()) {
+        return result.error();
+    }
+
     if (auto result = MountLinkerConfigForDefaultNamespace(); !result.ok()) {
         return result.error();
     }

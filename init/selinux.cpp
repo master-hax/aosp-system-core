@@ -765,8 +765,11 @@ void SelinuxRestoreContext() {
     selinux_android_restorecon("/dev/dm-user", SELINUX_ANDROID_RESTORECON_RECURSE);
     selinux_android_restorecon("/dev/device-mapper", 0);
 
-    selinux_android_restorecon("/apex", 0);
-
+    if (access("/.apex.bootstrap", R_OK) == 0) {
+        selinux_android_restorecon("/.apex.bootstrap", 0);
+    } else {
+        selinux_android_restorecon("/apex", 0);
+    }
     selinux_android_restorecon("/linkerconfig", 0);
 
     // adb remount, snapshot-based updates, and DSUs all create files during
