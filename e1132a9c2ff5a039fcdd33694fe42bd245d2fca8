@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b9d1fe1_4ed6a975",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010363
+      },
+      "writtenOn": "2023-07-20T16:21:46Z",
+      "side": 1,
+      "message": "The only test that is failing is an OTA test that is failing because the issue that the CL is fixing is present in the base build, so we need to bypass pre-submit.",
+      "revId": "e1132a9c2ff5a039fcdd33694fe42bd245d2fca8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
