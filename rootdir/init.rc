@@ -1319,6 +1319,8 @@ on userspace-reboot-fs-remount
   start bootanim
 
 on userspace-reboot-resume
+  enter_default_mount_ns
+  exec_start apexd-bootstrap
   trigger userspace-reboot-fs-remount
   trigger post-fs-data
   trigger zygote-start
