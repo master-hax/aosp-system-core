@@ -94,7 +94,24 @@ bool SetupMountNamespaces() {
     // /apex is a private mountpoint to give different sets of APEXes for
     // the bootstrap and default mount namespaces. The processes running with
     // the bootstrap namespace get APEXes from the read-only partition.
-    if (!(ChangeMount("/apex", MS_PRIVATE))) return false;
+    // However, some components (e.g. servicemanager) need to access bootstrap
+    // APEXes from the default mount namespace. To achieve that, we keep /apex
+    // as "shared" and bind-mount /.apex.bootstrap to /apex before entering
+    // the default mount namespace. In the default mount namespace, we detach
+    // /.apex.bootstrap and make /apex private. Then, even in the default
+    // mount namespace, bootstrap APEXes are still visible from /.apex.bootstrap.
+    //
+    // The end result will look like:
+    //   in the bootstrap mount namespace:
+    //     /apex  (== /.apex.bootstrap)
+    //       {bootstrap APEXes from the read-only partition}
+    //
+    //   in the default mount namespace:
+    //     /.apex.bootstrap
+    //       {bootstrap APEXes from the read-only partition}
+    //     /apex
+    //       {APEXes, can be from /data partition}
+    if (!(BindMount("/.apex.bootstrap", "/apex"))) return false;
 
     // /linkerconfig is a private mountpoint to give a different linker configuration
     // based on the mount namespace. Subdirectory will be bind-mounted based on current mount
