@@ -66,15 +66,6 @@ static std::string GetMountNamespaceId() {
     return ret;
 }
 
-// In case we have two sets of APEXes (non-updatable, updatable), we need two separate mount
-// namespaces.
-static bool NeedsTwoMountNamespaces() {
-    if (IsRecoveryMode()) return false;
-    // In microdroid, there's only one set of APEXes in built-in directories include block devices.
-    if (IsMicrodroid()) return false;
-    return true;
-}
-
 static android::base::unique_fd bootstrap_ns_fd;
 static android::base::unique_fd default_ns_fd;
 
@@ -82,6 +73,15 @@ static std::string bootstrap_ns_id;
 static std::string default_ns_id;
 
 }  // namespace
+
+// In case we have two sets of APEXes (non-updatable, updatable), we need two separate mount
+// namespaces.
+bool NeedsTwoMountNamespaces() {
+    if (IsRecoveryMode()) return false;
+    // In microdroid, there's only one set of APEXes in built-in directories include block devices.
+    if (IsMicrodroid()) return false;
+    return true;
+}
 
 bool SetupMountNamespaces() {
     // Set the propagation type of / as shared so that any mounting event (e.g.
@@ -94,7 +94,26 @@ bool SetupMountNamespaces() {
     // /apex is a private mountpoint to give different sets of APEXes for
     // the bootstrap and default mount namespaces. The processes running with
     // the bootstrap namespace get APEXes from the read-only partition.
-    if (!(ChangeMount("/apex", MS_PRIVATE))) return false;
+    // However, some components (e.g. servicemanager) need to access bootstrap
+    // APEXes from the default mount namespace. To achieve that, we keep /apex
+    // as "shared" and bind-mount /bootstrap-apex to /apex before entering
+    // the default mount namespace. In the default mount namespace, we detach
+    // /bootstrap-apex and make /apex private. Then, even in the default
+    // mount namespace, bootstrap APEXes are still visible from /bootstrap-apex.
+    //
+    // The end result will look like:
+    //   in the bootstrap mount namespace:
+    //     /apex  (== /bootstrap-apex)
+    //       {bootstrap APEXes from the read-only partition}
+    //
+    //   in the default mount namespace:
+    //     /bootstrap-apex
+    //       {bootstrap APEXes from the read-only partition}
+    //     /apex
+    //       {APEXes, can be from /data partition}
+    if (NeedsTwoMountNamespaces()) {
+        if (!(BindMount("/bootstrap-apex", "/apex"))) return false;
+    }
 
     // /linkerconfig is a private mountpoint to give a different linker configuration
     // based on the mount namespace. Subdirectory will be bind-mounted based on current mount
