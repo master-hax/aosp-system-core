@@ -1262,6 +1262,45 @@ static Result<void> MountLinkerConfigForDefaultNamespace() {
 
     return {};
 }
+
+static Result<void> MountApexForDefaultNamespace() {
+    auto mount_namespace_id = GetCurrentMountNamespace();
+    if (!mount_namespace_id.ok()) {
+        return mount_namespace_id.error();
+    }
+    // There's nothing to do if it's still in the bootstrap mount namespace.
+    // This happens when we don't need to update APEXes (e.g. Microdroid).
+    if (mount_namespace_id.value() == NS_BOOTSTRAP) {
+        return {};
+    }
+
+    // Now, we're in the "default" mount namespace and need a fresh /apex for
+    // the default mount namespace. At this point, /apex is bind-mount'ed to
+    // /.apex.bootstrap and contains bootstrap APEXes. So we need to umount it.
+    // /.apex.bootstrap is still visible.
+    //
+    // First make /apex private so that the bootstrap mount namespace won't receive
+    // further (u)mount events in /apex.
+    if (mount(nullptr, "/apex", nullptr, MS_PRIVATE, nullptr) == -1) {
+        return ErrnoError() << "Failed to remount /apex as private";
+    }
+    // Then, umount -R /apex. /apex is now empty again and ready for mounting
+    // apexes for the default mount namespace.
+    if (umount2("/apex", MNT_DETACH) == -1) {
+        return ErrnoError() << "Failed to umount /apex";
+    }
+
+    std::string lines;
+    base::ReadFileToString("/proc/self/mountinfo", &lines);
+    for (const auto& line : base::Split(lines, "\n")) {
+        if (line.find("apex") != std::string::npos) {
+            LOG(INFO) << "jooyung: " << line;
+        }
+    }
+
+    return {};
+}
+
 static Result<void> do_update_linker_config(const BuiltinArguments&) {
     return GenerateLinkerConfiguration();
 }
@@ -1314,6 +1353,11 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     if (auto result = SwitchToMountNamespaceIfNeeded(NS_DEFAULT); !result.ok()) {
         return result.error();
     }
+
+    if (auto result = MountApexForDefaultNamespace(); !result.ok()) {
+        return result.error();
+    }
+
     if (auto result = MountLinkerConfigForDefaultNamespace(); !result.ok()) {
         return result.error();
     }
