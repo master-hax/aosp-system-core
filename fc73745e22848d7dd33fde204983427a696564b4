@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d5a0aaa5_ef38b1f3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-07-21T04:00:11Z",
+      "side": 1,
+      "message": "I think we need to identify how (or why) vdc fails from soft reboot, and if apexd-bootstrap really should be re-executed from the scenario (which I don\u0027t think so).",
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b151289_866f202e",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
