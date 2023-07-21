@@ -100,15 +100,17 @@ bool fs_mgr_is_f2fs(const std::string& blk_device);
 bool fs_mgr_filesystem_available(const std::string& filesystem);
 std::string fs_mgr_get_context(const std::string& mount_point);
 
-enum class OverlayfsValidResult {
-    kNotSupported = 0,
-    kOk,
-    kOverrideCredsRequired,
-};
-OverlayfsValidResult fs_mgr_overlayfs_valid();
-
 namespace android {
 namespace fs_mgr {
+
 bool UnmapDevice(const std::string& name);
+
+struct OverlayfsCheckResult {
+    bool supported;
+    std::string mount_flags;
+};
+
+OverlayfsCheckResult CheckOverlayfs();
+
 }  // namespace fs_mgr
 }  // namespace android
