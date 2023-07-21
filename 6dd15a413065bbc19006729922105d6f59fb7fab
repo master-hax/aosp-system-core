@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8361e5e_04d09549",
+        "filename": "trusty/utils/coverage-controller/Android.bp",
+        "patchSetId": 20
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-07-21T16:28:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c24213ff_bbec90ed",
+      "range": {
+        "startLine": 28,
+        "startChar": 7,
+        "endLine": 28,
+        "endChar": 26
+      },
+      "revId": "6dd15a413065bbc19006729922105d6f59fb7fab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "709f35ea_b6765440",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-07-21T16:19:15Z",
       "side": 1,
       "message": "possibly these should be in the implementation file as they aren\u0027t really part of the interface",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 0
+      },
+      "revId": "6dd15a413065bbc19006729922105d6f59fb7fab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb61a498_97b1440c",
+        "filename": "trusty/utils/coverage-controller/controller.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-07-21T16:28:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "709f35ea_b6765440",
       "range": {
         "startLine": 29,
         "startChar": 0,
