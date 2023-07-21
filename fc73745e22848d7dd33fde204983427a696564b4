@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b151289_866f202e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1322,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-21T02:30:51Z",
+      "side": 1,
+      "message": "`enter_default_mount_ns` is to switch to the default mount namespace if necessary. (And there\u0027s some other side-effects like bind-mounting /linkerconfig/default to /linkerconfig. AFAIK, this isn\u0027t supposed to be invoked more than once. Or, at least, it should be no-op when invoked in the default mount namespace.",
+      "range": {
+        "startLine": 1322,
+        "startChar": 2,
+        "endLine": 1322,
+        "endChar": 24
+      },
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19f2bc48_e5a7867a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1323,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-21T02:30:51Z",
+      "side": 1,
+      "message": "Can you explain why apexd-bootstrap is needed?\n\napexd-bootstrap is to activate the bootstrap apexes in the bootstrap mount namespace. AFAIK, userspace reboot doesn\u0027t (shouldn\u0027t?) affect bootstrap apexes and bootstrap mount namespace. (Nikita, please correct me if I\u0027m wrong)\n\nAnd, at least, it needs to be invoked in the bootstrap mount namespace. Calling it after `enter_default_mount_ns` doesn\u0027t look right.",
+      "range": {
+        "startLine": 1323,
+        "startChar": 2,
+        "endLine": 1323,
+        "endChar": 28
+      },
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
