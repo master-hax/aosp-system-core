@@ -68,27 +68,12 @@ constexpr char kPhysicalDevice[] = "/dev/block/by-name/";
 constexpr char kLowerdirOption[] = "lowerdir=";
 constexpr char kUpperdirOption[] = "upperdir=";
 
-bool fs_mgr_access(const std::string& path) {
-    return access(path.c_str(), F_OK) == 0;
-}
-
-bool fs_mgr_in_recovery() {
-    // Check the existence of recovery binary instead of using the compile time
-    // __ANDROID_RECOVERY__ macro.
-    // If BOARD_USES_RECOVERY_AS_BOOT is true, both normal and recovery boot
-    // mode would use the same init binary, which would mean during normal boot
-    // the '/init' binary is actually a symlink pointing to
-    // init_second_stage.recovery, which would be compiled with
-    // __ANDROID_RECOVERY__ defined.
-    return fs_mgr_access("/system/bin/recovery");
-}
-
 bool fs_mgr_is_dsu_running() {
     // Since android::gsi::CanBootIntoGsi() or android::gsi::MarkSystemAsGsi() is
     // never called in recovery, the return value of android::gsi::IsGsiRunning()
     // is not well-defined. In this case, just return false as being in recovery
     // implies not running a DSU system.
-    if (fs_mgr_in_recovery()) return false;
+    if (InRecovery()) return false;
     return android::gsi::IsGsiRunning();
 }
 
@@ -119,11 +104,6 @@ static bool fs_mgr_is_dir(const std::string& path) {
     return !stat(path.c_str(), &st) && S_ISDIR(st.st_mode);
 }
 
-bool fs_mgr_rw_access(const std::string& path) {
-    if (path.empty()) return false;
-    return access(path.c_str(), R_OK | W_OK) == 0;
-}
-
 // At less than 1% or 8MB of free space return value of false,
 // means we will try to wrap with overlayfs.
 bool fs_mgr_filesystem_has_space(const std::string& mount_point) {
@@ -146,7 +126,7 @@ static bool fs_mgr_update_blk_device(FstabEntry* entry) {
     if (entry->fs_mgr_flags.logical) {
         fs_mgr_update_logical_partition(entry);
     }
-    if (fs_mgr_access(entry->blk_device)) {
+    if (access(entry->blk_device.c_str(), F_OK) == 0) {
         return true;
     }
     if (entry->blk_device != "/dev/root") {
@@ -155,9 +135,9 @@ static bool fs_mgr_update_blk_device(FstabEntry* entry) {
 
     // special case for system-as-root (taimen and others)
     auto blk_device = kPhysicalDevice + "system"s;
-    if (!fs_mgr_access(blk_device)) {
+    if (access(blk_device.c_str(), F_OK)) {
         blk_device += fs_mgr_get_slot_suffix();
-        if (!fs_mgr_access(blk_device)) {
+        if (access(blk_device.c_str(), F_OK)) {
             return false;
         }
     }
@@ -241,7 +221,7 @@ static std::string fs_mgr_get_overlayfs_candidate(const std::string& mount_point
         if (!fs_mgr_is_dir(upper)) continue;
         auto work = dir + kWorkName;
         if (!fs_mgr_is_dir(work)) continue;
-        if (!fs_mgr_rw_access(work)) continue;
+        if (access(work.c_str(), R_OK | W_OK)) continue;
         return dir;
     }
     return "";
@@ -528,11 +508,11 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
 // Mount kScratchMountPoint
 bool MountScratch(const std::string& device_path, bool readonly) {
     if (readonly) {
-        if (!fs_mgr_access(device_path)) {
+        if (access(device_path.c_str(), F_OK)) {
             LOG(ERROR) << "Path does not exist: " << device_path;
             return false;
         }
-    } else if (!fs_mgr_rw_access(device_path)) {
+    } else if (access(device_path.c_str(), R_OK | W_OK)) {
         LOG(ERROR) << "Path does not exist or is not readwrite: " << device_path;
         return false;
     }
@@ -644,7 +624,7 @@ bool OverlayfsSetupAllowed(bool verbose) {
         return false;
     }
     // in recovery or fastbootd, not allowed!
-    if (fs_mgr_in_recovery()) {
+    if (InRecovery()) {
         if (verbose) {
             LOG(ERROR) << "Unsupported overlayfs setup from recovery";
         }
@@ -724,7 +704,7 @@ static void TryMountScratch() {
     // if verity is still disabled, i.e. no reboot occurred), and skips calling
     // fs_mgr_overlayfs_mount_all().
     auto scratch_device = GetBootScratchDevice();
-    if (!fs_mgr_rw_access(scratch_device)) {
+    if (access(scratch_device.c_str(), R_OK | W_OK)) {
         return;
     }
     if (!WaitForFile(scratch_device, 10s)) {
@@ -733,7 +713,8 @@ static void TryMountScratch() {
     if (!MountScratch(scratch_device, true /* readonly */)) {
         return;
     }
-    auto has_overlayfs_dir = fs_mgr_access(kScratchMountPoint + "/"s + kOverlayTopDir);
+    const auto top = kScratchMountPoint + "/"s + kOverlayTopDir;
+    const bool has_overlayfs_dir = access(top.c_str(), F_OK) == 0;
     fs_mgr_overlayfs_umount_scratch();
     if (has_overlayfs_dir) {
         MountScratch(scratch_device);

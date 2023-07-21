@@ -89,7 +89,7 @@ static bool ScratchIsOnData() {
     if (fs_mgr_is_dsu_running()) {
         return false;
     }
-    return fs_mgr_access(kScratchImageMetadata);
+    return access(kScratchImageMetadata, F_OK) == 0;
 }
 
 static bool fs_mgr_rm_all(const std::string& path, bool* change = nullptr, int level = 0) {
@@ -262,7 +262,7 @@ OverlayfsTeardownResult fs_mgr_overlayfs_teardown_scratch(const std::string& ove
 
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device)) {
+    if (access(super_device.c_str(), R_OK | W_OK)) {
         return OverlayfsTeardownResult::Ok;
     }
 
@@ -295,7 +295,7 @@ bool fs_mgr_overlayfs_teardown_one(const std::string& overlay, const std::string
                                    bool* change, bool* should_destroy_scratch = nullptr) {
     const auto top = overlay + "/" + kOverlayTopDir;
 
-    if (!fs_mgr_access(top)) {
+    if (access(top.c_str(), F_OK)) {
         if (should_destroy_scratch) *should_destroy_scratch = true;
         return true;
     }
@@ -584,7 +584,7 @@ static bool CreateScratchOnData(std::string* scratch_device, bool* partition_exi
 static bool CanUseSuperPartition(const Fstab& fstab) {
     auto slot_number = fs_mgr_overlayfs_slot_number();
     auto super_device = fs_mgr_overlayfs_super_device(slot_number);
-    if (!fs_mgr_rw_access(super_device) || !fs_mgr_overlayfs_has_logical(fstab)) {
+    if (access(super_device.c_str(), R_OK | W_OK) || !fs_mgr_overlayfs_has_logical(fstab)) {
         return false;
     }
     auto metadata = ReadMetadata(super_device, slot_number);
@@ -634,8 +634,8 @@ bool fs_mgr_overlayfs_setup_scratch(const Fstab& fstab) {
     // If the partition exists, assume first that it can be mounted.
     if (partition_exists) {
         if (MountScratch(scratch_device)) {
-            if (fs_mgr_access(kScratchMountPoint + "/"s + kOverlayTopDir) ||
-                fs_mgr_filesystem_has_space(kScratchMountPoint)) {
+            const auto top = kScratchMountPoint + "/"s + kOverlayTopDir;
+            if (access(top.c_str(), F_OK) == 0 || fs_mgr_filesystem_has_space(kScratchMountPoint)) {
                 return true;
             }
             // declare it useless, no overrides and no free space
@@ -755,7 +755,7 @@ static std::optional<MapInfo> EnsureScratchMapped() {
     if (!info.device.empty()) {
         return {std::move(info)};
     }
-    if (!fs_mgr_in_recovery()) {
+    if (!InRecovery()) {
         return {};
     }
 
@@ -941,7 +941,7 @@ void TeardownAllOverlayForMountPoint(const std::string& mount_point) {
     if (!OverlayfsTeardownAllowed()) {
         return;
     }
-    if (!fs_mgr_in_recovery()) {
+    if (!InRecovery()) {
         LERROR << __FUNCTION__ << "(): must be called within recovery.";
         return;
     }
