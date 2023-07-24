@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2588a877_f7213185",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2023-07-24T07:01:00Z",
+      "side": 1,
+      "message": "Yes, the block size can also be even. I made changes accordingly.",
+      "parentUuid": "622a8c00_69305e94",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc662197_3b8a57e7",
         "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2023-07-11T16:46:20Z",
       "side": 1,
       "message": "How does the fuzzer ensure the overlapping copy operations. This sounds like it is randomly picking blocks and calling the API\u0027s; wouldn\u0027t this fail at L149 during VerifyMergeOps ?",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c283d7eb_841572c7",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2023-07-24T07:01:00Z",
+      "side": 1,
+      "message": "The purpose of this fuzzer is to perform robustness testing. The objective is not to ensure the correctness of overlapping copy operations, but rather to evaluate how the code handles such scenarios.",
+      "parentUuid": "fc662197_3b8a57e7",
       "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
