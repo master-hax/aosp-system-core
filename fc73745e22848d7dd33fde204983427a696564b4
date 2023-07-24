@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f2b3b4aa_1d90fa28",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-07-24T08:31:21Z",
+      "side": 1,
+      "message": "As Jooyung mentioned, this cannot be merged because apexd-bootstrap should be executed from bootstrap namespace, not default namespace. We need to identify why it enters into default namespace before apexd-bootstrap.",
+      "parentUuid": "8c5beb55_a8d7149e",
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b151289_866f202e",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
