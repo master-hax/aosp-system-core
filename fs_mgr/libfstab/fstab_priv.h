@@ -1,0 +1,72 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#pragma once
+
+#include <string>
+#include <utility>
+#include <vector>
+
+#include <android-base/logging.h>
+#include <fstab/fstab.h>
+
+/* The CHECK() in logging.h will use program invocation name as the tag.
+ * Thus, the log will have prefix "init: " when libfs_mgr is statically
+ * linked in the init process. This might be opaque when debugging.
+ * Appends "in libfs_mgr" at the end of the abort message to explicitly
+ * indicate the check happens in fs_mgr.
+ */
+#define FS_MGR_CHECK(x) CHECK(x) << "in libfs_mgr "
+
+#define FS_MGR_TAG "[libfs_mgr] "
+
+// Logs a message to kernel
+#define LINFO LOG(INFO) << FS_MGR_TAG
+#define LWARNING LOG(WARNING) << FS_MGR_TAG
+#define LERROR LOG(ERROR) << FS_MGR_TAG
+#define LFATAL LOG(FATAL) << FS_MGR_TAG
+
+// Logs a message with strerror(errno) at the end
+#define PINFO PLOG(INFO) << FS_MGR_TAG
+#define PWARNING PLOG(WARNING) << FS_MGR_TAG
+#define PERROR PLOG(ERROR) << FS_MGR_TAG
+#define PFATAL PLOG(FATAL) << FS_MGR_TAG
+
+bool fs_mgr_update_for_slotselect(android::fs_mgr::Fstab* fstab);
+const std::string& get_android_dt_dir();
+bool is_dt_compatible();
+bool fs_mgr_is_device_unlocked();
+
+std::vector<std::pair<std::string, std::string>> fs_mgr_parse_cmdline(const std::string& cmdline);
+bool fs_mgr_get_boot_config_from_kernel(const std::string& cmdline, const std::string& key,
+                                        std::string* out_val);
+bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::string* out_val);
+bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val);
+std::vector<std::pair<std::string, std::string>> fs_mgr_parse_proc_bootconfig(
+        const std::string& bootconfig);
+bool fs_mgr_get_boot_config_from_bootconfig(const std::string& bootconfig, const std::string& key,
+                                            std::string* out_val);
+bool fs_mgr_get_boot_config_from_bootconfig_source(const std::string& key, std::string* out_val);
+
+namespace android {
+namespace fs_mgr {
+
+bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out);
+std::string GetFstabPath();
+bool SkipMountWithConfig(const std::string& skip_config, Fstab* fstab, bool verbose);
+
+}  // namespace fs_mgr
+}  // namespace android

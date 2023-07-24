@@ -26,6 +26,21 @@
 std::string fs_mgr_get_slot_suffix();
 std::string fs_mgr_get_other_slot_suffix();
 
+// Verity modes
+enum verity_mode {
+    VERITY_MODE_EIO = 0,
+    VERITY_MODE_LOGGING = 1,
+    VERITY_MODE_RESTART = 2,
+    VERITY_MODE_LAST = VERITY_MODE_RESTART,
+    VERITY_MODE_DEFAULT = VERITY_MODE_RESTART
+};
+bool fs_mgr_load_verity_state(int* mode);
+
+// Return the name of the super partition if it exists. If a slot number is
+// specified, the super partition for the corresponding metadata slot will be
+// returned. Otherwise, it will use the current slot.
+std::string fs_mgr_get_super_partition_name(int slot = -1);
+
 namespace android {
 namespace fs_mgr {
 
@@ -92,13 +107,6 @@ struct FstabEntry {
 // The entries must be kept in the same order as they were seen in the fstab.
 // Unless explicitly requested, a lookup on mount point should always return the 1st one.
 using Fstab = std::vector<FstabEntry>;
-
-// Exported for testability. Regular users should use ReadFstabFromFile().
-bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out);
-// Exported for testability. Regular users should use ReadDefaultFstab().
-std::string GetFstabPath();
-// Exported for testability.
-bool SkipMountWithConfig(const std::string& skip_config, Fstab* fstab, bool verbose);
 
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab);
 bool ReadFstabFromProcMounts(Fstab* fstab);
