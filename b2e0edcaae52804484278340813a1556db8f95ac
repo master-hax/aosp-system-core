@@ -22,6 +22,30 @@
       },
       "revId": "b2e0edcaae52804484278340813a1556db8f95ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5927bc56_2d788d5f",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-07-24T04:06:17Z",
+      "side": 1,
+      "message": "the rule is that we cannot add two char[]. At least one operand need to be std::string. If the operands are both char[], then one of the operands need to be cast to std::string with \"\"s explicitly.",
+      "parentUuid": "a39bb784_bd2645bd",
+      "range": {
+        "startLine": 239,
+        "startChar": 41,
+        "endLine": 239,
+        "endChar": 45
+      },
+      "revId": "b2e0edcaae52804484278340813a1556db8f95ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
