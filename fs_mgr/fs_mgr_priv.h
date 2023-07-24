@@ -23,16 +23,6 @@
 #include <fs_mgr.h>
 #include <fstab/fstab.h>
 
-#include "fs_mgr_priv_boot_config.h"
-
-/* The CHECK() in logging.h will use program invocation name as the tag.
- * Thus, the log will have prefix "init: " when libfs_mgr is statically
- * linked in the init process. This might be opaque when debugging.
- * Appends "in libfs_mgr" at the end of the abort message to explicitly
- * indicate the check happens in fs_mgr.
- */
-#define FS_MGR_CHECK(x) CHECK(x) << "in libfs_mgr "
-
 #define FS_MGR_TAG "[libfs_mgr] "
 
 // Logs a message to kernel
@@ -89,10 +79,6 @@
 using namespace std::chrono_literals;
 
 bool fs_mgr_set_blk_ro(const std::string& blockdev, bool readonly = true);
-bool fs_mgr_update_for_slotselect(android::fs_mgr::Fstab* fstab);
-bool fs_mgr_is_device_unlocked();
-const std::string& get_android_dt_dir();
-bool is_dt_compatible();
 
 bool fs_mgr_is_ext4(const std::string& blk_device);
 bool fs_mgr_is_f2fs(const std::string& blk_device);

@@ -18,8 +18,9 @@
 
 #include <string>
 
-#include "fs_mgr.h"
-#include "fs_mgr_priv.h"
+#include <fstab/fstab.h>
+
+#include "fstab_priv.h"
 
 // Realistically, this file should be part of the android::fs_mgr namespace;
 using namespace android::fs_mgr;
