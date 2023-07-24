@@ -34,15 +34,6 @@
 // turn verity off in userdebug builds.
 #define VERITY_METADATA_MAGIC_DISABLE 0x46464f56 // "VOFF"
 
-// Verity modes
-enum verity_mode {
-    VERITY_MODE_EIO = 0,
-    VERITY_MODE_LOGGING = 1,
-    VERITY_MODE_RESTART = 2,
-    VERITY_MODE_LAST = VERITY_MODE_RESTART,
-    VERITY_MODE_DEFAULT = VERITY_MODE_RESTART
-};
-
 // Mount modes
 enum mount_mode {
     MOUNT_MODE_DEFAULT = 0,
@@ -89,7 +80,6 @@ int fs_mgr_do_mount(android::fs_mgr::Fstab* fstab, const std::string& n_name,
                     const std::string& n_blk_device, int needs_checkpoint, bool needs_encrypt);
 int fs_mgr_do_mount_one(const android::fs_mgr::FstabEntry& entry,
                         const std::string& mount_point = "");
-bool fs_mgr_load_verity_state(int* mode);
 // Returns true if verity is enabled on this particular FstabEntry.
 bool fs_mgr_is_verity_enabled(const android::fs_mgr::FstabEntry& entry);
 // Returns the verity hashtree information of this particular FstabEntry. Returns std::nullopt
@@ -110,11 +100,6 @@ int fs_mgr_do_format(const android::fs_mgr::FstabEntry& entry);
 #define FS_MGR_SETUP_VERITY_FAIL (-1)
 #define FS_MGR_SETUP_VERITY_SUCCESS 0
 int fs_mgr_setup_verity(android::fs_mgr::FstabEntry* fstab, bool wait_for_verity_dev);
-
-// Return the name of the super partition if it exists. If a slot number is
-// specified, the super partition for the corresponding metadata slot will be
-// returned. Otherwise, it will use the current slot.
-std::string fs_mgr_get_super_partition_name(int slot = -1);
 
 enum FsMgrUmountStatus : int {
     SUCCESS = 0,
