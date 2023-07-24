@@ -93,13 +93,6 @@ struct FstabEntry {
 // Unless explicitly requested, a lookup on mount point should always return the 1st one.
 using Fstab = std::vector<FstabEntry>;
 
-// Exported for testability. Regular users should use ReadFstabFromFile().
-bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out);
-// Exported for testability. Regular users should use ReadDefaultFstab().
-std::string GetFstabPath();
-// Exported for testability.
-bool SkipMountWithConfig(const std::string& skip_config, Fstab* fstab, bool verbose);
-
 bool ReadFstabFromFile(const std::string& path, Fstab* fstab);
 bool ReadFstabFromProcMounts(Fstab* fstab);
 bool ReadFstabFromDt(Fstab* fstab, bool verbose = true);
@@ -130,8 +123,6 @@ std::set<std::string> GetBootDevices();
 // not check whether the device is valid or exists; it merely returns the
 // expected name.
 std::string GetVerityDeviceName(const FstabEntry& entry);
-
-bool InRecovery();
 
 }  // namespace fs_mgr
 }  // namespace android
