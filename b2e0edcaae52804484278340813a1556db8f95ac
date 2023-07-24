@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a39bb784_bd2645bd",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-07-24T03:54:01Z",
+      "side": 1,
+      "message": "nit: Why we don\u0027t need \"/\"s here?\n\nIn this file, we use either \"/\" or \"/\"s, should we be consistent by always using \"/\"s? (Or any rule to determine which one to choose?)",
+      "range": {
+        "startLine": 239,
+        "startChar": 41,
+        "endLine": 239,
+        "endChar": 45
+      },
+      "revId": "b2e0edcaae52804484278340813a1556db8f95ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
