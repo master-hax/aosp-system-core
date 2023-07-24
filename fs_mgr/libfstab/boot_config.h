@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef __CORE_FS_MGR_PRIV_BOOTCONFIG_H
-#define __CORE_FS_MGR_PRIV_BOOTCONFIG_H
+#pragma once
 
 #include <sys/cdefs.h>
 #include <string>
@@ -33,5 +32,3 @@ std::vector<std::pair<std::string, std::string>> fs_mgr_parse_proc_bootconfig(
 bool fs_mgr_get_boot_config_from_bootconfig(const std::string& bootconfig, const std::string& key,
                                             std::string* out_val);
 bool fs_mgr_get_boot_config_from_bootconfig_source(const std::string& key, std::string* out_val);
-
-#endif /* __CORE_FS_MGR_PRIV_BOOTCONFIG_H */
