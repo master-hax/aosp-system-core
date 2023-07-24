@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8c5beb55_a8d7149e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1355299
+      },
+      "writtenOn": "2023-07-24T01:56:48Z",
+      "side": 1,
+      "message": "Yes, we also don\u0027t think this is a solution for the issue. The patch provided here is just a workaround, and we hope it can inspire the development of the final solution.",
+      "parentUuid": "d5a0aaa5_ef38b1f3",
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b151289_866f202e",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
