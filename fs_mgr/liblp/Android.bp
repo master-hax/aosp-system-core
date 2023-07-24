@@ -27,6 +27,17 @@ liblp_lib_deps = [
     "libz",
 ]
 
+cc_library_headers {
+    name: "liblp_headers",
+    vendor_available: true,
+    ramdisk_available: true,
+    vendor_ramdisk_available: true,
+    recovery_available: true,
+    host_supported: true,
+    export_include_dirs: ["include"],
+    visibility: ["//system/core/fs_mgr/libfstab"],
+}
+
 cc_library {
     name: "liblp",
     host_supported: true,

@@ -20,11 +20,11 @@
 #include <vector>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <android-base/properties.h>
 
-#include "fs_mgr_priv.h"
+#include "fstab_priv.h"
 
 std::vector<std::pair<std::string, std::string>> fs_mgr_parse_cmdline(const std::string& cmdline) {
     static constexpr char quote = '"';
@@ -170,4 +170,57 @@ bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val) {
     }
 
     return false;
+}
+
+// Orange state means the device is unlocked, see the following link for details.
+// https://source.android.com/security/verifiedboot/verified-boot#device_state
+bool fs_mgr_is_device_unlocked() {
+    std::string verified_boot_state;
+    if (fs_mgr_get_boot_config("verifiedbootstate", &verified_boot_state)) {
+        return verified_boot_state == "orange";
+    }
+    return false;
+}
+
+std::string fs_mgr_get_super_partition_name(int slot) {
+    // Devices upgrading to dynamic partitions are allowed to specify a super
+    // partition name. This includes cuttlefish, which is a non-A/B device.
+    std::string super_partition;
+    if (fs_mgr_get_boot_config("force_super_partition", &super_partition)) {
+        return super_partition;
+    }
+    if (fs_mgr_get_boot_config("super_partition", &super_partition)) {
+        if (fs_mgr_get_slot_suffix().empty()) {
+            return super_partition;
+        }
+        std::string suffix;
+        if (slot == 0) {
+            suffix = "_a";
+        } else if (slot == 1) {
+            suffix = "_b";
+        } else if (slot == -1) {
+            suffix = fs_mgr_get_slot_suffix();
+        }
+        return super_partition + suffix;
+    }
+    return LP_METADATA_DEFAULT_PARTITION_NAME;
+}
+
+bool fs_mgr_load_verity_state(int* mode) {
+    // unless otherwise specified, use EIO mode.
+    *mode = VERITY_MODE_EIO;
+
+    // The bootloader communicates verity mode via the kernel commandline
+    std::string verity_mode;
+    if (!fs_mgr_get_boot_config("veritymode", &verity_mode)) {
+        return false;
+    }
+
+    if (verity_mode == "enforcing") {
+        *mode = VERITY_MODE_DEFAULT;
+    } else if (verity_mode == "logging") {
+        *mode = VERITY_MODE_LOGGING;
+    }
+
+    return true;
 }
