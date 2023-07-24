@@ -20,11 +20,12 @@
 #include <vector>
 
 #include <android-base/file.h>
+#include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <android-base/properties.h>
+#include <fstab/fstab.h>
 
-#include "fs_mgr_priv.h"
+#include "fstab_priv.h"
 
 std::vector<std::pair<std::string, std::string>> fs_mgr_parse_cmdline(const std::string& cmdline) {
     static constexpr char quote = '"';
