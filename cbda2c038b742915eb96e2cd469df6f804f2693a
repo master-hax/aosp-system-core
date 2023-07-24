@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89b4b5a8_7ee48458",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-24T20:58:04Z",
+      "side": 1,
+      "message": "What do we use this option for? Flashing just a subset of all partitions will usually result in VBMETA failures.",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 9,
+        "endChar": 38
+      },
+      "revId": "cbda2c038b742915eb96e2cd469df6f804f2693a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
