@@ -23,6 +23,8 @@
 #include <gtest/gtest.h>
 #include <libdm/dm.h>
 
+#include "../libfstab/fstab_priv.h"
+
 using testing::Contains;
 using testing::Not;
 
