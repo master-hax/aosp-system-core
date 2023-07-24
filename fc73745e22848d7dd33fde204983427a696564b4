@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8126e45c_2f4c9453",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-24T09:15:27Z",
+      "side": 1,
+      "message": "I left a comment in the bug.\n\nTo repeat here, I think I understand why this fixes the issue. During the userspace reboot and before apexd, processes may fail due to the lack of runtime apex. In this workaround, runtime apex is activated via apexd-bootstrap in the default mount namespace and now vdc runs okay.",
+      "parentUuid": "f2b3b4aa_1d90fa28",
+      "revId": "fc73745e22848d7dd33fde204983427a696564b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6b151289_866f202e",
         "filename": "rootdir/init.rc",
         "patchSetId": 1
