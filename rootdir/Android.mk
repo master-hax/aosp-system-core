@@ -92,7 +92,7 @@ endif
 # create some directories (some are mount points) and symlinks
 LOCAL_POST_INSTALL_CMD := mkdir -p $(addprefix $(TARGET_ROOT_OUT)/, \
     dev proc sys system data data_mirror odm oem acct config storage mnt apex debug_ramdisk \
-    linkerconfig second_stage_resources postinstall $(BOARD_ROOT_EXTRA_FOLDERS)); \
+    linkerconfig second_stage_resources postinstall .test $(BOARD_ROOT_EXTRA_FOLDERS)); \
     ln -sf /system/bin $(TARGET_ROOT_OUT)/bin; \
     ln -sf /system/etc $(TARGET_ROOT_OUT)/etc; \
     ln -sf /data/user_de/0/com.android.shell/files/bugreports $(TARGET_ROOT_OUT)/bugreports; \
@@ -174,6 +174,8 @@ endif
 # The init symlink must be a post install command of a file that is to TARGET_ROOT_OUT.
 # Since init.environ.rc is required for init and satisfies that requirement, we hijack it to create the symlink.
 LOCAL_POST_INSTALL_CMD += ; ln -sf /system/bin/init $(TARGET_ROOT_OUT)/init
+
+LOCAL_POST_INSTALL_CMD += ; touch $(TARGET_ROOT_OUT)/.test/hello
 
 include $(BUILD_SYSTEM)/base_rules.mk
 
