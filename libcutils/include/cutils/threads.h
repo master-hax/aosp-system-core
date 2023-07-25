@@ -24,17 +24,4 @@
 #include <pthread.h>
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-//
-// Deprecated: use android::base::GetThreadId instead, which doesn't truncate on Mac/Windows.
-//
-#if !defined(__GLIBC__) || __GLIBC__ >= 2 && __GLIBC_MINOR__ < 30
-extern pid_t gettid();
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+#warning "cutils/threads.h is deprecated"
