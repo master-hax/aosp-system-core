@@ -32,6 +32,7 @@ message Attribute {
     string file = 3 [json_name = "File"];
     string filev2 = 4 [json_name = "FileV2"];
     string optional = 5 [json_name = "Optional"];
+    string path = 6 [json_name = "Path"];
 }
 
 // Next: 3

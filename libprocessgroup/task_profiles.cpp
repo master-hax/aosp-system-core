@@ -119,11 +119,22 @@ const std::string& ProfileAttribute::file_name() const {
     return file_name_;
 }
 
-void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name,
-                             const std::string& file_v2_name) {
+void ProfileAttribute::Reset(const CgroupController& controller, const std::string& path,
+                             const std::string& file_name, const std::string& file_v2_name) {
     controller_ = controller;
+    path_ = path;
     file_name_ = file_name;
     file_v2_name_ = file_v2_name;
+}
+
+bool ProfileAttribute::GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const {
+    if (path_.empty()) return GetPathForTask(pid, path);
+
+    std::string subgroup(path_);
+    subgroup = StringReplace(subgroup, "<uid>", std::to_string(uid), true);
+    subgroup = StringReplace(subgroup, "<pid>", std::to_string(pid), true);
+    *path = StringPrintf("%s/%s/%s", controller()->path(), subgroup.c_str(), file_name().c_str());
+    return true;
 }
 
 bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {
@@ -209,18 +220,7 @@ bool SetTimerSlackAction::ExecuteForTask(int) const {
 
 #endif
 
-bool SetAttributeAction::ExecuteForProcess(uid_t, pid_t pid) const {
-    return ExecuteForTask(pid);
-}
-
-bool SetAttributeAction::ExecuteForTask(int tid) const {
-    std::string path;
-
-    if (!attribute_->GetPathForTask(tid, &path)) {
-        LOG(ERROR) << "Failed to find cgroup for tid " << tid;
-        return false;
-    }
-
+bool SetAttributeAction::WriteValueToFile(const std::string& path) const {
     if (!WriteStringToFile(value_, path)) {
         if (access(path.c_str(), F_OK) < 0) {
             if (optional_) {
@@ -238,6 +238,28 @@ bool SetAttributeAction::ExecuteForTask(int tid) const {
     }
 
     return true;
+}
+
+bool SetAttributeAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
+    std::string path;
+
+    if (!attribute_->GetPathForProcess(uid, pid, &path)) {
+        LOG(ERROR) << "Failed to find cgroup for uid " << uid << " pid " << pid;
+        return false;
+    }
+
+    return WriteValueToFile(path);
+}
+
+bool SetAttributeAction::ExecuteForTask(int tid) const {
+    std::string path;
+
+    if (!attribute_->GetPathForTask(tid, &path)) {
+        LOG(ERROR) << "Failed to find cgroup for tid " << tid;
+        return false;
+    }
+
+    return WriteValueToFile(path);
 }
 
 bool SetAttributeAction::ExecuteForUID(uid_t uid) const {
@@ -807,6 +829,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         std::string controller_name = attr[i]["Controller"].asString();
         std::string file_attr = attr[i]["File"].asString();
         std::string file_v2_attr = attr[i]["FileV2"].asString();
+        std::string path = attr[i]["Path"].asString();
 
         if (!file_v2_attr.empty() && file_attr.empty()) {
             LOG(ERROR) << "Attribute " << name << " has FileV2 but no File property";
@@ -817,10 +840,10 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
         if (controller.HasValue()) {
             auto iter = attributes_.find(name);
             if (iter == attributes_.end()) {
-                attributes_[name] =
-                        std::make_unique<ProfileAttribute>(controller, file_attr, file_v2_attr);
+                attributes_[name] = std::make_unique<ProfileAttribute>(controller, path, file_attr,
+                                                                       file_v2_attr);
             } else {
-                iter->second->Reset(controller, file_attr, file_v2_attr);
+                iter->second->Reset(controller, path, file_attr, file_v2_attr);
             }
         } else {
             LOG(WARNING) << "Controller " << controller_name << " is not found";
