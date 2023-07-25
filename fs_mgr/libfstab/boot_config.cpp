@@ -26,6 +26,34 @@
 
 #include "fstab_priv.h"
 
+namespace android {
+namespace fs_mgr {
+
+constexpr char kDefaultAndroidDtDir[] = "/proc/device-tree/firmware/android/";
+
+const std::string& GetAndroidDtDir() {
+    // Set once and saves time for subsequent calls to this function
+    static const std::string kAndroidDtDir = [] {
+        std::string android_dt_dir;
+        // The platform may specify a custom Android DT path in kernel cmdline
+        if (fs_mgr_get_boot_config_from_bootconfig_source("android_dt_dir", &android_dt_dir) ||
+            fs_mgr_get_boot_config_from_kernel_cmdline("android_dt_dir", &android_dt_dir)) {
+            if (!android_dt_dir.empty() && android_dt_dir.back() != '/') {
+                android_dt_dir.push_back('/');
+            }
+        } else {
+            // Fall back to the standard procfs-based path
+            android_dt_dir = kDefaultAndroidDtDir;
+        }
+        LINFO << "Using Android DT directory " << android_dt_dir;
+        return android_dt_dir;
+    }();
+    return kAndroidDtDir;
+}
+
+}  // namespace fs_mgr
+}  // namespace android
+
 std::vector<std::pair<std::string, std::string>> fs_mgr_parse_cmdline(const std::string& cmdline) {
     static constexpr char quote = '"';
 
@@ -144,7 +172,7 @@ bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val) {
 
     // firstly, check the device tree
     if (is_dt_compatible()) {
-        std::string file_name = get_android_dt_dir() + "/" + key;
+        std::string file_name = android::fs_mgr::GetAndroidDtDir() + key;
         if (android::base::ReadFileToString(file_name, out_val)) {
             if (!out_val->empty()) {
                 out_val->pop_back();  // Trims the trailing '\0' out.
