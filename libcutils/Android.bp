@@ -211,6 +211,7 @@ cc_library {
                 "trace-dev.cpp",
                 "uevent.cpp",
             ],
+            version_script: "libcutils.map",
         },
 
         // qtaguid.cpp loads libnetd_client.so with dlopen().  Since
