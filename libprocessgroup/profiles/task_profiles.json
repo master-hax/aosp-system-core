@@ -75,7 +75,8 @@
     {
       "Name": "FreezerState",
       "Controller": "freezer",
-      "File": "cgroup.freeze"
+      "File": "cgroup.freeze",
+      "Path": "uid_<uid>/pid_<uid>"
     },
     {
       "Name": "BfqWeight",

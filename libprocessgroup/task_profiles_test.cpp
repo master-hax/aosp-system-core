@@ -100,16 +100,17 @@ class ScopedLogCapturer {
 // cgroup attribute at the top level of the cgroup hierarchy.
 class ProfileAttributeMock : public IProfileAttribute {
   public:
-    ProfileAttributeMock(const std::string& file_name) : file_name_(file_name) {}
+    ProfileAttributeMock(const std::string& file_name) : file_name_(file_name), path_("") {}
     ~ProfileAttributeMock() override = default;
-    void Reset(const CgroupController& controller, const std::string& file_name,
-               const std::string& file_v2_name) override {
+    void Reset(const CgroupController& controller, const std::string& path,
+               const std::string& file_name, const std::string& file_v2_name) override {
         CHECK(false);
     }
     const CgroupController* controller() const override {
         CHECK(false);
         return {};
     }
+    const std::string& path() const override { return path_; }
     const std::string& file_name() const override { return file_name_; }
     bool GetPathForTask(int tid, std::string* path) const override {
 #ifdef __ANDROID__
@@ -130,6 +131,7 @@ class ProfileAttributeMock : public IProfileAttribute {
 
   private:
     const std::string file_name_;
+    const std::string path_;
 };
 
 struct TestParam {
