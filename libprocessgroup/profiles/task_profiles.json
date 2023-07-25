@@ -75,6 +75,7 @@
     {
       "Name": "FreezerState",
       "Controller": "freezer",
+      "Path": "uid_<uid>/pid_<pid>",
       "File": "cgroup.freeze"
     },
     {
