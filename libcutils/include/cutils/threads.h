@@ -17,11 +17,3 @@
 #pragma once
 
 // WARNING: cutils/threads.h is DEPRECATED
-
-#include  <sys/types.h>
-
-#if defined(_WIN32)
-#include <windows.h>
-#else
-#include <pthread.h>
-#endif
