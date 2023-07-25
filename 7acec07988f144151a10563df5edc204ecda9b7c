@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63c45178_9bd28f95",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-25T20:26:20Z",
+      "side": 1,
+      "message": "yeah, given the amount of -Werror in the tree, this is unlikely to work...\n```\nsystem/core/libcutils/include/cutils/threads.h:27:2: error: \"cutils/threads.h is deprecated\" [-Werror,-W#warnings]\n```",
+      "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
