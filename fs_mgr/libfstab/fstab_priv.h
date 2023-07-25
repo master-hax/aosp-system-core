@@ -45,7 +45,6 @@
 #define PFATAL PLOG(FATAL) << FSTAB_TAG
 
 bool fs_mgr_update_for_slotselect(android::fs_mgr::Fstab* fstab);
-const std::string& get_android_dt_dir();
 bool is_dt_compatible();
 
 namespace android {
