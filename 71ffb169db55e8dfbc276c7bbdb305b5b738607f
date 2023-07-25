@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c7b381c_dcdd5da5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-07-25T17:38:26Z",
+      "side": 1,
+      "message": "missing `\"` here",
+      "range": {
+        "startLine": 336,
+        "startChar": 72,
+        "endLine": 336,
+        "endChar": 73
+      },
+      "revId": "71ffb169db55e8dfbc276c7bbdb305b5b738607f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
