@@ -16,12 +16,4 @@
 
 #pragma once
 
-#include  <sys/types.h>
-
-#if defined(_WIN32)
-#include <windows.h>
-#else
-#include <pthread.h>
-#endif
-
 #warning "cutils/threads.h is deprecated"
