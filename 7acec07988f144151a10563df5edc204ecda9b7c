@@ -16,6 +16,24 @@
       "message": "yeah, given the amount of -Werror in the tree, this is unlikely to work...\n```\nsystem/core/libcutils/include/cutils/threads.h:27:2: error: \"cutils/threads.h is deprecated\" [-Werror,-W#warnings]\n```",
       "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c25bb0d1_3e50f2d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-25T20:35:19Z",
+      "side": 1,
+      "message": "Ah, then aosp/2644815 needs to go in first.\n\nOther than Binder, it\u0027s only a dozen of qcom forks who include this file. And they don\u0027t care about warnings.",
+      "parentUuid": "63c45178_9bd28f95",
+      "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
