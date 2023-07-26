@@ -943,6 +943,7 @@ static Result<void> DoUserspaceReboot() {
         }
     }
     ServiceList::GetInstance().ResetState();
+    SetDefaultMountNamespaceReady(/* ready= */ false);
     LeaveShutdown();
     ActionManager::GetInstance().QueueEventTrigger("userspace-reboot-resume");
     guard.Disable();  // Go on with userspace reboot.

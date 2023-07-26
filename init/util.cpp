@@ -728,7 +728,7 @@ bool IsDefaultMountNamespaceReady() {
     return is_default_mount_namespace_ready;
 }
 
-void SetDefaultMountNamespaceReady() {
+void SetDefaultMountNamespaceReady(bool ready /* = true */) {
     is_default_mount_namespace_ready = true;
 }
 
