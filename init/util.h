@@ -103,7 +103,7 @@ void InitKernelLogging(char** argv);
 bool IsRecoveryMode();
 
 bool IsDefaultMountNamespaceReady();
-void SetDefaultMountNamespaceReady();
+void SetDefaultMountNamespaceReady(bool ready = true);
 
 inline constexpr bool IsMicrodroid() {
 #ifdef MICRODROID

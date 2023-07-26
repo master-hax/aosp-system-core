@@ -728,8 +728,8 @@ bool IsDefaultMountNamespaceReady() {
     return is_default_mount_namespace_ready;
 }
 
-void SetDefaultMountNamespaceReady() {
-    is_default_mount_namespace_ready = true;
+void SetDefaultMountNamespaceReady(bool ready /* = true */) {
+    is_default_mount_namespace_ready = ready;
 }
 
 bool Has32BitAbi() {
