@@ -115,6 +115,10 @@ cc_defaults {
         "libext4_utils",
         "liburing",
         "libzstd",
+        "libdebuggerd",
+    ],
+    apex_available: [
+        "//apex_available:platform",
     ],
 
     header_libs: [

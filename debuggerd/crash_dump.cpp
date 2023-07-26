@@ -17,6 +17,7 @@
 #include <arpa/inet.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <mntent.h>
 #include <stdlib.h>
 #include <sys/prctl.h>
 #include <sys/ptrace.h>
@@ -223,8 +224,27 @@ static void DefuseSignalHandlers() {
   }
 }
 
+static bool IsDataMounted() {
+  std::unique_ptr<std::FILE, int (*)(std::FILE*)> fp(setmntent("/proc/mounts", "re"), endmntent);
+  if (fp == nullptr) {
+    PLOG(ERROR) << "Failed to open /proc/mounts";
+    return false;
+  }
+  mntent* mentry = nullptr;
+  while ((mentry = getmntent(fp.get())) != nullptr) {
+    if (mentry->mnt_dir == std::string_view("/data")) {
+      return true;
+    }
+  }
+  return false;
+}
+
 static void Initialize(char** argv) {
+  // if (IsDataMounted()) {
   android::base::InitLogging(argv);
+  // } else {
+  // android::base::InitLogging(argv, android::base::KernelLogger);
+  // }
   android::base::SetAborter([](const char* abort_msg) {
     // If we abort before we get an output fd, contact tombstoned to let any
     // potential listeners know that we failed.
