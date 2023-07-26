@@ -28,6 +28,7 @@ cc_defaults {
 cc_library_headers {
     name: "libdebuggerd_common_headers",
     export_include_dirs: ["common/include"],
+    ramdisk_available: true,
     recovery_available: true,
     vendor_ramdisk_available: true,
     apex_available: [
@@ -90,6 +91,7 @@ cc_library_static {
 cc_library_static {
     name: "libdebuggerd_handler_core",
     defaults: ["debuggerd_defaults"],
+    ramdisk_available: true,
     recovery_available: true,
     vendor_ramdisk_available: true,
     srcs: ["handler/debuggerd_handler.cpp"],
@@ -116,6 +118,9 @@ cc_library_static {
     name: "libdebuggerd_handler",
     defaults: ["debuggerd_defaults"],
     srcs: ["handler/debuggerd_fallback_nop.cpp"],
+    ramdisk_available: true,
+    recovery_available: true,
+    vendor_ramdisk_available: true,
 
     header_libs: ["bionic_libc_platform_headers"],
     export_header_lib_headers: ["bionic_libc_platform_headers"],
@@ -188,6 +193,7 @@ cc_library {
 cc_library_static {
     name: "libdebuggerd",
     defaults: ["debuggerd_defaults"],
+    ramdisk_available: true,
     recovery_available: true,
     vendor_ramdisk_available: true,
 
@@ -232,8 +238,19 @@ cc_library_static {
         "libprocinfo",
         "libprotobuf-cpp-lite",
     ],
+    apex_available: [
+        "//apex_available:platform",
+    ],
 
     target: {
+        ramdisk: {
+            exclude_static_libs: [
+                "libdexfile_support",
+            ],
+            exclude_runtime_libs: [
+                "libdexfile",
+            ],
+        },
         recovery: {
             exclude_static_libs: [
                 "libdexfile_support",
