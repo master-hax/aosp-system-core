@@ -34,6 +34,24 @@
       "parentUuid": "659f6fe4_99e32169",
       "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a372182_e54992ac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-26T15:04:04Z",
+      "side": 1,
+      "message": "wasn\u0027t init one of the places where global constructors broke recently?",
+      "tag": "mailMessageId\u003d\u003cCAJgzZoqTDrG0N27vJq4YHiRz4mgOSo6wjfUHegtURingjxUOjQ@mail.gmail.com\u003e",
+      "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
