@@ -16,6 +16,24 @@
       "message": "why?\n\nis this related to the arm64 LTO breakage? (seems like LTO is broken for static binaries, but for some reason we\u0027re disabling it for static binaries one-by-one rather than globally?)",
       "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0bd99c93_e3d2aefe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1087625
+      },
+      "writtenOn": "2023-07-26T15:00:08Z",
+      "side": 1,
+      "message": "This can\u0027t be related. Global ThinLTO does not apply to any CFI enabled modules.",
+      "parentUuid": "659f6fe4_99e32169",
+      "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
