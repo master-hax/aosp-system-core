@@ -22,6 +22,30 @@
       },
       "revId": "d17ffba4bf0a9763c7af336b8341aceb653482ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92f68fbb_a3c82da2",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-26T14:54:49Z",
+      "side": 1,
+      "message": "no, neither of those are us. what you get if you type \"android native cleanup\" into buganizer is us: https://b.corp.google.com/issues/new?component\u003d128577\u0026template\u003d25920",
+      "parentUuid": "e90da887_5d1266c0",
+      "range": {
+        "startLine": 1,
+        "startChar": 17,
+        "endLine": 1,
+        "endChar": 24
+      },
+      "revId": "d17ffba4bf0a9763c7af336b8341aceb653482ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
