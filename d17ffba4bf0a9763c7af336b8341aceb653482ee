@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e90da887_5d1266c0",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-26T14:53:28Z",
+      "side": 1,
+      "message": "Elliott, you suggested 1280960 (Android \u003e Android OS \u0026 Apps \u003e Toolchain \u003e Native Code Health), but IMO 1293033 (Android \u003e Android OS \u0026 Apps \u003e Systems \u003e Native Libraries) looks more fitting. And I did it to entire system/core, since all other folders here seem to miss it.",
+      "range": {
+        "startLine": 1,
+        "startChar": 17,
+        "endLine": 1,
+        "endChar": 24
+      },
+      "revId": "d17ffba4bf0a9763c7af336b8341aceb653482ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
