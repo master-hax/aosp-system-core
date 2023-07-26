@@ -34,6 +34,23 @@
       "parentUuid": "63c45178_9bd28f95",
       "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e180734_d7c8fa8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-26T13:57:08Z",
+      "side": 1,
+      "message": "While I wait for approval of https://r.android.com/2644815 from Steven, there\u0027s one unrelated warning: XTS OWNERS. I asked on https://groups.google.com/a/google.com/g/android-xts-infra/c/P2p_gYBUn5Q and they say it\u0027s firing up because Android.bp I touched contains KernelLibcutilsTest VTS and the OWNERS file doesn\u0027t have component marked.\n\nElliott, do you want me to fix this (what would be the component then?) or ignore?",
+      "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
