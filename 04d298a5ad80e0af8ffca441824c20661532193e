@@ -92,6 +92,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "4ca8eca7_157ce81a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1978766
+      },
+      "writtenOn": "2023-07-27T18:23:11Z",
+      "side": 1,
+      "message": "cuttlefish booted without this patch and with cfi enabled. I\u0027ve updated the commit message of https://android-review.git.corp.google.com/c/platform/build/soong/+/2595746",
+      "parentUuid": "7565b286_9b590dc5",
+      "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "8a372182_e54992ac",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 5
