@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "65c0f423_f484d158",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2023-07-27T17:15:37Z",
+      "side": 1,
+      "message": "Let\u0027s also make sure cuttlefish can boot with CFI-for-init.  That is not covered (yet) in presubmit.",
+      "parentUuid": "9f96160c_e4d03dde",
+      "revId": "04d298a5ad80e0af8ffca441824c20661532193e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "8a372182_e54992ac",
