@@ -35,6 +35,7 @@ rust_binary {
         "liblibc",
         "liblog_rust",
     ],
+    prefer_rlibs: true,
     required: [
         "android.hardware.hardware_keystore.xml",
     ],
