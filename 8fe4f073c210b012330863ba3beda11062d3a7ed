@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10cf291e_2774542a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-27T17:18:04Z",
+      "side": 1,
+      "message": "Apparently, adding bug component to parent OWNERS file is not enough.",
+      "revId": "8fe4f073c210b012330863ba3beda11062d3a7ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
