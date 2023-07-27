@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26979392_bfdaab37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2023-07-27T12:28:41Z",
+      "side": 1,
+      "message": "I am not sure we should continue investing in userspace reboot... The feature was never actually launched",
+      "revId": "f5c096a81e284af5f4243233f46ea4bc27962fc0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
