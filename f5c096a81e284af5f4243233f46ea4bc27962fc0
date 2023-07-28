@@ -16,6 +16,24 @@
       "message": "I am not sure we should continue investing in userspace reboot... The feature was never actually launched",
       "revId": "f5c096a81e284af5f4243233f46ea4bc27962fc0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7ec7466_c16be089",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-28T01:34:32Z",
+      "side": 1,
+      "message": "Agreed. but on a second thought, this fixes the problem at hand. So until the deprecation, can we have this merged?",
+      "parentUuid": "26979392_bfdaab37",
+      "revId": "f5c096a81e284af5f4243233f46ea4bc27962fc0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
