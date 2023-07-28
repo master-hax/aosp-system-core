@@ -16,6 +16,24 @@
       "message": "not much point to this. no-one will read it, and it gives no actionable advice. (there\u0027s a reason java\u0027s @Deprecated takes a string, even if people are bad at using it well!)\n\nif you really want to say something, i\u0027d suggest std::thread for new code, no? beats dealing with windows vs unix, anyway!\n\nbut just saying nothing seems fine.",
       "revId": "a5aab362ab1f14091c3b678ce73367a1dd23ed91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed107065_f4b2a678",
+        "filename": "libcutils/include/cutils/threads.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-28T19:39:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff9b5023_8f085e6d",
+      "revId": "a5aab362ab1f14091c3b678ce73367a1dd23ed91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
