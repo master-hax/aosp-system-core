@@ -493,13 +493,41 @@ static void dump_mappings(Tombstone* tombstone, unwindstack::Maps* maps,
   }
 }
 
+// This creates a fake log message that indicates an error occurred when
+// reading the log.
+static void add_error_log_msg(Tombstone* tombstone, const std::string&& error_msg) {
+  LogBuffer buffer;
+  buffer.set_name("ERROR");
+
+  LogMessage* log_msg = buffer.add_logs();
+  log_msg->set_timestamp("00-00 00:00:00.000");
+  log_msg->set_pid(0);
+  log_msg->set_tid(0);
+  log_msg->set_priority(ANDROID_LOG_ERROR);
+  log_msg->set_tag("");
+  log_msg->set_message(error_msg);
+
+  *tombstone->add_log_buffers() = std::move(buffer);
+
+  async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "%s", error_msg.c_str());
+}
+
 static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
   logger_list* logger_list = android_logger_list_open(android_name_to_log_id(logger),
                                                       ANDROID_LOG_NONBLOCK, kMaxLogMessages, pid);
+  if (logger_list == nullptr) {
+    add_error_log_msg(tombstone, android::base::StringPrintf("Cannot open log file %s", logger));
+    return;
+  }
 
   LogBuffer buffer;
 
-  while (true) {
+  // Do not allow this to take more than kMaxLogReadTimeSeconds otherwise
+  // we might hit other timeouts and not generate a tombstone.
+  const time_t kMaxLogReadTimeSeconds = 3;
+  bool timeout = true;
+  time_t start = time(nullptr);
+  do {
     log_msg log_entry;
     ssize_t actual = android_logger_list_read(logger_list, &log_entry);
 
@@ -508,13 +536,15 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
         // interrupted by signal, retry
         continue;
       }
-      if (actual == -EAGAIN) {
-        // non-blocking EOF; we're done
-        break;
-      } else {
-        break;
+      // Don't consider EAGAIN an error since this is a non-blocking call.
+      if (actual != -EAGAIN) {
+        add_error_log_msg(tombstone, android::base::StringPrintf("%s: reading failed(errno=%s)",
+                                                                 logger, strerror(-actual)));
       }
+      timeout = false;
+      break;
     } else if (actual == 0) {
+      timeout = false;
       break;
     }
 
@@ -559,7 +589,14 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
       log_msg->set_tag(tag);
       log_msg->set_message(msg);
     } while ((msg = nl));
+  } while ((time(nullptr) - start) <= kMaxLogReadTimeSeconds);
+
+  if (timeout) {
+    add_error_log_msg(tombstone,
+                      android::base::StringPrintf("%s: Timed out reading log (%zu seconds)", logger,
+                                                  static_cast<size_t>(kMaxLogReadTimeSeconds)));
   }
+
   android_logger_list_free(logger_list);
 
   if (!buffer.logs().empty()) {
