@@ -87,6 +87,24 @@
       "parentUuid": "d440a207_1996c15d",
       "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "546dbf49_4021de91",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-07-28T17:01:04Z",
+      "side": 1,
+      "message": "It was almost doable, but it turned out qcom has enabled -Werror for #warnings - it takes ages to push anything their way. So I removed a warning and replaced it with a comment.",
+      "parentUuid": "c25bb0d1_3e50f2d3",
+      "revId": "7acec07988f144151a10563df5edc204ecda9b7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
