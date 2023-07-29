@@ -232,23 +232,28 @@ TEST(fs_mgr, fs_mgr_get_boot_config_from_kernel_cmdline) {
 }
 
 TEST(fs_mgr, fs_mgr_parse_bootconfig) {
-    EXPECT_EQ(bootconfig_result_space, fs_mgr_parse_proc_bootconfig(bootconfig));
+    std::vector<std::pair<std::string, std::string>> result;
+    android::fs_mgr::ImportBootconfigFromString(
+            bootconfig, [&](const std::string& key, const std::string& value) {
+                result.emplace_back(key, value);
+            });
+    EXPECT_EQ(bootconfig_result_space, result);
 }
 
 TEST(fs_mgr, fs_mgr_get_boot_config_from_bootconfig) {
     std::string content;
     for (const auto& entry : bootconfig_result_space) {
-        static constexpr char androidboot[] = "androidboot.";
-        if (!android::base::StartsWith(entry.first, androidboot)) continue;
-        auto key = entry.first.substr(strlen(androidboot));
-        EXPECT_TRUE(fs_mgr_get_boot_config_from_bootconfig(bootconfig, key, &content))
-                << " for " << key;
+        EXPECT_TRUE(android::fs_mgr::GetBootconfigFromString(bootconfig, entry.first, &content))
+                << " for " << entry.first;
         EXPECT_EQ(entry.second, content);
     }
 
-    EXPECT_FALSE(fs_mgr_get_boot_config_from_bootconfig(bootconfig, "vbmeta.avb_versio", &content));
+    content.clear();
+    EXPECT_FALSE(android::fs_mgr::GetBootconfigFromString(
+            bootconfig, "androidboot.vbmeta.avb_versio", &content));
     EXPECT_TRUE(content.empty()) << content;
-    EXPECT_FALSE(fs_mgr_get_boot_config_from_bootconfig(bootconfig, "nospace", &content));
+    EXPECT_FALSE(
+            android::fs_mgr::GetBootconfigFromString(bootconfig, "androidboot.nospace", &content));
     EXPECT_TRUE(content.empty()) << content;
 }
 
