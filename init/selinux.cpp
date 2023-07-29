@@ -110,7 +110,7 @@ EnforcingStatus StatusFromProperty() {
     });
 
     if (status == SELINUX_ENFORCING) {
-        ImportBootconfig([&](const std::string& key, const std::string& value) {
+        android::fs_mgr::ImportBootconfig([&](const std::string& key, const std::string& value) {
             if (key == "androidboot.selinux" && value == "permissive") {
                 status = SELINUX_PERMISSIVE;
             }
