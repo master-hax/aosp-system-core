@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3240ea8e_a8b838a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-07-29T01:08:04Z",
+      "side": 1,
+      "message": "Hey Elliot, what do you think of this VS doing attributes on files? I had automated this for libbinder, so tried it on this lib as well.",
+      "revId": "0a8d5b860eefea672e842bfd6b6cba49daef2558",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
