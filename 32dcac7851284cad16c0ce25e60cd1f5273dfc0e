@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "003124cc_1fb2383b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1219877
+      },
+      "writtenOn": "2023-07-30T01:17:18Z",
+      "side": 1,
+      "message": "Andy Tan",
+      "revId": "32dcac7851284cad16c0ce25e60cd1f5273dfc0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
