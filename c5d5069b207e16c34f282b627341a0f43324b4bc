@@ -119,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23c8babf_16539f4b",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1272,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-31T21:53:50Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1039e2ae_e9147be6",
+      "range": {
+        "startLine": 1272,
+        "startChar": 7,
+        "endLine": 1272,
+        "endChar": 74
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6be82eb1_3d86d135",
@@ -227,6 +251,30 @@
       "side": 1,
       "message": "Added more explanation  in the comments.",
       "parentUuid": "a9451730_5e09dbda",
+      "range": {
+        "startLine": 1281,
+        "startChar": 0,
+        "endLine": 1285,
+        "endChar": 5
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6070bd8_c1492926",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1285,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-07-31T21:53:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd121ced_ae65c903",
       "range": {
         "startLine": 1281,
         "startChar": 0,
