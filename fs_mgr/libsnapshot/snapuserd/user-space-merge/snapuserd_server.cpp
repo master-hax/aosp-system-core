@@ -348,14 +348,21 @@ std::shared_ptr<HandlerThread> UserSnapshotServer::AddHandler(const std::string&
     //
     // During boot up, we need multiple threads primarily for
     // update-verification.
+    bool boot_completed = android::base::GetBoolProperty("sys.boot_completed", false);
     int num_worker_threads = kNumWorkerThreads;
-    if (is_socket_present_) {
+    bool perform_verification = true;
+
+    if (is_socket_present_ && boot_completed) {
         num_worker_threads = 1;
+        perform_verification = false;
     }
 
-    bool perform_verification = true;
-    if (android::base::EndsWith(misc_name, "-init") || is_socket_present_) {
-        perform_verification = false;
+    if (perform_verification) {
+        if (android::base::EndsWith(misc_name, "-init") ||
+            android::base::EndsWith(misc_name, "-selinux")) {
+            perform_verification = false;
+            num_worker_threads = 1;
+        }
     }
 
     return handlers_->AddHandler(misc_name, cow_device_path, backing_device, base_path_merge,

@@ -55,6 +55,7 @@ class Daemon {
     UserSnapshotServer user_server_;
     void MaskAllSignalsExceptIntAndTerm();
     void MaskAllSignals();
+    bool LockSnapuserdTextPages(pid_t pid);
     static void SignalHandler(int signal);
 };
 

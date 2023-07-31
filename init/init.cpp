@@ -875,37 +875,27 @@ void SendLoadPersistentPropertiesMessage() {
     }
 }
 
-static Result<void> ConnectEarlyStageSnapuserdAction(const BuiltinArguments& args) {
+static Result<void> TransitionSnapuserdAction(const BuiltinArguments&) {
     auto pid = GetSnapuserdFirstStagePid();
     if (!pid) {
         return {};
     }
 
-    auto info = GetSnapuserdFirstStageInfo();
-    if (auto iter = std::find(info.begin(), info.end(), "socket"s); iter == info.end()) {
-        // snapuserd does not support socket handoff, so exit early.
-        return {};
-    }
-
-    // Socket handoff is supported.
     auto svc = ServiceList::GetInstance().FindService("snapuserd");
     if (!svc) {
         LOG(FATAL) << "Failed to find snapuserd service entry";
     }
 
-    svc->SetShutdownCritical();
-    svc->SetStartedInFirstStage(*pid);
-
-    svc = ServiceList::GetInstance().FindService("snapuserd_proxy");
-    if (!svc) {
-        LOG(FATAL) << "Failed find snapuserd_proxy service entry, merge will never initiate";
-    }
-    if (!svc->MarkSocketPersistent("snapuserd")) {
-        LOG(FATAL) << "Could not find snapuserd socket in snapuserd_proxy service entry";
-    }
     if (auto result = svc->Start(); !result.ok()) {
-        LOG(FATAL) << "Could not start snapuserd_proxy: " << result.error();
+        LOG(FATAL) << "Could not start snapuserd service: " << result.error();
     }
+
+    auto sm = snapshot::SnapshotManager::New();
+    if (!sm->PerformSecondStageInitTransition()) {
+        LOG(FATAL) << "Failed to transition snapuserd to second-stage";
+    }
+
+    KillFirstStageSnapuserd(pid.value());
     return {};
 }
 
@@ -1053,11 +1043,11 @@ int SecondStageMain(int argc, char** argv) {
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
-    am.QueueBuiltinAction(ConnectEarlyStageSnapuserdAction, "ConnectEarlyStageSnapuserd");
     am.QueueEventTrigger("early-init");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
     am.QueueBuiltinAction(wait_for_coldboot_done_action, "wait_for_coldboot_done");
+    am.QueueBuiltinAction(TransitionSnapuserdAction, "TransitionSnapuserdAction");
     // ... so that we can start queuing up actions that require stuff from /dev.
     am.QueueBuiltinAction(SetMmapRndBitsAction, "SetMmapRndBits");
     Keychords keychords;

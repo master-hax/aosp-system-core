@@ -1753,6 +1753,10 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
 
         auto misc_name = user_cow_name;
 
+        if (transition == InitTransition::SELINUX_DETACH) {
+            misc_name += "-selinux";
+        }
+
         std::string source_device_name;
         if (snapshot_status.old_partition_size() > 0) {
             source_device_name = GetSourceDeviceName(snapshot);
@@ -1820,7 +1824,7 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
                                                             source_device, base_path_merge);
         }
 
-        if (base_sectors == 0) {
+        if (!base_sectors) {
             // Unrecoverable as metadata reads from cow device failed
             LOG(FATAL) << "Failed to retrieve base_sectors from Snapuserd";
             return false;
@@ -1842,6 +1846,7 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         LOG(ERROR) << "Could not transition all snapuserd consumers.";
         return false;
     }
+    LOG(INFO) << "Second-stage transition complete";
     return true;
 }
 
@@ -4188,6 +4193,7 @@ bool SnapshotManager::DetachFirstStageSnapuserdForSelinux() {
 
         num_cows++;
         auto misc_name = user_cow_name;
+        misc_name += "-selinux";
 
         DmTable table;
         table.Emplace<DmTargetUser>(0, target.spec.length, misc_name);

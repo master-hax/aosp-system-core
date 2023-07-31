@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <procinfo/process_map.h>
+#include <sys/mman.h>
+
 #include <android-base/logging.h>
 #include <android-base/properties.h>
 #include <android-base/strings.h>
@@ -75,6 +78,55 @@ bool Daemon::StartDaemon(int argc, char** argv) {
         LOG(INFO) << "Starting daemon for dm-snapshots.....";
         return StartServerForDmSnapshot(arg_start, argc, argv);
     }
+}
+
+bool Daemon::LockSnapuserdTextPages(pid_t pid) {
+    std::string filename = "/system/bin/snapuserd";
+
+    int fd = open(filename.c_str(), O_RDONLY);
+
+    struct stat stat_buf;
+    if (fstat(fd, &stat_buf) < 0) {
+        PLOG(ERROR) << "Failed to fstat";
+        return false;
+    }
+
+    off_t size = stat_buf.st_size;
+
+    std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(size);
+
+    if (read(fd, buffer.get(), size) < 0) {
+        PLOG(ERROR) << "Failed to read binary";
+        return false;
+    }
+
+    bool ok = true;
+    auto callback = [&](const android::procinfo::MapInfo& map) -> void {
+        if (!ok || android::base::StartsWith(map.name, "/dev/") ||
+            !android::base::StartsWith(map.name, "/")) {
+            return;
+        }
+        auto start = reinterpret_cast<const void*>(map.start);
+        auto len = map.end - map.start;
+        if (!len) {
+            return;
+        }
+
+        if (!(map.flags & PROT_EXEC)) {
+            return;
+        }
+        if (mlock(start, len) < 0) {
+            PLOG(ERROR) << "mlock failed, " << start << " for " << len << " bytes.";
+            ok = false;
+        }
+    };
+
+    if (!android::procinfo::ReadProcessMaps(pid, callback) || !ok) {
+        LOG(ERROR) << "Could not process /proc/" << pid << "/maps file for snapuserd.";
+        return false;
+    }
+
+    return true;
 }
 
 bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** argv) {

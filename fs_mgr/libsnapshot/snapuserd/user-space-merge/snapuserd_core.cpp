@@ -325,6 +325,8 @@ bool SnapshotHandler::Start() {
         update_verify_->VerifyUpdatePartition();
     }
 
+    munlockall();
+
     bool ret = true;
     for (auto& t : threads) {
         ret = t.get() && ret;

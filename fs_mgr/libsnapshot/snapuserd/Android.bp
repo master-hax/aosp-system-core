@@ -115,6 +115,7 @@ cc_defaults {
         "libext4_utils",
         "liburing",
         "libzstd",
+	"libprocinfo",
     ],
 
     header_libs: [
