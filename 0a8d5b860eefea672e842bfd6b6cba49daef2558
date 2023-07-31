@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1aa4d3bf_21dc9cf4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-31T17:28:34Z",
+      "side": 1,
+      "message": "why do you say that?\n\ni mean, junk like `partition_wiped` really should be moved to fs_mgr, and i\u0027m sure there are others, but (a) this accurately describes the current state of the world and (b) i\u0027ve found that map files are the best way to avoid accidental exposure (i strongly disagree with those who think we should auto-generate them from headers; having the double-check has been helpful).",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "0a8d5b860eefea672e842bfd6b6cba49daef2558",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3240ea8e_a8b838a7",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
