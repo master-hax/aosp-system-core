@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc20c795_732b871a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-07-31T18:37:26Z",
+      "side": 1,
+      "message": "see discussion on https://android-review.git.corp.google.com/c/platform/frameworks/native/+/2672001",
+      "parentUuid": "1aa4d3bf_21dc9cf4",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "0a8d5b860eefea672e842bfd6b6cba49daef2558",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3240ea8e_a8b838a7",
