@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1039e2ae_e9147be6",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1272,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T09:22:30Z",
+      "side": 1,
+      "message": "Ack, but do we call it the \u0027bootstrap\u0027 namespace? That\u0027s what I feel wrong. It doesn\u0027t have to be resolved in this CL though.",
+      "parentUuid": "dfa8e3fe_a036a9e8",
+      "range": {
+        "startLine": 1272,
+        "startChar": 7,
+        "endLine": 1272,
+        "endChar": 74
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6be82eb1_3d86d135",
         "filename": "init/builtins.cpp",
         "patchSetId": 9
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "Rephrased the comments.",
       "parentUuid": "6be82eb1_3d86d135",
+      "range": {
+        "startLine": 1281,
+        "startChar": 37,
+        "endLine": 1282,
+        "endChar": 74
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac2dc8cc_139e05b7",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1282,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T09:22:30Z",
+      "side": 1,
+      "message": "Ack. The comment reads much better! Thanks.",
+      "parentUuid": "8807c32e_33577202",
       "range": {
         "startLine": 1281,
         "startChar": 37,
