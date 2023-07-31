@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6a5c96e_2976d684",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-07-31T19:04:34Z",
+      "side": 1,
+      "message": "you know you can use c++ syntax in map files, right? see https://source.corp.google.com/h/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/libhwui.map.txt;l\u003d49?q\u003dfile:map.txt%20c%5C%2B%5C%2B\u0026sq\u003drepo:android%2Fplatform%2Fsuperproject%2Fmain%20b:main%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F for an example.",
+      "parentUuid": "bc20c795_732b871a",
+      "range": {
+        "startLine": 9,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 41
+      },
+      "revId": "0a8d5b860eefea672e842bfd6b6cba49daef2558",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3240ea8e_a8b838a7",
