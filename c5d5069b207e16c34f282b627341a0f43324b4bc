@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "357b1772_ea29919e",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1266,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T08:37:17Z",
+      "side": 1,
+      "message": "MountApexRoot",
+      "range": {
+        "startLine": 1266,
+        "startChar": 20,
+        "endLine": 1266,
+        "endChar": 29
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f88d4f5_6c8e3c0f",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1272,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T08:37:17Z",
+      "side": 1,
+      "message": "Does this mean that we never transition to the default ns in Microdroid? That sounds wrong...",
+      "range": {
+        "startLine": 1272,
+        "startChar": 7,
+        "endLine": 1272,
+        "endChar": 74
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6be82eb1_3d86d135",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1282,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T08:37:17Z",
+      "side": 1,
+      "message": "I think this comment is misleading. /apex should be private in order to hide (un)mount events under the directory (for example mounting an APEX at /apex/\u003cname\u003e) in the other mount namespaces.",
+      "range": {
+        "startLine": 1281,
+        "startChar": 37,
+        "endLine": 1282,
+        "endChar": 74
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9451730_5e09dbda",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1285,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-07-31T08:37:17Z",
+      "side": 1,
+      "message": "Why is this needed? /apex is already mounted as MS_PRIVATE in SetupMountNamespaces",
+      "range": {
+        "startLine": 1281,
+        "startChar": 0,
+        "endLine": 1285,
+        "endChar": 5
+      },
+      "revId": "c5d5069b207e16c34f282b627341a0f43324b4bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
