@@ -38,7 +38,7 @@ class ReadWorker : public Worker {
     bool WriteDmUserPayload(size_t size);
     bool DmuserReadRequest();
     bool SendBufferedIo();
-    void RespondIOError();
+    void RespondIOError(bool send_header = true);
 
     bool ProcessCowOp(const CowOperation* cow_op, void* buffer);
     bool ProcessXorOp(const CowOperation* cow_op, void* buffer);
