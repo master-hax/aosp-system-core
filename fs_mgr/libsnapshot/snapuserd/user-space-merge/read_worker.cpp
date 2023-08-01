@@ -489,19 +489,11 @@ bool ReadWorker::ReadUnalignedSector(sector_t sector, size_t size) {
 }
 
 void ReadWorker::RespondIOError() {
-    struct dm_user_header* header = bufsink_.GetHeaderPtr();
-    header->type = DM_USER_RESP_ERROR;
-    // This is an issue with the dm-user interface. There
-    // is no way to propagate the I/O error back to dm-user
-    // if we have already communicated the header back. Header
-    // is responded once at the beginning; however I/O can
-    // be processed in chunks. If we encounter an I/O error
-    // somewhere in the middle of the processing, we can't communicate
-    // this back to dm-user.
-    //
-    // TODO: Fix the interface
-    CHECK(header_response_);
-
+    if (header_response_) {
+        struct dm_user_header* header = bufsink_.GetHeaderPtr();
+        header->type = DM_USER_RESP_ERROR;
+        header_response_ = false;
+    }
     WriteDmUserPayload(0);
 }
 
@@ -566,7 +558,8 @@ bool ReadWorker::ProcessIORequest() {
             break;
     }
 
-    if (!ok && header->type != DM_USER_RESP_ERROR) {
+    if (!ok) {
+        // if I/O error is encountered we respond with error
         RespondIOError();
     }
     return ok;
