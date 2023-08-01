@@ -25,10 +25,6 @@
 
 // Do not include logging_macros.h here as this header is used by fs_mgr, too.
 
-std::vector<std::pair<std::string, std::string>> fs_mgr_parse_cmdline(const std::string& cmdline);
-bool fs_mgr_get_boot_config_from_kernel(const std::string& cmdline, const std::string& key,
-                                        std::string* out_val);
-bool fs_mgr_get_boot_config_from_kernel_cmdline(const std::string& key, std::string* out_val);
 bool fs_mgr_get_boot_config(const std::string& key, std::string* out_val);
 
 bool fs_mgr_update_for_slotselect(android::fs_mgr::Fstab* fstab);
@@ -41,6 +37,12 @@ bool InRecovery();
 bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out);
 bool SkipMountWithConfig(const std::string& skip_config, Fstab* fstab, bool verbose);
 std::string GetFstabPath();
+
+void ImportKernelCmdlineFromString(const std::string& cmdline,
+                                   const std::function<void(std::string, std::string)>& fn);
+
+bool GetKernelCmdlineFromString(const std::string& cmdline, const std::string& key,
+                                std::string* out);
 
 void ImportBootconfigFromString(const std::string& bootconfig,
                                 const std::function<void(std::string, std::string)>& fn);
