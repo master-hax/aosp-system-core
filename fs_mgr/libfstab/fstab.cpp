@@ -879,7 +879,8 @@ std::set<std::string> GetBootDevices() {
     const std::string dt_file_name = GetAndroidDtDir() + "boot_devices";
     if (GetKernelCmdline("androidboot.boot_devices", &value) || ReadDtFile(dt_file_name, &value)) {
         auto boot_devices_list = Split(value, ",");
-        return {boot_devices_list.begin(), boot_devices_list.end()};
+        return {std::make_move_iterator(boot_devices_list.begin()),
+                std::make_move_iterator(boot_devices_list.end())};
     }
 
     ImportKernelCmdline([&](std::string key, std::string value) {
