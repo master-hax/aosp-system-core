@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4e1ffce_a5f5037a",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-08-03T17:22:28Z",
+      "side": 1,
+      "message": "It is just to make it consistent with how flags are being read throughout. I followed the same structure in Trusty where these were already defined.",
+      "parentUuid": "911a4dd6_88768af3",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 73
+      },
+      "revId": "b345ceba347a9e56cdfb283fa762fa3e74b474ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "effd0b8d_f1a975c9",
