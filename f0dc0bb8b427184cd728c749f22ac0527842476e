@@ -22,6 +22,30 @@
       },
       "revId": "f0dc0bb8b427184cd728c749f22ac0527842476e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ca066b3_4a20e53d",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-03T16:55:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1adbe700_aa076b9e",
+      "range": {
+        "startLine": 1256,
+        "startChar": 8,
+        "endLine": 1256,
+        "endChar": 12
+      },
+      "revId": "f0dc0bb8b427184cd728c749f22ac0527842476e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
