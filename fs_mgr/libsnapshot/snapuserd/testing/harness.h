@@ -33,6 +33,14 @@ class IUserDevice {
     virtual bool Destroy() = 0;
 };
 
+// Interface for an fd/temp file that is a block device when possible.
+class IBackingDevice {
+  public:
+    virtual ~IBackingDevice() {}
+    virtual const std::string& GetPath() = 0;
+    virtual uint64_t GetSize() = 0;
+};
+
 class ITestHarness {
   public:
     virtual ~ITestHarness() {}
@@ -40,6 +48,7 @@ class ITestHarness {
                                                           const std::string& misc_name,
                                                           uint64_t num_sectors) = 0;
     virtual IBlockServerFactory* GetBlockServerFactory() = 0;
+    virtual std::unique_ptr<IBackingDevice> CreateBackingDevice(uint64_t size);
 };
 
 }  // namespace snapshot
