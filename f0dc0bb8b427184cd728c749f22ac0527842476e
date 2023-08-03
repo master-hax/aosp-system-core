@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1adbe700_aa076b9e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-03T16:42:26Z",
+      "side": 1,
+      "message": "const auto ?",
+      "range": {
+        "startLine": 1256,
+        "startChar": 8,
+        "endLine": 1256,
+        "endChar": 12
+      },
+      "revId": "f0dc0bb8b427184cd728c749f22ac0527842476e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

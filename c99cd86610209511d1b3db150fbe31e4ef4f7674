@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbb1863b_614f98d9",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-03T16:42:26Z",
+      "side": 0,
+      "message": "Add [[nodiscard]] to MergeResult\u0027s type definition to avoid errors like this",
+      "range": {
+        "startLine": 1256,
+        "startChar": 12,
+        "endLine": 1256,
+        "endChar": 23
+      },
+      "revId": "c99cd86610209511d1b3db150fbe31e4ef4f7674",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
