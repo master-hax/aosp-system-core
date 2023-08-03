@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+#include <fcntl.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/ucontext.h>
+#include <unistd.h>
+
 #include "builtins.h"
 #include "first_stage_init.h"
 #include "init.h"
@@ -22,6 +30,7 @@
 #include "ueventd.h"
 
 #include <android-base/logging.h>
+#include <async_safe/log.h>
 
 #if __has_feature(address_sanitizer)
 #include <sanitizer/asan_interface.h>
@@ -50,11 +59,50 @@ AsanReportCallback(const char* str) {
 
 using namespace android::init;
 
+#if defined(__aarch64__)
+
+static void MyLogMessage(const char* msg) {
+    LOG(INFO) << "log_info: " << msg;
+    async_safe_format_log(ANDROID_LOG_FATAL, "init", "async_log: %s", msg);
+    android::base::KernelLogger(android::base::MAIN, android::base::WARNING, "init_kernel", nullptr,
+                                0, msg);
+}
+
+static void SigILLHandler(int, siginfo_t* si, void* data) {
+    char msg[512];
+    snprintf(msg, sizeof(msg), "SigILLHandler, signo %d, code %d\n", si->si_signo, si->si_code);
+    MyLogMessage(msg);
+    ucontext_t* uc = (ucontext_t*)data;
+    int instruction_length = 4;
+    int fd = open("/proc/self/maps", O_RDONLY);
+    if (fd != -1) {
+        while (true) {
+            ssize_t n = read(fd, msg, sizeof(msg) - 1);
+            if (n <= 0) {
+                break;
+            }
+            msg[n] = '\0';
+            MyLogMessage(msg);
+        }
+        close(fd);
+    }
+    uc->uc_mcontext.pc += instruction_length;
+}
+#endif
+
 int main(int argc, char** argv) {
 #if __has_feature(address_sanitizer)
     __asan_set_error_report_callback(AsanReportCallback);
 #elif __has_feature(hwaddress_sanitizer)
     __hwasan_set_error_report_callback(AsanReportCallback);
+#endif
+#if defined(__aarch64__)
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigfillset(&action.sa_mask);
+    action.sa_sigaction = SigILLHandler;
+    action.sa_flags = SA_RESTART | SA_SIGINFO;
+    sigaction(SIGILL, &action, nullptr);
 #endif
     // Boost prio which will be restored later
     setpriority(PRIO_PROCESS, 0, -20);
@@ -65,6 +113,7 @@ int main(int argc, char** argv) {
     if (argc > 1) {
         if (!strcmp(argv[1], "subcontext")) {
             android::base::InitLogging(argv, &android::base::KernelLogger);
+            LOG(INFO) << "Init stage " << argv[1];
             const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
 
             return SubcontextMain(argc, argv, &function_map);

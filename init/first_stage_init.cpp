@@ -494,7 +494,11 @@ int FirstStageMain(int argc, char** argv) {
     }
 
     SetInitAvbVersionInRecovery();
-
+#if defined(__aarch64__)
+// LOG(INFO) << "Before running illegal instruction";
+// asm("msr  tpidrro_el0, xzr");
+// LOG(INFO) << "After running illegal instruction";
+#endif
     setenv(kEnvFirstStageStartedAt, std::to_string(start_time.time_since_epoch().count()).c_str(),
            1);
 

@@ -995,6 +995,7 @@ void LoadSelinuxPolicyAndroid() {
 int SetupSelinux(char** argv) {
     SetStdioToDevNull(argv);
     InitKernelLogging(argv);
+    LOG(INFO) << "Init stage " << argv[1];
 
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
@@ -1010,6 +1011,11 @@ int SetupSelinux(char** argv) {
     } else {
         LoadSelinuxPolicyAndroid();
     }
+#if defined(__aarch64__)
+    LOG(INFO) << "Before running illegal instruction in SetupSelinux";
+    // asm("msr	tpidrro_el0, xzr");
+    LOG(INFO) << "After running illegal instruction in SetupSelinux";
+#endif
 
     SelinuxSetEnforcement();
 

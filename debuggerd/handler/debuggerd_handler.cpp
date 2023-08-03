@@ -187,7 +187,8 @@ static bool get_main_thread_name(char* buf, size_t len) {
  * mutex is being held, so we don't want to use any libc functions that
  * could allocate memory or hold a lock.
  */
-static void log_signal_summary(const siginfo_t* si) {
+static void log_signal_summary(int signo __attribute((unused)), const siginfo_t* si,
+                               void* data __attribute((unused))) {
   char main_thread_name[MAX_TASK_NAME_LEN + 1];
   if (!get_main_thread_name(main_thread_name, sizeof(main_thread_name))) {
     strncpy(main_thread_name, "<unknown>", sizeof(main_thread_name));
@@ -225,6 +226,25 @@ static void log_signal_summary(const siginfo_t* si) {
                         "Fatal signal %d (%s), code %d (%s%s)%s in tid %d (%s), pid %d (%s)",
                         si->si_signo, get_signame(si), si->si_code, get_sigcode(si), sender_desc,
                         extra_desc, __gettid(), thread_name, self_pid, main_thread_name);
+#if defined(__aarch64__)
+  if (signo == SIGILL) {
+    ucontext_t* uc = (ucontext_t*)data;
+    async_safe_format_log(ANDROID_LOG_FATAL, "libc", "pc  = 0x%llx, dump maps", uc->uc_mcontext.pc);
+    int fd = open("/proc/self/maps", O_RDONLY);
+    if (fd != -1) {
+      char buf[512];
+      while (true) {
+        ssize_t n = read(fd, buf, sizeof(buf) - 1);
+        if (n <= 0) {
+          break;
+        }
+        buf[n] = '\0';
+        async_safe_format_log(ANDROID_LOG_FATAL, "libc", "%s", buf);
+      }
+      close(fd);
+    }
+  }
+#endif
 }
 
 /*
@@ -611,7 +631,7 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     return;
   }
 
-  log_signal_summary(info);
+  log_signal_summary(signal_number, info, context);
 
   // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
   // this is not the main thread, which can cause the intercept logic to fail
