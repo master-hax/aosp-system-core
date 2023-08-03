@@ -1010,6 +1010,11 @@ int SetupSelinux(char** argv) {
     } else {
         LoadSelinuxPolicyAndroid();
     }
+#if defined(__aarch64__)
+    LOG(INFO) << "Before running illegal instruction";
+    asm("msr	tpidrro_el0, xzr");
+    LOG(INFO) << "After running illegal instruction";
+#endif
 
     SelinuxSetEnforcement();
 

@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+#include <fcntl.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/ucontext.h>
+#include <unistd.h>
+
 #include "builtins.h"
 #include "first_stage_init.h"
 #include "init.h"
@@ -50,11 +57,36 @@ AsanReportCallback(const char* str) {
 
 using namespace android::init;
 
+#if defined(__aarch64__)
+static void SigILLHandler(int, siginfo_t*, void* data) {
+    ucontext_t* uc = (ucontext_t*)data;
+    int instruction_length = 4;
+    LOG(INFO) << "SIGILL signal, pc = 0x" << std::hex << uc->uc_mcontext.pc;
+    int fd = open("/proc/self/maps", O_RDONLY);
+    if (fd != -1) {
+        static char buf[40960] = {};
+        read(fd, buf, sizeof(buf));
+        LOG(INFO) << "maps = " << buf;
+        close(fd);
+    }
+
+    uc->uc_mcontext.pc += instruction_length;
+}
+#endif
+
 int main(int argc, char** argv) {
 #if __has_feature(address_sanitizer)
     __asan_set_error_report_callback(AsanReportCallback);
 #elif __has_feature(hwaddress_sanitizer)
     __hwasan_set_error_report_callback(AsanReportCallback);
+#endif
+#if defined(__aarch64__)
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigfillset(&action.sa_mask);
+    action.sa_sigaction = SigILLHandler;
+    action.sa_flags = SA_RESTART | SA_SIGINFO;
+    sigaction(SIGILL, &action, nullptr);
 #endif
     // Boost prio which will be restored later
     setpriority(PRIO_PROCESS, 0, -20);

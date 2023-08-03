@@ -195,7 +195,7 @@ void InstallRebootSignalHandlers() {
     sigaction(SIGABRT, &action, nullptr);
     sigaction(SIGBUS, &action, nullptr);
     sigaction(SIGFPE, &action, nullptr);
-    sigaction(SIGILL, &action, nullptr);
+    // sigaction(SIGILL, &action, nullptr);
     sigaction(SIGSEGV, &action, nullptr);
 #if defined(SIGSTKFLT)
     sigaction(SIGSTKFLT, &action, nullptr);
