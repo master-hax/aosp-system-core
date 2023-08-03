@@ -39,6 +39,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include "android-base/strings.h"
 #include "parser_v2.h"
 
 // The info messages here are spammy, but as useful for update_engine. Disable
@@ -119,13 +120,22 @@ void CowWriterV2::SetupHeaders() {
 }
 
 bool CowWriterV2::ParseOptions() {
-    auto algorithm = CompressionAlgorithmFromString(options_.compression);
+    auto parts = android::base::Split(options_.compression, ",");
+    if (parts.size() < 1 || parts.size() > 2) {
+        LOG(FATAL) << "failed to parse compression parameters: invalid argument count: "
+                   << parts.size();
+    }
+    auto algorithm = CompressionAlgorithmFromString(parts[0]);
+    if (parts.size() > 1) {
+        compression_level_ = stoi(parts[1]);
+    } else {
+        compression_level_ = CompressWorker::GetDefaultCompressionLevel(algorithm.value());
+    }
     if (!algorithm) {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
     }
     compression_ = *algorithm;
-
     if (options_.cluster_ops == 1) {
         LOG(ERROR) << "Clusters must contain at least two operations to function.";
         return false;
@@ -165,7 +175,8 @@ void CowWriterV2::InitWorkers() {
         return;
     }
     for (int i = 0; i < num_compress_threads_; i++) {
-        auto wt = std::make_unique<CompressWorker>(compression_, header_.block_size);
+        auto wt = std::make_unique<CompressWorker>(compression_, compression_level_,
+                                                   header_.block_size);
         threads_.emplace_back(std::async(std::launch::async, &CompressWorker::RunThread, wt.get()));
         compress_threads_.push_back(std::move(wt));
     }
@@ -320,8 +331,8 @@ bool CowWriterV2::CompressBlocks(size_t num_blocks, const void* data) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
     compressed_buf_.clear();
     if (num_threads <= 1) {
-        return CompressWorker::CompressBlocks(compression_, options_.block_size, data, num_blocks,
-                                              &compressed_buf_);
+        return CompressWorker::CompressBlocks(compression_, compression_level_, options_.block_size,
+                                              data, num_blocks, &compressed_buf_);
     }
 
     // Submit the blocks per thread. The retrieval of
@@ -393,8 +404,8 @@ bool CowWriterV2::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
                         buf_iter_++;
                         return data;
                     } else {
-                        auto data =
-                                CompressWorker::Compress(compression_, iter, header_.block_size);
+                        auto data = CompressWorker::Compress(compression_, compression_level_, iter,
+                                                             header_.block_size);
                         return data;
                     }
                 }();
@@ -507,8 +518,8 @@ bool CowWriterV2::Finalize() {
         }
     }
 
-    // Footer should be at the end of a file, so if there is data after the current block, end it
-    // and start a new cluster.
+    // Footer should be at the end of a file, so if there is data after the current block, end
+    // it and start a new cluster.
     if (cluster_size_ && current_data_size_ > 0) {
         EmitCluster();
         extra_cluster = true;
