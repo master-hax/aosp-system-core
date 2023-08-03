@@ -27,7 +27,6 @@
 #include <sys/vfs.h>
 #include <unistd.h>
 
-#include <cstring>
 #include <string>
 #include <utility>
 
@@ -519,8 +518,7 @@ class FsTest : public ::testing::Test {
         ASSERT_EQ(ret, 0);
 
         // mount the file system
-        ASSERT_EQ(mount(loop_dev.device().c_str(), mntpoint_.c_str(), "f2fs", 0, nullptr), 0)
-                << strerror(errno);
+        ASSERT_EQ(mount(loop_dev.device().c_str(), mntpoint_.c_str(), "f2fs", 0, nullptr), 0);
     }
 
     void TearDown() override {
