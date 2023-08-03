@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdb801dc_8730dfea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1447997
+      },
+      "writtenOn": "2023-08-03T02:09:18Z",
+      "side": 1,
+      "message": "verified at neocola android U device",
+      "revId": "d865493814bb172d7100920b1cbce0b6ccfa17e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
