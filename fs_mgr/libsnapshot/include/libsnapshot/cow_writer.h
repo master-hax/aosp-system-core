@@ -39,6 +39,7 @@ struct CowOptions {
     uint32_t block_size = 4096;
     std::string compression;
 
+    uint32_t compression_level;
     // Maximum number of blocks that can be written.
     std::optional<uint64_t> max_blocks;
 
@@ -116,7 +117,8 @@ class CompressWorker {
     bool GetCompressedBuffers(std::vector<std::basic_string<uint8_t>>* compressed_buf);
     void Finalize();
     static std::basic_string<uint8_t> Compress(CowCompressionAlgorithm compression,
-                                               const void* data, size_t length);
+                                               uint32_t compression_level, const void* data,
+                                               size_t length);
 
     static bool CompressBlocks(CowCompressionAlgorithm compression, size_t block_size,
                                const void* buffer, size_t num_blocks,
