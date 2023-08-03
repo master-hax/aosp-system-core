@@ -39,6 +39,7 @@ struct CowOptions {
     uint32_t block_size = 4096;
     std::string compression;
 
+    uint32_t compression_level;
     // Maximum number of blocks that can be written.
     std::optional<uint64_t> max_blocks;
 

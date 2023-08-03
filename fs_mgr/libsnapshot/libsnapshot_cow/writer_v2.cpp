@@ -119,13 +119,35 @@ void CowWriterV2::SetupHeaders() {
 }
 
 bool CowWriterV2::ParseOptions() {
+    auto compression_level = options_.compression_level;
     auto algorithm = CompressionAlgorithmFromString(options_.compression);
     if (!algorithm) {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
     }
     compression_ = *algorithm;
-
+    if (compression_level == 0) {
+        switch (compression_) {
+            case kCowCompressGz: {
+                compression_level = Z_BEST_COMPRESSION;
+                break;
+            }
+            case kCowCompressBrotli: {
+                compression_level = BROTLI_DEFAULT_QUALITY;
+                break;
+            }
+            case kCowCompressLz4: {
+                break;
+            }
+            case kCowCompressZstd: {
+                compression_level = 9;
+                break;
+            }
+            case kCowCompressNone: {
+                break;
+            }
+        }
+    }
     if (options_.cluster_ops == 1) {
         LOG(ERROR) << "Clusters must contain at least two operations to function.";
         return false;
@@ -507,8 +529,8 @@ bool CowWriterV2::Finalize() {
         }
     }
 
-    // Footer should be at the end of a file, so if there is data after the current block, end it
-    // and start a new cluster.
+    // Footer should be at the end of a file, so if there is data after the current block, end
+    // it and start a new cluster.
     if (cluster_size_ && current_data_size_ > 0) {
         EmitCluster();
         extra_cluster = true;
