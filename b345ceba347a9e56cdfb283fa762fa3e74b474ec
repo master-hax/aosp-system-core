@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "911a4dd6_88768af3",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2023-08-03T17:05:23Z",
+      "side": 1,
+      "message": "Why are these macros used, instead of declaring the variables as volatile? It seems error-prone to have to remember to use these macros everywhere.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 73
+      },
+      "revId": "b345ceba347a9e56cdfb283fa762fa3e74b474ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "effd0b8d_f1a975c9",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1888075
+      },
+      "writtenOn": "2023-08-03T17:05:23Z",
+      "side": 1,
+      "message": "Nit: inconsistent style of whether braces are used for single-statement if clauses.",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 5
+      },
+      "revId": "b345ceba347a9e56cdfb283fa762fa3e74b474ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
