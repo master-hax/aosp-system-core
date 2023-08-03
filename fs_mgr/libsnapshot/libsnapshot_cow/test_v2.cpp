@@ -480,7 +480,7 @@ TEST_P(CompressionTest, HorribleStream) {
     std::string expected = "The quick brown fox jumps over the lazy dog.";
     expected.resize(4096, '\0');
 
-    auto result = CompressWorker::Compress(*algorithm, expected.data(), expected.size());
+    auto result = CompressWorker::Compress(compression, expected.data(), expected.size());
     ASSERT_FALSE(result.empty());
 
     HorribleStream<uint8_t> stream(result);
@@ -1407,6 +1407,16 @@ TEST_F(CowTest, RevMergeOpItrTest) {
     }
     ASSERT_EQ(expected_new_block, revMergeOpSequence.end());
     ASSERT_TRUE(iter->AtEnd());
+}
+
+TEST_F(CowTest, ParseOptionsTest) {
+    CowOptions options;
+    std::vector<std::pair<std::string, bool>> text = {{"gz,4", true}};
+    for (size_t i = 0; i < text.size(); i++) {
+        options.compression = text[i].first;
+        CowWriterV2 writer(options, GetCowFd());
+        ASSERT_EQ(writer.Initialize(), text[i].second);
+    }
 }
 
 TEST_F(CowTest, LegacyRevMergeOpItrTest) {
