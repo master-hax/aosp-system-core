@@ -51,6 +51,24 @@
       "message": "This check should be modified now, given when DmuserReadRequest() bails out because of error, we should still be able to send the reponse.",
       "revId": "b1dbbf591ebc08682f545ff929c99b42e49d6ebf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ce27d0f_0ab42e2b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-03T17:55:44Z",
+      "side": 1,
+      "message": "want to confirm (header-\u003etype !\u003d DM_USER_RESP_ERROR) condition should never fail since we only set DM_USER_RESP_ERROR in the RespondIOError function call? seems kind of circular, wondering why this check was here in the first place",
+      "parentUuid": "06463de0_63117831",
+      "revId": "b1dbbf591ebc08682f545ff929c99b42e49d6ebf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
