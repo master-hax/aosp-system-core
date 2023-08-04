@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be4fe8ed_9644eab5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-04T00:10:50Z",
+      "side": 1,
+      "message": "GetDefaultCompressionLevel",
+      "range": {
+        "startLine": 57,
+        "startChar": 16,
+        "endLine": 57,
+        "endChar": 37
+      },
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10a4198f_74db58f7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-04T00:10:50Z",
+      "side": 1,
+      "message": "pass a valid compression level here",
+      "range": {
+        "startLine": 176,
+        "startChar": 42,
+        "endLine": 176,
+        "endChar": 45
+      },
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
