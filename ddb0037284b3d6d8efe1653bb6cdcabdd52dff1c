@@ -26,6 +26,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fa3ef547_83d3160a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-04T03:16:14Z",
+      "side": 1,
+      "message": "We should add a comment here explaining that there are subtle compatibility implications.\n\nIf a value here is changed, an older version of Android will be assuming a different compression level, and the estimate may be off and cause the OTA to fail. \n\nIt\u0027s not a problem for products launched *after* this CL, because they will have an update_engine that knows to grab the compression level from the manifest. But for products launched *before*, they need the compression level to be exactly the same.",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce1c4235_eb990377",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-04T03:16:14Z",
+      "side": 1,
+      "message": "rather than handle a default value here, I\u0027d force its callers to decide on a value (default or not). Making it explicit forces callers to think about where they get the value from.",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "10a4198f_74db58f7",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
         "patchSetId": 2
@@ -43,6 +77,23 @@
         "endLine": 176,
         "endChar": 45
       },
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca912eba_d251c513",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-04T03:16:14Z",
+      "side": 1,
+      "message": "compression_level_ (trailing underscore for private fields) - though if this is fed right from CowOptions, do we even need it?",
       "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
