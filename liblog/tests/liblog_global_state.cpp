@@ -168,6 +168,10 @@ TEST(liblog_global_state, is_loggable_both_default) {
 
 TEST(liblog_global_state, is_loggable_minimum_log_priority_only) {
   auto tag = UniqueLogTag();
+  auto log_tag_property = std::string("persist.log.tag");
+  auto currentSetLogLevel = android::base::GetProperty(log_tag_property, "");
+  // reset persist log tag priority
+  android::base::SetProperty(log_tag_property, "");
   EXPECT_EQ(0, __android_log_is_loggable(ANDROID_LOG_DEBUG, tag.c_str(), ANDROID_LOG_INFO));
   EXPECT_EQ(1, __android_log_is_loggable(ANDROID_LOG_INFO, tag.c_str(), ANDROID_LOG_INFO));
   EXPECT_EQ(1, __android_log_is_loggable(ANDROID_LOG_WARN, tag.c_str(), ANDROID_LOG_INFO));
@@ -191,6 +195,7 @@ TEST(liblog_global_state, is_loggable_minimum_log_priority_only) {
   EXPECT_EQ(0, __android_log_is_loggable(ANDROID_LOG_DEBUG, tag.c_str(), ANDROID_LOG_INFO));
   EXPECT_EQ(0, __android_log_is_loggable(ANDROID_LOG_INFO, tag.c_str(), ANDROID_LOG_INFO));
   EXPECT_EQ(1, __android_log_is_loggable(ANDROID_LOG_WARN, tag.c_str(), ANDROID_LOG_INFO));
+  android::base::SetProperty(log_tag_property, currentSetLogLevel);
 }
 
 TEST(liblog_global_state, is_loggable_tag_log_priority_only) {
