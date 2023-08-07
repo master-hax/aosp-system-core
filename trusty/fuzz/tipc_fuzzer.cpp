@@ -74,7 +74,7 @@ extern "C" int LLVMFuzzerInitialize(int* /* argc */, char*** /* argv */) {
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
-    static uint8_t buf[TIPC_MAX_MSG_SIZE];
+    uint8_t buf[TIPC_MAX_MSG_SIZE];
 
     ExtraCounters counters(record.get());
     counters.Reset();

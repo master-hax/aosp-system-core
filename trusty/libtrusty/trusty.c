@@ -28,6 +28,12 @@
 #include <log/log.h>
 
 #include <trusty/ipc.h>
+#include <trusty/page.h>
+
+size_t TRUSTY_PAGESIZE = -1;
+static void __attribute__((constructor)) init_pagesize(void) {
+    TRUSTY_PAGESIZE = getpagesize();
+}
 
 int tipc_connect(const char* dev_name, const char* srv_name) {
     int fd;
