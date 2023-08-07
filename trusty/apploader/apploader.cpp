@@ -29,6 +29,7 @@
 #include <sys/sendfile.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <trusty/page.h>
 #include <trusty/tipc.h>
 #include <unistd.h>
 #include <algorithm>
@@ -90,7 +91,7 @@ static void parse_options(int argc, char** argv) {
 
 static unique_fd read_file(const char* file_name, off64_t* out_file_size) {
     int rc;
-    long page_size = sysconf(_SC_PAGESIZE);
+    long page_size = kTrustyPageSize;
     off64_t file_size, file_page_offset, file_page_size;
     struct stat64 st;
 

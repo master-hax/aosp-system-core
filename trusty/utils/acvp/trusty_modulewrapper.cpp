@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/mman.h>
+#include <trusty/page.h>
 #include <trusty/tipc.h>
 #include <unistd.h>
 #include <iostream>
@@ -40,10 +41,6 @@ using android::base::Error;
 using android::base::Result;
 using android::base::unique_fd;
 using android::base::WriteFully;
-
-static inline size_t AlignUpToPage(size_t size) {
-    return (size + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
-}
 
 namespace {
 
@@ -110,7 +107,7 @@ Result<void> ModuleWrapper::SendMessage(bssl::Span<const bssl::Span<const uint8_
 
     shm_size_ = ACVP_MIN_SHARED_MEMORY;
     if (total_args_size > shm_size_) {
-        shm_size_ = AlignUpToPage(total_args_size);
+        shm_size_ = RoundPageUp(total_args_size);
     }
     request.buffer_size = shm_size_;
 
