@@ -28,6 +28,7 @@
 #include <trusty/coverage/coverage.h>
 #include <trusty/coverage/record.h>
 #include <trusty/coverage/tipc.h>
+#include <trusty/page.h>
 #include <trusty/tipc.h>
 #include <iostream>
 
@@ -42,10 +43,6 @@ using android::base::Error;
 using std::string;
 using std::to_string;
 using std::unique_ptr;
-
-static inline uintptr_t RoundPageUp(uintptr_t val) {
-    return (val + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
-}
 
 CoverageRecord::CoverageRecord(string tipc_dev, struct uuid* uuid)
     : tipc_dev_(std::move(tipc_dev)),
