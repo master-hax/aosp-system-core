@@ -16,6 +16,24 @@
       "message": "Should be in alphabetical order.",
       "revId": "debc6a7880031ed43764090a359468e448394373",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8c0fa64_4932bb62",
+        "filename": "trusty/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-08-07T18:33:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1442e5e_e4d04fbe",
+      "revId": "debc6a7880031ed43764090a359468e448394373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
