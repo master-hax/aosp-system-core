@@ -20,8 +20,9 @@
 
 #include <android-base/result.h>
 #include <android-base/unique_fd.h>
+#include <trusty/page.h>
 
-#define TIPC_MAX_MSG_SIZE PAGE_SIZE
+const uint32_t TIPC_MAX_MSG_SIZE = TRUSTY_PAGESIZE;
 
 namespace android {
 namespace trusty {
