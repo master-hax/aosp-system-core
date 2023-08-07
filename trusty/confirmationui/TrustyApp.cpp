@@ -20,6 +20,7 @@
 #include <android-base/logging.h>
 #include <sys/mman.h>
 #include <sys/uio.h>
+#include <trusty/page.h>
 #include <trusty/tipc.h>
 
 #define countof(arr) (sizeof(arr) / sizeof(arr[0]))
@@ -29,10 +30,6 @@ namespace trusty {
 namespace confirmationui {
 
 using ::android::base::unique_fd;
-
-static inline uintptr_t RoundPageUp(uintptr_t val) {
-    return (val + (PAGE_SIZE - 1)) & ~(PAGE_SIZE - 1);
-}
 
 ssize_t TrustyApp::TrustyRpc(const uint8_t* obegin, const uint8_t* oend, uint8_t* ibegin,
                              uint8_t* iend) {
