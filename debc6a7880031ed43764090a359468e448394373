@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1442e5e_e4d04fbe",
+        "filename": "trusty/OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-08-07T13:54:38Z",
+      "side": 1,
+      "message": "Should be in alphabetical order.",
+      "revId": "debc6a7880031ed43764090a359468e448394373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
