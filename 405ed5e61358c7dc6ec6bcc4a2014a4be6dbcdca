@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f1a47c8_6729880e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-08T17:07:56Z",
+      "side": 1,
+      "message": "What are the range of compression levels for gz, lz4 and zstd ?\n\nShould we support all the levels ? gz has levels from 0 to 9.",
+      "revId": "405ed5e61358c7dc6ec6bcc4a2014a4be6dbcdca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9af61f7_3fdbe588",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-08T17:07:56Z",
+      "side": 1,
+      "message": "nit: remove break as we return above.",
+      "revId": "405ed5e61358c7dc6ec6bcc4a2014a4be6dbcdca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deaaeb90_7676182d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-08T17:07:56Z",
+      "side": 1,
+      "message": "Why is this comment revived ?",
+      "revId": "405ed5e61358c7dc6ec6bcc4a2014a4be6dbcdca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
