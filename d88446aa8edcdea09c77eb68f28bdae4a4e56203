@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7be9ab97_a5105c16",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-08T16:38:56Z",
+      "side": 1,
+      "message": "\u003d kCowCompressNone;",
+      "revId": "d88446aa8edcdea09c77eb68f28bdae4a4e56203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "015f9261_bab268da",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-08T16:38:56Z",
+      "side": 1,
+      "message": "\u003d 0;",
+      "revId": "d88446aa8edcdea09c77eb68f28bdae4a4e56203",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
