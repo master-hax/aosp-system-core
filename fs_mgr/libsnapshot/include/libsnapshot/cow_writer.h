@@ -28,6 +28,7 @@
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
+#include <zstd.h>
 
 namespace android {
 namespace snapshot {
@@ -137,6 +138,7 @@ class CompressWorker {
     std::mutex lock_;
     std::condition_variable cv_;
     bool stopped_ = false;
+    ZSTD_CCtx* zstd_context = nullptr;
 
     bool CompressBlocks(const void* buffer, size_t num_blocks,
                         std::vector<std::basic_string<uint8_t>>* compressed_data);
