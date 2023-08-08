@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f1c59a51_a2a4883c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-08T16:19:58Z",
+      "side": 1,
+      "message": "We did not specify a compression level before all the compression level change. In that case ZSTD uses ZSTD_defaultCLevel()",
+      "parentUuid": "f501d641_3547416d",
+      "revId": "c7c781c5d59f9e272792d3b295c446f4f674971c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9ae5df00_3849bb09",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
         "patchSetId": 4
