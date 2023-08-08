@@ -22,6 +22,30 @@
       },
       "revId": "cbda2c038b742915eb96e2cd469df6f804f2693a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18899c1c_b63e23c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-08T17:02:49Z",
+      "side": 1,
+      "message": "Answered offline; engprod asked for this for exercising the fast flashing path.",
+      "parentUuid": "89b4b5a8_7ee48458",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 9,
+        "endChar": 38
+      },
+      "revId": "cbda2c038b742915eb96e2cd469df6f804f2693a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
