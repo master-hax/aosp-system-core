@@ -41,6 +41,48 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "581c0779_2b9c03f8",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-08T15:04:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa3ef547_83d3160a",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21fe5871_f1362927",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-08T15:04:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be4fe8ed_9644eab5",
+      "range": {
+        "startLine": 57,
+        "startChar": 16,
+        "endLine": 57,
+        "endChar": 37
+      },
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce1c4235_eb990377",
@@ -54,6 +96,24 @@
       "writtenOn": "2023-08-04T03:16:14Z",
       "side": 1,
       "message": "rather than handle a default value here, I\u0027d force its callers to decide on a value (default or not). Making it explicit forces callers to think about where they get the value from.",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65bc2ef9_cc0b11ba",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-08T15:04:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce1c4235_eb990377",
       "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -81,6 +141,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1dd1de07_ae4d262a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-08T15:04:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10a4198f_74db58f7",
+      "range": {
+        "startLine": 176,
+        "startChar": 42,
+        "endLine": 176,
+        "endChar": 45
+      },
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ca912eba_d251c513",
@@ -94,6 +178,24 @@
       "writtenOn": "2023-08-04T03:16:14Z",
       "side": 1,
       "message": "compression_level_ (trailing underscore for private fields) - though if this is fed right from CowOptions, do we even need it?",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5f4daa8_f816f5e3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-08T15:04:41Z",
+      "side": 1,
+      "message": "since ParseOptions reads compression algorithm from CowOptions I\u0027m thinking we might as well store the compression level as well ? another idea is to change CowCompressionAlgorithm to also store the level so we only need the one variable",
+      "parentUuid": "ca912eba_d251c513",
       "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
