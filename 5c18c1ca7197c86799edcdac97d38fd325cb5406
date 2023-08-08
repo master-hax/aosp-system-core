@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4991a7c_6d016d87",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-08T16:17:56Z",
+      "side": 1,
+      "message": "Tokenize(), which ignores empty entries",
+      "range": {
+        "startLine": 123,
+        "startChar": 32,
+        "endLine": 123,
+        "endChar": 37
+      },
+      "revId": "5c18c1ca7197c86799edcdac97d38fd325cb5406",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

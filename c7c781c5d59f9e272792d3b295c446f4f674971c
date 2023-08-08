@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dac81a67_5fef7064",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-08T16:17:56Z",
+      "side": 1,
+      "message": "also log the value of option_.compression for debugging",
+      "parentUuid": "9ae5df00_3849bb09",
+      "revId": "c7c781c5d59f9e272792d3b295c446f4f674971c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ba17c2ca_7efb5141",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
         "patchSetId": 4
