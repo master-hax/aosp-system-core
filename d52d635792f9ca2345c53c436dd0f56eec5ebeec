@@ -22,6 +22,30 @@
       },
       "revId": "d52d635792f9ca2345c53c436dd0f56eec5ebeec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9076ebd_2b76830c",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/trusty_keymaster_ipc.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-08-08T21:52:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8078c22d_c99799cf",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 84
+      },
+      "revId": "d52d635792f9ca2345c53c436dd0f56eec5ebeec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
