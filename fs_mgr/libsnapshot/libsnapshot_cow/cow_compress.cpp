@@ -19,11 +19,14 @@
 
 #include <limits>
 #include <queue>
+#include "android-base/parseint.h"
+#include "android-base/strings.h"
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <brotli/encode.h>
+#include <libsnapshot/cow_compress.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
@@ -51,6 +54,21 @@ std::optional<CowCompressionAlgorithm> CompressionAlgorithmFromString(std::strin
     }
 }
 
+std::unique_ptr<ICompressor> ICompressor::InitializeCompressor(CowCompression compression) {
+    std::unique_ptr<ICompressor> compressor;
+    if (compression.algorithm == kCowCompressLz4) {
+        compressor = ICompressor::Lz4(compression.compression_level);
+    } else if (compression.algorithm == kCowCompressBrotli) {
+        compressor = ICompressor::Brotli(compression.compression_level);
+    } else if (compression.algorithm == kCowCompressGz) {
+        compressor = ICompressor::Gz(compression.compression_level);
+    } else if (compression.algorithm == kCowCompressZstd) {
+        compressor = ICompressor::Zstd(compression.compression_level);
+    } else {
+        return nullptr;
+    }
+    return compressor;
+}
 // 1. Default compression level is determined by compression algorithm
 // 2. There might be compatibility issues if a value is changed here, as  some older versions of
 // Android will assume a different compression level, causing cow_size estimation differences that
@@ -77,101 +95,139 @@ uint32_t CompressWorker::GetDefaultCompressionLevel(CowCompressionAlgorithm comp
     return 0;
 }
 
-std::basic_string<uint8_t> CompressWorker::Compress(CowCompression compression, const void* data,
-                                                    size_t length) {
-    switch (compression.algorithm) {
-        case kCowCompressGz: {
-            const auto bound = compressBound(length);
-            std::basic_string<uint8_t> buffer(bound, '\0');
+class GzCompressor final : public ICompressor {
+  public:
+    GzCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+    ~GzCompressor() override = default;
 
-            uLongf dest_len = bound;
-            auto rv = compress2(buffer.data(), &dest_len, reinterpret_cast<const Bytef*>(data),
-                                length, compression.compression_level);
-            if (rv != Z_OK) {
-                LOG(ERROR) << "compress2 returned: " << rv;
-                return {};
-            }
-            buffer.resize(dest_len);
-            return buffer;
-        }
-        case kCowCompressBrotli: {
-            const auto bound = BrotliEncoderMaxCompressedSize(length);
-            if (!bound) {
-                LOG(ERROR) << "BrotliEncoderMaxCompressedSize returned 0";
-                return {};
-            }
-            std::basic_string<uint8_t> buffer(bound, '\0');
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
 
-            size_t encoded_size = bound;
-            auto rv = BrotliEncoderCompress(
-                    compression.compression_level, BROTLI_DEFAULT_WINDOW, BROTLI_DEFAULT_MODE,
-                    length, reinterpret_cast<const uint8_t*>(data), &encoded_size, buffer.data());
-            if (!rv) {
-                LOG(ERROR) << "BrotliEncoderCompress failed";
-                return {};
-            }
-            buffer.resize(encoded_size);
-            return buffer;
-        }
-        case kCowCompressLz4: {
-            const auto bound = LZ4_compressBound(length);
-            if (!bound) {
-                LOG(ERROR) << "LZ4_compressBound returned 0";
-                return {};
-            }
-            std::basic_string<uint8_t> buffer(bound, '\0');
+std::basic_string<uint8_t> GzCompressor::Compress(const void* data, size_t length) {
+    LOG(INFO) << "COMPRESSION LEVEL: " << GetCompressionLevel();
+    const auto bound = compressBound(length);
+    std::basic_string<uint8_t> buffer(bound, '\0');
 
-            const auto compressed_size = LZ4_compress_default(
-                    static_cast<const char*>(data), reinterpret_cast<char*>(buffer.data()), length,
-                    buffer.size());
-            if (compressed_size <= 0) {
-                LOG(ERROR) << "LZ4_compress_default failed, input size: " << length
-                           << ", compression bound: " << bound << ", ret: " << compressed_size;
-                return {};
-            }
-            // Don't run compression if the compressed output is larger
-            if (compressed_size >= length) {
-                buffer.resize(length);
-                memcpy(buffer.data(), data, length);
-            } else {
-                buffer.resize(compressed_size);
-            }
-            return buffer;
-        }
-        case kCowCompressZstd: {
-            std::basic_string<uint8_t> buffer(ZSTD_compressBound(length), '\0');
-            const auto compressed_size = ZSTD_compress(buffer.data(), buffer.size(), data, length,
-                                                       compression.compression_level);
-            if (compressed_size <= 0) {
-                LOG(ERROR) << "ZSTD compression failed " << compressed_size;
-                return {};
-            }
-            // Don't run compression if the compressed output is larger
-            if (compressed_size >= length) {
-                buffer.resize(length);
-                memcpy(buffer.data(), data, length);
-            } else {
-                buffer.resize(compressed_size);
-            }
-            return buffer;
-        }
-        default:
-            LOG(ERROR) << "unhandled compression type: " << compression.algorithm;
-            break;
+    uLongf dest_len = bound;
+    auto rv = compress2(buffer.data(), &dest_len, reinterpret_cast<const Bytef*>(data), length,
+                        GetCompressionLevel());
+    if (rv != Z_OK) {
+        LOG(ERROR) << "compress2 returned: " << rv;
+        return {};
     }
-    return {};
+    buffer.resize(dest_len);
+    return buffer;
 }
+
+class Lz4Compressor final : public ICompressor {
+  public:
+    Lz4Compressor(uint32_t compression_level) : ICompressor(compression_level){};
+
+    ~Lz4Compressor() override = default;
+
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+std::basic_string<uint8_t> Lz4Compressor::Compress(const void* data, size_t length) {
+    LOG(INFO) << "COMPRESSION LEVEL: " << GetCompressionLevel();
+    const auto bound = LZ4_compressBound(length);
+    if (!bound) {
+        LOG(ERROR) << "LZ4_compressBound returned 0";
+        return {};
+    }
+    std::basic_string<uint8_t> buffer(bound, '\0');
+
+    const auto compressed_size =
+            LZ4_compress_default(static_cast<const char*>(data),
+                                 reinterpret_cast<char*>(buffer.data()), length, buffer.size());
+    if (compressed_size <= 0) {
+        LOG(ERROR) << "LZ4_compress_default failed, input size: " << length
+                   << ", compression bound: " << bound << ", ret: " << compressed_size;
+        return {};
+    }
+    // Don't run compression if the compressed output is larger
+    if (compressed_size >= length) {
+        buffer.resize(length);
+        memcpy(buffer.data(), data, length);
+    } else {
+        buffer.resize(compressed_size);
+    }
+    return buffer;
+}
+
+class BrotliCompressor final : public ICompressor {
+  public:
+    BrotliCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+
+    ~BrotliCompressor() override = default;
+
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+std::basic_string<uint8_t> BrotliCompressor::Compress(const void* data, size_t length) {
+    LOG(INFO) << "COMPRESSION LEVEL: " << GetCompressionLevel();
+    const auto bound = BrotliEncoderMaxCompressedSize(length);
+    if (!bound) {
+        LOG(ERROR) << "BrotliEncoderMaxCompressedSize returned 0";
+        return {};
+    }
+    std::basic_string<uint8_t> buffer(bound, '\0');
+
+    size_t encoded_size = bound;
+    auto rv = BrotliEncoderCompress(
+            GetCompressionLevel(), BROTLI_DEFAULT_WINDOW, BROTLI_DEFAULT_MODE, length,
+            reinterpret_cast<const uint8_t*>(data), &encoded_size, buffer.data());
+    if (!rv) {
+        LOG(ERROR) << "BrotliEncoderCompress failed";
+        return {};
+    }
+    buffer.resize(encoded_size);
+    return buffer;
+}
+class ZstdCompressor final : public ICompressor {
+  public:
+    ZstdCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+
+    ~ZstdCompressor() override = default;
+
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+std::basic_string<uint8_t> ZstdCompressor::Compress(const void* data, size_t length) {
+    LOG(INFO) << "COMPRESSION LEVEL: " << GetCompressionLevel();
+    std::basic_string<uint8_t> buffer(ZSTD_compressBound(length), '\0');
+    const auto compressed_size =
+            ZSTD_compress(buffer.data(), buffer.size(), data, length, GetCompressionLevel());
+    if (compressed_size <= 0) {
+        LOG(ERROR) << "ZSTD compression failed " << compressed_size;
+        return {};
+    }
+    // Don't run compression if the compressed output is larger
+    if (compressed_size >= length) {
+        buffer.resize(length);
+        memcpy(buffer.data(), data, length);
+    } else {
+        buffer.resize(compressed_size);
+    }
+    return buffer;
+}
+
+std::basic_string<uint8_t> CompressWorker::Compress(std::unique_ptr<ICompressor>& compressor,
+                                                    const void* data, size_t length) {
+    return compressor->Compress(data, length);
+}
+
 bool CompressWorker::CompressBlocks(const void* buffer, size_t num_blocks,
                                     std::vector<std::basic_string<uint8_t>>* compressed_data) {
-    return CompressBlocks(compression_, block_size_, buffer, num_blocks, compressed_data);
+    return CompressBlocks(compressor_, block_size_, buffer, num_blocks, compressed_data);
 }
 
-bool CompressWorker::CompressBlocks(CowCompression compression, size_t block_size,
+bool CompressWorker::CompressBlocks(std::unique_ptr<ICompressor>& compressor, size_t block_size,
                                     const void* buffer, size_t num_blocks,
                                     std::vector<std::basic_string<uint8_t>>* compressed_data) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(buffer);
     while (num_blocks) {
-        auto data = Compress(compression, iter, block_size);
+        auto data = Compress(compressor, iter, block_size);
         if (data.empty()) {
             PLOG(ERROR) << "CompressBlocks: Compression failed";
             return false;
@@ -270,6 +326,22 @@ bool CompressWorker::GetCompressedBuffers(std::vector<std::basic_string<uint8_t>
     return true;
 }
 
+std::unique_ptr<ICompressor> ICompressor::Brotli(uint32_t compression_level) {
+    return std::make_unique<BrotliCompressor>(compression_level);
+}
+
+std::unique_ptr<ICompressor> ICompressor::Gz(uint32_t compression_level) {
+    return std::make_unique<GzCompressor>(compression_level);
+}
+
+std::unique_ptr<ICompressor> ICompressor::Lz4(uint32_t compression_level) {
+    return std::make_unique<Lz4Compressor>(compression_level);
+}
+
+std::unique_ptr<ICompressor> ICompressor::Zstd(uint32_t compression_level) {
+    return std::make_unique<ZstdCompressor>(compression_level);
+}
+
 void CompressWorker::Finalize() {
     {
         std::unique_lock<std::mutex> lock(lock_);
@@ -278,8 +350,8 @@ void CompressWorker::Finalize() {
     cv_.notify_all();
 }
 
-CompressWorker::CompressWorker(CowCompression compression, uint32_t block_size)
-    : compression_(compression), block_size_(block_size) {}
+CompressWorker::CompressWorker(std::unique_ptr<ICompressor>&& compressor, uint32_t block_size)
+    : compressor_(std::move(compressor)), block_size_(block_size) {}
 
 }  // namespace snapshot
 }  // namespace android
