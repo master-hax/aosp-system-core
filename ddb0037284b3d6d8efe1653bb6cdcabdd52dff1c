@@ -198,6 +198,24 @@
       "parentUuid": "ca912eba_d251c513",
       "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7d8a3e0_88118ba3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-08T15:47:31Z",
+      "side": 1,
+      "message": "Oh, nevermind, I see now that it goes through string conversion.",
+      "parentUuid": "f5f4daa8_f816f5e3",
+      "revId": "ddb0037284b3d6d8efe1653bb6cdcabdd52dff1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
