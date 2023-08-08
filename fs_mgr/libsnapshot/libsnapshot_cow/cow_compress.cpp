@@ -78,7 +78,7 @@ uint32_t CompressWorker::GetDefaultCompressionLevel(CowCompressionAlgorithm comp
 }
 
 std::basic_string<uint8_t> CompressWorker::Compress(CowCompression compression, const void* data,
-                                                    size_t length) {
+                                                    size_t length, ZSTD_CCtx* zstd_context) {
     switch (compression.algorithm) {
         case kCowCompressGz: {
             const auto bound = compressBound(length);
@@ -139,9 +139,13 @@ std::basic_string<uint8_t> CompressWorker::Compress(CowCompression compression, 
             return buffer;
         }
         case kCowCompressZstd: {
+            if (!zstd_context) {
+                LOG(FATAL) << "zstd_context is null";
+            }
             std::basic_string<uint8_t> buffer(ZSTD_compressBound(length), '\0');
-            const auto compressed_size = ZSTD_compress(buffer.data(), buffer.size(), data, length,
-                                                       compression.compression_level);
+            const auto compressed_size =
+                    ZSTD_compressCCtx(zstd_context, buffer.data(), buffer.size(), data, length,
+                                      compression.compression_level);
             if (compressed_size <= 0) {
                 LOG(ERROR) << "ZSTD compression failed " << compressed_size;
                 return {};
@@ -163,15 +167,19 @@ std::basic_string<uint8_t> CompressWorker::Compress(CowCompression compression, 
 }
 bool CompressWorker::CompressBlocks(const void* buffer, size_t num_blocks,
                                     std::vector<std::basic_string<uint8_t>>* compressed_data) {
+    if (zstd_context) {
+        LOG(INFO) << "zstd context exists";
+    }
     return CompressBlocks(compression_, block_size_, buffer, num_blocks, compressed_data);
 }
 
 bool CompressWorker::CompressBlocks(CowCompression compression, size_t block_size,
                                     const void* buffer, size_t num_blocks,
-                                    std::vector<std::basic_string<uint8_t>>* compressed_data) {
+                                    std::vector<std::basic_string<uint8_t>>* compressed_data,
+                                    ZSTD_CCtx* zstd_context) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(buffer);
     while (num_blocks) {
-        auto data = Compress(compression, iter, block_size);
+        auto data = Compress(compression, iter, block_size, zstd_context);
         if (data.empty()) {
             PLOG(ERROR) << "CompressBlocks: Compression failed";
             return false;

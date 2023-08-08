@@ -29,6 +29,7 @@
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 
+typedef struct ZSTD_CCtx_s ZSTD_CCtx;
 namespace android {
 namespace snapshot {
 
@@ -114,11 +115,12 @@ class CompressWorker {
     void Finalize();
     static uint32_t GetDefaultCompressionLevel(CowCompressionAlgorithm compression);
     static std::basic_string<uint8_t> Compress(CowCompression compression, const void* data,
-                                               size_t length);
+                                               size_t length, ZSTD_CCtx* zstd_context = nullptr);
 
     static bool CompressBlocks(CowCompression compression, size_t block_size, const void* buffer,
                                size_t num_blocks,
-                               std::vector<std::basic_string<uint8_t>>* compressed_data);
+                               std::vector<std::basic_string<uint8_t>>* compressed_data,
+                               ZSTD_CCtx* zstd_context = nullptr);
 
   private:
     struct CompressWork {
@@ -136,6 +138,7 @@ class CompressWorker {
     std::mutex lock_;
     std::condition_variable cv_;
     bool stopped_ = false;
+    ZSTD_CCtx* zstd_context = nullptr;
 
     bool CompressBlocks(const void* buffer, size_t num_blocks,
                         std::vector<std::basic_string<uint8_t>>* compressed_data);
