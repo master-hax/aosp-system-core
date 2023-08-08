@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8078c22d_c99799cf",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/trusty_keymaster_ipc.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-08-08T20:21:58Z",
+      "side": 1,
+      "message": "I\u0027m worried this behavior here is undefined. The ordering of the constructor function and the cpp static initializations are not guaranteed. Let me rework this.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 84
+      },
+      "revId": "d52d635792f9ca2345c53c436dd0f56eec5ebeec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
