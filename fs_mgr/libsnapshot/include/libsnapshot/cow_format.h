@@ -15,6 +15,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <zstd.h>
 
 #include <optional>
 #include <string_view>
@@ -160,6 +161,11 @@ enum CowCompressionAlgorithm : uint8_t {
     kCowCompressBrotli = 2,
     kCowCompressLz4 = 3,
     kCowCompressZstd = 4,
+};
+struct CowCompression {
+    CowCompressionAlgorithm algorithm;
+    uint32_t compression_level;
+    ZSTD_CCtx* zstd_context;
 };
 
 static constexpr uint8_t kCowReadAheadNotStarted = 0;
