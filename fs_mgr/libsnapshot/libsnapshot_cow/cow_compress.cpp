@@ -24,6 +24,7 @@
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 #include <brotli/encode.h>
+#include <libsnapshot/cow_compress.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
@@ -76,6 +77,38 @@ uint32_t CompressWorker::GetDefaultCompressionLevel(CowCompressionAlgorithm comp
     }
     return 0;
 }
+
+class GzCompressor final : ICompressor {
+  public:
+    ~GzCompressor();
+
+    bool Init() override;
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+class Lz4Compressor final : ICompressor {
+  public:
+    ~Lz4Compressor();
+
+    bool Init() override;
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+class BrotliCompressor final : ICompressor {
+  public:
+    ~BrotliCompressor();
+
+    bool Init() override;
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
+
+class ZstdCompressor final : ICompressor {
+  public:
+    ~ZstdCompressor();
+
+    bool Init() override;
+    std::basic_string<uint8_t> Compress(const void* data, size_t length) override;
+};
 
 std::basic_string<uint8_t> CompressWorker::Compress(CowCompression compression, const void* data,
                                                     size_t length) {
