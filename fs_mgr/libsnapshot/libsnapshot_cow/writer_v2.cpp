@@ -134,16 +134,18 @@ bool CowWriterV2::ParseOptions() {
         return false;
     }
     if (parts.size() > 1) {
-        if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
+        uint32_t compression_level;
+        if (!android::base::ParseUint(parts[1], &compression_level)) {
             LOG(ERROR) << "failed to parse compression level invalid type: " << parts[1];
             return false;
         }
+        compressor_->setCompressionLevel(compression_level);
     } else {
-        compression_.compression_level =
-                CompressWorker::GetDefaultCompressionLevel(algorithm.value());
+        compressor_->setCompressionLevel(
+                CompressWorker::GetDefaultCompressionLevel(algorithm.value()));
     }
 
-    compression_.algorithm = *algorithm;
+    // compression_.algorithm = *algorithm;
 
     if (options_.cluster_ops == 1) {
         LOG(ERROR) << "Clusters must contain at least two operations to function.";
@@ -184,7 +186,7 @@ void CowWriterV2::InitWorkers() {
         return;
     }
     for (int i = 0; i < num_compress_threads_; i++) {
-        auto wt = std::make_unique<CompressWorker>(compression_, header_.block_size);
+        auto wt = std::make_unique<CompressWorker>(compressor_, header_.block_size);
         threads_.emplace_back(std::async(std::launch::async, &CompressWorker::RunThread, wt.get()));
         compress_threads_.push_back(std::move(wt));
     }
@@ -339,7 +341,7 @@ bool CowWriterV2::CompressBlocks(size_t num_blocks, const void* data) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
     compressed_buf_.clear();
     if (num_threads <= 1) {
-        return CompressWorker::CompressBlocks(compression_, options_.block_size, data, num_blocks,
+        return CompressWorker::CompressBlocks(compressor_, options_.block_size, data, num_blocks,
                                               &compressed_buf_);
     }
 
@@ -385,7 +387,7 @@ bool CowWriterV2::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     while (num_blocks) {
         size_t pending_blocks = (std::min(kProcessingBlocks, num_blocks));
 
-        if (compression_.algorithm && num_compress_threads_ > 1) {
+        if (compressor_ && num_compress_threads_ > 1) {
             if (!CompressBlocks(pending_blocks, iter)) {
                 return false;
             }
@@ -405,19 +407,18 @@ bool CowWriterV2::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
                 op.source = next_data_pos_;
             }
 
-            if (compression_.algorithm) {
+            if (compressor_) {
                 auto data = [&, this]() {
                     if (num_compress_threads_ > 1) {
                         auto data = std::move(*buf_iter_);
                         buf_iter_++;
                         return data;
                     } else {
-                        auto data =
-                                CompressWorker::Compress(compression_, iter, header_.block_size);
+                        auto data = CompressWorker::Compress(compressor_, iter, header_.block_size);
                         return data;
                     }
                 }();
-                op.compression = compression_.algorithm;
+                op.compression = compressor_->Enumerate();
                 op.data_length = static_cast<uint16_t>(data.size());
 
                 if (!WriteOperation(op, data.data(), data.size())) {
