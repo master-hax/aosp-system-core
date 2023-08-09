@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85e15b3e_b50e739c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-09T20:07:08Z",
+      "side": 1,
+      "message": "This looks ok. Let\u0027s test this with the dm-user changes and verify the daemon doesn\u0027t crash and I/O error (EIO) is propagated all the way to the userspace.",
+      "revId": "fd49938308b4a11e81f5c5ced9f50f7ff97824ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
