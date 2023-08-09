@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95623947_04620cb0",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "nit: \"CreateCompressor\" or just \"Create\"",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "181aa5eb_75fe4dde",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "Can we delete this Compress() method? It\u0027s just a wrapper around compressor-\u003eCompress().",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c20e75a1_18eee4a7",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "Use \"ICompress*\" here, since you\u0027re not transferring ownership. Or, \"const std::unique_ptr\u003cICompressor\u003e\u0026\" to prevent taking ownership.",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4f78c2f_7b429f3d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "Use \u003c\u003e instead of \"\" for global includes; move to android-specific include block as well.",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1e28eb5_53112233",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "Don\u0027t need this, it\u0027s implicit. You can remove it from the other classes as well.",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "988b5685_68ef65ed",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "assuming this was for local diagnostics - it will be very spammy, so either make it DEBUG/VERBOSE or preferably drop it. (Same for other classes)",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47465d6d_e0bf3ce1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:23:13Z",
+      "side": 1,
+      "message": "nit: newline between class and previous method",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
