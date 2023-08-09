@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f6b3148_cd1d6fb6",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T17:26:51Z",
+      "side": 1,
+      "message": "would be best to remove this, as we already have fail-able static factory methods. Any initializing logic that might fail can be put in the static factory methods.",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 28
+      },
+      "revId": "83cc7faf6d7266bebe7400e674722a20fba179f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb974864_f9af555e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T17:26:51Z",
+      "side": 1,
+      "message": "I rather add a parameter to static factory methods. With ZSTD contexts we might not be able to change the compression level after a compression is created.",
+      "range": {
+        "startLine": 41,
+        "startChar": 8,
+        "endLine": 41,
+        "endChar": 26
+      },
+      "revId": "83cc7faf6d7266bebe7400e674722a20fba179f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50791f05_50a50c50",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T17:26:51Z",
+      "side": 1,
+      "message": "implement init inside the class GzCompressor {} block, no need to declare + implement.",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 110,
+        "endChar": 0
+      },
+      "revId": "83cc7faf6d7266bebe7400e674722a20fba179f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee9b2c78_622d324a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T17:26:51Z",
+      "side": 1,
+      "message": "use the compression level specified?",
+      "range": {
+        "startLine": 117,
+        "startChar": 24,
+        "endLine": 117,
+        "endChar": 42
+      },
+      "revId": "83cc7faf6d7266bebe7400e674722a20fba179f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ec2fb13_93c1b1f5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T17:26:51Z",
+      "side": 1,
+      "message": "use the specified compression level",
+      "range": {
+        "startLine": 186,
+        "startChar": 12,
+        "endLine": 186,
+        "endChar": 34
+      },
+      "revId": "83cc7faf6d7266bebe7400e674722a20fba179f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
