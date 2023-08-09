@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5858fab4_fdd110be",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T17:22:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d624cbf_5f41ba4a",
+      "range": {
+        "startLine": 38,
+        "startChar": 21,
+        "endLine": 38,
+        "endChar": 34
+      },
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "17e9322f_8de9c643",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-08-09T00:10:14Z",
       "side": 1,
       "message": "what is this method for? What does this method return?",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 37
+      },
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "337a9c32_f2c34a90",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T17:22:26Z",
+      "side": 1,
+      "message": "Had this here when I was trying to take out compression_ variable (which contains Compression Algorithm as an enum) and just keep a Compressor object, but isn\u0027t needed now.",
+      "parentUuid": "17e9322f_8de9c643",
       "range": {
         "startLine": 39,
         "startChar": 0,
@@ -129,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5c174e6_4e8424ac",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T17:22:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86730c41_780840ac",
+      "range": {
+        "startLine": 112,
+        "startChar": 19,
+        "endLine": 112,
+        "endChar": 48
+      },
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e728b9ae_2d7b448f",
@@ -146,6 +218,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "776c4ad6_071ad310",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T17:22:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e728b9ae_2d7b448f",
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "532a0ce6_147e4fd3",
@@ -159,6 +249,24 @@
       "writtenOn": "2023-08-09T15:45:10Z",
       "side": 1,
       "message": "Maybe we could stick this in WriterV2 so it\u0027s only created once?\n\n(I\u0027d even argue it should go into WriterBase, along with compression_, since we\u0027ll want to share the new compression logic with upcoming WriterV3).",
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9e3c024_a1487457",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T17:22:26Z",
+      "side": 1,
+      "message": "each CompressWorker needs its\u0027s own compressor (since that\u0027s where we are going to store the context logic for zstd). One context per thread. That was my though process for creating compressor here, and transferring ownership to the CompressWorker.",
+      "parentUuid": "532a0ce6_147e4fd3",
       "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
