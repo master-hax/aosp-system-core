@@ -54,6 +54,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1de2d29a_454d7454",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "Whenever you want to take reference to a smart pointer object, replace it with a raw pointer.",
+      "parentUuid": "c20e75a1_18eee4a7",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d4f78c2f_7b429f3d",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
         "patchSetId": 13

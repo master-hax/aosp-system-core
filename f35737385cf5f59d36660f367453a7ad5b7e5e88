@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8c0d124_c2caf46d",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "explicit ICompressor to avoid implicitly converting uint32_t to ICompressor.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 15
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66ec7ba6_069d5d21",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "is this ; needed?",
+      "range": {
+        "startLine": 28,
+        "startChar": 85,
+        "endLine": 28,
+        "endChar": 86
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea992d8c_dc41ad4b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "mark as const",
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eed6866e_17b81117",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "mark as const and [[nodiscard]]",
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de4177d1_ea51d14d",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "never take references to smart pointer objects please. Whenever you want to take reference to a smart pointer object, replace it with a raw pointer.",
+      "range": {
+        "startLine": 118,
+        "startChar": 47,
+        "endLine": 118,
+        "endChar": 76
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa89d0ba_c8dc88cf",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-09T21:56:10Z",
+      "side": 1,
+      "message": "implement this inline inside class GzCompressor {} block. No need to separate declaration with definition.",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 84
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
