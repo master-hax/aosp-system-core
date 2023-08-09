@@ -17,6 +17,8 @@
 #ifndef ANDROID_PRINTER_H
 #define ANDROID_PRINTER_H
 
+#include "String8.h"
+
 #include <android/log.h>
 
 namespace android {
@@ -81,8 +83,6 @@ private:
     const char* mPrefix;
     char mFormatString[MAX_FORMAT_STRING];
 }; // class FdPrinter
-
-class String8;
 
 // Print to a String8
 class String8Printer : public Printer {
