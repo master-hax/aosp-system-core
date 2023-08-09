@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "15af1ee5_73f42871",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-09T08:36:54Z",
+      "side": 1,
+      "message": "This is ready for review. The PS1 is a revert^2 (the original change about adding /bootstrap-apex), and the PS3 is a simpler rewrite to fix the regression.\n\nIn PS1, /bootstrap-apex was bind-mounted to /apex before splitting the mount namespaces. So it had to be detached (unmounted) when switching to the default mount namespace so that we have a fresh new /apex for the normal apex activation. This process was not only hard-to-follow but also had a regression. Since /bootstrap-apex is a \"shared\" between two mount namespaces, some early processes like ueventd/servicemanager which start before switching to the default mount namespace, but in the default mount namespace, sees /apex directory with bootstrap apexes mounted.\n\nWith the new implementation in PS3, the bind-mount of /apex with /bootstrap-apex is done after splitting the mount namespace and in the bootstrap mount namespace only. Since /apex is private, processes starting in the default mount namespace can\u0027t see bootstrap apexes mounted in the bootstrap mount namespace, but still can see them via /bootstrap-apex. It\u0027s simpler because we don\u0027t need an extra \"detachment\".",
+      "revId": "566c65239f1cf3fcb0d8745715e5ef1083d4bd3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
