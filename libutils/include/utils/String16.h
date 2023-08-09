@@ -14,6 +14,51 @@
  * limitations under the License.
  */
 
+#if 1
+
+#pragma once
+
+// TODO: remove these
+#include <stdarg.h>
+#include <cstring>
+
+#include <string>
+
+namespace android {
+
+#define String16(...) ::android::toString16(__VA_ARGS__)
+typedef std::u16string String16;
+typedef std::u16string StaticString16;
+
+inline std::u16string s2ws(const std::string& str);
+
+inline String16 toString16() {
+    return u"";
+}
+
+inline String16 toString16(std::string s) {
+    return s2ws(s);
+}
+
+inline String16 toString16(const char* s) {
+    return s2ws(s);
+}
+
+inline String16 toString16(const char16_t* s) {
+    return std::u16string(s);
+}
+
+inline String16 toString16(const char16_t* s, size_t len) {
+    return std::u16string(s, len);
+}
+
+}  // namespace android
+
+// TODO: remove
+#include <utils/String8.h>
+
+#else
+
 #ifndef ANDROID_STRING16_H
 #define ANDROID_STRING16_H
 
@@ -338,3 +383,4 @@ inline String16::operator const char16_t*() const
 // ---------------------------------------------------------------------------
 
 #endif // ANDROID_STRING16_H
+#endif
