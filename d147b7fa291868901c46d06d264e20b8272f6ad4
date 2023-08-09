@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08ef8f7d_2e6bae83",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:29:35Z",
+      "side": 1,
+      "message": "Destructor needs to call ZSTD_freeCCtx. Or.. you can use std::unique_ptr, but it\u0027s a bit gross...\n\n    std::unique_ptr\u003cZSTD_CCtx, decltype(\u0026ZSTD_freeCCtx)\u003e zstd_context_;\n\nAnd then the constructor would need...\n \n    : ICompressor(compression_level),\n      zstd_context_(ZSTD_createCCtx(), ZSTD_freeCCtx) {",
+      "range": {
+        "startLine": 194,
+        "startChar": 0,
+        "endLine": 194,
+        "endChar": 4
+      },
+      "revId": "d147b7fa291868901c46d06d264e20b8272f6ad4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21b9b2de_37387cf7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T21:29:35Z",
+      "side": 1,
+      "message": "zstd_context_, and \u003d nullptr (if not a unique_ptr)",
+      "range": {
+        "startLine": 199,
+        "startChar": 26,
+        "endLine": 199,
+        "endChar": 27
+      },
+      "revId": "d147b7fa291868901c46d06d264e20b8272f6ad4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
