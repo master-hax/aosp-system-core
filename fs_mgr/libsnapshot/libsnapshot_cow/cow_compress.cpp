@@ -173,12 +173,18 @@ class BrotliCompressor final : public ICompressor {
 
 class ZstdCompressor final : public ICompressor {
   public:
-    ZstdCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+    ZstdCompressor(uint32_t compression_level) : ICompressor(compression_level) {
+        zstd_context = ZSTD_createCCtx();
+        ZSTD_CCtx_setParameter(zstd_context, ZSTD_c_compressionLevel, compression_level);
+        // FIXME: hardcoding a value of 12 here for 4k blocks, should change to be either set by
+        // user, or optimized depending on block size
+        ZSTD_CCtx_setParameter(zstd_context, ZSTD_c_windowLog, 12);
+    };
 
     std::basic_string<uint8_t> Compress(const void* data, size_t length) const override {
         std::basic_string<uint8_t> buffer(ZSTD_compressBound(length), '\0');
         const auto compressed_size =
-                ZSTD_compress(buffer.data(), buffer.size(), data, length, GetCompressionLevel());
+                ZSTD_compress2(zstd_context, buffer.data(), buffer.size(), data, length);
         if (compressed_size <= 0) {
             LOG(ERROR) << "ZSTD compression failed " << compressed_size;
             return {};
@@ -192,6 +198,9 @@ class ZstdCompressor final : public ICompressor {
         }
         return buffer;
     };
+
+  private:
+    ZSTD_CCtx* zstd_context;
 };
 
 bool CompressWorker::CompressBlocks(const void* buffer, size_t num_blocks,
