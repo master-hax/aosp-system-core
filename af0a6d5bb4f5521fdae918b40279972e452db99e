@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "57e4a892_13c127fc",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1569496
+      },
+      "writtenOn": "2023-08-09T22:25:57Z",
+      "side": 1,
+      "message": "Should we use the term \"u16string\" instead of \"ws(tring)\"? wstrings are not in the fixed size in C++ standard, and it means a different thing than u16strings.\n\nhttps://en.cppreference.com/w/cpp/language/types:\n\n\u003e In practice, it is 32 bits and holds UTF-32 on Linux and many other non-Windows systems, but 16 bits and holds UTF-16 code units on Windows. The standard used to require wchar_t to be large enough to represent any supported character code point. However, such requirement cannot be fulfilled on Windows, and thus it is considered as a defect and removed.",
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a69fcd88_b6b99dcd",
         "filename": "libutils/include/utils/String8.h",
         "patchSetId": 2
