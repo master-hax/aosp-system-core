@@ -16,6 +16,46 @@
       "message": "I know that it really is close to zero that the open log will fail, it\u0027s not 0% chance. So adding the check doesn\u0027t seem too bad.\n\nAn earlier version had a timeout reading the log, but that seems really iffy since I already have a maximum number of messages to read from the log.\n\nThere is no easy way to add a timeout to the read message unless I rework the logd process and liblog to add a timeout option. That feels like overkill since the only way this could happen in the future is that logd has stopped processing pending threads and gets in to a really bad state.",
       "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f36b608_6bc04ebd",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2269,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-09T14:07:42Z",
+      "side": 1,
+      "message": "this comment no longer makes sense?",
+      "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "494d4e0f_c3fef4b8",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-09T14:07:42Z",
+      "side": 1,
+      "message": "(i\u0027d drop the `errno\u003d` since this is actually a string)",
+      "range": {
+        "startLine": 534,
+        "startChar": 89,
+        "endLine": 534,
+        "endChar": 95
+      },
+      "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
