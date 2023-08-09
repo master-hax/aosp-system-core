@@ -14,6 +14,28 @@
  * limitations under the License.
  */
 
+#if 1
+
+#pragma once
+
+// TODO: remove these
+#include <stdarg.h>
+#include <cstring>
+
+#include <string>
+
+namespace android {
+
+typedef std::u16string String16;
+typedef std::u16string StaticString16;
+
+}  // namespace android
+
+// TODO: remove
+#include <utils/String8.h>
+
+#else
+
 #ifndef ANDROID_STRING16_H
 #define ANDROID_STRING16_H
 
@@ -338,3 +360,4 @@ inline String16::operator const char16_t*() const
 // ---------------------------------------------------------------------------
 
 #endif // ANDROID_STRING16_H
+#endif
