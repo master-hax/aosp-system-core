@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26396924_5947f4cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-09T01:52:31Z",
+      "side": 1,
+      "message": "I know that it really is close to zero that the open log will fail, it\u0027s not 0% chance. So adding the check doesn\u0027t seem too bad.\n\nAn earlier version had a timeout reading the log, but that seems really iffy since I already have a maximum number of messages to read from the log.\n\nThere is no easy way to add a timeout to the read message unless I rework the logd process and liblog to add a timeout option. That feels like overkill since the only way this could happen in the future is that logd has stopped processing pending threads and gets in to a really bad state.",
+      "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
