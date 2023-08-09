@@ -269,6 +269,24 @@
       "parentUuid": "532a0ce6_147e4fd3",
       "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7192bbed_21542281",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-09T17:24:33Z",
+      "side": 1,
+      "message": "right, but this case is the single-threaded, one-block-at-a-time version, so it could share one compressor for the lifetime of the writer. (that\u0027d let you share the zstd context too)",
+      "parentUuid": "d9e3c024_a1487457",
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
