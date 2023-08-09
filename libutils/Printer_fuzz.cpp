@@ -23,7 +23,7 @@ static constexpr int MAX_STR_SIZE = 1000;
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     FuzzedDataProvider dataProvider(data, size);
-    android::String8 outStr = android::String8();
+    std::string outStr = "";
     // Line indent/formatting
     uint indent = dataProvider.ConsumeIntegral<uint>();
     std::string prefix = dataProvider.ConsumeRandomLengthString(MAX_STR_SIZE);
