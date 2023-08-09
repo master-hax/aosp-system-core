@@ -14,6 +14,97 @@
  * limitations under the License.
  */
 
+#if 1
+
+#pragma once
+
+// TODO: remove these
+#include <stdarg.h>
+#include <utils/String16.h>
+#include <utils/Unicode.h>
+#include <bitset>
+#include <cstring>
+
+#include <string>
+
+#include <codecvt>
+#include <locale>
+
+namespace android {
+
+typedef std::string String8;
+
+typedef int32_t status_t;
+
+inline status_t appendFormatV(std::string& s, const char* fmt, va_list args) {
+    int n;
+    va_list tmp_args;
+
+    /* args is undefined after vsnprintf.
+     * So we need a copy here to avoid the
+     * second vsnprintf access undefined args.
+     */
+    va_copy(tmp_args, args);
+    n = vsnprintf(nullptr, 0, fmt, tmp_args);
+    va_end(tmp_args);
+
+    if (n < 0) return INT32_MIN;  // UNKNOWN_ERROR;
+
+    char buf[n + 1];
+    vsnprintf(buf, n + 1, fmt, args);
+    s += buf;
+
+    return 0;
+}
+
+inline status_t appendFormat(std::string& s, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    const auto result = appendFormatV(s, fmt, args);
+
+    va_end(args);
+
+    return result;
+}
+
+inline std::string String8formatV(const char* fmt, va_list args) {
+    String8 result;
+    appendFormatV(result, fmt, args);
+    return result;
+}
+
+inline String8 String8format(const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    String8 result(String8formatV(fmt, args));
+
+    va_end(args);
+    return result;
+}
+
+inline String16 s2ws(const String8& str) {
+    //    using convert_typeX = std::codecvt_utf8<wchar_t>;
+    //    std::wstring_convert<convert_typeX, wchar_t> converterX;
+    using convert_typeX = std::codecvt_utf8<char16_t>;
+    std::wstring_convert<convert_typeX, char16_t> converterX;
+
+    return converterX.from_bytes(str);
+}
+
+inline String8 ws2s(const String16& wstr) {
+    //    using convert_typeX = std::codecvt_utf8<wchar_t>;
+    //    std::wstring_convert<convert_typeX, wchar_t> converterX;
+    using convert_typeX = std::codecvt_utf8<char16_t>;
+    std::wstring_convert<convert_typeX, char16_t> converterX;
+
+    return converterX.to_bytes(wstr);
+}
+
+}  // namespace android
+
+#else
 #ifndef ANDROID_STRING8_H
 #define ANDROID_STRING8_H
 
@@ -391,3 +482,4 @@ inline String8::operator const char*() const
 // ---------------------------------------------------------------------------
 
 #endif // ANDROID_STRING8_H
+#endif

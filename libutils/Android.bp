@@ -142,8 +142,6 @@ cc_defaults {
         "RefBase.cpp",
         "SharedBuffer.cpp",
         "StopWatch.cpp",
-        "String8.cpp",
-        "String16.cpp",
         "StrongPointer.cpp",
         "SystemClock.cpp",
         "Threads.cpp",
@@ -264,18 +262,6 @@ cc_fuzz {
 }
 
 cc_fuzz {
-    name: "libutils_fuzz_string8",
-    defaults: ["libutils_fuzz_defaults"],
-    srcs: ["String8_fuzz.cpp"],
-}
-
-cc_fuzz {
-    name: "libutils_fuzz_string16",
-    defaults: ["libutils_fuzz_defaults"],
-    srcs: ["String16_fuzz.cpp"],
-}
-
-cc_fuzz {
     name: "libutils_fuzz_vector",
     defaults: ["libutils_fuzz_defaults"],
     srcs: ["Vector_fuzz.cpp"],
@@ -336,8 +322,6 @@ cc_test {
         "Mutex_test.cpp",
         "SharedBuffer_test.cpp",
         "Singleton_test.cpp",
-        "String16_test.cpp",
-        "String8_test.cpp",
         "StrongPointer_test.cpp",
         "Timers_test.cpp",
         "Unicode_test.cpp",
