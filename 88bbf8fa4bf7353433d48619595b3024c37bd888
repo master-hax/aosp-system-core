@@ -287,6 +287,24 @@
       "parentUuid": "d9e3c024_a1487457",
       "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "309daf95_928fe34e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-09T20:43:50Z",
+      "side": 1,
+      "message": "oh gotcha I see, is this the same case for line 343 writer_v2.cpp, where num_threads \u003c\u003d 1 (could reuse the same compressor?)",
+      "parentUuid": "7192bbed_21542281",
+      "revId": "88bbf8fa4bf7353433d48619595b3024c37bd888",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
