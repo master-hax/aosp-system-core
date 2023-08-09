@@ -14,6 +14,251 @@
  * limitations under the License.
  */
 
+#if 1
+
+#pragma once
+
+// TODO: remove these
+#include <iostream>
+#include <stdarg.h>
+#include <utils/Compat.h>
+#include <utils/String16.h>
+#include <utils/Unicode.h>
+#include <bitset>
+#include <cstring>
+
+#include <string>
+
+#include <codecvt>
+#include <locale>
+
+namespace android {
+
+#define String8(...) ::android::toString8(__VA_ARGS__)
+typedef std::string String8;
+
+typedef int32_t status_t;
+
+inline status_t appendFormatV(std::string& s, const char* fmt, va_list args) {
+    int n;
+    va_list tmp_args;
+
+    /* args is undefined after vsnprintf.
+     * So we need a copy here to avoid the
+     * second vsnprintf access undefined args.
+     */
+    va_copy(tmp_args, args);
+    n = vsnprintf(nullptr, 0, fmt, tmp_args);
+    va_end(tmp_args);
+
+    if (n < 0) return INT32_MIN;  // UNKNOWN_ERROR;
+
+    char buf[n + 1];
+    vsnprintf(buf, n + 1, fmt, args);
+    s += buf;
+
+    return 0;
+}
+
+inline status_t appendFormat(std::string& s, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    const auto result = appendFormatV(s, fmt, args);
+
+    va_end(args);
+
+    return result;
+}
+
+inline String8 String8formatV(const char* fmt, va_list args) {
+    std::string result;
+    appendFormatV(result, fmt, args);
+    return result;
+}
+
+inline std::string String8format(const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    std::string result(String8formatV(fmt, args));
+
+    va_end(args);
+    return result;
+}
+
+inline char* lockBuffer(std::string& s, size_t len) {
+    char* buf = new char[len + 1];
+    memcpy(buf, s.c_str(), std::min(s.size() + 1, len));
+    buf[len] = '\0';
+    return buf;
+}
+
+inline void unlockBuffer(std::string& s, char* buf, size_t len) {
+    s = std::string(buf, len);
+    delete[] buf;
+}
+
+inline void priv_setPathName(String8& s, const char* name) {
+    size_t len = strlen(name);
+    char* buf = lockBuffer(s, len);
+
+    memcpy(buf, name, len);
+
+    // remove trailing path separator, if present
+    if (len > 0 && buf[len - 1] == OS_PATH_SEPARATOR) len--;
+    buf[len] = '\0';
+
+    unlockBuffer(s, buf, len);
+}
+
+inline std::string& appendPath(std::string& s, const char* name) {
+    // TODO: The test below will fail for Win32 paths. Fix later or ignore.
+    if (name[0] != OS_PATH_SEPARATOR) {
+        if (*name == '\0') {
+            // nothing to do
+            return s;
+        }
+
+        size_t len = s.length();
+        if (len == 0) {
+            // no existing filename, just use the new one
+            priv_setPathName(s, name);
+            return s;
+        }
+
+        // make room for oldPath + '/' + newPath
+        int newlen = strlen(name);
+
+        char* buf = lockBuffer(s, len+1+newlen);
+
+        // insert a '/' if needed
+        if (buf[len-1] != OS_PATH_SEPARATOR)
+            buf[len++] = OS_PATH_SEPARATOR;
+
+        memcpy(buf+len, name, newlen+1);
+        len += newlen;
+
+        unlockBuffer(s, buf, len);
+
+        return s;
+    } else {
+        priv_setPathName(s, name);
+        return s;
+    }
+}
+
+inline std::string& appendPathCopy(std::string s, const char* name) {
+    return appendPath(s, name);
+}
+
+inline std::string& appendPath(std::string& s, const String8& leaf) {
+    return appendPath(s, leaf.c_str());
+}
+
+inline std::string& appendPathCopy(std::string s, const String8& leaf) {
+    return appendPath(s, leaf);
+}
+
+inline String8 getPathLeaf(const std::string& s) {
+    const char* cp;
+    const char*const buf = s.c_str();
+
+    cp = strrchr(buf, OS_PATH_SEPARATOR);
+    if (cp == nullptr)
+        return s;
+    else
+        return cp+1;
+}
+
+inline char* find_extension(const std::string& s)
+{
+    const char* lastSlash;
+    const char* lastDot;
+    const char* const str = s.c_str();
+
+    // only look at the filename
+    lastSlash = strrchr(str, OS_PATH_SEPARATOR);
+    if (lastSlash == nullptr)
+        lastSlash = str;
+    else
+        lastSlash++;
+
+    // find the last dot
+    lastDot = strrchr(lastSlash, '.');
+    if (lastDot == nullptr)
+        return nullptr;
+
+    // looks good, ship it
+    return const_cast<char*>(lastDot);
+}
+
+inline String8 getPathExtension(const std::string& s)
+{
+    char* ext;
+
+    ext = find_extension(s);
+    if (ext != nullptr)
+        return ext;
+    else
+        return "";
+}
+
+inline String8 getBasePath(const std::string& s)
+{
+    char* ext;
+    const char* const str = s.c_str();
+
+    ext = find_extension(s);
+    if (ext == nullptr)
+        return s;
+    else
+        return std::string(str, ext - str);
+}
+
+inline std::u16string s2ws(const std::string& str) {
+    // TODO: use utf8_to_utf16
+    using convert_typeX = std::codecvt_utf8<char16_t>;
+    std::wstring_convert<convert_typeX, char16_t> converterX;
+
+    return converterX.from_bytes(str);
+}
+
+inline std::string ws2s(const std::u16string& wstr) {
+    // TODO: use utf16_to_utf8
+    using convert_typeX = std::codecvt_utf8<char16_t>;
+    std::wstring_convert<convert_typeX, char16_t> converterX;
+
+    return converterX.to_bytes(wstr);
+}
+
+inline String8 toString8() {
+    return "";
+}
+
+inline String8 toString8(String8 s) {
+    return s;
+}
+
+inline String8 toString8(String16 s) {
+    return ws2s(s);
+}
+
+inline String8 toString8(const char* s) {
+    return std::string(s);
+}
+
+inline String8 toString8(const char* s, size_t len) {
+    return std::string(s, len);
+}
+
+inline String8 toString8(const char16_t* s, size_t len) {
+    return ws2s(std::u16string(s, len));
+}
+
+}  // namespace android
+
+#else
 #ifndef ANDROID_STRING8_H
 #define ANDROID_STRING8_H
 
@@ -362,3 +607,4 @@ inline String8::operator std::string_view() const
 #undef HAS_STRING_VIEW
 
 #endif // ANDROID_STRING8_H
+#endif
