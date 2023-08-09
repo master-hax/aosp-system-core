@@ -32,7 +32,7 @@ TEST(CallStackTest, current_backtrace) {
     android::String8 backtrace;
     CurrentCaller(backtrace);
 
-    ASSERT_NE(-1, backtrace.find("(CurrentCaller")) << "Full backtrace:\n" << backtrace;
+    ASSERT_NE(std::string::npos, backtrace.find("(CurrentCaller")) << "Full backtrace:\n" << backtrace;
 }
 
 __attribute__((__noinline__)) extern "C" void ThreadBusyWait(std::atomic<pid_t>* tid,
@@ -59,5 +59,5 @@ TEST(CallStackTest, thread_backtrace) {
     done = true;
     thread.join();
 
-    ASSERT_NE(-1, cs.toString().find("(ThreadBusyWait")) << "Full backtrace:\n" << cs.toString();
+    ASSERT_NE(std::string::npos, cs.toString().find("(ThreadBusyWait")) << "Full backtrace:\n" << cs.toString();
 }

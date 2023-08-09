@@ -10,15 +10,6 @@
    "source_file" : "system/core/libcutils/include_outside_system/cutils/native_handle.h"
   },
   {
-   "alignment" : 2,
-   "linker_set_key" : "_ZTIA1_Ds",
-   "name" : "char16_t[1]",
-   "referenced_type" : "_ZTIDs",
-   "self_type" : "_ZTIA1_Ds",
-   "size" : 2,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
    "alignment" : 1,
    "linker_set_key" : "_ZTIA20_c",
    "name" : "char[20]",
@@ -389,10 +380,10 @@
    "name" : "_ZN7android14String8Printer9printLineEPKc"
   },
   {
-   "name" : "_ZN7android14String8PrinterC1EPNS_7String8EPKc"
+   "name" : "_ZN7android14String8PrinterC1EPNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKc"
   },
   {
-   "name" : "_ZN7android14String8PrinterC2EPNS_7String8EPKc"
+   "name" : "_ZN7android14String8PrinterC2EPNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKc"
   },
   {
    "name" : "_ZN7android14sp_report_raceEv"
@@ -704,234 +695,6 @@
    "name" : "_ZN7android7RefBaseD2Ev"
   },
   {
-   "name" : "_ZN7android7String810lockBufferEj"
-  },
-  {
-   "name" : "_ZN7android7String811real_appendEPKcj"
-  },
-  {
-   "name" : "_ZN7android7String812appendFormatEPKcz"
-  },
-  {
-   "name" : "_ZN7android7String812unlockBufferEj"
-  },
-  {
-   "name" : "_ZN7android7String812unlockBufferEv"
-  },
-  {
-   "name" : "_ZN7android7String813appendFormatVEPKcSt9__va_list"
-  },
-  {
-   "name" : "_ZN7android7String85clearEv"
-  },
-  {
-   "name" : "_ZN7android7String85setToEPKDij"
-  },
-  {
-   "name" : "_ZN7android7String85setToEPKDsj"
-  },
-  {
-   "name" : "_ZN7android7String85setToEPKc"
-  },
-  {
-   "name" : "_ZN7android7String85setToEPKcj"
-  },
-  {
-   "name" : "_ZN7android7String85setToERKS0_"
-  },
-  {
-   "name" : "_ZN7android7String86appendEPKc"
-  },
-  {
-   "name" : "_ZN7android7String86appendEPKcj"
-  },
-  {
-   "name" : "_ZN7android7String86appendERKS0_"
-  },
-  {
-   "name" : "_ZN7android7String86formatEPKcz"
-  },
-  {
-   "name" : "_ZN7android7String87formatVEPKcSt9__va_list"
-  },
-  {
-   "name" : "_ZN7android7String87toLowerEv"
-  },
-  {
-   "name" : "_ZN7android7String89removeAllEPKc"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKDi"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKDij"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKDs"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKDsj"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKc"
-  },
-  {
-   "name" : "_ZN7android7String8C1EPKcj"
-  },
-  {
-   "name" : "_ZN7android7String8C1ERKNS_8String16E"
-  },
-  {
-   "name" : "_ZN7android7String8C1ERKS0_"
-  },
-  {
-   "name" : "_ZN7android7String8C1Ev"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKDi"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKDij"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKDs"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKDsj"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKc"
-  },
-  {
-   "name" : "_ZN7android7String8C2EPKcj"
-  },
-  {
-   "name" : "_ZN7android7String8C2ERKNS_8String16E"
-  },
-  {
-   "name" : "_ZN7android7String8C2ERKS0_"
-  },
-  {
-   "name" : "_ZN7android7String8C2Ev"
-  },
-  {
-   "name" : "_ZN7android7String8D1Ev"
-  },
-  {
-   "name" : "_ZN7android7String8D2Ev"
-  },
-  {
-   "name" : "_ZN7android8String1610editResizeEj"
-  },
-  {
-   "name" : "_ZN7android8String1610replaceAllEDsDs"
-  },
-  {
-   "name" : "_ZN7android8String1613allocFromUTF8EPKcj"
-  },
-  {
-   "name" : "_ZN7android8String1614allocFromUTF16EPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String164editEv"
-  },
-  {
-   "name" : "_ZN7android8String165allocEj"
-  },
-  {
-   "name" : "_ZN7android8String165setToEPKDs"
-  },
-  {
-   "name" : "_ZN7android8String165setToEPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String165setToERKS0_"
-  },
-  {
-   "name" : "_ZN7android8String165setToERKS0_jj"
-  },
-  {
-   "name" : "_ZN7android8String166appendEPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String166appendERKS0_"
-  },
-  {
-   "name" : "_ZN7android8String166insertEjPKDs"
-  },
-  {
-   "name" : "_ZN7android8String166insertEjPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String167acquireEv"
-  },
-  {
-   "name" : "_ZN7android8String167releaseEv"
-  },
-  {
-   "name" : "_ZN7android8String16C1EOS0_"
-  },
-  {
-   "name" : "_ZN7android8String16C1EPKDs"
-  },
-  {
-   "name" : "_ZN7android8String16C1EPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String16C1EPKc"
-  },
-  {
-   "name" : "_ZN7android8String16C1EPKcj"
-  },
-  {
-   "name" : "_ZN7android8String16C1ERKNS_7String8E"
-  },
-  {
-   "name" : "_ZN7android8String16C1ERKS0_"
-  },
-  {
-   "name" : "_ZN7android8String16C1ERKS0_jj"
-  },
-  {
-   "name" : "_ZN7android8String16C1Ev"
-  },
-  {
-   "name" : "_ZN7android8String16C2EOS0_"
-  },
-  {
-   "name" : "_ZN7android8String16C2EPKDs"
-  },
-  {
-   "name" : "_ZN7android8String16C2EPKDsj"
-  },
-  {
-   "name" : "_ZN7android8String16C2EPKc"
-  },
-  {
-   "name" : "_ZN7android8String16C2EPKcj"
-  },
-  {
-   "name" : "_ZN7android8String16C2ERKNS_7String8E"
-  },
-  {
-   "name" : "_ZN7android8String16C2ERKS0_"
-  },
-  {
-   "name" : "_ZN7android8String16C2ERKS0_jj"
-  },
-  {
-   "name" : "_ZN7android8String16C2Ev"
-  },
-  {
-   "name" : "_ZN7android8String16D1Ev"
-  },
-  {
-   "name" : "_ZN7android8String16D2Ev"
-  },
-  {
-   "name" : "_ZN7android8String16aSEOS0_"
-  },
-  {
    "name" : "_ZN7android9FdPrinter9printLineEPKc"
   },
   {
@@ -956,13 +719,13 @@
    "name" : "_ZN7android9StopWatchD2Ev"
   },
   {
-   "name" : "_ZN7android9Tokenizer12fromContentsERKNS_7String8EPKcPPS0_"
+   "name" : "_ZN7android9Tokenizer12fromContentsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKcPPS0_"
   },
   {
    "name" : "_ZN7android9Tokenizer14skipDelimitersEPKc"
   },
   {
-   "name" : "_ZN7android9Tokenizer4openERKNS_7String8EPPS0_"
+   "name" : "_ZN7android9Tokenizer4openERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPPS0_"
   },
   {
    "name" : "_ZN7android9Tokenizer8nextLineEv"
@@ -971,10 +734,10 @@
    "name" : "_ZN7android9Tokenizer9nextTokenEPKc"
   },
   {
-   "name" : "_ZN7android9TokenizerC1ERKNS_7String8EPNS_7FileMapEPcbj"
+   "name" : "_ZN7android9TokenizerC1ERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPNS_7FileMapEPcbj"
   },
   {
-   "name" : "_ZN7android9TokenizerC2ERKNS_7String8EPNS_7FileMapEPcbj"
+   "name" : "_ZN7android9TokenizerC2ERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPNS_7FileMapEPcbj"
   },
   {
    "name" : "_ZN7android9TokenizerD1Ev"
@@ -1137,42 +900,6 @@
   },
   {
    "name" : "_ZNK7android7RefBase9incStrongEPKv"
-  },
-  {
-   "name" : "_ZNK7android7String810getPathDirEv"
-  },
-  {
-   "name" : "_ZNK7android7String816getPathExtensionEv"
-  },
-  {
-   "name" : "_ZNK7android7String84findEPKcj"
-  },
-  {
-   "name" : "_ZNK7android7String86lengthEv"
-  },
-  {
-   "name" : "_ZNK7android8String1610startsWithEPKDs"
-  },
-  {
-   "name" : "_ZNK7android8String1610startsWithERKS0_"
-  },
-  {
-   "name" : "_ZNK7android8String1614isStaticStringEv"
-  },
-  {
-   "name" : "_ZNK7android8String1616staticStringSizeEv"
-  },
-  {
-   "name" : "_ZNK7android8String164sizeEv"
-  },
-  {
-   "name" : "_ZNK7android8String168containsEPKDs"
-  },
-  {
-   "name" : "_ZNK7android8String168findLastEDs"
-  },
-  {
-   "name" : "_ZNK7android8String169findFirstEDs"
   },
   {
    "name" : "_ZNK7android9StopWatch11elapsedTimeEv"
@@ -3610,40 +3337,6 @@
    [
     {
      "enum_field_value" : 1,
-     "name" : "android::trait_trivial_move<android::String8>::value"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE",
-   "name" : "android::trait_trivial_move<android::String8>::(unnamed)",
-   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h",
-   "underlying_type" : "_ZTIj"
-  },
-  {
-   "alignment" : 4,
-   "enum_fields" :
-   [
-    {
-     "enum_field_value" : 1,
-     "name" : "android::trait_trivial_move<android::String16>::value"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_8String16EE6$valueE",
-   "name" : "android::trait_trivial_move<android::String16>::(unnamed)",
-   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_8String16EE6$valueE",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_8String16EE6$valueE",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h",
-   "underlying_type" : "_ZTIj"
-  },
-  {
-   "alignment" : 4,
-   "enum_fields" :
-   [
-    {
-     "enum_field_value" : 1,
      "name" : "android::trait_trivial_move<bool>::value"
     }
    ],
@@ -5204,7 +4897,7 @@
   },
   {
    "function_name" : "android::String8Printer::String8Printer",
-   "linker_set_key" : "_ZN7android14String8PrinterC1EPNS_7String8EPKc",
+   "linker_set_key" : "_ZN7android14String8PrinterC1EPNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKc",
    "parameters" :
    [
     {
@@ -5212,7 +4905,7 @@
      "referenced_type" : "_ZTIPN7android14String8PrinterE"
     },
     {
-     "referenced_type" : "_ZTIPN7android7String8E"
+     "referenced_type" : "_ZTIPNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "default_arg" : true,
@@ -5224,7 +4917,7 @@
   },
   {
    "function_name" : "android::String8Printer::String8Printer",
-   "linker_set_key" : "_ZN7android14String8PrinterC2EPNS_7String8EPKc",
+   "linker_set_key" : "_ZN7android14String8PrinterC2EPNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKc",
    "parameters" :
    [
     {
@@ -5232,7 +4925,7 @@
      "referenced_type" : "_ZTIPN7android14String8PrinterE"
     },
     {
-     "referenced_type" : "_ZTIPN7android7String8E"
+     "referenced_type" : "_ZTIPNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "default_arg" : true,
@@ -6790,1273 +6483,6 @@
    "source_file" : "system/core/libutils/include/utils/RefBase.h"
   },
   {
-   "function_name" : "android::String8::lockBuffer",
-   "linker_set_key" : "_ZN7android7String810lockBufferEj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIPc",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::real_append",
-   "linker_set_key" : "_ZN7android7String811real_appendEPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::appendFormat",
-   "linker_set_key" : "_ZN7android7String812appendFormatEPKcz",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::unlockBuffer",
-   "linker_set_key" : "_ZN7android7String812unlockBufferEj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::unlockBuffer",
-   "linker_set_key" : "_ZN7android7String812unlockBufferEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::appendFormatV",
-   "linker_set_key" : "_ZN7android7String813appendFormatVEPKcSt9__va_list",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTISt9__va_list"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::clear",
-   "linker_set_key" : "_ZN7android7String85clearEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::setTo",
-   "linker_set_key" : "_ZN7android7String85setToEPKDij",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDi"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::setTo",
-   "linker_set_key" : "_ZN7android7String85setToEPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::setTo",
-   "linker_set_key" : "_ZN7android7String85setToEPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::setTo",
-   "linker_set_key" : "_ZN7android7String85setToEPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::setTo",
-   "linker_set_key" : "_ZN7android7String85setToERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::append",
-   "linker_set_key" : "_ZN7android7String86appendEPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::append",
-   "linker_set_key" : "_ZN7android7String86appendEPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::append",
-   "linker_set_key" : "_ZN7android7String86appendERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::format",
-   "linker_set_key" : "_ZN7android7String86formatEPKcz",
-   "parameters" :
-   [
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIN7android7String8E",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::formatV",
-   "linker_set_key" : "_ZN7android7String87formatVEPKcSt9__va_list",
-   "parameters" :
-   [
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTISt9__va_list"
-    }
-   ],
-   "return_type" : "_ZTIN7android7String8E",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::toLower",
-   "linker_set_key" : "_ZN7android7String87toLowerEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::removeAll",
-   "linker_set_key" : "_ZN7android7String89removeAllEPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIb",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKDi",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDi"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKDij",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDi"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1EPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1ERKNS_8String16E",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1ERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C1Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKDi",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDi"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKDij",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDi"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2EPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2ERKNS_8String16E",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2ERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::String8",
-   "linker_set_key" : "_ZN7android7String8C2Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::~String8",
-   "linker_set_key" : "_ZN7android7String8D1Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::~String8",
-   "linker_set_key" : "_ZN7android7String8D2Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::editResize",
-   "linker_set_key" : "_ZN7android8String1610editResizeEj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIPv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::replaceAll",
-   "linker_set_key" : "_ZN7android8String1610replaceAllEDsDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIDs"
-    },
-    {
-     "referenced_type" : "_ZTIDs"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::allocFromUTF8",
-   "linker_set_key" : "_ZN7android8String1613allocFromUTF8EPKcj",
-   "parameters" :
-   [
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIPDs",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::allocFromUTF16",
-   "linker_set_key" : "_ZN7android8String1614allocFromUTF16EPKDsj",
-   "parameters" :
-   [
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIPDs",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::edit",
-   "linker_set_key" : "_ZN7android8String164editEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIPv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::alloc",
-   "linker_set_key" : "_ZN7android8String165allocEj",
-   "parameters" :
-   [
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIPv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::setTo",
-   "linker_set_key" : "_ZN7android8String165setToEPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::setTo",
-   "linker_set_key" : "_ZN7android8String165setToEPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::setTo",
-   "linker_set_key" : "_ZN7android8String165setToERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::setTo",
-   "linker_set_key" : "_ZN7android8String165setToERKS0_jj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    },
-    {
-     "default_arg" : true,
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::append",
-   "linker_set_key" : "_ZN7android8String166appendEPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::append",
-   "linker_set_key" : "_ZN7android8String166appendERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::insert",
-   "linker_set_key" : "_ZN7android8String166insertEjPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::insert",
-   "linker_set_key" : "_ZN7android8String166insertEjPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::acquire",
-   "linker_set_key" : "_ZN7android8String167acquireEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::release",
-   "linker_set_key" : "_ZN7android8String167releaseEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1EOS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTION7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1EPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1EPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1EPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1EPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1ERKNS_7String8E",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1ERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1ERKS0_jj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    },
-    {
-     "default_arg" : true,
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C1Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2EOS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTION7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2EPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2EPKDsj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2EPKc",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2EPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2ERKNS_7String8E",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2ERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2ERKS0_jj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIj"
-    },
-    {
-     "default_arg" : true,
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::String16",
-   "linker_set_key" : "_ZN7android8String16C2Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::~String16",
-   "linker_set_key" : "_ZN7android8String16D1Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::~String16",
-   "linker_set_key" : "_ZN7android8String16D2Ev",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIv",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::operator=",
-   "linker_set_key" : "_ZN7android8String16aSEOS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTION7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIRN7android8String16E",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
    "function_name" : "android::FdPrinter::printLine",
    "linker_set_key" : "_ZN7android9FdPrinter9printLineEPKc",
    "parameters" :
@@ -8201,11 +6627,11 @@
   },
   {
    "function_name" : "android::Tokenizer::fromContents",
-   "linker_set_key" : "_ZN7android9Tokenizer12fromContentsERKNS_7String8EPKcPPS0_",
+   "linker_set_key" : "_ZN7android9Tokenizer12fromContentsERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKcPPS0_",
    "parameters" :
    [
     {
-     "referenced_type" : "_ZTIRKN7android7String8E"
+     "referenced_type" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8235,11 +6661,11 @@
   },
   {
    "function_name" : "android::Tokenizer::open",
-   "linker_set_key" : "_ZN7android9Tokenizer4openERKNS_7String8EPPS0_",
+   "linker_set_key" : "_ZN7android9Tokenizer4openERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPPS0_",
    "parameters" :
    [
     {
-     "referenced_type" : "_ZTIRKN7android7String8E"
+     "referenced_type" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "referenced_type" : "_ZTIPPN7android9TokenizerE"
@@ -8274,13 +6700,13 @@
      "referenced_type" : "_ZTIPKc"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E",
+   "return_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
   },
   {
    "access" : "private",
    "function_name" : "android::Tokenizer::Tokenizer",
-   "linker_set_key" : "_ZN7android9TokenizerC1ERKNS_7String8EPNS_7FileMapEPcbj",
+   "linker_set_key" : "_ZN7android9TokenizerC1ERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPNS_7FileMapEPcbj",
    "parameters" :
    [
     {
@@ -8288,7 +6714,7 @@
      "referenced_type" : "_ZTIPN7android9TokenizerE"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E"
+     "referenced_type" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "referenced_type" : "_ZTIPN7android7FileMapE"
@@ -8309,7 +6735,7 @@
   {
    "access" : "private",
    "function_name" : "android::Tokenizer::Tokenizer",
-   "linker_set_key" : "_ZN7android9TokenizerC2ERKNS_7String8EPNS_7FileMapEPcbj",
+   "linker_set_key" : "_ZN7android9TokenizerC2ERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPNS_7FileMapEPcbj",
    "parameters" :
    [
     {
@@ -8317,7 +6743,7 @@
      "referenced_type" : "_ZTIPN7android9TokenizerE"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E"
+     "referenced_type" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "referenced_type" : "_ZTIPN7android7FileMapE"
@@ -9078,187 +7504,6 @@
    "source_file" : "system/core/libutils/include/utils/RefBase.h"
   },
   {
-   "access" : "private",
-   "function_name" : "android::String8::getPathDir",
-   "linker_set_key" : "_ZNK7android7String810getPathDirEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIN7android7String8E",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String8::getPathExtension",
-   "linker_set_key" : "_ZNK7android7String816getPathExtensionEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIN7android7String8E",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::find",
-   "linker_set_key" : "_ZNK7android7String84findEPKcj",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E"
-    },
-    {
-     "referenced_type" : "_ZTIPKc"
-    },
-    {
-     "default_arg" : true,
-     "referenced_type" : "_ZTIj"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String8::length",
-   "linker_set_key" : "_ZNK7android7String86lengthEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E"
-    }
-   ],
-   "return_type" : "_ZTIj",
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "function_name" : "android::String16::startsWith",
-   "linker_set_key" : "_ZNK7android8String1610startsWithEPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIb",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::startsWith",
-   "linker_set_key" : "_ZNK7android8String1610startsWithERKS0_",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIRKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIb",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::isStaticString",
-   "linker_set_key" : "_ZNK7android8String1614isStaticStringEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIb",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "access" : "private",
-   "function_name" : "android::String16::staticStringSize",
-   "linker_set_key" : "_ZNK7android8String1616staticStringSizeEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIj",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::size",
-   "linker_set_key" : "_ZNK7android8String164sizeEv",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    }
-   ],
-   "return_type" : "_ZTIj",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::contains",
-   "linker_set_key" : "_ZNK7android8String168containsEPKDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "return_type" : "_ZTIb",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::findLast",
-   "linker_set_key" : "_ZNK7android8String168findLastEDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIDs"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "function_name" : "android::String16::findFirst",
-   "linker_set_key" : "_ZNK7android8String169findFirstEDs",
-   "parameters" :
-   [
-    {
-     "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android8String16E"
-    },
-    {
-     "referenced_type" : "_ZTIDs"
-    }
-   ],
-   "return_type" : "_ZTIi",
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
    "function_name" : "android::StopWatch::elapsedTime",
    "linker_set_key" : "_ZNK7android9StopWatch11elapsedTimeEv",
    "parameters" :
@@ -9294,7 +7539,7 @@
      "referenced_type" : "_ZTIPKN7android9TokenizerE"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E",
+   "return_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
   },
   {
@@ -9307,7 +7552,7 @@
      "referenced_type" : "_ZTIPKN7android9TokenizerE"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E",
+   "return_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
   },
   {
@@ -9729,15 +7974,6 @@
  [
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIRA1_KDs",
-   "name" : "const char16_t (&)[1]",
-   "referenced_type" : "_ZTIA1_KDs",
-   "self_type" : "_ZTIRA1_KDs",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
    "linker_set_key" : "_ZTIRKN7android10VectorImplE",
    "name" : "const android::VectorImpl &",
    "referenced_type" : "_ZTIKN7android10VectorImplE",
@@ -9864,30 +8100,21 @@
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIRKN7android7String8E",
-   "name" : "const android::String8 &",
-   "referenced_type" : "_ZTIKN7android7String8E",
-   "self_type" : "_ZTIRKN7android7String8E",
+   "linker_set_key" : "_ZTIRKNSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
+   "name" : "const std::basic_string<char16_t, std::char_traits<char16_t>, std::allocator<char16_t>> &",
+   "referenced_type" : "_ZTIKNSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
+   "self_type" : "_ZTIRKNSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIRKN7android8String1610StaticDataILj1EEE",
-   "name" : "const android::String16::StaticData<1> &",
-   "referenced_type" : "_ZTIKN7android8String1610StaticDataILj1EEE",
-   "self_type" : "_ZTIRKN7android8String1610StaticDataILj1EEE",
+   "linker_set_key" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "name" : "const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &",
+   "referenced_type" : "_ZTIKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "self_type" : "_ZTIRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIRKN7android8String16E",
-   "name" : "const android::String16 &",
-   "referenced_type" : "_ZTIKN7android8String16E",
-   "self_type" : "_ZTIRKN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
    "alignment" : 4,
@@ -10107,21 +8334,12 @@
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIRN7android7String8E",
-   "name" : "android::String8 &",
-   "referenced_type" : "_ZTIN7android7String8E",
-   "self_type" : "_ZTIRN7android7String8E",
+   "linker_set_key" : "_ZTIRNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "name" : "std::basic_string<char, std::char_traits<char>, std::allocator<char>> &",
+   "referenced_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "self_type" : "_ZTIRNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIRN7android8String16E",
-   "name" : "android::String16 &",
-   "referenced_type" : "_ZTIN7android8String16E",
-   "self_type" : "_ZTIRN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -10205,7 +8423,7 @@
    "referenced_type" : "_ZTIDs",
    "self_type" : "_ZTIPDs",
    "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
+   "source_file" : "system/core/libutils/include/utils/Unicode.h"
   },
   {
    "alignment" : 4,
@@ -10286,7 +8504,7 @@
    "referenced_type" : "_ZTIKDi",
    "self_type" : "_ZTIPKDi",
    "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
+   "source_file" : "system/core/libutils/include/utils/Unicode.h"
   },
   {
    "alignment" : 4,
@@ -10295,7 +8513,7 @@
    "referenced_type" : "_ZTIKDs",
    "self_type" : "_ZTIPKDs",
    "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
+   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -10488,10 +8706,10 @@
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIPKN7android6VectorINS_7String8EEE",
-   "name" : "const android::Vector<android::String8> *",
-   "referenced_type" : "_ZTIKN7android6VectorINS_7String8EEE",
-   "self_type" : "_ZTIPKN7android6VectorINS_7String8EEE",
+   "linker_set_key" : "_ZTIPKN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "name" : "const android::Vector<std::basic_string<char, std::char_traits<char>, std::allocator<char>>> *",
+   "referenced_type" : "_ZTIKN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "self_type" : "_ZTIPKN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/Vector.h"
   },
@@ -10521,24 +8739,6 @@
    "self_type" : "_ZTIPKN7android7RefBaseE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/RefBase.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIPKN7android7String8E",
-   "name" : "const android::String8 *",
-   "referenced_type" : "_ZTIKN7android7String8E",
-   "self_type" : "_ZTIPKN7android7String8E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIPKN7android8String16E",
-   "name" : "const android::String16 *",
-   "referenced_type" : "_ZTIKN7android8String16E",
-   "self_type" : "_ZTIPKN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -10674,15 +8874,6 @@
    "self_type" : "_ZTIPN7android14MessageHandlerE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/RefBase.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIPN7android14StaticString16ILj1EEE",
-   "name" : "android::StaticString16<1> *",
-   "referenced_type" : "_ZTIN7android14StaticString16ILj1EEE",
-   "self_type" : "_ZTIPN7android14StaticString16ILj1EEE",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -10947,10 +9138,10 @@
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIPN7android6VectorINS_7String8EEE",
-   "name" : "android::Vector<android::String8> *",
-   "referenced_type" : "_ZTIN7android6VectorINS_7String8EEE",
-   "self_type" : "_ZTIPN7android6VectorINS_7String8EEE",
+   "linker_set_key" : "_ZTIPN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "name" : "android::Vector<std::basic_string<char, std::char_traits<char>, std::allocator<char>>> *",
+   "referenced_type" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "self_type" : "_ZTIPN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/Vector.h"
   },
@@ -11010,33 +9201,6 @@
   },
   {
    "alignment" : 4,
-   "linker_set_key" : "_ZTIPN7android7String8E",
-   "name" : "android::String8 *",
-   "referenced_type" : "_ZTIN7android7String8E",
-   "self_type" : "_ZTIPN7android7String8E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/Printer.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIPN7android8String1610StaticDataILj1EEE",
-   "name" : "android::String16::StaticData<1> *",
-   "referenced_type" : "_ZTIN7android8String1610StaticDataILj1EEE",
-   "self_type" : "_ZTIPN7android8String1610StaticDataILj1EEE",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTIPN7android8String16E",
-   "name" : "android::String16 *",
-   "referenced_type" : "_ZTIN7android8String16E",
-   "self_type" : "_ZTIPN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android9CallStack12StackDeleterE",
    "name" : "android::CallStack::StackDeleter *",
    "referenced_type" : "_ZTIN7android9CallStack12StackDeleterE",
@@ -11088,6 +9252,15 @@
    "self_type" : "_ZTIPN7android9TokenizerE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
+  },
+  {
+   "alignment" : 4,
+   "linker_set_key" : "_ZTIPNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "name" : "std::basic_string<char, std::char_traits<char>, std::allocator<char>> *",
+   "referenced_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "self_type" : "_ZTIPNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "size" : 4,
+   "source_file" : "system/core/libutils/include/utils/Printer.h"
   },
   {
    "alignment" : 4,
@@ -11156,16 +9329,6 @@
  "qualified_types" :
  [
   {
-   "alignment" : 2,
-   "is_const" : true,
-   "linker_set_key" : "_ZTIA1_KDs",
-   "name" : "const char16_t[1]",
-   "referenced_type" : "_ZTIA1_Ds",
-   "self_type" : "_ZTIA1_KDs",
-   "size" : 2,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
    "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIK13native_handle",
@@ -11193,7 +9356,7 @@
    "referenced_type" : "_ZTIDi",
    "self_type" : "_ZTIKDi",
    "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
+   "source_file" : "system/core/libutils/include/utils/Unicode.h"
   },
   {
    "alignment" : 2,
@@ -11203,7 +9366,7 @@
    "referenced_type" : "_ZTIDs",
    "self_type" : "_ZTIKDs",
    "size" : 2,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
+   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -11438,10 +9601,10 @@
   {
    "alignment" : 4,
    "is_const" : true,
-   "linker_set_key" : "_ZTIKN7android6VectorINS_7String8EEE",
-   "name" : "const android::Vector<android::String8>",
-   "referenced_type" : "_ZTIN7android6VectorINS_7String8EEE",
-   "self_type" : "_ZTIKN7android6VectorINS_7String8EEE",
+   "linker_set_key" : "_ZTIKN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "name" : "const android::Vector<std::basic_string<char, std::char_traits<char>, std::allocator<char>>>",
+   "referenced_type" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "self_type" : "_ZTIKN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
    "size" : 20,
    "source_file" : "system/core/libutils/include/utils/Vector.h"
   },
@@ -11488,36 +9651,6 @@
   {
    "alignment" : 4,
    "is_const" : true,
-   "linker_set_key" : "_ZTIKN7android7String8E",
-   "name" : "const android::String8",
-   "referenced_type" : "_ZTIN7android7String8E",
-   "self_type" : "_ZTIKN7android7String8E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "alignment" : 4,
-   "is_const" : true,
-   "linker_set_key" : "_ZTIKN7android8String1610StaticDataILj1EEE",
-   "name" : "const android::String16::StaticData<1>",
-   "referenced_type" : "_ZTIN7android8String1610StaticDataILj1EEE",
-   "self_type" : "_ZTIKN7android8String1610StaticDataILj1EEE",
-   "size" : 8,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
-   "is_const" : true,
-   "linker_set_key" : "_ZTIKN7android8String16E",
-   "name" : "const android::String16",
-   "referenced_type" : "_ZTIN7android8String16E",
-   "self_type" : "_ZTIKN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "alignment" : 4,
-   "is_const" : true,
    "linker_set_key" : "_ZTIKN7android9CallStackE",
    "name" : "const android::CallStack",
    "referenced_type" : "_ZTIN7android9CallStackE",
@@ -11542,8 +9675,28 @@
    "name" : "const android::Tokenizer",
    "referenced_type" : "_ZTIN7android9TokenizerE",
    "self_type" : "_ZTIKN7android9TokenizerE",
-   "size" : 28,
+   "size" : 36,
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
+  },
+  {
+   "alignment" : 4,
+   "is_const" : true,
+   "linker_set_key" : "_ZTIKNSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
+   "name" : "const std::basic_string<char16_t, std::char_traits<char16_t>, std::allocator<char16_t>>",
+   "referenced_type" : "_ZTINSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
+   "self_type" : "_ZTIKNSt3__112basic_stringIDsNS_11char_traitsIDsEENS_9allocatorIDsEEEE",
+   "size" : 12,
+   "source_file" : "system/core/libutils/include/utils/String8.h"
+  },
+  {
+   "alignment" : 4,
+   "is_const" : true,
+   "linker_set_key" : "_ZTIKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "name" : "const std::basic_string<char, std::char_traits<char>, std::allocator<char>>",
+   "referenced_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "self_type" : "_ZTIKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE",
+   "size" : 12,
+   "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
    "alignment" : 4,
@@ -12624,31 +10777,6 @@
    "base_specifiers" :
    [
     {
-     "referenced_type" : "_ZTIN7android8String16E"
-    }
-   ],
-   "fields" :
-   [
-    {
-     "access" : "private",
-     "field_name" : "mData",
-     "field_offset" : 32,
-     "referenced_type" : "_ZTIKN7android8String1610StaticDataILj1EEE"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android14StaticString16ILj1EEE",
-   "name" : "android::StaticString16<1>",
-   "record_kind" : "class",
-   "referenced_type" : "_ZTIN7android14StaticString16ILj1EEE",
-   "self_type" : "_ZTIN7android14StaticString16ILj1EEE",
-   "size" : 12,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
-   "base_specifiers" :
-   [
-    {
      "referenced_type" : "_ZTIN7android7PrinterE"
     }
    ],
@@ -12658,7 +10786,7 @@
      "access" : "private",
      "field_name" : "mTarget",
      "field_offset" : 32,
-     "referenced_type" : "_ZTIPN7android7String8E"
+     "referenced_type" : "_ZTIPNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "access" : "private",
@@ -13636,32 +11764,6 @@
    "template_args" :
    [
     "_ZTIN7android6Looper8ResponseE"
-   ]
-  },
-  {
-   "alignment" : 1,
-   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE",
-   "name" : "android::trait_trivial_move<android::String8>",
-   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE",
-   "size" : 1,
-   "source_file" : "system/core/libutils/include/utils/String8.h",
-   "template_args" :
-   [
-    "_ZTIN7android7String8E"
-   ]
-  },
-  {
-   "alignment" : 1,
-   "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_8String16EEE",
-   "name" : "android::trait_trivial_move<android::String16>",
-   "referenced_type" : "_ZTIN7android18trait_trivial_moveINS_8String16EEE",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_8String16EEE",
-   "size" : 1,
-   "source_file" : "system/core/libutils/include/utils/String16.h",
-   "template_args" :
-   [
-    "_ZTIN7android8String16E"
    ]
   },
   {
@@ -14857,16 +12959,16 @@
      "referenced_type" : "_ZTIN7android10VectorImplE"
     }
    ],
-   "linker_set_key" : "_ZTIN7android6VectorINS_7String8EEE",
-   "name" : "android::Vector<android::String8>",
+   "linker_set_key" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "name" : "android::Vector<std::basic_string<char, std::char_traits<char>, std::allocator<char>>>",
    "record_kind" : "class",
-   "referenced_type" : "_ZTIN7android6VectorINS_7String8EEE",
-   "self_type" : "_ZTIN7android6VectorINS_7String8EEE",
+   "referenced_type" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
+   "self_type" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE",
    "size" : 20,
    "source_file" : "system/core/libutils/include/utils/Vector.h",
    "template_args" :
    [
-    "_ZTIN7android7String8E"
+    "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
    ],
    "vtable_components" :
    [
@@ -14875,33 +12977,33 @@
     },
     {
      "kind" : "rtti",
-     "mangled_component_name" : "_ZTIN7android6VectorINS_7String8EEE"
+     "mangled_component_name" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE"
     },
     {
      "kind" : "complete_dtor_pointer",
-     "mangled_component_name" : "_ZN7android6VectorINS_7String8EED1Ev"
+     "mangled_component_name" : "_ZN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEED1Ev"
     },
     {
      "kind" : "deleting_dtor_pointer",
-     "mangled_component_name" : "_ZN7android6VectorINS_7String8EED0Ev"
+     "mangled_component_name" : "_ZN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEED0Ev"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE12do_constructEPvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE12do_constructEPvj"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE10do_destroyEPvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE10do_destroyEPvj"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE7do_copyEPvPKvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE7do_copyEPvPKvj"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE8do_splatEPvPKvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE8do_splatEPvPKvj"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE15do_move_forwardEPvPKvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE15do_move_forwardEPvPKvj"
     },
     {
-     "mangled_component_name" : "_ZNK7android6VectorINS_7String8EE16do_move_backwardEPvPKvj"
+     "mangled_component_name" : "_ZNK7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEE16do_move_backwardEPvPKvj"
     }
    ]
   },
@@ -15103,63 +13205,6 @@
    ]
   },
   {
-   "alignment" : 4,
-   "fields" :
-   [
-    {
-     "access" : "private",
-     "field_name" : "mString",
-     "referenced_type" : "_ZTIPKc"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android7String8E",
-   "name" : "android::String8",
-   "record_kind" : "class",
-   "referenced_type" : "_ZTIN7android7String8E",
-   "self_type" : "_ZTIN7android7String8E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String8.h"
-  },
-  {
-   "alignment" : 4,
-   "fields" :
-   [
-    {
-     "field_name" : "size",
-     "referenced_type" : "_ZTIKj"
-    },
-    {
-     "field_name" : "data",
-     "field_offset" : 32,
-     "referenced_type" : "_ZTIA1_Ds"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android8String1610StaticDataILj1EEE",
-   "name" : "android::String16::StaticData<1>",
-   "referenced_type" : "_ZTIN7android8String1610StaticDataILj1EEE",
-   "self_type" : "_ZTIN7android8String1610StaticDataILj1EEE",
-   "size" : 8,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
-   "alignment" : 4,
-   "fields" :
-   [
-    {
-     "access" : "private",
-     "field_name" : "mString",
-     "referenced_type" : "_ZTIPKDs"
-    }
-   ],
-   "linker_set_key" : "_ZTIN7android8String16E",
-   "name" : "android::String16",
-   "record_kind" : "class",
-   "referenced_type" : "_ZTIN7android8String16E",
-   "self_type" : "_ZTIN7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
-  },
-  {
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android9CallStack12StackDeleterE",
    "name" : "android::CallStack::StackDeleter",
@@ -15175,7 +13220,7 @@
     {
      "access" : "private",
      "field_name" : "mFrameLines",
-     "referenced_type" : "_ZTIN7android6VectorINS_7String8EEE"
+     "referenced_type" : "_ZTIN7android6VectorINSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEEE"
     }
    ],
    "linker_set_key" : "_ZTIN7android9CallStackE",
@@ -15308,42 +13353,42 @@
     {
      "access" : "private",
      "field_name" : "mFilename",
-     "referenced_type" : "_ZTIN7android7String8E"
+     "referenced_type" : "_ZTINSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     },
     {
      "access" : "private",
      "field_name" : "mFileMap",
-     "field_offset" : 32,
+     "field_offset" : 96,
      "referenced_type" : "_ZTIPN7android7FileMapE"
     },
     {
      "access" : "private",
      "field_name" : "mBuffer",
-     "field_offset" : 64,
+     "field_offset" : 128,
      "referenced_type" : "_ZTIPc"
     },
     {
      "access" : "private",
      "field_name" : "mOwnBuffer",
-     "field_offset" : 96,
+     "field_offset" : 160,
      "referenced_type" : "_ZTIb"
     },
     {
      "access" : "private",
      "field_name" : "mLength",
-     "field_offset" : 128,
+     "field_offset" : 192,
      "referenced_type" : "_ZTIj"
     },
     {
      "access" : "private",
      "field_name" : "mCurrent",
-     "field_offset" : 160,
+     "field_offset" : 224,
      "referenced_type" : "_ZTIPKc"
     },
     {
      "access" : "private",
      "field_name" : "mLineNumber",
-     "field_offset" : 192,
+     "field_offset" : 256,
      "referenced_type" : "_ZTIi"
     }
    ],
@@ -15352,7 +13397,7 @@
    "record_kind" : "class",
    "referenced_type" : "_ZTIN7android9TokenizerE",
    "self_type" : "_ZTIN7android9TokenizerE",
-   "size" : 28,
+   "size" : 36,
    "source_file" : "system/core/libutils/include/utils/Tokenizer.h"
   },
   {
@@ -15442,15 +13487,6 @@
    "self_type" : "_ZTION7android7FileMapE",
    "size" : 4,
    "source_file" : "system/core/libutils/include/utils/FileMap.h"
-  },
-  {
-   "alignment" : 4,
-   "linker_set_key" : "_ZTION7android8String16E",
-   "name" : "android::String16 &&",
-   "referenced_type" : "_ZTIN7android8String16E",
-   "self_type" : "_ZTION7android8String16E",
-   "size" : 4,
-   "source_file" : "system/core/libutils/include/utils/String16.h"
   }
  ]
 }

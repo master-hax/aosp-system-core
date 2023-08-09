@@ -106,7 +106,7 @@ status_t Tokenizer::fromContents(const String8& filename,
 
 String8 Tokenizer::getLocation() const {
     String8 result;
-    result.appendFormat("%s:%d", mFilename.c_str(), mLineNumber);
+    appendFormat(result, "%s:%d", mFilename.c_str(), mLineNumber);
     return result;
 }
 

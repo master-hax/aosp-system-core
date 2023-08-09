@@ -139,7 +139,7 @@ public:
         if (reinterpret_cast<uintptr_t>(stackToStringInternal) != 0 && stack != nullptr) {
             return stackToStringInternal(prefix, stack);
         } else {
-            return String8::format("%s<CallStack package not linked>", (prefix ? prefix : ""));
+            return String8format("%s<CallStack package not linked>", (prefix ? prefix : ""));
         }
     }
 #else // !WEAKS_AVAILABLE

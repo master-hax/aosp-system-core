@@ -90,7 +90,7 @@ static String8 getThreadName(pid_t tid) {
 
     if (procName == nullptr) {
         // Reading /proc/self/task/%d/comm failed due to a race
-        return String8::format("[err-unknown-tid-%d]", tid);
+        return String8format("[err-unknown-tid-%d]", tid);
     }
 
     // Strip ending newline
