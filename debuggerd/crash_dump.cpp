@@ -278,9 +278,8 @@ static void ParseArgs(int argc, char** argv, pid_t* pseudothread_tid, DebuggerdD
   }
 }
 
-static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo,
-                          std::unique_ptr<unwindstack::Regs>* regs, ProcessInfo* process_info,
-                          bool* recoverable_gwp_asan_crash) {
+static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo, ThreadInfo* info,
+                          ProcessInfo* process_info, bool* recoverable_gwp_asan_crash) {
   std::aligned_storage<sizeof(CrashInfo) + 1, alignof(CrashInfo)>::type buf;
   CrashInfo* crash_info = reinterpret_cast<CrashInfo*>(&buf);
   ssize_t rc = TEMP_FAILURE_RETRY(read(fd.get(), &buf, sizeof(buf)));
@@ -333,8 +332,9 @@ static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo,
         process_info->untagged_fault_address =
             untag_address(reinterpret_cast<uintptr_t>(siginfo->si_addr));
       }
-      regs->reset(unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(),
-                                                        &crash_info->data.s.ucontext));
+      info->esr = get_aarch64_esr(&crash_info->data.s.ucontext);
+      info->registers.reset(unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(),
+                                                                  &crash_info->data.s.ucontext));
       break;
 
     default:
@@ -537,8 +537,7 @@ int main(int argc, char** argv) {
 
       if (thread == g_target_thread) {
         // Read the thread's registers along with the rest of the crash info out of the pipe.
-        ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info,
-                      &recoverable_gwp_asan_crash);
+        ReadCrashInfo(input_pipe, &siginfo, &info, &process_info, &recoverable_gwp_asan_crash);
         info.siginfo = &siginfo;
         info.signo = info.siginfo->si_signo;
 

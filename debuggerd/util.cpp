@@ -94,3 +94,17 @@ bool iterate_tids(pid_t pid, std::function<void(pid_t)> callback) {
   }
   return true;
 }
+
+uint64_t get_aarch64_esr(void* raw_ucontext) {
+#if defined(__aarch64__)
+  ucontext_t* ucontext = reinterpret_cast<ucontext_t*>(raw_ucontext);
+  _aarch64_ctx* ctx = reinterpret_cast<_aarch64_ctx*>(ucontext->uc_mcontext.__reserved);
+  while (ctx->size != 0) {
+    if (ctx->magic == ESR_MAGIC) {
+      return reinterpret_cast<esr_context*>(ctx)->esr;
+    }
+    ctx = reinterpret_cast<_aarch64_ctx*>(reinterpret_cast<uint8_t*>(ctx) + ctx->size);
+  }
+#endif
+  return -1;
+}

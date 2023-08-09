@@ -79,8 +79,9 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
     .selinux_label = std::move(selinux_label), .siginfo = siginfo,
     // Only supported on aarch64 for now.
 #if defined(__aarch64__)
-    .tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0),
-    .pac_enabled_keys = prctl(PR_PAC_GET_ENABLED_KEYS, 0, 0, 0, 0),
+    .tagged_addr_ctrl = static_cast<uint64_t>(prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0)),
+    .pac_enabled_keys = static_cast<uint64_t>(prctl(PR_PAC_GET_ENABLED_KEYS, 0, 0, 0, 0)),
+    .esr = get_aarch64_esr(ucontext),
 #endif
   };
   const ThreadInfo& thread = threads[pid];

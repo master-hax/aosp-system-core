@@ -86,12 +86,15 @@ static void print_thread_header(CallbackType callback, const Tombstone& tombston
      thread.name().c_str(), process_name);
   CB(should_log, "uid: %d", tombstone.uid());
   if (thread.tagged_addr_ctrl() != -1) {
-    CB(should_log, "tagged_addr_ctrl: %016" PRIx64 "%s", thread.tagged_addr_ctrl(),
+    CB(should_log, "tagged_addr_ctrl: %#016" PRIx64 "%s", thread.tagged_addr_ctrl(),
        describe_tagged_addr_ctrl(thread.tagged_addr_ctrl()).c_str());
   }
   if (thread.pac_enabled_keys() != -1) {
-    CB(should_log, "pac_enabled_keys: %016" PRIx64 "%s", thread.pac_enabled_keys(),
+    CB(should_log, "pac_enabled_keys: %#016" PRIx64 "%s", thread.pac_enabled_keys(),
        describe_pac_enabled_keys(thread.pac_enabled_keys()).c_str());
+  }
+  if (thread.esr() != -1) {
+    CB(should_log, "esr: %#016" PRIx64 "%s", thread.esr(), describe_esr(thread.esr()).c_str());
   }
 }
 

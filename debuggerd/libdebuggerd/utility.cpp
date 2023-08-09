@@ -479,6 +479,13 @@ std::string describe_pac_enabled_keys(long value) {
   return describe_end(value, desc);
 }
 
+std::string describe_esr(long value) {
+  int ec = (value >> 26) & 0b111111;
+  if (ec == 0b001101) return " (Branch Target Exception)";
+  if (ec == 0b011100) return " (Pointer Authentication Exception)";
+  return "";
+}
+
 void log_backtrace(log_t* log, unwindstack::AndroidUnwinder* unwinder,
                    unwindstack::AndroidUnwinderData& data, const char* prefix) {
   std::set<std::string> unreadable_elf_files;

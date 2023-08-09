@@ -442,6 +442,7 @@ static void dump_thread(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwi
   thread.set_name(thread_info.thread_name);
   thread.set_tagged_addr_ctrl(thread_info.tagged_addr_ctrl);
   thread.set_pac_enabled_keys(thread_info.pac_enabled_keys);
+  thread.set_esr(thread_info.esr);
 
   unwindstack::AndroidUnwinderData data;
   // Indicate we want a copy of the initial registers.

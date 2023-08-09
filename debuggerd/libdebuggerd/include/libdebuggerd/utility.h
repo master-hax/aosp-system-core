@@ -93,6 +93,7 @@ const char* get_signame(const siginfo_t*);
 const char* get_sigcode(const siginfo_t*);
 std::string describe_tagged_addr_ctrl(long ctrl);
 std::string describe_pac_enabled_keys(long keys);
+std::string describe_esr(long esr);
 
 // Number of bytes per MTE granule.
 constexpr size_t kTagGranuleSize = 16;
