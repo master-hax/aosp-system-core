@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31aeb7e1_c4c28787",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-09T22:51:45Z",
+      "side": 1,
+      "message": "Is there any way to add a test for this?\n\nI would presume it\u0027s not easy if mte is set, but I thought I would ask.",
+      "revId": "5ecabf21136530b3deeff12ea257b3f157fdfdd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69286ccc_1477e685",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-09T22:51:45Z",
+      "side": 1,
+      "message": "Should this be uint64_t along with the two value above since you changed them in the info structure from long to uint64_t?",
+      "range": {
+        "startLine": 96,
+        "startChar": 25,
+        "endLine": 96,
+        "endChar": 29
+      },
+      "revId": "5ecabf21136530b3deeff12ea257b3f157fdfdd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1063366_1a3a2cd2",
+        "filename": "debuggerd/libdebuggerd/utility.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-09T22:51:45Z",
+      "side": 1,
+      "message": "Should be the numeric value instead of nothing?",
+      "range": {
+        "startLine": 486,
+        "startChar": 10,
+        "endLine": 486,
+        "endChar": 11
+      },
+      "revId": "5ecabf21136530b3deeff12ea257b3f157fdfdd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
