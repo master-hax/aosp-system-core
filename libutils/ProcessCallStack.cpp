@@ -206,7 +206,7 @@ void ProcessCallStack::print(Printer& printer) const {
 
 void ProcessCallStack::printInternal(Printer& printer, Printer& csPrinter) const {
     dumpProcessHeader(printer, getpid(),
-                      getTimeString(mTimeUpdated).string());
+                      getTimeString(mTimeUpdated).c_str());
 
     for (size_t i = 0; i < mThreadMap.size(); ++i) {
         pid_t tid = mThreadMap.keyAt(i);
@@ -214,7 +214,7 @@ void ProcessCallStack::printInternal(Printer& printer, Printer& csPrinter) const
         const String8& threadName = threadInfo.threadName;
 
         printer.printLine("");
-        printer.printFormatLine("\"%s\" sysTid=%d", threadName.string(), tid);
+        printer.printFormatLine("\"%s\" sysTid=%d", threadName.c_str(), tid);
 
         threadInfo.callStack.print(csPrinter);
     }
