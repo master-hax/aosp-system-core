@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "1dbb5a68_0b406bcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-10T06:14:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ab0700e_a1d7f9f1",
+      "revId": "7bd0ee9c41ee3ff8299c20fe37c3d5fdcd4ee2c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c9e58527_a896ae87",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 3
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-09T19:04:51Z",
       "side": 1,
       "message": "Any reason not to make this ERROR?",
+      "revId": "7bd0ee9c41ee3ff8299c20fe37c3d5fdcd4ee2c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ba06e89_c3a17a43",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 737,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-08-10T06:14:10Z",
+      "side": 1,
+      "message": "This is a rare event. I now print this as an ERROR if we succeed to remove the file thereby giving us a hint in the logs that there was indeed a stale file present.",
+      "parentUuid": "c9e58527_a896ae87",
       "revId": "7bd0ee9c41ee3ff8299c20fe37c3d5fdcd4ee2c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
