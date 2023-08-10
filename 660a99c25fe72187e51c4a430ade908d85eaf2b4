@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c455dd0_9604543a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95623947_04620cb0",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "181aa5eb_75fe4dde",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-09T21:23:13Z",
       "side": 1,
       "message": "Can we delete this Compress() method? It\u0027s just a wrapper around compressor-\u003eCompress().",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1c7f970_bc7d3a13",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "181aa5eb_75fe4dde",
       "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -70,6 +106,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea49ef0a_34c5fd43",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1de2d29a_454d7454",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d4f78c2f_7b429f3d",
@@ -83,6 +137,24 @@
       "writtenOn": "2023-08-09T21:23:13Z",
       "side": 1,
       "message": "Use \u003c\u003e instead of \"\" for global includes; move to android-specific include block as well.",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0dddbba_fe319919",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4f78c2f_7b429f3d",
       "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -104,6 +176,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "782ee2ab_b94d4198",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1e28eb5_53112233",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "988b5685_68ef65ed",
@@ -121,6 +211,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a994fcc_ed0e9a07",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "988b5685_68ef65ed",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "47465d6d_e0bf3ce1",
@@ -134,6 +242,24 @@
       "writtenOn": "2023-08-09T21:23:13Z",
       "side": 1,
       "message": "nit: newline between class and previous method",
+      "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf32a4e3_a73c1202",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47465d6d_e0bf3ce1",
       "revId": "660a99c25fe72187e51c4a430ade908d85eaf2b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8895e6cf_c363105a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "I did a squash and the CL got moved here aosp/2702113, the comments here should all be responded to though.",
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b8c0d124_c2caf46d",
@@ -47,6 +64,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f476389e_0cad4386",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8c0d124_c2caf46d",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 15
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cecb108f_7b1b753a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66ec7ba6_069d5d21",
+      "range": {
+        "startLine": 28,
+        "startChar": 85,
+        "endLine": 28,
+        "endChar": 86
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ea992d8c_dc41ad4b",
@@ -64,6 +129,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d5a67b7_4aa0af50",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea992d8c_dc41ad4b",
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eed6866e_17b81117",
@@ -77,6 +160,24 @@
       "writtenOn": "2023-08-09T21:56:10Z",
       "side": 1,
       "message": "mark as const and [[nodiscard]]",
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24a42f92_b61fd667",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eed6866e_17b81117",
       "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -104,6 +205,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7449a68_0b6fc154",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de4177d1_ea51d14d",
+      "range": {
+        "startLine": 118,
+        "startChar": 47,
+        "endLine": 118,
+        "endChar": 76
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fa89d0ba_c8dc88cf",
@@ -117,6 +242,30 @@
       "writtenOn": "2023-08-09T21:56:10Z",
       "side": 1,
       "message": "implement this inline inside class GzCompressor {} block. No need to separate declaration with definition.",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 84
+      },
+      "revId": "f35737385cf5f59d36660f367453a7ad5b7e5e88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f893b12_b134e1ee",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T16:39:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa89d0ba_c8dc88cf",
       "range": {
         "startLine": 106,
         "startChar": 0,
