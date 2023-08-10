@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7b5ed01_0f29e77d",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2269,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-10T00:33:39Z",
+      "side": 1,
+      "message": "I think it does, but since I wrote it, it probably doesn\u0027t convey what I mean.\n\nI want the comment to convey that if the sections move around, then this test might need to be modified. I\u0027ve changed the comment to reflect this a bit better.",
+      "parentUuid": "1f36b608_6bc04ebd",
+      "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "494d4e0f_c3fef4b8",
@@ -48,6 +66,30 @@
       "writtenOn": "2023-08-09T14:07:42Z",
       "side": 1,
       "message": "(i\u0027d drop the `errno\u003d` since this is actually a string)",
+      "range": {
+        "startLine": 534,
+        "startChar": 89,
+        "endLine": 534,
+        "endChar": 95
+      },
+      "revId": "86e6761c35f9f43f65bc04225073a92054d4bfb4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9860f53_e3512dbb",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-08-10T00:33:39Z",
+      "side": 1,
+      "message": "Good point, removed the errno\u003d.",
+      "parentUuid": "494d4e0f_c3fef4b8",
       "range": {
         "startLine": 534,
         "startChar": 89,
