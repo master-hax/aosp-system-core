@@ -707,7 +707,12 @@ Result<void> ServiceParser::EndSection() {
     if (old_service) {
         if (!service_->is_override()) {
             return Error() << "ignored duplicate definition of service '" << service_->name()
-                           << "'";
+                           << "' because it's not 'override'-able.";
+        }
+
+        if (StartsWith(filename_, "/apex/") && old_service->IsRunning()) {
+            return Error() << "ignored duplicate definition of service '" << service_->name()
+                           << "' because it's already running.";
         }
 
         if (StartsWith(filename_, "/apex/") && !old_service->is_updatable()) {
