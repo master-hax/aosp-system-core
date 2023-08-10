@@ -53,9 +53,10 @@ public:
 
                                 ~String16();
 
-    inline  const char16_t*     string() const;
+    inline  const char16_t*     c_str() const;
 
 private:
+    inline  const char16_t*     string() const;
     static inline std::string   std_string(const String16& str);
 public:
             size_t              size() const;
@@ -234,6 +235,11 @@ inline int strictly_order_type(const String16& lhs, const String16& rhs)
     return compare_type(lhs, rhs) < 0;
 }
 
+inline const char16_t* String16::c_str() const
+{
+    return mString;
+}
+
 inline const char16_t* String16::string() const
 {
     return mString;
@@ -241,7 +247,7 @@ inline const char16_t* String16::string() const
 
 inline std::string String16::std_string(const String16& str)
 {
-    return std::string(String8(str).string());
+    return std::string(String8(str).c_str());
 }
 
 inline String16& String16::operator=(const String16& other)
