@@ -84,6 +84,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "30938b79_888b251b",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-10T03:29:30Z",
+      "side": 1,
+      "message": "I don\u0027t understand this comment. I am using u16string, aren\u0027t I? Or you\u0027re referring to a quick-and-dirty conversion function name \"s2ws\"?",
+      "parentUuid": "57adc8a0_9a6c9a8a",
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a69fcd88_b6b99dcd",
         "filename": "libutils/include/utils/String8.h",
         "patchSetId": 2
@@ -113,6 +131,24 @@
       "side": 1,
       "message": "what is the preferred approach in C++17 and beyond?",
       "parentUuid": "a69fcd88_b6b99dcd",
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bbca7e4_8f3acb46",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-10T03:29:30Z",
+      "side": 1,
+      "message": "Ah, I\u0027ll probably replace these conversion functions later with Android\u0027s implementation, this was just a quick and dirty one to get it building and figure out how many changes do we need to do to migrate android::StringX to std::string.",
+      "parentUuid": "60757260_5e73d908",
       "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
