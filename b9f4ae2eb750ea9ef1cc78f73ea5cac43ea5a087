@@ -24,6 +24,29 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "749e14f4_3b34793b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-10T17:33:21Z",
+      "side": 1,
+      "message": "remove this line, so that we can re-use the old aosp URL for reviewing",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 52
+      },
+      "revId": "b9f4ae2eb750ea9ef1cc78f73ea5cac43ea5a087",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "7c245cc5_51deb764",
