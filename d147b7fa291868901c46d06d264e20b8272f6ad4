@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "40d19516_1e87385d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T17:27:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5fc9ade4_ad7b0a96",
+      "range": {
+        "startLine": 194,
+        "startChar": 0,
+        "endLine": 194,
+        "endChar": 4
+      },
+      "revId": "d147b7fa291868901c46d06d264e20b8272f6ad4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "21b9b2de_37387cf7",
@@ -61,6 +85,30 @@
       "writtenOn": "2023-08-09T21:29:35Z",
       "side": 1,
       "message": "zstd_context_, and \u003d nullptr (if not a unique_ptr)",
+      "range": {
+        "startLine": 199,
+        "startChar": 26,
+        "endLine": 199,
+        "endChar": 27
+      },
+      "revId": "d147b7fa291868901c46d06d264e20b8272f6ad4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "246533ae_a1b5e448",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-10T17:27:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21b9b2de_37387cf7",
       "range": {
         "startLine": 199,
         "startChar": 26,
