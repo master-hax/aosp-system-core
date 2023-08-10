@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "53cf1772_b0244c93",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-10T17:31:59Z",
+      "side": 1,
+      "message": "leave just 1 Change-Id line",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 52
+      },
+      "revId": "b9f4ae2eb750ea9ef1cc78f73ea5cac43ea5a087",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "7c245cc5_51deb764",
@@ -14,6 +37,52 @@
       "writtenOn": "2023-08-10T16:40:01Z",
       "side": 1,
       "message": "CL replacing aosp/2699454",
+      "revId": "b9f4ae2eb750ea9ef1cc78f73ea5cac43ea5a087",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d499bcef_8e0338fa",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-10T17:31:59Z",
+      "side": 1,
+      "message": "use switch() so that compiler can warn you on handled cases",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 6
+      },
+      "revId": "b9f4ae2eb750ea9ef1cc78f73ea5cac43ea5a087",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3156d04b_396dffc1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-10T17:31:59Z",
+      "side": 1,
+      "message": "return directly instead of saving to a local variable",
+      "range": {
+        "startLine": 60,
+        "startChar": 8,
+        "endLine": 60,
+        "endChar": 18
+      },
       "revId": "b9f4ae2eb750ea9ef1cc78f73ea5cac43ea5a087",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
