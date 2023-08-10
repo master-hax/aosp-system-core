@@ -1307,7 +1307,7 @@ static Result<void> do_perform_apex_config(const BuiltinArguments& args) {
         }
     }
 
-    auto parse_configs = ParseApexConfigs(/*apex_name=*/"");
+    auto parse_configs = ParseAllApexConfigs(bootstrap);
     if (!parse_configs.ok()) {
         return parse_configs.error();
     }

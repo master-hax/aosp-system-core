@@ -25,8 +25,10 @@ namespace android {
 namespace init {
 
 // Parse all config files for a given apex.
-// If apex name is empty(""), config files for all apexes will be parsed.
 Result<void> ParseApexConfigs(const std::string& apex_name);
+
+// Parse all config files for all apexes under /apex.
+Result<void> ParseAllApexConfigs(bool bootstrap);
 
 }  // namespace init
 }  // namespace android
