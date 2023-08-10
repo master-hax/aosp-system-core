@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d8ea8b4_5c553e52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-08-10T23:48:01Z",
+      "side": 1,
+      "message": "I don\u0027t think this will compile due to many users of \u0027string\u0027. Also please provide reasoning in the CL (\"aligning usage with C++ stdlib\")",
+      "revId": "b004535c773e8b04cf0bd1beb880e5dfed29c699",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
