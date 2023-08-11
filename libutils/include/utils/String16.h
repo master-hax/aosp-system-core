@@ -54,9 +54,10 @@ public:
                                 ~String16();
 
     inline  const char16_t*     c_str() const;
-    inline  const char16_t*     string() const;
 
 private:
+    // These symbols are for potential backward compatibility with prebuilts. To be removed.
+    inline  const char16_t*     string() const;
     static inline std::string   std_string(const String16& str);
 public:
             size_t              size() const;
