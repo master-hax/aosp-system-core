@@ -54,7 +54,6 @@ public:
                                 ~String16();
 
     inline  const char16_t*     c_str() const;
-    inline  const char16_t*     string() const;
 
             size_t              size() const;
     inline  bool                empty() const;
@@ -176,6 +175,10 @@ protected:
 
     template <size_t N>
     explicit constexpr String16(const StaticData<N>& s) : mString(s.data) {}
+
+private:  // TODO: public/private depending on ANDROID_STRING_ENABLE_LEGACY_METHODS
+    // These symbols are for potential backward compatibility with prebuilts. To be removed.
+    inline  const char16_t*     string() const;
 };
 
 // String16 can be trivially moved using memcpy() because moving does not

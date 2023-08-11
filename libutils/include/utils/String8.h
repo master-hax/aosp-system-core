@@ -56,7 +56,6 @@ public:
     static String8              formatV(const char* fmt, va_list args);
 
     inline  const char*         c_str() const;
-    inline  const char*         string() const;
 
     inline  size_t              size() const;
     inline  size_t              bytes() const;
@@ -133,6 +132,10 @@ private:
             status_t            real_append(const char* other, size_t numChars);
 
             const char* mString;
+
+private:  // TODO: public/private depending on ANDROID_STRING_ENABLE_LEGACY_METHODS
+    // These symbols are for potential backward compatibility with prebuilts. To be removed.
+    inline  const char*         string() const;
 };
 
 // String8 can be trivially moved using memcpy() because moving does not
