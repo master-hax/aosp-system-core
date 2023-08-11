@@ -58,9 +58,9 @@ public:
     static String8              formatV(const char* fmt, va_list args);
 
     inline const char* c_str() const;
-    inline const char* string() const;
 
 private:
+    inline const char* string() const;
     static inline std::string   std_string(const String8& str);
 public:
 
