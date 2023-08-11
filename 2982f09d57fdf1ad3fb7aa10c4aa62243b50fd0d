@@ -22,6 +22,30 @@
       },
       "revId": "2982f09d57fdf1ad3fb7aa10c4aa62243b50fd0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b1eddce_2fa0e4c5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T09:00:27Z",
+      "side": 1,
+      "message": "Previously, create_apex_data_dirs only aborted when opendir(/apex) fails, but not when mkdir() fails.\n\nNow,\n- if opendir(/apex) fails, perform_apex_config will fail. Same as before.\n- if any mkdir() fails, the rest of perform_apex_config still will run. Same as before, but with extra error logs.\n\nSo, from the higher view, this change doesn\u0027t bring behavioral changes.\n\nIf necessary, we could make perform_apex_config abort when mkdir() fails, which might be a separate change.",
+      "parentUuid": "4ae35cd7_71642449",
+      "range": {
+        "startLine": 16,
+        "startChar": 2,
+        "endLine": 17,
+        "endChar": 8
+      },
+      "revId": "2982f09d57fdf1ad3fb7aa10c4aa62243b50fd0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
