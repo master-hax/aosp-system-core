@@ -81,6 +81,30 @@
       },
       "revId": "51891138d763f934df409f0a015057de5e3e6402",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b36451b6_68423c8c",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T19:38:29Z",
+      "side": 1,
+      "message": "Ah, never mind. This one became entirely unrelated after one of rebases.",
+      "parentUuid": "9cf29869_f361f657",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "51891138d763f934df409f0a015057de5e3e6402",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
