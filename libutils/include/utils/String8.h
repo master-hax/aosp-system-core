@@ -56,8 +56,16 @@ public:
     static String8              formatV(const char* fmt, va_list args);
 
     inline  const char*         c_str() const;
-    inline  const char*         string() const;
 
+<<<<<<< PATCH SET (0e82c1 Lock down String8|16.string() usage)
+private:
+    // These symbols are for potential backward compatibility with prebuilts. To be removed.
+    inline  const char*         string() const;
+    static inline std::string   std_string(const String8& str);
+public:
+
+=======
+>>>>>>> BASE      (8245af Merge "Revert "Revert "Revert "Revert "Drop all path-related)
     inline  size_t              size() const;
     inline  size_t              bytes() const;
     inline  bool                empty() const;
