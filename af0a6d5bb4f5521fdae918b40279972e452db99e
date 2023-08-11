@@ -47,6 +47,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "012ba642_ea110a6a",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T20:24:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "670030e3_8d10af7b",
+      "range": {
+        "startLine": 71,
+        "startChar": 7,
+        "endLine": 71,
+        "endChar": 18
+      },
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57e4a892_13c127fc",
@@ -136,6 +160,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f6e71db_b1c7c5b1",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T20:24:27Z",
+      "side": 1,
+      "message": "Ah, sure. It\u0027s just a quick and dirty proof as of right now - I\u0027m distilling final changes off of this one, e.g. https://r.android.com/2703570",
+      "parentUuid": "81682040_3b33e9c6",
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a69fcd88_b6b99dcd",
@@ -202,6 +244,24 @@
       "writtenOn": "2023-08-10T23:36:36Z",
       "side": 1,
       "message": "@egranata I don\u0027t find anything to replace. I think it means \"don\u0027t use it, write your own\"",
+      "parentUuid": "7bbca7e4_8f3acb46",
+      "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4579d1b7_5c97b92e",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T20:24:27Z",
+      "side": 1,
+      "message": "Added a TODO.",
       "parentUuid": "7bbca7e4_8f3acb46",
       "revId": "af0a6d5bb4f5521fdae918b40279972e452db99e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
