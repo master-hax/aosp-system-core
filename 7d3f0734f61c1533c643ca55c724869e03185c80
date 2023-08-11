@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "382e9f65_f98819f8",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Done. Thanks for the suggestion.",
+      "parentUuid": "0669620a_5011e6a8",
+      "range": {
+        "startLine": 39,
+        "startChar": 40,
+        "endLine": 39,
+        "endChar": 58
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "58c96e37_c487d5c3",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-08-10T11:25:12Z",
       "side": 1,
       "message": ".rc ?",
+      "range": {
+        "startLine": 43,
+        "startChar": 82,
+        "endLine": 43,
+        "endChar": 84
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e663c536_c4532cd9",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Added a comment explaining why the pattern uses \"*rc\", not \".rc\". It\u0027s because APEXes can have versioned rc files like foo.32rc.",
+      "parentUuid": "58c96e37_c487d5c3",
       "range": {
         "startLine": 43,
         "startChar": 82,
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "172cadce_cd09be8f",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Probably. But I think listing cases is also good enough for readability for now.",
+      "parentUuid": "d5bbfd7d_78031f3f",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 9
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e7233b38_fae07afb",
@@ -100,6 +172,30 @@
       "writtenOn": "2023-08-10T11:25:12Z",
       "side": 1,
       "message": "RcFiles",
+      "range": {
+        "startLine": 127,
+        "startChar": 22,
+        "endLine": 127,
+        "endChar": 29
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f773875_09a0c9ca",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7233b38_fae07afb",
       "range": {
         "startLine": 127,
         "startChar": 22,
@@ -133,6 +229,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1fdd5e3_b240ab05",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fce7a41f_c2079e02",
+      "range": {
+        "startLine": 129,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 5
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cec71a8f_a6f6e97c",
@@ -146,6 +266,30 @@
       "writtenOn": "2023-08-10T11:25:12Z",
       "side": 1,
       "message": "This as well.",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 146,
+        "endChar": 5
+      },
+      "revId": "7d3f0734f61c1533c643ca55c724869e03185c80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e10db7ee_42590252",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-08-11T01:08:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cec71a8f_a6f6e97c",
       "range": {
         "startLine": 144,
         "startChar": 0,
