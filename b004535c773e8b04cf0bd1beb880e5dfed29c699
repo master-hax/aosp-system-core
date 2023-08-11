@@ -34,6 +34,24 @@
       "parentUuid": "6d8ea8b4_5c553e52",
       "revId": "b004535c773e8b04cf0bd1beb880e5dfed29c699",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60050b8d_a482f27e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T02:18:00Z",
+      "side": 1,
+      "message": "https://r.android.com/2704555 needs to go in first, before I\u0027m able to submit all the other string-\u003ec_str changes (and then - at last - this one).",
+      "parentUuid": "9c5bc986_f41bd430",
+      "revId": "b004535c773e8b04cf0bd1beb880e5dfed29c699",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
