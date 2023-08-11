@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da52a5c4_02127b5f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T19:36:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2ea13c07_1bedef74",
+      "revId": "51891138d763f934df409f0a015057de5e3e6402",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8fbf1b51_bb3ba9db",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-08-11T19:30:44Z",
       "side": 1,
       "message": "unrelated change",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "51891138d763f934df409f0a015057de5e3e6402",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cf29869_f361f657",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-11T19:36:25Z",
+      "side": 1,
+      "message": "linter forced it when uploading the change. Do you want me to --no-verify all changes I\u0027m doing to system/core, or just this one? It\u0027s sometimes actually related  (not saying this specific line is) - `c_str` is shorter than `string`, causing all sorts of line-length consequences.",
+      "parentUuid": "8fbf1b51_bb3ba9db",
       "range": {
         "startLine": 59,
         "startChar": 0,
