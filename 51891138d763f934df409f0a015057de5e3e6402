@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ea13c07_1bedef74",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-08-11T19:30:14Z",
+      "side": 1,
+      "message": "can you add why as well? (for parity with std::wstring) I think this is a good change.",
+      "revId": "51891138d763f934df409f0a015057de5e3e6402",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
