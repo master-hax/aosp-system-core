@@ -16,6 +16,29 @@
       "message": "can you add why as well? (for parity with std::wstring) I think this is a good change.",
       "revId": "51891138d763f934df409f0a015057de5e3e6402",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8fbf1b51_bb3ba9db",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-08-11T19:30:44Z",
+      "side": 1,
+      "message": "unrelated change",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "51891138d763f934df409f0a015057de5e3e6402",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
