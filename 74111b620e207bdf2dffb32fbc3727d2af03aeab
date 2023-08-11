@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c780755f_40c673d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2023-08-11T22:00:54Z",
+      "side": 1,
+      "message": "LGTM from a fuzzing perspective, but still need +2 from code owners who know libsnapshot.",
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
