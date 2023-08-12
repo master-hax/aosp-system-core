@@ -24,11 +24,9 @@
 namespace android {
 namespace init {
 
-// Parse all RC scripts for a given apex.
-Result<void> ParseRcScriptsFromApex(const std::string& apex_name);
-
-// Parse all RC scripts for all apexes under /apex.
-Result<void> ParseRcScriptsFromAllApexes(bool bootstrap);
+// Parse all config files for a given apex.
+// If apex name is empty(""), config files for all apexes will be parsed.
+Result<void> ParseApexConfigs(const std::string& apex_name);
 
 }  // namespace init
 }  // namespace android
