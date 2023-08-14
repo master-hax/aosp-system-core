@@ -52,6 +52,24 @@
       "parentUuid": "b0972a04_43a3067f",
       "revId": "001ae097018aafc370b46d31c913e5714170311d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "571492fc_33be055b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-14T19:08:49Z",
+      "side": 1,
+      "message": "yeah, i think in the back of my mind i\u0027m always thinking \"supposing we fail in our _actual_ goal, have we moved closer?\" --- assuming you can actually move to the standard string classes, this is useless. i was just thinking that if that fails, anything that makes these less unlike the standard classes is a good thing. but fine by me either way.",
+      "parentUuid": "317d7e8d_97a7e241",
+      "revId": "001ae097018aafc370b46d31c913e5714170311d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
