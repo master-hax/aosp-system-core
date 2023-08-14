@@ -16,6 +16,24 @@
       "message": "seriously? one has length() but not size(), and the other has size() but not length()? you couldn\u0027t make this up...",
       "revId": "001ae097018aafc370b46d31c913e5714170311d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0972a04_43a3067f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-14T18:53:14Z",
+      "side": 1,
+      "message": "Not *this* bad. String16 is missing length(), but String8 prefers length() over size(), so I sticked with the former here.\n\nBut now that I\u0027m writing this out loud, I think I should have added length() to String16. Let me do it in next PS.",
+      "parentUuid": "bb01d4ae_8370a507",
+      "revId": "001ae097018aafc370b46d31c913e5714170311d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
