@@ -52,6 +52,24 @@
       "parentUuid": "c527c8fd_731b48e6",
       "revId": "eb2165079a958e96dc91ccb53bca03c7bddf60b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dbfa8dc9_26a033df",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-14T22:50:41Z",
+      "side": 0,
+      "message": "I\u0027d suggest we refactor the test to avoid calling this function, and then remove this code. It can be a separate CL though, and could even call into ICompressor directly.",
+      "parentUuid": "f98c5909_0b5b21b2",
+      "revId": "eb2165079a958e96dc91ccb53bca03c7bddf60b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
