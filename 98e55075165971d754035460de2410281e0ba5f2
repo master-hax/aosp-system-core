@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e3bc784_f3028457",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-14T18:19:00Z",
+      "side": 1,
+      "message": "this should presumably look more like https://android-review.git.corp.google.com/c/platform/system/logging/+/2637111 instead?",
+      "revId": "98e55075165971d754035460de2410281e0ba5f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
