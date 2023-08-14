@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb01d4ae_8370a507",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-14T18:23:04Z",
+      "side": 1,
+      "message": "seriously? one has length() but not size(), and the other has size() but not length()? you couldn\u0027t make this up...",
+      "revId": "001ae097018aafc370b46d31c913e5714170311d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
