@@ -52,6 +52,7 @@ class Controller {
     private:
         std::vector<std::unique_ptr<line_coverage::CoverageRecord>>record_list_;
         std::set<struct uuid>uuid_set_;
+        std::vector<std::string>uuid_list_;
         std::vector<uint64_t> counters;
         int coverage_srv_fd;
 
