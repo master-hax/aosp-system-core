@@ -61,7 +61,6 @@ public:
     inline  size_t              size() const;
     inline  size_t              bytes() const;
     inline  bool                empty() const;
-    inline  bool                isEmpty() const;
 
             size_t              length() const;
 
@@ -133,6 +132,10 @@ private:
             status_t            real_append(const char* other, size_t numChars);
 
             const char* mString;
+
+private:  // TODO: public/private depending on ANDROID_STRING_ENABLE_LEGACY_METHODS
+    // These symbols are for potential backward compatibility with prebuilts. To be removed.
+    inline  bool                isEmpty() const;
 };
 
 // String8 can be trivially moved using memcpy() because moving does not
