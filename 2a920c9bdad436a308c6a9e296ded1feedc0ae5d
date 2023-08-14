@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc7cfeb0_945a1545",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-14T16:56:01Z",
+      "side": 1,
+      "message": "you need to keep this for binary compatibility with prebuilts? worth adding a code comment, so future archeologists know they can remove this completely?",
+      "revId": "2a920c9bdad436a308c6a9e296ded1feedc0ae5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
