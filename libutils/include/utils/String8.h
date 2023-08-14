@@ -60,12 +60,12 @@ public:
 
 private:
     static inline std::string   std_string(const String8& str);
+    inline  bool                isEmpty() const;
 public:
 
     inline  size_t              size() const;
     inline  size_t              bytes() const;
     inline  bool                empty() const;
-    inline  bool                isEmpty() const;
 
             size_t              length() const;
 
