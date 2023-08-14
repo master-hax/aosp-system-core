@@ -58,10 +58,17 @@ public:
     inline  const char*         c_str() const;
     inline  const char*         string() const;
 
+<<<<<<< PATCH SET (83802d Lock down String8.isEmpty() usage)
+private:
+    static inline std::string   std_string(const String8& str);
+    inline  bool                isEmpty() const;
+public:
+
+=======
+>>>>>>> BASE      (8245af Merge "Revert "Revert "Revert "Revert "Drop all path-related)
     inline  size_t              size() const;
     inline  size_t              bytes() const;
     inline  bool                empty() const;
-    inline  bool                isEmpty() const;
 
             size_t              length() const;
 
