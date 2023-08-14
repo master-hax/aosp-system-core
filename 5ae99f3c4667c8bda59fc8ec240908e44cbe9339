@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecef49ef_6b59c2a0",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-08-14T19:57:07Z",
+      "side": 1,
+      "message": "Is there a macro for this constant?",
+      "range": {
+        "startLine": 88,
+        "startChar": 18,
+        "endLine": 88,
+        "endChar": 20
+      },
+      "revId": "5ae99f3c4667c8bda59fc8ec240908e44cbe9339",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30468952_77038ac4",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-08-14T19:57:07Z",
+      "side": 1,
+      "message": "Do we really need a set, a line and also the uuid in the `CoverageRecord`?",
+      "range": {
+        "startLine": 107,
+        "startChar": 13,
+        "endLine": 124,
+        "endChar": 96
+      },
+      "revId": "5ae99f3c4667c8bda59fc8ec240908e44cbe9339",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
