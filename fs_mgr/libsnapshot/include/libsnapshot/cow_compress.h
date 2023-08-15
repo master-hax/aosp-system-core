@@ -16,8 +16,8 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
-#include <string_view>
 #include "libsnapshot/cow_format.h"
 
 namespace android {
@@ -25,24 +25,24 @@ namespace snapshot {
 
 class ICompressor {
   public:
-    explicit ICompressor(uint32_t compression_level) : compression_level_(compression_level) {}
+    explicit ICompressor(int32_t compression_level) : compression_level_(compression_level) {}
 
     virtual ~ICompressor() {}
     // Factory methods for compression methods.
-    static std::unique_ptr<ICompressor> Gz(uint32_t compression_level);
-    static std::unique_ptr<ICompressor> Brotli(uint32_t compression_level);
-    static std::unique_ptr<ICompressor> Lz4(uint32_t compression_level);
-    static std::unique_ptr<ICompressor> Zstd(uint32_t compression_level, const int32_t BLOCK_SZ);
+    static std::unique_ptr<ICompressor> Gz(int32_t compression_level);
+    static std::unique_ptr<ICompressor> Brotli(int32_t compression_level);
+    static std::unique_ptr<ICompressor> Lz4(int32_t compression_level);
+    static std::unique_ptr<ICompressor> Zstd(int32_t compression_level, const int32_t BLOCK_SZ);
 
     static std::unique_ptr<ICompressor> Create(CowCompression compression, const int32_t BLOCK_SZ);
 
-    uint32_t GetCompressionLevel() const { return compression_level_; }
+    int32_t GetCompressionLevel() const { return compression_level_; }
 
     [[nodiscard]] virtual std::basic_string<uint8_t> Compress(const void* data,
                                                               size_t length) const = 0;
 
   private:
-    uint32_t compression_level_;
+    int32_t compression_level_;
 };
 }  // namespace snapshot
 }  // namespace android
