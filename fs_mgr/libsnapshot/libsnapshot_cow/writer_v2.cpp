@@ -42,6 +42,7 @@
 #include "android-base/parseint.h"
 #include "android-base/strings.h"
 #include "parser_v2.h"
+#include "snapuserd/include/snapuserd/snapuserd_kernel.h"
 
 // The info messages here are spammy, but as useful for update_engine. Disable
 // them when running on the host.
@@ -184,7 +185,7 @@ void CowWriterV2::InitWorkers() {
         return;
     }
     for (int i = 0; i < num_compress_threads_; i++) {
-        std::unique_ptr<ICompressor> compressor = ICompressor::Create(compression_);
+        std::unique_ptr<ICompressor> compressor = ICompressor::Create(compression_, BLOCK_SZ);
         auto wt = std::make_unique<CompressWorker>(std::move(compressor), header_.block_size);
         threads_.emplace_back(std::async(std::launch::async, &CompressWorker::RunThread, wt.get()));
         compress_threads_.push_back(std::move(wt));
@@ -341,7 +342,7 @@ bool CowWriterV2::CompressBlocks(size_t num_blocks, const void* data) {
     compressed_buf_.clear();
     if (num_threads <= 1) {
         if (!compressor_) {
-            compressor_ = ICompressor::Create(compression_);
+            compressor_ = ICompressor::Create(compression_, BLOCK_SZ);
         }
         return CompressWorker::CompressBlocks(compressor_.get(), options_.block_size, data,
                                               num_blocks, &compressed_buf_);
@@ -416,7 +417,7 @@ bool CowWriterV2::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
                         return data;
                     } else {
                         if (!compressor_) {
-                            compressor_ = ICompressor::Create(compression_);
+                            compressor_ = ICompressor::Create(compression_, BLOCK_SZ);
                         }
 
                         auto data = compressor_->Compress(iter, header_.block_size);
