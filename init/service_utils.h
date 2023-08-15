@@ -96,6 +96,8 @@ struct ProcessAttributes {
     std::vector<gid_t> supp_gids;
     int priority;
     bool stdio_to_kmsg;
+    int uclamp_min;
+    int uclamp_max;
 
     uid_t uid() const { return parsed_uid.value_or(0); }
 };
