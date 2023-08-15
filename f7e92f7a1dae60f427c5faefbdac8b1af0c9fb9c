@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b12a5d9f_fa8e94b2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-15T22:44:15Z",
+      "side": 1,
+      "message": "Note that IDecompressor is one-shot. There\u0027s no caching of them at all in CowReader right now - maybe there should be.",
+      "revId": "f7e92f7a1dae60f427c5faefbdac8b1af0c9fb9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
