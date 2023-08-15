@@ -25,6 +25,8 @@
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
 #include "cow_decompress.h"
+#include "libsnapshot/cow_compress.h"
+#include "libsnapshot/cow_format.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;
@@ -497,7 +499,7 @@ TEST_P(CompressionTest, HorribleStream) {
 }
 
 INSTANTIATE_TEST_SUITE_P(AllCompressors, CompressionTest,
-                         testing::Values("none", "gz", "brotli", "lz4"));
+                         testing::Values("none", "gz", "brotli", "lz4", "zstd"));
 
 TEST_F(CowTest, ClusterCompressGz) {
     CowOptions options;
@@ -1504,6 +1506,20 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_FALSE(reader.VerifyMergeOps());
 }
 
+TEST_F(CowTest, CompressorTest) {
+    std::vector<CowCompression> compression_list = {{kCowCompressLz4, 3},
+                                                    {kCowCompressBrotli, 11},
+                                                    {kCowCompressGz, 9},
+                                                    {kCowCompressZstd, 22},
+                                                    {kCowCompressZstd, -7}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i));
+    }
+    for (size_t i = 0; i < compressors.size(); i++) {
+        ASSERT_EQ(compressors[i]->GetCompressionLevel(), compression_list[i].compression_level);
+    }
+}
 }  // namespace snapshot
 }  // namespace android
 
