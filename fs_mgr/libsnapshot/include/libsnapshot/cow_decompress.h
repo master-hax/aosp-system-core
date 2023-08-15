@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <string_view>
+
 #include <libsnapshot/cow_reader.h>
 
 namespace android {
