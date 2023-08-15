@@ -25,6 +25,7 @@
 #include <libsnapshot/cow_decompress.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
+#include "snapuserd/include/snapuserd/snapuserd_kernel.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;
@@ -1504,6 +1505,99 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_FALSE(reader.VerifyMergeOps());
 }
 
+TEST_F(CowTest, CompressorTest) {
+    std::vector<CowCompression> compression_list = {
+            {kCowCompressLz4, 3}, {kCowCompressLz4, 0},   {kCowCompressBrotli, 1},
+            {kCowCompressLz4, 6}, {kCowCompressZstd, 22}, {kCowCompressZstd, 6},
+            {kCowCompressGz, 9},  {kCowCompressZstd, 22}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
+    }
+    for (size_t i = 0; i < compressors.size(); i++) {
+        std::string data = "some data some data some data som data some data";
+        std::basic_string<uint8_t> compressed_data =
+                compressors[i]->Compress(data.data(), data.size());
+
+        // Check that compressor level is set correctly
+        ASSERT_EQ(compressors[i]->GetCompressionLevel(), compression_list[i].compression_level);
+        // Check that compression works and compression level is less than uncompressed
+        ASSERT_TRUE(compressed_data.size() < data.size()) << i;
+    }
+}
+
+static std::string CompressionToString(CowCompression& compression) {
+    std::string output;
+    switch (compression.algorithm) {
+        case kCowCompressBrotli:
+            output.append("brotli");
+            break;
+        case kCowCompressGz:
+            output.append("gz");
+            break;
+        case kCowCompressLz4:
+            output.append("lz4");
+            break;
+        case kCowCompressZstd:
+            output.append("zstd");
+            break;
+        case kCowCompressNone:
+            return "No Compression";
+    }
+    output.append(" " + std::to_string(compression.compression_level));
+    return output;
+}
+
+TEST_F(CowTest, CompressorPerformance) {
+    LOG(INFO) << "\n-------Compressor Perf Analysis-------\n";
+
+    std::vector<CowCompression> compression_list = {
+            {kCowCompressLz4, 0},     {kCowCompressBrotli, 1}, {kCowCompressBrotli, 3},
+            {kCowCompressBrotli, 11}, {kCowCompressZstd, 3},   {kCowCompressZstd, 6},
+            {kCowCompressZstd, 9},    {kCowCompressZstd, 22},  {kCowCompressGz, 1},
+            {kCowCompressGz, 3},      {kCowCompressGz, 6},     {kCowCompressGz, 9}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
+    }
+    // Allocate a buffer of size 4096 bytes.
+    char buffer[32768];
+
+    // Generate a random 4k buffer of characters
+    for (int i = 0; i < 32768; i++) {
+        buffer[i] = static_cast<char>(rand() % 255);
+    }
+
+    std::vector<std::pair<double, std::string>> latencies;
+    std::vector<std::pair<double, std::string>> ratios;
+
+    for (size_t i = 0; i < compressors.size(); i++) {
+        clock_t start = clock();
+        std::basic_string<uint8_t> compressed_data = compressors[i]->Compress(buffer, 4096);
+        clock_t end = clock();
+        double latency = ((double)(end - start) / CLOCKS_PER_SEC) * 1000.0;
+        double compression_ratio = compressed_data.capacity();
+        LOG(INFO) << "Metrics for " << CompressionToString(compression_list[i]) << ": latency -> "
+                  << latency << "ms "
+                  << " compression ratio ->" << compression_ratio << " \n";
+        latencies.emplace_back(std::make_pair(latency, CompressionToString(compression_list[i])));
+        ratios.emplace_back(
+                std::make_pair(compression_ratio, CompressionToString(compression_list[i])));
+    }
+    int best_speed, best_ratio = INT_MAX;
+    for (int i = 0; i < latencies.size(); i++) {
+        if (latencies[i].first < best_speed) {
+            best_speed = i;
+        }
+        if (ratios[i].first < best_ratio) {
+            best_ratio = i;
+        }
+    }
+
+    LOG(INFO) << "BEST SPEED: " << latencies[best_speed].first << " "
+              << latencies[best_speed].second;
+    LOG(INFO) << "BEST RATIO: " << ratios[best_ratio].first << " " << ratios[best_ratio].second;
+}
 }  // namespace snapshot
 }  // namespace android
 
