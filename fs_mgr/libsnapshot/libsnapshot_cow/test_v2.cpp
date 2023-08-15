@@ -22,9 +22,9 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <gtest/gtest.h>
+#include <libsnapshot/cow_decompress.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
-#include "cow_decompress.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;

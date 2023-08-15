@@ -27,7 +27,7 @@
 #include <libsnapshot/cow_reader.h>
 #include <zlib.h>
 
-#include "cow_decompress.h"
+#include <libsnapshot/cow_decompress.h>
 #include "parser_v2.h"
 
 namespace android {
