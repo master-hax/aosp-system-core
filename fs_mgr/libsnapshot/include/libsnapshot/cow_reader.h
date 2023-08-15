@@ -22,6 +22,7 @@
 #include <unordered_map>
 
 #include <android-base/unique_fd.h>
+#include <libsnapshot/cow_decompress.h>
 #include <libsnapshot/cow_format.h>
 
 namespace chromeos_update_engine {
@@ -32,7 +33,7 @@ namespace android {
 namespace snapshot {
 
 class ICowOpIter;
-
+class IDecompressor;
 // Interface for reading from a snapuserd COW.
 class ICowReader {
   public:
@@ -169,6 +170,7 @@ class CowReader final : public ICowReader {
     bool PrepMergeOps();
     uint64_t FindNumCopyops();
     uint8_t GetCompressionType(const CowOperation* op);
+    std::unique_ptr<IDecompressor> decompressor_;
 
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
