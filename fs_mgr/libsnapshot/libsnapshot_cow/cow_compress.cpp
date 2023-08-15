@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <cstdint>
 #include <limits>
 #include <memory>
 #include <queue>
@@ -99,7 +100,7 @@ uint32_t CompressWorker::GetDefaultCompressionLevel(CowCompressionAlgorithm comp
 
 class GzCompressor final : public ICompressor {
   public:
-    GzCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+    GzCompressor(int32_t compression_level) : ICompressor(compression_level){};
 
     std::basic_string<uint8_t> Compress(const void* data, size_t length) const override {
         const auto bound = compressBound(length);
@@ -119,7 +120,7 @@ class GzCompressor final : public ICompressor {
 
 class Lz4Compressor final : public ICompressor {
   public:
-    Lz4Compressor(uint32_t compression_level) : ICompressor(compression_level){};
+    Lz4Compressor(int32_t compression_level) : ICompressor(compression_level){};
 
     std::basic_string<uint8_t> Compress(const void* data, size_t length) const override {
         const auto bound = LZ4_compressBound(length);
@@ -150,7 +151,7 @@ class Lz4Compressor final : public ICompressor {
 
 class BrotliCompressor final : public ICompressor {
   public:
-    BrotliCompressor(uint32_t compression_level) : ICompressor(compression_level){};
+    BrotliCompressor(int32_t compression_level) : ICompressor(compression_level){};
 
     std::basic_string<uint8_t> Compress(const void* data, size_t length) const override {
         const auto bound = BrotliEncoderMaxCompressedSize(length);
@@ -175,7 +176,7 @@ class BrotliCompressor final : public ICompressor {
 
 class ZstdCompressor final : public ICompressor {
   public:
-    ZstdCompressor(uint32_t compression_level)
+    ZstdCompressor(int32_t compression_level)
         : ICompressor(compression_level), zstd_context_(ZSTD_createCCtx(), ZSTD_freeCCtx) {
         ZSTD_CCtx_setParameter(zstd_context_.get(), ZSTD_c_compressionLevel, compression_level);
         // FIXME: hardcoding a value of 12 here for 4k blocks, should change to be either set by
@@ -314,19 +315,19 @@ bool CompressWorker::GetCompressedBuffers(std::vector<std::basic_string<uint8_t>
     return true;
 }
 
-std::unique_ptr<ICompressor> ICompressor::Brotli(uint32_t compression_level) {
+std::unique_ptr<ICompressor> ICompressor::Brotli(int32_t compression_level) {
     return std::make_unique<BrotliCompressor>(compression_level);
 }
 
-std::unique_ptr<ICompressor> ICompressor::Gz(uint32_t compression_level) {
+std::unique_ptr<ICompressor> ICompressor::Gz(int32_t compression_level) {
     return std::make_unique<GzCompressor>(compression_level);
 }
 
-std::unique_ptr<ICompressor> ICompressor::Lz4(uint32_t compression_level) {
+std::unique_ptr<ICompressor> ICompressor::Lz4(int32_t compression_level) {
     return std::make_unique<Lz4Compressor>(compression_level);
 }
 
-std::unique_ptr<ICompressor> ICompressor::Zstd(uint32_t compression_level) {
+std::unique_ptr<ICompressor> ICompressor::Zstd(int32_t compression_level) {
     return std::make_unique<ZstdCompressor>(compression_level);
 }
 
