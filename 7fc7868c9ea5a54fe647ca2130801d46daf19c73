@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46ca486f_f23ae07b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-15T22:45:51Z",
+      "side": 1,
+      "message": "consider passing this in from the caller? CowWriter should know what the block size is. We have too many hard coded 4096s.",
+      "range": {
+        "startLine": 330,
+        "startChar": 63,
+        "endLine": 330,
+        "endChar": 73
+      },
+      "revId": "7fc7868c9ea5a54fe647ca2130801d46daf19c73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
