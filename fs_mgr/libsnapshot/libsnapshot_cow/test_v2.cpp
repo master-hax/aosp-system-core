@@ -14,9 +14,11 @@
 
 #include <sys/stat.h>
 
+#include <chrono>
 #include <cstdio>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <string_view>
 
 #include <android-base/file.h>
@@ -25,6 +27,7 @@
 #include <libsnapshot/cow_decompress.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
+#include "snapuserd/include/snapuserd/snapuserd_kernel.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;
@@ -1504,6 +1507,185 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_FALSE(reader.VerifyMergeOps());
 }
 
+TEST_F(CowTest, CompressorTest) {
+    std::vector<CowCompression> compression_list = {
+            {kCowCompressLz4, 3}, {kCowCompressLz4, 0},   {kCowCompressBrotli, 1},
+            {kCowCompressLz4, 6}, {kCowCompressZstd, 22}, {kCowCompressZstd, 6},
+            {kCowCompressGz, 9},  {kCowCompressZstd, 22}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
+    }
+    for (size_t i = 0; i < compressors.size(); i++) {
+        std::string data = "some data some data some data som data some data";
+        std::basic_string<uint8_t> compressed_data =
+                compressors[i]->Compress(data.data(), data.size());
+
+        // Check that compressor level is set correctly
+        ASSERT_EQ(compressors[i]->GetCompressionLevel(), compression_list[i].compression_level);
+        // Check that compression works and compression level is less than uncompressed
+        ASSERT_TRUE(compressed_data.size() < data.size()) << i;
+    }
+}
+
+static std::string CompressionToString(CowCompression& compression) {
+    std::string output;
+    switch (compression.algorithm) {
+        case kCowCompressBrotli:
+            output.append("brotli");
+            break;
+        case kCowCompressGz:
+            output.append("gz");
+            break;
+        case kCowCompressLz4:
+            output.append("lz4");
+            break;
+        case kCowCompressZstd:
+            output.append("zstd");
+            break;
+        case kCowCompressNone:
+            return "No Compression";
+    }
+    output.append(" " + std::to_string(compression.compression_level));
+    return output;
+}
+
+TEST_F(CowTest, OneShotCompressorPerformance) {
+    LOG(INFO) << "\n-------One Shot Compressor Perf Analysis-------\n";
+
+    std::vector<CowCompression> compression_list = {
+            {kCowCompressLz4, 0},     {kCowCompressBrotli, 1}, {kCowCompressBrotli, 3},
+            {kCowCompressBrotli, 11}, {kCowCompressZstd, 3},   {kCowCompressZstd, 6},
+            {kCowCompressZstd, 9},    {kCowCompressZstd, 22},  {kCowCompressGz, 1},
+            {kCowCompressGz, 3},      {kCowCompressGz, 6},     {kCowCompressGz, 9}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
+    }
+
+    // Allocate a buffer of size 4096 bytes.
+    std::array<char, 32768> buffer;
+
+    // Generate a random 4k buffer of characters
+    std::default_random_engine gen;
+    std::uniform_int_distribution<int> distribution(0, 10);
+    for (int i = 0; i < buffer.size(); i++) {
+        buffer[i] = static_cast<char>(distribution(gen));
+    }
+
+    std::vector<std::pair<double, std::string>> latencies;
+    std::vector<std::pair<double, std::string>> ratios;
+
+    for (size_t i = 0; i < compressors.size(); i++) {
+        auto start = std::chrono::steady_clock::now();
+        std::basic_string<uint8_t> compressed_data =
+                compressors[i]->Compress(buffer.data(), buffer.size());
+        auto end = std::chrono::steady_clock::now();
+        auto latency = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start) / 1000.0;
+        double compression_ratio =
+                static_cast<uint16_t>(compressed_data.size()) * 1.00 / buffer.size();
+
+        LOG(INFO) << "Metrics for " << CompressionToString(compression_list[i]) << ": latency -> "
+                  << latency.count() << "ms "
+                  << " compression ratio ->" << compression_ratio << " \n";
+
+        latencies.emplace_back(
+                std::make_pair(latency.count(), CompressionToString(compression_list[i])));
+        ratios.emplace_back(
+                std::make_pair(compression_ratio, CompressionToString(compression_list[i])));
+    }
+
+    int best_speed = 0;
+    int best_ratio = 0;
+
+    for (size_t i = 1; i < latencies.size(); i++) {
+        if (latencies[i].first < latencies[best_speed].first) {
+            best_speed = i;
+        }
+        if (ratios[i].first < ratios[best_ratio].first) {
+            best_ratio = i;
+        }
+    }
+
+    LOG(INFO) << "BEST SPEED: " << latencies[best_speed].first << "ms "
+              << latencies[best_speed].second;
+    LOG(INFO) << "BEST RATIO: " << ratios[best_ratio].first << " " << ratios[best_ratio].second;
+}
+
+TEST_F(CowTest, IncrementalCompressorPerformance) {
+    LOG(INFO) << "\n-------Incremental Compressor Perf Analysis-------\n";
+
+    std::vector<CowCompression> compression_list = {
+            {kCowCompressLz4, 0},     {kCowCompressBrotli, 1}, {kCowCompressBrotli, 3},
+            {kCowCompressBrotli, 11}, {kCowCompressZstd, 3},   {kCowCompressZstd, 6},
+            {kCowCompressZstd, 9},    {kCowCompressZstd, 22},  {kCowCompressGz, 1},
+            {kCowCompressGz, 3},      {kCowCompressGz, 6},     {kCowCompressGz, 9}};
+    std::vector<std::unique_ptr<ICompressor>> compressors;
+    for (auto i : compression_list) {
+        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
+    }
+
+    // Allocate a buffer of size 4096 bytes.
+    std::array<char, 32768> buffer;
+
+    // Generate a random 4k buffer of characters
+    std::default_random_engine gen;
+    std::uniform_int_distribution<int> distribution(0, 10);
+    for (int i = 0; i < buffer.size(); i++) {
+        buffer[i] = static_cast<char>(distribution(gen));
+    }
+
+    std::vector<std::pair<double, std::string>> latencies;
+    std::vector<std::pair<double, std::string>> ratios;
+
+    for (size_t i = 0; i < compressors.size(); i++) {
+        std::vector<std::basic_string<uint8_t>> compressed_data_vec;
+        int num_blocks = buffer.size() / 4096;
+        const uint8_t* iter = reinterpret_cast<const uint8_t*>(buffer.data());
+
+        auto start = std::chrono::steady_clock::now();
+        while (num_blocks > 0) {
+            std::basic_string<uint8_t> compressed_data = compressors[i]->Compress(iter, 4096);
+            compressed_data_vec.emplace_back(compressed_data);
+            num_blocks--;
+            iter += 4096;
+        }
+
+        auto end = std::chrono::steady_clock::now();
+        auto latency = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start) / 1000.0;
+
+        int size = 0;
+        for (auto& i : compressed_data_vec) {
+            size += static_cast<uint16_t>(i.size());
+        }
+        double compression_ratio = size * 1.00 / buffer.size();
+
+        LOG(INFO) << "Metrics for " << CompressionToString(compression_list[i]) << ": latency -> "
+                  << latency.count() << "ms "
+                  << " compression ratio ->" << compression_ratio << " \n";
+
+        latencies.emplace_back(
+                std::make_pair(latency.count(), CompressionToString(compression_list[i])));
+        ratios.emplace_back(
+                std::make_pair(compression_ratio, CompressionToString(compression_list[i])));
+    }
+
+    int best_speed = 0;
+    int best_ratio = 0;
+
+    for (size_t i = 1; i < latencies.size(); i++) {
+        if (latencies[i].first < latencies[best_speed].first) {
+            best_speed = i;
+        }
+        if (ratios[i].first < ratios[best_ratio].first) {
+            best_ratio = i;
+        }
+    }
+
+    LOG(INFO) << "BEST SPEED: " << latencies[best_speed].first << "ms "
+              << latencies[best_speed].second;
+    LOG(INFO) << "BEST RATIO: " << ratios[best_ratio].first << " " << ratios[best_ratio].second;
+}
 }  // namespace snapshot
 }  // namespace android
 
