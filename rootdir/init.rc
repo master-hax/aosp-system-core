@@ -76,10 +76,6 @@ on early-init
     exec_start apexd-bootstrap
     perform_apex_config --bootstrap
 
-    # These must already exist by the time boringssl_self_test32 / boringssl_self_test64 run.
-    mkdir /dev/boringssl 0755 root root
-    mkdir /dev/boringssl/selftest 0755 root root
-
     # Mount tracefs (with GID=AID_READTRACEFS)
     mount tracefs tracefs /sys/kernel/tracing gid=3012
 
