@@ -38,6 +38,8 @@
 namespace android {
 namespace snapshot {
 
+static constexpr uint64_t kBlockSize = 4096;
+
 std::optional<CowCompressionAlgorithm> CompressionAlgorithmFromString(std::string_view name) {
     if (name == "gz") {
         return {kCowCompressGz};
@@ -175,12 +177,10 @@ class BrotliCompressor final : public ICompressor {
 
 class ZstdCompressor final : public ICompressor {
   public:
-    ZstdCompressor(uint32_t compression_level)
+    ZstdCompressor(uint32_t compression_level, const uint32_t MAX_BLOCK_SIZE)
         : ICompressor(compression_level), zstd_context_(ZSTD_createCCtx(), ZSTD_freeCCtx) {
         ZSTD_CCtx_setParameter(zstd_context_.get(), ZSTD_c_compressionLevel, compression_level);
-        // FIXME: hardcoding a value of 12 here for 4k blocks, should change to be either set by
-        // user, or optimized depending on block size
-        ZSTD_CCtx_setParameter(zstd_context_.get(), ZSTD_c_windowLog, 12);
+        ZSTD_CCtx_setParameter(zstd_context_.get(), ZSTD_c_windowLog, log2(MAX_BLOCK_SIZE));
     };
 
     std::basic_string<uint8_t> Compress(const void* data, size_t length) const override {
@@ -327,7 +327,7 @@ std::unique_ptr<ICompressor> ICompressor::Lz4(uint32_t compression_level) {
 }
 
 std::unique_ptr<ICompressor> ICompressor::Zstd(uint32_t compression_level) {
-    return std::make_unique<ZstdCompressor>(compression_level);
+    return std::make_unique<ZstdCompressor>(compression_level, kBlockSize);
 }
 
 void CompressWorker::Finalize() {
