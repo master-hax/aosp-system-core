@@ -336,6 +336,12 @@ class Lz4Decompressor final : public IDecompressor {
 
 class ZstdDecompressor final : public IDecompressor {
   public:
+    ZstdDecompressor() : zstd_context_(ZSTD_createDCtx(), ZSTD_freeDCtx) {
+        // FIXME: hardcoding a value of 12 here for 4k blocks, should change to be either set by
+        // user, or optimized depending on block size
+        ZSTD_DCtx_setParameter(zstd_context_.get(), ZSTD_d_windowLogMax, 12);
+    }
+
     ssize_t Decompress(void* buffer, size_t buffer_size, size_t decompressed_size,
                        size_t ignore_bytes = 0) override {
         if (buffer_size < decompressed_size - ignore_bytes) {
@@ -366,8 +372,9 @@ class ZstdDecompressor final : public IDecompressor {
                        << " actual: " << bytes_read;
             return false;
         }
-        const auto bytes_decompressed = ZSTD_decompress(output_buffer, output_size,
-                                                        input_buffer.data(), input_buffer.size());
+        const auto bytes_decompressed =
+                ZSTD_decompressDCtx(zstd_context_.get(), output_buffer, output_size,
+                                    input_buffer.data(), input_buffer.size());
         if (bytes_decompressed != output_size) {
             LOG(ERROR) << "Failed to decompress ZSTD block, expected output size: " << output_size
                        << ", actual: " << bytes_decompressed;
@@ -375,6 +382,9 @@ class ZstdDecompressor final : public IDecompressor {
         }
         return true;
     }
+
+  private:
+    std::unique_ptr<ZSTD_DCtx, decltype(&ZSTD_freeDCtx)> zstd_context_;
 };
 
 std::unique_ptr<IDecompressor> IDecompressor::Brotli() {
