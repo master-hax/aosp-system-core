@@ -45,6 +45,30 @@
       },
       "revId": "5ae99f3c4667c8bda59fc8ec240908e44cbe9339",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9566d61_77c87611",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2023-08-16T09:24:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30468952_77038ac4",
+      "range": {
+        "startLine": 107,
+        "startChar": 13,
+        "endLine": 124,
+        "endChar": 96
+      },
+      "revId": "5ae99f3c4667c8bda59fc8ec240908e44cbe9339",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
