@@ -34,5 +34,9 @@ cc_library {
     // libtrusty for system and vendor.
     vendor_available: true,
     recovery_available: true,
+    apex_available:  [
+        "//apex_available:platform",
+        "com.android.fw_oxidize.demo",
+    ],
     defaults: ["libtrusty_defaults"],
 }

@@ -33,3 +33,23 @@ cc_binary {
         "-Werror",
     ],
 }
+
+cc_binary {
+    name: "trusty-ut-ctrl-sys",
+
+    srcs: ["ut-ctrl.c"],
+    shared_libs: [
+        "libc",
+        "liblog",
+    ],
+    static_libs: [
+        "libtrusty",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+    apex_available: [
+        "com.android.fw_oxidize.demo",
+    ],
+}
