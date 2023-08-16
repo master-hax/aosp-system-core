@@ -16,6 +16,23 @@
       "message": "Let\u0027s try again...",
       "revId": "6cf9cd0123016879454fe0eff15ba78223a68527",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b760d88_a1ec30ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-16T22:42:56Z",
+      "side": 1,
+      "message": "Before merging this one, I\u0027ll also check if http://ag/24451133 is green.",
+      "revId": "6cf9cd0123016879454fe0eff15ba78223a68527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
