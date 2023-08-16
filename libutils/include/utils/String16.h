@@ -24,6 +24,11 @@
 #include <utils/String8.h>
 #include <utils/TypeHelpers.h>
 
+#if __has_include(<string_view>)
+#include <string_view>
+#define HAS_STRING_VIEW
+#endif
+
 // ---------------------------------------------------------------------------
 
 namespace android {
@@ -58,11 +63,17 @@ public:
 
 private:
     static inline std::string   std_string(const String16& str);
+//    inline                      operator const char16_t*() const;
 public:
             size_t              size() const;
     inline  bool                empty() const;
 
     inline  size_t              length() const;
+
+    // TODO: remove
+//    inline  char16_t            at(size_t pos) const {
+//        return c_str()[pos];
+//    }
 
             void                setTo(const String16& other);
             status_t            setTo(const char16_t* other);
@@ -91,6 +102,9 @@ public:
             bool                startsWith(const char16_t* prefix) const;
 
             bool                contains(const char16_t* chrs) const;
+    inline  bool                contains(const String16& other) const {
+        return contains(other.c_str());
+    }
 
             status_t            replaceAll(char16_t replaceThis,
                                            char16_t withThis);
@@ -110,8 +124,16 @@ public:
     inline  bool                operator!=(const char16_t* other) const;
     inline  bool                operator>=(const char16_t* other) const;
     inline  bool                operator>(const char16_t* other) const;
+    inline  char16_t            operator[](size_t pos) const
+    {
+        return mString[pos];
+    }
 
-    inline                      operator const char16_t*() const;
+#ifdef HAS_STRING_VIEW
+    inline operator std::u16string_view() const {
+        return mString;
+    }
+#endif
 
     // Static and non-static String16 behave the same for the users, so
     // this method isn't of much use for the users. It is public for testing.
@@ -348,13 +370,15 @@ inline bool String16::operator>(const char16_t* other) const
     return strcmp16(mString, other) > 0;
 }
 
-inline String16::operator const char16_t*() const
-{
-    return mString;
-}
+//inline String16::operator const char16_t*() const
+//{
+//    return mString;
+//}
 
 }  // namespace android
 
 // ---------------------------------------------------------------------------
+
+#undef HAS_STRING_VIEW
 
 #endif // ANDROID_STRING16_H

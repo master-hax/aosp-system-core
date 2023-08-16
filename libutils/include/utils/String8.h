@@ -27,6 +27,14 @@
 #include <string.h> // for strcmp
 #include <stdarg.h>
 
+#if __has_include(<string_view>)
+#include <string_view>
+#define HAS_STRING_VIEW
+#endif
+
+//#define STRING8_TO_STD8(str) std::string((str).c_str())
+#define STRING16_TO_STD8(str) String8(str)
+
 // ---------------------------------------------------------------------------
 
 namespace android {
@@ -110,8 +118,28 @@ public:
     inline  bool                operator!=(const char* other) const;
     inline  bool                operator>=(const char* other) const;
     inline  bool                operator>(const char* other) const;
+    inline  char                operator[](size_t pos) const
+    {
+        return mString[pos];
+    }
 
-    inline                      operator const char*() const;
+#ifdef HAS_STRING_VIEW
+    inline
+#if 1
+    explicit
+#endif
+    operator std::string_view() const {
+        return mString;
+    }
+#endif
+
+#if 1
+//#define STRING8_TO_STR_TMP(s) (std::string(s))
+#define STRING8_TO_STR_TMP(s) (s)
+    inline operator std::string() const {
+        return mString;
+    }
+#endif
 
             char*               lockBuffer(size_t size);
             void                unlockBuffer();
@@ -120,13 +148,22 @@ public:
             // return the index of the first byte of other in this at or after
             // start, or -1 if not found
             ssize_t             find(const char* other, size_t start = 0) const;
+    inline  ssize_t             find(const String8& other, size_t start = 0) const {
+        return find(other.c_str(), start);
+    }
 
             // return true if this string contains the specified substring
     inline  bool                contains(const char* other) const;
+    inline  bool                contains(const String8& other) const {
+        return contains(other.c_str());
+    }
 
             // removes all occurrence of the specified substring
             // returns true if any were found and removed
             bool                removeAll(const char* other);
+    inline  bool                removeAll(const String8& other) {
+        return removeAll(other.c_str());
+    }
 
             void                toLower();
 
@@ -372,13 +409,15 @@ inline bool String8::operator>(const char* other) const
     return strcmp(mString, other) > 0;
 }
 
-inline String8::operator const char*() const
-{
-    return mString;
-}
+//inline String8::operator const char*() const
+//{
+//    return mString;
+//}
 
 }  // namespace android
 
 // ---------------------------------------------------------------------------
+
+#undef HAS_STRING_VIEW
 
 #endif // ANDROID_STRING8_H
