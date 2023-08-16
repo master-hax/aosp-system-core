@@ -32,4 +32,7 @@ cc_binary {
         "-Wall",
         "-Werror",
     ],
+    apex_available: [
+        "com.android.fw_oxidize.demo",
+    ],
 }
