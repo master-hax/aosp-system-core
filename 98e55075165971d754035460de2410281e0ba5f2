@@ -52,6 +52,24 @@
       "parentUuid": "498d2702_fa06547b",
       "revId": "98e55075165971d754035460de2410281e0ba5f2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e8d140e_5442b635",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2034333
+      },
+      "writtenOn": "2023-08-16T17:05:04Z",
+      "side": 1,
+      "message": "As mentioned in the Cherry pick list of https://android-review.googlesource.com/c/platform/system/logging/+/2637111, it\u0027s only present in AOSP12 right now.\nIt\u0027s not backported yet. Can you please backport it for AOSP11?\nThis is causing us to not cover full CTS.",
+      "parentUuid": "c7c815f6_a5f259b8",
+      "revId": "98e55075165971d754035460de2410281e0ba5f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
