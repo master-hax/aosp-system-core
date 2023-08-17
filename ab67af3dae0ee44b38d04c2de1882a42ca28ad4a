@@ -46,6 +46,30 @@
       },
       "revId": "ab67af3dae0ee44b38d04c2de1882a42ca28ad4a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14c5bb64_46e7e00c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-17T21:05:52Z",
+      "side": 1,
+      "message": "This should be header_.block_size, which is the block size specified by OTA manifest.",
+      "parentUuid": "64a4b050_51bf8450",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 57
+      },
+      "revId": "ab67af3dae0ee44b38d04c2de1882a42ca28ad4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
