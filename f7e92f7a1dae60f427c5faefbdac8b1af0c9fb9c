@@ -34,6 +34,24 @@
       "parentUuid": "b12a5d9f_fa8e94b2",
       "revId": "f7e92f7a1dae60f427c5faefbdac8b1af0c9fb9c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac7948c7_7176e287",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-17T22:42:49Z",
+      "side": 1,
+      "message": "I think David said that we actually no longer support that (hopefully so this is a trivial change : ) )",
+      "parentUuid": "7fd614f4_e6906452",
+      "revId": "f7e92f7a1dae60f427c5faefbdac8b1af0c9fb9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
