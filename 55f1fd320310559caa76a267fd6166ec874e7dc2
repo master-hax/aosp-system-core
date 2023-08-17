@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fb3b3ce_54c17267",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-17T13:37:13Z",
+      "side": 1,
+      "message": "I\u0027d prefer if someone stamped a fix-forward, if possible: http://pa/2579316 and http://pa/2579553",
+      "revId": "55f1fd320310559caa76a267fd6166ec874e7dc2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
