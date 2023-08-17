@@ -75,7 +75,13 @@ using unique_fd = android::base::unique_fd_impl<FdsanBypassCloser>;
 #define CRASH_DUMP_NAME "crash_dump32"
 #endif
 
-#define CRASH_DUMP_PATH "/apex/com.android.runtime/bin/" CRASH_DUMP_NAME
+const char* CrashDumpPath() {
+  static constexpr auto&& CRASH_DUMP_PATH = "/apex/com.android.runtime/bin/" CRASH_DUMP_NAME;
+  if (access(CRASH_DUMP_PATH, F_OK) == 0) {
+    return CRASH_DUMP_PATH;
+  }
+  return "/system/bin/" CRASH_DUMP_NAME;
+}
 
 // Wrappers that directly invoke the respective syscalls, in case the cached values are invalid.
 #pragma GCC poison getpid gettid
@@ -447,7 +453,7 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
     async_safe_format_buffer(debuggerd_dump_type, sizeof(debuggerd_dump_type), "%d",
                              get_dump_type(thread_info));
 
-    execle(CRASH_DUMP_PATH, CRASH_DUMP_NAME, main_tid, pseudothread_tid, debuggerd_dump_type,
+    execle(CrashDumpPath(), CRASH_DUMP_NAME, main_tid, pseudothread_tid, debuggerd_dump_type,
            nullptr, nullptr);
     async_safe_format_log(ANDROID_LOG_FATAL, "libc", "failed to exec crash_dump helper: %s",
                           strerror(errno));

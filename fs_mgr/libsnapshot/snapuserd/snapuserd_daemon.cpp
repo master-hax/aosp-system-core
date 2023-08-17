@@ -20,6 +20,8 @@
 #include <gflags/gflags.h>
 #include <snapuserd/snapuserd_client.h>
 
+#include <debuggerd/handler.h>
+
 #include "snapuserd_daemon.h"
 
 DEFINE_string(socket, android::snapshot::kSnapuserdSocket, "Named socket or socket path.");
@@ -173,11 +175,16 @@ bool Daemon::StartServerForDmSnapshot(int arg_start, int argc, char** argv) {
 }
 
 void Daemon::MaskAllSignalsExceptIntAndTerm() {
-    sigset_t signal_mask;
+    if constexpr (true) {
+        return;
+    }
+    sigset_t signal_mask{};
     sigfillset(&signal_mask);
     sigdelset(&signal_mask, SIGINT);
     sigdelset(&signal_mask, SIGTERM);
     sigdelset(&signal_mask, SIGPIPE);
+    sigdelset(&signal_mask, SIGSEGV);
+    sigdelset(&signal_mask, SIGTRAP);
     sigdelset(&signal_mask, SIGUSR1);
     if (sigprocmask(SIG_SETMASK, &signal_mask, NULL) != 0) {
         PLOG(ERROR) << "Failed to set sigprocmask";

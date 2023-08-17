@@ -96,7 +96,7 @@ void _VLOG(log_t* log, enum logtype ltype, const char* fmt, va_list ap) {
     }
 
     if (write_to_kmsg) {
-      unique_fd kmsg_fd(open("/dev/kmsg_debug", O_WRONLY | O_APPEND | O_CLOEXEC));
+      unique_fd kmsg_fd(open("/dev/kmsg", O_WRONLY | O_APPEND | O_CLOEXEC));
       if (kmsg_fd.get() >= 0) {
         // Our output might contain newlines which would otherwise be handled by the android logger.
         // Split the lines up ourselves before sending to the kernel logger.

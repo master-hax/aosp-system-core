@@ -121,7 +121,7 @@ cc_defaults {
         "libext4_utils",
         "liburing",
         "libzstd",
-        "libdebuggerd",
+        "libdebuggerd_handler",
     ],
 
     header_libs: [

@@ -152,6 +152,8 @@ void PrepareSwitchRoot() {
         LOG(INFO) << "Using vendor ramdisk copy of snapuserd " << snapuserd;
         Copy(snapuserd, dst);
     }
+    const auto dst_crash_dump = dst_dir + "/crash_dump64";
+    Copy("/system/bin/crash_dump_static64", dst_crash_dump.c_str());
 }
 }  // namespace
 

@@ -59,7 +59,11 @@
 #include "libdebuggerd/utility.h"
 
 #include "debuggerd/handler.h"
+
+#ifdef TOMBSTONED_SUPPORTED
 #include "tombstone_handler.h"
+#else
+#endif
 
 #include "protocol.h"
 #include "util.h"
@@ -226,8 +230,9 @@ static void DefuseSignalHandlers() {
 static void Initialize(char** argv) {
   android::base::InitLogging(argv);
   android::base::SetAborter([](const char* abort_msg) {
-    // If we abort before we get an output fd, contact tombstoned to let any
-    // potential listeners know that we failed.
+  // If we abort before we get an output fd, contact tombstoned to let any
+  // potential listeners know that we failed.
+#ifdef TOMBSTONED_SUPPORTED
     if (!g_tombstoned_connected) {
       if (!connect_tombstone_server(g_target_thread, &g_tombstoned_socket, &g_output_fd,
                                     &g_proto_fd, kDebuggerdAnyIntercept)) {
@@ -236,6 +241,7 @@ static void Initialize(char** argv) {
         _exit(1);
       }
     }
+#endif
 
     dprintf(g_output_fd.get(), "crash_dump failed to dump process");
     if (g_target_thread != 1) {
@@ -600,12 +606,14 @@ int main(int argc, char** argv) {
   // Drop our capabilities now that we've fetched all of the information we need.
   drop_capabilities();
 
+#ifdef TOMBSTONED_SUPPORTED
   {
     ATRACE_NAME("tombstoned_connect");
     LOG(INFO) << "obtaining output fd from tombstoned, type: " << dump_type;
     g_tombstoned_connected = connect_tombstone_server(g_target_thread, &g_tombstoned_socket,
                                                       &g_output_fd, &g_proto_fd, dump_type);
   }
+#endif
 
   if (g_tombstoned_connected) {
     if (TEMP_FAILURE_RETRY(dup2(g_output_fd.get(), STDOUT_FILENO)) == -1) {
@@ -687,10 +695,12 @@ int main(int argc, char** argv) {
 
   // Close stdout before we notify tombstoned of completion.
   close(STDOUT_FILENO);
+#ifdef TOMBSTONED_SUPPORTED
   if (g_tombstoned_connected &&
       !notify_completion(g_tombstoned_socket.get(), g_output_fd.get(), g_proto_fd.get())) {
     LOG(ERROR) << "failed to notify tombstoned of completion";
   }
+#endif
 
   return 0;
 }

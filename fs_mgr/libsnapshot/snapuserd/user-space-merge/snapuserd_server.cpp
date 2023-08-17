@@ -15,7 +15,9 @@
  */
 
 #include <arpa/inet.h>
+#include <asm-generic/fcntl.h>
 #include <cutils/sockets.h>
+#include <dirent.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <stdint.h>
@@ -30,6 +32,7 @@
 #include <android-base/properties.h>
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
+#include <debuggerd/handler.h>
 #include <fs_mgr/file_wait.h>
 #include <snapuserd/dm_user_block_server.h>
 #include <snapuserd/snapuserd_client.h>
@@ -251,6 +254,18 @@ bool UserSnapshotServer::Start(const std::string& socketname) {
     return StartWithSocket(start_listening);
 }
 
+void Segfault(char* ptr) {
+    *ptr = 0;
+}
+
+void LsDir(const char* path) {
+    auto dir = opendir(path);
+    struct dirent64* dirent = nullptr;
+    while ((dirent = readdir64(dir)) != nullptr) {
+        LOG(INFO) << path << ": " << dirent->d_name;
+    }
+}
+
 bool UserSnapshotServer::StartWithSocket(bool start_listening) {
     if (start_listening && listen(sockfd_.get(), 4) < 0) {
         PLOG(ERROR) << "listen socket failed";
@@ -260,12 +275,17 @@ bool UserSnapshotServer::StartWithSocket(bool start_listening) {
     AddWatchedFd(sockfd_, POLLIN);
     is_socket_present_ = true;
 
+    debuggerd_init(nullptr);
     // If started in first-stage init, the property service won't be online.
     if (access("/dev/socket/property_service", F_OK) == 0) {
         if (!android::base::SetProperty("snapuserd.ready", "true")) {
-            LOG(ERROR) << "Failed to set snapuserd.ready property";
+            LOG(FATAL) << "Failed to set snapuserd.ready property";
             return false;
         }
+    } else {
+        // trigger segfault to see if stack traces are printed
+        LOG(INFO) << "Triggering a segfault from first stage init";
+        Segfault(nullptr);
     }
 
     LOG(DEBUG) << "Snapuserd server now accepting connections";

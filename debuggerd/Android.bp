@@ -68,6 +68,7 @@ cc_library_shared {
 cc_library_static {
     name: "libtombstoned_client_static",
     defaults: ["debuggerd_defaults"],
+    ramdisk_available: true,
     recovery_available: true,
     vendor_ramdisk_available: true,
     srcs: [
@@ -368,6 +369,8 @@ cc_test {
     ],
 
     test_suites: ["device-tests"],
+    // Required for tests.
+    required: ["crash_dump.policy"],
 }
 
 cc_benchmark {
@@ -380,8 +383,8 @@ cc_benchmark {
     ],
 }
 
-cc_binary {
-    name: "crash_dump",
+cc_defaults {
+    name: "crash_dump_defaults",
     srcs: [
         "crash_dump.cpp",
         "tombstone_handler.cpp",
@@ -418,13 +421,47 @@ cc_binary {
         "libprocinfo",
         "libunwindstack",
     ],
+}
+
+cc_binary {
+    name: "crash_dump",
+    defaults: ["crash_dump_defaults"],
+    cflags: [
+        "-DTOMBSTONED_SUPPORTED",
+    ],
 
     apex_available: [
         "com.android.runtime",
+        "//apex_available:platform",
     ],
+}
 
-    // Required for tests.
-    required: ["crash_dump.policy"],
+cc_binary {
+    name: "crash_dump_static",
+    defaults: ["crash_dump_defaults"],
+    ramdisk_available: true,
+    vendor_ramdisk_available: true,
+    recovery_available: true,
+    static_executable: true,
+    exclude_srcs: [
+        "tombstone_handler.cpp",
+    ],
+    static_libs: [
+        "libbase",
+        "liblog",
+        "libprocinfo",
+        "libunwindstack",
+        "liblzma",
+        "libxz",
+    ],
+    header_libs: [
+        "libdebuggerd_common_headers",
+    ],
+    exclude_static_libs: [
+        "libtombstoned_client_static",
+        "libtombstone_proto",
+        "libprotobuf-cpp-lite",
+    ],
 }
 
 cc_binary {
