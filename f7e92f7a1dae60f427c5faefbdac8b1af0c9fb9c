@@ -16,6 +16,24 @@
       "message": "Note that IDecompressor is one-shot. There\u0027s no caching of them at all in CowReader right now - maybe there should be.",
       "revId": "f7e92f7a1dae60f427c5faefbdac8b1af0c9fb9c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fd614f4_e6906452",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_decompress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-17T22:31:05Z",
+      "side": 1,
+      "message": "Looks like we support using different compression algorithms for different blocks. So caching will be a bit tricky. Daniel\u0027s earlier CL showed that caching compression contexts gives ~10% perf improvement, we should probably add caching for decompression as well.",
+      "parentUuid": "b12a5d9f_fa8e94b2",
+      "revId": "f7e92f7a1dae60f427c5faefbdac8b1af0c9fb9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
