@@ -30,6 +30,7 @@ class FileDescriptor;
 
 namespace android {
 namespace snapshot {
+class IDecompressor;
 
 class ICowOpIter;
 
@@ -169,6 +170,7 @@ class CowReader final : public ICowReader {
     bool PrepMergeOps();
     uint64_t FindNumCopyops();
     uint8_t GetCompressionType(const CowOperation* op);
+    std::unique_ptr<IDecompressor> decompressor;
 
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
