@@ -31,6 +31,7 @@ class FileDescriptor;
 
 namespace android {
 namespace snapshot {
+class IDecompressor;
 
 class ICowOpIter;
 class IDecompressor;
