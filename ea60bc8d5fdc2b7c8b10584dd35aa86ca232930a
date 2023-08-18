@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10ab4bfd_4253e608",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-18T22:54:13Z",
+      "side": 1,
+      "message": "that isn\u0027t what this change actually does?",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 59
+      },
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa1f5823_e9b9b61d",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-18T22:54:13Z",
+      "side": 1,
+      "message": "are people really serious about 64KiB support too? i see that in some of the changes... if so, append `StringPrintf(\"_%dk\", getpagesize()/1024)` instead?",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 19
+      },
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c89f8c5d_579a7369",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-18T22:54:13Z",
+      "side": 1,
+      "message": "did you mean to leave the logging in? (if so, might be better in a separate change for clarity?)",
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
