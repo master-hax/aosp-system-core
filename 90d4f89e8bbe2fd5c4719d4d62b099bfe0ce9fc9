@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65412b5b_531b8b27",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v2.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-08-18T13:22:12Z",
+      "side": 1,
+      "message": "The \"\u003c\u003c\" operator has higher precedence than the ternary \"?:\" operator.  So I believe this is going to directly log the value of `batch_write_`, instead of the text strings `enabled` or `disabled`.\n\nI think this needs to be:\n\n```\n  LOG_INFO \u003c\u003c \"Batch writes: \" \u003c\u003c (batch_write_ ? \"enabled\" : \"disabled\");\n```",
+      "revId": "90d4f89e8bbe2fd5c4719d4d62b099bfe0ce9fc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
