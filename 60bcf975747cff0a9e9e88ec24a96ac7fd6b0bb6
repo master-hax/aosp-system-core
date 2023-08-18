@@ -1,6 +1,24 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "41afb09b_1ffc8eac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-18T02:06:27Z",
+      "side": 1,
+      "message": "is there a reason not to use StringPrintf() from libbase?",
+      "tag": "mailMessageId\u003d\u003cCAJgzZoo-Nv4qbWcuvcFUouw3yxvB7QQbeBPv_U9P3FT04K_yeQ@mail.gmail.com\u003e",
+      "revId": "60bcf975747cff0a9e9e88ec24a96ac7fd6b0bb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e98c3b6d_a474f700",
