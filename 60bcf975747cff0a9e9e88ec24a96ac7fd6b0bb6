@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e98c3b6d_a474f700",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-08-18T00:40:11Z",
+      "side": 1,
+      "message": "Seems clunky, but ok.",
+      "range": {
+        "startLine": 56,
+        "startChar": 12,
+        "endLine": 60,
+        "endChar": 49
+      },
+      "revId": "60bcf975747cff0a9e9e88ec24a96ac7fd6b0bb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
