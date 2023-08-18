@@ -153,6 +153,11 @@ void PrepareSwitchRoot() {
         Copy(snapuserd, dst);
     }
 }
+
+bool IsKernel16K() {
+    return sysconf(_SC_PAGE_SIZE) == 16384;
+}
+
 }  // namespace
 
 std::string GetModuleLoadList(BootMode boot_mode, const std::string& dir_path) {
@@ -201,9 +206,20 @@ bool LoadKernelModules(BootMode boot_mode, bool want_console, bool want_parallel
     }
     dirent* entry = nullptr;
     std::vector<std::string> module_dirs;
+    std::string release_specific_module_dir = uts.release;
+    if (IsKernel16K()) {
+        release_specific_module_dir += "_16k";
+    }
     while ((entry = readdir(base_dir.get()))) {
         if (entry->d_type != DT_DIR) {
             continue;
+        }
+        if (entry->d_name == release_specific_module_dir) {
+            LOG(INFO) << "Release specific kernel module dir " << release_specific_module_dir
+                      << " found, loading modules from here with no fallbacks.";
+            module_dirs.clear();
+            module_dirs.emplace_back(entry->d_name);
+            break;
         }
         int dir_major = 0, dir_minor = 0;
         if (sscanf(entry->d_name, "%d.%d", &dir_major, &dir_minor) != 2 || dir_major != major ||
@@ -228,6 +244,7 @@ bool LoadKernelModules(BootMode boot_mode, bool want_console, bool want_parallel
         bool retval = m.LoadListedModules(!want_console);
         modules_loaded = m.GetModuleCount();
         if (modules_loaded > 0) {
+            LOG(INFO) << "Loaded " << modules_loaded << " modules from " << dir_path;
             return retval;
         }
     }
@@ -237,6 +254,7 @@ bool LoadKernelModules(BootMode boot_mode, bool want_console, bool want_parallel
                                   : m.LoadListedModules(!want_console);
     modules_loaded = m.GetModuleCount();
     if (modules_loaded > 0) {
+        LOG(INFO) << "Loaded " << modules_loaded << " modules from " << MODULE_BASE_DIR;
         return retval;
     }
     return true;
