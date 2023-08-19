@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "76f38cc7_1bf084ba",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-19T00:07:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "10ab4bfd_4253e608",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 59
+      },
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fa1f5823_e9b9b61d",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0ec7785_fda44159",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-19T00:07:09Z",
+      "side": 1,
+      "message": "sure. Can re-open aosp/2654867 ? That CL makes shadow stack code agnostic to page sizes.",
+      "parentUuid": "fa1f5823_e9b9b61d",
+      "range": {
+        "startLine": 210,
+        "startChar": 8,
+        "endLine": 210,
+        "endChar": 19
+      },
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c89f8c5d_579a7369",
@@ -60,6 +108,24 @@
       "writtenOn": "2023-08-18T22:54:13Z",
       "side": 1,
       "message": "did you mean to leave the logging in? (if so, might be better in a separate change for clarity?)",
+      "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "398f8524_a47be291",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-19T00:07:09Z",
+      "side": 1,
+      "message": "Yes I meant to leave the logging in. This allows us to make sure init loaded kernel module from the right directory.",
+      "parentUuid": "c89f8c5d_579a7369",
       "revId": "ea60bc8d5fdc2b7c8b10584dd35aa86ca232930a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
