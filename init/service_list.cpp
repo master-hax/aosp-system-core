@@ -76,10 +76,7 @@ bool ServiceList::IsPostData() {
     return post_data_;
 }
 
-void ServiceList::MarkServicesUpdate() {
-    services_update_finished_ = true;
-
-    // start the delayed services
+void ServiceList::StartDelayedServices() {
     for (const auto& name : delayed_service_names_) {
         Service* service = FindService(name);
         if (service == nullptr) {
