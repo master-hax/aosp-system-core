@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcb4aaa7_53c1abca",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1520,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26595f64_70f46c95",
+      "range": {
+        "startLine": 1520,
+        "startChar": 8,
+        "endLine": 1520,
+        "endChar": 19
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9df80020_07b4f7a9",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-08-22T23:17:36Z",
       "side": 1,
       "message": "seed `gen` with a hardcoded seed",
+      "range": {
+        "startLine": 1570,
+        "startChar": 31,
+        "endLine": 1570,
+        "endChar": 34
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78050752_c0e8fdc4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1570,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9df80020_07b4f7a9",
       "range": {
         "startLine": 1570,
         "startChar": 31,
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "947b7581_47830179",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1580,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "adb8c0eb_3763e3cb",
+      "range": {
+        "startLine": 1580,
+        "startChar": 8,
+        "endLine": 1580,
+        "endChar": 12
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f55cddcd_69a273fe",
@@ -100,6 +172,30 @@
       "writtenOn": "2023-08-22T23:17:36Z",
       "side": 1,
       "message": "const auto",
+      "range": {
+        "startLine": 1583,
+        "startChar": 8,
+        "endLine": 1583,
+        "endChar": 12
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acd8dbb6_282e84ad",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1583,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f55cddcd_69a273fe",
       "range": {
         "startLine": 1583,
         "startChar": 8,
@@ -133,6 +229,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7669a8b2_a44405ea",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1584,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "400b287a_2e951fc3",
+      "range": {
+        "startLine": 1584,
+        "startChar": 8,
+        "endLine": 1584,
+        "endChar": 12
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aeafeaed_d90d6fb6",
@@ -146,6 +266,30 @@
       "writtenOn": "2023-08-22T23:17:36Z",
       "side": 1,
       "message": "const double",
+      "range": {
+        "startLine": 1585,
+        "startChar": 8,
+        "endLine": 1585,
+        "endChar": 14
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0bfb6142_cb535845",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1585,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aeafeaed_d90d6fb6",
       "range": {
         "startLine": 1585,
         "startChar": 8,
@@ -179,6 +323,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d6fa5b3_c611484f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1643,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12f6c0a9_6d2200be",
+      "range": {
+        "startLine": 1643,
+        "startChar": 41,
+        "endLine": 1643,
+        "endChar": 45
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5d05e35a_397c8685",
@@ -192,6 +360,30 @@
       "writtenOn": "2023-08-22T23:17:36Z",
       "side": 1,
       "message": "BLOCK_SZ",
+      "range": {
+        "startLine": 1651,
+        "startChar": 20,
+        "endLine": 1651,
+        "endChar": 24
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2b55ee2_9e735be2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1651,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5d05e35a_397c8685",
       "range": {
         "startLine": 1651,
         "startChar": 20,
@@ -225,6 +417,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d9b1919_2f603e58",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1657,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3f1ce63_a38bc3d5",
+      "range": {
+        "startLine": 1657,
+        "startChar": 8,
+        "endLine": 1657,
+        "endChar": 11
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ca1633f3_2360af9a",
@@ -238,6 +454,30 @@
       "writtenOn": "2023-08-22T23:17:36Z",
       "side": 1,
       "message": "why is this cast necessary?",
+      "range": {
+        "startLine": 1659,
+        "startChar": 20,
+        "endLine": 1659,
+        "endChar": 31
+      },
+      "revId": "5594c72208e86d290e51d014e8bf31961072d2be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f37c807_f88898f5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1659,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-22T23:34:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca1633f3_2360af9a",
       "range": {
         "startLine": 1659,
         "startChar": 20,
