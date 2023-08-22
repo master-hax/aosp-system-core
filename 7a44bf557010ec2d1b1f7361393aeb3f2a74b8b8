@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47dc6557_e95a57be",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-22T23:40:12Z",
+      "side": 1,
+      "message": "You should probably not include the `snapuserd/include` prefix. Try\n\n```\n#include \u003csnapuserd/snapuserd_kernel.h\u003e\n```\n\nIf compiler reports header not found, consider adding relevant header libs to cow_api-test target",
+      "range": {
+        "startLine": 30,
+        "startChar": 10,
+        "endLine": 30,
+        "endChar": 28
+      },
+      "revId": "7a44bf557010ec2d1b1f7361393aeb3f2a74b8b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
