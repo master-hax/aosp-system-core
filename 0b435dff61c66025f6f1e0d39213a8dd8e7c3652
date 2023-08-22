@@ -86,6 +86,23 @@
       "parentUuid": "56c55a4c_29f245aa",
       "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f07f4379_1bc01755",
+        "filename": "init/service_parser.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1988540
+      },
+      "writtenOn": "2023-08-22T18:22:15Z",
+      "side": 1,
+      "message": "Should we add a validation check for enforcing uclamp_min \u003c\u003d uclamp_max?\nI believe the system call wouldn\u0027t error out if uclamp_min \u003e uclamp_max (The uclamp min value would simply be set to the uclamp max value)\nRef: https://cs.android.com/android/kernel/superproject/+/common-android-mainline:common/kernel/sched/core.c;l\u003d10779",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
