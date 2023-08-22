@@ -68,6 +68,24 @@
       "parentUuid": "e6164802_2ef9547e",
       "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30f11f78_b76be8a0",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-08-22T18:18:03Z",
+      "side": 1,
+      "message": "Ah, setting it per-service like this would only work when the cpu controller is on the V2 cgroup hierarchy. But we\u0027re still on V1 for cpu, so we\u0027d need to upgrade first for this to work. Sorry, pls ignore.",
+      "parentUuid": "56c55a4c_29f245aa",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
