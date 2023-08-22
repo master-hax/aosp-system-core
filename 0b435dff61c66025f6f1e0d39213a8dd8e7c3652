@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e0b3d0e_0fb510ff",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-22T14:51:35Z",
+      "side": 1,
+      "message": "but this type is in the same header file as every time we have this conversation... please don\u0027t duplicate this.\n\n(i don\u0027t think you need to duplicate the constants above either?)",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6164802_2ef9547e",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-22T14:51:35Z",
+      "side": 1,
+      "message": "oh, if you\u0027re building for glibc too, i\u0027d suggest either (a) wait for ccross and use musl [with up to date uapi headers] instead or (b) move this out into the platform-dependent code.",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
