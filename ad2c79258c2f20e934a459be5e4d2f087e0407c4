@@ -3,6 +3,75 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1c6b336a_45ff6fdf",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1564,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-22T15:38:57Z",
+      "side": 1,
+      "message": "std::array\u003cchar, 32768\u003e buffer;",
+      "range": {
+        "startLine": 1564,
+        "startChar": 4,
+        "endLine": 1564,
+        "endChar": 23
+      },
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01a17e23_84b45155",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1567,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-22T15:38:57Z",
+      "side": 1,
+      "message": "buffer.size()",
+      "range": {
+        "startLine": 1567,
+        "startChar": 24,
+        "endLine": 1567,
+        "endChar": 29
+      },
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c174bf8_9aaa3710",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1568,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-22T15:38:57Z",
+      "side": 1,
+      "message": "It\u0027s usually better to not use any randomness in test cases. If you have to, seed your generators properly. Use\n\n```\nstd::uniform_int_distribution\n```\n\nto generate numbers between 0 to 255",
+      "range": {
+        "startLine": 1568,
+        "startChar": 38,
+        "endLine": 1568,
+        "endChar": 50
+      },
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ec83a03b_56eeb085",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
         "patchSetId": 6
