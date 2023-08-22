@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72de63c2_b57c48eb",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 749,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-08-22T01:16:54Z",
+      "side": 1,
+      "message": "nit: how about just clear errno in the beginning of svc-\u003eStart()?",
+      "revId": "d6b65fb307fa38ad44fe4da38497d4f78fcdad7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
