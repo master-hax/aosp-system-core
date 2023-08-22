@@ -1,0 +1,21 @@
+
+cc_binary_host {
+    name: "cow_benchmark",
+    defaults: [
+        "fs_mgr_defaults",
+        "libsnapshot_cow_defaults",
+    ],
+
+    srcs: ["cow_benchmark.cpp"],
+
+    static_libs: [
+        "libsnapshot_cow",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "liblog",
+    ],
+
+    cflags: ["-Werror"],
+}
