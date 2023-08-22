@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec83a03b_56eeb085",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1575,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-22T13:20:33Z",
+      "side": 1,
+      "message": "Prefer std::chrono::steady_clock::now() over clock()",
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "300114e1_0ba6868f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1587,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-22T13:20:33Z",
+      "side": 1,
+      "message": "Note that only best_ratio is getting initialized here. Better to do:\n\n    size_t best_speed \u003d 0;\n    size_t best_ratio \u003d 0;\n\n(Eg assume the first is best until loop proves otherwise)",
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af7c3106_33d89f27",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1588,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-22T13:20:33Z",
+      "side": 1,
+      "message": "size_t",
+      "revId": "ad2c79258c2f20e934a459be5e4d2f087e0407c4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
