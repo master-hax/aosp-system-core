@@ -50,6 +50,24 @@
       "message": "oh, if you\u0027re building for glibc too, i\u0027d suggest either (a) wait for ccross and use musl [with up to date uapi headers] instead or (b) move this out into the platform-dependent code.",
       "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56c55a4c_29f245aa",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-08-22T15:56:43Z",
+      "side": 1,
+      "message": "Alternatively you could use the cgroup CPU controller to do this (cpu.uclamp.min / cpu.uclamp.max): https://docs.kernel.org/admin-guide/cgroup-v2.html#cpu \n\nThere are already uclamp attributes available in libprocessgroup, although I guess you could also just write them directly from here.\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/profiles/task_profiles.json;drc\u003deef0f563fd2d16343aa1ac01eebe98126f26e352;l\u003d61-68",
+      "parentUuid": "e6164802_2ef9547e",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
