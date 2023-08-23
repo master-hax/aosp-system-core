@@ -58,15 +58,15 @@ public:
 
 private:
     static inline std::string   std_string(const String16& str);
-public:
-            size_t              size() const;
+
             void                setTo(const String16& other);
             status_t            setTo(const char16_t* other);
             status_t            setTo(const char16_t* other, size_t len);
             status_t            setTo(const String16& other,
                                       size_t len,
                                       size_t begin=0);
-
+public:
+            size_t              size() const;
             status_t            append(const String16& other);
             status_t            append(const char16_t* other, size_t len);
 

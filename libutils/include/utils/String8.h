@@ -62,6 +62,13 @@ public:
 
 private:
     static inline std::string   std_string(const String8& str);
+
+            void                setTo(const String8& other);
+            status_t            setTo(const char* other);
+            status_t            setTo(const char* other, size_t numChars);
+            status_t            setTo(const char16_t* other, size_t numChars);
+            status_t            setTo(const char32_t* other,
+                                      size_t length);
 public:
 
     inline  size_t              size() const;
@@ -71,13 +78,6 @@ public:
             size_t              length() const;
 
             void                clear();
-
-            void                setTo(const String8& other);
-            status_t            setTo(const char* other);
-            status_t            setTo(const char* other, size_t numChars);
-            status_t            setTo(const char16_t* other, size_t numChars);
-            status_t            setTo(const char32_t* other,
-                                      size_t length);
 
             status_t            append(const String8& other);
             status_t            append(const char* other);
