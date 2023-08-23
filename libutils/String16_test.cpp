@@ -86,7 +86,7 @@ TEST(String16Test, Size) {
 
 TEST(String16Test, setTo) {
     String16 tmp("Verify me");
-    tmp.setTo(u"New content");
+    tmp = String16(u"New content");
     EXPECT_EQ(11U, tmp.size());
     EXPECT_STR16EQ(u"New content", tmp);
 }
@@ -143,14 +143,6 @@ TEST(String16Test, StaticStringMove) {
 TEST(String16Test, StaticStringSize) {
     StaticString16 tmp(u"Verify me");
     EXPECT_EQ(9U, tmp.size());
-}
-
-TEST(String16Test, StaticStringSetTo) {
-    StaticString16 tmp(u"Verify me");
-    tmp.setTo(u"New content");
-    EXPECT_EQ(11U, tmp.size());
-    EXPECT_STR16EQ(u"New content", tmp);
-    EXPECT_FALSE(tmp.isStaticString());
 }
 
 TEST(String16Test, StaticStringAppend) {

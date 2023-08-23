@@ -6907,6 +6907,7 @@
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String8::setTo",
    "linker_set_key" : "_ZN7android7String85setToEPKDim",
    "parameters" :
@@ -6926,6 +6927,7 @@
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String8::setTo",
    "linker_set_key" : "_ZN7android7String85setToEPKDsm",
    "parameters" :
@@ -6945,6 +6947,7 @@
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String8::setTo",
    "linker_set_key" : "_ZN7android7String85setToEPKc",
    "parameters" :
@@ -6961,6 +6964,7 @@
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String8::setTo",
    "linker_set_key" : "_ZN7android7String85setToEPKcm",
    "parameters" :
@@ -6980,6 +6984,7 @@
    "source_file" : "system/core/libutils/include/utils/String8.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String8::setTo",
    "linker_set_key" : "_ZN7android7String85setToERKS0_",
    "parameters" :
@@ -7524,6 +7529,7 @@
    "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String16::setTo",
    "linker_set_key" : "_ZN7android8String165setToEPKDs",
    "parameters" :
@@ -7540,6 +7546,7 @@
    "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String16::setTo",
    "linker_set_key" : "_ZN7android8String165setToEPKDsm",
    "parameters" :
@@ -7559,6 +7566,7 @@
    "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String16::setTo",
    "linker_set_key" : "_ZN7android8String165setToERKS0_",
    "parameters" :
@@ -7575,6 +7583,7 @@
    "source_file" : "system/core/libutils/include/utils/String16.h"
   },
   {
+   "access" : "private",
    "function_name" : "android::String16::setTo",
    "linker_set_key" : "_ZN7android8String165setToERKS0_mm",
    "parameters" :

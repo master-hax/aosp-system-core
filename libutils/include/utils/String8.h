@@ -74,13 +74,6 @@ public:
 
             void                clear();
 
-            void                setTo(const String8& other);
-            status_t            setTo(const char* other);
-            status_t            setTo(const char* other, size_t numChars);
-            status_t            setTo(const char16_t* other, size_t numChars);
-            status_t            setTo(const char32_t* other,
-                                      size_t length);
-
             status_t            append(const String8& other);
             status_t            append(const char* other);
             status_t            append(const char* other, size_t numChars);
@@ -156,6 +149,12 @@ private:
 #endif
     inline  const char*         string() const;
     inline  bool                isEmpty() const;
+            void                setTo(const String8& other);
+            status_t            setTo(const char* other);
+            status_t            setTo(const char* other, size_t numChars);
+            status_t            setTo(const char16_t* other, size_t numChars);
+            status_t            setTo(const char32_t* other,
+                                      size_t length);
 };
 
 // String8 can be trivially moved using memcpy() because moving does not

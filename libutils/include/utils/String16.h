@@ -65,13 +65,6 @@ public:
 
     inline  size_t              length() const;
 
-            void                setTo(const String16& other);
-            status_t            setTo(const char16_t* other);
-            status_t            setTo(const char16_t* other, size_t len);
-            status_t            setTo(const String16& other,
-                                      size_t len,
-                                      size_t begin=0);
-
             status_t            append(const String16& other);
             status_t            append(const char16_t* other, size_t len);
 
@@ -195,6 +188,12 @@ public:
 private:
 #endif
     inline  const char16_t*     string() const;
+            void                setTo(const String16& other);
+            status_t            setTo(const char16_t* other);
+            status_t            setTo(const char16_t* other, size_t len);
+            status_t            setTo(const String16& other,
+                                      size_t len,
+                                      size_t begin=0);
 };
 
 // String16 can be trivially moved using memcpy() because moving does not
