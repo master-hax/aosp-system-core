@@ -16,6 +16,24 @@
       "message": "cc_binary and add host_available: true\n\nThis way we can run it on device as well.",
       "revId": "7d9c4560ff634b9067b2fea74e60b68062cbf72d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27a1e680_8c883c8b",
+        "filename": "fs_mgr/libsnapshot/tools/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-23T17:23:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77063fad_dd59d1ba",
+      "revId": "7d9c4560ff634b9067b2fea74e60b68062cbf72d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
