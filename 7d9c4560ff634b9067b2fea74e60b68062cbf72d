@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77063fad_dd59d1ba",
+        "filename": "fs_mgr/libsnapshot/tools/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-08-23T12:25:48Z",
+      "side": 1,
+      "message": "cc_binary and add host_available: true\n\nThis way we can run it on device as well.",
+      "revId": "7d9c4560ff634b9067b2fea74e60b68062cbf72d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
