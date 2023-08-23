@@ -253,16 +253,22 @@ static int try_interfaces(IOUSBDeviceInterface500** dev, usb_handle* handle) {
              */
 
             if (handle->info.has_bulk_in) {
-                kr = (*interface)->ClearPipeStallBothEnds(interface,
-                        handle->bulkIn);
+                do {
+                    kr = (*interface)->ClearPipeStallBothEnds(interface,
+                            handle->bulkIn);
+                } while (kr == kIOReturnTimeout);
+
                 if (kr != 0) {
                     ERR("could not clear input pipe; result %x, ignoring...\n", kr);
                 }
             }
 
             if (handle->info.has_bulk_out) {
-                kr = (*interface)->ClearPipeStallBothEnds(interface,
-                        handle->bulkOut);
+                do {
+                    kr = (*interface)->ClearPipeStallBothEnds(interface,
+                            handle->bulkOut);
+                } while (kr == kIOReturnTimeout);
+
                 if (kr != 0) {
                     ERR("could not clear output pipe; result %x, ignoring....\n", kr);
                 }
