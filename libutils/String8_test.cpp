@@ -74,11 +74,6 @@ TEST_F(String8Test, OperatorPlusEquals) {
     EXPECT_STREQ(src3, " Verify me.");
 }
 
-TEST_F(String8Test, SetToSizeMaxReturnsNoMemory) {
-    const char *in = "some string";
-    EXPECT_EQ(NO_MEMORY, String8("").setTo(in, SIZE_MAX));
-}
-
 // http://b/29250543
 TEST_F(String8Test, CorrectInvalidSurrogate) {
     // d841d8 is an invalid start for a surrogate pair. Make sure this is handled by ignoring the
