@@ -15,6 +15,7 @@ on property:init.svc.adbd=stopped
     setprop sys.usb.ffs.ready 0
 
 on property:sys.usb.config=adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello1"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb && property:sys.usb.configfs=1
@@ -30,6 +31,7 @@ on property:sys.usb.config=mtp && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello2"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
@@ -46,6 +48,7 @@ on property:sys.usb.config=ptp && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello3"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
@@ -62,6 +65,7 @@ on property:sys.usb.config=accessory && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello5"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,adb && property:sys.usb.configfs=1
@@ -78,6 +82,7 @@ on property:sys.usb.config=audio_source && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=audio_source,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello6"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=audio_source,adb && property:sys.usb.configfs=1
@@ -95,6 +100,7 @@ on property:sys.usb.config=accessory,audio_source && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello7"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.configfs=1
@@ -112,6 +118,7 @@ on property:sys.usb.config=midi && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=midi,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello8"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=midi,adb && property:sys.usb.configfs=1
@@ -129,6 +136,7 @@ on property:sys.usb.config=rndis && property:sys.usb.configfs=1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=rndis,adb && property:sys.usb.configfs=1
+    write /dev/kmsg "test567, Hello9"
     start adbd
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb && property:sys.usb.configfs=1
