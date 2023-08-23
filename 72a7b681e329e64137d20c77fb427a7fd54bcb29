@@ -47,6 +47,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d9d7f5a_3cad020d",
+        "filename": "libutils/String8.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-23T21:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de1d2812_779ab54f",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 30
+      },
+      "revId": "72a7b681e329e64137d20c77fb427a7fd54bcb29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "372040c1_a23c374b",
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "Yeah, but a small percentage of 10,000s is still a lot (+all lunch targets +downstream). I expect two classes of things to fail: some set of tests and things which happen to be using something else which is included by iostream. I\u0027ve spent a _lot_ of time cleaning this kind of thing up.\n\nWould you like to try it out? I am at least curious.",
       "parentUuid": "775b9dff_d48c352c",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 18
+      },
+      "revId": "72a7b681e329e64137d20c77fb427a7fd54bcb29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "375807ac_54d9b2bf",
+        "filename": "libutils/include/utils/String8.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-23T21:26:18Z",
+      "side": 1,
+      "message": "I may try this out, but not as a part of this CL.",
+      "parentUuid": "6e4425e3_dd3a937a",
       "range": {
         "startLine": 20,
         "startChar": 10,
