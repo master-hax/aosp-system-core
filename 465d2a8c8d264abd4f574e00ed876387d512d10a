@@ -22,6 +22,30 @@
       },
       "revId": "465d2a8c8d264abd4f574e00ed876387d512d10a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b476cf97_befe4ee5",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-24T23:14:51Z",
+      "side": 1,
+      "message": "Switched to comparing page size suffixes. this also ignores 4K modules when running a 16K kernel, just for safety.",
+      "parentUuid": "30ed7c12_1536b730",
+      "range": {
+        "startLine": 237,
+        "startChar": 48,
+        "endLine": 237,
+        "endChar": 73
+      },
+      "revId": "465d2a8c8d264abd4f574e00ed876387d512d10a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
