@@ -15,8 +15,7 @@
 //
 #include "task.h"
 
-#include <cstddef>
-#include <iostream>
+#include "fastboot_driver.h"
 
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -130,8 +129,9 @@ void OptimizedFlashSuperTask::Run() {
     // Send the data to the device.
     flash_partition_files(super_name_, files);
 }
+
 std::string OptimizedFlashSuperTask::ToString() const {
-    return "optimized-flash-super";
+    return "optimized-flashtesting-super";
 }
 
 // This looks for a block within tasks that has the following pattern [reboot fastboot,
@@ -164,7 +164,7 @@ std::unique_ptr<OptimizedFlashSuperTask> OptimizedFlashSuperTask::Initialize(
         LOG(INFO) << "super optimization is disabled";
         return nullptr;
     }
-    if (!supports_AB()) {
+    if (!supports_AB(fp->fb)) {
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
@@ -221,9 +221,9 @@ std::unique_ptr<OptimizedFlashSuperTask> OptimizedFlashSuperTask::Initialize(
         } else if (auto update_super_task = task->AsUpdateSuperTask()) {
             return true;
         } else if (auto reboot_task = task->AsRebootTask()) {
-            return true;
-        } else if (auto resize_task = task->AsResizeTask()) {
-            return true;
+            if (reboot_task->ToString() == "reboot fastboot") {
+                return true;
+            }
         }
         return false;
     };
