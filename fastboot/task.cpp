@@ -15,8 +15,7 @@
 //
 #include "task.h"
 
-#include <cstddef>
-#include <iostream>
+#include "fastboot_driver.h"
 
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -130,6 +129,7 @@ void OptimizedFlashSuperTask::Run() {
     // Send the data to the device.
     flash_partition_files(super_name_, files);
 }
+
 std::string OptimizedFlashSuperTask::ToString() const {
     return "optimized-flash-super";
 }
@@ -143,6 +143,9 @@ bool OptimizedFlashSuperTask::CanOptimize(const ImageSource* source,
     for (size_t i = 0; i < tasks.size(); i++) {
         auto reboot_task = tasks[i]->AsRebootTask();
         if (!reboot_task || reboot_task->GetTarget() != "fastboot") {
+            if (reboot_task) {
+                LOG(INFO) << "----REBOTO TASK " << reboot_task->GetTarget();
+            }
             continue;
         }
         // The check for i >= tasks.size() - 2 is because we are peeking two tasks ahead. We need to
@@ -165,7 +168,7 @@ std::unique_ptr<OptimizedFlashSuperTask> OptimizedFlashSuperTask::Initialize(
         LOG(INFO) << "super optimization is disabled";
         return nullptr;
     }
-    if (!supports_AB()) {
+    if (!supports_AB(fp->fb)) {
         LOG(VERBOSE) << "Cannot optimize flashing super on non-AB device";
         return nullptr;
     }
@@ -225,7 +228,9 @@ std::unique_ptr<OptimizedFlashSuperTask> OptimizedFlashSuperTask::Initialize(
         } else if (auto update_super_task = task->AsUpdateSuperTask()) {
             return true;
         } else if (auto reboot_task = task->AsRebootTask()) {
-            return true;
+            if (reboot_task->ToString() == "reboot fastboot") {
+                return true;
+            }
         }
         return false;
     };
