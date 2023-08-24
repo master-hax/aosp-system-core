@@ -18,12 +18,14 @@
 #include "fastboot.h"
 #include "fastboot_driver_mock.h"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <unordered_map>
 #include "android-base/strings.h"
+#include "gmock/gmock.h"
 
 using android::base::Split;
 using testing::_;
@@ -234,4 +236,35 @@ TEST_F(ParseTest, CorrectTaskLists) {
     ASSERT_TRUE(fastboot_info_tasks.size() >= hardcoded_tasks.size())
             << "size of fastboot-info task list: " << fastboot_info_tasks.size()
             << " size of hardcoded task list: " << hardcoded_tasks.size();
+}
+
+TEST_F(ParseTest, OptimizedFlashSuperTest) {
+    if (!get_android_product_out()) {
+        GTEST_SKIP();
+    }
+
+    LocalImageSource s;
+    fp->source = &s;
+    fp->sparse_limit = std::numeric_limits<int64_t>::max();
+
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+    fp->should_optimize_flash_super = true;
+    fp->should_use_fastboot_info = true;
+
+    ON_CALL(fb, GetVar("super-partition-name", _, _))
+            .WillByDefault(testing::Return(fastboot::BAD_ARG));
+
+    ON_CALL(fb, GetVar("slot-count", _, _))
+            .WillByDefault(testing::DoAll(testing::SetArgPointee<1>("2"),
+                                          testing::Return(fastboot::SUCCESS)));
+
+    ON_CALL(fb, GetVar("partition-size:super", _, _))
+            .WillByDefault(testing::DoAll(testing::SetArgPointee<1>("1000"),
+                                          testing::Return(fastboot::SUCCESS)));
+    std::vector<std::string> test1{
+            "flash boot",   "flash init_boot",       "flash vendor_boot", "reboot fastboot",
+            "update-super", "flash product",         "flash system",      "flash system_ext",
+            "flash odm",    "if-wipe erase userdata"};
+    std::vector<std::unique_ptr<Task>> task_list1 = ParseFastbootInfo(fp.get(), test1);
 }
