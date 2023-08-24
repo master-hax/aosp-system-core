@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d387f00c_ddc89cd6",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2023-08-24T22:19:27Z",
+      "side": 1,
+      "message": "I believe this will break the logic on line 248-266, right? That expects `modules_dir` to contain the kernel version dirs that match the existing major and minor versions.\n\nI\u0027m confused at what this patch is fixing since line 241 filters `module_dirs` based on the current kernel version.",
+      "range": {
+        "startLine": 237,
+        "startChar": 0,
+        "endLine": 240,
+        "endChar": 0
+      },
+      "revId": "4788b5e4fa1a6c18fd1737ac2013c047d2971b7a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
