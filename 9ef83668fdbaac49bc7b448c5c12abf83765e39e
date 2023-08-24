@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e060a10_c9d407a5",
+        "filename": "fastboot/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2023-08-24T18:51:17Z",
+      "side": 1,
+      "message": "will this be required to be at the end of the flashing process or could it be in the middle? E.g. what happens if there is an `erase`/`reboot` command after a flash or zero flashing steps\n\nAlso, is `if-wipe` allowed? (given that this optimization happens after the initial processing I guess the answer is probably yes)",
+      "revId": "9ef83668fdbaac49bc7b448c5c12abf83765e39e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
