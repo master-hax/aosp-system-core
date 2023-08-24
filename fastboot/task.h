@@ -15,10 +15,8 @@
 //
 #pragma once
 
-#include <sstream>
 #include <string>
 
-#include "fastboot_driver.h"
 #include "super_flash_helper.h"
 #include "util.h"
 
@@ -84,11 +82,12 @@ class OptimizedFlashSuperTask : public Task {
   public:
     OptimizedFlashSuperTask(const std::string& super_name, std::unique_ptr<SuperFlashHelper> helper,
                             SparsePtr sparse_layout, uint64_t super_size, const FlashingPlan* fp);
+
     static std::unique_ptr<OptimizedFlashSuperTask> Initialize(const FlashingPlan* fp,
                                                                std::vector<ImageEntry>& os_images);
     static std::unique_ptr<OptimizedFlashSuperTask> InitializeFromTasks(
             const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
-    using ImageEntry = std::pair<const Image*, std::string>;
+
     void Run() override;
     std::string ToString() const override;
 
