@@ -15,7 +15,7 @@
 //
 #include "task.h"
 
-#include <iostream>
+#include "fastboot_driver.h"
 
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -120,6 +120,7 @@ void OptimizedFlashSuperTask::Run() {
     // Send the data to the device.
     flash_partition_files(super_name_, files);
 }
+
 std::string OptimizedFlashSuperTask::ToString() {
     return "optimized-flash-super";
 }
@@ -255,7 +256,9 @@ std::unique_ptr<OptimizedFlashSuperTask> OptimizedFlashSuperTask::InitializeFrom
         } else if (auto update_super_task = task->AsUpdateSuperTask()) {
             return true;
         } else if (auto reboot_task = task->AsRebootTask()) {
-            return true;
+            if (reboot_task->ToString() == "reboot fastboot") {
+                return true;
+            }
         }
         return false;
     };

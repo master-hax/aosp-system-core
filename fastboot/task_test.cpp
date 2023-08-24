@@ -235,3 +235,54 @@ TEST_F(ParseTest, CorrectTaskLists) {
             << "size of fastboot-info task list: " << fastboot_info_tasks.size()
             << " size of hardcoded task list: " << hardcoded_tasks.size();
 }
+
+TEST_F(ParseTest, OptimizedFlashSuperTest) {
+    if (!get_android_product_out()) {
+        GTEST_SKIP();
+    }
+
+    LocalImageSource s;
+    fp->source = &s;
+    fp->sparse_limit = std::numeric_limits<int64_t>::max();
+    fp->slot_override = "all";
+
+    fastboot::MockFastbootDriver fb;
+    fp->fb = &fb;
+    fp->should_optimize_flash_super = true;
+
+    ON_CALL(fb, GetVar("super-partition-name", _, _))
+            .WillByDefault(testing::Return(fastboot::BAD_ARG));
+
+    ON_CALL(fb, GetVar("slot-count", _, _)).WillByDefault(testing::Return(fastboot::BAD_ARG));
+
+    FlashAllTool tool(fp.get());
+
+    fp->should_use_fastboot_info = false;
+    auto hardcoded_tasks = tool.CollectTasks();
+    fp->should_use_fastboot_info = true;
+    auto fastboot_info_tasks = tool.CollectTasks();
+
+    auto is_non_flash_task = [](const auto& task) -> bool {
+        return task->AsFlashTask() == nullptr;
+    };
+
+    // remove non flash tasks for testing purposes
+    hardcoded_tasks.erase(
+            std::remove_if(hardcoded_tasks.begin(), hardcoded_tasks.end(), is_non_flash_task),
+            hardcoded_tasks.end());
+    fastboot_info_tasks.erase(std::remove_if(fastboot_info_tasks.begin(), fastboot_info_tasks.end(),
+                                             is_non_flash_task),
+                              fastboot_info_tasks.end());
+
+    if (!compareTaskList(fastboot_info_tasks, hardcoded_tasks)) {
+        std::cout << "\n\n---Hardcoded Task List---\n"
+                  << tasksToString(hardcoded_tasks) << "\n---Fastboot-Info Task List---\n"
+                  << tasksToString(fastboot_info_tasks);
+    }
+
+    ASSERT_TRUE(compareTaskList(fastboot_info_tasks, hardcoded_tasks));
+
+    ASSERT_TRUE(fastboot_info_tasks.size() >= hardcoded_tasks.size())
+            << "size of fastboot-info task list: " << fastboot_info_tasks.size()
+            << " size of hardcoded task list: " << hardcoded_tasks.size();
+}
