@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <cstdio>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -163,6 +164,14 @@ std::string GetPageSizeSuffix() {
     return android::base::StringPrintf("_%zuk", page_size / 1024);
 }
 
+// Check if the string is an kernel release string(output of `uname -r`)
+bool IsKernelReleaseName(const char* str) {
+    int major = 0;
+    int minor = 0;
+    int patch = 0;
+    return sscanf("%d.%d.%d-", str, &major, &minor, &patch) == 3;
+}
+
 }  // namespace
 
 std::string GetModuleLoadList(BootMode boot_mode, const std::string& dir_path) {
@@ -222,6 +231,12 @@ bool LoadKernelModules(BootMode boot_mode, bool want_console, bool want_parallel
             module_dirs.clear();
             module_dirs.emplace_back(entry->d_name);
             break;
+        }
+        // If this dir name is in format of `uname -r` , skip it.
+        // We already checked the dir name with kernel's release string,
+        // this directory is for another kernel version.
+        if (IsKernelReleaseName(entry->d_name)) {
+            continue;
         }
         int dir_major = 0, dir_minor = 0;
         if (sscanf(entry->d_name, "%d.%d", &dir_major, &dir_minor) != 2 || dir_major != major ||
