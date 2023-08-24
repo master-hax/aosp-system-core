@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48189754_4de4e104",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-08-24T04:30:35Z",
+      "side": 1,
+      "message": "Looks like between Elliott creating this change and now there was ABI check introduced at the end of last year. Please let me know if dropping this symbol from abi-dumps is okay or I need to find some other way to nuke this function.",
+      "revId": "646ee488180bd97c658726db71b80870012cda64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
