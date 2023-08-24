@@ -15,10 +15,8 @@
 //
 #pragma once
 
-#include <sstream>
 #include <string>
 
-#include "fastboot_driver.h"
 #include "super_flash_helper.h"
 #include "util.h"
 
@@ -90,7 +88,6 @@ class OptimizedFlashSuperTask : public Task {
             const FlashingPlan* fp, std::vector<std::unique_ptr<Task>>& tasks);
     static bool CanOptimize(const ImageSource* source, std::vector<std::unique_ptr<Task>>& tasks);
 
-    using ImageEntry = std::pair<const Image*, std::string>;
     void Run() override;
     std::string ToString() const override;
 
