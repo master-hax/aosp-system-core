@@ -16,6 +16,24 @@
       "message": "will this be required to be at the end of the flashing process or could it be in the middle? E.g. what happens if there is an `erase`/`reboot` command after a flash or zero flashing steps\n\nAlso, is `if-wipe` allowed? (given that this optimization happens after the initial processing I guess the answer is probably yes)",
       "revId": "9ef83668fdbaac49bc7b448c5c12abf83765e39e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83e5db3c_7a88c7b9",
+        "filename": "fastboot/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-24T23:29:59Z",
+      "side": 1,
+      "message": "I think we are only replacing the specified tasks with the optimized task. The wipe and reboot tasks will be ignored. (If it shows up in the middle of this block we won\u0027t be able to optimize). For now, fastboot will only have wipe commands at the end.\n\nAlso worth nothing, right now if we can\u0027t optimize, we insert some resize to 0 tasks before flashing the dynamic partition tasks.",
+      "parentUuid": "0e060a10_c9d407a5",
+      "revId": "9ef83668fdbaac49bc7b448c5c12abf83765e39e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
