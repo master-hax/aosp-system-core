@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5ee3fc7_d4ea7b2b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1470474
+      },
+      "writtenOn": "2023-08-25T19:41:11Z",
+      "side": 1,
+      "message": "we probably only want to collect mskps on userdebug or eng builds.\n\nthere\u0027s probably not much harm in having an extra dir on user builds (hence, this comment is nonblocking), but just curious if there\u0027s a way to conditionally mkdir this.",
+      "range": {
+        "startLine": 802,
+        "startChar": 4,
+        "endLine": 803,
+        "endChar": 45
+      },
+      "revId": "ef4c575dd3e229fb930a94d20bb9a174a94c3c95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
