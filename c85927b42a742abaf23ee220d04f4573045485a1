@@ -110,6 +110,30 @@
       },
       "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e68fd3b_fa2ed5c3",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_apis_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2023-08-25T19:09:08Z",
+      "side": 1,
+      "message": "Would it be possible to just include the original images (not the copies) in the `Android.bp` similar to how they\u0027re used in the `fastboot_vendor_boot_img_utils_test` build rule in `system/core/fastboot/Android.bp`?",
+      "parentUuid": "425d23b5_7562efa6",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 42
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
