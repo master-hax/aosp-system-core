@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aaecc39d_609d457b",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-25T15:38:36Z",
+      "side": 1,
+      "message": "Why is this changed to flashtesting?",
+      "range": {
+        "startLine": 134,
+        "startChar": 22,
+        "endLine": 134,
+        "endChar": 34
+      },
+      "revId": "ea74216d5ed4bab450d953e8e1fe75bca4000ad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
