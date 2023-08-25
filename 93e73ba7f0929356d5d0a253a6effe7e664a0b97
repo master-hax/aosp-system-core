@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da3e6d0f_6388cea0",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_builder_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2023-08-25T18:57:53Z",
+      "side": 1,
+      "message": "These seem to be two disjoint sets of functionality. Split this into two separate fuzz targets, perhaps `liblp_builder_fuzzer` and `liblp_super_layout_builder_fuzzer`.\n\nI\u0027ve done the diff and it looks like there are a few constants that get shared between the two halves, so we can either duplicate them or extract them into a separate header file if needed.",
+      "range": {
+        "startLine": 525,
+        "startChar": 0,
+        "endLine": 529,
+        "endChar": 5
+      },
+      "revId": "93e73ba7f0929356d5d0a253a6effe7e664a0b97",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
