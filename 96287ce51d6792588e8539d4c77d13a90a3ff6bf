@@ -46,6 +46,30 @@
       },
       "revId": "96287ce51d6792588e8539d4c77d13a90a3ff6bf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ab64bc6_84b743c5",
+        "filename": "libsparse/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2023-08-28T16:54:51Z",
+      "side": 1,
+      "message": "Made the same change for `img2simg`.",
+      "parentUuid": "03aaa162_58fc2a6d",
+      "range": {
+        "startLine": 65,
+        "startChar": 11,
+        "endLine": 65,
+        "endChar": 19
+      },
+      "revId": "96287ce51d6792588e8539d4c77d13a90a3ff6bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
