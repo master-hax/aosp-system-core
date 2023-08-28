@@ -143,6 +143,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "53c7b635_003bd3b8",
+        "filename": "init/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-28T19:16:51Z",
+      "side": 1,
+      "message": "\u003e @enh, that would be best, if we support this in bionic.\n\nno. as i\u0027ve said before: we won\u0027t be adding this to bionic specifically _because_ it\u0027s unstable. if you want a library (and i think you _should_!), you\u0027ll want to make your own/add it to an existing scheduling-related library as appropriate.",
+      "parentUuid": "0802d236_33ba7ed4",
+      "revId": "0b435dff61c66025f6f1e0d39213a8dd8e7c3652",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f07f4379_1bc01755",
         "filename": "init/service_parser.cpp",
         "patchSetId": 1
