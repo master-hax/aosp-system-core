@@ -22,6 +22,30 @@
       },
       "revId": "ef4c575dd3e229fb930a94d20bb9a174a94c3c95",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8a0cbba_a8a14d73",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-08-28T19:13:36Z",
+      "side": 1,
+      "message": "can we use an selabel or something instead of different permissions on userdebug builds? we\u0027re trying to reduce the number of ways to differentiate user/userdebug...",
+      "parentUuid": "d5ee3fc7_d4ea7b2b",
+      "range": {
+        "startLine": 802,
+        "startChar": 4,
+        "endLine": 803,
+        "endChar": 45
+      },
+      "revId": "ef4c575dd3e229fb930a94d20bb9a174a94c3c95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
