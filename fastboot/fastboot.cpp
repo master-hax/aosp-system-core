@@ -397,6 +397,7 @@ static Transport* open_device(const char* local_serial, bool wait_for_device = t
 static Transport* NetworkDeviceConnected(bool print = false) {
     Transport* transport = nullptr;
     Transport* result = nullptr;
+    bool found_serial = false;
 
     ConnectedDevicesStorage storage;
     std::set<std::string> devices;
@@ -406,10 +407,25 @@ static Transport* NetworkDeviceConnected(bool print = false) {
     }
 
     for (const std::string& device : devices) {
+        if (serial && !strcmp(device.c_str(), serial)) {
+            found_serial = true;
+        }
+
         transport = open_device(device.c_str(), false, false);
 
         if (print) {
             PrintDevice(device.c_str(), transport == nullptr ? "offline" : "fastboot");
+        }
+
+        if (transport != nullptr) {
+            result = transport;
+        }
+    }
+
+    if (!found_serial && serial && !strncmp(serial,"tcp", 3)) {
+        transport = open_device(serial, false, false);
+        if (print) {
+            PrintDevice(serial, transport == nullptr ? "offline" : "fastboot");
         }
 
         if (transport != nullptr) {
