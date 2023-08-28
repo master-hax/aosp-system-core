@@ -22,6 +22,30 @@
       },
       "revId": "96287ce51d6792588e8539d4c77d13a90a3ff6bf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03aaa162_58fc2a6d",
+        "filename": "libsparse/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-08-28T14:55:28Z",
+      "side": 1,
+      "message": "Yes, but img2simg is much less likely to end up in `required`.",
+      "parentUuid": "ed65e08d_ec5c856d",
+      "range": {
+        "startLine": 65,
+        "startChar": 11,
+        "endLine": 65,
+        "endChar": 19
+      },
+      "revId": "96287ce51d6792588e8539d4c77d13a90a3ff6bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
