@@ -310,7 +310,7 @@ static UeventdConfiguration GetConfiguration() {
 
     std::vector<std::string> canonical{"/system/etc/ueventd.rc"};
 
-    if (android::base::GetIntProperty("ro.product.first_api_level", 10000) < __ANDROID_API_T__) {
+    if (android::base::GetIntProperty("ro.product.first_api_level", 10000) <= __ANDROID_API_U__) {
         // TODO: Remove these legacy paths once Android S is no longer supported.
         for (const auto& info : legacy_paths) {
             canonical.push_back(info.legacy_path);
