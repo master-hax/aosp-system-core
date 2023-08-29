@@ -29,7 +29,7 @@ static constexpr uint32_t kCowVersionMinor = 0;
 static constexpr uint32_t kCowVersionManifest = 2;
 
 static constexpr uint32_t kMinCowVersion = 1;
-static constexpr uint32_t kMaxCowVersion = 2;
+static constexpr uint32_t kMaxCowVersion = 3;
 
 // Normally, this should be kMaxCowVersion. When a new version is under testing
 // it may be the previous value of kMaxCowVersion.
@@ -107,8 +107,45 @@ struct CowFooterOperation {
     uint64_t num_ops;
 } __attribute__((packed));
 
-// Cow operations are currently fixed-size entries, but this may change if
-// needed.
+// New 15 byte version of Cow Operation specified. This will be used as our in memory representation
+// of Cow, eventually also replacing our on disk representation once compatability requirements are
+// met.
+struct CowOperationV3 {
+    // The operation code (see the constants and structures below).
+    // Split ReplaceOp into ReplaceOp and CompressedReplaceOp.
+    uint8_t type;
+
+    // If this operation reads from the data section of the COW,
+    // this contains the length.
+    //
+    // Unused for Copy, Zero, and XorSource ops.
+    uint16_t data_length;
+
+    // The block of data in the new image that this operation modifies.
+    //
+    // Unused for XorData.
+    uint32_t new_block;
+
+    // The value of |source| depends on the operation code.
+    //
+    // CopyOp: a 32-bit block location in the source image.
+    //
+    // ReplaceOp and XorDataOp: a byte offset within the COW's data
+    // section. It is an absolute position within the image.
+    //
+    // ZeroOp: unused
+    //
+    // XorSource: the byte location in the source image.
+    //
+    // Bits 47-62 are reserved and must be zero. These bits will represent the Compression algorithm
+    // (eg: lz4) && Compression Factor (eg: 4k or 16k)
+    //
+    // Bit 63 indicates compressed data, if
+    // applicable.
+    uint64_t source;
+} __attribute__((packed));
+
+// Cow operations are currently fixed-size entries, but this may change if needed.
 struct CowOperation {
     // The operation code (see the constants and structures below).
     uint8_t type;
