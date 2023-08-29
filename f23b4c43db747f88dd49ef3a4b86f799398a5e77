@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fe2554a_ba4f098a",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-08-29T18:16:31Z",
+      "side": 1,
+      "message": "extract this to a lambda \n```\nauto\u0026\u0026 ContainsOptimizedFlashTask \u003d [](const std::vector\u003cstd::unique_ptr\u003cTask\u003e\u003e\u0026 tasks) {\nfor (auto\u0026 task : tasks) {\n            if (auto optimized_task \u003d task-\u003eAsOptimizedFlashSuperTask()) {\n               return true;\n            }\n        }\n        return false;\n}\n```",
+      "range": {
+        "startLine": 289,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 9
+      },
+      "revId": "f23b4c43db747f88dd49ef3a4b86f799398a5e77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
