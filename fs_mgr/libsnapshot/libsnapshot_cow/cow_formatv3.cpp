@@ -19,15 +19,15 @@
 #include <unistd.h>
 
 #include <android-base/logging.h>
-#include "writer_v2.h"
+#include "writer_v3.h"
 
 namespace android {
 namespace snapshot {
 
 using android::base::unique_fd;
 
-std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
-    os << "CowOperation(type:";
+std::ostream& operator<<(std::ostream& os, CowOperationV3 const& op) {
+    os << "CowOperationV3(type:";
     if (op.type == kCowCopyOp)
         os << "kCowCopyOp,    ";
     else if (op.type == kCowReplaceOp)
@@ -49,14 +49,14 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     else
         os << (int)op.type << "?,";
     os << "compression:";
-    if (op.compression == kCowCompressNone)
+    if (GetCompressionAlgorithm(&op) == kCowCompressNone)
         os << "kCowCompressNone,   ";
-    else if (op.compression == kCowCompressGz)
+    else if (GetCompressionAlgorithm(&op) == kCowCompressGz)
         os << "kCowCompressGz,     ";
-    else if (op.compression == kCowCompressBrotli)
+    else if (GetCompressionAlgorithm(&op) == kCowCompressBrotli)
         os << "kCowCompressBrotli, ";
     else
-        os << (int)op.compression << "?, ";
+        os << (int)GetCompressionAlgorithm(&op) << "?, ";
     os << "data_length:" << op.data_length << ",\t";
     os << "new_block:" << op.new_block << ",\t";
     os << "source:" << op.source;
@@ -65,23 +65,6 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
 }
 
 int64_t GetNextOpOffset(const CowOperationV3& op, uint32_t cluster_ops) {
-    // PlaceHolder
-    if (op.data_length && cluster_ops) {
-        return 0;
-    }
-    return 0;
-}
-
-int64_t GetNextDataOffset(const CowOperationV3& op, uint32_t cluster_ops) {
-    // PlaceHolder
-
-    if (op.data_length && cluster_ops) {
-        return 0;
-    }
-    return 0;
-}
-
-int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
         return op.source;
     } else if ((op.type == kCowReplaceOp || op.type == kCowXorOp) && cluster_ops == 0) {
@@ -91,17 +74,17 @@ int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_ops) {
     }
 }
 
-int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_ops) {
+int64_t GetNextDataOffset(const CowOperationV3& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
-        return cluster_ops * sizeof(CowOperation);
+        return cluster_ops * sizeof(CowOperationV3);
     } else if (cluster_ops == 0) {
-        return sizeof(CowOperation);
+        return sizeof(CowOperationV3);
     } else {
         return 0;
     }
 }
 
-bool IsMetadataOp(const CowOperation& op) {
+bool IsMetadataOp(const CowOperationV3& op) {
     switch (op.type) {
         case kCowLabelOp:
         case kCowClusterOp:
@@ -113,7 +96,7 @@ bool IsMetadataOp(const CowOperation& op) {
     }
 }
 
-bool IsOrderedOp(const CowOperation& op) {
+bool IsOrderedOp(const CowOperationV3& op) {
     switch (op.type) {
         case kCowCopyOp:
         case kCowXorOp:
@@ -129,7 +112,7 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
     switch (version) {
         case 1:
         case 2:
-            base = std::make_unique<CowWriterV2>(options, std::move(fd));
+            base = std::make_unique<CowWriterV3>(options, std::move(fd));
             break;
         default:
             LOG(ERROR) << "Cannot create unknown cow version: " << version;
