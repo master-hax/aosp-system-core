@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff521f9c_8ccd8e6d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 827,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-08-30T09:58:33Z",
+      "side": 1,
+      "message": "I\u0027m not at all convinced this works.\n/data/misc/virtualizationservice may not exist yet, in which case I think this mkdir doesn\u0027t work (it doesn\u0027t do a recrusive mkdir).\nAnd b/230056726 was exceptionally subtle; it caused a lot of problems.\nThe rmdir / mkdir here is intended to make sure we end up with the right owners. (We may not have permission to do a chown.)\nTesting this is hard, since you need to try all the possible pre-conditions (directory exists and is non-empty, directory doesn\u0027t exist, directory exists but has the wrong owner, ... )",
+      "range": {
+        "startLine": 824,
+        "startChar": 0,
+        "endLine": 827,
+        "endChar": 0
+      },
+      "revId": "708ec712e9642d951a465c3bee16c10f2bb73fc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
