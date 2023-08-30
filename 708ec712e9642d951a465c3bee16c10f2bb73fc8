@@ -46,6 +46,30 @@
       },
       "revId": "708ec712e9642d951a465c3bee16c10f2bb73fc8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b60330bd_7ce5fe75",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 827,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2023-08-30T12:56:24Z",
+      "side": 1,
+      "message": "It will fail, in that the chmod won\u0027t do anything - which is fine, we only need it if the directory exists with the wrong permissions.\nThe boot continues anyway.",
+      "parentUuid": "4af8326e_82d4c1dd",
+      "range": {
+        "startLine": 824,
+        "startChar": 0,
+        "endLine": 827,
+        "endChar": 0
+      },
+      "revId": "708ec712e9642d951a465c3bee16c10f2bb73fc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
