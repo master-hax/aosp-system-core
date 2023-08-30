@@ -157,6 +157,24 @@
       "parentUuid": "2d504c4d_3f551904",
       "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37623c65_958915f0",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T18:38:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5731536_5eca60a8",
+      "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
