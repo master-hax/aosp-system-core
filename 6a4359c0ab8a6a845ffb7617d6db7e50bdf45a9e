@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "883f2349_614d6936",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1922,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T00:29:31Z",
+      "side": 1,
+      "message": "Don\u0027t think so. Initially did this to keep the sequence in line with how this was introduced (before the wipe \u0026\u0026 any additional dynamic partition flash tasks), but don\u0027t think order matters here.",
+      "parentUuid": "de8890cf_646c90f4",
+      "revId": "6a4359c0ab8a6a845ffb7617d6db7e50bdf45a9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0ef5205d_ad9c4b5c",
         "filename": "fastboot/task.cpp",
         "patchSetId": 6
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-29T23:05:11Z",
       "side": 1,
       "message": "const here, since tasks isn\u0027t modified",
+      "revId": "6a4359c0ab8a6a845ffb7617d6db7e50bdf45a9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba9d201b_b5f78640",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T00:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ef5205d_ad9c4b5c",
       "revId": "6a4359c0ab8a6a845ffb7617d6db7e50bdf45a9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -48,6 +84,24 @@
       "writtenOn": "2023-08-29T23:05:11Z",
       "side": 1,
       "message": "This much nesting is a bit hard to read, try flattening this like:\n\n    auto reboot_task \u003d tasks[i]-\u003eAsRebootTask();\n    if (!reboot_task || !reboot_task-\u003e...) {\n        continue;\n    }\n    if (i \u003e\u003d tasks.size() - 2 || !tasks[i + 1]-\u003eAsSuperUpdateTask()) {\n        continue;\n    }\n    \n\nGenerally ToString() methods are considered diagnostic. Instead, add a \"GetTarget()\" helper or something that returns \"fastboot\".",
+      "revId": "6a4359c0ab8a6a845ffb7617d6db7e50bdf45a9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84397bc8_140fb0e9",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T00:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6bdbc9f_fd47b4a4",
       "revId": "6a4359c0ab8a6a845ffb7617d6db7e50bdf45a9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
