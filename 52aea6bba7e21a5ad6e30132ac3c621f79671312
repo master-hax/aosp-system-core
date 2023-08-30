@@ -16,6 +16,24 @@
       "message": "i \u003e\u003d tasks.size() - 2\n\n(Worth adding a comment that this is because we peek two tasks ahead below)",
       "revId": "52aea6bba7e21a5ad6e30132ac3c621f79671312",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa5a6942_313760a1",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T16:40:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71fc7d7e_11f61300",
+      "revId": "52aea6bba7e21a5ad6e30132ac3c621f79671312",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
