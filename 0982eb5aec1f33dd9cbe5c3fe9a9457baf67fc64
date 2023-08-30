@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "35f30ac1_2aa81f00",
+        "filename": "fastboot/task.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T18:04:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "093b12cf_4266c901",
+      "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1640688c_afd850bc",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-30T17:29:40Z",
       "side": 1,
       "message": "included twice?",
+      "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "821e8233_7eb93183",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T18:04:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1640688c_afd850bc",
       "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa2349c6_93978aec",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T18:04:18Z",
+      "side": 1,
+      "message": "pretty neat :P",
+      "parentUuid": "a52fbba4_62b985ab",
+      "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8a4f7bef_8da97ac2",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-08-30T17:29:40Z",
       "side": 1,
       "message": "You might want to be more explicit and test there are no remaining \"flash dynamic partition\" tasks.",
+      "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d504c4d_3f551904",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-08-30T18:04:18Z",
+      "side": 1,
+      "message": "isn\u0027t there the case where there are leftover flash dynamic partition tasks ?",
+      "parentUuid": "8a4f7bef_8da97ac2",
       "revId": "0982eb5aec1f33dd9cbe5c3fe9a9457baf67fc64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
