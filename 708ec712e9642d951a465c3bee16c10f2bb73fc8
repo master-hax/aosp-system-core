@@ -22,6 +22,30 @@
       },
       "revId": "708ec712e9642d951a465c3bee16c10f2bb73fc8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4af8326e_82d4c1dd",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 827,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2023-08-30T12:33:13Z",
+      "side": 1,
+      "message": "\u003e /data/misc/virtualizationservice may not exist yet..\n\nIf `/data/misc/virtualizationservice` doesn\u0027t exist, then line 824 should first fail. That also happens without this change.",
+      "parentUuid": "ff521f9c_8ccd8e6d",
+      "range": {
+        "startLine": 824,
+        "startChar": 0,
+        "endLine": 827,
+        "endChar": 0
+      },
+      "revId": "708ec712e9642d951a465c3bee16c10f2bb73fc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
