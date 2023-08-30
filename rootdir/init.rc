@@ -822,8 +822,8 @@ on post-fs-data
     # Directory for VirtualizationService temporary image files.
     # Delete any stale files owned by the old virtualizationservice uid (b/230056726).
     chmod 0770 /data/misc/virtualizationservice
-    exec - virtualizationservice system -- /bin/rm -rf /data/misc/virtualizationservice
-    mkdir /data/misc/virtualizationservice 0771 system system
+    exec - virtualizationservice system -- /bin/rm -rf /data/misc/virtualizationservice/tmp
+    mkdir /data/misc/virtualizationservice/tmp 0771 system system
 
     # /data/preloads uses encryption=None because it only contains preloaded
     # files that are public information, similar to the system image.
