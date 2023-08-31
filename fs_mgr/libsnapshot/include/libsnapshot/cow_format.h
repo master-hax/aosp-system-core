@@ -143,6 +143,41 @@ struct CowOperation {
     uint64_t source;
 } __attribute__((packed));
 
+// The on disk format of cow (currently ==  CowOperation)
+struct CowOperationV2 {
+    // The operation code (see the constants and structures below).
+    uint8_t type;
+
+    // If this operation reads from the data section of the COW, this contains
+    // the compression type of that data (see constants below).
+    uint8_t compression;
+
+    // If this operation reads from the data section of the COW, this contains
+    // the length.
+    uint16_t data_length;
+
+    // The block of data in the new image that this operation modifies.
+    uint64_t new_block;
+
+    // The value of |source| depends on the operation code.
+    //
+    // For copy operations, this is a block location in the source image.
+    //
+    // For replace operations, this is a byte offset within the COW's data
+    // sections (eg, not landing within the header or metadata). It is an
+    // absolute position within the image.
+    //
+    // For zero operations (replace with all zeroes), this is unused and must
+    // be zero.
+    //
+    // For Label operations, this is the value of the applied label.
+    //
+    // For Cluster operations, this is the length of the following data region
+    //
+    // For Xor operations, this is the byte location in the source image.
+    uint64_t source;
+} __attribute__((packed));
+
 static_assert(sizeof(CowOperation) == sizeof(CowFooterOperation));
 
 static constexpr uint8_t kCowCopyOp = 1;
@@ -198,6 +233,7 @@ struct BufferState {
 // 2MB Scratch space used for read-ahead
 static constexpr uint64_t BUFFER_REGION_DEFAULT_SIZE = (1ULL << 21);
 
+std::ostream& operator<<(std::ostream& os, CowOperationV2 const& arg);
 std::ostream& operator<<(std::ostream& os, CowOperation const& arg);
 
 int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_size);
