@@ -101,8 +101,15 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     footer_ = parser.footer();
     fd_size_ = parser.fd_size();
     last_label_ = parser.last_label();
-    ops_ = parser.ops();
     data_loc_ = parser.data_loc();
+
+    for (const auto& op : *parser.ops()) {
+        CowOperation new_op;
+        static_assert(sizeof(op) == sizeof(new_op));
+
+        memcpy(&new_op, &op, sizeof(new_op));
+        ops_->emplace_back(new_op);
+    }
 
     // If we're resuming a write, we're not ready to merge
     if (label.has_value()) return true;
