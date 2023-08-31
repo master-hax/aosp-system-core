@@ -186,7 +186,7 @@ static bool Inspect(const std::string& path) {
 
         if (!FLAGS_silent && FLAGS_show_ops) std::cout << *op << "\n";
 
-        if (FLAGS_decompress && op->type == kCowReplaceOp && op->compression != kCowCompressNone) {
+        if (FLAGS_decompress && op->type == kCowReplaceOp) {
             if (reader.ReadData(op, buffer.data(), buffer.size()) < 0) {
                 std::cerr << "Failed to decompress for :" << *op << "\n";
                 success = false;
