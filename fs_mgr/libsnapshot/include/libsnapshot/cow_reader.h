@@ -165,6 +165,7 @@ class CowReader final : public ICowReader {
     void UpdateMergeOpsCompleted(int num_merge_ops) { header_.num_merge_ops += num_merge_ops; }
 
   private:
+    bool ParseV2(android::base::borrowed_fd fd, std::optional<uint64_t> label);
     bool PrepMergeOps();
     uint64_t FindNumCopyops();
     uint8_t GetCompressionType(const CowOperation* op);
