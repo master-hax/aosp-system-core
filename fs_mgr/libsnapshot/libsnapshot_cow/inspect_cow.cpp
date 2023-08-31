@@ -56,7 +56,7 @@ void MyLogger(android::base::LogId, android::base::LogSeverity severity, const c
     }
 }
 
-static void ShowBad(CowReader& reader, const CowOperation* op) {
+static void ShowBad(CowReader& reader, const struct CowOperation* op) {
     size_t count;
     auto buffer = std::make_unique<uint8_t[]>(op->data_length);
 
