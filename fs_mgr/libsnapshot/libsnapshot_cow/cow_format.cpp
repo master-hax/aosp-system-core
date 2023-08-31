@@ -14,11 +14,14 @@
 // limitations under the License.
 //
 
+#include <inttypes.h>
 #include <libsnapshot/cow_format.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <android-base/logging.h>
+#include <android-base/stringprintf.h>
+#include <libsnapshot/cow_format.h>
 #include "writer_v2.h"
 
 namespace android {
@@ -26,6 +29,7 @@ namespace snapshot {
 
 using android::base::unique_fd;
 
+<<<<<<< HEAD
 std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
     os << "CowOperationV2(type:";
     if (op.type == kCowCopyOp)
@@ -59,11 +63,86 @@ std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
         os << (int)op.compression << "?, ";
     os << "data_length:" << op.data_length << ",\t";
     os << "new_block:" << op.new_block << ",\t";
+=======
+std::ostream& EmitCowTypeString(std::ostream& os, uint8_t cow_type) {
+    switch (cow_type) {
+        case kCowCopyOp:
+            return os << "kCowCopyOp";
+        case kCowReplaceOp:
+            return os << "kCowReplaceOp";
+        case kCowZeroOp:
+            return os << "kZeroOp";
+        case kCowFooterOp:
+            return os << "kCowFooterOp";
+        case kCowLabelOp:
+            return os << "kCowLabelOp";
+        case kCowClusterOp:
+            return os << "kCowClusterOp";
+        case kCowXorOp:
+            return os << "kCowXorOp";
+        case kCowSequenceOp:
+            return os << "kCowSequenceOp";
+        default:
+            return os << (int)cow_type << "unknown";
+    }
+}
+
+std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
+    os << "CowOperationV2(";
+    EmitCowTypeString(os, op.type) << ", ";
+    switch (op.compression) {
+        case kCowCompressNone:
+            os << "uncompressed, ";
+            break;
+        case kCowCompressGz:
+            os << "gz, ";
+            break;
+        case kCowCompressBrotli:
+            os << "brotli, ";
+            break;
+        case kCowCompressLz4:
+            os << "lz4, ";
+            break;
+        case kCowCompressZstd:
+            os << "zstd, ";
+            break;
+    }
+    os << "data_length:" << op.data_length << ", ";
+    os << "new_block:" << op.new_block << ", ";
+>>>>>>> 76a74e97b (Refactor off V2 Cow Ops)
     os << "source:" << op.source;
     os << ")";
     return os;
 }
 
+<<<<<<< HEAD
+=======
+std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
+    os << "CowOperation(";
+    EmitCowTypeString(os, op.type);
+    if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowSequenceOp) {
+        if (op.source_info & kCowOpSourceInfoCompressBit) {
+            os << ", compressed";
+        } else {
+            os << ", uncompressed";
+        }
+        os << ", data_length:" << op.data_length;
+    }
+    if (op.type != kCowClusterOp && op.type != kCowSequenceOp && op.type != kCowLabelOp) {
+        os << ", new_block:" << op.new_block;
+    }
+    if (op.type == kCowXorOp || op.type == kCowReplaceOp || op.type == kCowCopyOp) {
+        os << ", source:" << (op.source_info & kCowOpSourceInfoDataMask);
+    } else if (op.type == kCowClusterOp) {
+        os << ", cluster_data:" << (op.source_info & kCowOpSourceInfoDataMask);
+    } else {
+        os << ", label:0x" << android::base::StringPrintf("%" PRIx64, op.source_info);
+    }
+    os << ")";
+    return os;
+}
+
+>>>>>>> 76a74e97b (Refactor off V2 Cow Ops)
 int64_t GetNextOpOffset(const CowOperationV2& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
         return op.source;
@@ -76,9 +155,15 @@ int64_t GetNextOpOffset(const CowOperationV2& op, uint32_t cluster_ops) {
 
 int64_t GetNextDataOffset(const CowOperationV2& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
+<<<<<<< HEAD
         return cluster_ops * sizeof(CowOperationV2);
     } else if (cluster_ops == 0) {
         return sizeof(CowOperationV2);
+=======
+        return cluster_ops * sizeof(op);
+    } else if (cluster_ops == 0) {
+        return sizeof(op);
+>>>>>>> 76a74e97b (Refactor off V2 Cow Ops)
     } else {
         return 0;
     }

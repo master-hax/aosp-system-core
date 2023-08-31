@@ -53,7 +53,11 @@ void MyLogger(android::base::LogId, android::base::LogSeverity severity, const c
     }
 }
 
+<<<<<<< HEAD
 static void ShowBad(CowReader& reader, const struct CowOperationV2* op) {
+=======
+static void ShowBad(CowReader& reader, const CowOperation* op) {
+>>>>>>> 76a74e97b (Refactor off V2 Cow Ops)
     size_t count;
     auto buffer = std::make_unique<uint8_t[]>(op->data_length);
 
@@ -186,7 +190,7 @@ static bool Inspect(const std::string& path) {
 
         if (!FLAGS_silent && FLAGS_show_ops) std::cout << *op << "\n";
 
-        if (FLAGS_decompress && op->type == kCowReplaceOp && op->compression != kCowCompressNone) {
+        if (FLAGS_decompress && op->type == kCowReplaceOp) {
             if (reader.ReadData(op, buffer.data(), buffer.size()) < 0) {
                 std::cerr << "Failed to decompress for :" << *op << "\n";
                 success = false;

@@ -214,7 +214,11 @@ bool CowWriterV2::Initialize(std::optional<uint64_t> label) {
 }
 
 void CowWriterV2::InitPos() {
+<<<<<<< HEAD
     next_op_pos_ = sizeof(header_) + header_.buffer_size;
+=======
+    next_op_pos_ = sizeof(CowHeader) + header_.buffer_size;
+>>>>>>> 76a74e97b (Refactor off V2 Cow Ops)
     cluster_size_ = header_.cluster_ops * sizeof(CowOperationV2);
     if (header_.cluster_ops) {
         next_data_pos_ = next_op_pos_ + cluster_size_;
