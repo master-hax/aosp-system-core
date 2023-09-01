@@ -88,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "691dc44d_b2a12b3c",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2023-09-01T21:19:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cb8c3b8a_9c9806e5",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aae9fed4_7915fdc6",
@@ -155,6 +173,24 @@
       "side": 1,
       "message": "I\u0027m not sure I\u0027m following how the logic is not needed for `list_devices()`?\n\nThe problem is running:\n `fastboot -s tcp:localhost:39909 getenv all` - works\n `fastboot -s tcp:localhost:39909 devices` - returns empty\n \nBecause unless `fastboot connect` was called, the specified serial device *isn\u0027t* in the devices list. Most other fastboot commands utilize the specified serial value without a dependency on calling `fastboot connect`, so this inconsistency commonly causes problems with scripts.\n\nSo my patch is trying to make it so the specified serial value is considered when we list the devices.\n\nDoes that clarify things, or am I still just missing something?",
       "parentUuid": "c70174b4_4b17b8a5",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58c0d60a_56017e95",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2023-09-01T21:19:43Z",
+      "side": 1,
+      "message": "I didn\u0027t realize a device has to be explicitly connected to prior to being enumerated in fastboot. For usb `fastboot devices` the `-s SERIAL` flag has no effect. You are correct here.",
+      "parentUuid": "7d221125_1f801900",
       "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
