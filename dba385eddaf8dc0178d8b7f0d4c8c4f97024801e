@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee5fca06_d329db8b",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-01T21:27:06Z",
+      "side": 1,
+      "message": "candidate for libbase?",
+      "revId": "dba385eddaf8dc0178d8b7f0d4c8c4f97024801e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
