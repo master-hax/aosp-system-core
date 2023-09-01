@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d7ee60b6_b9c56a75",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-09-01T20:34:38Z",
+      "side": 1,
+      "message": "Thanks for the suggestion. I\u0027ll rework this later to include it.",
+      "parentUuid": "212c61f4_b096bb5a",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1df8d012_9d2e078d",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
@@ -37,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cb8c3b8a_9c9806e5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-09-01T20:34:38Z",
+      "side": 1,
+      "message": "I believe so, in order for `fastboot devices` to not be empty when you specify a network device as the serial option.\n\nThe devices list includes USB attached devices as well as network devices that had previously been connected via `fastboot connect` but the inconsistency I\u0027m trying to resolve is that when you specify a network device on the serial option (or via environment variables) but have not called `fastboot connect`, `fastboot devices` returns empty, which seems to commonly breaks scripts.\n\nSo here, we\u0027re only printing out the device if it was specified explicitly (via -s or env variable) and is not already in the devices list.",
+      "parentUuid": "1df8d012_9d2e078d",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aae9fed4_7915fdc6",
         "filename": "fastboot/fastboot.cpp",
         "patchSetId": 2
@@ -48,6 +84,24 @@
       "writtenOn": "2023-09-01T19:50:03Z",
       "side": 1,
       "message": "how does the caller of the function know if `result` matches the `serial` or it is the last valid `transport` from devices?",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a49157bc_83912e3b",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-09-01T20:34:38Z",
+      "side": 1,
+      "message": "This is a good question. The existing loop to process the devices list seems to have the same problem - it only returns the last valid transport value. So it seemed to me that matching the behavior with the specified serial device being the last device checked (if it was not already connected and added to the device list).\n\nDo you have an alternative suggestion?",
+      "parentUuid": "aae9fed4_7915fdc6",
       "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
