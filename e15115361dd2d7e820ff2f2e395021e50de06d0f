@@ -121,6 +121,24 @@
       "parentUuid": "aae9fed4_7915fdc6",
       "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c70174b4_4b17b8a5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2023-09-01T20:44:27Z",
+      "side": 1,
+      "message": "I was actually curious about the goal of the function as well. It appears to loop over all the devices; When `print` is set, it makes sense to iterate over the whole list and print their status. When `print` is not set, it merely returns the last device it could connect to, whether it needs to be last or any is also unclear, as you could break on the first one found.\n\nThere are two callers into this function; One being `list_devices()` which will just print all the devices. The other is from `open_device()` when the serial number is not specified, in such a case fastboot just wants to connect to first available devices. As your logic is not needed for for `list_devices()` and is unreachable when `serial` is set, your overall intent might not work.",
+      "parentUuid": "a49157bc_83912e3b",
+      "revId": "e15115361dd2d7e820ff2f2e395021e50de06d0f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
