@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e3331df_73968251",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-09-02T02:31:08Z",
+      "side": 1,
+      "message": "Is this still needed?",
+      "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30fff3da_3f0a6d08",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-09-02T02:31:08Z",
+      "side": 1,
+      "message": "When this goes out of scope, the connection is closed. Is that intended?",
+      "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
