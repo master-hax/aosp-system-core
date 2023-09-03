@@ -22,6 +22,30 @@
       },
       "revId": "6d0668b64f78ec6fad72e710dffdb507fd80f556",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18959511_341db68b",
+        "filename": "fastboot/tcp.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-09-03T19:09:05Z",
+      "side": 1,
+      "message": "You\u0027re right, thanks",
+      "parentUuid": "4d31d9d9_75b314b3",
+      "range": {
+        "startLine": 76,
+        "startChar": 20,
+        "endLine": 76,
+        "endChar": 26
+      },
+      "revId": "6d0668b64f78ec6fad72e710dffdb507fd80f556",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
