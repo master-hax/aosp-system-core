@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d31d9d9_75b314b3",
+        "filename": "fastboot/tcp.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-09-03T17:34:27Z",
+      "side": 1,
+      "message": "shouldn\u0027t Socket\u0027s destructor handle resource management?",
+      "range": {
+        "startLine": 76,
+        "startChar": 20,
+        "endLine": 76,
+        "endChar": 26
+      },
+      "revId": "6d0668b64f78ec6fad72e710dffdb507fd80f556",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
