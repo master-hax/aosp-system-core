@@ -59,7 +59,7 @@ class TcpTransport : public Transport {
     static std::unique_ptr<TcpTransport> NewTransport(std::unique_ptr<Socket> socket,
                                                       std::string* error);
 
-    ~TcpTransport() override = default;
+    ~TcpTransport() override;
 
     ssize_t Read(void* data, size_t length) override;
     ssize_t Write(const void* data, size_t length) override;
@@ -88,6 +88,10 @@ std::unique_ptr<TcpTransport> TcpTransport::NewTransport(std::unique_ptr<Socket>
     }
 
     return transport;
+}
+
+TcpTransport::~TcpTransport() {
+    Close();
 }
 
 // These error strings are checked in tcp_test.cpp and should be kept in sync.
