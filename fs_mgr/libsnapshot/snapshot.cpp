@@ -699,6 +699,34 @@ bool SnapshotManager::UnmapCowImage(const std::string& name) {
     return images_->UnmapImageIfExists(GetCowImageDeviceName(name));
 }
 
+bool SnapshotManager::DeleteCowImage(const std::string& name) {
+    auto cow_image_name = GetCowImageDeviceName(name);
+    if (images_->BackingImageExists(cow_image_name)) {
+        if (!images_->DeleteBackingImage(cow_image_name)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool SnapshotManager::RemoveSnapshotStatusFile(const std::string& name) {
+    std::string error;
+    auto file_path = GetSnapshotStatusFilePath(name);
+    if (!android::base::RemoveFileIfExists(file_path, &error)) {
+        LOG(ERROR) << "Failed to remove status file " << file_path << ": " << error;
+        return false;
+    }
+
+    // This path may never exist. If it is present, then it's a stale
+    // snapshot status file. Just remove the file and log the message.
+    const std::string tmp_path = file_path + ".tmp";
+    if (!android::base::RemoveFileIfExists(tmp_path, &error)) {
+        LOG(ERROR) << "Failed to remove stale snapshot file " << tmp_path;
+    }
+
+    return true;
+}
+
 bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) {
     CHECK(lock);
     CHECK(lock->lock_mode() == LOCK_EX);
@@ -716,25 +744,12 @@ bool SnapshotManager::DeleteSnapshot(LockedFile* lock, const std::string& name) 
         return true;
     }
 
-    auto cow_image_name = GetCowImageDeviceName(name);
-    if (images_->BackingImageExists(cow_image_name)) {
-        if (!images_->DeleteBackingImage(cow_image_name)) {
-            return false;
-        }
-    }
-
-    std::string error;
-    auto file_path = GetSnapshotStatusFilePath(name);
-    if (!android::base::RemoveFileIfExists(file_path, &error)) {
-        LOG(ERROR) << "Failed to remove status file " << file_path << ": " << error;
+    if (!DeleteCowImage(name)) {
         return false;
     }
 
-    // This path may never exist. If it is present, then it's a stale
-    // snapshot status file. Just remove the file and log the message.
-    const std::string tmp_path = file_path + ".tmp";
-    if (!android::base::RemoveFileIfExists(tmp_path, &error)) {
-        LOG(ERROR) << "Failed to remove stale snapshot file " << tmp_path;
+    if (!RemoveSnapshotStatusFile(name)) {
+        return false;
     }
 
     return true;
