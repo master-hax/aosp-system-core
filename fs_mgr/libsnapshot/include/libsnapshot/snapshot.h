@@ -441,6 +441,7 @@ class SnapshotManager final : public ISnapshotManager {
     friend class FlashAfterUpdateTest;
     friend class LockTestConsumer;
     friend class SnapshotFuzzEnv;
+    friend class MapSnapshots;
     friend struct AutoDeleteCowImage;
     friend struct AutoDeleteSnapshot;
     friend struct PartitionCowCreator;
@@ -538,6 +539,12 @@ class SnapshotManager final : public ISnapshotManager {
 
     // Unmap a COW image device previously mapped with MapCowImage().
     bool UnmapCowImage(const std::string& name);
+
+    // Delete a COW image if exists.
+    bool DeleteCowImage(const std::string& name);
+
+    // Remove Snapshot status file
+    bool RemoveSnapshotStatusFile(const std::string& name);
 
     // Unmap a COW and remove it from a MetadataBuilder.
     void UnmapAndDeleteCowPartition(MetadataBuilder* current_metadata);
