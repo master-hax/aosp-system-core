@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "76e04518_db660c39",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T16:24:36Z",
+      "side": 1,
+      "message": "I\u0027m wondering now if we should have a \"tools\" directory...",
+      "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1425989_2f13289b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T16:24:36Z",
+      "side": 1,
+      "message": "nit: create_snapshot_patch_",
+      "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9688d6de_2c23e0bc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T16:24:36Z",
+      "side": 1,
+      "message": "cluster_ops conflicts with this constant, which could change or get removed in the future. Either:\n\n1. Remove the cluster_ops assignment, or:\n2. Hardcode version 2 here.",
+      "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
