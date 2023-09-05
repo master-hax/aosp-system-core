@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9347baa_f8086206",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2023-09-05T03:12:48Z",
+      "side": 1,
+      "message": "Could tools that know about network devices run `fastboot connect` instead? I worry that this will lead to confusing issues where some scripts/tools pass `ANDROID_SERAIL`/`-s` to `fastboot devices` and others won\u0027t.",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
