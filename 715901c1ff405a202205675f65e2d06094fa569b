@@ -22,6 +22,30 @@
       },
       "revId": "715901c1ff405a202205675f65e2d06094fa569b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc1c31a7_02ab5168",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-05T22:51:43Z",
+      "side": 1,
+      "message": "For long term, we should move all of this to fastboot so that the snapshots are streamed directly. With that, we don\u0027t need an intermediate stage for these snapshots to reside.",
+      "parentUuid": "016b9112_332d6e3f",
+      "range": {
+        "startLine": 104,
+        "startChar": 27,
+        "endLine": 104,
+        "endChar": 30
+      },
+      "revId": "715901c1ff405a202205675f65e2d06094fa569b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
