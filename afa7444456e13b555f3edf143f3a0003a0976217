@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28998fdc_b3f7be92",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T15:01:58Z",
+      "side": 1,
+      "message": "combine these into one line?",
+      "revId": "afa7444456e13b555f3edf143f3a0003a0976217",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
