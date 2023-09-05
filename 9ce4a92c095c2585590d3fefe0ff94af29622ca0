@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "eab7808b_48650e50",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-05T18:18:48Z",
+      "side": 1,
+      "message": "Yes. I was contemplating moving this to fs_mgr/tools/ - but this is libsnapshot_cow library specific, I moved it here.\n\nYes, we should move inspect_cow.cpp and this tool to tools/ directory. Will follow that with a separate CL.",
+      "parentUuid": "76e04518_db660c39",
+      "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "d1425989_2f13289b",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
         "patchSetId": 4
@@ -48,6 +66,24 @@
       "writtenOn": "2023-09-05T16:24:36Z",
       "side": 1,
       "message": "cluster_ops conflicts with this constant, which could change or get removed in the future. Either:\n\n1. Remove the cluster_ops assignment, or:\n2. Hardcode version 2 here.",
+      "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abef4e38_c25fb338",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-05T18:18:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9688d6de_2c23e0bc",
       "revId": "9ce4a92c095c2585590d3fefe0ff94af29622ca0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
