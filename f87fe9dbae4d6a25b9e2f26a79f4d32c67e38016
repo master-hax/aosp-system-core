@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f40178e6_4011dc65",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-05T18:37:03Z",
+      "side": 1,
+      "message": "Right.. I think patchset-1 had it wherein implicitly we passed it.. I thought this was nice to be more explicit and hence used gflags :) ; but I am ok with either.\n\nPerhaps, as mentioned in other comment, we can re-factor this as part of reading from target package ?",
+      "parentUuid": "005cbb23_83130348",
+      "revId": "f87fe9dbae4d6a25b9e2f26a79f4d32c67e38016",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c05d4189_08cbe7c1",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-09-05T18:23:58Z",
       "side": 1,
       "message": "On a similar note, I think it would be nice to pass in two target-files and generate all the patches in one shot like ota_from_target_files. Otherwise we would have to generate individual patches for all the partitions right? (if I\u0027m reading this correctly)",
+      "revId": "f87fe9dbae4d6a25b9e2f26a79f4d32c67e38016",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5fb30877_d79fc5b6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-05T18:37:03Z",
+      "side": 1,
+      "message": "That is a good input; However, I would prefer to do it in a separate CL or eventually get all of this integrated to fastboot which already has most of the infrastruture and will be seamless as well.",
+      "parentUuid": "c05d4189_08cbe7c1",
       "revId": "f87fe9dbae4d6a25b9e2f26a79f4d32c67e38016",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
