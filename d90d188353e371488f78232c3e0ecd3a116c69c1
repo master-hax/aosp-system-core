@@ -34,6 +34,24 @@
       "parentUuid": "c9347baa_f8086206",
       "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8021ae3c_2030613c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1945845
+      },
+      "writtenOn": "2023-09-05T18:28:33Z",
+      "side": 1,
+      "message": "Could you expand some more about your concern?\n\nMy thinking is that it seems more surprising / confusing to have `fastboot devices` ignore explicitly set (via -s/ANDROID_SERIAL/FASTBOOT_DEVICE) network devices.\n\nObviously we don\u0027t consider it confusing when scripts that don\u0027t specify -s `fastboot flash` fail to flash network devices (which is common). And setting environment variables usually can fix that issue, with the exception of any scripts that depend on `fastboot devices`",
+      "parentUuid": "3a0feeec_a8ec0ede",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
