@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "016b9112_332d6e3f",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T20:52:16Z",
+      "side": 1,
+      "message": "Long-term, I can\u0027t decide whether we should have a separate metadata folder for this, or not. It feels weird to conflict with /metadata/ota, but to introduce a new folder would require changes to first-stage init.",
+      "range": {
+        "startLine": 104,
+        "startChar": 27,
+        "endLine": 104,
+        "endChar": 30
+      },
+      "revId": "715901c1ff405a202205675f65e2d06094fa569b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

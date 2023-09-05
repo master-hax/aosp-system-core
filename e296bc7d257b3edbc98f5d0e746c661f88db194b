@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09ecd8c6_aa4c4414",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-05T20:52:16Z",
+      "side": 1,
+      "message": "Why do we need these exposed? ImageManager/DeviceInfo should exist for any SnapshotManager, so it should be okay to call DeleteSnapshot. (Unless the point was to bypass the lock, but we should never do that - it\u0027s okay to expose self-locking wrappers.)",
+      "revId": "e296bc7d257b3edbc98f5d0e746c661f88db194b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
