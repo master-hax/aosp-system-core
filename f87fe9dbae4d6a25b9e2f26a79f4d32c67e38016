@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "005cbb23_83130348",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-09-05T18:23:58Z",
+      "side": 1,
+      "message": "do we want to specify --source\u003d \u0026\u0026 --target\u003d or would be better to just implicitly pass the source and target similar to ota_from_target_files",
+      "revId": "f87fe9dbae4d6a25b9e2f26a79f4d32c67e38016",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c05d4189_08cbe7c1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-09-05T18:23:58Z",
+      "side": 1,
+      "message": "On a similar note, I think it would be nice to pass in two target-files and generate all the patches in one shot like ota_from_target_files. Otherwise we would have to generate individual patches for all the partitions right? (if I\u0027m reading this correctly)",
+      "revId": "f87fe9dbae4d6a25b9e2f26a79f4d32c67e38016",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
