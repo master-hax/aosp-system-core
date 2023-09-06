@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b5fc2cf_8af43652",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-06T02:11:22Z",
+      "side": 1,
+      "message": "Let\u0027s add a getuid() \u003d\u003d 0 check to these handlers, as a defense-in-depth to not being called on userdebug builds.",
+      "revId": "73467c6147484311264e60b1e8dc37fc92a4cebd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

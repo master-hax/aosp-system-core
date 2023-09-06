@@ -46,6 +46,30 @@
       },
       "revId": "715901c1ff405a202205675f65e2d06094fa569b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c256b6f6_07009354",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-06T02:11:22Z",
+      "side": 1,
+      "message": "That assumes /data is never needed? Which seems reasonable. Still, its a backdoor of functionality into SnapshotManager and long-term we should have first-class support and tests for it, so it looks more like applying a special OTA.",
+      "parentUuid": "fc1c31a7_02ab5168",
+      "range": {
+        "startLine": 104,
+        "startChar": 27,
+        "endLine": 104,
+        "endChar": 30
+      },
+      "revId": "715901c1ff405a202205675f65e2d06094fa569b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
