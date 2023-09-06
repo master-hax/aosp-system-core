@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "55ae20ae_27498659",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2023-09-06T01:27:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "994656d6_f87c0ed4",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 34
+      },
+      "revId": "990f896be3fe0e940205879c2ab2665918edd3dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b19c48ba_e07c956d",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-09-05T22:01:50Z",
       "side": 1,
       "message": "If the correct commit is reverted, there are no conflicts in the comments.\n\nUnrelated improvements to the comments should be a separate CL.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 36
+      },
+      "revId": "990f896be3fe0e940205879c2ab2665918edd3dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29098c51_3bf1143c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2023-09-06T01:27:15Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "b19c48ba_e07c956d",
       "range": {
         "startLine": 10,
         "startChar": 0,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dca3d5f4_863ea9b4",
+        "filename": "init/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2023-09-06T01:27:15Z",
+      "side": 1,
+      "message": "Reverted using baeece6. Thanks.",
+      "parentUuid": "ec776baa_69b55a28",
+      "range": {
+        "startLine": 200,
+        "startChar": 0,
+        "endLine": 200,
+        "endChar": 24
+      },
+      "revId": "990f896be3fe0e940205879c2ab2665918edd3dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2d362ac1_6d2d5e64",
@@ -83,6 +155,24 @@
       "writtenOn": "2023-09-05T22:01:50Z",
       "side": 1,
       "message": "This line should be reverted, as it was added by baeece6d0c0ff72f667318ec365e5281955c8f42",
+      "revId": "990f896be3fe0e940205879c2ab2665918edd3dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a81bbbb_a9ec7a25",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1561651
+      },
+      "writtenOn": "2023-09-06T01:27:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d362ac1_6d2d5e64",
       "revId": "990f896be3fe0e940205879c2ab2665918edd3dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
