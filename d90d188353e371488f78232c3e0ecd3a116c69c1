@@ -52,6 +52,24 @@
       "parentUuid": "3a0feeec_a8ec0ede",
       "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f008e1b_ea4d1ed3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1079753
+      },
+      "writtenOn": "2023-09-06T05:37:53Z",
+      "side": 1,
+      "message": "The other commands that respect serial number arguments operate on a single device, so the behavior when specifying a serial number is clear. `fastboot devices` lists all devices, not only the one specified by the serial number (e.g. should only list the device with the provided serial number). What do you think about a separate command to query for a specific device instead (respecting the serial number args).\n\nI guess the main potential issue I see is code would work just fine with physical devices, since they would always be listed, but the behavior would only change for network devices. I can\u0027t say I have any examples of this on hand though.\n\nAlso, have you tested that this works as expected with Tradefed? usually there are multiple devices on a single lab host, so I would expect tradefed to do a list with `fastboot devices` and then filter for the specific device vs passing the specific device to search for (could be wrong on this though). In the lab/tradefed case where there are usually multiple devices on a single host would a separate argument that takes a list of devices be better? Otherwise how would you be able to support multiple devices at the same time in the `fastboot devices` output?",
+      "parentUuid": "8021ae3c_2030613c",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
