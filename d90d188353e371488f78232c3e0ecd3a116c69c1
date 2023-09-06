@@ -70,6 +70,24 @@
       "parentUuid": "8021ae3c_2030613c",
       "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7676a932_d8f17811",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-06T16:01:13Z",
+      "side": 1,
+      "message": "(i haven\u0027t been paying attention, but \"what does `adb -s XXX devices` do?\" seems like obvious precedent that should also be considered.)",
+      "parentUuid": "3f008e1b_ea4d1ed3",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
