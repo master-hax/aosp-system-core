@@ -17,8 +17,10 @@
 #include <cutils/multiuser.h>
 #include <private/android_filesystem_config.h>
 
-userid_t multiuser_get_user_id(uid_t uid) {
-    return uid / AID_USER_OFFSET;
+appid_t multiuser_get_user_id(uid_t uid) {
+  if (static_cast<uid_t>(std::abs(uid)) >= std::numeric_limits<uid_t>::max() / AID_USER_OFFSET) {
+    return std::nullopt;
+  return uid / AID_USER_OFFSET;
 }
 
 appid_t multiuser_get_app_id(uid_t uid) {
