@@ -88,6 +88,24 @@
       "parentUuid": "3f008e1b_ea4d1ed3",
       "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e626d17d_f1c27cd1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1590141
+      },
+      "writtenOn": "2023-09-06T17:32:20Z",
+      "side": 1,
+      "message": "I don\u0027t have much experience with pontis, as I use locally connected devices.\nHowever, reading through https://g3doc.corp.google.com/corp/cloudtop/pontis/g3doc/userguide.md?cl\u003dhead, on the bottom there is a description of how to obtain currently connected devices. Could the same logic not apply here?",
+      "parentUuid": "7676a932_d8f17811",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
