@@ -21,8 +21,6 @@
 #include <android-base/result.h>
 #include <android-base/unique_fd.h>
 
-#define TIPC_MAX_MSG_SIZE PAGE_SIZE
-
 namespace android {
 namespace trusty {
 namespace fuzz {
