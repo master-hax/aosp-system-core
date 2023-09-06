@@ -22,6 +22,30 @@
       },
       "revId": "b8645acedbb9f59239209ce4a44c654dc243a7f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ad41335_6421b6d2",
+        "filename": "libcutils/multiuser.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1965265
+      },
+      "writtenOn": "2023-09-06T22:45:39Z",
+      "side": 1,
+      "message": "Ooops.  Thank you..dumb tpm.",
+      "parentUuid": "4ab47a57_0a509677",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 13
+      },
+      "revId": "b8645acedbb9f59239209ce4a44c654dc243a7f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
