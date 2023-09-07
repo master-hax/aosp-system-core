@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dea9accc_cd26652b",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-07T08:23:50Z",
+      "side": 1,
+      "message": "Looks like we might need something like this..\n\n```\n    target: {\n        darwin: {\n            enabled: false,\n        },\n        windows: {\n            enabled: false,\n        },\n    },\n```",
+      "revId": "bf72b25a07eeb24f4467d397dfeb2d94265f95b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
