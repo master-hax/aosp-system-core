@@ -117,12 +117,17 @@ bool HashtreeDmVeritySetup(FstabEntry* fstab_entry, const FsAvbHashtreeDescripto
 }
 
 std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
-        const std::string& partition_name, const std::vector<VBMetaData>& vbmeta_images) {
+        const std::string& partition_name, const std::vector<VBMetaData>& vbmeta_images,
+        const std::string& vbmeta_partition) {
     bool found = false;
     const uint8_t* desc_partition_name;
     auto hashtree_desc = std::make_unique<FsAvbHashtreeDescriptor>();
 
     for (const auto& vbmeta : vbmeta_images) {
+        if (!vbmeta_partition.empty() && !vbmeta.partition().empty() &&
+            vbmeta.partition() != vbmeta_partition) {
+            continue;
+        }
         size_t num_descriptors;
         std::unique_ptr<const AvbDescriptor* [], decltype(&avb_free)> descriptors(
                 avb_descriptor_get_all(vbmeta.data(), vbmeta.size(), &num_descriptors), avb_free);
@@ -187,9 +192,9 @@ bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity
         LERROR << "partition name is empty, cannot lookup AVB descriptors";
         return false;
     }
-
-    std::unique_ptr<FsAvbHashtreeDescriptor> hashtree_descriptor =
-            GetHashtreeDescriptor(partition_name, vbmeta_images);
+    std::unique_ptr<FsAvbHashtreeDescriptor> hashtree_descriptor = GetHashtreeDescriptor(
+            partition_name, vbmeta_images,
+            fstab_entry->fs_mgr_flags.avb ? fstab_entry->vbmeta_partition : "");
     if (!hashtree_descriptor) {
         return false;
     }
