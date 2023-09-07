@@ -39,7 +39,8 @@ struct ChainInfo {
 
 // AvbHashtreeDescriptor to dm-verity table setup.
 std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
-        const std::string& partition_name, const std::vector<VBMetaData>& vbmeta_images);
+        const std::string& partition_name, const std::vector<VBMetaData>& vbmeta_images,
+        const std::string& vbmeta_partition = {});
 
 bool ConstructVerityTable(const FsAvbHashtreeDescriptor& hashtree_desc,
                           const std::string& blk_device, android::dm::DmTable* table);
