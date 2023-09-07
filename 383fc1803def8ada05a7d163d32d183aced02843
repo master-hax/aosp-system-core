@@ -16,6 +16,24 @@
       "message": "this should be \u0026\u0026, not ||, right?\n\nwiping a locked dsu should be fine if oem unlocked\nwiping a non-locked dsu should be fine on a locked device. in fact it\u0027;s the only way to escape if the dsu is broken.",
       "revId": "383fc1803def8ada05a7d163d32d183aced02843",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3dca6ae3_1a3925e8",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1566802
+      },
+      "writtenOn": "2023-09-07T04:15:58Z",
+      "side": 1,
+      "message": "Makes sense. There is no guarantee for data integrity for an oem unlocked device. Let me check with the security reviewer for their consent.",
+      "parentUuid": "128b5515_a529dc45",
+      "revId": "383fc1803def8ada05a7d163d32d183aced02843",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
