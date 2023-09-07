@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b3d5b30_af077521",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-07T03:27:36Z",
+      "side": 1,
+      "message": "IsLockedDsu()",
+      "revId": "aabf4b0b252092753d9d81c7f9166c4aafaf886c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "527b5371_342f8c28",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-07T03:27:36Z",
+      "side": 1,
+      "message": "Add \"\u0026\u0026 GetDeviceLockStatus()\"?",
+      "revId": "aabf4b0b252092753d9d81c7f9166c4aafaf886c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
