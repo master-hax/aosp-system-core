@@ -34,6 +34,24 @@
       "parentUuid": "128b5515_a529dc45",
       "revId": "383fc1803def8ada05a7d163d32d183aced02843",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca73f3c0_a6b52b89",
+        "filename": "fastboot/device/commands.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1566802
+      },
+      "writtenOn": "2023-09-07T07:23:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3dca6ae3_1a3925e8",
+      "revId": "383fc1803def8ada05a7d163d32d183aced02843",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
