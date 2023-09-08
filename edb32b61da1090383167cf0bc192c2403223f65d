@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4f944e4_8aea820c",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/trusty_keymaster_ipc.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-08T21:02:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a50dda5f_2c279370",
+      "revId": "edb32b61da1090383167cf0bc192c2403223f65d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "628275f8_f492f902",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-08-18T17:22:35Z",
       "side": 1,
       "message": "Same comment here, except the \"- 16\" part might be affected if the trusty linux driver to uses a linux page instead of the 4k buffers. It would probably be more compatible to leave those msg buffers at 4k though.",
+      "revId": "edb32b61da1090383167cf0bc192c2403223f65d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73b8213d_7411a0ed",
+        "filename": "trusty/keymaster/include/trusty_keymaster/ipc/trusty_keymaster_ipc.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-08T21:02:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "628275f8_f492f902",
       "revId": "edb32b61da1090383167cf0bc192c2403223f65d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
