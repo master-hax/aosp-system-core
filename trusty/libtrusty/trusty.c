@@ -23,15 +23,95 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
 #include <unistd.h>
 
+#include <linux/vm_sockets.h> /* must be after sys/socket.h */
 #include <log/log.h>
 
 #include <trusty/ipc.h>
 
+static bool use_vsock_connection = false;
+static int tipc_vsock_connect(const char* cid_port_str, const char* srv_name) {
+    int ret;
+    char* port_str;
+    char* end_str;
+    long cid = strtol(cid_port_str, &port_str, 0);
+    if (port_str[0] != ':') {
+        ALOGE("%s: invalid VSOCK str, \"%s\", need cid:port missing : after cid\n", __func__,
+              cid_port_str);
+        return -EINVAL;
+    }
+    long port = strtol(port_str + 1, &end_str, 0);
+    if (end_str[0] != '\0') {
+        ALOGE("%s: invalid VSOCK str, \"%s\", need cid:port got %ld:%ld\n", __func__, cid_port_str,
+              cid, port);
+        return -EINVAL;
+    }
+    int fd = socket(AF_VSOCK, SOCK_STREAM, 0); /* TODO: should be seq-packet */
+    if (fd < 0) {
+        ret = -errno;
+        ALOGE("%s: can't get vsock socket for tipc service \"%s\" (err=%d)\n", __func__, srv_name,
+              errno);
+        return ret < 0 ? ret : -1;
+    }
+    struct sockaddr_vm sa = {
+            .svm_family = AF_VSOCK,
+            .svm_port = port,
+            .svm_cid = cid,
+    };
+    ret = TEMP_FAILURE_RETRY(connect(fd, (struct sockaddr*)&sa, sizeof(sa)));
+    if (ret) {
+        ret = -errno;
+        ALOGE("%s: can't connect to vsock for tipc service \"%s\" (err=%d)\n", __func__, srv_name,
+              errno);
+        close(fd);
+        return ret < 0 ? ret : -1;
+    }
+    /*
+     * TODO: Current vsock tipc bridge in trusty expects a port name in the
+     * first packet. We need to replace this with a protocol that also does DICE
+     * based autentication.
+     */
+    ret = TEMP_FAILURE_RETRY(write(fd, srv_name, strlen(srv_name)));
+    if (ret != strlen(srv_name)) {
+        ret = -errno;
+        ALOGE("%s: failed to send tipc service name \"%s\" to vsock (err=%d)\n", __func__, srv_name,
+              errno);
+        close(fd);
+        return ret < 0 ? ret : -1;
+    }
+    use_vsock_connection = true;
+    return fd;
+}
+
+static size_t tipc_vsock_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm* shms,
+                              int shmcnt) {
+    int ret;
+
+    (void)shms;
+    if (shmcnt != 0) {
+        ALOGE("%s: vsock does not yet support passing fds\n", __func__);
+        return -ENOTSUP;
+    }
+    ret = TEMP_FAILURE_RETRY(writev(fd, iov, iovcnt));
+    if (ret < 0) {
+        ret = -errno;
+        ALOGE("%s: failed to send message (err=%d)\n", __func__, errno);
+        return ret < 0 ? ret : -1;
+    }
+
+    return ret;
+}
+
 int tipc_connect(const char* dev_name, const char* srv_name) {
     int fd;
     int rc;
+
+    if (strncmp(dev_name, "VSOCK:", 6) == 0) {
+        return tipc_vsock_connect(dev_name + 6, srv_name);
+    }
 
     fd = TEMP_FAILURE_RETRY(open(dev_name, O_RDWR));
     if (fd < 0) {
@@ -54,6 +134,9 @@ int tipc_connect(const char* dev_name, const char* srv_name) {
 
 ssize_t tipc_send(int fd, const struct iovec* iov, int iovcnt, struct trusty_shm* shms,
                   int shmcnt) {
+    if (use_vsock_connection) {
+        return tipc_vsock_send(fd, iov, iovcnt, shms, shmcnt);
+    }
     struct tipc_send_msg_req req;
     req.iov = (__u64)iov;
     req.iov_cnt = (__u64)iovcnt;
