@@ -894,7 +894,7 @@ static int send_fd_test(void) {
         goto cleanup;
     }
 
-    size_t buf_size = PAGE_SIZE * num_pages;
+    size_t buf_size = FFA_PAGE_SIZE * num_pages;
     dma_buf = DmabufHeapAlloc(allocator, "system", buf_size, 0, 0 /* legacy align */);
     if (dma_buf < 0) {
         ret = dma_buf;
@@ -928,12 +928,15 @@ static int send_fd_test(void) {
 
     ret = 0;
     for (size_t skip = 0; skip < num_pages; skip++) {
-        ret |= strcmp("Hello from Trusty!", (const char*)&buf[skip * PAGE_SIZE]) ? (-1) : 0;
+        int cmp = strcmp("Hello from Trusty!", (const char*)&buf[skip * FFA_PAGE_SIZE]) ? (-1) : 0;
+        if (cmp)
+            fprintf(stderr, "Failed: Unexpected content at page %zu in dmabuf\n", skip);
+        ret |= cmp;
     }
 
 cleanup:
     if (buf != MAP_FAILED) {
-        munmap((char*)buf, PAGE_SIZE);
+        munmap((char*)buf, buf_size);
     }
     close(dma_buf);
     if (allocator) {

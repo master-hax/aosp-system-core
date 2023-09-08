@@ -22,6 +22,12 @@
 #include <linux/uio.h>
 
 /**
+ * Arm Firmware Framework for Arm A-profile expresses
+ * the size of memory regions as counts of 4K pages.
+ */
+#define FFA_PAGE_SIZE 4096
+
+/**
  * enum transfer_kind - How to send an fd to Trusty
  * @TRUSTY_SHARE:       Memory will be accessible by Linux and Trusty. On ARM it
  *                      will be mapped as nonsecure. Suitable for shared memory.
