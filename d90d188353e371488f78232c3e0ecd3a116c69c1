@@ -106,6 +106,23 @@
       "parentUuid": "7676a932_d8f17811",
       "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54fc14b8_7a38c5a5",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1893074
+      },
+      "writtenOn": "2023-09-08T16:48:07Z",
+      "side": 1,
+      "message": "From the code perspective I think this one can be simplified to something like that:\n\n```\nTransport* transport \u003d nullptr;\nTransport* result \u003d nullptr;\n\nConnectedDevicesStorage storage;\nstd::set\u003cstd::string\u003e devices;\nif (storage.Exists()) {\n    FileLock lock \u003d storage.Lock();\n    devices \u003d storage.ReadDevices(lock);\n}\n\nif (serial \u0026\u0026 ParseNetworkSerial(serial).ok()) {\n    devices.add(serial);\n}\n\nfor (const std::string\u0026 device : devices) {\n    transport \u003d open_device(device.c_str(), false, false);\n\n    if (print) {\n        PrintDevice(device.c_str(), transport \u003d\u003d nullptr ? \"offline\" : \"fastboot\");\n    }\n\n    if (transport !\u003d nullptr) {\n        result \u003d transport;\n    }\n}\n\nreturn result;\n```",
+      "revId": "d90d188353e371488f78232c3e0ecd3a116c69c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
