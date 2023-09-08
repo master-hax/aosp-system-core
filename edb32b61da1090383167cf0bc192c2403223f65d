@@ -86,6 +86,24 @@
       "message": "It seems confusing to have a \u003ctrusty/page.h\u003e file with a rounding function to the _Linux_ page size. See other comments as well. Not every old use of PAGE_SIZE refer to the same limit. The ff-a memory sharing granule is not necessarily the same as the Linux page size, and increasing the page size on the Linux side does not mean the app on the other side will always get a larger max message size.",
       "revId": "edb32b61da1090383167cf0bc192c2403223f65d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48f76556_b4ebe8d1",
+        "filename": "trusty/libtrusty/include/trusty/page.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-08T21:02:35Z",
+      "side": 1,
+      "message": "Remove this",
+      "parentUuid": "e83ed696_f33c6996",
+      "revId": "edb32b61da1090383167cf0bc192c2403223f65d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
