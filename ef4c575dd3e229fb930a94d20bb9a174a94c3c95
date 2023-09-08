@@ -46,6 +46,30 @@
       },
       "revId": "ef4c575dd3e229fb930a94d20bb9a174a94c3c95",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d21b048d_f93b925d",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1012974
+      },
+      "writtenOn": "2023-09-08T19:35:40Z",
+      "side": 1,
+      "message": "This is well outside my knowledge area, so I don\u0027t have any opinion on the right way to do it, or exactly what to do.\n\nBut MSKP capture is quite useful, and currently broken. Another approach we could take: defer creation until we actually capture an MSKP. That\u0027s the approach I take in patch set 2 of ag/24551042.\n\nEither way, it seems we\u0027ll still need I3232409872a5bd51f115b9c39939ee59cff4d72b. Even with `adb shell setenforce 0`, I sometimes am able to write here, and sometimes I get policy errors.",
+      "parentUuid": "b8a0cbba_a8a14d73",
+      "range": {
+        "startLine": 802,
+        "startChar": 4,
+        "endLine": 803,
+        "endChar": 45
+      },
+      "revId": "ef4c575dd3e229fb930a94d20bb9a174a94c3c95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
