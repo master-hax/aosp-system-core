@@ -16,6 +16,24 @@
       "message": "What\u0027s the reasoning behind this change from 10s to 2s?",
       "revId": "b2b037d9f05eaef2c09fdd8ec905d75dc7ac2644",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fca14c0_47be5229",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3110,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-09T06:10:18Z",
+      "side": 0,
+      "message": "This is invoked from IsUserspaceSnapshotUpdateInProgress(); and this is invoked during reboot() path. 10s seems long during reboot path if this hangs for some reason. Hence, cut it to 2 seconds.",
+      "parentUuid": "d28d0b95_1b79408b",
+      "revId": "b2b037d9f05eaef2c09fdd8ec905d75dc7ac2644",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

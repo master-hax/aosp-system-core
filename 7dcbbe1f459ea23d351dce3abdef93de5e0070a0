@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db55ab16_ad0b17a8",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-09T06:10:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2baa3978_190eacb6",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5459dd56_44ca9194",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "daf11946_541d9891",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-09T06:10:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5459dd56_44ca9194",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "15d0d7cf_97c3ac89",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-09-09T03:48:18Z",
       "side": 1,
       "message": "I can\u0027t think of *why* it wouldn\u0027t be true, but... for the sake of it, this should check that slot \u003d\u003d current slot I think?",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bfe25d6_f52a2187",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2252,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-09T06:10:18Z",
+      "side": 1,
+      "message": "Added a check to verify CurrentSlot \u003d\u003d Source.",
+      "parentUuid": "15d0d7cf_97c3ac89",
       "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
