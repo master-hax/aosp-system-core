@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2baa3978_190eacb6",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-09T03:48:18Z",
+      "side": 1,
+      "message": "assumedly this will not work with v3? if so, CHECK() or if (version \u003e 2) LOG(ERROR) here.",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5459dd56_44ca9194",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-09T03:48:18Z",
+      "side": 1,
+      "message": "nit: \"...Path()\" to match the other names.",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15d0d7cf_97c3ac89",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2252,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-09T03:48:18Z",
+      "side": 1,
+      "message": "I can\u0027t think of *why* it wouldn\u0027t be true, but... for the sake of it, this should check that slot \u003d\u003d current slot I think?",
+      "revId": "7dcbbe1f459ea23d351dce3abdef93de5e0070a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
