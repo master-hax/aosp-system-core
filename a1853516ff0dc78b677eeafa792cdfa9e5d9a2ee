@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5c35cd3_42085786",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-09-11T17:46:14Z",
+      "side": 1,
+      "message": "Fix for the most recent failure merged: http://ag/24721337",
+      "revId": "a1853516ff0dc78b677eeafa792cdfa9e5d9a2ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
