@@ -115,6 +115,7 @@ void CowWriterV2::SetupHeaders() {
     header_.num_merge_ops = options_.num_merge_ops;
     header_.cluster_ops = options_.cluster_ops;
     header_.buffer_size = 0;
+    header_.compression_algorithm = 0;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -133,6 +134,7 @@ bool CowWriterV2::ParseOptions() {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
     }
+    header_.compression_algorithm = static_cast<int>(algorithm.value());
     if (parts.size() > 1) {
         if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
             LOG(ERROR) << "failed to parse compression level invalid type: " << parts[1];
