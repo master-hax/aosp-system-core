@@ -252,19 +252,19 @@ TEST_F(TrustyStatsTest, CheckAtoms) {
                     ::testing::AnyOf(::testing::Eq(TrustyAtoms::TrustyAppCrashed),
                                      ::testing::Eq(TrustyAtoms::TrustyError),
                                      ::testing::Eq(TrustyAtoms::TrustyStorageError)));
-        ASSERT_STREQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
+        ASSERT_EQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
         switch (vendorAtom.atomId) {
             case TrustyAtoms::TrustyAppCrashed:
                 ++atomAppCrashedCnt;
-                ASSERT_STREQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
+                ASSERT_EQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
                              "5247d19b-cf09-4272-a450-3ef20dbefc14");
                 break;
             case TrustyAtoms::TrustyStorageError:
                 ++atomStorageErrorCnt;
                 ASSERT_EQ(vendorAtom.values[0].get<VendorAtomValue::intValue>(), 5);
-                ASSERT_STREQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()),
+                ASSERT_EQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()),
                              "5247d19b-cf09-4272-a450-3ef20dbefc14");
-                ASSERT_STREQ(String8(vendorAtom.values[2].get<VendorAtomValue::stringValue>()),
+                ASSERT_EQ(String8(vendorAtom.values[2].get<VendorAtomValue::stringValue>()),
                              "5247d19b-cf09-4272-a450-3ef20dbefc14");
                 ASSERT_EQ(vendorAtom.values[3].get<VendorAtomValue::intValue>(), 1);
                 ASSERT_EQ(vendorAtom.values[4].get<VendorAtomValue::intValue>(), 3);
@@ -330,12 +330,12 @@ TEST_F(TrustyMetricsCrashTest, CheckTrustyCrashAtoms) {
                     ::testing::AnyOf(::testing::Eq(TrustyAtoms::TrustyAppCrashed),
                                      ::testing::Eq(TrustyAtoms::TrustyError),
                                      ::testing::Eq(TrustyAtoms::TrustyStorageError)));
-        ASSERT_STREQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
+        ASSERT_EQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
 
         switch (vendorAtom.atomId) {
             case TrustyAtoms::TrustyAppCrashed:
                 ++atomAppCrashedCnt;
-                ASSERT_STREQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
+                ASSERT_EQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
                              kTrustyCrasherUuid);
                 atomCrashReasons.push_back(vendorAtom.values[1].get<VendorAtomValue::intValue>());
                 break;
@@ -344,7 +344,7 @@ TEST_F(TrustyMetricsCrashTest, CheckTrustyCrashAtoms) {
                 break;
             case TrustyAtoms::TrustyError:
                 ++atomTrustyErrorCnt;
-                ASSERT_STREQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()), "");
+                ASSERT_EQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()), "");
                 break;
             default:
                 FAIL() << "Unknown vendor atom ID: " << vendorAtom.atomId;
