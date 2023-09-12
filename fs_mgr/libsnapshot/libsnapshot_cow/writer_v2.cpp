@@ -214,7 +214,7 @@ bool CowWriterV2::Initialize(std::optional<uint64_t> label) {
 }
 
 void CowWriterV2::InitPos() {
-    next_op_pos_ = sizeof(header_) + header_.buffer_size;
+    next_op_pos_ = sizeof(CowHeader) + header_.buffer_size;
     cluster_size_ = header_.cluster_ops * sizeof(CowOperation);
     if (header_.cluster_ops) {
         next_data_pos_ = next_op_pos_ + cluster_size_;
@@ -243,7 +243,7 @@ bool CowWriterV2::OpenForWrite() {
 
     // Headers are not complete, but this ensures the file is at the right
     // position.
-    if (!android::base::WriteFully(fd_, &header_, sizeof(header_))) {
+    if (!android::base::WriteFully(fd_, &header_, sizeof(CowHeader))) {
         PLOG(ERROR) << "write failed";
         return false;
     }
@@ -262,7 +262,7 @@ bool CowWriterV2::OpenForWrite() {
         return false;
     }
 
-    if (lseek(fd_.get(), sizeof(header_) + header_.buffer_size, SEEK_SET) < 0) {
+    if (lseek(fd_.get(), sizeof(CowHeader) + header_.buffer_size, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek failed";
         return false;
     }
