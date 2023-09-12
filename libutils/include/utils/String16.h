@@ -118,8 +118,6 @@ public:
     inline  bool                operator>(const char16_t* other) const;
     inline  char16_t            operator[](size_t pos) const;
 
-    inline                      operator const char16_t*() const;
-
 #ifdef HAS_STRING_VIEW
     // Implicit cast to std::u16string is not implemented on purpose - u16string_view is much
     // lighter and if one needs, they can still create u16string from u16string_view.
@@ -369,11 +367,6 @@ inline bool String16::operator>(const char16_t* other) const
 inline char16_t String16::operator[](size_t pos) const
 {
     return mString[pos];
-}
-
-inline String16::operator const char16_t*() const
-{
-    return mString;
 }
 
 inline String16::operator std::u16string_view() const
