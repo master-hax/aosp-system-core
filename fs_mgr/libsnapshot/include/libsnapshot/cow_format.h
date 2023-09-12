@@ -68,6 +68,8 @@ struct CowHeaderPrefix {
     uint16_t header_size;  // size of CowHeader.
 } __attribute__((packed));
 
+static constexpr size_t kCowHeaderV2Size = 42;
+
 struct CowHeader {
     CowHeaderPrefix prefix;
 
@@ -88,6 +90,9 @@ struct CowHeader {
 
     // Scratch space used during merge
     uint32_t buffer_size;
+
+    // Compression Algorithm
+    uint32_t compression_algorithm;
 } __attribute__((packed));
 
 // This structure is the same size of a normal Operation, but is repurposed for the footer.
