@@ -49,8 +49,12 @@ class CowOperationV3Test : public ::testing::Test {
     std::unique_ptr<TemporaryFile> cow_;
 };
 
-TEST_F(CowOperationV3Test, TmpTest) {
-    ASSERT_TRUE(true);
+TEST_F(CowOperationV3Test, InitializeTest) {
+    CowOptions options;
+    options.cluster_ops = 0;
+    CowWriterV3 writer(options, GetCowFd());
+
+    ASSERT_TRUE(writer.Initialize());
 }
 
 }  // namespace snapshot
