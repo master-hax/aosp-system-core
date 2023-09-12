@@ -162,6 +162,10 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
         if (!writer_v2->Initialize(label)) {
             return nullptr;
         }
+    } else if (auto writer_v3 = base->AsV3Writer()) {
+        if (!writer_v3->Initialize()) {
+            return nullptr;
+        }
     }
     return base;
 }

@@ -20,6 +20,8 @@ namespace android {
 namespace snapshot {
 
 class CowWriterV2;
+class CowWriterV3;
+
 class CowWriterBase : public ICowWriter {
   public:
     CowWriterBase(const CowOptions& options, android::base::unique_fd&& fd);
@@ -27,6 +29,8 @@ class CowWriterBase : public ICowWriter {
 
     // cast to writer v2
     virtual CowWriterV2* AsV2Writer() { return nullptr; }
+    // cast to writer v3
+    virtual CowWriterV3* AsV3Writer() { return nullptr; }
 
     bool AddCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
     bool AddRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;
