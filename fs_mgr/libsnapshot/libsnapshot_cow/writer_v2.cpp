@@ -115,6 +115,7 @@ void CowWriterV2::SetupHeaders() {
     header_.num_merge_ops = options_.num_merge_ops;
     header_.cluster_ops = options_.cluster_ops;
     header_.buffer_size = 0;
+    header_.compression_algorithm = 0;
     footer_ = {};
     footer_.op.data_length = 64;
     footer_.op.type = kCowFooterOp;
@@ -133,6 +134,7 @@ bool CowWriterV2::ParseOptions() {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
     }
+    header_.compression_algorithm = static_cast<int>(algorithm.value());
     if (parts.size() > 1) {
         if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
             LOG(ERROR) << "failed to parse compression level invalid type: " << parts[1];
@@ -214,7 +216,7 @@ bool CowWriterV2::Initialize(std::optional<uint64_t> label) {
 }
 
 void CowWriterV2::InitPos() {
-    next_op_pos_ = sizeof(header_) + header_.buffer_size;
+    next_op_pos_ = kCowHeaderV2Size + header_.buffer_size;
     cluster_size_ = header_.cluster_ops * sizeof(CowOperation);
     if (header_.cluster_ops) {
         next_data_pos_ = next_op_pos_ + cluster_size_;
@@ -243,7 +245,7 @@ bool CowWriterV2::OpenForWrite() {
 
     // Headers are not complete, but this ensures the file is at the right
     // position.
-    if (!android::base::WriteFully(fd_, &header_, sizeof(header_))) {
+    if (!android::base::WriteFully(fd_, &header_, kCowHeaderV2Size)) {
         PLOG(ERROR) << "write failed";
         return false;
     }
@@ -262,7 +264,7 @@ bool CowWriterV2::OpenForWrite() {
         return false;
     }
 
-    if (lseek(fd_.get(), sizeof(header_) + header_.buffer_size, SEEK_SET) < 0) {
+    if (lseek(fd_.get(), kCowHeaderV2Size + header_.buffer_size, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek failed";
         return false;
     }
