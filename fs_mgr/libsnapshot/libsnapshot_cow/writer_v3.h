@@ -48,8 +48,8 @@ class CowWriterV3 : public CowWriterBase {
     bool OpenForAppend(uint64_t label);
     bool GetDataPos(uint64_t* pos);
     bool WriteRawData(const void* data, size_t size);
-    bool WriteOperation(const CowOperationV2& op, const void* data = nullptr, size_t size = 0);
-    void AddOperation(const CowOperationV2& op);
+    bool WriteOperation(const CowOperationV3& op, const void* data = nullptr, size_t size = 0);
+    void AddOperation(const CowOperationV3& op);
     void InitPos();
     void InitBatchWrites();
     void InitWorkers();
@@ -65,10 +65,6 @@ class CowWriterV3 : public CowWriterBase {
     // in the case that we are using one thread for compression, we can store and re-use the same
     // compressor
     std::unique_ptr<ICompressor> compressor_;
-    uint64_t next_op_pos_ = 0;
-    uint64_t next_data_pos_ = 0;
-    uint64_t current_data_pos_ = 0;
-    uint64_t current_data_size_ = 0;
 
     int num_compress_threads_ = 1;
     std::vector<std::unique_ptr<CompressWorker>> compress_threads_;
@@ -76,7 +72,7 @@ class CowWriterV3 : public CowWriterBase {
     std::vector<std::basic_string<uint8_t>> compressed_buf_;
     std::vector<std::basic_string<uint8_t>>::iterator buf_iter_;
 
-    std::vector<std::unique_ptr<CowOperationV2>> opbuffer_vec_;
+    std::vector<std::unique_ptr<CowOperationV3>> opbuffer_vec_;
     std::vector<std::unique_ptr<uint8_t[]>> databuffer_vec_;
     std::unique_ptr<struct iovec[]> cowop_vec_;
 
