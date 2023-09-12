@@ -25,6 +25,7 @@
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
 #include "cow_decompress.h"
+#include "libsnapshot/cow_format.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;
@@ -1502,6 +1503,23 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_TRUE(writer->Finalize());
     ASSERT_TRUE(reader.Parse(cow_->fd));
     ASSERT_FALSE(reader.VerifyMergeOps());
+}
+
+TEST_F(CowTest, HeaderCompressionTest) {
+    CowOptions options;
+    options.compression = "lz4";
+    auto writer = std::make_unique<CowWriterV2>(options, GetCowFd());
+
+    ASSERT_TRUE(writer->Initialize());
+    ASSERT_TRUE(writer->Finalize());
+    CowReader reader;
+
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+    const auto& header = reader.GetHeader();
+    LOG(INFO) << "header.compression_algorithm : " << header.compression_algorithm;
+    LOG(INFO) << "header.magic : " << header.prefix.magic;
+
+    ASSERT_EQ(header.compression_algorithm, kCowCompressLz4);
 }
 
 }  // namespace snapshot
