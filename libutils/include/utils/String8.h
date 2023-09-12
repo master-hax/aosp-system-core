@@ -107,7 +107,11 @@ public:
     inline  bool                operator>=(const char* other) const;
     inline  bool                operator>(const char* other) const;
 
-    inline                      operator const char*() const;
+    inline  char                operator[](size_t pos) const;
+
+#ifdef HAS_STRING
+    inline                      operator std::string() const;
+#endif
 
 #ifdef HAS_STRING_VIEW
     inline explicit             operator std::string_view() const;
@@ -331,10 +335,17 @@ inline bool String8::operator>(const char* other) const
     return strcmp(mString, other) > 0;
 }
 
-inline String8::operator const char*() const
+inline char String8::operator[](size_t pos) const
 {
-    return mString;
+    return mString[pos];
 }
+
+#ifdef HAS_STRING
+inline String8::operator std::string() const
+{
+    return {mString, length()};
+}
+#endif
 
 #ifdef HAS_STRING_VIEW
 inline String8::operator std::string_view() const
