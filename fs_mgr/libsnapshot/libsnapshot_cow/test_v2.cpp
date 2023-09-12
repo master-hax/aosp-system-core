@@ -25,6 +25,7 @@
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
 #include "cow_decompress.h"
+#include "libsnapshot/cow_format.h"
 #include "writer_v2.h"
 
 using android::base::unique_fd;
