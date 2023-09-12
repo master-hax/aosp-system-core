@@ -91,7 +91,13 @@ struct CowHeader {
 
     // Scratch space used during merge
     uint32_t buffer_size;
+
 } __attribute__((packed));
+
+struct CowHeaderV2 : public CowHeader {
+    // Compression Algorithm
+    uint32_t compression_algorithm;
+};
 
 // This structure is the same size of a normal Operation, but is repurposed for the footer.
 struct CowFooterOperation {
