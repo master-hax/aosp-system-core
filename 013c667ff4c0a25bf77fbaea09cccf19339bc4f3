@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "777087de_f33ccfd0",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-13T03:52:38Z",
+      "side": 1,
+      "message": "all caps is only for compile-time constants (let\u0027s fix the existing cases of this too)",
+      "revId": "013c667ff4c0a25bf77fbaea09cccf19339bc4f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a1cf478_819091a7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-13T03:52:38Z",
+      "side": 1,
+      "message": "name is inconsistent with interface - keep them all \"block_size\" or \"max_block_size\"",
+      "revId": "013c667ff4c0a25bf77fbaea09cccf19339bc4f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
