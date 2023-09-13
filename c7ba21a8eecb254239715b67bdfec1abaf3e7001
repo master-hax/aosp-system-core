@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "518d3b2f_b32836f3",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-13T01:02:42Z",
+      "side": 1,
+      "message": "Looks like this isn\u0027t defined/used in this CL?",
+      "revId": "c7ba21a8eecb254239715b67bdfec1abaf3e7001",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
