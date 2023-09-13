@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab582b32_e3191732",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-13T04:58:14Z",
+      "side": 1,
+      "message": "We can\u0027t change the header without a version bump - this will break downgrade OTAs. The problem is writer_v2 will be writing sizeof(CowHeader) bytes, which is now changing, and older versions of CowParserV2 won\u0027t know to how to read it.\n\nThere are two ways to deal with this.\n\n(1) Hardcode the existing sizeof(CowHeader) somewhere. Eg, if it\u0027s 80 bytes, have:\n\n     static constexpr size_t kCowHeaderV2Size \u003d 80;\n \nAnd replace uses of sizeof(CowHeader) in parser_v2/writer_v2. Or,\n\n(2) Create a CowHeaderV2, identical to the current CowHeader, and replace uses in the parser/writer. Then convert from CowHeaderV2 -\u003e CowHeader in CowReader.\n\n(3) We could also have CowHeader inherit from a CowHeaderV2, but you\u0027d still need the refactoring from (2).",
+      "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
