@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e981e3fd_364a153b",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-13T21:57:43Z",
+      "side": 1,
+      "message": "I think the old code was clearer here. Why don\u0027t you set TIPC_MAX_MSG_SIZE to 4096?",
+      "revId": "dbb175bddcdd8ee5739bc471449dc1b9d3fba58a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
