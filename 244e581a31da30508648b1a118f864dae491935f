@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e1e91fd_16de866d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1112073
+      },
+      "writtenOn": "2023-09-13T00:50:29Z",
+      "side": 1,
+      "message": "working for the /cache use case on our end",
+      "revId": "244e581a31da30508648b1a118f864dae491935f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
