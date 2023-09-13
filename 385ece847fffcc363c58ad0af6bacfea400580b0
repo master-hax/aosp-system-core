@@ -16,6 +16,24 @@
       "message": "This use of FFA_PAGE_SIZE is different from the use in the next patch and neither of them have to match the ff-a page size. Here you are allocating a dma buf to be shared. The total size of that buffer has to be aligned to both the ff-a page size, the page size enforced by any hypervisor on either side and the page size of the os on each side. The important part here though is that the server on the other side writes a string at the start of every 4k chunk. You could use FFA_PAGE_SIZE for this if you update both sides to use the same constant, but it is not really ff-a related, so I think this just causes unnecessary confusion. Using a custom constant for this test would be clearer and less likely to break if the page size changes.\n\nThe next patch uses FFA_PAGE_SIZE as the max message size, this is yet another size that just happens to have the same value.",
       "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "efea7102_3d079059",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-13T22:29:04Z",
+      "side": 1,
+      "message": "Thanks for the clarifications Arve.\n\nThis was a bit confusing since everywhere was only using `PAGE_SIZE` which just so happened to be equal to every other type of `4096` constant.\n\nDo you have any suggestions on the naming of the custom 4096 constant here and for keymaster?",
+      "parentUuid": "23c809ff_9f1f6cac",
+      "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
