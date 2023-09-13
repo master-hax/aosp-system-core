@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "341b673e_4432ddf0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-13T12:21:39Z",
+      "side": 1,
+      "message": "Hi Yabin, are you the right reviewer for this adb client change? Should we merge into the AOSP 11 branch or higher?\n\nThis is to add adb over USB DbC capabilites, an alternate mode to USB gadget mode for devices that do not support gadget mode, namely Chromebooks but should apply to other devices with DbC support as well.",
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
