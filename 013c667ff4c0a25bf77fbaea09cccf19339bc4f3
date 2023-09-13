@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a9b1661_65cc2752",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_compress.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-09-13T07:28:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "777087de_f33ccfd0",
+      "revId": "013c667ff4c0a25bf77fbaea09cccf19339bc4f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3a1cf478_819091a7",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-09-13T03:52:38Z",
       "side": 1,
       "message": "name is inconsistent with interface - keep them all \"block_size\" or \"max_block_size\"",
+      "revId": "013c667ff4c0a25bf77fbaea09cccf19339bc4f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e38678e6_b1fb2482",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-09-13T07:28:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1cf478_819091a7",
       "revId": "013c667ff4c0a25bf77fbaea09cccf19339bc4f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
