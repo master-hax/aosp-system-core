@@ -24,6 +24,7 @@ rust_library {
         "src/lib.rs"
     ],
     rustlibs: [
+        "liblog_rust",
         "libnix",
         "liblibc",
     ],
