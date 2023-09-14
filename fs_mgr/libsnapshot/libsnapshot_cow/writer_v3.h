@@ -57,12 +57,12 @@ class CowWriterV3 : public CowWriterBase {
     // in the case that we are using one thread for compression, we can store and re-use the same
     // compressor
 
-    uint64_t current_op_pos_ = 0;
     uint64_t next_op_pos_ = 0;
     uint64_t next_data_pos_ = 0;
     uint64_t current_data_pos_ = 0;
-    ssize_t total_data_written_ = 0;
     uint64_t current_data_size_ = 0;
+    uint64_t current_op_pos_ = 0;
+    ssize_t total_data_written_ = 0;
 
     int num_compress_threads_ = 1;
     std::vector<std::unique_ptr<CompressWorker>> compress_threads_;
