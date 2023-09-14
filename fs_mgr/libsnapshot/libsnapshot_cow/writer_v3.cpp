@@ -139,9 +139,11 @@ bool CowWriterV3::Finalize() {
 }
 
 uint64_t CowWriterV3::GetCowSize() {
-    LOG(ERROR) << __LINE__ << " " << __FILE__
-               << " <- Get Cow Size function here should never be called";
-    return 0;
+    if (current_data_size_ > 0) {
+        return next_data_pos_;
+    } else {
+        return next_op_pos_;
+    }
 }
 
 bool CowWriterV3::GetDataPos(uint64_t* pos) {
