@@ -135,7 +135,7 @@ static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs
 
     /* Format the partition using the calculated length */
 
-    const auto size_str = std::to_string(dev_sz / getpagesize());
+    const auto size_str = std::to_string(dev_sz / 4096);
 
     std::vector<const char*> args = {"/system/bin/make_f2fs", "-g", "android"};
     if (needs_projid) {
