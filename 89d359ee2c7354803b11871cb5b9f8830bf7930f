@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89ca67a8_6734922d",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2023-09-14T16:42:37Z",
+      "side": 1,
+      "message": "Either remove commented out `println!`s or replace with `debug!` or `trace!`",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f16d2ea1_a4fadd36",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2023-09-14T16:42:37Z",
+      "side": 1,
+      "message": "Safety comment (surprised the lint didn\u0027t trigger?)",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b6d15a5_0ceae9a5",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2023-09-14T16:42:37Z",
+      "side": 1,
+      "message": "Self",
+      "range": {
+        "startLine": 138,
+        "startChar": 26,
+        "endLine": 138,
+        "endChar": 37
+      },
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
