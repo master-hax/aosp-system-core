@@ -118,8 +118,10 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
             LOG(ERROR) << "Cannot create unknown cow version: " << version;
             return nullptr;
     }
-    if (!base->Initialize(label)) {
-        return nullptr;
+    if (auto writer_v2 = base->AsV2Writer()) {
+        if (!writer_v2->Initialize(label)) {
+            return nullptr;
+        }
     }
     return base;
 }
