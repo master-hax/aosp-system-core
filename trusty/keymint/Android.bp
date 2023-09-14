@@ -29,6 +29,7 @@ rust_binary {
     rustlibs: [
         "libandroid_logger",
         "libbinder_rs",
+        "libclap",
         "libkmr_wire",
         "libkmr_hal",
         "libtrusty-rs",
