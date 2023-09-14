@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e7f533b_4ca971df",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-14T20:55:15Z",
+      "side": 1,
+      "message": "Can debug! or trace! be enabled at runtime? Your suggestion is good either way though. I was planning to remove them, but since there is a standard way to keep them in a disabled form that seems to be a better option.",
+      "parentUuid": "89ca67a8_6734922d",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f16d2ea1_a4fadd36",
         "filename": "trusty/libtrusty-rs/src/lib.rs",
         "patchSetId": 1
@@ -48,6 +66,48 @@
       "writtenOn": "2023-09-14T16:42:37Z",
       "side": 1,
       "message": "Self",
+      "range": {
+        "startLine": 138,
+        "startChar": 26,
+        "endLine": 138,
+        "endChar": 37
+      },
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6b5ca1d_580eba9a",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-14T20:55:15Z",
+      "side": 1,
+      "message": "It seems to trigger a build failure on some builds. But, not the one I ran locally (or perhaps I have not synced recently enough if this is new warning).",
+      "parentUuid": "f16d2ea1_a4fadd36",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9790993_c32783c9",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-14T20:55:15Z",
+      "side": 1,
+      "message": "The existing code on line 152 does not use Self. Should that also be updated?",
+      "parentUuid": "3b6d15a5_0ceae9a5",
       "range": {
         "startLine": 138,
         "startChar": 26,
