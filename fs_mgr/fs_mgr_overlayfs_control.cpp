@@ -381,7 +381,7 @@ bool MakeScratchFilesystem(const std::string& scratch_device) {
     if (!access(kMkF2fs, X_OK) && fs_mgr_filesystem_available("f2fs")) {
         fs_type = "f2fs";
         command = kMkF2fs + " -w "s;
-        command += std::to_string(getpagesize());
+        command += std::to_string(4096);
         command += " -f -d1 -l" + android::base::Basename(kScratchMountPoint);
     } else if (!access(kMkExt4, X_OK) && fs_mgr_filesystem_available("ext4")) {
         fs_type = "ext4";
