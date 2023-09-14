@@ -19,20 +19,14 @@
 namespace android {
 namespace snapshot {
 
+class CowWriterV2;
 class CowWriterBase : public ICowWriter {
   public:
     CowWriterBase(const CowOptions& options, android::base::unique_fd&& fd);
     virtual ~CowWriterBase() {}
 
-    // Set up the writer.
-    // The file starts from the beginning.
-    //
-    // If fd is < 0, the CowWriter will be opened against /dev/null. This is for
-    // computing COW sizes without using storage space.
-    //
-    // If a label is given, any operations after the given label will be dropped.
-    // If the given label is not found, Initialize will fail.
-    virtual bool Initialize(std::optional<uint64_t> label = {}) = 0;
+    // cast to writer v2
+    virtual CowWriterV2* AsV2Writer() { return nullptr; }
 
     bool AddCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
     bool AddRawBlocks(uint64_t new_block_start, const void* data, size_t size) override;

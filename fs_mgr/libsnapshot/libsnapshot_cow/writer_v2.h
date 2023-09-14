@@ -24,8 +24,15 @@ class CowWriterV2 : public CowWriterBase {
   public:
     explicit CowWriterV2(const CowOptions& options, android::base::unique_fd&& fd);
     ~CowWriterV2() override;
-
-    bool Initialize(std::optional<uint64_t> label = {}) override;
+    // Set up the writer.
+    // The file starts from the beginning.
+    //
+    // If fd is < 0, the CowWriter will be opened against /dev/null. This is for
+    // computing COW sizes without using storage space.
+    //
+    // If a label is given, any operations after the given label will be dropped.
+    // If the given label is not found, Initialize will fail.
+    bool Initialize(std::optional<uint64_t> label = {});
     bool Finalize() override;
     uint64_t GetCowSize() override;
 
