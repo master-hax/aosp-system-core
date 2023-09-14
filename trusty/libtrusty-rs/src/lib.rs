@@ -61,10 +61,13 @@
 //! ```
 
 use crate::sys::tipc_connect;
+use nix::sys::socket;
 use std::ffi::CString;
 use std::fs::File;
+use std::io;
 use std::io::prelude::*;
 use std::io::{ErrorKind, Result};
+use std::os::fd::FromRawFd;
 use std::os::unix::prelude::AsRawFd;
 use std::path::Path;
 
@@ -98,7 +101,47 @@ impl TipcChannel {
     /// bytes. This is handled with a panic because the service names are all
     /// hard-coded constants, and so such an error should always be indicative of a
     /// bug in the calling code.
-    pub fn connect(device: impl AsRef<Path>, service: &str) -> Result<Self> {
+    pub fn connect(device: &str, service: &str) -> Result<Self> {
+        if let Some(cid_port_str) = device.strip_prefix("VSOCK:") {
+            Self::connect_vsock(cid_port_str, service)
+        } else {
+            Self::connect_tipc(device, service)
+        }
+    }
+
+    fn connect_vsock(cid_port_str: &str, service: &str) -> Result<Self> {
+        let [cid, port]: [u32; 2] = cid_port_str
+            .split(':')
+            .map(|v| v.parse::<u32>().map_err(|e| io::Error::new(io::ErrorKind::InvalidInput, e)))
+            .collect::<Result<Vec<u32>>>()?
+            .try_into()
+            .map_err(|e| {
+                io::Error::new(io::ErrorKind::InvalidInput, format!("Wrong number of args: {e:?}"))
+            })?;
+
+        // TODO: use SeqPacket instead of Stream
+        //println!("got cid, port: {cid}, {port}");
+        let s = socket::socket(
+            socket::AddressFamily::Vsock,
+            socket::SockType::Stream,
+            socket::SockFlag::empty(),
+            None,
+        )?;
+        //println!("got socket");
+        let sa = socket::VsockAddr::new(cid, port);
+        //println!("got sa");
+        socket::connect(s, &sa)?;
+        //println!("connected");
+        // TODO: Current vsock tipc bridge in trusty expects a port name in the
+        // first packet. We need to replace this with a protocol that also does DICE
+        // based autentication.
+        let mut channel = TipcChannel(unsafe { File::from_raw_fd(s) });
+        channel.send(service.as_bytes())?;
+        //println!("sent tipc port name");
+        Ok(channel)
+    }
+
+    fn connect_tipc(device: impl AsRef<Path>, service: &str) -> Result<Self> {
         let file = File::options().read(true).write(true).open(device)?;
 
         let srv_name = CString::new(service).expect("Service name contained null bytes");
