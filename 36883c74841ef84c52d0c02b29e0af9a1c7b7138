@@ -16,6 +16,24 @@
       "message": "The performance of this should be tested on all devices. Seems good though.",
       "revId": "36883c74841ef84c52d0c02b29e0af9a1c7b7138",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "462ae043_8691f961",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-09-15T21:02:21Z",
+      "side": 1,
+      "message": "well -not all devices, but a more representative sample. For instance, a couple of phones.",
+      "parentUuid": "e299f49e_f8aa6f3d",
+      "revId": "36883c74841ef84c52d0c02b29e0af9a1c7b7138",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
