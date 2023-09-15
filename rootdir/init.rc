@@ -13,6 +13,13 @@ import /system/etc/init/hw/init.${ro.zygote}.rc
 
 # Cgroups are mounted right before early-init using list from /etc/cgroups.json
 on early-init
+    # Mount binderfs
+    mkdir /dev/binderfs
+    mount binder binder /dev/binderfs stats=global
+    chmod 0755 /dev/binderfs
+    symlink /dev/binderfs/hwbinder /dev/hwbinder
+    chmod 0666 /dev/binderfs/hwbinder
+
     # Disable sysrq from keyboard
     write /proc/sys/kernel/sysrq 0
 
@@ -225,19 +232,12 @@ on init
     chmod 0770 /config/sdcardfs
     chown system package_info /config/sdcardfs
 
-    # Mount binderfs
-    mkdir /dev/binderfs
-    mount binder binder /dev/binderfs stats=global
-    chmod 0755 /dev/binderfs
-
     # Mount fusectl
     mount fusectl none /sys/fs/fuse/connections
 
     symlink /dev/binderfs/binder /dev/binder
-    symlink /dev/binderfs/hwbinder /dev/hwbinder
     symlink /dev/binderfs/vndbinder /dev/vndbinder
 
-    chmod 0666 /dev/binderfs/hwbinder
     chmod 0666 /dev/binderfs/binder
     chmod 0666 /dev/binderfs/vndbinder
 
