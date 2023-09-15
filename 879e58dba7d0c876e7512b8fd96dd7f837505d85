@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e029e27d_d4ded121",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_format.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-09-15T17:24:51Z",
+      "side": 1,
+      "message": "avoid hard coding for subclasses if possible. If v3 is using labels differently, it\u0027s better to design a common API for both v2 and v3. It\u0027s better to hide the difference between v2/v3 in their own subclasses, that\u0027s the point of inheritance.",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 121,
+        "endChar": 46
+      },
+      "revId": "879e58dba7d0c876e7512b8fd96dd7f837505d85",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
