@@ -65,19 +65,20 @@ static bool SetupConsole() {
     return true;
 }
 
-static void RunScript() {
+static int RunScript() {
     LOG(INFO) << "Attempting to run /first_stage.sh...";
     pid_t pid = fork();
     if (pid != 0) {
         int status;
         waitpid(pid, &status, 0);
         LOG(INFO) << "/first_stage.sh exited with status " << status;
-        return;
+        return status;
     }
     const char* path = "/system/bin/sh";
     const char* args[] = {path, "/first_stage.sh", nullptr};
     int rv = execv(path, const_cast<char**>(args));
     LOG(ERROR) << "unable to execv /first_stage.sh, returned " << rv << " errno " << errno;
+    _exit(127);
 }
 
 namespace android {
@@ -100,14 +101,15 @@ void StartConsole(const std::string& cmdline) {
     }
 
     if (console) console = SetupConsole();
-    RunScript();
-    if (console) {
+    int status = RunScript();
+    if (console && (!WIFEXITED(status) || WEXITSTATUS(status) != 0)) {
         const char* path = "/system/bin/sh";
         const char* args[] = {path, nullptr};
         int rv = execv(path, const_cast<char**>(args));
         LOG(ERROR) << "unable to execv, returned " << rv << " errno " << errno;
+        _exit(127);
     }
-    _exit(127);
+    _exit(0);
 }
 
 int FirstStageConsole(const std::string& cmdline, const std::string& bootconfig) {
