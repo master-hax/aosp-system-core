@@ -59,7 +59,7 @@ cc_library_static {
             cflags: ["-UNDEBUG"],
         },
     },
-}
+}License
 
 // bootstat binary
 // -----------------------------------------------------------------------------
@@ -97,4 +97,4 @@ cc_test {
     test_options: {
         unit_test: true,
     },
-}
+}licenses-reference 
