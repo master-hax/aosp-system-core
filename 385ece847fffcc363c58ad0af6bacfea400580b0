@@ -34,6 +34,24 @@
       "parentUuid": "23c809ff_9f1f6cac",
       "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e67e3cc9_970f3258",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-16T00:23:42Z",
+      "side": 1,
+      "message": "Updated to custom constant for the test.\n\nFor the keymaster constant I just used `4096 * 2`. Previous git history shows it was being hardcoded to `8192`. So I think that\u0027s ok.",
+      "parentUuid": "efea7102_3d079059",
+      "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
