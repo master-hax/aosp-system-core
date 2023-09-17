@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c204a7f_8910f9c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-09-17T05:13:42Z",
+      "side": 1,
+      "message": "+1",
+      "parentUuid": "4857b5ee_d40dbc69",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "36883c74841ef84c52d0c02b29e0af9a1c7b7138",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e299f49e_f8aa6f3d",
@@ -55,6 +79,29 @@
       "side": 1,
       "message": "well -not all devices, but a more representative sample. For instance, a couple of phones.",
       "parentUuid": "e299f49e_f8aa6f3d",
+      "revId": "36883c74841ef84c52d0c02b29e0af9a1c7b7138",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b98d263_66b9264e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 6
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-09-17T05:13:42Z",
+      "side": 1,
+      "message": "Is there a reason to leave these behind?",
+      "range": {
+        "startLine": 238,
+        "startChar": 0,
+        "endLine": 242,
+        "endChar": 38
+      },
       "revId": "36883c74841ef84c52d0c02b29e0af9a1c7b7138",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
