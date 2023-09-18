@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99e5d6a2_ec0a8726",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-09-18T18:11:11Z",
+      "side": 1,
+      "message": "just check if FLAGS_target is empty. No need for second check",
+      "revId": "85a9c3dd5eedecaf5fbb10b7e320475ba29b73f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
