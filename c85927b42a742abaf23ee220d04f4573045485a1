@@ -158,6 +158,30 @@
       },
       "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76529340_3923dc1a",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_apis_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-09-19T07:57:21Z",
+      "side": 1,
+      "message": "Thanks. This LGTM.",
+      "parentUuid": "1ca663da_1516fad9",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 42
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
