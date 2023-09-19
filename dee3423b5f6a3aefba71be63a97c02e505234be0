@@ -34,6 +34,24 @@
       "parentUuid": "ab582b32_e3191732",
       "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7f316cd_c5bac01b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-09-19T16:43:57Z",
+      "side": 1,
+      "message": "Can we follow what boot image header did?\n\nhttps://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/tools/mkbootimg/include/bootimg/bootimg.h;l\u003d156;drc\u003dc257c4a69cc4abdca6b62a3f8f447513d396d741\n\nIt uses inheritance to create different types for different version of headers. I would rather not hard code any magic values if possible.",
+      "parentUuid": "5ecbbc52_fc8f7e8f",
+      "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
