@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56195c95_fe868c6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2023-09-19T22:55:08Z",
+      "side": 1,
+      "message": "pending keyword name change. Meanwhile, please review.",
+      "revId": "f4120e3a8d6c9fa2d07a3a4792a12d22e23fdb70",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
