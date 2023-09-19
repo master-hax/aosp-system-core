@@ -1,6 +1,52 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "49f136e4_de93f5d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-19T21:50:40Z",
+      "side": 1,
+      "message": "Do we mean ADB (or adbd)?",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 9,
+        "endChar": 39
+      },
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91ef7d3c_9996dd16",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-19T21:50:40Z",
+      "side": 1,
+      "message": "available on all hosts?",
+      "range": {
+        "startLine": 12,
+        "startChar": 25,
+        "endLine": 12,
+        "endChar": 53
+      },
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "341b673e_4432ddf0",
