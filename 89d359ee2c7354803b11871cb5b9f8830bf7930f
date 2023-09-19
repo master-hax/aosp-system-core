@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaf4a7dd_8b0bb88d",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-19T19:22:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e7f533b_4ca971df",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f16d2ea1_a4fadd36",
@@ -114,6 +132,24 @@
         "endLine": 138,
         "endChar": 37
       },
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01b5d601_0ee60e57",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-09-19T19:22:17Z",
+      "side": 1,
+      "message": "I could reproduce the build failure after syncing everything.",
+      "parentUuid": "b6b5ca1d_580eba9a",
       "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
