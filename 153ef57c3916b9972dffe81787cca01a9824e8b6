@@ -39,6 +39,30 @@
       },
       "revId": "153ef57c3916b9972dffe81787cca01a9824e8b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7bf8522_bc61ce0c",
+        "filename": "init/security.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-19T19:27:38Z",
+      "side": 1,
+      "message": "that would explain the boot test failures :-/\n\nsounds like we should go back to 24 but update the comment to say \"The kernel still (6.5) defaults to 39 va bits for 4KiB pages, so most shipping devices are only getting 24 bits.\"?",
+      "parentUuid": "18796131_4e3dc69f",
+      "range": {
+        "startLine": 110,
+        "startChar": 7,
+        "endLine": 110,
+        "endChar": 49
+      },
+      "revId": "153ef57c3916b9972dffe81787cca01a9824e8b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
