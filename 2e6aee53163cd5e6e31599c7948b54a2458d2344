@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ee3bd23_a126e0da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-19T23:38:17Z",
+      "side": 1,
+      "message": "Pixel 3 is a retrofit device.",
+      "revId": "2e6aee53163cd5e6e31599c7948b54a2458d2344",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
