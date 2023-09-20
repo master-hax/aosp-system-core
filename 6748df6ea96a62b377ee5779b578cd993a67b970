@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "de153745_d2ddef77",
+        "filename": "adb/adb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-20T22:49:20Z",
+      "side": 1,
+      "message": "yeah, +1 to removing `ADB_DBC_PROTOCOL` --- the fewer differences, the less unconvincing the change.\n\nis there a reason we can\u0027t make the subclass the same too?",
+      "parentUuid": "2720c31c_8e76d5dd",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 28
+      },
+      "revId": "6748df6ea96a62b377ee5779b578cd993a67b970",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31c0a6db_c8a27ece",
         "filename": "adb/client/transport_usb.cpp",
         "patchSetId": 4
