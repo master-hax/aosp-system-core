@@ -16,6 +16,23 @@
       "message": "The Ib63259983d952b97cf1b1c6c243c831cb72f9724 change had preserved the existing behavior, but that behavior was buggy. When I uploaded that CL, I hadn\u0027t realized  that discarding the result of std::async blocked.",
       "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16253723_53224b3d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-20T04:21:52Z",
+      "side": 1,
+      "message": "This is expensive wait... We shouldn\u0027t block here.. The wait should go to L814\n\nAnyways, I will send a new CL to fix it as all of this code will go away.",
+      "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
