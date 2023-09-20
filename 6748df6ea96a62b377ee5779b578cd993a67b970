@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2720c31c_8e76d5dd",
+        "filename": "adb/adb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-20T22:15:57Z",
+      "side": 1,
+      "message": "If folks this this is best, I\u0027m ok with it. Do we have a convention? Personally I think duplicating the constant reduces code readability - later on I will see \"ADB_PROTOCOL\" and \"ADB_DBC_PROTOCOL\" and I will assume they are two different constants. And, in fact, we are doing 2 different boolean checks in the code. For me having one constant to represent one entity makes more sense. We could just have ABD_PROTOCOL and comment the boolean check below and say \"ADB over gadget mode and DbC use the same ADB protocol\".\n\nI think Shaju\u0027s question underlines the confusion needlessly duplicating the const can cause. The obvious assumption is every where in the codebase where we have ADB_PROTOCOL we need to have a second check for the \"other\" protocol, ADB_DBC_PROTOCOL, for example in usb_linux.cpp. This code would needless duplication.\n\nThat being said, it\u0027s a small nit, happy to bow to others\u0027 opinions.",
+      "parentUuid": "391ff15f_6172fea8",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 28
+      },
+      "revId": "6748df6ea96a62b377ee5779b578cd993a67b970",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31c0a6db_c8a27ece",
         "filename": "adb/client/transport_usb.cpp",
         "patchSetId": 4
