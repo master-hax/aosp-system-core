@@ -23,8 +23,10 @@
 #include <algorithm>
 
 #include <csignal>
+#include <future>
 #include <optional>
 #include <set>
+#include <vector>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -733,11 +735,16 @@ void Snapuserd::ReadBlocks(const std::string& partition_name, const std::string&
     size_t read_sz_per_thread = num_blocks_per_thread << BLOCK_SHIFT;
     off_t offset = 0;
 
+    std::vector<std::future<void>> threads;
     for (int i = 0; i < num_threads; i++) {
-        (void)std::async(std::launch::async, &Snapuserd::ReadBlocksToCache, this, dm_block_device,
-                         partition_name, offset, read_sz_per_thread);
+        threads.emplace_back(std::async(std::launch::async, &Snapuserd::ReadBlocksToCache, this,
+                                        dm_block_device, partition_name, offset,
+                                        read_sz_per_thread));
 
         offset += read_sz_per_thread;
+    }
+    for (auto& t : threads) {
+        t.wait();
     }
 }
 
