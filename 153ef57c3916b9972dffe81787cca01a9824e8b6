@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d11d5939_dbef56e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-09-20T00:39:13Z",
+      "side": 1,
+      "message": "\u003e we still need to support pre-4.5 kernels\n\nWe don\u0027t need to support those. IIRC, Android 14 marks the end of 4.9 kernel support.",
+      "parentUuid": "44cb60d2_dadd13b6",
+      "revId": "153ef57c3916b9972dffe81787cca01a9824e8b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "18796131_4e3dc69f",
