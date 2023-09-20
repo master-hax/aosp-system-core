@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "391ff15f_6172fea8",
+        "filename": "adb/adb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-20T09:55:10Z",
+      "side": 1,
+      "message": "This is the same value as ADB_PROTOCOL. I think we should not define a new constant. This is confusing, for example in usb_linux.cpp. If it\u0027s the same protocol, let\u0027s just leave it as ADB_PROTOCOL.",
+      "range": {
+        "startLine": 201,
+        "startChar": 8,
+        "endLine": 201,
+        "endChar": 28
+      },
+      "revId": "6748df6ea96a62b377ee5779b578cd993a67b970",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31c0a6db_c8a27ece",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-20T09:55:10Z",
+      "side": 1,
+      "message": "Let\u0027s change to just ADB_PROTOCOL, these are identical values.",
+      "range": {
+        "startLine": 204,
+        "startChar": 28,
+        "endLine": 204,
+        "endChar": 44
+      },
+      "revId": "6748df6ea96a62b377ee5779b578cd993a67b970",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

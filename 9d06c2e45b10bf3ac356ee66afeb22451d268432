@@ -133,6 +133,30 @@
       },
       "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8ab252d_c8df308a",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-20T09:55:10Z",
+      "side": 1,
+      "message": "This should be the only change to dbc support to the adb client. In usb_device the protocol is actually the same constant, I left some comments here, I think we should not make a new constant with an identical value.\n\nI believe we need that same find device logic.\n\nFor USB 2, dbc will not work. It requires USB3 and the superspeed lines. We should  leave legacy USB gadget mode in the adb client to support all legacy setups and devices.",
+      "parentUuid": "4a6fc6df_503ff353",
+      "range": {
+        "startLine": 203,
+        "startChar": 12,
+        "endLine": 204,
+        "endChar": 46
+      },
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
