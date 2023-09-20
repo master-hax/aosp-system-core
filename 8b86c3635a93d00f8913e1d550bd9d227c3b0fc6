@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a83e97db_6a1bf99b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2023-09-20T04:16:22Z",
+      "side": 1,
+      "message": "The Ib63259983d952b97cf1b1c6c243c831cb72f9724 change had preserved the existing behavior, but that behavior was buggy. When I uploaded that CL, I hadn\u0027t realized  that discarding the result of std::async blocked.",
+      "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
