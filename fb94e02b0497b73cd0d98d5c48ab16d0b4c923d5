@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a4b5546_7e6c2dbd",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-09-20T06:13:30Z",
+      "side": 1,
+      "message": "Might be nice to include the device name in the error message, so that if the wrong config turns up somewhere there\u0027s a clue.\n\n(Thinking about it, a log line in the KM/C++ and Gatekeeper CLs might be nice too...)",
+      "revId": "fb94e02b0497b73cd0d98d5c48ab16d0b4c923d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
