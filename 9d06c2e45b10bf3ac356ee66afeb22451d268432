@@ -110,6 +110,29 @@
       "message": "Hi Yabin, are you the right reviewer for this adb client change? Should we merge into the AOSP 11 branch or higher?\n\nThis is to add adb over USB DbC capabilites, an alternate mode to USB gadget mode for devices that do not support gadget mode, namely Chromebooks but should apply to other devices with DbC support as well.",
       "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a6fc6df_503ff353",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-20T00:34:53Z",
+      "side": 1,
+      "message": "Some rudimentary questions (since I\u0027m unfamiliar with DbC, pending the dragonfly hardware for testing it out, at the moment)..\n- Is this the only change needed to enable DbC to adb? Would find_usb_device() (ref: https://source.corp.google.com/h/android/platform/superproject/+/master:packages/modules/adb/client/usb_linux.cpp;l\u003d262) need any handling (do let me know if we no longer need the device_poll_thread under DbC)?\n- Also, there are some users (e.g. scale labs stuck with USB 2.0 hubs due to limitations such as number of devices supported on a single adb host/server) who might be slow to adopt. For such cases, do we need to do anything special (like flag-guarding) to preserve the legacy path (is that even viable, since the documentation says \"will no longer be supported in future intel chips\")?\nPS: I shall resolve this comment thread if I\u0027m able to discuss these questions internally (with the chrome team members).",
+      "range": {
+        "startLine": 203,
+        "startChar": 12,
+        "endLine": 204,
+        "endChar": 46
+      },
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
