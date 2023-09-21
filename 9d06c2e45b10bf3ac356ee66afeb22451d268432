@@ -204,6 +204,30 @@
       },
       "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d576a110_47fe6f89",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-09-21T07:52:22Z",
+      "side": 1,
+      "message": "I think this is resolved now.",
+      "parentUuid": "e8ab252d_c8df308a",
+      "range": {
+        "startLine": 203,
+        "startChar": 12,
+        "endLine": 204,
+        "endChar": 46
+      },
+      "revId": "9d06c2e45b10bf3ac356ee66afeb22451d268432",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
