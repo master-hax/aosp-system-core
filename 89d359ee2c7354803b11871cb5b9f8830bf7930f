@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "492ec29d_f353866e",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2023-09-21T17:46:15Z",
+      "side": 1,
+      "message": "There are two configuration knobs you can use here. At compile time:\nhttps://docs.rs/log/0.4.20/log/#compile-time-filters\nAt run time, you can use the trusty logger config:\n```\nlet config \u003d trusty_log::TrustyLoggerConfig::default()\n     .with_min_level(log::Level::Trace)\n     .format(\u0026log_function);\ntrusty_log::init_with_config(config);\n```\n\nIf you need per-module log levels, you can add it to `trusty-log` but it\u0027s not implemented yet. You can see `env_logger` for an example.",
+      "parentUuid": "eaf4a7dd_8b0bb88d",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f16d2ea1_a4fadd36",
@@ -150,6 +168,30 @@
       "side": 1,
       "message": "I could reproduce the build failure after syncing everything.",
       "parentUuid": "b6b5ca1d_580eba9a",
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0c29c12_74143fe7",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2023-09-21T17:46:15Z",
+      "side": 1,
+      "message": "Ideally yes. Using Self is mostly a way to make this easy to refactor if you choose to rename later, it\u0027s not critical.",
+      "parentUuid": "f9790993_c32783c9",
+      "range": {
+        "startLine": 138,
+        "startChar": 26,
+        "endLine": 138,
+        "endChar": 37
+      },
       "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
