@@ -240,7 +240,7 @@ bool LoadKernelModules(BootMode boot_mode, bool want_console, bool want_parallel
             break;
         }
         // Ignore _16k/_64k module dirs on 4K kernels
-        if (GetPageSizeSuffix(entry->d_name) != page_size_suffix) {
+        if (getpagesize() == 4096 && GetPageSizeSuffix(entry->d_name) != page_size_suffix) {
             continue;
         }
         int dir_major = 0, dir_minor = 0;
