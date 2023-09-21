@@ -46,6 +46,29 @@
       },
       "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ce5fe3f_55509e5a",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-21T18:42:30Z",
+      "side": 1,
+      "message": "An orthogonal question (mostly applicable for the adbd/chromeos module): If adb debugging issues on chromeos come in (as adb bugs), I wonder whether it\u0027s conceivable to do something like feature negotiation (ref: https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:packages/modules/adb/adb.cpp;l\u003d1370) to answer questions like: Is DbC enabled? Would a USB3.0 cable enable it? Is fallback to `debug accessory mode` viable (assuming continued chipset support)?\nIf this\u0027s out-of-scope, feel free to mark resolved however some documentation would help (esp since chromeos devtools like `ectool` and `initctl` are normally not enabled).",
+      "range": {
+        "startLine": 202,
+        "startChar": 7,
+        "endLine": 202,
+        "endChar": 61
+      },
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
