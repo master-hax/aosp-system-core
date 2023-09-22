@@ -16,6 +16,29 @@
       "message": "Tested OK. This fixes the boot issue with custom kernel passed with `-initramfs_path` on a target `aosp_cf_arm64_phone_pgagnostic` which has default kernel set to 16K via `BOARD_KERNEL_PATH`.",
       "revId": "399c0561c177f48825600c7e34ad8ffc0854025e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54b82b06_2571be75",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1889140
+      },
+      "writtenOn": "2023-09-22T00:43:20Z",
+      "side": 1,
+      "message": "Would it work just to have\n\n```\npage_size_suffix \u003d\u003d \"\"\n```\n\n?",
+      "range": {
+        "startLine": 243,
+        "startChar": 12,
+        "endLine": 243,
+        "endChar": 90
+      },
+      "revId": "399c0561c177f48825600c7e34ad8ffc0854025e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
