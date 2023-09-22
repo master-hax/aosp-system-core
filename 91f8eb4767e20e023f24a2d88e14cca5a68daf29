@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff37474c_415c62dd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-22T18:50:41Z",
+      "side": 1,
+      "message": "hopefully this can be the one-liner it should be if the other two changes make it in.\n\n(i defer to jeffv anyway for the meaningful part of this change :-) )",
+      "revId": "91f8eb4767e20e023f24a2d88e14cca5a68daf29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f4c7e16_28332523",
+        "filename": "libcutils/include/private/android_filesystem_capability.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-22T18:50:41Z",
+      "side": 1,
+      "message": "heh, i was wondering about this earlier this week ... do we actually need to copy \u0026 paste all this crap any more, or can we just use \u003clinux/capability.h\u003e? i\u0027m assuming this was added for darwin OS builds, which are no longer supported?\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2760169\n\nwe\u0027ll still need to update the glibc prebuilt, but i\u0027ll send out a change for that too.\n\nhttps://android-review.googlesource.com/c/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+/2759696",
+      "revId": "91f8eb4767e20e023f24a2d88e14cca5a68daf29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
