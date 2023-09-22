@@ -102,7 +102,7 @@ int ipc_respond(struct storage_msg *msg, void *out, size_t out_size)
 
     msg->cmd |= STORAGE_RESP_BIT;
 
-    rc = writev(tipc_fd, iovs, out ? 2 : 1);
+    rc = TEMP_FAILURE_RETRY(writev(tipc_fd, iovs, out ? 2 : 1));
     if (rc < 0) {
         ALOGE("error sending response 0x%x: %s\n",
               msg->cmd, strerror(errno));
