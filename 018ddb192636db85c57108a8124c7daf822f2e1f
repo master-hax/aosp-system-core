@@ -51,6 +51,24 @@
       "message": "When this goes out of scope, the connection is closed. Is that intended?",
       "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbae27a8_5b6c3df1",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 2012811
+      },
+      "writtenOn": "2023-09-22T10:55:58Z",
+      "side": 1,
+      "message": "I think so, if I understood how things work correctly, but I\u0027m not sure if I did.\n\nMy thinking was that a connection is opened in this initialize function at all in order to start lazy-loaded TAs.  Since it is repeatedly connected and disconnected in the main fuzzing function (the previous behavior, too), I thought it\u0027s okay to disconnect like this, and that the purpose of the initializer is just to start up the TA in the first place, so we can do that and just disconnect after.  Does it work the way I think?",
+      "parentUuid": "30fff3da_3f0a6d08",
+      "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
