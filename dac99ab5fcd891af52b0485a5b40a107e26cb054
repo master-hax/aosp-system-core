@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "16037f61_eadaf8c7",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-09-22T02:16:16Z",
+      "side": 1,
+      "message": "Seems like this value is still being used within the code. We may need a separated CL if possible.",
+      "parentUuid": "34b253d5_5f409ad1",
+      "revId": "dac99ab5fcd891af52b0485a5b40a107e26cb054",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95d41583_988d63c5",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-09-21T14:24:41Z",
       "side": 1,
       "message": "Remove these as well?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 43
+      },
+      "revId": "dac99ab5fcd891af52b0485a5b40a107e26cb054",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3e8c3f5_8aa77591",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-09-22T02:16:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95d41583_988d63c5",
       "range": {
         "startLine": 50,
         "startChar": 0,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "abb0b9f9_41856af5",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-09-22T02:16:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4d5a8fa_30d40152",
+      "range": {
+        "startLine": 100,
+        "startChar": 48,
+        "endLine": 100,
+        "endChar": 59
+      },
+      "revId": "dac99ab5fcd891af52b0485a5b40a107e26cb054",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9336a079_646ae2e3",
@@ -77,6 +143,30 @@
       "writtenOn": "2023-09-21T14:24:41Z",
       "side": 1,
       "message": "store the result to a local static variable so that you don\u0027t have to read the sysprop every time this function is called",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 102,
+        "endChar": 10
+      },
+      "revId": "dac99ab5fcd891af52b0485a5b40a107e26cb054",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cda6b894_85590b98",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-09-22T02:16:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9336a079_646ae2e3",
       "range": {
         "startLine": 102,
         "startChar": 4,
