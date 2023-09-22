@@ -15,6 +15,7 @@
  */
 #include <errno.h>
 #include <getopt.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -36,6 +37,8 @@
 
 #define REQ_BUFFER_SIZE 4096
 static uint8_t req_buffer[REQ_BUFFER_SIZE + 1];
+
+static volatile sig_atomic_t terminate = false;
 
 static const char* ss_data_root;
 static const char* trusty_devname;
@@ -70,6 +73,10 @@ static void show_usage_and_exit(int code) {
     ALOGE("usage: storageproxyd -d <trusty_dev> -p <data_path> -r <rpmb_dev> -t <dev_type>\n");
     ALOGE("Available dev types: mmc, virt\n");
     exit(code);
+}
+
+static void handle_sigterm(int signum __attribute__((unused))) {
+    terminate = true;
 }
 
 static int handle_req(struct storage_msg* msg, const void* req, size_t req_len) {
@@ -170,10 +177,14 @@ static int proxy_loop(void) {
     struct storage_msg msg;
 
     /* enter main message handling loop */
-    while (true) {
+    while (!terminate) {
         /* get incoming message */
         rc = ipc_get_msg(&msg, req_buffer, REQ_BUFFER_SIZE);
-        if (rc < 0) return rc;
+        if (rc == EINTR && terminate) {
+            return 0;
+        } else if (rc < 0) {
+            return rc;
+        }
 
         /* handle request */
         req_buffer[rc] = 0; /* force zero termination */
@@ -236,6 +247,12 @@ int main(int argc, char* argv[]) {
      */
     umask(S_IRWXG | S_IRWXO);
 
+    /* catch SIGTERM for graceful shutdown */
+    const struct sigaction sa = {
+        .sa_handler = handle_sigterm,
+    };
+    sigaction(SIGTERM, &sa, NULL);
+
     /* parse arguments */
     parse_args(argc, argv);
 
@@ -265,10 +282,14 @@ int main(int argc, char* argv[]) {
 
     /* enter main loop */
     rc = proxy_loop();
-    ALOGE("exiting proxy loop with status (%d)\n", rc);
+    if (terminate) {
+        ALOGI("proxy loop terminated with status (%d)\n", rc);
+    } else {
+        ALOGE("exiting proxy loop with status (%d)\n", rc);
+    }
 
     ipc_disconnect();
     rpmb_close();
 
-    return (rc < 0) ? EXIT_FAILURE : EXIT_SUCCESS;
+    _exit((rc < 0) ? EXIT_FAILURE : EXIT_SUCCESS);
 }
