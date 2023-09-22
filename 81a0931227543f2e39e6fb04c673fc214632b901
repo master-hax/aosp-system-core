@@ -69,6 +69,30 @@
       },
       "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4519dbf_996150ad",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1116349
+      },
+      "writtenOn": "2023-09-22T20:09:52Z",
+      "side": 1,
+      "message": "I don\u0027t have access to above link but my understanding is it\u0027s out of scope in current chrome/adbd implementation and pre-requisites to be documented on Chrome site.",
+      "parentUuid": "6ce5fe3f_55509e5a",
+      "range": {
+        "startLine": 202,
+        "startChar": 7,
+        "endLine": 202,
+        "endChar": 61
+      },
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
