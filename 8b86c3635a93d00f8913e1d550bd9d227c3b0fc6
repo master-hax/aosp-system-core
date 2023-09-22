@@ -69,6 +69,24 @@
       "parentUuid": "9ef2469a_3a896eba",
       "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dbbe73cb_4c7ce9dd",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-09-22T01:15:08Z",
+      "side": 1,
+      "message": "Yeah. This looks ok.\n\nI plan to refactor the other code in couple of weeks; but for now, this change looks good.",
+      "parentUuid": "18a90a62_158a533e",
+      "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
