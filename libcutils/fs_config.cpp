@@ -41,10 +41,6 @@
 
 #include "fs_config.h"
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 using android::base::EndsWith;
 using android::base::StartsWith;
 
