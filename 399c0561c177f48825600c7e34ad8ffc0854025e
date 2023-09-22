@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e705058_895fd991",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1889091
+      },
+      "writtenOn": "2023-09-22T00:01:14Z",
+      "side": 1,
+      "message": "Tested OK. This fixes the boot issue with custom kernel passed with `-initramfs_path` on a target `aosp_cf_arm64_phone_pgagnostic` which has default kernel set to 16K via `BOARD_KERNEL_PATH`.",
+      "revId": "399c0561c177f48825600c7e34ad8ffc0854025e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
