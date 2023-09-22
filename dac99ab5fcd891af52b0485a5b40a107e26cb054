@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1380bb2b_3dda7ee6",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-22T14:46:47Z",
+      "side": 1,
+      "message": "my point was that \"/* Will be added to UAPI once upstream change is merged */\" happened years ago in *R*.\n\nhttps://android-review.googlesource.com/c/platform/system/core/+/2760268",
+      "parentUuid": "16037f61_eadaf8c7",
+      "revId": "dac99ab5fcd891af52b0485a5b40a107e26cb054",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95d41583_988d63c5",
