@@ -51,6 +51,24 @@
       "parentUuid": "16253723_53224b3d",
       "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18a90a62_158a533e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2023-09-22T00:55:43Z",
+      "side": 1,
+      "message": "On second thought, is this CL okay if it\u0027s limited to just the snapuserd_test.cpp change? I don\u0027t actually need to fix Snapuserd::ReadBlocks to accommodate the libc++ update, because I already applied a (void) cast fix there. My snapuserd_test.cpp change in this CL defers the async operation to the end of the test function, which is probably the best that can be done.\n\nIf you\u0027d prefer to submit your own CL, that\u0027s fine too!",
+      "parentUuid": "9ef2469a_3a896eba",
+      "revId": "8b86c3635a93d00f8913e1d550bd9d227c3b0fc6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
