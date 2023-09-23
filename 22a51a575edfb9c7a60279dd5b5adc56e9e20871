@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8e2ee00_d95841e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947190
+      },
+      "writtenOn": "2023-09-23T07:41:15Z",
+      "side": 1,
+      "message": "Doesn\u0027t make sense to me. Please explain in the bug to proceed.",
+      "revId": "22a51a575edfb9c7a60279dd5b5adc56e9e20871",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
