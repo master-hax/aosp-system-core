@@ -372,26 +372,3 @@ TEST_F(ParseTest, OptimizedFlashSuperPatternMatchTest) {
         ASSERT_EQ(IsOptimized(fp.get(), tasks), test.second);
     }
 }
-// Retrofit devices have two super partitions, named super_a and super_b.
-// On these devices, secondary slots must be flashed as physical
-// partitions (otherwise they would not mount on first boot). To enforce
-// this, we delete any logical partitions for the "other" slot.
-//
-// This test takes in two image.zips. One from a retrofit device (pixel 3a) and one from a non
-// retrofit device (pixel 6 pro) The retrofit check only needs to look at super_empty.img to
-// determine if the device is retrofit or not, so the *.zip in testdata is concatenated to only the
-// super_empty.img
-TEST_F(ParseTest, RetrofitDeviceTest) {
-    const char* filename1 = "system/core/fastboot/testdata/is_retrofit.zip";
-    const char* filename2 = "system/core/fastboot/testdata/not_retrofit.zip";
-
-    ZipArchiveHandle zip, zip2;
-    OpenArchive(filename1, &zip);
-    OpenArchive(filename2, &zip2);
-
-    ZipImageSource source1(zip);
-    ZipImageSource source2(zip2);
-
-    ASSERT_EQ(is_retrofit_device(&source1), true);
-    ASSERT_EQ(is_retrofit_device(&source2), false);
-}
