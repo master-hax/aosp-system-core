@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fdfccb03_8056a43e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1116349
+      },
+      "writtenOn": "2023-09-25T21:21:58Z",
+      "side": 1,
+      "message": "adb is moved to packages/modules/adb on aosp-main and android13-dev.\n\nI pushed same commit to aosp-main: https://android-review.googlesource.com/c/platform/packages/modules/adb/+/2762165",
+      "parentUuid": "7d6328b5_feb571fe",
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc9c19bc_940af2b1",
