@@ -251,11 +251,12 @@ static void print_thread_memory_dump(CallbackType callback, const Tombstone& tom
   }
 }
 
-static void print_thread(CallbackType callback, const Tombstone& tombstone, const Thread& thread) {
+static void print_thread(CallbackType callback, const Tombstone& tombstone, const Thread& thread,
+                         bool print_memory) {
   print_thread_header(callback, tombstone, thread, false);
   print_thread_registers(callback, tombstone, thread, false);
   print_thread_backtrace(callback, tombstone, thread, false);
-  print_thread_memory_dump(callback, tombstone, thread);
+  if (print_memory) print_thread_memory_dump(callback, tombstone, thread);
 }
 
 static void print_tag_dump(CallbackType callback, const Tombstone& tombstone) {
@@ -389,7 +390,7 @@ static void print_memory_maps(CallbackType callback, const Tombstone& tombstone)
 }
 
 static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
-                              const Thread& thread) {
+                              const Thread& thread, bool print_memory) {
   print_thread_header(callback, tombstone, thread, true);
 
   const Signal& signal_info = tombstone.signal_info();
@@ -431,7 +432,7 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
     CBL("Abort message: '%s'", tombstone.abort_message().c_str());
   }
 
-  print_thread_registers(callback, tombstone, thread, true);
+  if (print_memory) print_thread_registers(callback, tombstone, thread, true);
   if (is_async_mte_crash) {
     CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
     CBL("      in this process. The stack trace below is the first system call or context");
@@ -476,12 +477,12 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
         "https://source.android.com/docs/security/test/memory-safety/mte-reports");
   }
 
-  print_thread_memory_dump(callback, tombstone, thread);
+  if (print_memory) print_thread_memory_dump(callback, tombstone, thread);
 
   CBS("");
 
   // No memory maps to print.
-  if (!tombstone.memory_mappings().empty()) {
+  if (print_memory && !tombstone.memory_mappings().empty()) {
     print_memory_maps(callback, tombstone);
   } else {
     CBS("No memory maps found");
@@ -512,7 +513,7 @@ void print_logs(CallbackType callback, const Tombstone& tombstone, int tail) {
   }
 }
 
-bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) {
+bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback, bool print_memory) {
   CBL("*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***");
   CBL("Build fingerprint: '%s'", tombstone.build_fingerprint().c_str());
   CBL("Revision: '%s'", tombstone.revision().c_str());
@@ -530,7 +531,7 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
 
   const auto& main_thread = main_thread_it->second;
 
-  print_main_thread(callback, tombstone, main_thread);
+  print_main_thread(callback, tombstone, main_thread, print_memory);
 
   print_logs(callback, tombstone, 50);
 
@@ -544,7 +545,7 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
 
   for (const auto& tid : thread_ids) {
     CBS("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---");
-    print_thread(callback, tombstone, threads.find(tid)->second);
+    print_thread(callback, tombstone, threads.find(tid)->second, print_memory);
   }
 
   if (tombstone.open_fds().size() > 0) {
@@ -563,4 +564,8 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   print_logs(callback, tombstone, 0);
 
   return true;
+}
+
+bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) {
+  return tombstone_proto_to_text(tombstone, callback, true);
 }
