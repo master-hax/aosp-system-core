@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e1f7b84_2f655897",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-25T15:23:24Z",
+      "side": 1,
+      "message": "adb-team@ is OK with this CL since 1.) this is minimal (host/client) modifications 2.) android-usb@ does not see any major concerns (from the Android perspective), although there are remnant questions (on the other end).",
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc9c19bc_940af2b1",
@@ -108,6 +125,30 @@
       "writtenOn": "2023-09-25T15:05:47Z",
       "side": 1,
       "message": "I don\u0027t see how this would work here in the client. Could share some code ideas?",
+      "parentUuid": "a4519dbf_996150ad",
+      "range": {
+        "startLine": 202,
+        "startChar": 7,
+        "endLine": 202,
+        "endChar": 61
+      },
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc84cba8_5ff1e904",
+        "filename": "adb/client/transport_usb.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1579231
+      },
+      "writtenOn": "2023-09-25T15:23:24Z",
+      "side": 1,
+      "message": "Marking this resolved, since supportability question will be dealt with separately.",
       "parentUuid": "a4519dbf_996150ad",
       "range": {
         "startLine": 202,
