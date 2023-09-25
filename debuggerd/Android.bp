@@ -198,6 +198,7 @@ cc_library {
 
     srcs: [
         "libdebuggerd/tombstone_proto_to_text.cpp",
+        "libdebuggerd/proto_to_text_utility.cpp",
     ],
 
     header_libs: [
@@ -214,7 +215,10 @@ cc_library {
         "libprotobuf-cpp-lite",
     ],
 
-    apex_available: ["com.android.runtime"],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.runtime",
+    ],
 }
 
 cc_library_static {
