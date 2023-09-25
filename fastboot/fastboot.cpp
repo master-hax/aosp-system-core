@@ -1878,18 +1878,6 @@ std::vector<std::unique_ptr<Task>> FlashAllTool::CollectTasksFromImageList() {
 
     // Sync the super partition. This will reboot to userspace fastboot if needed.
     tasks.emplace_back(std::make_unique<UpdateSuperTask>(fp_));
-    for (const auto& [image, slot] : os_images_) {
-        // Retrofit devices have two super partitions, named super_a and super_b.
-        // On these devices, secondary slots must be flashed as physical
-        // partitions (otherwise they would not mount on first boot). To enforce
-        // this, we delete any logical partitions for the "other" slot.
-        if (is_retrofit_device(fp_->source)) {
-            std::string partition_name = image->part_name + "_" + slot;
-            if (image->IsSecondary() && should_flash_in_userspace(partition_name)) {
-                tasks.emplace_back(std::make_unique<DeleteTask>(fp_, partition_name));
-            }
-        }
-    }
 
     AddFlashTasks(os_images_, tasks);
 
