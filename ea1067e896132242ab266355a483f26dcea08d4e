@@ -16,6 +16,23 @@
       "message": "(this is the context for the squashfs change...)",
       "revId": "ea1067e896132242ab266355a483f26dcea08d4e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d91b1709_8bcc2edf",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2023-09-25T20:31:15Z",
+      "side": 1,
+      "message": "Did you mean to delete these?",
+      "revId": "ea1067e896132242ab266355a483f26dcea08d4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
