@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60a57445_6a8993ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337780
+      },
+      "writtenOn": "2023-09-26T09:35:41Z",
+      "side": 1,
+      "message": "nice!",
+      "revId": "fdd141b3789780a3b2374a74c3596e126439298a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "174ba19e_68017f7b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1337780
+      },
+      "writtenOn": "2023-09-26T09:35:41Z",
+      "side": 1,
+      "message": "Let\u0027s have a boolean for memory dump and one method for non_main_thread_registers.",
+      "range": {
+        "startLine": 255,
+        "startChar": 30,
+        "endLine": 255,
+        "endChar": 42
+      },
+      "revId": "fdd141b3789780a3b2374a74c3596e126439298a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a73dfd4a_2ab2374a",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1337780
+      },
+      "writtenOn": "2023-09-26T09:35:41Z",
+      "side": 1,
+      "message": "let\u0027s not print the registers here either.",
+      "range": {
+        "startLine": 257,
+        "startChar": 2,
+        "endLine": 257,
+        "endChar": 24
+      },
+      "revId": "fdd141b3789780a3b2374a74c3596e126439298a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7cec48f_6b135f99",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1337780
+      },
+      "writtenOn": "2023-09-26T09:35:41Z",
+      "side": 1,
+      "message": "let\u0027s print the registers here, it is these ones and they are useful: https://screenshot.googleplex.com/7rFwhwv8PuKt47H",
+      "range": {
+        "startLine": 435,
+        "startChar": 20,
+        "endLine": 435,
+        "endChar": 42
+      },
+      "revId": "fdd141b3789780a3b2374a74c3596e126439298a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
