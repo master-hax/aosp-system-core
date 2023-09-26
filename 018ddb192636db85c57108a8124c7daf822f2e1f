@@ -87,6 +87,24 @@
       "parentUuid": "30fff3da_3f0a6d08",
       "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "423d8c76_5953eb28",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2023-09-26T06:02:33Z",
+      "side": 1,
+      "message": "I found https://r.android.com/1637549 which was the original commit that added this. It did exactly what you\u0027re doing, so I guess it\u0027s fine (Stephen changed it later for unrelated reasons).",
+      "parentUuid": "dbae27a8_5b6c3df1",
+      "revId": "018ddb192636db85c57108a8124c7daf822f2e1f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
