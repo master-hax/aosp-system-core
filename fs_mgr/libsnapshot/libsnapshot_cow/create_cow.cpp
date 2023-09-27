@@ -240,11 +240,9 @@ bool CreateSnapshot::ReadBlocks(off_t offset, const int skip_blocks, const uint6
             SHA256(bufptr, BLOCK_SZ, checksum);
             std::string hash = ToHexString(checksum, sizeof(checksum));
 
-            if (create_snapshot_patch_) {
-                if (!WriteSnapshot(bufptr, blkindex, hash)) {
-                    LOG(ERROR) << "WriteSnapshot failed for block: " << blkindex;
-                    return false;
-                }
+            if (create_snapshot_patch_ && !WriteSnapshot(bufptr, blkindex, hash)) {
+                LOG(ERROR) << "WriteSnapshot failed for block: " << blkindex;
+                return false;
             } else {
                 std::lock_guard<std::mutex> lock(source_block_hash_lock_);
                 {
@@ -258,7 +256,7 @@ bool CreateSnapshot::ReadBlocks(off_t offset, const int skip_blocks, const uint6
             num_blocks -= 1;
         }
 
-        file_offset += (skip_blocks * to_read);
+        file_offset += (skip_blocks * kBlockSizeToRead);
         if (file_offset >= dev_sz) {
             break;
         }
