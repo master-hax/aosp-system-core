@@ -54,9 +54,9 @@ void Controller::run(std::string output_dir) {
             if (complete_cnt != counters[index] && start_cnt == complete_cnt) {
                 WRITE_ONCE(control->cntrl_flags, FLAG_NONE);
                 std::string filename;
-                filename = android::base::StringPrintf("/%s.%lu.profraw",
+                filename = android::base::StringPrintf("/%s.%llu.profraw",
                                                     uuid_list_[index].c_str(),
-                                                    counters[index]);
+                                                    static_cast<unsigned long long>(counters[index]));
                 filename.insert(0, output_dir);
                 android::base::Result<void> res = record_list_[index]->SaveFile(filename);
                 counters[index]++;
