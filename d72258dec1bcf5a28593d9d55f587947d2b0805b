@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20f40e9b_17e3571d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v2.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1508,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-09-27T00:35:27Z",
+      "side": 1,
+      "message": "Follow what lz4diff test did https://cs.android.com/android/platform/superproject/main/+/main:system/update_engine/lz4diff/lz4diff_unittest.cc;l\u003d57?q\u003dLz4Difftest\n\nto reference test data inside unittests",
+      "range": {
+        "startLine": 1508,
+        "startChar": 28,
+        "endLine": 1508,
+        "endChar": 82
+      },
+      "revId": "d72258dec1bcf5a28593d9d55f587947d2b0805b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
