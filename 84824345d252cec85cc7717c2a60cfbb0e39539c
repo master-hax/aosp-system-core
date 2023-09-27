@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4d87b6f_e9f8e722",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952023
+      },
+      "writtenOn": "2023-09-27T15:32:42Z",
+      "side": 1,
+      "message": "I realized that I also need to set the file mode bits to 755 so statsd can execute the binary. File updated. Please take another look.",
+      "revId": "84824345d252cec85cc7717c2a60cfbb0e39539c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
