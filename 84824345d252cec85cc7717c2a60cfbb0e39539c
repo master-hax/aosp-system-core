@@ -16,6 +16,29 @@
       "message": "I realized that I also need to set the file mode bits to 755 so statsd can execute the binary. File updated. Please take another look.",
       "revId": "84824345d252cec85cc7717c2a60cfbb0e39539c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0967eaa6_ee8a98a9",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-09-27T15:40:37Z",
+      "side": 1,
+      "message": "0755 or 0750? (\"why does \u0027other\u0027 need to be able to execute this?\")",
+      "range": {
+        "startLine": 209,
+        "startChar": 6,
+        "endLine": 209,
+        "endChar": 11
+      },
+      "revId": "84824345d252cec85cc7717c2a60cfbb0e39539c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
