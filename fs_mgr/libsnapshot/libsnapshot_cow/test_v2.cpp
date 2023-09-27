@@ -1504,6 +1504,20 @@ TEST_F(CowTest, InvalidMergeOrderTest) {
     ASSERT_FALSE(reader.VerifyMergeOps());
 }
 
+TEST_F(CowTest, CompatibilityTest) {
+    const char* filename1 = "system/core/fastboot/testdata/is_retrofit.zip";
+    android::base::unique_fd fd(open(filename1, O_CREAT | O_RDWR, 0666));
+    CowReader reader;
+    reader.Parse(fd);
+
+    const auto& header = reader.GetHeader();
+    ASSERT_EQ(header.prefix.magic, kCowMagicNumber);
+    ASSERT_EQ(header.prefix.major_version, kCowVersionMajor);
+    ASSERT_EQ(header.prefix.minor_version, kCowVersionMinor);
+
+    CowFooter footer;
+    ASSERT_TRUE(reader.GetFooter(&footer));
+}
 }  // namespace snapshot
 }  // namespace android
 
