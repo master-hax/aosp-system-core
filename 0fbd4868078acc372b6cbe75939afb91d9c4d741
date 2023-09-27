@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "720c17a2_022520c7",
+        "filename": "trusty/utils/coverage-controller/controller.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-09-27T12:20:56Z",
+      "side": 1,
+      "message": "The cast doesn\u0027t seem like it should be needed - it\u0027s a `uint64_t`?  \n\nSo the problem is with the format string.  I would avoid the cast and `llu` specifier, and just use the C-style format specifier, which I find more readable:\n```suggestion\n                filename \u003d android::base::StringPrintf(\"/%s.%\" PRIu64 \".profraw\",\n```",
+      "range": {
+        "startLine": 57,
+        "startChar": 15,
+        "endLine": 57,
+        "endChar": 74
+      },
+      "revId": "0fbd4868078acc372b6cbe75939afb91d9c4d741",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
