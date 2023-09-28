@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "489ae916_0b298c3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-09-28T05:22:15Z",
+      "side": 1,
+      "message": "Fix forward almost ready to merge: https://buganizer.corp.google.com/issues/302407640#comment20",
+      "revId": "433bfcca3d22071c94fac9e07e156195d0b8751a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
