@@ -76,6 +76,11 @@
       "Name": "FreezerState",
       "Controller": "freezer",
       "File": "cgroup.freeze"
+    },
+    {
+      "Name": "IoPrioClass",
+      "Controller": "io",
+      "File": "io.prio.class"
     }
   ],
 
@@ -444,6 +449,15 @@
           {
             "Controller": "io"
           }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "IoPrioClass",
+            "Value": "restrict-to-be",
+            "Optional": "true"
+          }
         }
       ]
     },
@@ -455,6 +469,15 @@
           "Params":
           {
             "Controller": "io"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "IoPrioClass",
+            "Value": "restrict-to-be",
+            "Optional": "true"
           }
         }
       ]
@@ -468,6 +491,15 @@
           {
             "Controller": "io"
           }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "IoPrioClass",
+            "Value": "promote-to-rt",
+            "Optional": "true"
+          }
         }
       ]
     },
@@ -479,6 +511,15 @@
           "Params":
           {
             "Controller": "io"
+          }
+        },
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "IoPrioClass",
+            "Value": "promote-to-rt",
+            "Optional": "true"
           }
         }
       ]
