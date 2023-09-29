@@ -16,6 +16,171 @@
       "message": "Let\u0027s fold this into the CL that adds the header file, since it\u0027ll make it more clear which members can be removed.",
       "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "640a662c_3ee42b5d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Can hardcode these version fields to 3 and 0 here.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "afd7bd99_7a0345ec",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "footer_size \u003d 0, not used in new format",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "205c1c6a_73abb009",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "cluster_ops \u003d 0",
+      "range": {
+        "startLine": 73,
+        "startChar": 35,
+        "endLine": 73,
+        "endChar": 46
+      },
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcd6719c_0c3fefa1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Can remove footer_",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35dfbd84_ea115227",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Anything checking cluster_ops will be false and can be removed.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1c632b1_e7ae69c6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Anything not getting immediately implemented, that is not an override, can be removed. I think that goes for all of the Init* functions below.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c162866a_665f581e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Stubbing a \"return false\" is fine, and actually highly recommended over \"return true\". But you\u0027ll want to LOG(ERROR). Otherwise something higher up later will fail as you get further along, and it\u0027ll be difficult to track down why.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5d8f0fc_78ac74c3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "Drop cluster functions",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5f6c861_40034d11",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:08:13Z",
+      "side": 1,
+      "message": "LOG(ERROR) and return 0 here. This one is only used by the cow estimator so we really don\u0027t want to accidentally forget it.",
+      "range": {
+        "startLine": 234,
+        "startChar": 11,
+        "endLine": 234,
+        "endChar": 15
+      },
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
