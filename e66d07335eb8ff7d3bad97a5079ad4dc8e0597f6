@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a95f0c9_4bc5a4ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 23
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-09-29T17:00:21Z",
+      "side": 1,
+      "message": "Let\u0027s fold this into the CL that adds the header file, since it\u0027ll make it more clear which members can be removed.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
