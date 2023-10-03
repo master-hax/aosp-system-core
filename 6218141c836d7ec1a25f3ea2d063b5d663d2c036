@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0aced75e_e859fbd7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 31
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T22:10:05Z",
+      "side": 1,
+      "message": "The previous iteration of this patch (v30) was in the right direction. The new one effectively hardcodes a lot of places to the V3 version which is not what we want.\n\nOn Friday I tested a few combinations of OTAs with the v30 patch. The base build w/o patch -\u003e build w/ patch fails. It works fine if both builds have the patch. So, there is some kind of compatibility issue introduced.\n\nI haven\u0027t had any luck in tracking the issue down yet though. My guess is there is something in snapuserd going wrong, because inspect_cow (after some build fixes) seems to view the old COW just fine. I\u0027m trying to write a test to narrow this down.",
+      "revId": "6218141c836d7ec1a25f3ea2d063b5d663d2c036",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d262eb8_81ebb749",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
         "patchSetId": 31
