@@ -16,6 +16,23 @@
       "message": "I\u0027m not sure how this worked before, I couldn\u0027t see anything special in the ImageSource derived objects that would make this work. But maybe I was missing something.\n\nHowever, I had a crash with this code, which this fixes and makes sense to me.",
       "revId": "9dabc9ef320ce3651dda4db4881cdb49686c4f52",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9be781be_b2f81d01",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-03T20:21:55Z",
+      "side": 1,
+      "message": "There are two weird failures that don\u0027t seem related to this CL, but I won\u0027t be able to get to this until tomorrow. If this is causing problems, feel free to bypass.",
+      "revId": "9dabc9ef320ce3651dda4db4881cdb49686c4f52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
