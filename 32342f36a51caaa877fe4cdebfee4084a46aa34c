@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "88d6e7ca_0ef10155",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 23
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T20:27:14Z",
+      "side": 1,
+      "message": "The CL after this is the stub. It\u0027d be good to have it in the same CL.",
+      "parentUuid": "f8c43cf8_967b3fb0",
+      "range": {
+        "startLine": 23,
+        "startChar": 14,
+        "endLine": 23,
+        "endChar": 15
+      },
+      "revId": "32342f36a51caaa877fe4cdebfee4084a46aa34c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "41366298_6785711c",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
         "patchSetId": 23
