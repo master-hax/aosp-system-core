@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "abe5ca41_26845552",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 31
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T22:17:05Z",
+      "side": 1,
+      "message": "yeah I noticed that, which was why I was trying to do some renaming before adding on any functionality changes. I\u0027ll revert to the old patch, and see if I can help track down the compatibility issuee",
+      "parentUuid": "0aced75e_e859fbd7",
+      "revId": "6218141c836d7ec1a25f3ea2d063b5d663d2c036",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d262eb8_81ebb749",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
         "patchSetId": 31
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-03T21:27:36Z",
       "side": 1,
       "message": "CowReader should not have version-specific structures in it outside of the code that decides which parser to use.",
+      "revId": "6218141c836d7ec1a25f3ea2d063b5d663d2c036",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "943bc6a5_f68711d9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T22:17:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d262eb8_81ebb749",
       "revId": "6218141c836d7ec1a25f3ea2d063b5d663d2c036",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
