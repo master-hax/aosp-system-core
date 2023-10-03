@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a487b214_81b691aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-03T17:21:41Z",
+      "side": 1,
+      "message": "I guess the fallback path has existed for non-Treble devices which no longer should exist.",
+      "revId": "5248c5d72ad2a14f3426b7872b8867f97818650f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
