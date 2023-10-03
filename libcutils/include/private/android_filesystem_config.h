@@ -169,6 +169,7 @@
 #define AID_WAKELOCK 3010     /* Allow system wakelock read/write access */
 #define AID_UHID 3011         /* Allow read/write to /dev/uhid node */
 #define AID_READTRACEFS 3012  /* Allow tracefs read */
+#define AID_UPDATE_ENGINE_LOG 3013 /* Allow access to update engine log */
 
 /* The range 5000-5999 is also reserved for vendor partition. */
 #define AID_OEM_RESERVED_2_START 5000
