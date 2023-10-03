@@ -317,9 +317,17 @@ void Charger::UpdateScreenState(int64_t now) {
             // Do nothing, keep waiting
             return;
         }
-        // If timeout and battery level is still not ready, draw unknown battery
     }
 
+    /* when battery_level got update to a non-zero value and battery status
+     * not yet got update, still wait for time expire
+     */
+    if (health_info_.battery_status == BatteryStatus::UNKNOWN &&
+        now <= wait_batt_level_timestamp_) {
+        return;
+    } else {
+        // If timeout and battery status is still not ready, draw unknown battery
+    }
     if (healthd_draw_ == nullptr) return;
 
     /* animation is over, blank screen and leave */
