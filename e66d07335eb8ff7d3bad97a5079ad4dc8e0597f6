@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e807b4a_7c4df6fb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "640a662c_3ee42b5d",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "afd7bd99_7a0345ec",
@@ -48,6 +66,24 @@
       "writtenOn": "2023-09-29T17:08:13Z",
       "side": 1,
       "message": "footer_size \u003d 0, not used in new format",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae661432_9a0b73d3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "afd7bd99_7a0345ec",
       "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -75,6 +111,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fcf58495_d37dad4c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "205c1c6a_73abb009",
+      "range": {
+        "startLine": 73,
+        "startChar": 35,
+        "endLine": 73,
+        "endChar": 46
+      },
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bcd6719c_0c3fefa1",
@@ -88,6 +148,24 @@
       "writtenOn": "2023-09-29T17:08:13Z",
       "side": 1,
       "message": "Can remove footer_",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b31e0ba_0282b658",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "bcd6719c_0c3fefa1",
       "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -109,6 +187,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddd0dca0_b85222d4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "35dfbd84_ea115227",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a1c632b1_e7ae69c6",
@@ -122,6 +218,24 @@
       "writtenOn": "2023-09-29T17:08:13Z",
       "side": 1,
       "message": "Anything not getting immediately implemented, that is not an override, can be removed. I think that goes for all of the Init* functions below.",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2fdb94f2_ad8d086a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1c632b1_e7ae69c6",
       "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -143,6 +257,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2763f26f_bab7528f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c162866a_665f581e",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5d8f0fc_78ac74c3",
@@ -160,6 +292,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba088a95_20883934",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5d8f0fc_78ac74c3",
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c5f6c861_40034d11",
@@ -173,6 +323,30 @@
       "writtenOn": "2023-09-29T17:08:13Z",
       "side": 1,
       "message": "LOG(ERROR) and return 0 here. This one is only used by the cow estimator so we really don\u0027t want to accidentally forget it.",
+      "range": {
+        "startLine": 234,
+        "startChar": 11,
+        "endLine": 234,
+        "endChar": 15
+      },
+      "revId": "e66d07335eb8ff7d3bad97a5079ad4dc8e0597f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1a0fb42_59d0948e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-03T19:39:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5f6c861_40034d11",
       "range": {
         "startLine": 234,
         "startChar": 11,
