@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b52e86c5_d3db0188",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T22:19:11Z",
+      "side": 1,
+      "message": "can just assert_true this, I think.",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2987b75a_d875f082",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T22:19:11Z",
+      "side": 1,
+      "message": "no need for if check here",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daf70075_97d36dc3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T22:19:11Z",
+      "side": 1,
+      "message": "It\u0027s too late to rollback here, right? So the best we can do is either deadlock or proceed and potentially hit the bug?",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
