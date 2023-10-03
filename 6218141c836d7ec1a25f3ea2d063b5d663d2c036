@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d262eb8_81ebb749",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-03T21:27:36Z",
+      "side": 1,
+      "message": "CowReader should not have version-specific structures in it outside of the code that decides which parser to use.",
+      "revId": "6218141c836d7ec1a25f3ea2d063b5d663d2c036",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
