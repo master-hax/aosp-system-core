@@ -126,10 +126,10 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     std::unique_ptr<CowReader> CloneReaderForWorker();
     std::shared_ptr<SnapshotHandler> GetSharedPtr() { return shared_from_this(); }
 
-    std::vector<std::pair<sector_t, const CowOperation*>>& GetChunkVec() { return chunk_vec_; }
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& GetChunkVec() { return chunk_vec_; }
 
-    static bool compare(std::pair<sector_t, const CowOperation*> p1,
-                        std::pair<sector_t, const CowOperation*> p2) {
+    static bool compare(std::pair<sector_t, const CowOperationV2*> p1,
+                        std::pair<sector_t, const CowOperationV2*> p2) {
         return p1.first < p2.first;
     }
 
@@ -209,7 +209,7 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
 
     // chunk_vec stores the pseudo mapping of sector
     // to COW operations.
-    std::vector<std::pair<sector_t, const CowOperation*>> chunk_vec_;
+    std::vector<std::pair<sector_t, const CowOperationV2*>> chunk_vec_;
 
     std::mutex lock_;
     std::condition_variable cv;

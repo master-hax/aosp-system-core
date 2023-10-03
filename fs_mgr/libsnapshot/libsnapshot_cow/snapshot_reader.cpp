@@ -37,7 +37,7 @@ CompressedSnapshotReader::CompressedSnapshotReader(std::unique_ptr<ICowReader>&&
     // Populate the operation map.
     op_iter_ = cow_->GetOpIter(false);
     while (!op_iter_->AtEnd()) {
-        const CowOperation* op = op_iter_->Get();
+        const CowOperationV2* op = op_iter_->Get();
         if (IsMetadataOp(*op)) {
             op_iter_->Next();
             continue;
@@ -142,7 +142,7 @@ ssize_t CompressedSnapshotReader::ReadBlock(uint64_t chunk, size_t start_offset,
     // one chunk.
     CHECK(start_offset + bytes_to_read <= block_size_);
 
-    const CowOperation* op = nullptr;
+    const CowOperationV2* op = nullptr;
     if (chunk < ops_.size()) {
         op = ops_[chunk];
     }

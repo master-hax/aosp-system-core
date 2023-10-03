@@ -171,7 +171,7 @@ ReadAheadThread::ReadAheadThread(const std::string& cow_device, const std::strin
     snapuserd_ = snapuserd;
 }
 
-void ReadAheadThread::CheckOverlap(const CowOperation* cow_op) {
+void ReadAheadThread::CheckOverlap(const CowOperationV2* cow_op) {
     uint64_t source_block = GetCowOpSourceInfoData(cow_op);
     if (dest_blocks_.count(cow_op->new_block) || source_blocks_.count(source_block)) {
         overlap_ = true;
@@ -189,7 +189,7 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_offset, int* pending_ops
 
     if (!RAIterDone() && num_ops) {
         // Get the first block with offset
-        const CowOperation* cow_op = GetRAOpIter();
+        const CowOperationV2* cow_op = GetRAOpIter();
         CHECK_NE(cow_op, nullptr);
         *source_offset = GetCowOpSourceInfoData(cow_op);
         if (cow_op->type == kCowCopyOp) {
@@ -208,7 +208,7 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_offset, int* pending_ops
          * Find number of consecutive blocks working backwards.
          */
         while (!RAIterDone() && num_ops) {
-            const CowOperation* op = GetRAOpIter();
+            const CowOperationV2* op = GetRAOpIter();
             CHECK_NE(op, nullptr);
             uint64_t next_offset = GetCowOpSourceInfoData(op);
             if (op->type == kCowCopyOp) {
@@ -265,7 +265,7 @@ bool ReadAheadThread::ReconstructDataFromCow() {
     // all the COW operations to-be merged are present in the re-constructed
     // mapping.
     while (!RAIterDone()) {
-        const CowOperation* op = GetRAOpIter();
+        const CowOperationV2* op = GetRAOpIter();
         if (read_ahead_buffer_map.find(op->new_block) != read_ahead_buffer_map.end()) {
             num_ops -= 1;
             snapuserd_->SetFinalBlockMerged(op->new_block);
@@ -453,12 +453,12 @@ bool ReadAheadThread::InitializeFds() {
 }
 
 void ReadAheadThread::InitializeRAIter() {
-    std::vector<const CowOperation*>& read_ahead_ops = snapuserd_->GetReadAheadOpsVec();
+    std::vector<const CowOperationV2*>& read_ahead_ops = snapuserd_->GetReadAheadOpsVec();
     read_ahead_iter_ = read_ahead_ops.rbegin();
 }
 
 bool ReadAheadThread::RAIterDone() {
-    std::vector<const CowOperation*>& read_ahead_ops = snapuserd_->GetReadAheadOpsVec();
+    std::vector<const CowOperationV2*>& read_ahead_ops = snapuserd_->GetReadAheadOpsVec();
     return read_ahead_iter_ == read_ahead_ops.rend();
 }
 
@@ -466,7 +466,7 @@ void ReadAheadThread::RAIterNext() {
     read_ahead_iter_++;
 }
 
-const CowOperation* ReadAheadThread::GetRAOpIter() {
+const CowOperationV2* ReadAheadThread::GetRAOpIter() {
     return *read_ahead_iter_;
 }
 

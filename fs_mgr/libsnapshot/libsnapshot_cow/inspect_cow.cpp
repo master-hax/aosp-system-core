@@ -53,7 +53,7 @@ void MyLogger(android::base::LogId, android::base::LogSeverity severity, const c
     }
 }
 
-static void ShowBad(CowReader& reader, const struct CowOperation* op) {
+static void ShowBad(CowReader& reader, const struct CowOperationV2* op) {
     size_t count;
     auto buffer = std::make_unique<uint8_t[]>(op->data_length);
 
@@ -65,8 +65,8 @@ static void ShowBad(CowReader& reader, const struct CowOperation* op) {
             std::cout << std::hex << (int)buffer[i];
         }
         std::cout << std::dec << "\n\n";
-        if (op->data_length >= sizeof(CowOperation)) {
-            std::cout << "The start, as an op, would be " << *(CowOperation*)buffer.get() << "\n";
+        if (op->data_length >= sizeof(CowOperationV2)) {
+            std::cout << "The start, as an op, would be " << *(CowOperationV2*)buffer.get() << "\n";
         }
     }
 }
@@ -182,7 +182,7 @@ static bool Inspect(const std::string& path) {
     bool success = true;
     uint64_t xor_ops = 0, copy_ops = 0, replace_ops = 0, zero_ops = 0;
     while (!iter->AtEnd()) {
-        const CowOperation* op = iter->Get();
+        const CowOperationV2* op = iter->Get();
 
         if (!FLAGS_silent && FLAGS_show_ops) std::cout << *op << "\n";
 

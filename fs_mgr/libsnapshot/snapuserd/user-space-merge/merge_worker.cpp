@@ -33,14 +33,14 @@ MergeWorker::MergeWorker(const std::string& cow_device, const std::string& misc_
     : Worker(cow_device, misc_name, base_path_merge, snapuserd) {}
 
 int MergeWorker::PrepareMerge(uint64_t* source_offset, int* pending_ops,
-                              std::vector<const CowOperation*>* replace_zero_vec) {
+                              std::vector<const CowOperationV2*>* replace_zero_vec) {
     int num_ops = *pending_ops;
     int nr_consecutive = 0;
     bool checkOrderedOp = (replace_zero_vec == nullptr);
 
     do {
         if (!cowop_iter_->AtEnd() && num_ops) {
-            const CowOperation* cow_op = cowop_iter_->Get();
+            const CowOperationV2* cow_op = cowop_iter_->Get();
             if (checkOrderedOp && !IsOrderedOp(*cow_op)) {
                 break;
             }
@@ -55,7 +55,7 @@ int MergeWorker::PrepareMerge(uint64_t* source_offset, int* pending_ops,
             nr_consecutive = 1;
 
             while (!cowop_iter_->AtEnd() && num_ops) {
-                const CowOperation* op = cowop_iter_->Get();
+                const CowOperationV2* op = cowop_iter_->Get();
                 if (checkOrderedOp && !IsOrderedOp(*op)) {
                     break;
                 }
@@ -96,7 +96,7 @@ bool MergeWorker::MergeReplaceZeroOps() {
 
     while (!cowop_iter_->AtEnd()) {
         int num_ops = PAYLOAD_BUFFER_SZ / BLOCK_SZ;
-        std::vector<const CowOperation*> replace_zero_vec;
+        std::vector<const CowOperationV2*> replace_zero_vec;
         uint64_t source_offset;
 
         int linear_blocks = PrepareMerge(&source_offset, &num_ops, &replace_zero_vec);
@@ -107,7 +107,7 @@ bool MergeWorker::MergeReplaceZeroOps() {
         }
 
         for (size_t i = 0; i < replace_zero_vec.size(); i++) {
-            const CowOperation* cow_op = replace_zero_vec[i];
+            const CowOperationV2* cow_op = replace_zero_vec[i];
 
             void* buffer = bufsink_.AcquireBuffer(BLOCK_SZ);
             if (!buffer) {
@@ -191,7 +191,7 @@ bool MergeWorker::MergeOrderedOpsAsync() {
     SNAP_LOG(INFO) << "MergeOrderedOpsAsync started....";
 
     while (!cowop_iter_->AtEnd()) {
-        const CowOperation* cow_op = cowop_iter_->Get();
+        const CowOperationV2* cow_op = cowop_iter_->Get();
         if (!IsOrderedOp(*cow_op)) {
             break;
         }
@@ -373,7 +373,7 @@ bool MergeWorker::MergeOrderedOps() {
     SNAP_LOG(INFO) << "MergeOrderedOps started....";
 
     while (!cowop_iter_->AtEnd()) {
-        const CowOperation* cow_op = cowop_iter_->Get();
+        const CowOperationV2* cow_op = cowop_iter_->Get();
         if (!IsOrderedOp(*cow_op)) {
             break;
         }

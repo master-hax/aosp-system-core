@@ -50,13 +50,13 @@ class ICowReader {
     // Return the last valid label
     virtual bool GetLastLabel(uint64_t* label) = 0;
 
-    // Return an iterator for retrieving CowOperation entries.
+    // Return an iterator for retrieving CowOperationV2 entries.
     virtual std::unique_ptr<ICowOpIter> GetOpIter(bool merge_progress) = 0;
 
-    // Return an iterator for retrieving CowOperation entries in reverse merge order
+    // Return an iterator for retrieving CowOperationV2 entries in reverse merge order
     virtual std::unique_ptr<ICowOpIter> GetRevMergeOpIter(bool ignore_progress) = 0;
 
-    // Return an iterator for retrieving CowOperation entries in merge order
+    // Return an iterator for retrieving CowOperationV2 entries in merge order
     virtual std::unique_ptr<ICowOpIter> GetMergeOpIter(bool ignore_progress) = 0;
 
     // Get decoded bytes from the data section, handling any decompression.
@@ -71,12 +71,12 @@ class ICowReader {
     // operation block size.
     //
     // The operation pointer must derive from ICowOpIter::Get().
-    virtual ssize_t ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
+    virtual ssize_t ReadData(const CowOperationV2* op, void* buffer, size_t buffer_size,
                              size_t ignore_bytes = 0) = 0;
 
-    // Get the absolute source offset, in bytes, of a CowOperation. Returns
+    // Get the absolute source offset, in bytes, of a CowOperationV2. Returns
     // false if the operation does not read from source partitions.
-    virtual bool GetSourceOffset(const CowOperation* op, uint64_t* source_offset) = 0;
+    virtual bool GetSourceOffset(const CowOperationV2* op, uint64_t* source_offset) = 0;
 };
 
 static constexpr uint64_t GetBlockFromOffset(const CowHeader& header, uint64_t offset) {
@@ -97,7 +97,7 @@ class ICowOpIter {
     virtual bool AtEnd() = 0;
 
     // Read the current operation.
-    virtual const CowOperation* Get() = 0;
+    virtual const CowOperationV2* Get() = 0;
 
     // Advance to the next item.
     virtual void Next() = 0;
@@ -131,22 +131,22 @@ class CowReader final : public ICowReader {
     bool VerifyMergeOps() override;
     bool GetFooter(CowFooter* footer) override;
     bool GetLastLabel(uint64_t* label) override;
-    bool GetSourceOffset(const CowOperation* op, uint64_t* source_offset) override;
+    bool GetSourceOffset(const CowOperationV2* op, uint64_t* source_offset) override;
 
     // Create a CowOpIter object which contains footer_.num_ops
-    // CowOperation objects. Get() returns a unique CowOperation object
+    // CowOperationV2 objects. Get() returns a unique CowOperationV2 object
     // whose lifetime depends on the CowOpIter object; the return
     // value of these will never be null.
     std::unique_ptr<ICowOpIter> GetOpIter(bool merge_progress = false) override;
     std::unique_ptr<ICowOpIter> GetRevMergeOpIter(bool ignore_progress = false) override;
     std::unique_ptr<ICowOpIter> GetMergeOpIter(bool ignore_progress = false) override;
 
-    ssize_t ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
+    ssize_t ReadData(const CowOperationV2* op, void* buffer, size_t buffer_size,
                      size_t ignore_bytes = 0) override;
 
     CowHeader& GetHeader() override { return header_; }
 
-    bool GetRawBytes(const CowOperation* op, void* buffer, size_t len, size_t* read);
+    bool GetRawBytes(const CowOperationV2* op, void* buffer, size_t len, size_t* read);
     bool GetRawBytes(uint64_t offset, void* buffer, size_t len, size_t* read);
 
     // Returns the total number of data ops that should be merged. This is the
@@ -167,7 +167,7 @@ class CowReader final : public ICowReader {
   private:
     bool PrepMergeOps();
     uint64_t FindNumCopyops();
-    uint8_t GetCompressionType(const CowOperation* op);
+    uint8_t GetCompressionType(const CowOperationV2* op);
 
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
@@ -175,7 +175,7 @@ class CowReader final : public ICowReader {
     std::optional<CowFooter> footer_;
     uint64_t fd_size_;
     std::optional<uint64_t> last_label_;
-    std::shared_ptr<std::vector<CowOperation>> ops_;
+    std::shared_ptr<std::vector<CowOperationV2>> ops_;
     uint64_t merge_op_start_{};
     std::shared_ptr<std::vector<int>> block_pos_index_;
     uint64_t num_total_data_ops_{};

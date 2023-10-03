@@ -36,7 +36,7 @@ ReadAhead::ReadAhead(const std::string& cow_device, const std::string& backing_d
     snapuserd_ = snapuserd;
 }
 
-void ReadAhead::CheckOverlap(const CowOperation* cow_op) {
+void ReadAhead::CheckOverlap(const CowOperationV2* cow_op) {
     uint64_t source_offset;
     if (!reader_->GetSourceOffset(cow_op, &source_offset)) {
         SNAP_LOG(ERROR) << "ReadAhead operation has no source offset: " << *cow_op;
@@ -60,7 +60,7 @@ void ReadAhead::CheckOverlap(const CowOperation* cow_op) {
 
 int ReadAhead::PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
                                     std::vector<uint64_t>& blocks,
-                                    std::vector<const CowOperation*>& xor_op_vec) {
+                                    std::vector<const CowOperationV2*>& xor_op_vec) {
     int num_ops = *pending_ops;
     int nr_consecutive = 0;
 
@@ -71,7 +71,7 @@ int ReadAhead::PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
     }
 
     // Get the first block with offset
-    const CowOperation* cow_op = GetRAOpIter();
+    const CowOperationV2* cow_op = GetRAOpIter();
 
     if (!reader_->GetSourceOffset(cow_op, source_offset)) {
         SNAP_LOG(ERROR) << "PrepareNextReadAhead operation has no source offset: " << *cow_op;
@@ -94,7 +94,7 @@ int ReadAhead::PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
      * Find number of consecutive blocks
      */
     while (!RAIterDone() && num_ops) {
-        const CowOperation* op = GetRAOpIter();
+        const CowOperationV2* op = GetRAOpIter();
         uint64_t next_offset;
         if (!reader_->GetSourceOffset(op, &next_offset)) {
             SNAP_LOG(ERROR) << "PrepareNextReadAhead operation has no source offset: " << *cow_op;
@@ -178,7 +178,7 @@ bool ReadAhead::ReconstructDataFromCow() {
     // all the COW operations to-be merged are present in the re-constructed
     // mapping.
     while (!RAIterDone()) {
-        const CowOperation* op = GetRAOpIter();
+        const CowOperationV2* op = GetRAOpIter();
         if (read_ahead_buffer_map.find(op->new_block) != read_ahead_buffer_map.end()) {
             num_ops -= 1;
             RAIterNext();
@@ -279,7 +279,7 @@ bool ReadAhead::ReadAheadAsyncIO() {
     dest_blocks_.clear();
     source_blocks_.clear();
     blocks_.clear();
-    std::vector<const CowOperation*> xor_op_vec;
+    std::vector<const CowOperationV2*> xor_op_vec;
 
     int pending_sqe = queue_depth_;
     int pending_ios_to_submit = 0;
@@ -449,7 +449,7 @@ bool ReadAhead::ReapIoCompletions(int pending_ios_to_complete) {
 }
 
 void ReadAhead::ProcessXorData(size_t& block_xor_index, size_t& xor_index,
-                               std::vector<const CowOperation*>& xor_op_vec, void* buffer,
+                               std::vector<const CowOperationV2*>& xor_op_vec, void* buffer,
                                loff_t& buffer_offset) {
     loff_t xor_buf_offset = 0;
 
@@ -458,7 +458,7 @@ void ReadAhead::ProcessXorData(size_t& block_xor_index, size_t& xor_index,
         uint64_t new_block = blocks_[block_xor_index];
 
         if (xor_index < xor_op_vec.size()) {
-            const CowOperation* xor_op = xor_op_vec[xor_index];
+            const CowOperationV2* xor_op = xor_op_vec[xor_index];
 
             // Check if this block is an XOR op
             if (xor_op->new_block == new_block) {
@@ -486,14 +486,14 @@ void ReadAhead::ProcessXorData(size_t& block_xor_index, size_t& xor_index,
 }
 
 bool ReadAhead::ReadXorData(size_t block_index, size_t xor_op_index,
-                            std::vector<const CowOperation*>& xor_op_vec) {
+                            std::vector<const CowOperationV2*>& xor_op_vec) {
     // Process the XOR ops in parallel - We will be reading data
     // from COW file for XOR ops processing.
     while (block_index < blocks_.size()) {
         uint64_t new_block = blocks_[block_index];
 
         if (xor_op_index < xor_op_vec.size()) {
-            const CowOperation* xor_op = xor_op_vec[xor_op_index];
+            const CowOperationV2* xor_op = xor_op_vec[xor_op_index];
             if (xor_op->new_block == new_block) {
                 void* buffer = bufsink_.AcquireBuffer(BLOCK_SZ);
                 if (!buffer) {
@@ -524,7 +524,7 @@ bool ReadAhead::ReadAheadSyncIO() {
     dest_blocks_.clear();
     source_blocks_.clear();
     blocks_.clear();
-    std::vector<const CowOperation*> xor_op_vec;
+    std::vector<const CowOperationV2*> xor_op_vec;
 
     AutoNotifyReadAheadFailed notify_read_ahead_failed(snapuserd_);
 
@@ -590,7 +590,7 @@ bool ReadAhead::ReadAheadSyncIO() {
         uint64_t new_block = blocks_[block_index];
 
         if (xor_index < xor_op_vec.size()) {
-            const CowOperation* xor_op = xor_op_vec[xor_index];
+            const CowOperationV2* xor_op = xor_op_vec[xor_index];
 
             // Check if this block is an XOR op
             if (xor_op->new_block == new_block) {
@@ -828,7 +828,7 @@ bool ReadAhead::RAIterDone() {
         return true;
     }
 
-    const CowOperation* cow_op = GetRAOpIter();
+    const CowOperationV2* cow_op = GetRAOpIter();
 
     if (!IsOrderedOp(*cow_op)) {
         return true;
@@ -848,7 +848,7 @@ void ReadAhead::RAResetIter(uint64_t num_blocks) {
     }
 }
 
-const CowOperation* ReadAhead::GetRAOpIter() {
+const CowOperationV2* ReadAhead::GetRAOpIter() {
     return cowop_iter_->Get();
 }
 

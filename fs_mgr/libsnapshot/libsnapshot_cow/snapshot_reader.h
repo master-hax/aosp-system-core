@@ -57,7 +57,7 @@ class CompressedSnapshotReader : public chromeos_update_engine::FileDescriptor {
     uint64_t block_device_size_ = 0;
     off64_t offset_ = 0;
 
-    std::vector<const CowOperation*> ops_;
+    std::vector<const CowOperationV2*> ops_;
 };
 
 }  // namespace snapshot

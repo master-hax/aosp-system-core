@@ -45,7 +45,7 @@ ReadWorker::ReadWorker(const std::string& cow_device, const std::string& backing
 // Start the replace operation. This will read the
 // internal COW format and if the block is compressed,
 // it will be de-compressed.
-bool ReadWorker::ProcessReplaceOp(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ProcessReplaceOp(const CowOperationV2* cow_op, void* buffer) {
     if (!reader_->ReadData(cow_op, buffer, BLOCK_SZ)) {
         SNAP_LOG(ERROR) << "ProcessReplaceOp failed for block " << cow_op->new_block;
         return false;
@@ -53,7 +53,7 @@ bool ReadWorker::ProcessReplaceOp(const CowOperation* cow_op, void* buffer) {
     return true;
 }
 
-bool ReadWorker::ReadFromSourceDevice(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ReadFromSourceDevice(const CowOperationV2* cow_op, void* buffer) {
     uint64_t offset;
     if (!reader_->GetSourceOffset(cow_op, &offset)) {
         SNAP_LOG(ERROR) << "ReadFromSourceDevice: Failed to get source offset";
@@ -78,14 +78,14 @@ bool ReadWorker::ReadFromSourceDevice(const CowOperation* cow_op, void* buffer) 
 
 // Start the copy operation. This will read the backing
 // block device which is represented by cow_op->source.
-bool ReadWorker::ProcessCopyOp(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ProcessCopyOp(const CowOperationV2* cow_op, void* buffer) {
     if (!ReadFromSourceDevice(cow_op, buffer)) {
         return false;
     }
     return true;
 }
 
-bool ReadWorker::ProcessXorOp(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ProcessXorOp(const CowOperationV2* cow_op, void* buffer) {
     if (!ReadFromSourceDevice(cow_op, buffer)) {
         return false;
     }
@@ -114,7 +114,7 @@ bool ReadWorker::ProcessZeroOp(void* buffer) {
     return true;
 }
 
-bool ReadWorker::ProcessOrderedOp(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ProcessOrderedOp(const CowOperationV2* cow_op, void* buffer) {
     MERGE_GROUP_STATE state = snapuserd_->ProcessMergingBlock(cow_op->new_block, buffer);
 
     switch (state) {
@@ -161,7 +161,7 @@ bool ReadWorker::ProcessOrderedOp(const CowOperation* cow_op, void* buffer) {
     return false;
 }
 
-bool ReadWorker::ProcessCowOp(const CowOperation* cow_op, void* buffer) {
+bool ReadWorker::ProcessCowOp(const CowOperationV2* cow_op, void* buffer) {
     if (cow_op == nullptr) {
         SNAP_LOG(ERROR) << "ProcessCowOp: Invalid cow_op";
         return false;
@@ -245,7 +245,7 @@ bool ReadWorker::ReadDataFromBaseDevice(sector_t sector, void* buffer, size_t re
 
 bool ReadWorker::ReadAlignedSector(sector_t sector, size_t sz) {
     size_t remaining_size = sz;
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
     int ret = 0;
 
     do {
@@ -309,7 +309,7 @@ bool ReadWorker::ReadAlignedSector(sector_t sector, size_t sz) {
 
 int ReadWorker::ReadUnalignedSector(
         sector_t sector, size_t size,
-        std::vector<std::pair<sector_t, const CowOperation*>>::iterator& it) {
+        std::vector<std::pair<sector_t, const CowOperationV2*>>::iterator& it) {
     SNAP_LOG(DEBUG) << "ReadUnalignedSector: sector " << sector << " size: " << size
                     << " Aligned sector: " << it->first;
 
@@ -341,7 +341,7 @@ int ReadWorker::ReadUnalignedSector(
 }
 
 bool ReadWorker::ReadUnalignedSector(sector_t sector, size_t size) {
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
 
     auto it = std::lower_bound(chunk_vec.begin(), chunk_vec.end(), std::make_pair(sector, nullptr),
                                SnapshotHandler::compare);

@@ -94,7 +94,7 @@ void WorkerThread::ConstructKernelCowHeader() {
 // Start the replace operation. This will read the
 // internal COW format and if the block is compressed,
 // it will be de-compressed.
-bool WorkerThread::ProcessReplaceOp(const CowOperation* cow_op) {
+bool WorkerThread::ProcessReplaceOp(const CowOperationV2* cow_op) {
     void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
     if (!buffer) {
         SNAP_LOG(ERROR) << "No space in buffer sink";
@@ -109,7 +109,7 @@ bool WorkerThread::ProcessReplaceOp(const CowOperation* cow_op) {
     return true;
 }
 
-bool WorkerThread::ReadFromBaseDevice(const CowOperation* cow_op) {
+bool WorkerThread::ReadFromBaseDevice(const CowOperationV2* cow_op) {
     void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
     if (buffer == nullptr) {
         SNAP_LOG(ERROR) << "ReadFromBaseDevice: Failed to get payload buffer";
@@ -131,7 +131,7 @@ bool WorkerThread::ReadFromBaseDevice(const CowOperation* cow_op) {
     return true;
 }
 
-bool WorkerThread::GetReadAheadPopulatedBuffer(const CowOperation* cow_op) {
+bool WorkerThread::GetReadAheadPopulatedBuffer(const CowOperationV2* cow_op) {
     void* buffer = bufsink_.GetPayloadBuffer(BLOCK_SZ);
     if (buffer == nullptr) {
         SNAP_LOG(ERROR) << "GetReadAheadPopulatedBuffer: Failed to get payload buffer";
@@ -147,7 +147,7 @@ bool WorkerThread::GetReadAheadPopulatedBuffer(const CowOperation* cow_op) {
 
 // Start the copy operation. This will read the backing
 // block device which is represented by cow_op->source.
-bool WorkerThread::ProcessCopyOp(const CowOperation* cow_op) {
+bool WorkerThread::ProcessCopyOp(const CowOperationV2* cow_op) {
     if (!GetReadAheadPopulatedBuffer(cow_op)) {
         SNAP_LOG(DEBUG) << " GetReadAheadPopulatedBuffer failed..."
                         << " new_block: " << cow_op->new_block;
@@ -171,7 +171,7 @@ bool WorkerThread::ProcessZeroOp() {
     return true;
 }
 
-bool WorkerThread::ProcessCowOp(const CowOperation* cow_op) {
+bool WorkerThread::ProcessCowOp(const CowOperationV2* cow_op) {
     if (cow_op == nullptr) {
         SNAP_LOG(ERROR) << "ProcessCowOp: Invalid cow_op";
         return false;
@@ -199,7 +199,7 @@ bool WorkerThread::ProcessCowOp(const CowOperation* cow_op) {
 
 int WorkerThread::ReadUnalignedSector(
         sector_t sector, size_t size,
-        std::vector<std::pair<sector_t, const CowOperation*>>::iterator& it) {
+        std::vector<std::pair<sector_t, const CowOperationV2*>>::iterator& it) {
     size_t skip_sector_size = 0;
 
     SNAP_LOG(DEBUG) << "ReadUnalignedSector: sector " << sector << " size: " << size
@@ -243,8 +243,8 @@ int WorkerThread::ReadUnalignedSector(
  *
  */
 int WorkerThread::ReadData(sector_t sector, size_t size) {
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
-    std::vector<std::pair<sector_t, const CowOperation*>>::iterator it;
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>::iterator it;
     /*
      * chunk_map stores COW operation at 4k granularity.
      * If the requested IO with the sector falls on the 4k
@@ -465,7 +465,7 @@ int WorkerThread::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffe
     int merged_ops_cur_iter = 0;
     std::unordered_map<uint64_t, void*>& read_ahead_buffer_map = snapuserd_->GetReadAheadMap();
     *ordered_op = false;
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
 
     // Find the operations which are merged in this cycle.
     while ((unmerged_exceptions + merged_ops_cur_iter) < exceptions_per_area_) {
@@ -500,7 +500,7 @@ int WorkerThread::GetNumberOfMergedOps(void* merged_buffer, void* unmerged_buffe
                 SNAP_LOG(ERROR) << "Invalid sector: " << ChunkToSector(cow_de->new_chunk);
                 return -1;
             }
-            const CowOperation* cow_op = it->second;
+            const CowOperationV2* cow_op = it->second;
 
             if (snapuserd_->IsReadAheadFeaturePresent() && IsOrderedOp(*cow_op)) {
                 *ordered_op = true;
@@ -670,7 +670,7 @@ bool WorkerThread::DmuserWriteRequest() {
         return true;
     }
 
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
     size_t remaining_size = header->len;
     size_t read_size = std::min(PAYLOAD_SIZE, remaining_size);
 
@@ -718,7 +718,7 @@ bool WorkerThread::DmuserReadRequest() {
     size_t remaining_size = header->len;
     loff_t offset = 0;
     sector_t sector = header->sector;
-    std::vector<std::pair<sector_t, const CowOperation*>>& chunk_vec = snapuserd_->GetChunkVec();
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& chunk_vec = snapuserd_->GetChunkVec();
     bool header_response = true;
     do {
         size_t read_size = std::min(PAYLOAD_SIZE, remaining_size);

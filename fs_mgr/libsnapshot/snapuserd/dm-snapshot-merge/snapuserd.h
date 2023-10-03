@@ -102,7 +102,7 @@ class ReadAheadThread {
     void InitializeRAIter();
     bool RAIterDone();
     void RAIterNext();
-    const CowOperation* GetRAOpIter();
+    const CowOperationV2* GetRAOpIter();
     void InitializeBuffer();
 
     bool InitializeFds();
@@ -114,11 +114,11 @@ class ReadAheadThread {
     bool ReadAheadIOStart();
     void PrepareReadAhead(uint64_t* source_offset, int* pending_ops, std::vector<uint64_t>& blocks);
     bool ReconstructDataFromCow();
-    void CheckOverlap(const CowOperation* cow_op);
+    void CheckOverlap(const CowOperationV2* cow_op);
 
     void* read_ahead_buffer_;
     void* metadata_buffer_;
-    std::vector<const CowOperation*>::reverse_iterator read_ahead_iter_;
+    std::vector<const CowOperationV2*>::reverse_iterator read_ahead_iter_;
     std::string cow_device_;
     std::string backing_store_device_;
     std::string misc_name_;
@@ -165,17 +165,17 @@ class WorkerThread {
     bool ProcessIORequest();
     int ReadData(sector_t sector, size_t size);
     int ReadUnalignedSector(sector_t sector, size_t size,
-                            std::vector<std::pair<sector_t, const CowOperation*>>::iterator& it);
+                            std::vector<std::pair<sector_t, const CowOperationV2*>>::iterator& it);
 
     // Processing COW operations
-    bool ProcessCowOp(const CowOperation* cow_op);
-    bool ProcessReplaceOp(const CowOperation* cow_op);
+    bool ProcessCowOp(const CowOperationV2* cow_op);
+    bool ProcessReplaceOp(const CowOperationV2* cow_op);
     // Handles Copy
-    bool ProcessCopyOp(const CowOperation* cow_op);
+    bool ProcessCopyOp(const CowOperationV2* cow_op);
     bool ProcessZeroOp();
 
-    bool ReadFromBaseDevice(const CowOperation* cow_op);
-    bool GetReadAheadPopulatedBuffer(const CowOperation* cow_op);
+    bool ReadFromBaseDevice(const CowOperationV2* cow_op);
+    bool GetReadAheadPopulatedBuffer(const CowOperationV2* cow_op);
 
     // Merge related functions
     bool ProcessMergeComplete(chunk_t chunk, void* buffer);
@@ -231,11 +231,11 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::unique_ptr<CowReader> CloneReaderForWorker();
     std::shared_ptr<Snapuserd> GetSharedPtr() { return shared_from_this(); }
 
-    std::vector<std::pair<sector_t, const CowOperation*>>& GetChunkVec() { return chunk_vec_; }
+    std::vector<std::pair<sector_t, const CowOperationV2*>>& GetChunkVec() { return chunk_vec_; }
     const std::vector<std::unique_ptr<uint8_t[]>>& GetMetadataVec() const { return vec_; }
 
-    static bool compare(std::pair<sector_t, const CowOperation*> p1,
-                        std::pair<sector_t, const CowOperation*> p2) {
+    static bool compare(std::pair<sector_t, const CowOperationV2*> p1,
+                        std::pair<sector_t, const CowOperationV2*> p2) {
         return p1.first < p2.first;
     }
 
@@ -243,7 +243,7 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     bool MmapMetadata();
 
     // Read-ahead related functions
-    std::vector<const CowOperation*>& GetReadAheadOpsVec() { return read_ahead_ops_; }
+    std::vector<const CowOperationV2*>& GetReadAheadOpsVec() { return read_ahead_ops_; }
     std::unordered_map<uint64_t, void*>& GetReadAheadMap() { return read_ahead_buffer_map_; }
     void* GetMappedAddr() { return mapped_addr_; }
     bool IsReadAheadFeaturePresent() { return read_ahead_feature_; }
@@ -304,7 +304,7 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
 
     // chunk_vec stores the pseudo mapping of sector
     // to COW operations.
-    std::vector<std::pair<sector_t, const CowOperation*>> chunk_vec_;
+    std::vector<std::pair<sector_t, const CowOperationV2*>> chunk_vec_;
 
     std::mutex lock_;
     std::condition_variable cv;
@@ -315,7 +315,7 @@ class Snapuserd : public std::enable_shared_from_this<Snapuserd> {
     std::vector<std::unique_ptr<WorkerThread>> worker_threads_;
     // Read-ahead related
     std::unordered_map<uint64_t, void*> read_ahead_buffer_map_;
-    std::vector<const CowOperation*> read_ahead_ops_;
+    std::vector<const CowOperationV2*> read_ahead_ops_;
     bool populate_data_from_cow_ = false;
     bool read_ahead_feature_;
     uint64_t final_block_merged_;

@@ -43,7 +43,7 @@ class ReadAhead {
     bool RAIterDone();
     void RAIterNext();
     void RAResetIter(uint64_t num_blocks);
-    const CowOperation* GetRAOpIter();
+    const CowOperationV2* GetRAOpIter();
 
     void InitializeBuffer();
     bool InitReader();
@@ -54,16 +54,16 @@ class ReadAhead {
     bool ReadAheadIOStart();
     int PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
                              std::vector<uint64_t>& blocks,
-                             std::vector<const CowOperation*>& xor_op_vec);
+                             std::vector<const CowOperationV2*>& xor_op_vec);
     bool ReconstructDataFromCow();
-    void CheckOverlap(const CowOperation* cow_op);
+    void CheckOverlap(const CowOperationV2* cow_op);
 
     bool ReadAheadAsyncIO();
     bool ReapIoCompletions(int pending_ios_to_complete);
     bool ReadXorData(size_t block_index, size_t xor_op_index,
-                     std::vector<const CowOperation*>& xor_op_vec);
+                     std::vector<const CowOperationV2*>& xor_op_vec);
     void ProcessXorData(size_t& block_xor_index, size_t& xor_index,
-                        std::vector<const CowOperation*>& xor_op_vec, void* buffer,
+                        std::vector<const CowOperationV2*>& xor_op_vec, void* buffer,
                         loff_t& buffer_offset);
     void UpdateScratchMetadata();
 

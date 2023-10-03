@@ -40,18 +40,18 @@ class ReadWorker : public Worker, public IBlockServer::Delegate {
   private:
     bool SendBufferedIo();
 
-    bool ProcessCowOp(const CowOperation* cow_op, void* buffer);
-    bool ProcessXorOp(const CowOperation* cow_op, void* buffer);
-    bool ProcessOrderedOp(const CowOperation* cow_op, void* buffer);
-    bool ProcessCopyOp(const CowOperation* cow_op, void* buffer);
-    bool ProcessReplaceOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessCowOp(const CowOperationV2* cow_op, void* buffer);
+    bool ProcessXorOp(const CowOperationV2* cow_op, void* buffer);
+    bool ProcessOrderedOp(const CowOperationV2* cow_op, void* buffer);
+    bool ProcessCopyOp(const CowOperationV2* cow_op, void* buffer);
+    bool ProcessReplaceOp(const CowOperationV2* cow_op, void* buffer);
     bool ProcessZeroOp(void* buffer);
 
     bool ReadAlignedSector(sector_t sector, size_t sz);
     bool ReadUnalignedSector(sector_t sector, size_t size);
     int ReadUnalignedSector(sector_t sector, size_t size,
-                            std::vector<std::pair<sector_t, const CowOperation*>>::iterator& it);
-    bool ReadFromSourceDevice(const CowOperation* cow_op, void* buffer);
+                            std::vector<std::pair<sector_t, const CowOperationV2*>>::iterator& it);
+    bool ReadFromSourceDevice(const CowOperationV2* cow_op, void* buffer);
     bool ReadDataFromBaseDevice(sector_t sector, void* buffer, size_t read_size);
 
     constexpr bool IsBlockAligned(size_t size) { return ((size & (BLOCK_SZ - 1)) == 0); }

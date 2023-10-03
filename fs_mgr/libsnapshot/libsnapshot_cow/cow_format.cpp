@@ -26,8 +26,8 @@ namespace snapshot {
 
 using android::base::unique_fd;
 
-std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
-    os << "CowOperation(type:";
+std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
+    os << "CowOperationV2(type:";
     if (op.type == kCowCopyOp)
         os << "kCowCopyOp,    ";
     else if (op.type == kCowReplaceOp)
@@ -64,7 +64,7 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     return os;
 }
 
-int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_ops) {
+int64_t GetNextOpOffset(const CowOperationV2& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
         return op.source;
     } else if ((op.type == kCowReplaceOp || op.type == kCowXorOp) && cluster_ops == 0) {
@@ -74,17 +74,17 @@ int64_t GetNextOpOffset(const CowOperation& op, uint32_t cluster_ops) {
     }
 }
 
-int64_t GetNextDataOffset(const CowOperation& op, uint32_t cluster_ops) {
+int64_t GetNextDataOffset(const CowOperationV2& op, uint32_t cluster_ops) {
     if (op.type == kCowClusterOp) {
-        return cluster_ops * sizeof(CowOperation);
+        return cluster_ops * sizeof(CowOperationV2);
     } else if (cluster_ops == 0) {
-        return sizeof(CowOperation);
+        return sizeof(CowOperationV2);
     } else {
         return 0;
     }
 }
 
-bool IsMetadataOp(const CowOperation& op) {
+bool IsMetadataOp(const CowOperationV2& op) {
     switch (op.type) {
         case kCowLabelOp:
         case kCowClusterOp:
@@ -96,7 +96,7 @@ bool IsMetadataOp(const CowOperation& op) {
     }
 }
 
-bool IsOrderedOp(const CowOperation& op) {
+bool IsOrderedOp(const CowOperationV2& op) {
     switch (op.type) {
         case kCowCopyOp:
         case kCowXorOp:

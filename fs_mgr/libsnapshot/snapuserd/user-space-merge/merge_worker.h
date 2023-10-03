@@ -28,7 +28,7 @@ class MergeWorker : public Worker {
 
   private:
     int PrepareMerge(uint64_t* source_offset, int* pending_ops,
-                     std::vector<const CowOperation*>* replace_zero_vec = nullptr);
+                     std::vector<const CowOperationV2*>* replace_zero_vec = nullptr);
     bool MergeReplaceZeroOps();
     bool MergeOrderedOps();
     bool MergeOrderedOpsAsync();

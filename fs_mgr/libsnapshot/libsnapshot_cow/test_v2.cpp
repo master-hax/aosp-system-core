@@ -50,7 +50,8 @@ class CowTest : public ::testing::Test {
 };
 
 // Helper to check read sizes.
-static inline bool ReadData(CowReader& reader, const CowOperation* op, void* buffer, size_t size) {
+static inline bool ReadData(CowReader& reader, const CowOperationV2* op, void* buffer,
+                            size_t size) {
     return reader.ReadData(op, buffer, size) == size;
 }
 
@@ -1072,7 +1073,7 @@ AssertionResult WriteDataBlock(ICowWriter* writer, uint64_t new_block, std::stri
     return AssertionSuccess();
 }
 
-AssertionResult CompareDataBlock(CowReader* reader, const CowOperation* op,
+AssertionResult CompareDataBlock(CowReader* reader, const CowOperationV2* op,
                                  const std::string& data) {
     const auto& header = reader->GetHeader();
 

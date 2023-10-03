@@ -41,7 +41,7 @@ struct CowOptions {
     // Maximum number of blocks that can be written.
     std::optional<uint64_t> max_blocks;
 
-    // Number of CowOperations in a cluster. 0 for no clustering. Cannot be 1.
+    // Number of CowOperationV2s in a cluster. 0 for no clustering. Cannot be 1.
     uint32_t cluster_ops = 200;
 
     bool scratch_space = true;

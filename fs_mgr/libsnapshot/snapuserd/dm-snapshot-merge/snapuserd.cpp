@@ -391,7 +391,7 @@ bool Snapuserd::ReadMetadata() {
     memset(de_ptr.get(), 0, (exceptions_per_area_ * sizeof(struct disk_exception)));
 
     while (!cowop_rm_iter->AtEnd()) {
-        const CowOperation* cow_op = cowop_rm_iter->Get();
+        const CowOperationV2* cow_op = cowop_rm_iter->Get();
         struct disk_exception* de =
                 reinterpret_cast<struct disk_exception*>((char*)de_ptr.get() + offset);
 
@@ -447,7 +447,7 @@ bool Snapuserd::ReadMetadata() {
 
     int num_ra_ops_per_iter = ((GetBufferDataSize()) / BLOCK_SZ);
     std::optional<chunk_t> prev_id = {};
-    std::vector<const CowOperation*> vec;
+    std::vector<const CowOperationV2*> vec;
     std::set<uint64_t> dest_blocks;
     std::set<uint64_t> source_blocks;
     size_t pending_ordered_ops = exceptions_per_area_ - num_ops;
@@ -459,7 +459,7 @@ bool Snapuserd::ReadMetadata() {
 
     while (!cowop_rm_iter->AtEnd()) {
         do {
-            const CowOperation* cow_op = cowop_rm_iter->Get();
+            const CowOperationV2* cow_op = cowop_rm_iter->Get();
 
             // We have two cases specific cases:
             //
@@ -531,7 +531,7 @@ bool Snapuserd::ReadMetadata() {
         for (size_t i = 0; i < vec.size(); i++) {
             struct disk_exception* de =
                     reinterpret_cast<struct disk_exception*>((char*)de_ptr.get() + offset);
-            const CowOperation* cow_op = vec[i];
+            const CowOperationV2* cow_op = vec[i];
 
             de->old_chunk = cow_op->new_block;
             de->new_chunk = data_chunk_id;

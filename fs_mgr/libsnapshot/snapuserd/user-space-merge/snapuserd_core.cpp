@@ -190,7 +190,7 @@ bool SnapshotHandler::ReadMetadata() {
     size_t copy_ops = 0, replace_ops = 0, zero_ops = 0, xor_ops = 0;
 
     while (!cowop_iter->AtEnd()) {
-        const CowOperation* cow_op = cowop_iter->Get();
+        const CowOperationV2* cow_op = cowop_iter->Get();
 
         if (cow_op->type == kCowCopyOp) {
             copy_ops += 1;
