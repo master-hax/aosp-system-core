@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81e0407a_202e68c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 33
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-04T23:08:08Z",
+      "side": 1,
+      "message": "Nice, looks like we\u0027re down to just flake failures on TH.\n\nPlease do check the critical OTA paths and note them in the commit message, and we\u0027re good to go.",
+      "revId": "a20629d175ba60b4d80760a08c69005bbf6ad09c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
