@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "febcb38e_8e56dcb8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1960240
+      },
+      "writtenOn": "2023-10-04T21:41:57Z",
+      "side": 1,
+      "message": "Step two is going to be in another CL, which I will link to this CL later. The current CL is for step one",
+      "parentUuid": "a5b5c72a_8ead5fba",
+      "range": {
+        "startLine": 9,
+        "startChar": 162,
+        "endLine": 9,
+        "endChar": 218
+      },
+      "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c2b7351_fce16f09",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -37,6 +61,24 @@
       "writtenOn": "2023-10-04T21:39:10Z",
       "side": 1,
       "message": "there\u0027s literally nothing written in this bug?",
+      "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "800c06ee_06b01abf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1960240
+      },
+      "writtenOn": "2023-10-04T21:41:57Z",
+      "side": 1,
+      "message": "This is a new feature. More details will be added to the bug description",
+      "parentUuid": "2c2b7351_fce16f09",
       "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
