@@ -22,6 +22,30 @@
       },
       "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64b1e3a5_e6b97c35",
+        "filename": "fs_mgr/liblp/fuzzer/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1958854
+      },
+      "writtenOn": "2023-10-04T21:41:01Z",
+      "side": 1,
+      "message": "I see this is the CL description.",
+      "parentUuid": "e4759d45_2f859382",
+      "range": {
+        "startLine": 89,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 16
+      },
+      "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
