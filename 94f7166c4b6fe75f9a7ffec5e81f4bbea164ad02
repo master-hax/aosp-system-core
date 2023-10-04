@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe9dae96_8710674e",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-10-04T04:39:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b52e86c5_d3db0188",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2987b75a_d875f082",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "96b87869_8ca9a881",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-10-04T04:39:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2987b75a_d875f082",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "daf70075_97d36dc3",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-10-03T22:19:11Z",
       "side": 1,
       "message": "It\u0027s too late to rollback here, right? So the best we can do is either deadlock or proceed and potentially hit the bug?",
+      "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f32c9902_ed32960a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-10-04T04:39:35Z",
+      "side": 1,
+      "message": "Yes.. We don\u0027t want to fail completely; and rollback is tough as we are already half way through the merge. \n\nThe worker threads should be up and partitions should be mounted off the snapshots. In the worst case, yes, we will hit the bug.\n\nOne way to address this is to mark the block as \"bad\" - In the I/O path, return EIO for that specific block which is marked as bad. This should be possible with bitmaps for the blocks and tracking which blocks are bad during merge. However, this prompts a new question - How to take next set of OTA\u0027s if the block is marked as bad as we can never switch the snapshot tables.. These are some of the open ended design questions to cover these corner cases.",
+      "parentUuid": "daf70075_97d36dc3",
       "revId": "94f7166c4b6fe75f9a7ffec5e81f4bbea164ad02",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
