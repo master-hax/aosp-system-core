@@ -182,6 +182,30 @@
       },
       "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "519f3ecd_36e89d23",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_apis_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1958854
+      },
+      "writtenOn": "2023-10-04T21:40:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76529340_3923dc1a",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 42
+      },
+      "revId": "c85927b42a742abaf23ee220d04f4573045485a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
