@@ -16,6 +16,24 @@
       "message": "It\u0027s only one file, is a group really needed?",
       "revId": "7de9b1e5f393c9c29a78ed5bbc03ccef66eadd82",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "530281a2_645eccf4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958854
+      },
+      "writtenOn": "2023-10-04T21:30:13Z",
+      "side": 1,
+      "message": "This is a valid point. Was this ever addressed?",
+      "parentUuid": "7f49b94c_7a31f073",
+      "revId": "7de9b1e5f393c9c29a78ed5bbc03ccef66eadd82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
