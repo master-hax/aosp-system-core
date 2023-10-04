@@ -28,6 +28,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <string>
 #include "fastboot_driver_interface.h"
 #include "filesystem.h"

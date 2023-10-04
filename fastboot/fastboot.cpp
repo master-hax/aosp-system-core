@@ -1525,6 +1525,7 @@ void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
         fb->ResizePartition(pname, std::to_string(buf.image_size));
     }
     std::string flash_pname = repack_ramdisk(pname, &buf, fp->fb);
+    // Do nothing comment to trigger test.
     flash_buf(fp->source, flash_pname, &buf, apply_vbmeta);
 }
 
