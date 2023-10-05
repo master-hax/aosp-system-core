@@ -16,6 +16,24 @@
       "message": "nit: no space needed",
       "revId": "73e48fb9d02f8bc4867972a7273bc96293a1484f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d41dface_810410f1",
+        "filename": "fs_mgr/liblp/fuzzer/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-10-05T06:09:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b7a8054_4e36857b",
+      "revId": "73e48fb9d02f8bc4867972a7273bc96293a1484f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
