@@ -63,7 +63,7 @@ class CowWriterBase : public ICowWriter {
     bool ValidateNewBlock(uint64_t new_block);
 
     CowOptions options_;
-    CowHeader header_{};
+    CowHeaderV3 header_{};
 
     android::base::unique_fd fd_;
     bool is_dev_null_ = false;
