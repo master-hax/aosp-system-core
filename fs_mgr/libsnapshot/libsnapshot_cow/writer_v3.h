@@ -42,7 +42,6 @@ class CowWriterV3 : public CowWriterBase {
     bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
                     uint16_t offset, uint8_t type);
     void SetupHeaders();
-    void SetupWriteOptions();
     bool ParseOptions();
     bool OpenForWrite();
     bool OpenForAppend(uint64_t label);
@@ -60,7 +59,6 @@ class CowWriterV3 : public CowWriterBase {
     bool EnsureSpaceAvailable(const uint64_t bytes_needed) const;
 
   private:
-    CowFooter footer_{};
     CowCompression compression_;
     // in the case that we are using one thread for compression, we can store and re-use the same
     // compressor
