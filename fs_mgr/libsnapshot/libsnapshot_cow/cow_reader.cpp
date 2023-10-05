@@ -122,7 +122,6 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     if (!ReadCowHeader(fd, &header_)) {
         return false;
     }
-
     CowParserV2 parser;
     if (!parser.Parse(fd, header_, label)) {
         return false;
@@ -168,7 +167,6 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         }
         new_op.source_info = source_info;
     }
-
     // If we're resuming a write, we're not ready to merge
     if (label.has_value()) return true;
     return PrepMergeOps();
