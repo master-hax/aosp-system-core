@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6c22638_c7960ce1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_format.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-05T22:31:58Z",
+      "side": 1,
+      "message": "How will this work when header_.block_size !\u003d BLOCK_SZ?\n\nMaybe just remove the compressed/uncompressed display if it\u0027s implicit in data_length?",
+      "revId": "31434e141ec43504cd54afde362c4d45f746f9f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
