@@ -22,6 +22,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <libsnapshot/cow_format.h>
+#include "snapuserd/include/snapuserd/snapuserd_kernel.h"
 #include "writer_v2.h"
 
 namespace android {
@@ -83,7 +84,7 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     os << "CowOperation(";
     EmitCowTypeString(os, op.type);
     if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowSequenceOp) {
-        if (op.source_info & kCowOpSourceInfoCompressBit) {
+        if (op.source_info & (op.data_length < BLOCK_SZ)) {
             os << ", compressed";
         } else {
             os << ", uncompressed";
