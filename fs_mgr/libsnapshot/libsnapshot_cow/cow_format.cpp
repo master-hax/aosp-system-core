@@ -82,8 +82,9 @@ std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
 
 std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     os << "CowOperation(";
-    EmitCowTypeString(os, op.type);
-    if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowSequenceOp) {
+    EmitCowTypeString(os, GetCowOpSourceInfoType(&op));
+    if (GetCowOpSourceInfoType(&op) == kCowReplaceOp || GetCowOpSourceInfoType(&op) == kCowXorOp ||
+        GetCowOpSourceInfoType(&op) == kCowSequenceOp) {
         if (op.source_info & (op.data_length < BLOCK_SZ)) {
             os << ", compressed";
         } else {
@@ -91,12 +92,15 @@ std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
         }
         os << ", data_length:" << op.data_length;
     }
-    if (op.type != kCowClusterOp && op.type != kCowSequenceOp && op.type != kCowLabelOp) {
+    if (GetCowOpSourceInfoType(&op) != kCowClusterOp &&
+        GetCowOpSourceInfoType(&op) != kCowSequenceOp &&
+        GetCowOpSourceInfoType(&op) != kCowLabelOp) {
         os << ", new_block:" << op.new_block;
     }
-    if (op.type == kCowXorOp || op.type == kCowReplaceOp || op.type == kCowCopyOp) {
+    if (GetCowOpSourceInfoType(&op) == kCowXorOp || GetCowOpSourceInfoType(&op) == kCowReplaceOp ||
+        GetCowOpSourceInfoType(&op) == kCowCopyOp) {
         os << ", source:" << (op.source_info & kCowOpSourceInfoDataMask);
-    } else if (op.type == kCowClusterOp) {
+    } else if (GetCowOpSourceInfoType(&op) == kCowClusterOp) {
         os << ", cluster_data:" << (op.source_info & kCowOpSourceInfoDataMask);
     } else {
         os << ", label:0x" << android::base::StringPrintf("%" PRIx64, op.source_info);
@@ -126,7 +130,7 @@ int64_t GetNextDataOffset(const CowOperationV2& op, uint32_t cluster_ops) {
 }
 
 bool IsMetadataOp(const CowOperation& op) {
-    switch (op.type) {
+    switch (GetCowOpSourceInfoType(&op)) {
         case kCowLabelOp:
         case kCowClusterOp:
         case kCowFooterOp:
@@ -138,7 +142,7 @@ bool IsMetadataOp(const CowOperation& op) {
 }
 
 bool IsOrderedOp(const CowOperation& op) {
-    switch (op.type) {
+    switch (GetCowOpSourceInfoType(&op)) {
         case kCowCopyOp:
         case kCowXorOp:
             return true;
