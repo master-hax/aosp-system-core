@@ -34,6 +34,24 @@
       "parentUuid": "7f49b94c_7a31f073",
       "revId": "7de9b1e5f393c9c29a78ed5bbc03ccef66eadd82",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f40331a3_7e9438ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-10-05T06:09:11Z",
+      "side": 1,
+      "message": "Yes it has to be added as this file is not exposed anywhere except \"liblp_test_defaults\" which cannot be used directly in the fuzzer\u0027s cc_fuzz. Reason for the same is that \"libcrypto_static\" is not visible to our fuzzer. Also this file is used by fuzzers in subsequent CLs in \"fs_mgr/liblp/fuzzer/Android.bp\" but this file is in \"fs_mgr/liblp/\" and hence can\u0027t be included directly. Hence, to overcome all this, we need this filegroup.",
+      "parentUuid": "530281a2_645eccf4",
+      "revId": "7de9b1e5f393c9c29a78ed5bbc03ccef66eadd82",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
