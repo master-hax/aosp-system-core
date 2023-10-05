@@ -16,6 +16,23 @@
       "message": "PS5 was already +2\u0027ed and PS6 just removed a space.",
       "revId": "4ac5b76d9661d77f79f4cad7476d207bf5c96d3d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cef8302_6e736aa3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-05T16:38:15Z",
+      "side": 1,
+      "message": "Adding OWNERS +1 since I think there is some value in fuzzing MetadataBuilder -\u003e FlashPartitionTable, but it\u0027s pretty limited. These functions are not attack vectors so best case we\u0027ll expose something wrong in the OTA process.\n\nI think a more interesting target would be ReadFromImageFile or ReadFromImageBlob. They might be a bit hard to fuzz since part of the image format is a checksum. But errors in our deserialization code would be more concerning.",
+      "revId": "4ac5b76d9661d77f79f4cad7476d207bf5c96d3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
