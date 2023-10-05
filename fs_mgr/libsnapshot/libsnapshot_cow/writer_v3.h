@@ -37,6 +37,40 @@ class CowWriterV3 : public CowWriterBase {
     virtual bool EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) override;
     virtual bool EmitLabel(uint64_t label) override;
     virtual bool EmitSequenceData(size_t num_ops, const uint32_t* data) override;
+
+  private:
+    bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
+                    uint16_t offset, uint8_t type);
+    void SetupHeaders();
+    bool ParseOptions();
+    bool OpenForWrite();
+    bool OpenForAppend(uint64_t label);
+    bool GetDataPos(uint64_t* pos);
+    bool WriteRawData(const void* data, size_t size);
+    bool WriteOperation(const CowOperation& op, const void* data = nullptr, size_t size = 0);
+    void AddOperation(const CowOperation& op);
+    void InitPos();
+    void InitBatchWrites();
+    void InitWorkers();
+
+    bool CompressBlocks(size_t num_blocks, const void* data);
+    bool Truncate(off_t length);
+    bool EnsureSpaceAvailable(const uint64_t bytes_needed) const;
+
+  private:
+    CowCompression compression_;
+    // in the case that we are using one thread for compression, we can store and re-use the same
+    // compressor
+
+    uint64_t current_op_pos_ = 0;
+    uint64_t next_op_pos_ = 0;
+    uint64_t next_data_pos_ = 0;
+    uint64_t current_data_pos_ = 0;
+    ssize_t total_data_written_ = 0;
+    uint64_t current_data_size_ = 0;
+
+    int num_compress_threads_ = 1;
+    std::vector<std::unique_ptr<CompressWorker>> compress_threads_;
 };
 
 }  // namespace snapshot
