@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ca7484a_1dc53246",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-05T21:13:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37dc44af_31cf5217",
+      "revId": "f5663a49672672dff1d119f9c5acfacaf8ef9d29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a2870a0_af3bb7d0",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-05T18:34:59Z",
       "side": 1,
       "message": "Reword? \n\n\"When battery level is assigned non-zero value and battery status is still unknown then wait for the timeout to expire before drawing the unknown battery graphic.\"",
+      "revId": "f5663a49672672dff1d119f9c5acfacaf8ef9d29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "498344c0_4074c9af",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-05T21:13:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a2870a0_af3bb7d0",
       "revId": "f5663a49672672dff1d119f9c5acfacaf8ef9d29",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
