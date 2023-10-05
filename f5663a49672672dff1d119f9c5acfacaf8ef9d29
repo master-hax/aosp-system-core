@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37dc44af_31cf5217",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1967029
+      },
+      "writtenOn": "2023-10-05T18:34:59Z",
+      "side": 1,
+      "message": "Is this comment still relevant here if we add the additional condition to inhibit drawing unknown battery ? Maybe shift below the new conditional / logic that also inhibits drawing ?",
+      "revId": "f5663a49672672dff1d119f9c5acfacaf8ef9d29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a2870a0_af3bb7d0",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1967029
+      },
+      "writtenOn": "2023-10-05T18:34:59Z",
+      "side": 1,
+      "message": "Reword? \n\n\"When battery level is assigned non-zero value and battery status is still unknown then wait for the timeout to expire before drawing the unknown battery graphic.\"",
+      "revId": "f5663a49672672dff1d119f9c5acfacaf8ef9d29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
