@@ -57,23 +57,65 @@ using android::base::unique_fd;
 CowWriterV3::CowWriterV3(const CowOptions& options, unique_fd&& fd)
     : CowWriterBase(options, std::move(fd)) {
     SetupHeaders();
-    SetupWriteOptions();
 }
 
 void CowWriterV3::SetupHeaders() {
+    header_ = {};
+    header_.prefix.magic = kCowMagicNumber;
+    header_.prefix.major_version = 3;
+    header_.prefix.minor_version = 0;
+    header_.prefix.header_size = sizeof(CowHeader);
+    header_.footer_size = 0;
+    header_.op_size = sizeof(CowOperationV3);
+    header_.block_size = options_.block_size;
+    header_.num_merge_ops = options_.num_merge_ops;
+    header_.cluster_ops = 0;
+    header_.buffer_size = 0;
     return;
 }
 
-void CowWriterV3::SetupWriteOptions() {
-    return;
+bool CowWriterV3::ParseOptions() {
+    num_compress_threads_ = std::max(options_.num_compress_threads, 1);
+    auto parts = android::base::Split(options_.compression, ",");
+    if (parts.size() > 2) {
+        LOG(ERROR) << "failed to parse compression parameters: invalid argument count: "
+                   << parts.size() << " " << options_.compression;
+        return false;
+    }
+    auto algorithm = CompressionAlgorithmFromString(parts[0]);
+    if (!algorithm) {
+        LOG(ERROR) << "unrecognized compression: " << options_.compression;
+        return false;
+    }
+    if (parts.size() > 1) {
+        if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
+            LOG(ERROR) << "failed to parse compression level invalid type: " << parts[1];
+            return false;
+        }
+    } else {
+        compression_.compression_level =
+                CompressWorker::GetDefaultCompressionLevel(algorithm.value());
+    }
+
+    compression_.algorithm = *algorithm;
+    return true;
 }
 
 CowWriterV3::~CowWriterV3() {}
 
 bool CowWriterV3::Initialize(std::optional<uint64_t> label) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-    if (label) return false;
-    return false;
+    if (!InitFd() || !ParseOptions()) {
+        return false;
+    }
+    if (!label) {
+        if (!OpenForWrite()) {
+            return false;
+        }
+    }
+    if (!compress_threads_.size()) {
+        InitWorkers();
+    }
+    return true;
 }
 
 bool CowWriterV3::OpenForWrite() {
