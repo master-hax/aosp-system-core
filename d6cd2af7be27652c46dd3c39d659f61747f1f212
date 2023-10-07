@@ -34,6 +34,29 @@
       "parentUuid": "6e7435b4_5b278924",
       "revId": "d6cd2af7be27652c46dd3c39d659f61747f1f212",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a92c0e31_d15f43a9",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-07T01:21:20Z",
+      "side": 1,
+      "message": "This will be std::mutex, and a few other things don\u0027t work. So just the shape is there.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 24
+      },
+      "revId": "d6cd2af7be27652c46dd3c39d659f61747f1f212",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
