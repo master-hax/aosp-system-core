@@ -53,6 +53,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d7be815_b9ad7a93",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1269804
+      },
+      "writtenOn": "2023-10-09T09:54:14Z",
+      "side": 1,
+      "message": "Let\u0027s abandon this patch. Merged in aosp/2762165.",
+      "revId": "81a0931227543f2e39e6fb04c673fc214632b901",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc9c19bc_940af2b1",
