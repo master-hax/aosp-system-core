@@ -22,6 +22,30 @@
       },
       "revId": "4ccc0fe7847b7788a71cb8ac822ac519e8aed20b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96403a74_6c9895dd",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 39
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T19:57:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85b78e4a_2800ccfe",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 46
+      },
+      "revId": "4ccc0fe7847b7788a71cb8ac822ac519e8aed20b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
