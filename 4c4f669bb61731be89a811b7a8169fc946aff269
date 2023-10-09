@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "985fa920_e9f4dd60",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 40
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:07:07Z",
+      "side": 1,
+      "message": "Remove these implementation methods. Only keep the virtual method stubs.",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 65
+      },
+      "revId": "4c4f669bb61731be89a811b7a8169fc946aff269",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
