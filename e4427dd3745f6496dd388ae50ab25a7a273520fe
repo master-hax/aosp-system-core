@@ -16,6 +16,155 @@
       "message": "Need to think through how to make CowOpIterator work with these changes",
       "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b761e8dd_a7baf753",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "`0xFULL` WDYT!",
+      "range": {
+        "startLine": 205,
+        "startChar": 53,
+        "endLine": 205,
+        "endChar": 58
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ac0cc75_480872d1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 207,
+        "startChar": 7,
+        "endLine": 207,
+        "endChar": 13
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "406a17c5_6455ee95",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 210,
+        "startChar": 7,
+        "endLine": 210,
+        "endChar": 13
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4e70b7f_2c86f58c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "const ref is usually preferred over const pointer",
+      "range": {
+        "startLine": 210,
+        "startChar": 46,
+        "endLine": 210,
+        "endChar": 68
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4441d4b2_bc7d1df5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "angle bracket",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5942be32_81f24fd4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "angle bracket if possible",
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9463d4a_094ee98f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:24:50Z",
+      "side": 1,
+      "message": "ASSERT_NE(GetCowOpSourceInfoType(\u0026new_op), old_op.type);",
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
