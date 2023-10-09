@@ -16,6 +16,24 @@
       "message": "although not directly related to this CL, but this shouldn\u0027t be updated for metadata ops.. \n\nAlso, since we don\u0027t support per-OP compression, once compression_type_ is set, having as ASSERT to verity if all COW-OPS have the same compression.",
       "revId": "ce57c58e6b0efd4621e1c84abfce38f4e30deff3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5f35133_5d30f9cc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T23:45:19Z",
+      "side": 1,
+      "message": "assert/CHECK will crash the parent process, which is probably overkill since \"properly formatted file\" is not necessarily a precondition for the parser.",
+      "parentUuid": "67b590bf_6c6c8cbb",
+      "revId": "ce57c58e6b0efd4621e1c84abfce38f4e30deff3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
