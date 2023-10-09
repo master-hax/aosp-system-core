@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57b9abe4_c95a7103",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T22:08:19Z",
+      "side": 1,
+      "message": "BTW you can keep both if that\u0027s easier, eg:\n\n    static inline uint64_t GetCowOpSourceInfoData(const CowOperation* op) {\n        ...\n    }\n    static inline uint64_t GetCowOpSourceInfoData(const CowOperation\u0026 op) {\n        return GetCowOpSourceInfoData(\u0026op);\n    }",
+      "revId": "4674d161913086282e733098dce5c533e779c89e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
