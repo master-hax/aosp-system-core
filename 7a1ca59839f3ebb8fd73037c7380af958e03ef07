@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09c10aef_3f658494",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-09T21:59:58Z",
+      "side": 1,
+      "message": "Lint bypass reason: the lint rule may be silly, but regardless of that this is an existing test",
+      "revId": "7a1ca59839f3ebb8fd73037c7380af958e03ef07",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
