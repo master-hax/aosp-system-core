@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02f00eb2_fe57f6b8",
+        "filename": "trusty/utils/acvp/trusty_modulewrapper.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2023-10-09T13:35:32Z",
+      "side": 1,
+      "message": "I\u0027m not really a fan of `continue` - it\u0027s sort of like `goto` in disguise and doesn\u0027t fold.  I think an `else` statement to guard the forwarding lines would be neater, and equivalent.",
+      "range": {
+        "startLine": 231,
+        "startChar": 11,
+        "endLine": 231,
+        "endChar": 21
+      },
+      "revId": "b2a75cd34c1c1bdd1561864cbad6fcac5e787e72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
