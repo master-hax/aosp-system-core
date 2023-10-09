@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3d07018_2d741278",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T21:02:00Z",
+      "side": 1,
+      "message": "might need to \u003e\u003e 60 to get the correct type value?",
+      "range": {
+        "startLine": 211,
+        "startChar": 11,
+        "endLine": 211,
+        "endChar": 52
+      },
+      "revId": "8d16ceae3a342cbd251ad63287b8bc66804b471d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
