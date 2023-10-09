@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f3939ea_3e670aa9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 41
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-09T20:25:43Z",
+      "side": 1,
+      "message": "angle bracket, and group with L23-L32",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 33
+      },
+      "revId": "d733d1cd3818b20aaf085755e62fa5380ef95461",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
