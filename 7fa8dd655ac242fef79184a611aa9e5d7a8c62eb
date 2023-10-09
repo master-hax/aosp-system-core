@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "605078b8_71c961ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1872883
+      },
+      "writtenOn": "2023-10-09T13:45:39Z",
+      "side": 1,
+      "message": "Hi @zhangkelvin@google.com and @dvander@google.com,\n\nWould you mind to review this patch?\nThis is a patch for watch factory team to get a better battery-soc reading after FSI image flashing.\n\nThanks,\nHarry",
+      "revId": "7fa8dd655ac242fef79184a611aa9e5d7a8c62eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
