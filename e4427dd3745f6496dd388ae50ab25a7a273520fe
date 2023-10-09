@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2a9266f8_2ae1e00e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "WDYT?",
+      "parentUuid": "b761e8dd_a7baf753",
+      "range": {
+        "startLine": 205,
+        "startChar": 53,
+        "endLine": 205,
+        "endChar": 58
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8ac0cc75_480872d1",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 6
@@ -54,6 +78,30 @@
       "writtenOn": "2023-10-09T20:24:50Z",
       "side": 1,
       "message": "constexpr",
+      "range": {
+        "startLine": 207,
+        "startChar": 7,
+        "endLine": 207,
+        "endChar": 13
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a451961a_f820aa40",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ac0cc75_480872d1",
       "range": {
         "startLine": 207,
         "startChar": 7,
@@ -110,6 +158,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a17d7ce_ee24f58c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "406a17c5_6455ee95",
+      "range": {
+        "startLine": 210,
+        "startChar": 7,
+        "endLine": 210,
+        "endChar": 13
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39b7c6e1_c6c21383",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4e70b7f_2c86f58c",
+      "range": {
+        "startLine": 210,
+        "startChar": 46,
+        "endLine": 210,
+        "endChar": 68
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4441d4b2_bc7d1df5",
@@ -123,6 +219,30 @@
       "writtenOn": "2023-10-09T20:24:50Z",
       "side": 1,
       "message": "angle bracket",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bcc56b3_dfa81439",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4441d4b2_bc7d1df5",
       "range": {
         "startLine": 31,
         "startChar": 9,
@@ -150,6 +270,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca8d529b_f304f40d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5942be32_81f24fd4",
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e9463d4a_094ee98f",
@@ -163,6 +301,24 @@
       "writtenOn": "2023-10-09T20:24:50Z",
       "side": 1,
       "message": "ASSERT_NE(GetCowOpSourceInfoType(\u0026new_op), old_op.type);",
+      "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe0e3d7b_9eb348fd",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-09T20:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9463d4a_094ee98f",
       "revId": "e4427dd3745f6496dd388ae50ab25a7a273520fe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
