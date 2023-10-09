@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "688fe50f_a1767365",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T22:18:51Z",
+      "side": 1,
+      "message": "static constexpr uint64_t kCowOpSourceInfoTypeBit \u003d 60;\n    static constexpr uint64_t kCowOpSourceInfoTypeNumBits \u003d 4;\n    static constexpr uint64_t kCowOpSourceInfoTypeMask \u003d (1 \u003c\u003c kCowOpSourceInfoTypeNumBits) - 1;",
+      "revId": "8926260d84cda14a7262dfd2e2ecf7ffe110aaff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5557308_9106498c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T22:18:51Z",
+      "side": 1,
+      "message": "CHECK_EQ((type \u0026 kCowOpSourceInfoTypeMask), type);\nop-\u003esource_info |\u003d uint64_t(type) \u003c\u003c kCowOpSourceInfoTypeBit;",
+      "revId": "8926260d84cda14a7262dfd2e2ecf7ffe110aaff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7ef7105_8f554f43",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T22:18:51Z",
+      "side": 1,
+      "message": "return (op.source_info \u003e\u003e kCowOpSourceInfoTypeBit) \u0026 kCowOpSourceInfoTypeMask;\n\nTechnically the mask is not needed here, since it\u0027s the top bits, but it\u0027s good practice.",
+      "revId": "8926260d84cda14a7262dfd2e2ecf7ffe110aaff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c227d34_dc625225",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-09T22:18:51Z",
+      "side": 1,
+      "message": "You could also add a type() method, as shortcut.",
+      "revId": "8926260d84cda14a7262dfd2e2ecf7ffe110aaff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
