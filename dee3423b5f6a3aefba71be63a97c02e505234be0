@@ -52,6 +52,24 @@
       "parentUuid": "5ecbbc52_fc8f7e8f",
       "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "193df013_f166ea18",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-10T18:14:21Z",
+      "side": 1,
+      "message": "okay, I like this idea, should we also do this for cowOperationV3 as in it just inherits from cowOperationV2? Are there any technical limitations as why we can\u0027t do this?",
+      "parentUuid": "f7f316cd_c5bac01b",
+      "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
