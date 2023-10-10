@@ -16,6 +16,24 @@
       "message": "We already have liblp_test for this, and they\u0027re identical suites. Can we put liblp_test in TEST_MAPPING instead, and keep the vts prefixed one only for vts?",
       "revId": "cecc742a2018525b7d0169636c618ce01c3d6d42",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "930de953_4614fd61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1942356
+      },
+      "writtenOn": "2023-10-10T23:15:16Z",
+      "side": 1,
+      "message": "That works for me, done.",
+      "parentUuid": "436a5c1c_79e576f9",
+      "revId": "cecc742a2018525b7d0169636c618ce01c3d6d42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
