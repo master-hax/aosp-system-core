@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7263935_391da86d",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1401,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-10T14:12:21Z",
+      "side": 1,
+      "message": "has_staged_props",
+      "range": {
+        "startLine": 1401,
+        "startChar": 17,
+        "endLine": 1401,
+        "endChar": 33
+      },
+      "revId": "8bc11e877a8d9d6c4842c538b1014b6b865b9a08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e38054d2_a12a7aa8",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1402,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-10T14:12:21Z",
+      "side": 1,
+      "message": "consider using std::string_view instead, because you don\u0027t want to mutate this string",
+      "range": {
+        "startLine": 1402,
+        "startChar": 39,
+        "endLine": 1402,
+        "endChar": 50
+      },
+      "revId": "8bc11e877a8d9d6c4842c538b1014b6b865b9a08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1e6fe79_09b9a342",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1403,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-10T14:12:21Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1403,
+        "startChar": 47,
+        "endLine": 1403,
+        "endChar": 58
+      },
+      "revId": "8bc11e877a8d9d6c4842c538b1014b6b865b9a08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "191adaa9_10922745",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1431,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-10T14:12:21Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Check Contents: Lines longer than 100 characters should be wrapped to improve readability; see https://source.android.com/setup/contribute/code-style#limit-line-length for more details. See go/ayeaye-long-lines for ayeaye-specific info.\n\nAnalyzer Description: Validates that changes do not have prohibited expressions in them.\nOwner: ayeaye-team@google.com\n\nLines longer than 100 characters should be wrapped to improve readability; see https://source.android.com/setup/contribute/code-style#limit-line-length for more details. See go/ayeaye-long-lines for ayeaye-specific info.",
+      "range": {
+        "startLine": 1431,
+        "startChar": 0,
+        "endLine": 1431,
+        "endChar": 101
+      },
+      "revId": "8bc11e877a8d9d6c4842c538b1014b6b865b9a08",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
