@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e3127ad_fcdb2c3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-10-10T22:13:26Z",
+      "side": 1,
+      "message": "I have not looked at this in detail, but adding owner +2 based on the change description and existing code review +2 vote",
+      "revId": "589c8d1e44cff96092c943f22cc10a9c23b81c01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
