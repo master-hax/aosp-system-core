@@ -20,8 +20,6 @@
 #include <libsnapshot/cow_format.h>
 #include <unordered_map>
 
-#include <libsnapshot_cow/parser_v2.h>
-
 namespace android {
 namespace snapshot {
 
