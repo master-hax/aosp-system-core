@@ -22,6 +22,30 @@
       },
       "revId": "925ac391c2935f04c900397a81c132a377e545f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c1615ed_9e72ac81",
+        "filename": "fs_mgr/libsnapshot/tools/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-10T23:57:15Z",
+      "side": 1,
+      "message": "NVM, next CL adds additional logic",
+      "parentUuid": "2b3b6c53_7790d3c8",
+      "range": {
+        "startLine": 33,
+        "startChar": 12,
+        "endLine": 33,
+        "endChar": 21
+      },
+      "revId": "925ac391c2935f04c900397a81c132a377e545f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
