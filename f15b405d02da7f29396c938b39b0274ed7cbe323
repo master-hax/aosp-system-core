@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fff1a699_1a74516c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 56
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-10T17:46:08Z",
+      "side": 1,
+      "message": "Since this changes the write path, make sure a v2 COW written *after* this change can be read by a reader built *before* this change.\n\nEasy way to do this is to build inspect_cow without the CL. Hard way is to test a downgrade OTA.",
+      "revId": "f15b405d02da7f29396c938b39b0274ed7cbe323",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
