@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4417b038_d9d91fde",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-10T19:54:23Z",
+      "side": 1,
+      "message": "Could be done in a different CL, but it\u0027s better to use enums for type rather than untyped integers.",
+      "range": {
+        "startLine": 211,
+        "startChar": 69,
+        "endLine": 211,
+        "endChar": 76
+      },
+      "revId": "cc8a9732028453f796b545b70e3c30e60926aebe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
