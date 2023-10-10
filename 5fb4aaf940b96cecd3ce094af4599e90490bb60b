@@ -22,6 +22,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "392fbb94_de0ac53d",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-10T18:57:55Z",
+      "side": 1,
+      "message": "This could be an race condition, I do see sometime battery level is updated before battery status. if the checking happen to be in the between, the problem could happen.",
+      "parentUuid": "b7d6a8a5_d0caf295",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
