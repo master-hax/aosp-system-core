@@ -70,6 +70,24 @@
       "parentUuid": "f7f316cd_c5bac01b",
       "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c06a5aa5_c7afb519",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-10T18:17:43Z",
+      "side": 1,
+      "message": "CowOperationV3 can\u0027t inherit from V2, it\u0027s a whole new struct. Otherwise it\u0027d work fine.",
+      "parentUuid": "193df013_f166ea18",
+      "revId": "dee3423b5f6a3aefba71be63a97c02e505234be0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
