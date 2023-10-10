@@ -22,6 +22,30 @@
       },
       "revId": "cc8a9732028453f796b545b70e3c30e60926aebe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e994327f_b7bd354c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-10T20:00:32Z",
+      "side": 1,
+      "message": "I did it this way originally because C++\u0027s strongly typed enums get kind of ugly with flags/bitfields and packed structs.\n\nThere\u0027s probably a better way (or something I missed), but I think it\u0027s fine for now.",
+      "parentUuid": "4417b038_d9d91fde",
+      "range": {
+        "startLine": 211,
+        "startChar": 69,
+        "endLine": 211,
+        "endChar": 76
+      },
+      "revId": "cc8a9732028453f796b545b70e3c30e60926aebe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
