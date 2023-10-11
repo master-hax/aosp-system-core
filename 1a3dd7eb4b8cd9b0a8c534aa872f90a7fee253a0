@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f13df17_057a8628",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-11T15:57:09Z",
+      "side": 1,
+      "message": "+Akailash@ in case we want to think about reverting this for snapuserd too (my guess is not, since the risk/reward for OTA is not in our favor)",
+      "revId": "1a3dd7eb4b8cd9b0a8c534aa872f90a7fee253a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
