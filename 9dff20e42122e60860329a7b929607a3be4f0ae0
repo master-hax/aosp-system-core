@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf743789_83b76c7d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1942356
+      },
+      "writtenOn": "2023-10-11T22:24:13Z",
+      "side": 1,
+      "message": "It should not have any impact on v2/android-virtual-infra/test_mapping/presubmit-large-avd\t.  The test `com.android.inputmethod.stresstest.ImeOpenCloseStressTest#testShowHideWithInputMethodManager_intervalAfterHide` has had two flakes prior with the same error, with https://android-build.corp.google.com/test_investigate/?invocationId\u003dI81800010206308477\u0026testResultId\u003dTR18328991591008538 being the first.",
+      "revId": "9dff20e42122e60860329a7b929607a3be4f0ae0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
