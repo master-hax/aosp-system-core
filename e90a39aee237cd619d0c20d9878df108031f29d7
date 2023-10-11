@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab4d5922_954652a6",
+        "filename": "fs_mgr/libsnapshot/snapuserd/dm-snapshot-merge/snapuserd_readahead.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-11T19:43:56Z",
+      "side": 1,
+      "message": "This should be `GetCowOpSourceInfoType` , as the return value is used for checking type of an CowOp",
+      "range": {
+        "startLine": 196,
+        "startChar": 12,
+        "endLine": 196,
+        "endChar": 34
+      },
+      "revId": "e90a39aee237cd619d0c20d9878df108031f29d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
