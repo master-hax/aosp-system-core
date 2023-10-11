@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7822e673_25f7c70c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1608334
+      },
+      "writtenOn": "2023-10-11T07:23:41Z",
+      "side": 1,
+      "message": "May I ask a question: why did you remove the following judge condition:\nif (partition \u003d\u003d \"boot\" || partition \u003d\u003d \"boot_a\" || partition \u003d\u003d \"boot_b\" ||\n        partition \u003d\u003d \"init_boot\" || partition \u003d\u003d \"init_boot_a\" || partition \u003d\u003d \"init_boot_b\" ||\n        partition \u003d\u003d \"recovery\" || partition \u003d\u003d \"recovery_a\" || partition \u003d\u003d \"recovery_b\") {\n      \nThis will lead to a issue: we cannot use avb sign on a 1GB+(bigger than a single transfer package size) partition image; Or will flash failed.\n\nCould you help to solve this problem? Because HOST\u0027s fastboot program is released by Google. A lot of developers and users cannot flash ROM if they use new fastboot program(eg: above version 34.0.1)",
+      "revId": "980985af6e69a2215384205bcac02ba3ebd911f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
