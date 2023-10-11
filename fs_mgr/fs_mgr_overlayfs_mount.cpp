@@ -654,8 +654,7 @@ Fstab fs_mgr_overlayfs_candidate_list(const Fstab& fstab) {
         auto duplicate_or_more_specific = false;
         for (auto it = candidates.begin(); it != candidates.end();) {
             auto it_mount_point = fs_mgr_mount_point(it->mount_point);
-            if ((it_mount_point == new_mount_point) ||
-                (android::base::StartsWith(new_mount_point, it_mount_point + "/"))) {
+            if (it_mount_point == new_mount_point) {
                 duplicate_or_more_specific = true;
                 break;
             }
