@@ -70,6 +70,30 @@
       },
       "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9acaa0f_e53bf081",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-12T21:17:01Z",
+      "side": 1,
+      "message": "probably before this CL. -1 means 255 in uint8_t world.",
+      "parentUuid": "1bf16ea5_d995eae1",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 43
+      },
+      "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
