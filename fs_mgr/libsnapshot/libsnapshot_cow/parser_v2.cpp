@@ -17,6 +17,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include "libsnapshot/cow_format.h"
 
 namespace android {
 namespace snapshot {
@@ -190,11 +191,55 @@ bool CowParserV2::ParseOps(borrowed_fd fd, std::optional<uint64_t> label) {
         }
     }
 
-    ops_ = ops_buffer;
-    ops_->shrink_to_fit();
+    v2_ops_ = ops_buffer;
+    v2_ops_->shrink_to_fit();
     data_loc_ = data_loc;
     return true;
 }
+std::shared_ptr<std::vector<CowOperationV3>> CowParserV2::ops() {
+    std::shared_ptr<std::vector<CowOperationV3>> v3_ops =
+            std::make_shared<std::vector<CowOperation>>(v2_ops_->size());
 
+    // Translate the operation buffer from on disk to in memory
+    for (size_t i = 0; i < v3_ops->size(); i++) {
+        const auto& v2_op = v2_ops_->at(i);
+
+        auto& new_op = v3_ops->at(i);
+        new_op.type = v2_op.type;
+        new_op.data_length = v2_op.data_length;
+
+        if (v2_op.new_block > std::numeric_limits<uint32_t>::max()) {
+            LOG(ERROR) << "Out-of-range new block in COW op: " << v2_op;
+            return nullptr;
+        }
+        new_op.new_block = v2_op.new_block;
+
+        uint64_t source_info = v2_op.source;
+        if (new_op.type != kCowLabelOp) {
+            source_info &= kCowOpSourceInfoDataMask;
+            if (source_info != v2_op.source) {
+                LOG(ERROR) << "Out-of-range source value in COW op: " << v2_op;
+                return nullptr;
+            }
+        }
+        new_op.source_info = source_info;
+    }
+    return v3_ops;
+}
+
+uint8_t CowParserV2::GetCompressionType() {
+    uint8_t compression_type = kCowCompressNone;
+    for (auto op : *v2_ops_) {
+        if (compression_type == kCowCompressNone) {
+            compression_type = op.compression;
+        } else if (op.compression != kCowCompressNone && compression_type != op.compression) {
+            LOG(ERROR) << "COW has mixed compression types which is not supported;"
+                       << " previously saw " << int(compression_type) << ", got "
+                       << int(op.compression) << ", op: " << op;
+            CHECK_EQ(op.compression, compression_type);
+        }
+    }
+    return compression_type;
+}
 }  // namespace snapshot
 }  // namespace android
