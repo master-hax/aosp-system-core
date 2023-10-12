@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7ea003f_e44b3e99",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-12T21:05:38Z",
+      "side": 1,
+      "message": "Can we turn these into something like\n\n\n```\nenum class CowOperationType: uint8_t {\nkCowCopyOp \u003d 1,\nkCowReplaceOp \u003d 2,\n...\n};\n\n```\n\n\nbefore making this huge refactorings? This will ensure we don\u0027t mistakenly compare integers with Cow op types.",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 43
+      },
+      "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
