@@ -94,6 +94,30 @@
       },
       "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e50af18_3917ea28",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-12T21:34:56Z",
+      "side": 1,
+      "message": "If we\u0027re going typed enums, make the names shorter, otherwise they get pretty ridiculous. Like,\n\n    enum class CowOpType : uint8_t {\n        Copy,\n        Replace,\n        ...\n    };\n    \nAnd then we have `CowOpType::Copy` instead of `CowOperationType::kCowCopyOp`.",
+      "parentUuid": "d9acaa0f_e53bf081",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 43
+      },
+      "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
