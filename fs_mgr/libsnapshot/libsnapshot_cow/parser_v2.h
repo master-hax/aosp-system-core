@@ -22,14 +22,15 @@
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
+#include "parser_base.h"
 
 namespace android {
 namespace snapshot {
 
-class CowParserV2 {
+class CowParserV2 : ParserBase {
   public:
     bool Parse(android::base::borrowed_fd fd, const CowHeader& header,
-               std::optional<uint64_t> label = {});
+               std::optional<uint64_t> label = {}) override;
 
     const CowHeader& header() const { return header_; }
     const std::optional<CowFooter>& footer() const { return footer_; }
