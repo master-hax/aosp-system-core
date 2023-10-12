@@ -28,6 +28,7 @@
 #include <zlib.h>
 
 #include "cow_decompress.h"
+#include "parser_base.h";
 #include "parser_v2.h"
 
 namespace android {
@@ -123,20 +124,17 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
-    CowParserV2 parser;
-    if (!parser.Parse(fd, header_, label)) {
-        return false;
-    }
+    std::unique_ptr<CowParserV2> parser = std::make_unique<CowParserV2>();
 
-    footer_ = parser.footer();
-    fd_size_ = parser.fd_size();
-    last_label_ = parser.last_label();
-    data_loc_ = parser.data_loc();
-    ops_ = std::make_shared<std::vector<CowOperation>>(parser.ops()->size());
+    footer_ = parser->footer();
+    fd_size_ = parser->fd_size();
+    last_label_ = parser->last_label();
+    data_loc_ = parser->data_loc();
+    ops_ = std::make_shared<std::vector<CowOperation>>(parser->ops()->size());
 
     // Translate the operation buffer from on disk to in memory
-    for (size_t i = 0; i < parser.ops()->size(); i++) {
-        const auto& v2_op = parser.ops()->at(i);
+    for (size_t i = 0; i < parser->ops()->size(); i++) {
+        const auto& v2_op = parser->ops()->at(i);
 
         auto& new_op = ops_->at(i);
         new_op.type = v2_op.type;
