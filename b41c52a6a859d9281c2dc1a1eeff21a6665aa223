@@ -34,6 +34,24 @@
       "parentUuid": "3997fda1_d1099e32",
       "revId": "b41c52a6a859d9281c2dc1a1eeff21a6665aa223",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db306dd9_89dee522",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1377141
+      },
+      "writtenOn": "2023-10-12T16:46:39Z",
+      "side": 1,
+      "message": "do we already have a configuration file on /vendor \u0026 ramdisk that OEMs can customize?  \nif yes, it will be fine to move it to the configuration file.",
+      "parentUuid": "de516440_71e0867f",
+      "revId": "b41c52a6a859d9281c2dc1a1eeff21a6665aa223",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
