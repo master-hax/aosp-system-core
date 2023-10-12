@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c1d400f_747c79e6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-12T08:47:31Z",
+      "side": 1,
+      "message": "just curious but what exact denials are you seeing? `gsid` deamon is missing or some nodes under procfs are missing?",
+      "range": {
+        "startLine": 9,
+        "startChar": 27,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be6622d1_47526946",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-12T08:47:31Z",
+      "side": 1,
+      "message": "I\u0027d like to understand the background more, so we know what is safe to refactor in the future, and what is still being used by the ecosystem.\n\nWhat device \u0026 kernel is this, does it not support dm-linear/device-mapper at all?\n\nIs it using \"/cache\" directory to store the adb remount scratch files?\n\nDo you have plans to adopt dynamic_partitions in the future?",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 64
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdecd4b1_6acf48cf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-12T08:47:31Z",
+      "side": 1,
+      "message": "FYI. On production builds (ro.debuggable\u003d0), this file is not installed at all, so it won\u0027t eat up production boot resources.",
+      "range": {
+        "startLine": 10,
+        "startChar": 2,
+        "endLine": 10,
+        "endChar": 36
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
