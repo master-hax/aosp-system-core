@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4088369f_43e5d619",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-12T10:36:26Z",
+      "side": 1,
+      "message": "The logic of filtering out submountpoints are introduced here https://android-review.git.corp.google.com/c/platform/system/core/+/740264\n\n@dvander@google.com do you know what were the background of such decision? It seems more useful to support submounts than not. Note that if we choose to support submounts, we also run the risk of tripping on b/243503963, so we might want to handle that first.",
+      "revId": "6fe854f3a9ef6cf2ab56e93761d1d9cbd7e6eed0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
