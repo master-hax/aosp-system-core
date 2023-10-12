@@ -123,52 +123,34 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     if (!ReadCowHeader(fd, &header_)) {
         return false;
     }
+    std::unique_ptr<ParserBase> parser;
 
-    CowParserV2 parser;
-    if (!parser.Parse(fd, header_, label)) {
+    switch (header_.prefix.major_version) {
+        case 1:
+        case 2:
+            parser = std::make_unique<CowParserV2>();
+            break;
+        case 3:
+            break;
+        default:
+            LOG(ERROR) << "Unknown version: " << header_.prefix.major_version;
+            return false;
+    }
+
+    if (!parser->Parse(fd, header_, label)) {
         return false;
     }
 
-    footer_ = parser.footer();
-    fd_size_ = parser.fd_size();
-    last_label_ = parser.last_label();
-    data_loc_ = parser.data_loc();
-    ops_ = std::make_shared<std::vector<CowOperation>>(parser.ops()->size());
-
-    // Translate the operation buffer from on disk to in memory
-    for (size_t i = 0; i < parser.ops()->size(); i++) {
-        const auto& v2_op = parser.ops()->at(i);
-
-        auto& new_op = ops_->at(i);
-        new_op.type = v2_op.type;
-        new_op.data_length = v2_op.data_length;
-
-        if (v2_op.new_block > std::numeric_limits<uint32_t>::max()) {
-            LOG(ERROR) << "Out-of-range new block in COW op: " << v2_op;
-            return false;
-        }
-        new_op.new_block = v2_op.new_block;
-
-        uint64_t source_info = v2_op.source;
-        if (new_op.type != kCowLabelOp) {
-            source_info &= kCowOpSourceInfoDataMask;
-            if (source_info != v2_op.source) {
-                LOG(ERROR) << "Out-of-range source value in COW op: " << v2_op;
-                return false;
-            }
-        }
-        if (v2_op.compression != kCowCompressNone) {
-            if (compression_type_ == kCowCompressNone) {
-                compression_type_ = v2_op.compression;
-            } else if (compression_type_ != v2_op.compression) {
-                LOG(ERROR) << "COW has mixed compression types which is not supported;"
-                           << " previously saw " << compression_type_ << ", got "
-                           << v2_op.compression << ", op: " << v2_op;
-                return false;
-            }
-        }
-        new_op.source_info = source_info;
+    if (auto parser_v2 = parser->AsParserV2()) {
+        compression_type_ = parser_v2->GetCompressionType();
     }
+
+    footer_ = parser->footer();
+    fd_size_ = parser->fd_size();
+    last_label_ = parser->last_label();
+    data_loc_ = parser->data_loc();
+
+    ops_ = parser->ops();
 
     // If we're resuming a write, we're not ready to merge
     if (label.has_value()) return true;

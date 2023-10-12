@@ -292,7 +292,7 @@ bool CowWriterV2::OpenForAppend(uint64_t label) {
     footer_.op.num_ops = 0;
     InitPos();
 
-    for (const auto& op : *parser.ops()) {
+    for (const auto& op : *parser.get_v2ops()) {
         AddOperation(op);
     }
 
