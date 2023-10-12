@@ -124,12 +124,21 @@ bool WriteToImageFile(borrowed_fd fd, const LpMetadata& input) {
 }
 
 bool WriteToImageFile(const std::string& file, const LpMetadata& input) {
-    unique_fd fd(open(file.c_str(), O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_BINARY, 0644));
-    if (fd < 0) {
-        PERROR << __PRETTY_FUNCTION__ << " open failed: " << file;
+    TemporaryFile tmpfile;
+    if (!WriteToImageFile(tmpfile.fd, input)) {
+        PLOG(ERROR) << "Failed to write geometry data to tmpfile " << tmpfile.path;
         return false;
     }
-    return WriteToImageFile(fd, input);
+
+#if !defined(_WIN32)
+    fsync(tmpfile.fd);
+#endif
+    const auto err = rename(tmpfile.path, file.c_str());
+    if (err != 0) {
+        PLOG(ERROR) << "Failed to rename tmp geometry file " << tmpfile.path << " to " << file;
+        return false;
+    }
+    return true;
 }
 
 ImageBuilder::ImageBuilder(const LpMetadata& metadata, uint32_t block_size,
@@ -208,7 +217,8 @@ bool ImageBuilder::ExportFiles(const std::string& output_dir) {
         std::string file_name = "super_" + name + ".img";
         std::string file_path = output_dir + "/" + file_name;
 
-        static const int kOpenFlags = O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_NOFOLLOW | O_BINARY;
+        static const int kOpenFlags =
+                O_CREAT | O_RDWR | O_TRUNC | O_CLOEXEC | O_NOFOLLOW | O_BINARY;
         unique_fd fd(open(file_path.c_str(), kOpenFlags, 0644));
         if (fd < 0) {
             PERROR << "open failed: " << file_path;
