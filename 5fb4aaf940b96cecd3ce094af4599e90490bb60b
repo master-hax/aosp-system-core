@@ -46,6 +46,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "533ad5da_0d7998f0",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-12T16:59:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "392fbb94_de0ac53d",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
