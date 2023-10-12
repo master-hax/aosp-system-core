@@ -46,6 +46,30 @@
       },
       "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bf16ea5_d995eae1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-12T21:14:23Z",
+      "side": 1,
+      "message": "can this CL go after this one? or should it go before.\n\nAlso do you know why kCowFooterop is -1, when it\u0027s a uint?",
+      "parentUuid": "5b0eadf5_40ebf3f8",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 43
+      },
+      "revId": "22177ea4341f0e74119741831131cb68c286ea1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
