@@ -29,6 +29,7 @@
 #include <zlib.h>
 
 #include "cow_decompress.h"
+#include "parser_base.h";
 #include "parser_v2.h"
 
 namespace android {
