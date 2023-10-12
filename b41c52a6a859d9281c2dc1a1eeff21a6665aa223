@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3997fda1_d1099e32",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-12T16:30:32Z",
+      "side": 1,
+      "message": "I\u0027m not really sure what to do with these CLs - I think I became a default OWNER here after salyzyn@ handed off his projects, but I have very little familiarity with this one.\n\nMuch like aosp/2377069 these appear to be Pixel-specific strings/codes, which if true, isn\u0027t appropriate for AOSP.\n\nShould boot reasons be a configuration file on /vendor \u0026 ramdisk that OEMs can customize?",
+      "revId": "b41c52a6a859d9281c2dc1a1eeff21a6665aa223",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
