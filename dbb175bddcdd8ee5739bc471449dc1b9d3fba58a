@@ -34,6 +34,24 @@
       "parentUuid": "e981e3fd_364a153b",
       "revId": "dbb175bddcdd8ee5739bc471449dc1b9d3fba58a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef2fd2e8_21f99464",
+        "filename": "trusty/fuzz/tipc_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-10-12T20:02:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec1deb11_166ba504",
+      "revId": "dbb175bddcdd8ee5739bc471449dc1b9d3fba58a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
