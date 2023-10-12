@@ -16,6 +16,24 @@
       "message": "It might be nice to define the chunk size that send_fd_test uses here since  it has to match what the com.android.trusty.memref.receiver server uses.",
       "revId": "05869ef13cf5ea9bdc507b2896b0b9ed7d0edd74",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3218d037_40201d8a",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-10-12T20:36:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9bfa0f0b_e8ec6dd1",
+      "revId": "05869ef13cf5ea9bdc507b2896b0b9ed7d0edd74",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

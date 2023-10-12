@@ -52,6 +52,24 @@
       "parentUuid": "efea7102_3d079059",
       "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1088771e_d3fb888a",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 897,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-10-12T20:36:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e67e3cc9_970f3258",
+      "revId": "385ece847fffcc363c58ad0af6bacfea400580b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
