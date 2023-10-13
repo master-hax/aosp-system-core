@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "19467d92_9a678830",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1960240
+      },
+      "writtenOn": "2023-10-13T01:07:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "febcb38e_8e56dcb8",
+      "range": {
+        "startLine": 9,
+        "startChar": 162,
+        "endLine": 9,
+        "endChar": 218
+      },
+      "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2c2b7351_fce16f09",
@@ -79,6 +103,24 @@
       "side": 1,
       "message": "This is a new feature. More details will be added to the bug description",
       "parentUuid": "2c2b7351_fce16f09",
+      "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b60d2880_cc43cb22",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1960240
+      },
+      "writtenOn": "2023-10-13T01:07:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "800c06ee_06b01abf",
       "revId": "c786721a6cab234943ecfd7def96fbea15f4c30b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
