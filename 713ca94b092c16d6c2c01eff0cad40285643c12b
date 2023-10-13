@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c0e49c8_880abec1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-10-13T12:38:30Z",
+      "side": 1,
+      "message": "I don\u0027t think I agree with this direction. GID-based permissions are kind of a convenient hack which become maintenance headaches when we inevitably want to put the toothpaste back in the tube. It seems like this should be a normal API. Or perhaps update_engine can send its own logs to DropboxManager?",
+      "revId": "713ca94b092c16d6c2c01eff0cad40285643c12b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
