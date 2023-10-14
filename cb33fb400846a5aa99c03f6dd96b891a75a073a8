@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "83d048ab_87c1aa08",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1112368
+      },
+      "writtenOn": "2023-10-14T03:28:45Z",
+      "side": 1,
+      "message": "those, plus the fact it isn\u0027t labeled: `avc: denied { execute_no_trans } for comm\u003d\"init\" path\u003d\"/system/bin/clean_scratch_files\" dev\u003d\"mmcblk0p14\" ino\u003d563 scontext\u003du:r:init:s0 tcontext\u003du:object_r:system_file:s0 tclass\u003dfile permissive\u003d1`.\n\nThough this may be a separate problem, that doesn\u0027t negate the need for this change.",
+      "parentUuid": "7c1d400f_747c79e6",
+      "range": {
+        "startLine": 9,
+        "startChar": 27,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be6622d1_47526946",
@@ -60,6 +84,54 @@
       "writtenOn": "2023-10-12T08:47:31Z",
       "side": 1,
       "message": "FYI. On production builds (ro.debuggable\u003d0), this file is not installed at all, so it won\u0027t eat up production boot resources.",
+      "range": {
+        "startLine": 10,
+        "startChar": 2,
+        "endLine": 10,
+        "endChar": 36
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f24517e4_a4325d76",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1112368
+      },
+      "writtenOn": "2023-10-14T03:28:45Z",
+      "side": 1,
+      "message": "This is on non-dynamic legacy SAR (normal) and legacy SAR (A/B).\n\nIn my case it\u0027s a device that we shipped on 10 non dynamic A/B, and are still supporting. There are no remount scratch files, it\u0027s just remounting the block. But this is a commit intended originally for LineageOS, where we support a whole load of legacy devices that all hit this.\n\nWe have no plans to retrofit many of these older devices, as it adds significant complexity to the install path for the end user when we can\u0027t do multi-stage OTAs on our infrastructure (non-linear OTA paths, all OTAs are full).",
+      "parentUuid": "be6622d1_47526946",
+      "range": {
+        "startLine": 10,
+        "startChar": 51,
+        "endLine": 10,
+        "endChar": 64
+      },
+      "revId": "cb33fb400846a5aa99c03f6dd96b891a75a073a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6600e2f7_3f930c8c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1112368
+      },
+      "writtenOn": "2023-10-14T03:28:45Z",
+      "side": 1,
+      "message": "Yeah, this is in a user debug context given, but still unnecessary in this case",
+      "parentUuid": "cdecd4b1_6acf48cf",
       "range": {
         "startLine": 10,
         "startChar": 2,
