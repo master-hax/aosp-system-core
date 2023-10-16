@@ -386,6 +386,39 @@ void SnapshotHandler::WaitForRaThreadToStart() {
     }
 }
 
+bool SnapshotHandler::CheckMergeConsistency() {
+    size_t num_ops = 0;
+    num_ops = reader_->get_num_total_data_ops();
+
+    unique_fd fd(open(cow_device_.c_str(), O_RDONLY | O_DIRECT | O_SYNC | O_CLOEXEC));
+    if (fd < 0) {
+        SNAP_PLOG(ERROR) << "Failed to open direct " << cow_device_;
+        return false;
+    }
+
+    void* addr;
+    size_t page_size = getpagesize();
+    if (posix_memalign(&addr, page_size, page_size) < 0) {
+        SNAP_PLOG(ERROR) << "posix_memalign with page size " << page_size;
+        return false;
+    }
+
+    std::unique_ptr<void, decltype(&::free)> buffer(addr, ::free);
+    if (!android::base::ReadFully(fd, buffer.get(), page_size)) {
+        PLOG(ERROR) << "Direct read failed " << cow_device_;
+        return false;
+    }
+
+    auto header = reinterpret_cast<CowHeader*>(buffer.get());
+    if (header->num_merge_ops != num_ops) {
+        LOG(INFO) << "COW merge consistency: expected " << num_ops << " to be merged, "
+                  << "but " << header->num_merge_ops << " were actually recorded. "
+                  << " Waiting for merge to complete";
+        return false;
+    }
+    return true;
+}
+
 std::string SnapshotHandler::GetMergeStatus() {
     bool merge_not_initiated = false;
     bool merge_monitored = false;
@@ -446,7 +479,16 @@ std::string SnapshotHandler::GetMergeStatus() {
 
     // Merge complete
     if (merge_complete) {
-        return "snapshot-merge-complete";
+        // Verify the merge-completion by reading the header from disk. We want
+        // to make sure that all the metadata and data are persisted to disk
+        // before dm tables are switched.
+        //
+        // We may get a spurious error if the COW header update (through msync)
+        // is still in progress. If that is the case, send the return code as "snapshot-merge".
+        // Update-engine will continue to poll until merge is complete.
+        if (CheckMergeConsistency()) {
+            return "snapshot-merge-complete";
+        }
     }
 
     // Merge is in-progress

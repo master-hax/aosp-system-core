@@ -159,6 +159,7 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
 
     bool ShouldReconstructDataFromCow() { return populate_data_from_cow_; }
     void FinishReconstructDataFromCow() { populate_data_from_cow_ = false; }
+    bool CheckMergeConsistency();
     // Return the snapshot status
     std::string GetMergeStatus();
 
