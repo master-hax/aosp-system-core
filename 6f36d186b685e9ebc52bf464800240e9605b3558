@@ -16,6 +16,24 @@
       "message": "Are there test cases we can add to make sure this check works ?",
       "revId": "6f36d186b685e9ebc52bf464800240e9605b3558",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57ec0ece_90eb934d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-10-16T18:38:00Z",
+      "side": 1,
+      "message": "I have revised the check now..\n\nAll the snapshot-test and snapuserd_test should be applicable and should cover it.",
+      "parentUuid": "f9cd12e0_33c3d29a",
+      "revId": "6f36d186b685e9ebc52bf464800240e9605b3558",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
