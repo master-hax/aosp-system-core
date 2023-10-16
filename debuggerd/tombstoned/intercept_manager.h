@@ -44,9 +44,19 @@ struct Intercept {
   DebuggerdDumpType dump_type = kDebuggerdNativeBacktrace;
 };
 
+template <>
+struct std::hash<std::pair<pid_t, DebuggerdDumpType>> {
+  std::size_t operator()(const std::pair<pid_t, DebuggerdDumpType>& p) const {
+    std::size_t h1 = std::hash<pid_t>()(p.first);
+    std::size_t h2 = std::hash<DebuggerdDumpType>()(p.second);
+    // Golden Ratio hash combining
+    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+  }
+};
+
 struct InterceptManager {
   event_base* base;
-  std::unordered_map<pid_t, std::unique_ptr<Intercept>> intercepts;
+  std::unordered_map<std::pair<pid_t, DebuggerdDumpType>, std::unique_ptr<Intercept>> intercepts;
   evconnlistener* listener = nullptr;
 
   InterceptManager(event_base* _Nonnull base, int intercept_socket);

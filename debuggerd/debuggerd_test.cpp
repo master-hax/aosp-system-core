@@ -1878,6 +1878,18 @@ TEST(tombstoned, multiple_intercepts) {
 
   unique_fd intercept_fd_2, output_fd_2;
   tombstoned_intercept(fake_pid, &intercept_fd_2, &output_fd_2, &status, kDebuggerdNativeBacktrace);
+  ASSERT_EQ(InterceptStatus::kRegistered, status);
+}
+
+TEST(tombstoned, multiple_intercepts_same_type) {
+  const pid_t fake_pid = 1'234'567;
+  unique_fd intercept_fd, output_fd;
+  InterceptStatus status;
+  tombstoned_intercept(fake_pid, &intercept_fd, &output_fd, &status, kDebuggerdJavaBacktrace);
+  ASSERT_EQ(InterceptStatus::kRegistered, status);
+
+  unique_fd intercept_fd_2, output_fd_2;
+  tombstoned_intercept(fake_pid, &intercept_fd_2, &output_fd_2, &status, kDebuggerdJavaBacktrace);
   ASSERT_EQ(InterceptStatus::kFailedAlreadyRegistered, status);
 }
 
@@ -2786,4 +2798,40 @@ TEST_F(CrasherTest, log_with_newline) {
   ConsumeFd(std::move(output_fd), &result);
   ASSERT_MATCH(result, ":\\s*This line has a newline.");
   ASSERT_MATCH(result, ":\\s*This is on the next line.");
+}
+
+TEST(CrasherTest, multiple_intercept_smoke) {
+  const char java[] = "java";
+  const char native[] = "native";
+  char outbuf_java[sizeof(java)], outbuf_native[sizeof(native)];
+  unique_fd intercept_fd_native, intercept_fd_java, output_fd_native, output_fd_java;
+  InterceptStatus native_status, java_status;
+
+  const pid_t self = getpid();
+
+  tombstoned_intercept(self, &intercept_fd_native, &output_fd_native, &native_status,
+                       kDebuggerdNativeBacktrace);
+  tombstoned_intercept(self, &intercept_fd_java, &output_fd_java, &java_status,
+                       kDebuggerdJavaBacktrace);
+
+  std::this_thread::sleep_for(500ms);
+
+  ASSERT_EQ(InterceptStatus::kRegistered, native_status);
+  ASSERT_EQ(InterceptStatus::kRegistered, java_status);
+
+  unique_fd tombstoned_socket_native, tombstoned_socket_java, input_fd_native, input_fd_java;
+  ASSERT_TRUE(tombstoned_connect(self, &tombstoned_socket_native, &input_fd_native,
+                                 kDebuggerdNativeBacktrace));
+  ASSERT_TRUE(android::base::WriteFully(input_fd_native.get(), native, sizeof(native)));
+  tombstoned_notify_completion(tombstoned_socket_native.get());
+  ASSERT_TRUE(
+      tombstoned_connect(self, &tombstoned_socket_java, &input_fd_java, kDebuggerdJavaBacktrace));
+  ASSERT_TRUE(android::base::WriteFully(input_fd_java.get(), java, sizeof(java)));
+  tombstoned_notify_completion(tombstoned_socket_java.get());
+
+  ASSERT_TRUE(android::base::ReadFully(output_fd_java.get(), outbuf_java, sizeof(outbuf_java)));
+  ASSERT_STREQ("java", outbuf_java);
+  ASSERT_TRUE(
+      android::base::ReadFully(output_fd_native.get(), outbuf_native, sizeof(outbuf_native)));
+  ASSERT_STREQ("native", outbuf_native);
 }

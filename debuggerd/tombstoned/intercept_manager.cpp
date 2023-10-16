@@ -20,6 +20,7 @@
 #include <sys/types.h>
 
 #include <unordered_map>
+#include <vector>
 
 #include <event2/event.h>
 #include <event2/listener.h>
@@ -48,7 +49,8 @@ static void intercept_close_cb(evutil_socket_t sockfd, short event, void* arg) {
   if (!intercept->registered) {
     delete intercept;
   } else {
-    auto it = intercept_manager->intercepts.find(intercept->intercept_pid);
+    auto it = intercept_manager->intercepts.find(
+        std::make_pair(intercept->intercept_pid, intercept->dump_type));
     if (it == intercept_manager->intercepts.end()) {
       LOG(FATAL) << "intercept close callback called after intercept was already removed?";
     }
@@ -131,7 +133,8 @@ static void intercept_request_cb(evutil_socket_t sockfd, short ev, void* arg) {
     intercept->dump_type = intercept_request.dump_type;
 
     // Check if it's already registered.
-    if (intercept_manager->intercepts.count(intercept_request.pid) > 0) {
+    if (intercept_manager->intercepts.count(
+            std::make_pair(intercept_request.pid, intercept_request.dump_type)) > 0) {
       InterceptResponse response = {};
       response.status = InterceptStatus::kFailedAlreadyRegistered;
       snprintf(response.error_message, sizeof(response.error_message),
@@ -152,7 +155,9 @@ static void intercept_request_cb(evutil_socket_t sockfd, short ev, void* arg) {
     }
 
     intercept->output_fd = std::move(rcv_fd);
-    intercept_manager->intercepts[intercept_request.pid] = std::unique_ptr<Intercept>(intercept);
+    intercept_manager
+        ->intercepts[std::make_pair(intercept_request.pid, intercept_request.dump_type)] =
+        std::unique_ptr<Intercept>(intercept);
     intercept->registered = true;
 
     LOG(INFO) << "registered intercept for pid " << intercept_request.pid << " and type "
@@ -204,20 +209,42 @@ bool dump_types_compatible(DebuggerdDumpType interceptor, DebuggerdDumpType dump
   return false;
 }
 
+std::vector<DebuggerdDumpType> get_compatible_dump_types_for(DebuggerdDumpType dump_type) {
+  // For  kDebuggerdAnyIntercept, we return all dump types
+  // For kDebuggerdTombstoneProto, we return both the input type and kDebuggerdTombstone.
+  // For all other types, only the input is returned.
+  if (dump_type == kDebuggerdAnyIntercept) {
+    // Return all the debug types
+    return {
+        kDebuggerdAnyIntercept,  kDebuggerdNativeBacktrace, kDebuggerdTombstone,
+        kDebuggerdJavaBacktrace, kDebuggerdTombstoneProto,
+    };
+  } else if (dump_type == kDebuggerdTombstoneProto) {
+    return {dump_type, kDebuggerdTombstone};
+  }
+  return {dump_type};
+}
+
 bool InterceptManager::GetIntercept(pid_t pid, DebuggerdDumpType dump_type,
                                     android::base::unique_fd* out_fd) {
-  auto it = this->intercepts.find(pid);
+  auto it = this->intercepts.end();
+  for (const DebuggerdDumpType& candidate_type : get_compatible_dump_types_for(dump_type)) {
+    it = this->intercepts.find(std::make_pair(pid, candidate_type));
+    if (it != this->intercepts.end()) {
+      // Found a compatible intercept
+      break;
+    }
+  }
+
   if (it == this->intercepts.end()) {
+    LOG(WARNING) << "found no matching intercept for pid " << pid
+                 << " for requested type: " << dump_type;
     return false;
   }
 
   if (dump_type == kDebuggerdAnyIntercept) {
     LOG(INFO) << "found registered intercept of type " << it->second->dump_type
               << " for requested type kDebuggerdAnyIntercept";
-  } else if (!dump_types_compatible(it->second->dump_type, dump_type)) {
-    LOG(WARNING) << "found non-matching intercept of type " << it->second->dump_type
-                 << " for requested type: " << dump_type;
-    return false;
   }
 
   auto intercept = std::move(it->second);
