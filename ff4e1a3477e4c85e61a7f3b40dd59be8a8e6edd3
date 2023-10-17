@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64f2d692_41a7b932",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 34
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T22:00:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cb105140_e4a6f5d9",
+      "revId": "ff4e1a3477e4c85e61a7f3b40dd59be8a8e6edd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7ed3afea_274135eb",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-17T17:56:28Z",
       "side": 1,
       "message": "Let\u0027s drop this too. I\u0027m guessing it needs to go to WriterBase, but we don\u0027t need to do that until we implement compression.",
+      "revId": "ff4e1a3477e4c85e61a7f3b40dd59be8a8e6edd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3eca2000_7f929d18",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 34
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T22:00:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ed3afea_274135eb",
       "revId": "ff4e1a3477e4c85e61a7f3b40dd59be8a8e6edd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
