@@ -188,7 +188,7 @@ class CowReader final : public ICowReader {
     uint8_t compression_type_ = kCowCompressNone;
 };
 
-bool ReadCowHeader(android::base::borrowed_fd fd, CowHeader* header);
+bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header);
 
 }  // namespace snapshot
 }  // namespace android
