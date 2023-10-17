@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19e72cef_df456901",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T22:44:18Z",
+      "side": 1,
+      "message": "Add a comment here that even though it\u0027s taking in a CowHeaderV3, the returned struct may only be a v1/v2 CowHeader, in which case the difference in fields will be zero.",
+      "revId": "5bed89f6b200c18ef042e102686eaf8c9d4b93a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9d4f1d0_ed592a22",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T22:44:18Z",
+      "side": 1,
+      "message": "I think you can drop this temporary variable.",
+      "revId": "5bed89f6b200c18ef042e102686eaf8c9d4b93a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
