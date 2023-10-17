@@ -28,12 +28,13 @@
 #include <zlib.h>
 
 #include "cow_decompress.h"
+#include "libsnapshot/cow_format.h"
 #include "parser_v2.h"
 
 namespace android {
 namespace snapshot {
 
-bool ReadCowHeader(android::base::borrowed_fd fd, CowHeader* header) {
+bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header) {
     if (lseek(fd.get(), 0, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek header failed";
         return false;
