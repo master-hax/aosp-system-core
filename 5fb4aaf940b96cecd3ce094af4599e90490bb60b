@@ -189,6 +189,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d510d7a8_42fd4d93",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1895601
+      },
+      "writtenOn": "2023-10-17T21:34:09Z",
+      "side": 1,
+      "message": "`(IMHO, L310 should only check if status \u003d\u003d UNKNOWN or not but not check level.)`\n\nI also came to that conclusion, but interested to hear what AleX says.",
+      "parentUuid": "48adae23_4d3bda98",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
