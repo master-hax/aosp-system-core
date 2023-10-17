@@ -117,6 +117,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c07cd6c_e15e4880",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-17T21:16:25Z",
+      "side": 1,
+      "message": "This does not look like a problem wrt to kernel driver, should the code here consider this scenario? btw, why we are have this \"AND\" condition here:\n\"(health_info_.battery_level \u003d\u003d 0 \u0026\u0026 health_info_.battery_status \u003d\u003d BatteryStatus::UNKNOWN\"?",
+      "parentUuid": "6742c8e9_7a497d15",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
