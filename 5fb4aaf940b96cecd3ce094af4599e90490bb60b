@@ -141,6 +141,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ada38842_45236770",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-17T21:20:21Z",
+      "side": 1,
+      "message": "The oldest history I can trace is that this logic came from:\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/923014/6/healthd/healthd_mode_charger.cpp",
+      "parentUuid": "4c07cd6c_e15e4880",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
