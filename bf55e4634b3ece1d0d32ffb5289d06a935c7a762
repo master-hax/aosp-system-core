@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be992888_7a059814",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "if (options_.scratch_space) {\n        header_.buffer_size \u003d BUFFER_REGION_DEFAULT_SIZE;\n    }",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6381bea6_b23b6056",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "Maybe CHECK(!label.has_value()); until we implement resume points?",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23602830_114e926d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "rm commented code, or CHECK_EQ(compress_threads_.size(), 0);",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6a1df81_5294367f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "Let\u0027s remove this helper and inline it into OpenForWrite. For simplicity, let\u0027s remove current_data_size_. And, let\u0027s make next_op_pos_/next_data_pos_ relative to the start of their dedicated sections. That way OpenForWrite just has to initialize them to 0.",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a1b541e_4b5e0de0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "Move this into SetupHeaders.",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef87f581_427e7b6b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T16:28:51Z",
+      "side": 1,
+      "message": "We don\u0027t need both this lseek and the WriteFully. Just having one of them suffices.",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
