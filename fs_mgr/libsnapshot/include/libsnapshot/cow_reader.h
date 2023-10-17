@@ -172,7 +172,7 @@ class CowReader final : public ICowReader {
 
     android::base::unique_fd owned_fd_;
     android::base::borrowed_fd fd_;
-    CowHeader header_;
+    CowHeaderV3 header_;
     std::optional<CowFooter> footer_;
     uint64_t fd_size_;
     std::optional<uint64_t> last_label_;
@@ -188,7 +188,7 @@ class CowReader final : public ICowReader {
     uint8_t compression_type_ = kCowCompressNone;
 };
 
-bool ReadCowHeader(android::base::borrowed_fd fd, CowHeader* header);
+bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header);
 
 }  // namespace snapshot
 }  // namespace android
