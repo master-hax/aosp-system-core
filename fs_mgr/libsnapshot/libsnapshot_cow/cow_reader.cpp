@@ -28,12 +28,13 @@
 #include <zlib.h>
 
 #include "cow_decompress.h"
+#include "libsnapshot/cow_format.h"
 #include "parser_v2.h"
 
 namespace android {
 namespace snapshot {
 
-bool ReadCowHeader(android::base::borrowed_fd fd, CowHeader* header) {
+bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header) {
     if (lseek(fd.get(), 0, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek header failed";
         return false;
@@ -49,9 +50,9 @@ bool ReadCowHeader(android::base::borrowed_fd fd, CowHeader* header) {
                    << "Expected: " << kCowMagicNumber;
         return false;
     }
-    if (header->prefix.header_size > sizeof(CowHeader)) {
+    if (header->prefix.header_size > sizeof(CowHeaderV3)) {
         LOG(ERROR) << "Unknown CowHeader size (got " << header->prefix.header_size
-                   << " bytes, expected at most " << sizeof(CowHeader) << " bytes)";
+                   << " bytes, expected at most " << sizeof(CowHeaderV3) << " bytes)";
         return false;
     }
 
@@ -123,8 +124,10 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
         return false;
     }
 
+    CowHeader header_v2 = header_;
+
     CowParserV2 parser;
-    if (!parser.Parse(fd, header_, label)) {
+    if (!parser.Parse(fd, header_v2, label)) {
         return false;
     }
 
