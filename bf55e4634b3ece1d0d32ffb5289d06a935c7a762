@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e43f69f_89c7a403",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be992888_7a059814",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6381bea6_b23b6056",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a96e978e_fe0cbd64",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6381bea6_b23b6056",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "23602830_114e926d",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-10-17T16:28:51Z",
       "side": 1,
       "message": "rm commented code, or CHECK_EQ(compress_threads_.size(), 0);",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05a2a7c5_3dee23cc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "23602830_114e926d",
       "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eecf2c5c_5597ab5d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "okay, I\u0027m assuming we\u0027ll have to do the calculations on the reference sites instead to get the correct values of next_op_pos_/next_data_pos_. Is current_data_size_ not needed or are we just adding it in later?",
+      "parentUuid": "b6a1df81_5294367f",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8a1b541e_4b5e0de0",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 31
@@ -82,6 +154,24 @@
       "writtenOn": "2023-10-17T16:28:51Z",
       "side": 1,
       "message": "Move this into SetupHeaders.",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc361a0c_e4ec7734",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a1b541e_4b5e0de0",
       "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -99,6 +189,24 @@
       "writtenOn": "2023-10-17T16:28:51Z",
       "side": 1,
       "message": "We don\u0027t need both this lseek and the WriteFully. Just having one of them suffices.",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37d2a4c7_a5cf2dd5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-17T17:43:15Z",
+      "side": 1,
+      "message": "okay so writefully is sufficient to make sure our fd is in the right place",
+      "parentUuid": "ef87f581_427e7b6b",
       "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
