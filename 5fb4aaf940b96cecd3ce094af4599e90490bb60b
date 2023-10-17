@@ -93,6 +93,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6742c8e9_7a497d15",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-17T18:17:36Z",
+      "side": 1,
+      "message": "The race condition happens in the kernel driver. I think the kernel driver should be fixed instead, not healthd",
+      "parentUuid": "533ad5da_0d7998f0",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
