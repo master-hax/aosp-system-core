@@ -143,6 +143,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "45608c31_cf26d5f9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-17T17:56:28Z",
+      "side": 1,
+      "message": "Yeah, when appending we\u0027ll have to find the correct values. That\u0027ll come when we do resume points.\n\ncurrent_data_size_ isn\u0027t needed AFAICT.",
+      "parentUuid": "eecf2c5c_5597ab5d",
+      "revId": "bf55e4634b3ece1d0d32ffb5289d06a935c7a762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8a1b541e_4b5e0de0",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 31
