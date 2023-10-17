@@ -90,11 +90,12 @@ static bool ShowRawOpStreamV2(borrowed_fd fd, const CowHeader& header) {
 }
 
 static bool ShowRawOpStream(borrowed_fd fd) {
-    CowHeader header;
-    if (!ReadCowHeader(fd, &header)) {
+    CowHeaderV3 header_v3;
+    if (!ReadCowHeader(fd, &header_v3)) {
         LOG(ERROR) << "parse header failed";
         return false;
     }
+    CowHeader header = header_v3;
 
     switch (header.prefix.major_version) {
         case 1:
