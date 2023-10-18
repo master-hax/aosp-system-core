@@ -26,6 +26,33 @@ rust_library {
     rustlibs: [
         "libnix",
         "liblibc",
+        "libbinder_ndk_sys",
+        "libbinder_rs",
+    ],
+}
+
+rust_library {
+    name: "libtrusty_binder-rs",
+    crate_name: "trusty_binder",
+    srcs: [
+        "src/binder.rs"
+    ],
+    rustlibs: [
+        "libnix",
+        "liblibc",
+        "libbinder_ndk_sys",
+        "libbinder_rs",
+        "libtrusty-rs",
+    ],
+    shared_libs: [
+        "libbinder_trusty",
+        //"libbinder",
+        //"libbinder_ndk",
+        //"liblog",
+        //"libtrusty",
+        //"libutils",
+        //"libbase",
+        //"libtrusty",
     ],
 }
 
