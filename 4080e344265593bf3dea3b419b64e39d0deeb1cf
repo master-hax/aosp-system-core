@@ -46,6 +46,40 @@
       },
       "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e3e23d6_a015ea1a",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_super_layout_builder_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-10-18T15:49:59Z",
+      "side": 1,
+      "message": "Do we want to take the `fuzzPartitionName` by reference here?  As is, we\u0027re taking it by copy, and so...",
+      "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc55be36_1491500c",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_super_layout_builder_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-10-18T15:49:59Z",
+      "side": 1,
+      "message": "...this line has no effect outside of this function, and it\u0027s the last line of code in this function.",
+      "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
