@@ -47,10 +47,8 @@ cc_defaults {
     generated_headers: [
         "toolbox_input_labels",
     ],
-    shared_libs: [
-        "libbase",
-    ],
     static_libs: [
+        "libbase",
         "libmodprobe",
         "libpropertyinfoparser",
     ],
@@ -69,6 +67,8 @@ cc_binary {
     name: "toolbox",
     defaults: ["toolbox_binary_defaults"],
     recovery_available: true,
+    static_executable: true,
+    static_libs: ["liblog"],
 }
 
 cc_binary {
@@ -76,4 +76,5 @@ cc_binary {
     stem: "toolbox",
     vendor: true,
     defaults: ["toolbox_binary_defaults"],
+    shared_libs: ["liblog"],
 }
