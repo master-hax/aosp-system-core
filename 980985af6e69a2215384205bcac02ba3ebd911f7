@@ -33,6 +33,23 @@
       "message": "IssueTracker: https://issuetracker.google.com/issues/304574023",
       "revId": "980985af6e69a2215384205bcac02ba3ebd911f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e0fa2f7_8df2d7e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2023-10-18T01:46:48Z",
+      "side": 1,
+      "message": "Please help pay attention to this issues caused by this patch. \n@dvander@google.com @zhengdaniel@google.com\nhttps://issuetracker.google.com/issues/304574023",
+      "revId": "980985af6e69a2215384205bcac02ba3ebd911f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
