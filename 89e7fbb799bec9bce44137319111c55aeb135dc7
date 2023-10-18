@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f0ef841_2da6dadf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-18T04:26:40Z",
+      "side": 1,
+      "message": "Sorry for taking over the change. The code in debuggerd was pretty ugly, so I used this as an excuse to refactor and do some clean up.\n\nMohamad, let me know if this works for your testing.\n\nThe old CL is:\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/2786948\n\nI also added a bunch of extra intercept tests that were missing.",
+      "revId": "89e7fbb799bec9bce44137319111c55aeb135dc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
