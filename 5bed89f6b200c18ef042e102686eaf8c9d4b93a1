@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4069f9d8_08efbd5c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-18T18:05:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19e72cef_df456901",
+      "revId": "5bed89f6b200c18ef042e102686eaf8c9d4b93a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9d4f1d0_ed592a22",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-17T22:44:18Z",
       "side": 1,
       "message": "I think you can drop this temporary variable.",
+      "revId": "5bed89f6b200c18ef042e102686eaf8c9d4b93a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38fbdc89_4249d152",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/inspect_cow.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-10-18T18:05:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9d4f1d0_ed592a22",
       "revId": "5bed89f6b200c18ef042e102686eaf8c9d4b93a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
