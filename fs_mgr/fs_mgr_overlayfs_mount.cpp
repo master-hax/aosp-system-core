@@ -381,33 +381,53 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
 
     auto retval = true;
 
-    struct move_entry {
-        std::string mount_point;
-        std::string dir;
-        bool shared_flag;
-    };
-    std::vector<move_entry> move;
+    std::vector<mount_info> mountinfo = ReadMountinfoFromFile("/proc/self/mountinfo");
+    std::vector<mount_info> submounts;
     auto parent_private = false;
     auto parent_made_private = false;
     auto dev_private = false;
     auto dev_made_private = false;
-    for (auto& entry : ReadMountinfoFromFile("/proc/self/mountinfo")) {
+    for (const auto& entry : mountinfo) {
         if ((entry.mount_point == mount_point) && !entry.shared_flag) {
             parent_private = true;
         }
         if ((entry.mount_point == "/dev") && !entry.shared_flag) {
             dev_private = true;
         }
-
+        // Find all immediate submounts.
         if (!android::base::StartsWith(entry.mount_point, mount_point + "/")) {
             continue;
         }
-        if (std::find_if(move.begin(), move.end(), [&entry](const auto& it) {
-                return android::base::StartsWith(entry.mount_point, it.mount_point + "/");
-            }) != move.end()) {
+        // Exclude duplicated or more specific entries.
+        if (std::find_if(submounts.begin(), submounts.end(), [&entry](const auto& it) {
+                return android::base::StartsWith(entry.mount_point, it.mount_point + "/") ||
+                       it.mount_point == entry.mount_point;
+            }) != submounts.end()) {
             continue;
         }
+        auto erase_from = std::remove_if(submounts.begin(), submounts.end(), [&](const auto& it) {
+            return android::base::StartsWith(it.mount_point, entry.mount_point + "/");
+        });
+        submounts.erase(erase_from, submounts.end());
+        // Pick the last mount entry in case of over mounts.
+        submounts.push_back(
+                *std::find_if(mountinfo.rbegin(), mountinfo.rend(),
+                              [&](const auto& it) { return it.mount_point == entry.mount_point; }));
+    }
 
+    // Need to make the original mountpoint MS_PRIVATE, so that the overlayfs can be MS_MOVE.
+    // This could happen if its parent mount is remounted later.
+    if (!parent_private) {
+        parent_made_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
+    }
+
+    struct move_entry {
+        std::string mount_point;
+        std::string dir;
+        bool shared_flag;
+    };
+    std::vector<move_entry> moved_mounts;
+    for (const auto entry : submounts) {
         // use as the bound directory in /dev.
         AutoSetFsCreateCon createcon;
         auto new_context = fs_mgr_get_context(entry.mount_point);
@@ -426,9 +446,6 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
             continue;
         }
 
-        if (!parent_private && !parent_made_private) {
-            parent_made_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
-        }
         if (new_entry.shared_flag) {
             new_entry.shared_flag = fs_mgr_overlayfs_set_shared_mount(new_entry.mount_point, false);
         }
@@ -439,7 +456,7 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
             }
             continue;
         }
-        move.emplace_back(std::move(new_entry));
+        moved_mounts.push_back(std::move(new_entry));
     }
 
     // hijack __mount() report format to help triage
@@ -463,7 +480,7 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
     }
 
     // Move submounts back.
-    for (const auto& entry : move) {
+    for (const auto& entry : moved_mounts) {
         if (!dev_private && !dev_made_private) {
             dev_made_private = fs_mgr_overlayfs_set_shared_mount("/dev", false);
         }
@@ -658,22 +675,13 @@ Fstab fs_mgr_overlayfs_candidate_list(const Fstab& fstab) {
             !fs_mgr_wants_overlayfs(&new_entry)) {
             continue;
         }
-        auto new_mount_point = fs_mgr_mount_point(entry.mount_point);
-        auto duplicate_or_more_specific = false;
-        for (auto it = candidates.begin(); it != candidates.end();) {
-            auto it_mount_point = fs_mgr_mount_point(it->mount_point);
-            if ((it_mount_point == new_mount_point) ||
-                (android::base::StartsWith(new_mount_point, it_mount_point + "/"))) {
-                duplicate_or_more_specific = true;
-                break;
-            }
-            if (android::base::StartsWith(it_mount_point, new_mount_point + "/")) {
-                it = candidates.erase(it);
-            } else {
-                ++it;
-            }
+        const auto new_mount_point = fs_mgr_mount_point(new_entry.mount_point);
+        if (std::find_if(candidates.begin(), candidates.end(), [&](const auto& it) {
+                return fs_mgr_mount_point(it.mount_point) == new_mount_point;
+            }) != candidates.end()) {
+            continue;
         }
-        if (!duplicate_or_more_specific) candidates.emplace_back(std::move(new_entry));
+        candidates.push_back(std::move(new_entry));
     }
     return candidates;
 }
