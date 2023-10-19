@@ -16,6 +16,29 @@
       "message": "please have a look",
       "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfe875ae_64338775",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 924,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-19T13:28:03Z",
+      "side": 1,
+      "message": "nit: isn\u0027t this redundant to the previous line?",
+      "range": {
+        "startLine": 924,
+        "startChar": 4,
+        "endLine": 924,
+        "endChar": 48
+      },
+      "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
