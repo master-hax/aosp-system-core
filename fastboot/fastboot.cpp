@@ -1247,7 +1247,11 @@ void flash_partition_files(const std::string& partition, const std::vector<Spars
 
 static void flash_buf(const ImageSource* source, const std::string& partition,
                       struct fastboot_buffer* buf, const bool apply_vbmeta) {
-    copy_avb_footer(source, partition, buf);
+    if (partition == "boot" || partition == "boot_a" || partition == "boot_b" ||
+        partition == "init_boot" || partition == "init_boot_a" || partition == "init_boot_b" ||
+        partition == "recovery" || partition == "recovery_a" || partition == "recovery_b") {
+        copy_avb_footer(partition, buf);
+    }
 
     // Rewrite vbmeta if that's what we're flashing and modification has been requested.
     if (g_disable_verity || g_disable_verification) {
