@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "551fa608_104e5f4e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:55:57Z",
+      "side": 1,
+      "message": "!\u003d 3 and !\u003d 0 (since we don\u0027t use minor versions)",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b199807_bbf005e6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:55:57Z",
+      "side": 1,
+      "message": "Version will always be 3 here. You can remove the \"if\" condition and \"else\" block, everything should work (since header_size + buffer_size \u003d\u003d header_size if buffer is 0).",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfd92435_391ace03",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:55:57Z",
+      "side": 1,
+      "message": "Shouldn\u0027t need the \"+ sizeof(CowOperationV3)\" here? If ops are right after the header, the position is already correct.",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf7272fa_ff3f7680",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:55:57Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need this loop at all, because you have header_.op_buffer_size. You can divide by sizeof(CowOperationV3) and do one call to ReadFully().\n\n(You could also change the header field to be \"op_buffer_count\" rather than bytes, to make it easier.)",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
