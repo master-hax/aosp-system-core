@@ -34,6 +34,24 @@
       "parentUuid": "7d549501_bdaba89c",
       "revId": "26721d57b284f405ce9ea6f69bf9504b6533557f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50108fbb_a2d4eb52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1951730
+      },
+      "writtenOn": "2023-10-19T11:57:57Z",
+      "side": 1,
+      "message": "It is related to the work done on reducing and classifying \u0027no stack frame ANRs\u0027 (b/254634348). The primary use case for this is to perform a parallel stack dump (both Java and native) for specific ANRs.",
+      "parentUuid": "d8c4ff0d_de66ea1a",
+      "revId": "26721d57b284f405ce9ea6f69bf9504b6533557f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
