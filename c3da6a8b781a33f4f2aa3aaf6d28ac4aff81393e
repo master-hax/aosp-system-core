@@ -39,6 +39,30 @@
       },
       "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29548a70_e89de696",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 924,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-10-19T13:41:59Z",
+      "side": 1,
+      "message": "Agreed. From: https://android.googlesource.com/platform/system/core/+/refs/heads/main/init/README.md\n\nThe information about mkdir says:\n\"If provided, the mode, owner and group will be updated if the directory exists already. \"",
+      "parentUuid": "dfe875ae_64338775",
+      "range": {
+        "startLine": 924,
+        "startChar": 4,
+        "endLine": 924,
+        "endChar": 48
+      },
+      "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
