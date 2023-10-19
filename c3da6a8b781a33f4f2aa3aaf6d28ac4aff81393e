@@ -63,6 +63,30 @@
       },
       "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7c11fdb_0b16b776",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 924,
+      "author": {
+        "id": 1221112
+      },
+      "writtenOn": "2023-10-19T13:43:13Z",
+      "side": 1,
+      "message": "this is to make sure that the permissions are correct when already created, for upgrades",
+      "parentUuid": "dfe875ae_64338775",
+      "range": {
+        "startLine": 924,
+        "startChar": 4,
+        "endLine": 924,
+        "endChar": 48
+      },
+      "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
