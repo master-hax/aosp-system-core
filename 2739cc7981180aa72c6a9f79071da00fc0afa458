@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1aefa0ec_49b25027",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:28:39Z",
+      "side": 1,
+      "message": "Maybe we can we get rid of AsParserV2()?\n\nfooter() you can put in the base class, and ParserV3 will just return nothing.\n\nGetCompressionType(), similar thing. Though you might also be able to remove compression_type_, since you\u0027ve added it to the v3 header now.",
+      "revId": "2739cc7981180aa72c6a9f79071da00fc0afa458",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba11ef29_b704e8d6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v2.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-19T22:28:39Z",
+      "side": 1,
+      "message": "There\u0027s a risk this could affect boot time, since there are a lot of ops to go through, and we have to parse every COW twice on boot. It would be good to measure the on-device impact of this (\"adb shell time inspect_cow\" on a big COW file would work).\n\nAlternately, just re-inline it, and store it in the header or a member variable. Either cache ops() and do it there, or do it in the Parse function.",
+      "revId": "2739cc7981180aa72c6a9f79071da00fc0afa458",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
