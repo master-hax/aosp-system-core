@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41214a3d_1a2927a7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-10-19T16:50:00Z",
+      "side": 1,
+      "message": "Out of curiosity, do you have a citation for this?  If true, there are probably a few other things we should be cleaning up.",
+      "range": {
+        "startLine": 13,
+        "startChar": 28,
+        "endLine": 13,
+        "endChar": 58
+      },
+      "revId": "b010393fe537d855ec18a623c46e6efb6df261df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
