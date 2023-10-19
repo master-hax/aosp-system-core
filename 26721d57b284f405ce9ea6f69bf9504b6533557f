@@ -70,6 +70,24 @@
       "parentUuid": "50108fbb_a2d4eb52",
       "revId": "26721d57b284f405ce9ea6f69bf9504b6533557f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4693cce5_995927ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1951730
+      },
+      "writtenOn": "2023-10-19T15:14:56Z",
+      "side": 1,
+      "message": "Added that info to the commit message.",
+      "parentUuid": "f7f3339a_75b284f6",
+      "revId": "26721d57b284f405ce9ea6f69bf9504b6533557f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
