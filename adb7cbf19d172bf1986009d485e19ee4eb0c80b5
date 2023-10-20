@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa8e1940_c9ca002b",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-20T21:23:30Z",
+      "side": 1,
+      "message": "To make more clear what is happening here, it\u0027d be great to include a tiny sample mount list, and show what the transformation does to it.",
+      "revId": "adb7cbf19d172bf1986009d485e19ee4eb0c80b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
