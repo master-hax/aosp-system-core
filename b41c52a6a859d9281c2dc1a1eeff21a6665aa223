@@ -52,6 +52,24 @@
       "parentUuid": "de516440_71e0867f",
       "revId": "b41c52a6a859d9281c2dc1a1eeff21a6665aa223",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26232688_0d1a9d4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-20T21:56:41Z",
+      "side": 1,
+      "message": "We don\u0027t, and I guess we shouldn\u0027t hold this up on that basis, at least not this far into Android V. I\u0027ll +2 but I\u0027d like to figure out how OEMs are using this.",
+      "parentUuid": "db306dd9_89dee522",
+      "revId": "b41c52a6a859d9281c2dc1a1eeff21a6665aa223",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
