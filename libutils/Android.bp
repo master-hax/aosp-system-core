@@ -68,13 +68,6 @@ cc_defaults {
         "-Wno-exit-time-destructors",
         "-DANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION",
     ],
-    header_libs: [
-        "libbase_headers",
-        "libutils_headers",
-    ],
-    export_header_lib_headers: [
-        "libutils_headers",
-    ],
 
     shared_libs: [
         "libcutils",
@@ -133,6 +126,14 @@ cc_defaults {
     native_bridge_supported: true,
 
     whole_static_libs: ["libutils_binder"],
+
+    header_libs: [
+        "libbase_headers",
+        "libutils_headers",
+    ],
+    export_header_lib_headers: [
+        "libutils_headers",
+    ],
 
     srcs: [
         "FileMap.cpp",
