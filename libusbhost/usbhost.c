@@ -731,6 +731,10 @@ int usb_request_queue(struct usb_request *req)
     urb->buffer = req->buffer;
     urb->buffer_length = req->buffer_length;
 
+    if (req->dev == NULL) {
+        return -1;
+    }
+
     do {
         res = ioctl(req->dev->fd, USBDEVFS_SUBMITURB, urb);
     } while((res < 0) && (errno == EINTR));
