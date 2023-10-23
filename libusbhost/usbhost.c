@@ -357,7 +357,9 @@ struct usb_device *usb_device_open(const char *dev_name)
 
 void usb_device_close(struct usb_device *device)
 {
-    close(device->fd);
+    if (device->fd) {
+        close(device->fd);
+    }
     free(device);
 }
 
@@ -730,6 +732,12 @@ int usb_request_queue(struct usb_request *req)
     urb->status = -1;
     urb->buffer = req->buffer;
     urb->buffer_length = req->buffer_length;
+
+    if (req->dev == NULL) {
+        errno = ENOTTY;
+        D("usb_request_queue dev is null. errno %d\n", errno);
+        return -1;
+    }
 
     do {
         res = ioctl(req->dev->fd, USBDEVFS_SUBMITURB, urb);
