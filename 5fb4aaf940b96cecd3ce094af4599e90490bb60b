@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "638a17ec_ca363cc6",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-24T20:29:34Z",
+      "side": 1,
+      "message": "@apelosi@google.com, this battery level and status are from healthd by reading the sysfs. so make sure battery status update before or at the same time as battery level, the change need to at kernel. Would you mean that change in kernel is more preferable ?",
+      "parentUuid": "e9ee7edc_a0c79cf6",
+      "range": {
+        "startLine": 310,
+        "startChar": 0,
+        "endLine": 310,
+        "endChar": 99
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b7d6a8a5_d0caf295",
         "filename": "healthd/healthd_mode_charger.cpp",
         "patchSetId": 3
