@@ -46,6 +46,13 @@ namespace {
 
 constexpr const char kLegacyPersistentPropertyDir[] = "/data/property";
 
+void AddPersistentProperty(const std::string& name, const std::string& value,
+                           PersistentProperties* persistent_properties) {
+    auto persistent_property_record = persistent_properties->add_properties();
+    persistent_property_record->set_name(name);
+    persistent_property_record->set_value(value);
+}
+
 Result<PersistentProperties> LoadLegacyPersistentProperties() {
     std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(kLegacyPersistentPropertyDir), closedir);
     if (!dir) {
@@ -145,13 +152,6 @@ Result<PersistentProperties> ParsePersistentPropertyFile(const std::string& file
 }
 
 }  // namespace
-
-void AddPersistentProperty(const std::string& name, const std::string& value,
-                           PersistentProperties* persistent_properties) {
-    auto persistent_property_record = persistent_properties->add_properties();
-    persistent_property_record->set_name(name);
-    persistent_property_record->set_value(value);
-}
 
 Result<PersistentProperties> LoadPersistentPropertyFile() {
     auto file_contents = ReadPersistentPropertyFile();
@@ -266,8 +266,44 @@ PersistentProperties LoadPersistentProperties() {
         }
     }
 
+    bool has_staged_prop = false;
+    auto const staged_prefix = std::string_view("next_boot.");
+    auto applied_props = std::unordered_map<std::string, std::string>();
+    for (const auto& property_record : persistent_properties->properties()) {
+      auto const& prop_name = property_record.name();
+      auto const& prop_value = property_record.value();
+
+      if (StartsWith(prop_name, staged_prefix)) {
+        // encounter a staged prop
+        has_staged_prop = true;
+        auto actual_prop_name = prop_name.substr(staged_prefix.size());
+        applied_props[actual_prop_name] = prop_value;
+      } else if (!applied_props.count(prop_name)){
+        // only add prop name value pair to hash table if it is not seen as staged prop
+        applied_props[prop_name] = prop_value;
+      }
+    }
+
+    // Update persist prop file if there are staged props
+    if (has_staged_prop) {
+      PersistentProperties updated_persistent_properties;
+      for (auto const& [prop_name, prop_value] : applied_props) {
+        AddPersistentProperty(prop_name, prop_value, &updated_persistent_properties);
+      }
+
+      // write current updated persist prop file
+      auto result = WritePersistentPropertyFile(updated_persistent_properties);
+      if (!result.ok()) {
+        LOG(ERROR) << "Could not store persistent property: " << result.error();
+      }
+
+      return updated_persistent_properties;
+    }
+
     return *persistent_properties;
 }
+
+
 
 }  // namespace init
 }  // namespace android
