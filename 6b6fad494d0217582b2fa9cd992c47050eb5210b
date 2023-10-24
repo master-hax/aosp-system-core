@@ -34,6 +34,24 @@
       "parentUuid": "1f78a218_345e15dc",
       "revId": "6b6fad494d0217582b2fa9cd992c47050eb5210b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f69efdee_e68dbd71",
+        "filename": "libusbhost/usbhost.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-24T14:26:00Z",
+      "side": 1,
+      "message": "\u003e dev is set in the fuzzer so I can\u0027t put any check there.\n\nif that\u0027s true, then this code is fine and you should fix the broken fuzzer instead.",
+      "parentUuid": "c0947da7_34922260",
+      "revId": "6b6fad494d0217582b2fa9cd992c47050eb5210b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
