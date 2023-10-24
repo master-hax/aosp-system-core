@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16ca2f1c_96455444",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1064003
+      },
+      "writtenOn": "2023-10-24T18:44:40Z",
+      "side": 1,
+      "message": "Why only the 32-bit zygote? Did you do any testing for 64-bit primary?",
+      "range": {
+        "startLine": 1,
+        "startChar": 105,
+        "endLine": 1,
+        "endChar": 112
+      },
+      "revId": "14f5446e1d788c83ba98fd7fa1cc42ce2206efa3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
