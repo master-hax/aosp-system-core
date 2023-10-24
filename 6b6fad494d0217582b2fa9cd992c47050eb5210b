@@ -16,6 +16,24 @@
       "message": "seems wrong to add a case that returns failure without setting errno.\n\nis there a reason you\u0027re not addressing this where dev gets set to an invalid value instead?\n\nseems to me like usb_device_new() should fail if given a bad fd? otherwise you\u0027re going to spend the rest of your life chasing everywhere someone tries to use fd in an object you should never have allowed to be created in the first place (including as new uses of fd are added).",
       "revId": "6b6fad494d0217582b2fa9cd992c47050eb5210b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0947da7_34922260",
+        "filename": "libusbhost/usbhost.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1883512
+      },
+      "writtenOn": "2023-10-24T08:07:25Z",
+      "side": 1,
+      "message": "I will set errno for this case. dev is set in the fuzzer so I can\u0027t put any check there.\n\nCurrently `usb_device_new()` is getting failed for the wrong fd value and that\u0027s why it\u0027s returning NULL.",
+      "parentUuid": "1f78a218_345e15dc",
+      "revId": "6b6fad494d0217582b2fa9cd992c47050eb5210b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
