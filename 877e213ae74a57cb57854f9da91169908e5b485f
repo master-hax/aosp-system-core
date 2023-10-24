@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa68178d_57de13a0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.h",
+        "patchSetId": 33
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-24T17:48:06Z",
+      "side": 1,
+      "message": "final",
+      "range": {
+        "startLine": 43,
+        "startChar": 6,
+        "endLine": 43,
+        "endChar": 17
+      },
+      "revId": "877e213ae74a57cb57854f9da91169908e5b485f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
