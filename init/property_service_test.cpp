@@ -26,6 +26,10 @@
 #include <android-base/strings.h>
 #include <gtest/gtest.h>
 
+#include "init.h"
+#include "property_service.h"
+#include "system/core/init/property_service.pb.h"
+
 using android::base::GetProperty;
 using android::base::SetProperty;
 
@@ -123,6 +127,42 @@ TEST(property_service, check_fingerprint_with_legacy_build_id) {
             GetProperty("ro.build.tags", "")};
 
     ASSERT_EQ(android::base::Join(fingerprint_fields, ""), fingerprint);
+}
+
+TEST(property_service, next_boot) {
+  // Stage a next boot prop
+  // SetProperty("persist.device_config.aconfig_flags.a_test_flag", "false");
+  // ASSERT_EQ(GetProperty("persist.device_config.aconfig_flags.a_test_flag", ""), "false");
+  // SetProperty("next_boot.persist.device_config.aconfig_flags.a_test_flag", "true");
+  // ASSERT_EQ(GetProperty("next_boot.persist.device_config.aconfig_flags.a_test_flag", ""), "true");
+
+  // Connect to the property service directly
+  int fd = socket(AF_LOCAL, SOCK_STREAM | SOCK_CLOEXEC, 0);
+  ASSERT_NE(fd, -1);
+
+  static const char* property_service_socket = "/dev/socket/" PROP_SERVICE_NAME;
+  sockaddr_un addr = {};
+  addr.sun_family = AF_LOCAL;
+  strlcpy(addr.sun_path, property_service_socket, sizeof(addr.sun_path));
+
+  socklen_t addr_len = strlen(property_service_socket) + offsetof(sockaddr_un, sun_path) + 1;
+  ASSERT_NE(connect(fd, reinterpret_cast<sockaddr*>(&addr), addr_len), -1);
+
+  // Send message to socket to request loading persist prop
+  auto init_msg = InitMessage{};
+  init_msg.set_load_persistent_properties(true);
+  std::string msg;
+  init_msg.SerializeToString(&msg);
+  ASSERT_EQ(static_cast<long>(msg.size()), send(fd, msg.c_str(), msg.size(), 0));
+
+  // Wait for load persist prop to complete
+  start_waiting_for_property("ro.persistent_properties.ready", "true");
+  ASSERT_EQ(GetProperty("ro.persistent_properties.ready", ""), "true");
+
+  // Check that the prop is applied
+  ASSERT_EQ(GetProperty("persist.device_config.aconfig_flags.a_test_flag", ""), "true");
+
+  ASSERT_EQ(0, close(fd));
 }
 
 }  // namespace init
