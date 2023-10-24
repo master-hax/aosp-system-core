@@ -309,6 +309,30 @@
       },
       "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76d101d3_3c0b25ec",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 1951090
+      },
+      "writtenOn": "2023-10-24T20:34:17Z",
+      "side": 1,
+      "message": "Only reason I could think of checking the battery level is that the platform do not use battery status, such as it always set the battery status as something other than unknown. If this case exist, the current change will not have negative impact. If not, just use battery status(without checking battery level) seems works well.",
+      "parentUuid": "af81a7a4_622fc57c",
+      "range": {
+        "startLine": 322,
+        "startChar": 7,
+        "endLine": 323,
+        "endChar": 25
+      },
+      "revId": "5fb4aaf940b96cecd3ce094af4599e90490bb60b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
