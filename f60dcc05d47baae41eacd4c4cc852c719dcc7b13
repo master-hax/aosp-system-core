@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d2fa45d_cc0c92c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T04:32:05Z",
+      "side": 1,
+      "message": "I added an op_count_max field to the header. In estimation mode this won\u0027t be used, but it will need to be communicated as part of the DeltaArchiveManifest. In write/append mode we must stay within the bounds of op_count_max when incrementing op_count.",
+      "revId": "f60dcc05d47baae41eacd4c4cc852c719dcc7b13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

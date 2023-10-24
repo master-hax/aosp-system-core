@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9292538_c6399b44",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T04:32:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "551fa608_104e5f4e",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0b199807_bbf005e6",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-10-19T22:55:57Z",
       "side": 1,
       "message": "Version will always be 3 here. You can remove the \"if\" condition and \"else\" block, everything should work (since header_size + buffer_size \u003d\u003d header_size if buffer is 0).",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9b3ea01_2ad36888",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T04:32:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b199807_bbf005e6",
       "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa44c592_a733fce7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T04:32:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bfd92435_391ace03",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bf7272fa_ff3f7680",
@@ -65,6 +119,24 @@
       "writtenOn": "2023-10-19T22:55:57Z",
       "side": 1,
       "message": "You shouldn\u0027t need this loop at all, because you have header_.op_buffer_size. You can divide by sizeof(CowOperationV3) and do one call to ReadFully().\n\n(You could also change the header field to be \"op_buffer_count\" rather than bytes, to make it easier.)",
+      "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ffd578b_ba6230bb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T04:32:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf7272fa_ff3f7680",
       "revId": "a13067a3d6c9ba848129ab6abd05ef4dfd2bce91",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
