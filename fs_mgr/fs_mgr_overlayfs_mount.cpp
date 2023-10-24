@@ -34,6 +34,7 @@
 #include <android-base/file.h>
 #include <android-base/macros.h>
 #include <android-base/properties.h>
+#include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <ext4_utils/ext4_utils.h>
@@ -57,6 +58,9 @@ constexpr char kPreferCacheBackingStorageProp[] = "fs_mgr.overlayfs.prefer_cache
 
 constexpr char kCacheMountPoint[] = "/cache";
 constexpr char kPhysicalDevice[] = "/dev/block/by-name/";
+
+// Mount tree to temporarily hold references to submounts.
+constexpr char kMoveMountTempDir[] = "/dev/remount";
 
 constexpr char kLowerdirOption[] = "lowerdir=";
 constexpr char kUpperdirOption[] = "upperdir=";
@@ -284,10 +288,6 @@ static bool fs_mgr_overlayfs_set_shared_mount(const std::string& mount_point, bo
     if (ret) {
         PERROR << "__mount(target=" << mount_point
                << ",flag=" << (shared_flag ? "MS_SHARED" : "MS_PRIVATE") << ")=" << ret;
-        // If "/system" doesn't look like a mountpoint, retry with "/".
-        if (errno == EINVAL && mount_point == "/system") {
-            return fs_mgr_overlayfs_set_shared_mount("/", shared_flag);
-        }
         return false;
     }
     return true;
@@ -379,19 +379,18 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
     const auto options = fs_mgr_get_overlayfs_options(entry);
     if (options.empty()) return false;
 
-    auto retval = true;
-
     struct MoveEntry {
         std::string mount_point;
         std::string dir;
         bool shared_flag;
     };
-
     std::vector<MoveEntry> moved_mounts;
-    auto parent_private = false;
-    auto parent_made_private = false;
-    auto dev_private = false;
-    auto dev_made_private = false;
+
+    bool retval = true;
+    bool move_dir_shared = true;
+    bool parent_shared = true;
+    bool root_shared = true;
+    bool root_made_private = false;
 
     // There could be multiple mount entries with the same mountpoint.
     // Group these entries together with stable_sort, and keep only the last entry of a group.
@@ -411,18 +410,31 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
     // mountinfo is reversed twice, so still is in lexical sorted order.
 
     for (const auto& entry : mountinfo) {
-        if ((entry.mount_point == mount_point) && !entry.shared_flag) {
-            parent_private = true;
+        if (entry.mount_point == kMoveMountTempDir) {
+            move_dir_shared = entry.shared_flag;
         }
-        if ((entry.mount_point == "/dev") && !entry.shared_flag) {
-            dev_private = true;
+        if (entry.mount_point == mount_point ||
+            (mount_point == "/system" && entry.mount_point == "/")) {
+            parent_shared = entry.shared_flag;
         }
+        if (entry.mount_point == "/") {
+            root_shared = entry.shared_flag;
+        }
+    }
+
+    // Precondition is that kMoveMountTempDir is 'private', otherwise don't try to move any submount
+    // in to or out of it.
+    if (move_dir_shared) {
+        mountinfo.clear();
     }
 
     // Need to make the original mountpoint MS_PRIVATE, so that the overlayfs can be MS_MOVE.
     // This could happen if its parent mount is remounted later.
-    if (!parent_private) {
-        parent_made_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
+    if (!fs_mgr_overlayfs_set_shared_mount(mount_point, false)) {
+        // If "/system" doesn't look like a mountpoint, retry with "/".
+        if (errno == EINVAL && mount_point == "/system") {
+            root_made_private = fs_mgr_overlayfs_set_shared_mount("/", false);
+        }
     }
 
     for (const auto& entry : mountinfo) {
@@ -440,8 +452,8 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
         // mountinfo is in lexical order, so no need to worry about |entry| being a parent mount of
         // entries of |moved_mounts|.
 
-        // use as the bound directory in /dev.
-        MoveEntry new_entry{entry.mount_point, "/dev/TemporaryDir-XXXXXX", entry.shared_flag};
+        MoveEntry new_entry{entry.mount_point, kMoveMountTempDir + "/TemporaryDir-XXXXXX"s,
+                            entry.shared_flag};
         {
             AutoSetFsCreateCon createcon;
             auto new_context = fs_mgr_get_context(entry.mount_point);
@@ -497,10 +509,6 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
 
     // Move submounts back.
     for (const auto& entry : moved_mounts) {
-        if (!dev_private && !dev_made_private) {
-            dev_made_private = fs_mgr_overlayfs_set_shared_mount("/dev", false);
-        }
-
         if (!fs_mgr_overlayfs_move_mount(entry.dir, entry.mount_point)) {
             retval = false;
         } else if (entry.shared_flag &&
@@ -509,11 +517,11 @@ static bool fs_mgr_overlayfs_mount(const FstabEntry& entry) {
         }
         rmdir(entry.dir.c_str());
     }
-    if (dev_made_private) {
-        fs_mgr_overlayfs_set_shared_mount("/dev", true);
-    }
-    if (parent_made_private) {
+    if (parent_shared) {
         fs_mgr_overlayfs_set_shared_mount(mount_point, true);
+    }
+    if (root_shared && root_made_private) {
+        fs_mgr_overlayfs_set_shared_mount("/", true);
     }
 
     return retval;
@@ -730,6 +738,22 @@ bool fs_mgr_overlayfs_mount_all(Fstab* fstab) {
     if (!OverlayfsSetupAllowed()) {
         return false;
     }
+
+    // Ensure kMoveMountTempDir is standalone mount tree with 'private' propagation.
+    if (!fs_mgr_overlayfs_already_mounted(kMoveMountTempDir, false)) {
+        if (mkdir(kMoveMountTempDir, 0755) && errno != EEXIST) {
+            PERROR << "mkdir " << kMoveMountTempDir;
+        }
+        if (mount(kMoveMountTempDir, kMoveMountTempDir, nullptr, MS_BIND, nullptr)) {
+            PERROR << "bind mount " << kMoveMountTempDir;
+        }
+    }
+    fs_mgr_overlayfs_set_shared_mount(kMoveMountTempDir, false);
+    android::base::ScopeGuard umountDir([]() {
+        umount(kMoveMountTempDir);
+        rmdir(kMoveMountTempDir);
+    });
+
     auto ret = true;
     auto scratch_can_be_mounted = !fs_mgr_overlayfs_already_mounted(kScratchMountPoint, false);
     for (const auto& entry : fs_mgr_overlayfs_candidate_list(*fstab)) {
