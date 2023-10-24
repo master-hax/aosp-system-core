@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9997c927_bc171446",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-24T18:07:39Z",
+      "side": 1,
+      "message": "OK can we add an error check here on header_.prefix.header_size?",
+      "parentUuid": "81eb0461_57e9636a",
+      "range": {
+        "startLine": 106,
+        "startChar": 49,
+        "endLine": 106,
+        "endChar": 75
+      },
+      "revId": "fa2be2874aebc3b9e1a375a9fba91b155179f95e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b34973e4_1f0a2472",
