@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "797b9259_c17e4b8a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-24T18:58:30Z",
+      "side": 1,
+      "message": "LGTM conditional on two questions.",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fe51ef2_ce244c57",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-24T18:58:30Z",
+      "side": 1,
+      "message": "Is it necessary to change from \u003cutils/CallStack.h\u003e to \"../../...\" here?",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b84ce2f_e20e9a3f",
+        "filename": "libutils/include/utils/LightRefBase.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-24T18:58:30Z",
+      "side": 1,
+      "message": "Is this (and other) symlink necessary? Isn\u0027t it enough to export libutils_binder include?",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
