@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "278c9d63_022c63e9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T20:30:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "408ec9f5_42c7e913",
+      "range": {
+        "startLine": 48,
+        "startChar": 40,
+        "endLine": 48,
+        "endChar": 41
+      },
+      "revId": "362681a9b6f56a60dfee1de6c1693e6aa52ea3bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "20e70f66_681ad450",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-10-24T17:55:29Z",
       "side": 1,
       "message": "CHECK_LT",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 49,
+        "endChar": 13
+      },
+      "revId": "362681a9b6f56a60dfee1de6c1693e6aa52ea3bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee0789e9_513a3b77",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T20:30:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "20e70f66_681ad450",
       "range": {
         "startLine": 49,
         "startChar": 8,
