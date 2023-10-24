@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a59c60df_e2f3ce11",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-24T23:32:24Z",
+      "side": 1,
+      "message": "Yes. We\u0027re not moving CallStack.h into libutils_binder (it is already split out into libutilscallstack). We can cut this dependency very easily though by setting CALLSTCK_ENABLED to 0 in your build.",
+      "parentUuid": "0fe51ef2_ce244c57",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b84ce2f_e20e9a3f",
         "filename": "libutils/include/utils/LightRefBase.h",
         "patchSetId": 2
@@ -48,6 +66,24 @@
       "writtenOn": "2023-10-24T18:58:30Z",
       "side": 1,
       "message": "Is this (and other) symlink necessary? Isn\u0027t it enough to export libutils_binder include?",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "835a2adf_440e20a7",
+        "filename": "libutils/include/utils/LightRefBase.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-24T23:32:24Z",
+      "side": 1,
+      "message": "This is due to globals.go including frameworks/native/include, which symlinks this folder. Though, maybe libutils is cleaned up here. I can try.",
+      "parentUuid": "9b84ce2f_e20e9a3f",
       "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
