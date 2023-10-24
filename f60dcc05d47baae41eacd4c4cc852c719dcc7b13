@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e4fc848_7e47a167",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T20:26:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1fdd1390_9e1a0d69",
+      "range": {
+        "startLine": 48,
+        "startChar": 37,
+        "endLine": 48,
+        "endChar": 38
+      },
+      "revId": "f60dcc05d47baae41eacd4c4cc852c719dcc7b13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "26ba1b21_fcdf0be1",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-10-24T17:53:31Z",
       "side": 1,
       "message": "`ReadFullyAtOffset` and remove the lseek call",
+      "range": {
+        "startLine": 72,
+        "startChar": 24,
+        "endLine": 72,
+        "endChar": 33
+      },
+      "revId": "f60dcc05d47baae41eacd4c4cc852c719dcc7b13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52878c11_6289b4fb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-10-24T20:26:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26ba1b21_fcdf0be1",
       "range": {
         "startLine": 72,
         "startChar": 24,
