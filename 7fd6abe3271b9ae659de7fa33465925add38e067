@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6338525e_9698db10",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-25T15:17:00Z",
+      "side": 1,
+      "message": "aren\u0027t we supposed to be working to _reduce_ the amount of this kind of thing in system properties?\n\nit\u0027s unclear to me why (like bugreport already does) whatever\u0027s calling getprop can\u0027t just call `uname -a` rather than duplicate the implementation?",
+      "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
