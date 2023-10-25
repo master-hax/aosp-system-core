@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e76b595_11b8e705",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2023-10-25T11:10:59Z",
+      "side": 1,
+      "message": "Updated commit message for better clarity.",
+      "revId": "ab677096bd3a4ad0ad95bba51e8eaa7fc81c9fdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
