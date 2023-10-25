@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1e6f6906_dd8d0d05",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-25T22:05:22Z",
+      "side": 1,
+      "message": "I didn\u0027t want to add \u0027__has_include\u0027 because it could silently break. Callstacks are enabled by default for a couple of error paths.",
+      "parentUuid": "a2c543fb_39ffa129",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f8c1f0f6_4bcd49cd",
         "filename": "libutils/binder/String8.cpp",
         "patchSetId": 2
