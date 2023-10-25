@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cebced78_10208c16",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-25T22:15:16Z",
+      "side": 1,
+      "message": "+elsk/zhangkelvin for fastboot...\n\n(idea sgtm though; this is what we\u0027ve done in adb for integration testing, and -- while obviously we\u0027d prefer more unit testing -- it\u0027s helped us cover a lot of things that just weren\u0027t practical to retrofit unit tests to without a massive rewrite we can\u0027t afford.)",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
