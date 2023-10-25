@@ -22,6 +22,30 @@
       },
       "revId": "14f5446e1d788c83ba98fd7fa1cc42ce2206efa3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "deb6e279_2aa91637",
+        "filename": "rootdir/init.zygote32.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1837219
+      },
+      "writtenOn": "2023-10-25T06:07:22Z",
+      "side": 1,
+      "message": "Hi Jared,\nWhy only the 32-bit zygote? \nREPLY:Our adt4 and ohm is 32-bit Android,so we just submit only 32bit patch \nDid you do any testing for 64-bit primary?\nREPLY:Yes, we do test 64 bit primary and \"--enable-lazy-preload\" can also make 1s faster, I  supplement the 64-bit patch with patchset 2",
+      "parentUuid": "16ca2f1c_96455444",
+      "range": {
+        "startLine": 1,
+        "startChar": 105,
+        "endLine": 1,
+        "endChar": 112
+      },
+      "revId": "14f5446e1d788c83ba98fd7fa1cc42ce2206efa3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
