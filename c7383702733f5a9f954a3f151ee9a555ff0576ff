@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6adbbddc_a62c2e5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-25T22:54:26Z",
+      "side": 1,
+      "message": "FWIW, this change still doesn\u0027t fix my build - Binder still depends on libutils. Parcel.h includes Flattenable.h.\n\nHere\u0027s a list of all files I had to symlink:\n- Compat.h\n- Endian.h\n- Flattenable.h\n- KeyedVector.h\n- Log.h\n- Mutex.h\n- SortedVector.h\n- Timers.h\n- misc.h",
+      "revId": "c7383702733f5a9f954a3f151ee9a555ff0576ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
