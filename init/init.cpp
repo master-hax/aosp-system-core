@@ -701,6 +701,11 @@ static void SetKernelVersion() {
         return;
     }
     SetProperty("ro.kernel.version", android::base::StringPrintf("%u.%u", major, minor));
+    SetProperty("ro.kernel.version_sysname", android::base::StringPrintf("%s", uts.sysname));
+    SetProperty("ro.kernel.version_nodename", android::base::StringPrintf("%s", uts.nodename));
+    SetProperty("ro.kernel.version_release", android::base::StringPrintf("%s", uts.release));
+    SetProperty("ro.kernel.version_version", android::base::StringPrintf("%s", uts.version));
+    SetProperty("ro.kernel.version_machine", android::base::StringPrintf("%s", uts.machine));
 }
 
 static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
