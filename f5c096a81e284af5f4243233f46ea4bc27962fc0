@@ -187,7 +187,7 @@
         },
         "applicabilityExpression": {
           "value": {
-            "expressionString": "branch:refs/heads/oreo-cts-dev OR branch:refs/heads/oreo-mr1-cts-dev OR branch:refs/heads/oreo-vts-dev OR branch:refs/heads/oreo-mr1-vts-dev OR branch:refs/heads/nougat-cts-dev OR branch:refs/heads/nougat-mr1-cts-dev OR branch:refs/heads/pie-cts-dev OR branch:refs/heads/pie-vts-dev OR branch:refs/heads/android10-tests-dev OR branch:refs/heads/android11-tests-dev OR branch:refs/heads/android12-tests-dev OR branch:refs/heads/android12L-tests-dev OR branch:refs/heads/android13-tests-dev OR branch:^refs/heads/.*-gsi OR branch:refs/heads/emu-32-dev"
+            "expressionString": "branch:refs/heads/oreo-cts-dev OR branch:refs/heads/oreo-mr1-cts-dev OR branch:refs/heads/oreo-vts-dev OR branch:refs/heads/oreo-mr1-vts-dev OR branch:refs/heads/nougat-cts-dev OR branch:refs/heads/nougat-mr1-cts-dev OR branch:refs/heads/pie-cts-dev OR branch:refs/heads/pie-vts-dev OR branch:refs/heads/android10-tests-dev OR branch:refs/heads/android11-tests-dev OR branch:refs/heads/android12-tests-dev OR branch:refs/heads/android12L-tests-dev OR branch:refs/heads/android13-tests-dev OR branch:refs/heads/android14-tests-dev OR branch:^refs/heads/.*-gsi OR branch:refs/heads/emu-32-dev OR branch:refs/heads/emu-33-dev OR (branch:refs/heads/main AND (project:device/google/redbull))"
           }
         },
         "submittabilityExpression": {
@@ -201,7 +201,7 @@
         "allowOverrideInChildProjects": true
       },
       "applicabilityExpressionResult": {
-        "value": {"expression":{"expressionString":"branch:refs/heads/oreo-cts-dev OR branch:refs/heads/oreo-mr1-cts-dev OR branch:refs/heads/oreo-vts-dev OR branch:refs/heads/oreo-mr1-vts-dev OR branch:refs/heads/nougat-cts-dev OR branch:refs/heads/nougat-mr1-cts-dev OR branch:refs/heads/pie-cts-dev OR branch:refs/heads/pie-vts-dev OR branch:refs/heads/android10-tests-dev OR branch:refs/heads/android11-tests-dev OR branch:refs/heads/android12-tests-dev OR branch:refs/heads/android12L-tests-dev OR branch:refs/heads/android13-tests-dev OR branch:^refs/heads/.*-gsi OR branch:refs/heads/emu-32-dev"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["branch:refs/heads/oreo-cts-dev","branch:refs/heads/oreo-mr1-cts-dev","branch:refs/heads/oreo-vts-dev","branch:refs/heads/oreo-mr1-vts-dev","branch:refs/heads/nougat-cts-dev","branch:refs/heads/nougat-mr1-cts-dev","branch:refs/heads/pie-cts-dev","branch:refs/heads/pie-vts-dev","branch:refs/heads/android10-tests-dev","branch:refs/heads/android11-tests-dev","branch:refs/heads/android12-tests-dev","branch:refs/heads/android12L-tests-dev","branch:refs/heads/android13-tests-dev","branch:^refs/heads/.*-gsi","branch:refs/heads/emu-32-dev"]}
+        "value": {"expression":{"expressionString":"branch:refs/heads/oreo-cts-dev OR branch:refs/heads/oreo-mr1-cts-dev OR branch:refs/heads/oreo-vts-dev OR branch:refs/heads/oreo-mr1-vts-dev OR branch:refs/heads/nougat-cts-dev OR branch:refs/heads/nougat-mr1-cts-dev OR branch:refs/heads/pie-cts-dev OR branch:refs/heads/pie-vts-dev OR branch:refs/heads/android10-tests-dev OR branch:refs/heads/android11-tests-dev OR branch:refs/heads/android12-tests-dev OR branch:refs/heads/android12L-tests-dev OR branch:refs/heads/android13-tests-dev OR branch:refs/heads/android14-tests-dev OR branch:^refs/heads/.*-gsi OR branch:refs/heads/emu-32-dev OR branch:refs/heads/emu-33-dev OR (branch:refs/heads/main AND (project:device/google/redbull))"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":["branch:refs/heads/main"],"failingAtoms":["branch:refs/heads/oreo-cts-dev","branch:refs/heads/oreo-mr1-cts-dev","branch:refs/heads/oreo-vts-dev","branch:refs/heads/oreo-mr1-vts-dev","branch:refs/heads/nougat-cts-dev","branch:refs/heads/nougat-mr1-cts-dev","branch:refs/heads/pie-cts-dev","branch:refs/heads/pie-vts-dev","branch:refs/heads/android10-tests-dev","branch:refs/heads/android11-tests-dev","branch:refs/heads/android12-tests-dev","branch:refs/heads/android12L-tests-dev","branch:refs/heads/android13-tests-dev","branch:refs/heads/android14-tests-dev","branch:^refs/heads/.*-gsi","branch:refs/heads/emu-32-dev","branch:refs/heads/emu-33-dev","project:device/google/redbull"]}
       },
       "submittabilityExpressionResult": {
         "value": {"expression":{"expressionString":"label:DrNo-Review=MAX AND -label:DrNo-Review=MIN"},"status":"NOT_EVALUATED","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":[]}
@@ -346,7 +346,7 @@
       },
       "applicabilityExpressionResult": {},
       "submittabilityExpressionResult": {
-        "value": {"expression":{"expressionString":"-label:Presubmit-Verified=-2 AND (label:Bypass-Presubmit=+1 OR label:Presubmit-Verified-Together=+1 OR (-label:Presubmit-Verified=-1 AND (label:Presubmit-Verified=+2 OR label:Presubmit-Verified=+1)))"},"status":"PASS","errorMessage":{"value":null},"passingAtoms":["label:Presubmit-Verified=+2"],"failingAtoms":["label:Presubmit-Verified=-2","label:Bypass-Presubmit=+1","label:Presubmit-Verified-Together=+1","label:Presubmit-Verified=-1","label:Presubmit-Verified=+1"]}
+        "value": {"expression":{"expressionString":"-label:Presubmit-Verified=-2 AND (label:Bypass-Presubmit=+1 OR label:Presubmit-Verified-Together=+1 OR (-label:Presubmit-Verified=-1 AND (label:Presubmit-Verified=+2 OR label:Presubmit-Verified=+1)))"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["label:Presubmit-Verified=-2","label:Bypass-Presubmit=+1","label:Presubmit-Verified-Together=+1","label:Presubmit-Verified=-1","label:Presubmit-Verified=+2","label:Presubmit-Verified=+1"]}
       },
       "overrideExpressionResult": {
         "value": {"expression":{"expressionString":"label:Bypass-Presubmit=+2 OR is:android_exemptedusers OR uploader:1587862 OR (branch:\"^refs/heads/cherrypick-temp-.*\" AND is:android-cherry-pick_exemptedusers) OR (label:Build-Cop-Override=+1 AND is:pure-revert AND -label:Presubmit-Verified=-2)"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["label:Bypass-Presubmit=+2","is:android_exemptedusers","uploader:1587862","branch:\"^refs/heads/cherrypick-temp-.*\"","is:android-cherry-pick_exemptedusers","label:Build-Cop-Override=+1","is:pure-revert","label:Presubmit-Verified=-2"]}
@@ -413,10 +413,10 @@
         "allowOverrideInChildProjects": false
       },
       "applicabilityExpressionResult": {
-        "value": {"expression":{"expressionString":"is:review-enforced_gerrit"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["is:review-enforced_gerrit"]}
+        "value": {"expression":{"expressionString":"is:review-enforced_gerrit"},"status":"PASS","errorMessage":{"value":null},"passingAtoms":["is:review-enforced_gerrit"],"failingAtoms":[]}
       },
       "submittabilityExpressionResult": {
-        "value": {"expression":{"expressionString":"is:review-enforcement-satisfied_gerrit"},"status":"NOT_EVALUATED","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":[]}
+        "value": {"expression":{"expressionString":"is:review-enforcement-satisfied_gerrit"},"status":"PASS","errorMessage":{"value":null},"passingAtoms":["is:review-enforcement-satisfied_gerrit"],"failingAtoms":[]}
       },
       "overrideExpressionResult": {},
       "patchSetCommitId": "f5c096a81e284af5f4243233f46ea4bc27962fc0",
