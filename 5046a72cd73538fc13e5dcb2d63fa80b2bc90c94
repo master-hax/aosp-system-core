@@ -73,6 +73,41 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a2c543fb_39ffa129",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-25T20:17:23Z",
+      "side": 1,
+      "message": "shouldn\u0027t it be off by default?\n\n(or should CALLSTACK_ENABLED be conditional on `__has_include()`?)",
+      "parentUuid": "f183aad6_c3abda8b",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8c1f0f6_4bcd49cd",
+        "filename": "libutils/binder/String8.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-25T20:17:23Z",
+      "side": 1,
+      "message": "(is not exporting them in the binder copy an option?)",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b84ce2f_e20e9a3f",
         "filename": "libutils/include/utils/LightRefBase.h",
         "patchSetId": 2
