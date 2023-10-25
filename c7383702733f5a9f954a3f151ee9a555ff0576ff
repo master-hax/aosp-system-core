@@ -34,6 +34,24 @@
       "parentUuid": "6adbbddc_a62c2e5a",
       "revId": "c7383702733f5a9f954a3f151ee9a555ff0576ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc32fa7b_fdd1b6de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-25T23:12:45Z",
+      "side": 1,
+      "message": "Right, it took me literally 10 minutes to make it build with your change and without any symlinks. I\u0027ll add a change to the stack shortly.\n\nAnd yes, I\u0027d like to land the current stack very much, just waiting for your approval :).",
+      "parentUuid": "e32b8cd8_1891324a",
+      "revId": "c7383702733f5a9f954a3f151ee9a555ff0576ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
