@@ -16,6 +16,24 @@
       "message": "This one should be easy to check with checkbuild, isn\u0027t it?",
       "revId": "d59040d61bc06447947ff08f7df06366f2ff926a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81ecbe8f_299f8f69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-25T16:59:53Z",
+      "side": 1,
+      "message": "I see TH complains, but I guess it\u0027s fixable by adding some export_include_dirs or similar.",
+      "parentUuid": "8482dd4f_0cdab3a6",
+      "revId": "d59040d61bc06447947ff08f7df06366f2ff926a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
