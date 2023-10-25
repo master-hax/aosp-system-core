@@ -70,6 +70,30 @@
       },
       "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a60fb9dd_2244f2dd",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-25T11:31:27Z",
+      "side": 1,
+      "message": "btw do we really need to duplicate the string with `android::base::StringPrintf(\"%s\")` before passing it to SetProperty?\n```suggestion\n    SetProperty(\"ro.kernel.version_release\", uts.release);\n```",
+      "parentUuid": "08a0c463_a3caf5e8",
+      "range": {
+        "startLine": 706,
+        "startChar": 60,
+        "endLine": 706,
+        "endChar": 91
+      },
+      "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
