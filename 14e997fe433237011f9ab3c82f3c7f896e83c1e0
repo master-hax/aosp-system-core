@@ -16,6 +16,23 @@
       "message": "This fixes the obvious bugs, but the fuzzer still needs more help since it has problems in LiplpApisFuzzer::setupBuilder related to adding the same named partition twice. I\u0027m not familiar with the fuzzer, so I don\u0027t know what it\u0027s trying to do.",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "765d506b_214f8df3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-25T19:45:11Z",
+      "side": 1,
+      "message": "(+elsk since dvander\u0027s out. lgtm though :-) )",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
