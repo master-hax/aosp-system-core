@@ -94,6 +94,30 @@
       },
       "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eab726c4_35e6bc65",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2023-10-25T11:42:40Z",
+      "side": 1,
+      "message": "Maybe not, it\u0027s kind an extra precaution that I take when expanding a char[] to make sure they are hiding any further string expansions... It was a muscle-memory tipo 😊",
+      "parentUuid": "a60fb9dd_2244f2dd",
+      "range": {
+        "startLine": 706,
+        "startChar": 60,
+        "endLine": 706,
+        "endChar": 91
+      },
+      "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
