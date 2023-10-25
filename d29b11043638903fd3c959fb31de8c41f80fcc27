@@ -46,6 +46,30 @@
       },
       "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08a0c463_a3caf5e8",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1409599
+      },
+      "writtenOn": "2023-10-25T10:16:17Z",
+      "side": 1,
+      "message": "Correct.\nAlso things such as `version_version` are a bit weird, but I think it\u0027s reasonable as a nesting disambiguation :)",
+      "parentUuid": "00eae297_953df77c",
+      "range": {
+        "startLine": 706,
+        "startChar": 60,
+        "endLine": 706,
+        "endChar": 91
+      },
+      "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
