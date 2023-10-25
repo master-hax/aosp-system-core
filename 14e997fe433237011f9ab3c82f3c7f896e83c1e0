@@ -33,6 +33,23 @@
       "message": "(+elsk since dvander\u0027s out. lgtm though :-) )",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff228acc_b177bfec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-25T20:53:53Z",
+      "side": 1,
+      "message": "TIL: ConsumeIntegralInRange is inclusive!",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
