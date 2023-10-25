@@ -22,6 +22,30 @@
       },
       "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00eae297_953df77c",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-25T09:43:21Z",
+      "side": 1,
+      "message": "oh right nvm, \nro.kernel.version_release actually contains the full version string, including the suffix after major.minor numbers",
+      "parentUuid": "ab7259b2_c34a075c",
+      "range": {
+        "startLine": 706,
+        "startChar": 60,
+        "endLine": 706,
+        "endChar": 91
+      },
+      "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
