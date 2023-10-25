@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab7259b2_c34a075c",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-25T09:39:13Z",
+      "side": 1,
+      "message": "ain\u0027t this just the same as ro.kernel.version, \"major.minor\"?\nro.kernel.version_version seems very strange too...\nhow about using another prefix so it don\u0027t get confused with ro.kernel.version?\n\nlike ro.kernel.utsname.{sysname,nodename,release,version,machine}",
+      "range": {
+        "startLine": 706,
+        "startChar": 60,
+        "endLine": 706,
+        "endChar": 91
+      },
+      "revId": "d29b11043638903fd3c959fb31de8c41f80fcc27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
