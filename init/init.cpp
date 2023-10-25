@@ -690,8 +690,10 @@ static void SetUsbController() {
     }
 }
 
-/// Set ro.kernel.version property to contain the major.minor pair as returned
-/// by uname(2).
+// Set ro.kernel.version property to contain the version.patchlevel values of
+// the running Linux kernel.
+// In addition, export the contents of all the other raw `struct utsname`
+// fields defined by uname(2) in the corresponding sysprop fields.
 static void SetKernelVersion() {
     struct utsname uts;
     unsigned int major, minor;
@@ -701,6 +703,11 @@ static void SetKernelVersion() {
         return;
     }
     SetProperty("ro.kernel.version", android::base::StringPrintf("%u.%u", major, minor));
+    SetProperty("ro.kernel.version_sysname", android::base::StringPrintf("%s", uts.sysname));
+    SetProperty("ro.kernel.version_nodename", android::base::StringPrintf("%s", uts.nodename));
+    SetProperty("ro.kernel.version_release", android::base::StringPrintf("%s", uts.release));
+    SetProperty("ro.kernel.version_version", android::base::StringPrintf("%s", uts.version));
+    SetProperty("ro.kernel.version_machine", android::base::StringPrintf("%s", uts.machine));
 }
 
 static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
