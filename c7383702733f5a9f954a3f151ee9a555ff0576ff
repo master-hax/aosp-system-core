@@ -16,6 +16,24 @@
       "message": "FWIW, this change still doesn\u0027t fix my build - Binder still depends on libutils. Parcel.h includes Flattenable.h.\n\nHere\u0027s a list of all files I had to symlink:\n- Compat.h\n- Endian.h\n- Flattenable.h\n- KeyedVector.h\n- Log.h\n- Mutex.h\n- SortedVector.h\n- Timers.h\n- misc.h",
       "revId": "c7383702733f5a9f954a3f151ee9a555ff0576ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e32b8cd8_1891324a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-25T23:07:21Z",
+      "side": 1,
+      "message": "Yeah, we still need to fixup some of the other deps from libbinder.\n\n- Compat.h, Endian.h are pretty trivial to kick out\n- Flattenable - we can drop this, but honestly could add to libutils_binder\n- KeyedVector/SortedVector - we can drop these\n- Log.h - can just use log.h\n- Mutext.h - std::mutex\n- Timers.h/misc.h - can get rid of\n\nDo you want to land the current stack of your CLs, and we can get libbinder_sdk building with libutils_binder?",
+      "parentUuid": "6adbbddc_a62c2e5a",
+      "revId": "c7383702733f5a9f954a3f151ee9a555ff0576ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
