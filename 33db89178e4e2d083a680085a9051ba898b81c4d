@@ -33,6 +33,24 @@
       "message": "When this test gets scheduled by tradefed, are we sure that we are running current build\u0027s fastboot binary, and not some pre-installed ones on tradefed host?",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75d5e71f_af151626",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1156333
+      },
+      "writtenOn": "2023-10-26T19:26:03Z",
+      "side": 1,
+      "message": "Yeah. After running \u0027lunch ...\u0027, the fastboot and adb binaries point to the ones built in your local repo. test_adb.py in ADB\u0027s directory is doing the same thing.",
+      "parentUuid": "41d9e396_63db4580",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
