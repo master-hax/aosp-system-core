@@ -177,6 +177,24 @@
       "parentUuid": "2b291e73_3a458a16",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36939991_f44e9118",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1156333
+      },
+      "writtenOn": "2023-10-26T22:28:21Z",
+      "side": 1,
+      "message": "What about the first part of the question? Are you saying it\u0027s fine if this is a manual test and assumes that a device is already in fastboot?",
+      "parentUuid": "29aaffc2_26a92a99",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
