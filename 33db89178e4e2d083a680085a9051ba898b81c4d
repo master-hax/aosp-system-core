@@ -159,6 +159,24 @@
       "parentUuid": "8f276ecb_04e9da05",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29aaffc2_26a92a99",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-26T21:42:43Z",
+      "side": 1,
+      "message": "go/androidbp has it all (link is internal only)",
+      "parentUuid": "2b291e73_3a458a16",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
