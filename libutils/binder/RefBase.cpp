@@ -55,12 +55,14 @@
 // log all reference counting operations
 #define PRINT_REFS 0
 
+#if !defined(CALLSTACK_ENABLED)
 #if defined(__linux__)
 // CallStack is only supported on linux type platforms.
 #define CALLSTACK_ENABLED 1
 #else
 #define CALLSTACK_ENABLED 0
-#endif
+#endif  // defined(__linux__)
+#endif  // !defined(CALLSTACK_ENABLED)
 
 #if CALLSTACK_ENABLED
 #include "../../include/utils/CallStack.h"
