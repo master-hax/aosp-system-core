@@ -85,6 +85,24 @@
       "parentUuid": "31476e00_24e6bdaf",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0aa279b_b54148be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-26T17:11:17Z",
+      "side": 1,
+      "message": "I think I spot some other instances of this, e.g.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/fs_mgr/liblp/fuzzer/liblp_builder_fuzzer.cpp;l\u003d216;drc\u003d4080e344265593bf3dea3b419b64e39d0deeb1cf\n\n(the slot number should be 0~1). NBD though",
+      "parentUuid": "d18808c0_dd5c1720",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
