@@ -16,6 +16,23 @@
       "message": "Jiyong, this CL is a direct CP of the internal version.",
       "revId": "c25abe47392f4f86ce3706846995fe6c948caf84",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "441ab1fd_24d898a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T06:06:25Z",
+      "side": 1,
+      "message": "This is a cherry-pick from internal. Rubber stamping...",
+      "revId": "c25abe47392f4f86ce3706846995fe6c948caf84",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
