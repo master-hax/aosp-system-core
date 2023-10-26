@@ -16,6 +16,23 @@
       "message": "+elsk/zhangkelvin for fastboot...\n\n(idea sgtm though; this is what we\u0027ve done in adb for integration testing, and -- while obviously we\u0027d prefer more unit testing -- it\u0027s helped us cover a lot of things that just weren\u0027t practical to retrofit unit tests to without a massive rewrite we can\u0027t afford.)",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41d9e396_63db4580",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-26T00:58:22Z",
+      "side": 1,
+      "message": "When this test gets scheduled by tradefed, are we sure that we are running current build\u0027s fastboot binary, and not some pre-installed ones on tradefed host?",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
