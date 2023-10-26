@@ -76,6 +76,10 @@ public class VendorOverlayHostTest extends BaseHostJUnit4Test {
   public void testVendorOverlay() throws DeviceNotAvailableException {
     String vndkVersion = getDevice().executeShellV2Command("getprop ro.vndk.version").getStdout();
 
+    // TODO(b/307925435) : use ro.board.api_level once it is available from all vendors from
+    // Android 15 or above, and skip test before it is ready.
+    Assume.assumeTrue("VNDK version is empty", !vndkVersion.matches("[\\w\\n\\r]+"));
+
     // Create files and modify policy
     CommandResult result = getDevice().executeShellV2Command(
         "echo '/(product|system/product)/vendor_overlay/" + vndkVersion +
