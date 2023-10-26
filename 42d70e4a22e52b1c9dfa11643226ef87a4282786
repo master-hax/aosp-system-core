@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "390ca7d9_2d6039f8",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:34:22Z",
+      "side": 1,
+      "message": "I don\u0027t think this printing is needed. The error message is passed back to the caller and then printed there.",
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b59bb89_fc492799",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:34:22Z",
+      "side": 1,
+      "message": "can we keep the order of properties, just for the sake of consistency?",
+      "range": {
+        "startLine": 272,
+        "startChar": 30,
+        "endLine": 272,
+        "endChar": 43
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38526ad3_889a593d",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:34:22Z",
+      "side": 1,
+      "message": "Can we get rid of this map? We need this map only when there are staged properties, but we build it every time the device boots.",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 72
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11428096_81e6b808",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:34:22Z",
+      "side": 1,
+      "message": "This has a minor side effect.\n\nFor example, if the persisted properties were like below...\n\n```\npersist.foo\u003d1\npersist.foo\u003d2\n```\n\nthen after the reboot, only `persist.foo\u003d1` will remain.",
+      "range": {
+        "startLine": 282,
+        "startChar": 17,
+        "endLine": 282,
+        "endChar": 48
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9900ba2_072b2430",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:34:22Z",
+      "side": 1,
+      "message": "Writing the file in a function named Load* sounds very non-intuitive. Can we change the signature of LoadPersistentProperties to return both the properties and a boolean indicating whether the file needs to be updated, and then do the update at the call site?",
+      "range": {
+        "startLine": 296,
+        "startChar": 20,
+        "endLine": 296,
+        "endChar": 47
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
