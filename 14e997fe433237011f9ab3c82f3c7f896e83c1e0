@@ -139,6 +139,24 @@
       "parentUuid": "36ac73ef_162810dc",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e252e0a3_66287a18",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-26T18:52:11Z",
+      "side": 1,
+      "message": "I filed b/307978015 with the issue mentioned here and the other one I saw which I don\u0027t have the knowledge to fix properly.",
+      "parentUuid": "b51b4687_a642a21d",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
