@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "04186f35_07f881f1",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-10-26T15:38:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "390ca7d9_2d6039f8",
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0b59bb89_fc492799",
@@ -77,6 +95,30 @@
       "writtenOn": "2023-10-26T15:34:22Z",
       "side": 1,
       "message": "This has a minor side effect.\n\nFor example, if the persisted properties were like below...\n\n```\npersist.foo\u003d1\npersist.foo\u003d2\n```\n\nthen after the reboot, only `persist.foo\u003d1` will remain.",
+      "range": {
+        "startLine": 282,
+        "startChar": 17,
+        "endLine": 282,
+        "endChar": 48
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d59f8ca_44f0b6e4",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-10-26T15:38:38Z",
+      "side": 1,
+      "message": "The persist prop should not have a state like \n\npersist.foo\u003d1\npersist.foo\u003d2\n\nwhen writing a persist prop, it checks if the entry persist.foo already exists, if so, update the value, otherwise append.",
+      "parentUuid": "11428096_81e6b808",
       "range": {
         "startLine": 282,
         "startChar": 17,
