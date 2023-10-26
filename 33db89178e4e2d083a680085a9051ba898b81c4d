@@ -123,6 +123,24 @@
       "parentUuid": "0eb0a80c_104b9194",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f276ecb_04e9da05",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1121894
+      },
+      "writtenOn": "2023-10-26T20:12:50Z",
+      "side": 1,
+      "message": "if you don\u0027t run in test mapping, you can simply remove test_suites tag to be used locally.\n\nIf you wanted TEST_MAPPING, you probably would have to attempt to use the fastboot that isn\u0027t on PATH, otherwise it wouldn\u0027t use the current one but the lab released one (which defeat purpose of the test). If it\u0027s your data:[] then yes it would work, because we insert the module artifacts ahead in PATH.\n\nTo ensure that at least one device is in fastboot/d you probably want the test to set your device under test in that state by rebooting it, (and then out of that state). Expecting device state to be already fastboot is error prone.",
+      "parentUuid": "9ec3ab82_88856631",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
