@@ -103,6 +103,24 @@
       "parentUuid": "d18808c0_dd5c1720",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36ac73ef_162810dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-26T18:38:14Z",
+      "side": 1,
+      "message": "There are definitely some other issues with this fuzzer that needs to be fixed. I just wanted to fix the obvious bugs, but someone with more understanding of the code should look at the fuzzer too.",
+      "parentUuid": "d0aa279b_b54148be",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
