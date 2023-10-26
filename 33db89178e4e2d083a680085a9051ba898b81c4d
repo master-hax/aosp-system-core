@@ -141,6 +141,24 @@
       "parentUuid": "9ec3ab82_88856631",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b291e73_3a458a16",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1156333
+      },
+      "writtenOn": "2023-10-26T20:47:55Z",
+      "side": 1,
+      "message": "Sorry, this is all pretty new to me. What should I do here? Since this test should be manual, I think it\u0027s reasonable to expect there\u0027s a device already in fastboot or the bootloader. The test fails if there isn\u0027t a device already there.\n\nWhat\u0027s the \"data:\" thing? Part of the build rule?",
+      "parentUuid": "8f276ecb_04e9da05",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
