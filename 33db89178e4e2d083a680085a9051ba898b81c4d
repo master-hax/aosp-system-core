@@ -87,6 +87,24 @@
       "parentUuid": "1500772b_33d8306f",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0eb0a80c_104b9194",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-26T19:33:02Z",
+      "side": 1,
+      "message": "remove \n\n```\n    test_config: \"fastboot_integration_test.xml\",\n    test_suites: [\"general-tests\"],\n```",
+      "parentUuid": "8ab5ed0d_8c427e12",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
