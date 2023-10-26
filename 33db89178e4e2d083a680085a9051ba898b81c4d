@@ -69,6 +69,24 @@
       "parentUuid": "75d5e71f_af151626",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ab5ed0d_8c427e12",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1156333
+      },
+      "writtenOn": "2023-10-26T19:30:47Z",
+      "side": 1,
+      "message": "We don\u0027t have devices running in fastboot in treehugger anyway, right? This should probably be manual only. I don\u0027t work in the Android tree very often. Is there a way I can configure it to be only manual?",
+      "parentUuid": "1500772b_33d8306f",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
