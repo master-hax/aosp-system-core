@@ -51,6 +51,24 @@
       "parentUuid": "41d9e396_63db4580",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1500772b_33d8306f",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-26T19:27:45Z",
+      "side": 1,
+      "message": "When running this locally, it\u0027s surely using your locally built fastboot binary. However, when scheduled on treehugger, I believe it might not have a full android repo. Tests would be downloaded from test_x86_64 target and the unzipped. Worth double checking with tradefed people.",
+      "parentUuid": "75d5e71f_af151626",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
