@@ -110,6 +110,8 @@ bool fs_mgr_vendor_overlay_mount(const std::pair<std::string, std::string>& moun
 bool fs_mgr_vendor_overlay_mount_all() {
     // To read the property, it must be called at the second init stage after the default
     // properties are loaded.
+    // TODO(b/307925435) : use ro.board.api_level once it is available from all vendors from Android
+    // 15 or above
     static const auto vndk_version = android::base::GetProperty(kVndkVersionPropertyName, "");
     if (vndk_version.empty()) {
         LINFO << "vendor overlay: vndk version not defined";
