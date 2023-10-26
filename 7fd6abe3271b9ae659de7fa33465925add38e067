@@ -69,6 +69,24 @@
       "parentUuid": "ec824935_16f1debd",
       "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9668902e_6a23921f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-26T22:45:09Z",
+      "side": 1,
+      "message": "\u003e I actually don\u0027t like ro.kernel.version either which was added with aosp/1840075; I didn\u0027t know this.\n\nis there a better way to have init actions depend on kernel version? that seemed like the valid argument for including that --- no-one knew another way to do what https://android-review.git.corp.google.com/c/platform/system/core/+/1839019 is doing. (sorry, i didn\u0027t realize you weren\u0027t involved in that discussion!)",
+      "parentUuid": "01c5155c_7d8f7731",
+      "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
