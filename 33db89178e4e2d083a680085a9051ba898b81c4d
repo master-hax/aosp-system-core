@@ -105,6 +105,24 @@
       "parentUuid": "8ab5ed0d_8c427e12",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ec3ab82_88856631",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-26T19:34:27Z",
+      "side": 1,
+      "message": "as long as it\u0027s not in TEST_MAPPING, he doesn\u0027t even need to do that, right?\n\n+jdesprez for whether there\u0027s clever way to make sure you\u0027re running the desired binary (maybe with a `data:`?).",
+      "parentUuid": "0eb0a80c_104b9194",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
