@@ -195,6 +195,24 @@
       "parentUuid": "29aaffc2_26a92a99",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9daf5a65_c5ab086e",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-10-26T22:34:29Z",
+      "side": 1,
+      "message": "I think it is fine, but I\u0027ll let Kelvin to confirm.\n\nRegardless of whether there\u0027s an actual device being connected, your test will pass, right?\n\nThe `data:` thing ensures that you are running your test against the fastboot built from the tree, not the fastboot on the host machine (regardless of whether it is there). After setting `data:`, I think you also need to use tricks to find the built binary; it is somewhere relative to the current directory of the test.",
+      "parentUuid": "36939991_f44e9118",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
