@@ -213,6 +213,24 @@
       "parentUuid": "36939991_f44e9118",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c6a93d0_bce8de0c",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-26T22:40:27Z",
+      "side": 1,
+      "message": "It\u0027s fine to leave this test as a local test. In that case, remove the \n\n\n```\ntest_suites: [\"general-tests\"],\n```\n\npart and add \n\n```\ndata: [\"fastboot\"],\n```",
+      "parentUuid": "9daf5a65_c5ab086e",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
