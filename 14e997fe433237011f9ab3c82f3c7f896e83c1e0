@@ -121,6 +121,24 @@
       "parentUuid": "d0aa279b_b54148be",
       "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b51b4687_a642a21d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-26T18:38:55Z",
+      "side": 1,
+      "message": "I can file a bug for the other issue I saw (along with this one) since it\u0027s likely another fuzzer failure will occur.",
+      "parentUuid": "36ac73ef_162810dc",
+      "revId": "14e997fe433237011f9ab3c82f3c7f896e83c1e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
