@@ -21,10 +21,8 @@ import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
 import com.android.tradefed.util.CommandResult;
 import com.android.tradefed.util.CommandStatus;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -41,6 +39,11 @@ public class VendorOverlayHostTest extends BaseHostJUnit4Test {
 
   @Before
   public void setup() throws DeviceNotAvailableException {
+    String vndkVersion = getDevice().executeShellV2Command("getprop ro.vndk.version").getStdout();
+    Assume.assumeTrue(
+        "Vendor Overlay is disabled for VNDK deprecated devices",
+        vndkVersion != null && !vndkVersion.trim().isEmpty());
+
     wasRoot = getDevice().isAdbRoot();
     if (!wasRoot) {
       Assume.assumeTrue("Test requires root", getDevice().enableAdbRoot());
