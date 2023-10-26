@@ -82,6 +82,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5e4b6f4_547b285e",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-10-26T17:16:59Z",
+      "side": 1,
+      "message": "Done, now we first parse the props to see if they are any staged props at all. If not, the hash table will be empty.",
+      "parentUuid": "38526ad3_889a593d",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 72
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "609fbc5f_8d97ba02",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-10-26T17:16:59Z",
+      "side": 1,
+      "message": "now the original order of the properties is preserved. additional properties that are staged but not in the original prop list are appended.",
+      "parentUuid": "0b59bb89_fc492799",
+      "range": {
+        "startLine": 272,
+        "startChar": 30,
+        "endLine": 272,
+        "endChar": 43
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "11428096_81e6b808",
@@ -142,6 +190,30 @@
       "writtenOn": "2023-10-26T15:34:22Z",
       "side": 1,
       "message": "Writing the file in a function named Load* sounds very non-intuitive. Can we change the signature of LoadPersistentProperties to return both the properties and a boolean indicating whether the file needs to be updated, and then do the update at the call site?",
+      "range": {
+        "startLine": 296,
+        "startChar": 20,
+        "endLine": 296,
+        "endChar": 47
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "753fc511_ec70ffb4",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-10-26T17:16:59Z",
+      "side": 1,
+      "message": "I totally understand your point. That is also my initial thinking, but I eventually keep the write here are for two reasons:\n\n(1) applying staged props and writing the updated file is a package deal, we should always write an updated file once staging has been applied. Otherwise it would be wrong, as the staging lingers. So having these two things done in one function makes more sense and less error prone.\n\n(2) I\u0027ve noticed that there are already file write calls in this function before this change.\n\nWDYT?",
+      "parentUuid": "d9900ba2_072b2430",
       "range": {
         "startLine": 296,
         "startChar": 20,
