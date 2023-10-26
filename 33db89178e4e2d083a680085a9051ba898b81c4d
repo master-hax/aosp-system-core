@@ -249,6 +249,24 @@
       "parentUuid": "9daf5a65_c5ab086e",
       "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0aa3db36_6ccd4fc0",
+        "filename": "fastboot/test_fastboot.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1156333
+      },
+      "writtenOn": "2023-10-26T23:52:54Z",
+      "side": 1,
+      "message": "Alright, done. Tested it locally, and it works. (I had to make it `data: [\":fastboot\"]`)",
+      "parentUuid": "be1d7e1c_f3fbfac3",
+      "revId": "33db89178e4e2d083a680085a9051ba898b81c4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
