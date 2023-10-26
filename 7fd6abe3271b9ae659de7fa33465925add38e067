@@ -51,6 +51,24 @@
       "message": "Adding some extra context.\n\nCan we extract this information somewhere else?\nIndeed we can.\n\nWhy did I decide to create new system properties, knowing that this is a discouraged practice?\nAs far as I can tell, the biggest issue of system properties is that they are considered part of the API as some apps may start depending on them, so they should be maintained forever. This is not a big deal here, being uname already covered by many standards.\nExporting this system information as a system property property makes my life much easier for the monitoring of device information and features in the field, as sysprops are likely dumped for collected almost everywhere. Adding new hooks to trigger `uname` for specific events would have taken much longer and include changes in data collection pipeline that I would have preferred to avoid.\n\nAnyways, I will abandon this change looking for a more elegant solution and resume this change as a last resort.",
       "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9eec3994_a0d1664e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-26T15:01:09Z",
+      "side": 1,
+      "message": "One of the reasons we are hesitant about this kind of change is that system properties have hard limit on their sizes. See b/306062513#comment17 for example.",
+      "parentUuid": "ec824935_16f1debd",
+      "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
