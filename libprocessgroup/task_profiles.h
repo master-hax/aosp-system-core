@@ -18,6 +18,7 @@
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <filesystem>
 #include <functional>
 #include <map>
 #include <mutex>
@@ -36,9 +37,9 @@ class IProfileAttribute {
                        const std::string& file_v2_name) = 0;
     virtual const CgroupController* controller() const = 0;
     virtual const std::string& file_name() const = 0;
-    virtual bool GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const = 0;
-    virtual bool GetPathForTask(int tid, std::string* path) const = 0;
-    virtual bool GetPathForUID(uid_t uid, std::string* path) const = 0;
+    virtual std::filesystem::path GetPathForProcess(uid_t uid, pid_t pid) const = 0;
+    virtual std::filesystem::path GetPathForTask(int tid) const = 0;
+    virtual std::filesystem::path GetPathForUID(uid_t uid) const = 0;
 };
 
 class ProfileAttribute : public IProfileAttribute {
@@ -56,9 +57,9 @@ class ProfileAttribute : public IProfileAttribute {
     void Reset(const CgroupController& controller, const std::string& file_name,
                const std::string& file_v2_name) override;
 
-    bool GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const override;
-    bool GetPathForTask(int tid, std::string* path) const override;
-    bool GetPathForUID(uid_t uid, std::string* path) const override;
+    std::filesystem::path GetPathForProcess(uid_t uid, pid_t pid) const override;
+    std::filesystem::path GetPathForTask(int tid) const override;
+    std::filesystem::path GetPathForUID(uid_t uid) const override;
 
   private:
     CgroupController controller_;
@@ -136,7 +137,7 @@ class SetAttributeAction : public ProfileAction {
     std::string value_;
     bool optional_;
 
-    bool WriteValueToFile(const std::string& path) const;
+    bool WriteValueToFile(const std::string& path) const; // TODO: filesystem:path pls?
 };
 
 // Set cgroup profile element

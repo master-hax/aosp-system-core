@@ -26,7 +26,7 @@
 
 __BEGIN_DECLS
 
-static constexpr const char* CGROUPV2_CONTROLLER_NAME = "cgroup2";
+static constexpr const char* CGROUPV2_CONTROLLER_NAME = "cgroup2"; // TODO Uhh, this is not a "controller name"
 
 bool CgroupsAvailable();
 bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path);

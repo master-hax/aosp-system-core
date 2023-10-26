@@ -126,42 +126,40 @@ void ProfileAttribute::Reset(const CgroupController& controller, const std::stri
     file_v2_name_ = file_v2_name;
 }
 
-bool ProfileAttribute::GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const {
+std::filesystem::path ProfileAttribute::GetPathForProcess(uid_t uid, pid_t pid) const {
+    std::filesystem::path path;
     if (controller()->version() == 2) {
         // all cgroup v2 attributes use the same process group hierarchy
-        *path = StringPrintf("%s/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
-                             file_name().c_str());
-        return true;
+        path  = controller()->path(); // TODO actual std::filesystem::path from here pls
+        path /= "uid_" + std::to_string(uid);
+        path /= "pid_" + std::to_string(pid);
+        path /= file_name();
     }
-    return GetPathForTask(pid, path);
+    return GetPathForTask(pid);
 }
 
-bool ProfileAttribute::GetPathForTask(int tid, std::string* path) const {
-    std::string subgroup;
-    if (!controller()->GetTaskGroup(tid, &subgroup)) {
-        return false;
+std::filesystem::path ProfileAttribute::GetPathForTask(int tid) const {
+    std::filesystem::path path;
+    if (std::string subgroup; controller()->GetTaskGroup(tid, &subgroup)) {
+        if (subgroup.empty()) {
+            path  = controller()->path();
+            path /= file_name();
+        } else {
+            path  = controller()->path();
+            path /= subgroup;
+            path /= file_name();
+        }
     }
 
-    if (path == nullptr) {
-        return true;
-    }
-
-    if (subgroup.empty()) {
-        *path = StringPrintf("%s/%s", controller()->path(), file_name().c_str());
-    } else {
-        *path = StringPrintf("%s/%s/%s", controller()->path(), subgroup.c_str(),
-                             file_name().c_str());
-    }
-    return true;
+    return path;
 }
 
-bool ProfileAttribute::GetPathForUID(uid_t uid, std::string* path) const {
-    if (path == nullptr) {
-        return true;
-    }
-
-    *path = StringPrintf("%s/uid_%u/%s", controller()->path(), uid, file_name().c_str());
-    return true;
+std::filesystem::path ProfileAttribute::GetPathForUID(uid_t uid) const {
+    std::filesystem::path path;
+    path  = controller()->path();
+    path /= "uid_" + std::to_string(uid);
+    path /= file_name();
+    return path;
 }
 
 bool SetClampsAction::ExecuteForProcess(uid_t, pid_t) const {
@@ -240,36 +238,36 @@ bool SetAttributeAction::WriteValueToFile(const std::string& path) const {
 }
 
 bool SetAttributeAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
-    std::string path;
+    std::filesystem::path path = attribute_->GetPathForProcess(uid, pid);
 
-    if (!attribute_->GetPathForProcess(uid, pid, &path)) {
+    if (path.empty()) {
         LOG(ERROR) << "Failed to find cgroup for uid " << uid << " pid " << pid;
         return false;
     }
 
-    return WriteValueToFile(path);
+    return WriteValueToFile(path.string());
 }
 
 bool SetAttributeAction::ExecuteForTask(int tid) const {
-    std::string path;
+    std::filesystem::path path = attribute_->GetPathForTask(tid);
 
-    if (!attribute_->GetPathForTask(tid, &path)) {
+    if (path.empty()) {
         LOG(ERROR) << "Failed to find cgroup for tid " << tid;
         return false;
     }
 
-    return WriteValueToFile(path);
+    return WriteValueToFile(path.string());
 }
 
 bool SetAttributeAction::ExecuteForUID(uid_t uid) const {
-    std::string path;
+    std::filesystem::path path = attribute_->GetPathForUID(uid);
 
-    if (!attribute_->GetPathForUID(uid, &path)) {
+    if (path.empty()) {
         LOG(ERROR) << "Failed to find cgroup for uid " << uid;
         return false;
     }
 
-    if (!WriteStringToFile(value_, path)) {
+    if (!WriteStringToFile(value_, path.string())) {
         if (access(path.c_str(), F_OK) < 0) {
             if (optional_) {
                 return true;
@@ -289,9 +287,9 @@ bool SetAttributeAction::IsValidForProcess(uid_t, pid_t pid) const {
 }
 
 bool SetAttributeAction::IsValidForTask(int tid) const {
-    std::string path;
+    std::filesystem::path path = attribute_->GetPathForTask(tid);
 
-    if (!attribute_->GetPathForTask(tid, &path)) {
+    if (path.empty()) {
         return false;
     }
 

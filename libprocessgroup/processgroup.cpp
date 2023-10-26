@@ -30,6 +30,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <filesystem>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -60,80 +61,70 @@ bool CgroupsAvailable() {
     return cgroups_available;
 }
 
-bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) {
-    auto controller = CgroupMap::GetInstance().FindController(cgroup_name);
+std::filesystem::path CgroupGetControllerPath(const std::string& cgroup_name) {
+    std::filesystem::path path;
+    const CgroupController controller = CgroupMap::GetInstance().FindController(cgroup_name);
 
-    if (!controller.HasValue()) {
-        return false;
+    if (controller.HasValue()) {
+        path = controller.path();
     }
 
-    if (path) {
-        *path = controller.path();
-    }
-
-    return true;
+    return path;
 }
 
-static bool CgroupGetMemcgAppsPath(std::string* path) {
+static std::filesystem::path CgroupGetMemcgAppsPath() {
+    std::filesystem::path path;
     CgroupController controller = CgroupMap::GetInstance().FindController("memory");
 
-    if (!controller.HasValue()) {
-        return false;
-    }
-
-    if (path) {
-        *path = controller.path();
+    if (controller.HasValue()) {
+        path = controller.path();
         if (controller.version() == 1) {
-            *path += "/apps";
+            path /= "apps";
         }
     }
 
-    return true;
+    return path;
 }
 
-bool CgroupGetControllerFromPath(const std::string& path, std::string* cgroup_name) {
+std::string CgroupGetControllerFromPath(const std::filesystem::path& path) {
+    std::string name;
     auto controller = CgroupMap::GetInstance().FindControllerByPath(path);
 
-    if (!controller.HasValue()) {
-        return false;
+    if (controller.HasValue()) {
+        name = controller.name();
     }
 
-    if (cgroup_name) {
-        *cgroup_name = controller.name();
-    }
-
-    return true;
+    return name;
 }
 
-bool CgroupGetAttributePath(const std::string& attr_name, std::string* path) {
+std::filesystem::path CgroupGetAttributePath(const std::string& attr_name) {
+    std::filesystem::path path;
+    const TaskProfiles& tp = TaskProfiles::GetInstance();
+    const IProfileAttribute* attr = tp.GetAttribute(attr_name);
+
+    if (attr) {
+        path =  attr->controller()->path();
+        path /= attr->file_name();
+    }
+
+    return path;
+}
+
+std::filesystem::path CgroupGetAttributePathForTask(const std::string& attr_name, int tid) {
+    std::filesystem::path path;
     const TaskProfiles& tp = TaskProfiles::GetInstance();
     const IProfileAttribute* attr = tp.GetAttribute(attr_name);
 
     if (attr == nullptr) {
-        return false;
+        return path;
     }
 
-    if (path) {
-        *path = StringPrintf("%s/%s", attr->controller()->path(), attr->file_name().c_str());
-    }
-
-    return true;
-}
-
-bool CgroupGetAttributePathForTask(const std::string& attr_name, int tid, std::string* path) {
-    const TaskProfiles& tp = TaskProfiles::GetInstance();
-    const IProfileAttribute* attr = tp.GetAttribute(attr_name);
-
-    if (attr == nullptr) {
-        return false;
-    }
-
-    if (!attr->GetPathForTask(tid, path)) {
+    path = attr->GetPathForTask(tid);
+    if (path.empty()) {
         PLOG(ERROR) << "Failed to find cgroup for tid " << tid;
-        return false;
     }
 
-    return true;
+    return path;
 }
 
 bool UsePerAppMemcg() {
@@ -205,7 +196,7 @@ bool SetUserProfiles(uid_t uid, const std::vector<std::string>& profiles) {
                                                        false);
 }
 
-static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
+static std::string ConvertUidToPath(const char* cgroup, uid_t uid) { // TODO filesystem pls
     return StringPrintf("%s/uid_%u", cgroup, uid);
 }
 
@@ -276,13 +267,13 @@ static bool RemoveUidProcessGroups(const std::string& uid_path, bool empty_only)
 }
 
 void removeAllProcessGroupsInternal(bool empty_only) {
-    std::vector<std::string> cgroups;
-    std::string path, memcg_apps_path;
+    std::vector<std::string> cgroups; // TODO std::filesystem::path pls
+    std::filesystem::path path, memcg_apps_path;
 
-    if (CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &path)) {
-        cgroups.push_back(path);
+    if (path = CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME); !path.empty()) {
+        cgroups.push_back(path.string());
     }
-    if (CgroupGetMemcgAppsPath(&memcg_apps_path) && memcg_apps_path != path) {
+    if (memcg_apps_path = CgroupGetMemcgAppsPath(); !memcg_apps_path.empty() && memcg_apps_path != path) {
         cgroups.push_back(memcg_apps_path);
     }
 
@@ -522,8 +513,8 @@ static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries,
         int err = RemoveProcessGroup(cgroup, uid, initialPid, 400);
 
         if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
-            std::string memcg_apps_path;
-            if (CgroupGetMemcgAppsPath(&memcg_apps_path) &&
+            std::filesystem::path memcg_apps_path = CgroupGetMemcgAppsPath();
+            if (!memcg_apps_path.empty() &&
                 RemoveProcessGroup(memcg_apps_path.c_str(), uid, initialPid, 400) < 0) {
                 return -1;
             }
@@ -557,9 +548,9 @@ int sendSignalToProcessGroup(uid_t uid, int initialPid, int signal) {
     return DoKillProcessGroupOnce(cgroup, uid, initialPid, signal);
 }
 
-static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,
+static int createProcessGroupInternal(uid_t uid, int initialPid, std::filesystem::path hierarchy,
                                       bool activate_controllers) {
-    auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
+    auto uid_path = ConvertUidToPath(hierarchy.c_str(), uid);
 
     struct stat cgroup_stat;
     mode_t cgroup_mode = 0750;
@@ -567,8 +558,8 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
     gid_t cgroup_gid = AID_SYSTEM;
     int ret = 0;
 
-    if (stat(cgroup.c_str(), &cgroup_stat) < 0) {
-        PLOG(ERROR) << "Failed to get stats for " << cgroup;
+    if (stat(hierarchy.c_str(), &cgroup_stat) < 0) {
+        PLOG(ERROR) << "Failed to get stats for " << hierarchy;
     } else {
         cgroup_mode = cgroup_stat.st_mode;
         cgroup_uid = cgroup_stat.st_uid;
@@ -587,7 +578,7 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
         }
     }
 
-    auto uid_pid_path = ConvertUidPidToPath(cgroup.c_str(), uid, initialPid);
+    auto uid_pid_path = ConvertUidPidToPath(hierarchy.c_str(), uid, initialPid);
 
     if (!MkdirAndChown(uid_pid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_pid_path;
@@ -613,19 +604,18 @@ int createProcessGroup(uid_t uid, int initialPid, bool memControl) {
         return -EINVAL;
     }
 
-    if (std::string memcg_apps_path;
-        isMemoryCgroupSupported() && UsePerAppMemcg() && CgroupGetMemcgAppsPath(&memcg_apps_path)) {
+    if (std::filesystem::path memcg_apps_path = CgroupGetMemcgAppsPath();
+        isMemoryCgroupSupported() && UsePerAppMemcg() && !memcg_apps_path.empty()) {
         // Note by bvanassche: passing 'false' as fourth argument below implies that the v1
         // hierarchy is used. It is not clear to me whether the above conditions guarantee that the
         // v1 hierarchy is used.
-        int ret = createProcessGroupInternal(uid, initialPid, memcg_apps_path, false);
+        int ret = createProcessGroupInternal(uid, initialPid, memcg_apps_path.string(), false);
         if (ret != 0) {
             return ret;
         }
     }
 
-    std::string cgroup;
-    CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroup);
+    std::filesystem::path cgroup = CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME);
     return createProcessGroupInternal(uid, initialPid, cgroup, true);
 }
 

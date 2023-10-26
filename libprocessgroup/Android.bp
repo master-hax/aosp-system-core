@@ -63,6 +63,7 @@ cc_library {
     ],
     static_libs: [
         "libjsoncpp",
+        "libc++fs",
     ],
     // for cutils/android_filesystem_config.h
     header_libs: [
