@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9af8edbf_d7c92eb8",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-26T23:01:08Z",
+      "side": 1,
+      "message": "@smoreland: `LIBUTILS_CALLSTACK_ENABLED`?",
+      "range": {
+        "startLine": 58,
+        "startChar": 13,
+        "endLine": 58,
+        "endChar": 30
+      },
+      "revId": "3835487de00a5192c4da0225d7a2fcfde167bd39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
