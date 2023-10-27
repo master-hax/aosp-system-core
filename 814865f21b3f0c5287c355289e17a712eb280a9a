@@ -94,6 +94,30 @@
       },
       "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9b5093d_93c592c6",
+        "filename": "fs_mgr/tests/src/com/android/tests/vendoroverlay/VendorOverlayHostTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-27T04:22:50Z",
+      "side": 1,
+      "message": "\\w -\u003e [w]ords (not, [w]hitespace)\n\\s -\u003e [s]paces\n\neasily confused \u003d)\n\n---\n\n\nis it possible that `vndkVersion` has whitespace and line break? Maybe we should trim()  the string before doing anything with it.",
+      "parentUuid": "72cb9d1d_e34e886a",
+      "range": {
+        "startLine": 81,
+        "startChar": 47,
+        "endLine": 81,
+        "endChar": 83
+      },
+      "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
