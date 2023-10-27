@@ -118,6 +118,30 @@
       },
       "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12d46bad_764dd565",
+        "filename": "fs_mgr/tests/src/com/android/tests/vendoroverlay/VendorOverlayHostTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-10-27T04:26:55Z",
+      "side": 1,
+      "message": "When I tested locally it came with a linebreak when it is empty. As this is a temp fix until we replace this with other version if vndk version is empty, I think it would be OK as it is.",
+      "parentUuid": "a9b5093d_93c592c6",
+      "range": {
+        "startLine": 81,
+        "startChar": 47,
+        "endLine": 81,
+        "endChar": 83
+      },
+      "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
