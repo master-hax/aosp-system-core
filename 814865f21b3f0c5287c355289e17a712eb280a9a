@@ -70,6 +70,30 @@
       },
       "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72cb9d1d_e34e886a",
+        "filename": "fs_mgr/tests/src/com/android/tests/vendoroverlay/VendorOverlayHostTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-10-27T04:15:33Z",
+      "side": 1,
+      "message": "You are right. I confused between \"\\w\" and \"\\s\". Updated to use \\\\w only. PTAL.\n\n(I did not use isEmpty because it checks if length is 0, so cannot filter any whitespaces or linebreaks.)",
+      "parentUuid": "409d5b98_a1d0343e",
+      "range": {
+        "startLine": 81,
+        "startChar": 47,
+        "endLine": 81,
+        "endChar": 83
+      },
+      "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
