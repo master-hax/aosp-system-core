@@ -105,6 +105,24 @@
       "parentUuid": "9668902e_6a23921f",
       "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "606ae83f_0687be40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-27T14:36:45Z",
+      "side": 1,
+      "message": "yeah, i know we argued about using a script instead at the time, but i can\u0027t remember why that option was rejected (and i can\u0027t find the history)... +glider in case he remembers.",
+      "parentUuid": "76150b15_ba561acb",
+      "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
