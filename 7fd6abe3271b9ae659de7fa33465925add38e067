@@ -87,6 +87,24 @@
       "parentUuid": "01c5155c_7d8f7731",
       "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76150b15_ba561acb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-10-27T02:07:17Z",
+      "side": 1,
+      "message": "aosp/1839019 could have implemented as below:\n\n```\non late-fs\n    exec some_script.sh \n```\n\n```\nsome_script.sh:\n\n1. use uname -r to get the kernel major/minor numbers\n2. depending on the versions, set /sys/kernel/tracing/* accordingly\n3. also set bootreceiver.enable using the setprop shell command\n```\n\nThe point is that this doesn\u0027t have to be fully described in the rc file, which lacks vocabulary.",
+      "parentUuid": "9668902e_6a23921f",
+      "revId": "7fd6abe3271b9ae659de7fa33465925add38e067",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
