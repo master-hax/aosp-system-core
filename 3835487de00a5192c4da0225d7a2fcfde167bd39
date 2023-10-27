@@ -46,6 +46,30 @@
       },
       "revId": "3835487de00a5192c4da0225d7a2fcfde167bd39",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e881ac8f_387ea61c",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-10-27T17:53:10Z",
+      "side": 1,
+      "message": "Done. Used `ANDROID_UTILS_CALLSTACK_ENABLED` to match existing `ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION`.",
+      "parentUuid": "5f6bd827_759e2407",
+      "range": {
+        "startLine": 58,
+        "startChar": 13,
+        "endLine": 58,
+        "endChar": 30
+      },
+      "revId": "3835487de00a5192c4da0225d7a2fcfde167bd39",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
