@@ -142,6 +142,30 @@
       },
       "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af7a92f7_e94bcc4a",
+        "filename": "fs_mgr/tests/src/com/android/tests/vendoroverlay/VendorOverlayHostTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-10-27T04:28:08Z",
+      "side": 1,
+      "message": "yeah reading it again we should definitely trim it. else we would skip always\n\nif ro.vndk.version is non-empty, say \u002734\u0027, then `vndkVersion` would contain `34\\n`, which means `vndkVersion.matches(\"[\\\\w]+\")` would be false.\nif ro.vndk.version is empty, then `vndkVersion` would contain `\\n`, which means `vndkVersion.matches(\"[\\\\w]+\")` would be false.",
+      "parentUuid": "a9b5093d_93c592c6",
+      "range": {
+        "startLine": 81,
+        "startChar": 47,
+        "endLine": 81,
+        "endChar": 83
+      },
+      "revId": "814865f21b3f0c5287c355289e17a712eb280a9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
