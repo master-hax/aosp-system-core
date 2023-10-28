@@ -229,6 +229,24 @@
       "parentUuid": "835a2adf_440e20a7",
       "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33bbf534_e84a4639",
+        "filename": "libutils/include/utils/LightRefBase.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-10-28T00:39:14Z",
+      "side": 1,
+      "message": "Of course, there are no symlinks for libutils in frameworks/native. They are in system/core/include/utils. So I could redo those to point directly to these new locations, but maybe it\u0027s better to just start cleaning them up",
+      "parentUuid": "0bd58060_8da70928",
+      "revId": "5046a72cd73538fc13e5dcb2d63fa80b2bc90c94",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
