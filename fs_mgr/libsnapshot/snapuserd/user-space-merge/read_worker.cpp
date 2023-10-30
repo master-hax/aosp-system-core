@@ -18,6 +18,7 @@
 
 #include <pthread.h>
 
+#include "libsnapshot/cow_format.h"
 #include "snapuserd_core.h"
 #include "utility.h"
 
