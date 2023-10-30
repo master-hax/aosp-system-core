@@ -161,6 +161,8 @@ bool CowWriterV3::OpenForWrite() {
         LOG(ERROR) << "Header sync failed";
         return false;
     }
+    next_data_pos_ = sizeof(CowHeaderV3) + header_.buffer_size + sizeof(CowOperation);
+
     return true;
 }
 
@@ -171,10 +173,7 @@ bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_
 }
 
 bool CowWriterV3::EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-
-    if (new_block_start || data || size) return false;
-    return false;
+    return EmitBlocks(new_block_start, data, size, 0, 0, kCowReplaceOp);
 }
 
 bool CowWriterV3::EmitXorBlocks(uint32_t new_block_start, const void* data, size_t size,
@@ -182,6 +181,33 @@ bool CowWriterV3::EmitXorBlocks(uint32_t new_block_start, const void* data, size
     LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
     if (new_block_start || old_block || offset || data || size) return false;
     return false;
+}
+
+bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
+                             uint64_t old_block, uint16_t offset, uint8_t type) {
+    const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
+
+    // Placing here until we support XOR ops
+    CHECK_EQ(old_block, 0);
+    CHECK_EQ(offset, 0);
+
+    size_t num_blocks = (size / header_.block_size);
+
+    for (size_t i = 0; i < num_blocks; i++) {
+        CowOperation op = {};
+        op.new_block = new_block_start + i;
+        op.type = type;
+        op.source_info = next_data_pos_;
+        op.data_length = static_cast<uint16_t>(header_.block_size);
+        if (!WriteOperation(op, iter, header_.block_size)) {
+            LOG(ERROR) << "AddRawBlocks: write failed";
+            return false;
+        }
+        iter += header_.block_size;
+        num_blocks--;
+    }
+    CHECK_EQ(num_blocks, 0);
+    return true;
 }
 
 bool CowWriterV3::EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) {
@@ -210,7 +236,7 @@ bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
     return false;
 }
 
-bool CowWriterV3::WriteOperation(const CowOperationV3& op) {
+bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, size_t size) {
     if (IsEstimating()) {
         header_.op_count++;
         header_.op_count_max++;
@@ -226,8 +252,15 @@ bool CowWriterV3::WriteOperation(const CowOperationV3& op) {
     if (!android::base::WriteFullyAtOffset(fd_, &op, sizeof(op), offset)) {
         return false;
     }
-
+    if (data && size > 0) {
+        if (!android::base::WriteFullyAtOffset(fd_, data, size, next_data_pos_)) {
+            return false;
+        }
+    }
     header_.op_count++;
+    next_data_pos_ += op.data_length;
+    next_op_pos_ += sizeof(CowOperationV3);
+
     return true;
 }
 
