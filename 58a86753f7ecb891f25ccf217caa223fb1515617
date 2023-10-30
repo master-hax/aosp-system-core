@@ -46,6 +46,30 @@
       },
       "revId": "58a86753f7ecb891f25ccf217caa223fb1515617",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad20d75c_b5b89a8f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-30T17:51:43Z",
+      "side": 1,
+      "message": "re-open, for some reason this is not updated",
+      "parentUuid": "6af35a29_5d67d875",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 57
+      },
+      "revId": "58a86753f7ecb891f25ccf217caa223fb1515617",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
