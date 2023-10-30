@@ -18,6 +18,7 @@
 
 #include <pthread.h>
 
+#include "libsnapshot/cow_format.h"
 #include "snapuserd_core.h"
 #include "utility.h"
 
@@ -86,27 +87,32 @@ bool ReadWorker::ProcessCopyOp(const CowOperation* cow_op, void* buffer) {
 }
 
 bool ReadWorker::ProcessXorOp(const CowOperation* cow_op, void* buffer) {
-    if (!ReadFromSourceDevice(cow_op, buffer)) {
-        return false;
-    }
+    if (cow_op->type == kCowXorOp) {
+        if (!ReadFromSourceDevice(cow_op, buffer)) {
+            return false;
+        }
 
-    if (xor_buffer_.empty()) {
-        xor_buffer_.resize(BLOCK_SZ);
-    }
-    CHECK(xor_buffer_.size() == BLOCK_SZ);
+        if (xor_buffer_.empty()) {
+            xor_buffer_.resize(BLOCK_SZ);
+        }
+        CHECK(xor_buffer_.size() == BLOCK_SZ);
 
-    ssize_t size = reader_->ReadData(cow_op, xor_buffer_.data(), xor_buffer_.size());
-    if (size != BLOCK_SZ) {
-        SNAP_LOG(ERROR) << "ProcessXorOp failed for block " << cow_op->new_block
-                        << ", return value: " << size;
-        return false;
-    }
+        ssize_t size = reader_->ReadData(cow_op, xor_buffer_.data(), xor_buffer_.size());
+        if (size != BLOCK_SZ) {
+            SNAP_LOG(ERROR) << "ProcessXorOp failed for block " << cow_op->new_block
+                            << ", return value: " << size;
+            return false;
+        }
 
-    auto xor_out = reinterpret_cast<uint8_t*>(buffer);
-    for (size_t i = 0; i < BLOCK_SZ; i++) {
-        xor_out[i] ^= xor_buffer_[i];
+        auto xor_out = reinterpret_cast<uint8_t*>(buffer);
+        for (size_t i = 0; i < BLOCK_SZ; i++) {
+            xor_out[i] ^= xor_buffer_[i];
+        }
+        return true;
+    } else if (cow_op->type == kCowXorSourceOp) {
     }
-    return true;
+    PLOG(ERROR) << "ProcessXorOp called with incompatible op" << *cow_op;
+    return false;
 }
 
 bool ReadWorker::ProcessZeroOp(void* buffer) {
@@ -178,6 +184,7 @@ bool ReadWorker::ProcessCowOp(const CowOperation* cow_op, void* buffer) {
 
         case kCowCopyOp:
             [[fallthrough]];
+        case kCowXorSourceOp:
         case kCowXorOp: {
             return ProcessOrderedOp(cow_op, buffer);
         }

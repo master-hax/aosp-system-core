@@ -196,6 +196,8 @@ static constexpr uint8_t kCowLabelOp = 4;
 static constexpr uint8_t kCowClusterOp = 5;
 static constexpr uint8_t kCowXorOp = 6;
 static constexpr uint8_t kCowSequenceOp = 7;
+static constexpr uint8_t kCowXorSourceOp = 8;
+static constexpr uint8_t kCowXorDataOp = 9;
 static constexpr uint8_t kCowFooterOp = -1;
 
 enum CowCompressionAlgorithm : uint8_t {
