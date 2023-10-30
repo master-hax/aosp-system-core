@@ -3513,6 +3513,11 @@ Return SnapshotManager::InitializeUpdateSnapshots(
             return Return::Error();
         }
 
+        if (!WaitForDevice(cow_path, 6s)) {
+            LOG(ERROR) << "WaitForDevice: " << cow_path << " failed.";
+            return false;
+        }
+
         if (it->second.using_snapuserd()) {
             unique_fd fd(open(cow_path.c_str(), O_RDWR | O_CLOEXEC));
             if (fd < 0) {
