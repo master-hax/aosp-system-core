@@ -48,6 +48,8 @@ std::ostream& EmitCowTypeString(std::ostream& os, uint8_t cow_type) {
             return os << "kCowXorOp";
         case kCowSequenceOp:
             return os << "kCowSequenceOp";
+        case kCowXorDataOp:
+            return os << "kCowXorDataOp";
         default:
             return os << (int)cow_type << "unknown";
     }
@@ -83,13 +85,15 @@ std::ostream& operator<<(std::ostream& os, CowOperationV2 const& op) {
 std::ostream& operator<<(std::ostream& os, CowOperation const& op) {
     os << "CowOperation(";
     EmitCowTypeString(os, op.type);
-    if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowSequenceOp) {
+    if (op.type == kCowReplaceOp || op.type == kCowXorOp || op.type == kCowXorDataOp ||
+        op.type == kCowSequenceOp) {
         os << ", data_length:" << op.data_length;
     }
     if (op.type != kCowClusterOp && op.type != kCowSequenceOp && op.type != kCowLabelOp) {
         os << ", new_block:" << op.new_block;
     }
-    if (op.type == kCowXorOp || op.type == kCowReplaceOp || op.type == kCowCopyOp) {
+    if (op.type == kCowXorOp || op.type == kCowReplaceOp || op.type == kCowXorDataOp ||
+        op.type == kCowXorSourceOp || op.type == kCowCopyOp) {
         os << ", source:" << (op.source_info & kCowOpSourceInfoDataMask);
     } else if (op.type == kCowClusterOp) {
         os << ", cluster_data:" << (op.source_info & kCowOpSourceInfoDataMask);
