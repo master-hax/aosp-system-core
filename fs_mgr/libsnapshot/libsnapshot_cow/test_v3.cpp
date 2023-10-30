@@ -51,6 +51,11 @@ class CowTestV3 : public ::testing::Test {
     std::unique_ptr<TemporaryFile> cow_;
 };
 
+// Helper to check read sizes.
+static inline bool ReadData(CowReader& reader, const CowOperation* op, void* buffer, size_t size) {
+    return reader.ReadData(op, buffer, size) == size;
+}
+
 TEST_F(CowTestV3, CowHeaderV2Test) {
     CowOptions options;
     options.cluster_ops = 5;
@@ -118,6 +123,41 @@ TEST_F(CowTestV3, ZeroOp) {
     ASSERT_EQ(op->data_length, 0);
     ASSERT_EQ(op->new_block, 2);
     ASSERT_EQ(op->source_info, 0);
+}
+
+TEST_F(CowTestV3, ReplaceOp) {
+    CowOptions options;
+    options.op_count_max = 20;
+    options.scratch_space = false;
+    auto writer = CreateCowWriter(3, options, GetCowFd());
+    std::string data = "This is some data, believe it";
+    data.resize(options.block_size, '\0');
+
+    ASSERT_TRUE(writer->AddRawBlocks(5, data.data(), data.size()));
+    ASSERT_TRUE(writer->Finalize());
+
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+
+    const auto& header = reader.header_v3();
+    ASSERT_EQ(header.prefix.magic, kCowMagicNumber);
+    ASSERT_EQ(header.prefix.major_version, 3);
+    ASSERT_EQ(header.prefix.minor_version, kCowVersionMinor);
+    ASSERT_EQ(header.block_size, options.block_size);
+    ASSERT_EQ(header.op_count, 1);
+
+    auto iter = reader.GetOpIter();
+    ASSERT_NE(iter, nullptr);
+    ASSERT_FALSE(iter->AtEnd());
+
+    auto op = iter->Get();
+    std::string sink(data.size(), '\0');
+
+    ASSERT_EQ(op->type, kCowReplaceOp);
+    ASSERT_EQ(op->data_length, 4096);
+    ASSERT_EQ(op->new_block, 5);
+    ASSERT_TRUE(ReadData(reader, op, sink.data(), sink.size()));
+    ASSERT_EQ(sink, data);
 }
 
 }  // namespace snapshot
