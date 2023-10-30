@@ -681,11 +681,8 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
     }
 
     uint64_t offset;
-    if (op->type == kCowXorOp) {
-        offset = data_loc_->at(op->new_block);
-    } else {
-        offset = GetCowOpSourceInfoData(*op);
-    }
+
+    offset = GetCowOpSourceInfoData(*op);
 
     if (!decompressor) {
         CowDataStream stream(this, offset + ignore_bytes, op->data_length - ignore_bytes);
