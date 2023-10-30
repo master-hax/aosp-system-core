@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b5b4381_b17c78ea",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_base.h",
+        "patchSetId": 24
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-30T17:52:38Z",
+      "side": 1,
+      "message": "is this default implementation actually used? Make it pure virtual if possible",
+      "range": {
+        "startLine": 41,
+        "startChar": 84,
+        "endLine": 43,
+        "endChar": 5
+      },
+      "revId": "a13d4e309309d3cbf767252e1b540af6b49a4ef0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
