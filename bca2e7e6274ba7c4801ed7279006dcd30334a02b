@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ac50469_edb8b686",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_base.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-30T20:36:50Z",
+      "side": 1,
+      "message": "Does V3 need the same fields? It seems out of context to have a data_loc_ variable here w/o any code using it in parser_base. Put the definition in v2 parser directly, and turn data_loc() into a pure virtual function.",
+      "revId": "bca2e7e6274ba7c4801ed7279006dcd30334a02b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
