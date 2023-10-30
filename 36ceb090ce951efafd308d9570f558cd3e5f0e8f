@@ -16,6 +16,24 @@
       "message": "```suggestion\n    String vndkVersion \u003d getDevice().executeShellV2Command(\"getprop ro.vndk.version\").getStdout();\n    vndkVersion \u003d vndkVersion \u003d\u003d null ? \u0027\u0027 : vndkVersion.trim();\n```",
       "revId": "36ceb090ce951efafd308d9570f558cd3e5f0e8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58ee397c_6cb987e7",
+        "filename": "fs_mgr/tests/src/com/android/tests/vendoroverlay/VendorOverlayHostTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-10-30T04:02:23Z",
+      "side": 1,
+      "message": "Updated code to check from setup stage.",
+      "parentUuid": "7546d929_424b500f",
+      "revId": "36ceb090ce951efafd308d9570f558cd3e5f0e8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
