@@ -195,5 +195,41 @@ TEST_F(CowTestV3, CopyOp) {
 
     ASSERT_EQ(i, 100);
 }
+
+TEST_F(CowTestV3, XorOp) {
+    CowOptions options;
+    options.op_count_max = 100;
+    auto writer = CreateCowWriter(3, options, GetCowFd());
+
+    std::string data = "This is some new data, believe it";
+    data.resize(options.block_size, '\0');
+    ASSERT_TRUE(writer->AddXorBlocks(50, data.data(), data.size(), 24, 10));
+    ASSERT_TRUE(writer->Finalize());
+
+    ASSERT_EQ(lseek(cow_->fd, 0, SEEK_SET), 0);
+
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+
+    const auto& header = reader.GetHeader();
+    ASSERT_EQ(header.prefix.magic, kCowMagicNumber);
+    ASSERT_EQ(header.prefix.major_version, 3);
+    ASSERT_EQ(header.prefix.minor_version, kCowVersionMinor);
+    ASSERT_EQ(header.block_size, options.block_size);
+
+    auto iter = reader.GetOpIter();
+    ASSERT_NE(iter, nullptr);
+    ASSERT_FALSE(iter->AtEnd());
+    auto op = iter->Get();
+    std::string sink(data.size(), '\0');
+
+    ASSERT_EQ(op->type, kCowXorOp);
+    ASSERT_EQ(op->data_length, 4096);
+    ASSERT_EQ(op->new_block, 50);
+    ASSERT_EQ(GetCowOpSourceInfoData(*op), 98314);  // 4096 * 24 + 10
+    ASSERT_TRUE(ReadData(reader, op, sink.data(), sink.size()));
+    ASSERT_EQ(sink, data);
+}
+
 }  // namespace snapshot
 }  // namespace android

@@ -68,6 +68,15 @@ bool CowParserV3::ParseOps(borrowed_fd fd, std::optional<uint64_t> label) {
         return false;
     }
 
+    // fill out mapping of XOR op data location
+    uint64_t data_pos =
+            sizeof(CowHeaderV3) + header_.buffer_size + header_.op_count_max * sizeof(CowOperation);
+    for (auto op : *ops_) {
+        data_pos += op.data_length;
+        if (op.type == kCowXorOp) {
+            xor_data_loc_->insert({op.new_block, data_pos});
+        }
+    }
     // :TODO: sequence buffer & resume buffer follow
     // Once we implement labels, we'll have to discard unused ops and adjust
     // the header as needed.

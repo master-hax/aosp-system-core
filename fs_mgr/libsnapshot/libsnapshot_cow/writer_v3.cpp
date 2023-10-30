@@ -187,9 +187,7 @@ bool CowWriterV3::EmitRawBlocks(uint64_t new_block_start, const void* data, size
 
 bool CowWriterV3::EmitXorBlocks(uint32_t new_block_start, const void* data, size_t size,
                                 uint32_t old_block, uint16_t offset) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-    if (new_block_start || old_block || offset || data || size) return false;
-    return false;
+    return EmitBlocks(new_block_start, data, size, old_block, offset, kCowXorOp);
 }
 
 bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
@@ -206,12 +204,18 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
         CowOperation op = {};
         op.new_block = new_block_start + i;
         op.type = type;
-        op.source_info = next_data_pos_;
         op.data_length = static_cast<uint16_t>(header_.block_size);
+
+        if (type == kCowXorOp) {
+            op.source_info = (old_block + i) * header_.block_size + offset;
+        } else {
+            op.source_info = next_data_pos_;
+        }
         if (!WriteOperation(op, iter, header_.block_size)) {
             LOG(ERROR) << "AddRawBlocks: write failed";
             return false;
         }
+
         iter += header_.block_size;
     }
 
