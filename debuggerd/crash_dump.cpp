@@ -312,6 +312,8 @@ static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo,
   }
 
   switch (crash_info->header.version) {
+    // Dynamic executables always use version 4. There is no need to increment the version number if
+    // the format changes, because the sender (linker) and receiver (crash_dump) are version locked.
     case 4:
       process_info->fdsan_table_address = crash_info->data.d.fdsan_table_address;
       process_info->gwp_asan_state = crash_info->data.d.gwp_asan_state;
@@ -321,6 +323,7 @@ static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo,
       process_info->scudo_ring_buffer = crash_info->data.d.scudo_ring_buffer;
       process_info->scudo_ring_buffer_size = crash_info->data.d.scudo_ring_buffer_size;
       *recoverable_gwp_asan_crash = crash_info->data.d.recoverable_gwp_asan_crash;
+      process_info->read_or_write = crash_info->data.d.read_or_write;
       FALLTHROUGH_INTENDED;
     case 1:
     case 2:

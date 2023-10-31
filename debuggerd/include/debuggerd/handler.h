@@ -24,6 +24,8 @@
 #include <sys/system_properties.h>
 #include <sys/types.h>
 
+#include "debuggerd/enums.h"
+
 __BEGIN_DECLS
 
 // Forward declare these classes so not everyone has to include GWP-ASan
@@ -45,6 +47,7 @@ struct __attribute__((packed)) debugger_process_info {
   const char* scudo_ring_buffer;
   size_t scudo_ring_buffer_size;
   bool recoverable_gwp_asan_crash;
+  ReadOrWrite read_or_write;
 };
 
 // GWP-ASan calbacks to support the recoverable mode. Separate from the

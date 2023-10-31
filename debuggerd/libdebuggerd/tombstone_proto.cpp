@@ -682,6 +682,18 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   sig.set_code(main_thread.siginfo->si_code);
   sig.set_code_name(get_sigcode(main_thread.siginfo));
 
+  switch (process_info.read_or_write) {
+    case ReadOrWrite::UNKNOWN:
+      sig.set_read_or_write(Signal::UNKNOWN);
+      break;
+    case ReadOrWrite::WRITE:
+      sig.set_read_or_write(Signal::WRITE);
+      break;
+    case ReadOrWrite::READ:
+      sig.set_read_or_write(Signal::READ);
+      break;
+  }
+
   if (signal_has_sender(main_thread.siginfo, main_thread.pid)) {
     sig.set_has_sender(true);
     sig.set_sender_uid(main_thread.siginfo->si_uid);
