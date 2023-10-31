@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2fa9895f_deb269e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2023-10-31T20:16:15Z",
+      "side": 1,
+      "message": "We could add a test to `system/core/debuggerd/debuggerd_test.cpp`. No need for MTE, all we need to do is access a PROT_NONE page. We could, for example, check WnR and (if ISV is set) SAS.",
+      "parentUuid": "31aeb7e1_c4c28787",
+      "revId": "5ecabf21136530b3deeff12ea257b3f157fdfdd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "69286ccc_1477e685",
