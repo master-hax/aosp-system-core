@@ -34,6 +34,24 @@
       "parentUuid": "9ac50469_edb8b686",
       "revId": "bca2e7e6274ba7c4801ed7279006dcd30334a02b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63149d23_21b99446",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_base.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-31T01:57:44Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "de30eea9_39f32e9c",
+      "revId": "bca2e7e6274ba7c4801ed7279006dcd30334a02b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
