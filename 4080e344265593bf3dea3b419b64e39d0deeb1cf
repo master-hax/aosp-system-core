@@ -65,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "04d5df57_f16899ba",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_super_layout_builder_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-10-31T08:27:00Z",
+      "side": 1,
+      "message": "Fuzzer has been updated as per these suggestions in another CL.\nLink for the same - https://android-review.googlesource.com/c/platform/system/core/+/2811834",
+      "parentUuid": "1e3e23d6_a015ea1a",
+      "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cc55be36_1491500c",
@@ -78,6 +96,24 @@
       "writtenOn": "2023-10-18T15:49:59Z",
       "side": 1,
       "message": "...this line has no effect outside of this function, and it\u0027s the last line of code in this function.",
+      "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a9d961f_2fcee976",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_super_layout_builder_fuzzer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-10-31T08:27:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc55be36_1491500c",
       "revId": "4080e344265593bf3dea3b419b64e39d0deeb1cf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
