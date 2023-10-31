@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "468f8c35_a5065536",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-10-31T19:04:05Z",
+      "side": 1,
+      "message": "Looks fine to me, but you probably need an owner for +2 also.",
+      "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
