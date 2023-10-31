@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a2d0f77_ac643986",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-31T02:04:28Z",
+      "side": 1,
+      "message": "This is already computed by `GetOpOffset(header_.op_count);` , do we need to store it using an member variable?",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91ffe624_77cc6887",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-31T02:04:28Z",
+      "side": 1,
+      "message": "What data do we keep in memory such that processing a large block chunk is stressing memory? Looking at implementation of this loop, we always process each block independently, and every CowOperation is immediately written to disk with no caching, memory should not be an issue here.",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9e90089_4ecd7b3d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-10-31T02:04:28Z",
+      "side": 1,
+      "message": "do we need to update `next_data_pos_` after writing?",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
