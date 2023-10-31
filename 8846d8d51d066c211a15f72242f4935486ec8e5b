@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0103ef1_67a8c834",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-10-31T19:56:18Z",
+      "side": 1,
+      "message": "Bug: 269521803\n\nAlso, this could be a separate change, but I think it could be useful to include the entire ESR value (maybe as part of the register dump) on Arm. There is a bunch of information there about the fault that can help in the hard cases.",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
