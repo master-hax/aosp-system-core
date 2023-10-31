@@ -413,9 +413,22 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
       fault_addr_desc = "--------";
     }
 
-    CBL("signal %d (%s), code %d (%s%s), fault addr %s", signal_info.number(),
+    std::string read_or_write_desc;
+    switch (signal_info.read_or_write()) {
+      default:
+      case Signal::UNKNOWN:
+        break;
+      case Signal::WRITE:
+        read_or_write_desc = " (write)";
+        break;
+      case Signal::READ:
+        read_or_write_desc = " (read)";
+        break;
+    }
+
+    CBL("signal %d (%s), code %d (%s%s), fault addr %s%s", signal_info.number(),
         signal_info.name().c_str(), signal_info.code(), signal_info.code_name().c_str(),
-        sender_desc.c_str(), fault_addr_desc.c_str());
+        sender_desc.c_str(), fault_addr_desc.c_str(), read_or_write_desc.c_str());
 #ifdef SEGV_MTEAERR
     is_async_mte_crash = signal_info.number() == SIGSEGV && signal_info.code() == SEGV_MTEAERR;
     is_mte_crash = is_async_mte_crash ||

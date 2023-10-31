@@ -47,6 +47,7 @@
 
 #include <libdebuggerd/utility.h>
 
+#include "debuggerd/enums.h"
 #include "dump_type.h"
 #include "protocol.h"
 
@@ -187,7 +188,7 @@ static bool get_main_thread_name(char* buf, size_t len) {
  * mutex is being held, so we don't want to use any libc functions that
  * could allocate memory or hold a lock.
  */
-static void log_signal_summary(const siginfo_t* si) {
+static void log_signal_summary(const siginfo_t* si, ReadOrWrite read_or_write) {
   char main_thread_name[MAX_TASK_NAME_LEN + 1];
   if (!get_main_thread_name(main_thread_name, sizeof(main_thread_name))) {
     strncpy(main_thread_name, "<unknown>", sizeof(main_thread_name));
@@ -212,6 +213,18 @@ static void log_signal_summary(const siginfo_t* si) {
     async_safe_format_buffer(extra_desc, sizeof(extra_desc), ", fault addr %p", si->si_addr);
   }
 
+  char rw_desc[16] = {};  // " (write)", " (read)", or ""
+  switch (read_or_write) {
+    case ReadOrWrite::UNKNOWN:
+      break;
+    case ReadOrWrite::WRITE:
+      async_safe_format_buffer(rw_desc, sizeof(rw_desc), " (write)");
+      break;
+    case ReadOrWrite::READ:
+      async_safe_format_buffer(rw_desc, sizeof(rw_desc), " (read)");
+      break;
+  }
+
   char thread_name[MAX_TASK_NAME_LEN + 1];  // one more for termination
   if (prctl(PR_GET_NAME, reinterpret_cast<unsigned long>(thread_name), 0, 0, 0) != 0) {
     strcpy(thread_name, "<name unknown>");
@@ -222,9 +235,9 @@ static void log_signal_summary(const siginfo_t* si) {
   }
 
   async_safe_format_log(ANDROID_LOG_FATAL, "libc",
-                        "Fatal signal %d (%s), code %d (%s%s)%s in tid %d (%s), pid %d (%s)",
+                        "Fatal signal %d (%s), code %d (%s%s)%s%s in tid %d (%s), pid %d (%s)",
                         si->si_signo, get_signame(si), si->si_code, get_sigcode(si), sender_desc,
-                        extra_desc, __gettid(), thread_name, self_pid, main_thread_name);
+                        extra_desc, rw_desc, __gettid(), thread_name, self_pid, main_thread_name);
 }
 
 /*
@@ -396,6 +409,7 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
     ASSERT_SAME_OFFSET(scudo_ring_buffer, scudo_ring_buffer);
     ASSERT_SAME_OFFSET(scudo_ring_buffer_size, scudo_ring_buffer_size);
     ASSERT_SAME_OFFSET(recoverable_gwp_asan_crash, recoverable_gwp_asan_crash);
+    ASSERT_SAME_OFFSET(read_or_write, read_or_write);
 #undef ASSERT_SAME_OFFSET
 
     iovs[3] = {.iov_base = &thread_info->process_info,
@@ -521,6 +535,33 @@ static void resend_signal(siginfo_t* info) {
   }
 }
 
+static ReadOrWrite get_read_or_write(__attribute__((unused)) ucontext_t* ucontext) {
+#if defined(__x86_64__) || defined(__i386__)
+  static const uintptr_t PF_WRITE = 1U << 1;
+  uintptr_t err = ucontext->uc_mcontext.gregs[REG_ERR];
+  return err & PF_WRITE ? ReadOrWrite::WRITE : ReadOrWrite::READ;
+#elif defined(__arm__)
+  static const uintptr_t FSR_WRITE = 1U << 11;
+  uintptr_t fsr = ucontext->uc_mcontext.error_code;
+  return fsr & FSR_WRITE ? ReadOrWrite::WRITE : ReadOrWrite::READ;
+#elif defined(__aarch64__)
+  static const uint64_t ESR_ELx_WNR = 1U << 6;
+  static const uint32_t kEsrMagic = 0x45535201;
+  uint8_t* aux = reinterpret_cast<uint8_t*>(ucontext->uc_mcontext.__reserved);
+  while (true) {
+    _aarch64_ctx* ctx = reinterpret_cast<_aarch64_ctx*>(aux);
+    if (ctx->size == 0) return ReadOrWrite::UNKNOWN;
+    if (ctx->magic == kEsrMagic) {
+      uint64_t esr = reinterpret_cast<esr_context*>(ctx)->esr;
+      return esr & ESR_ELx_WNR ? ReadOrWrite::WRITE : ReadOrWrite::READ;
+    }
+    aux += ctx->size;
+  }
+#else   // defined(__x86_64__) || defined(__i386__) || defined(__arm__)
+  return ReadOrWrite::UNKNOWN;
+#endif  // defined(__x86_64__) || defined(__i386__) || defined(__arm__)
+}
+
 // Handler that does crash dumping by forking and doing the processing in the child.
 // Do this by ptracing the relevant thread, and then execing debuggerd to do the actual dump.
 static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* context) {
@@ -570,6 +611,8 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     }
   }
 
+  process_info.read_or_write = get_read_or_write(ucontext);
+
   gwp_asan_callbacks_t gwp_asan_callbacks = {};
   if (g_callbacks.get_gwp_asan_callbacks != nullptr) {
     // GWP-ASan catches use-after-free and heap-buffer-overflow by using PROT_NONE
@@ -615,7 +658,7 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     return;
   }
 
-  log_signal_summary(info);
+  log_signal_summary(info, process_info.read_or_write);
 
   // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
   // this is not the main thread, which can cause the intercept logic to fail

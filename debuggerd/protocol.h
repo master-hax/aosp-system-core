@@ -23,6 +23,8 @@
 
 #include "dump_type.h"
 
+#include "debuggerd/enums.h"
+
 // Sockets in the ANDROID_SOCKET_NAMESPACE_RESERVED namespace.
 // Both sockets are SOCK_SEQPACKET sockets, so no explicit length field is needed.
 constexpr char kTombstonedCrashSocketName[] = "tombstoned_crash";
@@ -100,6 +102,7 @@ struct __attribute__((__packed__)) CrashInfoDataDynamic : public CrashInfoDataSt
   uintptr_t scudo_ring_buffer;
   size_t scudo_ring_buffer_size;
   bool recoverable_gwp_asan_crash;
+  ReadOrWrite read_or_write;
 };
 
 struct __attribute__((__packed__)) CrashInfo {
