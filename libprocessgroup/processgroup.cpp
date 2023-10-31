@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
+#include <poll.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +31,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <cstring>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -53,7 +55,9 @@ using android::base::WriteStringToFile;
 
 using namespace std::chrono_literals;
 
-#define PROCESSGROUP_CGROUP_PROCS_FILE "/cgroup.procs"
+#define PROCESSGROUP_CGROUP_PROCS_FILE "cgroup.procs"
+#define PROCESSGROUP_CGROUP_KILL_FILE "cgroup.kill"
+#define PROCESSGROUP_CGROUP_EVENTS_FILE "cgroup.events"
 
 bool CgroupsAvailable() {
     static bool cgroups_available = access("/proc/cgroups", F_OK) == 0;
@@ -72,6 +76,29 @@ bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) 
     }
 
     return true;
+}
+
+static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
+    return StringPrintf("%s/uid_%u", cgroup, uid);
+}
+
+static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {
+    return StringPrintf("%s/uid_%u/pid_%d", cgroup, uid, pid);
+}
+
+static bool CgroupKillAvailable() {
+    static std::once_flag f;
+    static bool cgroup_kill_available = false;
+    std::call_once(f, []() {
+        std::string cg_kill;
+        CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &cg_kill);
+        // cgroup.kill is not on the root cgroup, so check a non-root cgroup that should always
+        // exist
+        cg_kill = ConvertUidToPath(cg_kill.c_str(), AID_ROOT) + '/' + PROCESSGROUP_CGROUP_KILL_FILE;
+        cgroup_kill_available = access(cg_kill.c_str(), F_OK) == 0;
+    });
+
+    return cgroup_kill_available;
 }
 
 static bool CgroupGetMemcgAppsPath(std::string* path) {
@@ -205,29 +232,16 @@ bool SetUserProfiles(uid_t uid, const std::vector<std::string>& profiles) {
                                                        false);
 }
 
-static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
-    return StringPrintf("%s/uid_%u", cgroup, uid);
-}
-
-static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, int pid) {
-    return StringPrintf("%s/uid_%u/pid_%d", cgroup, uid, pid);
-}
-
-static int RemoveCgroup(const char* cgroup, uid_t uid, int pid, unsigned int retries) {
-    int ret = 0;
+static int RemoveCgroup(const char* cgroup, uid_t uid, int pid) {
     auto uid_pid_path = ConvertUidPidToPath(cgroup, uid, pid);
 
-    while (retries--) {
-        ret = rmdir(uid_pid_path.c_str());
-        if (!ret || errno != EBUSY || !retries) break;
-        std::this_thread::sleep_for(5ms);
-    }
+    int ret = TEMP_FAILURE_RETRY(rmdir(uid_pid_path.c_str()));
 
     if (!ret && uid >= AID_ISOLATED_START && uid <= AID_ISOLATED_END) {
         // Isolated UIDs are unlikely to be reused soon after removal,
         // so free up the kernel resources for the UID level cgroup.
         const auto uid_path = ConvertUidToPath(cgroup, uid);
-        ret = rmdir(uid_path.c_str());
+        ret = TEMP_FAILURE_RETRY(rmdir(uid_path.c_str()));
     }
 
     return ret;
@@ -374,35 +388,49 @@ err:
     return false;
 }
 
-// Returns number of processes killed on success
-// Returns 0 if there are no processes in the process cgroup left to kill
-// Returns -1 on error
-static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal) {
-    // We separate all of the pids in the cgroup into those pids that are also the leaders of
-    // process groups (stored in the pgids set) and those that are not (stored in the pids set).
-    std::set<pid_t> pgids;
-    pgids.emplace(initialPid);
-    std::set<pid_t> pids;
-    int processes = 0;
+bool sendSignalToProcessGroup(uid_t uid, int initialPid, int signal) {
+    std::string hierarchy_root_path, cgroup_v2_path;
+    if (CgroupsAvailable()) {
+        CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &hierarchy_root_path);
+        cgroup_v2_path = ConvertUidPidToPath(hierarchy_root_path.c_str(), uid, initialPid);
+    }
 
-    std::unique_ptr<FILE, decltype(&fclose)> fd(nullptr, fclose);
+    if (signal == SIGKILL && CgroupKillAvailable()) {
+        LOG(VERBOSE) << "Using " << PROCESSGROUP_CGROUP_KILL_FILE << " to SIGKILL "
+                     << cgroup_v2_path;
+        const std::string killfilepath = cgroup_v2_path + '/' + PROCESSGROUP_CGROUP_KILL_FILE;
+        if (!WriteStringToFile("1", killfilepath)) {
+            PLOG(ERROR) << "Failed to write '" << initialPid << " to " << killfilepath;
+            return true;
+        }
+        return false;
+    }
+
+    std::set<pid_t> pgids, pids;
+    pgids.emplace(initialPid);  // For non-cgroup case
 
     if (CgroupsAvailable()) {
-        auto path = ConvertUidPidToPath(cgroup, uid, initialPid) + PROCESSGROUP_CGROUP_PROCS_FILE;
-        fd.reset(fopen(path.c_str(), "re"));
-        if (!fd) {
+        // Since cgroup.kill only sends SIGKILLs, we read cgroup.procs to find each process to
+        // signal individually
+        LOG(VERBOSE) << "Using " << PROCESSGROUP_CGROUP_PROCS_FILE << " to signal (" << signal
+                     << ") " << cgroup_v2_path;
+
+        // We separate all of the pids in the cgroup into those pids that are also the leaders of
+        // process groups (stored in the pgids set) and those that are not (stored in the pids set).
+        const auto procsfilepath = cgroup_v2_path + '/' + PROCESSGROUP_CGROUP_PROCS_FILE;
+        std::unique_ptr<FILE, decltype(&fclose)> fp(fopen(procsfilepath.c_str(), "re"), fclose);
+        if (!fp) {
             if (errno == ENOENT) {
                 // This happens when process is already dead
-                return 0;
+                return false;
             }
             PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
                           << initialPid;
-            return -1;
+            return true;
         }
         pid_t pid;
         bool file_is_empty = true;
-        while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
-            processes++;
+        while (fscanf(fp.get(), "%d\n", &pid) == 1 && pid >= 0) {
             file_is_empty = false;
             if (pid == 0) {
                 // Should never happen...  but if it does, trying to kill this
@@ -452,101 +480,148 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
         }
     }
 
-    return (!fd || feof(fd.get())) ? processes : -1;
+    return false;
 }
 
-static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
+template <typename T>
+std::chrono::milliseconds toMillisec(T&& duration) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+}
+
+static void pollOnEvents(int events_fd, const std::chrono::steady_clock::time_point& until) {
+    const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+    struct pollfd fds = {
+        .fd = events_fd,
+        .events = POLLPRI,
+    };
+
+    int ret = 0;
+    for (auto now = std::chrono::steady_clock::now();
+         now < until && (ret == 0 || (ret == -1 && errno == EINTR));
+         now = std::chrono::steady_clock::now()) {
+        ret = poll(&fds, 1, toMillisec(until - now).count());
+    }
+
+    LOG(VERBOSE) << "Waited " << toMillisec(std::chrono::steady_clock::now() - start).count()
+                 << " ms for " << PROCESSGROUP_CGROUP_EVENTS_FILE << " poll"
+                 << (ret < 0 ? std::string(": ") + std::strerror(errno) : "");
+}
+
+static bool cgroupIsPopulated(int events_fd) {
+    const std::string POPULATED_KEY("populated ");
+    const std::string::size_type MAX_EVENTS_FILE_SIZE = 32;
+
+    std::string buf;
+full_retry:
+    buf.resize(MAX_EVENTS_FILE_SIZE);
+    lseek(events_fd, 0, SEEK_SET);
+    ssize_t len = TEMP_FAILURE_RETRY(read(events_fd, buf.data(), buf.size()));
+    if (len <= 0) {
+        LOG(ERROR) << "Could not read cgroup.events";
+        // Potentially ENODEV if the cgroup has been removed since we opened this file, but that
+        // shouldn't have happened yet.
+        return false;
+    }
+
+    buf.resize(len);
+
+    const std::string::size_type pos = buf.find(POPULATED_KEY);
+    if (pos == std::string::npos) {
+        LOG(ERROR) << "Could not find populated key in cgroup.events";
+        goto full_retry;
+    }
+
+    if (pos + POPULATED_KEY.size() + 1 > len) {
+        LOG(ERROR) << "Partial read of cgroup.events";
+        goto full_retry;
+    }
+
+    return buf[pos + POPULATED_KEY.size()] == '1';
+}
+
+// The default timeout of 2200ms comes from the default number of retries in a previous
+// implementation of this function. The default retry value was 40 for killing and 400 for cgroup
+// removal with 5ms sleeps between each retry.
+static int KillProcessGroup(
+        uid_t uid, int initialPid, int signal,
+        std::chrono::steady_clock::time_point until = std::chrono::steady_clock::now() + 2200ms) {
     CHECK_GE(uid, 0);
     CHECK_GT(initialPid, 0);
 
+    if (!CgroupsAvailable()) return sendSignalToProcessGroup(uid, initialPid, signal) ? 0 : -1;
+
     std::string hierarchy_root_path;
-    if (CgroupsAvailable()) {
-        CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &hierarchy_root_path);
-    }
-    const char* cgroup = hierarchy_root_path.c_str();
+    CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &hierarchy_root_path);
 
-    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    const std::string cgroup_v2_path =
+            ConvertUidPidToPath(hierarchy_root_path.c_str(), uid, initialPid);
 
-    int retry = retries;
-    int processes;
-    while ((processes = DoKillProcessGroupOnce(cgroup, uid, initialPid, signal)) > 0) {
-        LOG(VERBOSE) << "Killed " << processes << " processes for processgroup " << initialPid;
-        if (!CgroupsAvailable()) {
-            // makes no sense to retry, because there are no cgroup_procs file
-            processes = 0;  // no remaining processes
-            break;
-        }
-        if (retry > 0) {
-            std::this_thread::sleep_for(5ms);
-            --retry;
-        } else {
-            break;
-        }
-    }
-
-    if (processes < 0) {
-        PLOG(ERROR) << "Error encountered killing process cgroup uid " << uid << " pid "
-                    << initialPid;
+    const std::string eventsfile = cgroup_v2_path + '/' + PROCESSGROUP_CGROUP_EVENTS_FILE;
+    android::base::unique_fd events_fd(open(eventsfile.c_str(), O_RDONLY));
+    if (events_fd.get() == -1) {
+        PLOG(ERROR) << "Error opening " << eventsfile << ": ";
         return -1;
     }
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
-    // We only calculate the number of 'processes' when killing the processes.
-    // In the retries == 0 case, we only kill the processes once and therefore
-    // will not have waited then recalculated how many processes are remaining
-    // after the first signals have been sent.
-    // Logging anything regarding the number of 'processes' here does not make sense.
-
-    if (processes == 0) {
-        if (retries > 0) {
-            LOG(INFO) << "Successfully killed process cgroup uid " << uid << " pid " << initialPid
-                      << " in " << static_cast<int>(ms) << "ms";
+    // The primary reason to loop here is to capture any new forks or migrations that could occur
+    // after we send signals to the original set of processes, but before all of those processes
+    // exit and the cgroup becomes unpopulated, or before we remove the cgroup. We try hard to
+    // ensure this completes successfully to avoid permanent memory leaks, but we still place a
+    // large default upper bound on the amount of time we spend in this loop. The amount of CPU
+    // contention, and the amount of work that needs to be done in do_exit for each process
+    // determines how long this will take.
+    int ret;
+    do {
+        bool populated;
+        while ((populated = cgroupIsPopulated(events_fd.get())) &&
+               std::chrono::steady_clock::now() < until) {
+            sendSignalToProcessGroup(uid, initialPid, signal);
+            pollOnEvents(events_fd.get(), until);
         }
 
-        if (!CgroupsAvailable()) {
-            // nothing to do here, if cgroups isn't available
-            return 0;
+        const std::chrono::milliseconds kill_duration =
+                toMillisec(std::chrono::steady_clock::now() - start);
+
+        if (populated) {
+            LOG(WARNING) << "Still waiting on process(es) to exit for cgroup " << cgroup_v2_path
+                         << " after " << kill_duration.count() << " ms";
+            // We'll still try the cgroup removal below which we expect to log an error.
+        } else {
+            LOG(INFO) << "Killed all processes under cgroup " << cgroup_v2_path
+                      << " after " << kill_duration.count() << " ms";
         }
 
-        // 400 retries correspond to 2 secs max timeout
-        int err = RemoveCgroup(cgroup, uid, initialPid, 400);
+        ret = RemoveCgroup(hierarchy_root_path.c_str(), uid, initialPid);
+        if (ret)
+            PLOG(ERROR) << "Unable to remove cgroup " << cgroup_v2_path;
+        else
+            LOG(INFO) << "Removed cgroup " << cgroup_v2_path;
 
         if (isMemoryCgroupSupported() && UsePerAppMemcg()) {
+            // This per-application memcg v1 case should eventually be removed after migration to
+            // memcg v2.
             std::string memcg_apps_path;
             if (CgroupGetMemcgAppsPath(&memcg_apps_path) &&
-                RemoveCgroup(memcg_apps_path.c_str(), uid, initialPid, 400) < 0) {
-                return -1;
+                (ret = RemoveCgroup(memcg_apps_path.c_str(), uid, initialPid)) < 0) {
+                const auto memcg_v1_cgroup_path =
+                        ConvertUidPidToPath(memcg_apps_path.c_str(), uid, initialPid);
+                PLOG(ERROR) << "Unable to remove memcg v1 cgroup " << memcg_v1_cgroup_path;
             }
         }
+    } while (ret && errno == EBUSY && std::chrono::steady_clock::now() < until);
 
-        return err;
-    } else {
-        if (retries > 0) {
-            LOG(ERROR) << "Failed to kill process cgroup uid " << uid << " pid " << initialPid
-                       << " in " << static_cast<int>(ms) << "ms, " << processes
-                       << " processes remain";
-        }
-        return -1;
-    }
+    return ret;
 }
 
 int killProcessGroup(uid_t uid, int initialPid, int signal) {
-    return KillProcessGroup(uid, initialPid, signal, 40 /*retries*/);
+    return KillProcessGroup(uid, initialPid, signal);
 }
 
 int killProcessGroupOnce(uid_t uid, int initialPid, int signal) {
-    return KillProcessGroup(uid, initialPid, signal, 0 /*retries*/);
-}
-
-int sendSignalToProcessGroup(uid_t uid, int initialPid, int signal) {
-    std::string hierarchy_root_path;
-    if (CgroupsAvailable()) {
-        CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &hierarchy_root_path);
-    }
-    const char* cgroup = hierarchy_root_path.c_str();
-    return DoKillProcessGroupOnce(cgroup, uid, initialPid, signal);
+    return KillProcessGroup(uid, initialPid, signal, std::chrono::steady_clock::now() + 200ms);
 }
 
 static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgroup,
@@ -586,7 +661,7 @@ static int createProcessGroupInternal(uid_t uid, int initialPid, std::string cgr
         return -errno;
     }
 
-    auto uid_pid_procs_file = uid_pid_path + PROCESSGROUP_CGROUP_PROCS_FILE;
+    auto uid_pid_procs_file = uid_pid_path + '/' + PROCESSGROUP_CGROUP_PROCS_FILE;
 
     if (!WriteStringToFile(std::to_string(initialPid), uid_pid_procs_file)) {
         ret = -errno;
