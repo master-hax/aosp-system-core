@@ -16,6 +16,108 @@
       "message": "Bug: 269521803\n\nAlso, this could be a separate change, but I think it could be useful to include the entire ESR value (maybe as part of the register dump) on Arm. There is a bunch of information there about the fault that can help in the hard cases.",
       "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c46b8edd_ee8c879a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "i\u0027d probably have gone with just \" (read)\" or \" (write)\"; i\u0027m not sure \"memory access\" adds anything.\n\nand i\u0027m not sure we shouldn\u0027t just wait for riscv kernels to actually communicate this to us.\n\n+cferris for thoughts on who\u0027s likely to break if that most-regexed-of-lines changes.\n\nbut otherwise the principle seems reasonable...",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4f700ff_f830f2fb",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "explicitly mention static binaries?",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf264338_7919d04b",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "won\u0027t this crash if the fault is from an instruction read?",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b091777_5d308ffd",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "don\u0027t forget C... and V... (see below, though, for whether we should even do this at all.)",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6575f346_955a78ef",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "we don\u0027t support other variants.",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5a15b55_5d398958",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-10-31T20:12:15Z",
+      "side": 1,
+      "message": "was there any upstream kernel discussion about this gap?",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
