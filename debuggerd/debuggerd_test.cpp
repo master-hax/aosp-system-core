@@ -333,10 +333,12 @@ TEST_F(CrasherTest, smoke) {
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
 #ifdef __LP64__
-  ASSERT_MATCH(result,
-               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x000000000000dead)");
+  ASSERT_MATCH(
+      result,
+      R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x000000000000dead \(write\))");
 #else
-  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0000dead)");
+  ASSERT_MATCH(result,
+               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0000dead \(write\))");
 #endif
 
   if (mte_supported()) {
@@ -376,7 +378,8 @@ TEST_F(CrasherTest, tagged_fault_addr) {
 
   // The address can either be tagged (new kernels) or untagged (old kernels).
   ASSERT_MATCH(
-      result, R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x[01]00000000000dead)");
+      result,
+      R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x[01]00000000000dead \(write\))");
 }
 
 void CrasherTest::Trap(void* ptr) {
@@ -869,7 +872,8 @@ TEST_F(CrasherTest, LD_PRELOAD) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+dead)");
+  ASSERT_MATCH(result,
+               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+dead \(write\))");
 }
 
 TEST_F(CrasherTest, abort) {
@@ -2225,7 +2229,8 @@ TEST_F(CrasherTest, fault_address_before_first_map) {
 
   std::string result;
   ConsumeFd(std::move(output_fd), &result);
-  ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+1024)");
+  ASSERT_MATCH(result,
+               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+1024 \(write\))");
 
   ASSERT_MATCH(result, R"(\nmemory map \(.*\):\n)");
 
@@ -2260,6 +2265,7 @@ TEST_F(CrasherTest, fault_address_after_last_map) {
 
   std::string match_str = R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x)";
   match_str += format_full_pointer(crash_uptr);
+  match_str += " \\(write\\)";
   ASSERT_MATCH(result, match_str);
 
   ASSERT_MATCH(result, R"(\nmemory map \(.*\): \(fault address prefixed with --->)\n)");
@@ -2312,6 +2318,7 @@ TEST_F(CrasherTest, fault_address_between_maps) {
 
   std::string match_str = R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x)";
   match_str += format_full_pointer(reinterpret_cast<uintptr_t>(middle_ptr));
+  match_str += " \\(write\\)";
   ASSERT_MATCH(result, match_str);
 
   ASSERT_MATCH(result, R"(\nmemory map \(.*\): \(fault address prefixed with --->)\n)");
@@ -2350,6 +2357,7 @@ TEST_F(CrasherTest, fault_address_in_map) {
 
   std::string match_str = R"(signal 11 \(SIGSEGV\), code 2 \(SEGV_ACCERR\), fault addr 0x)";
   match_str += format_full_pointer(reinterpret_cast<uintptr_t>(ptr));
+  match_str += " \\(write\\)";
   ASSERT_MATCH(result, match_str);
 
   ASSERT_MATCH(result, R"(\nmemory map \(.*\): \(fault address prefixed with --->)\n)");
@@ -2790,4 +2798,50 @@ TEST_F(CrasherTest, log_with_newline) {
   ConsumeFd(std::move(output_fd), &result);
   ASSERT_MATCH(result, ":\\s*This line has a newline.");
   ASSERT_MATCH(result, ":\\s*This is on the next line.");
+}
+
+TEST_F(CrasherTest, describe_read_access) {
+  StartProcess([]() {
+    uintptr_t ptr_val = 0x13337;
+    char* volatile ptr = reinterpret_cast<char*>(ptr_val);
+    __attribute__((unused)) volatile char d = *ptr;
+    _exit(0);
+  });
+
+  unique_fd output_fd;
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+
+  int intercept_result;
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result,
+               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+13337 \(read\))");
+}
+
+TEST_F(CrasherTest, describe_write_access) {
+  StartProcess([]() {
+    uintptr_t ptr_val = 0x13337;
+    char* volatile ptr = reinterpret_cast<char*>(ptr_val);
+    *ptr = 0;
+    _exit(0);
+  });
+
+  unique_fd output_fd;
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+
+  int intercept_result;
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result,
+               R"(signal 11 \(SIGSEGV\), code 1 \(SEGV_MAPERR\), fault addr 0x0+13337 \(write\))");
 }

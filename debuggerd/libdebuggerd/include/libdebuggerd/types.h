@@ -22,6 +22,8 @@
 
 #include <unwindstack/Regs.h>
 
+#include "debuggerd/enums.h"
+
 struct ThreadInfo {
   std::unique_ptr<unwindstack::Regs> registers;
   long tagged_addr_ctrl = -1;
@@ -55,4 +57,6 @@ struct ProcessInfo {
   bool has_fault_address = false;
   uintptr_t untagged_fault_address = 0;
   uintptr_t maybe_tagged_fault_address = 0;
+
+  ReadOrWrite read_or_write = ReadOrWrite::UNKNOWN;
 };

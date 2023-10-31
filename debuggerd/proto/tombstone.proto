@@ -70,7 +70,15 @@ message Signal {
   // only include metadata, and not the contents.
   MemoryDump fault_adjacent_metadata = 10;
 
-  reserved 11 to 999;
+  enum ReadOrWrite {
+    UNKNOWN = 0;
+    WRITE = 1;
+    READ = 2;
+    reserved 3 to 999;
+  }
+  ReadOrWrite read_or_write = 11;
+
+  reserved 12 to 999;
 }
 
 message HeapObject {
