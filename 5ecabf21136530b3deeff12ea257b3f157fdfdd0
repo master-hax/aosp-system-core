@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "31ba23e2_3da16023",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2023-10-31T20:40:05Z",
+      "side": 1,
+      "message": "Ah, that\u0027s what you were referring to in your other message with \"crasher\" (which I\u0027d never used before, but it appears to be a tool for manually testing tombstoned?) I think it would be better to add a test to `debuggerd_test.cpp` so that it at least has a chance of being run automatically.\n\nAnyway, I built crasher and it didn\u0027t have the ELF note required for BTI so I wouldn\u0027t expect BTI failures to work. Was that the one that wasn\u0027t working for you?",
+      "parentUuid": "529f1a9c_e31b8f7d",
+      "revId": "5ecabf21136530b3deeff12ea257b3f157fdfdd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "69286ccc_1477e685",
         "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility.h",
         "patchSetId": 2
