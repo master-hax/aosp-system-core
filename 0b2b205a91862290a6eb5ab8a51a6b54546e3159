@@ -1,0 +1,280 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc6760ab_2edd31c1",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Huh. This is strange. Should the be `true` if no errors encountered? Alternatively keep the return type as `int` and return 0 on success.",
+      "range": {
+        "startLine": 78,
+        "startChar": 3,
+        "endLine": 78,
+        "endChar": 78
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9d4b163_38e641e9",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "should be in alphabetic order after \u003cchrono\u003e.",
+      "range": {
+        "startLine": 33,
+        "startChar": 9,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e139384d_7a453627",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "space is missing. Please run clang-format",
+      "range": {
+        "startLine": 93,
+        "startChar": 25,
+        "endLine": 93,
+        "endChar": 27
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "592df1e5_4d696236",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Log this once to prevent spamming the log output.",
+      "range": {
+        "startLine": 401,
+        "startChar": 8,
+        "endLine": 401,
+        "endChar": 99
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6382fe7_7fb1add5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Is this log really useful? If so, maybe log only once?",
+      "range": {
+        "startLine": 416,
+        "startChar": 0,
+        "endLine": 417,
+        "endChar": 36
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d9ed373_a59df6dc",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "We should return whether we timed out or succeeded.",
+      "range": {
+        "startLine": 496,
+        "startChar": 7,
+        "endLine": 496,
+        "endChar": 11
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d345cb03_e610a282",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "you can use TEMP_FAILURE_RETRY() for this check.",
+      "range": {
+        "startLine": 507,
+        "startChar": 37,
+        "endLine": 507,
+        "endChar": 66
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95aa686a_24ad3c30",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "This is CPP, so let\u0027s try to avoid goto\u0027s. How about a while loop?",
+      "range": {
+        "startLine": 522,
+        "startChar": 0,
+        "endLine": 522,
+        "endChar": 10
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "774e7781_a8065852",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Should we protect against an infinite loop?",
+      "range": {
+        "startLine": 537,
+        "startChar": 13,
+        "endLine": 537,
+        "endChar": 23
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de412ea5_f9e6f473",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Let\u0027s add a comment explaining the origin of this 2200ms.",
+      "range": {
+        "startLine": 549,
+        "startChar": 85,
+        "endLine": 549,
+        "endChar": 91
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8947d85_146c2f42",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "This would change the behavior for systems which do not use cgroups, effectively removing any retry, no?",
+      "range": {
+        "startLine": 553,
+        "startChar": 4,
+        "endLine": 554,
+        "endChar": 74
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e9077f9_aa86cb09",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-01T00:40:01Z",
+      "side": 1,
+      "message": "Should we check the return values and act accordingly? What\u0027s the point of polling if sendSignalToProcessGroup() failed?",
+      "range": {
+        "startLine": 583,
+        "startChar": 12,
+        "endLine": 584,
+        "endChar": 49
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
