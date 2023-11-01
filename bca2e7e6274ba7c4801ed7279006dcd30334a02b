@@ -52,6 +52,24 @@
       "parentUuid": "de30eea9_39f32e9c",
       "revId": "bca2e7e6274ba7c4801ed7279006dcd30334a02b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a92e5a4_1d78462a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_base.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-01T20:04:09Z",
+      "side": 1,
+      "message": "re-opening since we actually won\u0027t be using data_loc() in v3 format. XOR ops will be split into XOR_source + XOR_data ops, so we won\u0027t need this mapping in cowReader",
+      "parentUuid": "63149d23_21b99446",
+      "revId": "bca2e7e6274ba7c4801ed7279006dcd30334a02b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
