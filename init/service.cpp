@@ -43,6 +43,7 @@
 #include "interprocess_fifo.h"
 #include "lmkd_service.h"
 #include "service_list.h"
+#include "sigchld_handler.h"
 #include "util.h"
 
 #if defined(__BIONIC__)
@@ -204,6 +205,7 @@ void Service::KillProcessGroup(int signal, bool report_oneshot) {
                   << ") process group...";
         int max_processes = 0;
         int r;
+
         if (signal == SIGTERM) {
             r = killProcessGroupOnce(uid(), pid_, signal, &max_processes);
         } else {
@@ -306,6 +308,7 @@ void Service::Reap(const siginfo_t& siginfo) {
 
     pid_ = 0;
     flags_ &= (~SVC_RUNNING);
+    being_stopped_ = false;
     start_order_ = 0;
     was_last_exit_ok_ = siginfo.si_code == CLD_EXITED && siginfo.si_status == 0;
 
@@ -588,6 +591,14 @@ Result<void> Service::Start() {
                        << "Queued for execution.";
     }
 
+    if (being_stopped_) {
+        // Setting sys.audio.restart.hal=1 causes the audio HAL services to be
+        // stopped and restarted. Make sure that the start action sees that the
+        // service has been stopped by waiting until the SIGCHLD signal has
+        // been received.
+        WaitToBeReaped({pid_}, 1s);
+    }
+
     bool disabled = (flags_ & (SVC_DISABLED | SVC_RESET));
     ResetFlagsForStart();
 
@@ -845,6 +856,7 @@ void Service::Terminate() {
     flags_ &= ~(SVC_RESTARTING | SVC_DISABLED_START);
     flags_ |= SVC_DISABLED;
     if (pid_) {
+        being_stopped_ = true;
         KillProcessGroup(SIGTERM);
         NotifyStateChange("stopping");
     }
@@ -857,6 +869,7 @@ void Service::Timeout() {
     LOG(INFO) << "Service '" << name_ << "' expired its timeout of " << timeout_period_->count()
               << " seconds and will now be killed";
     if (pid_) {
+        being_stopped_ = true;
         KillProcessGroup(SIGKILL);
         NotifyStateChange("stopping");
     }
@@ -902,6 +915,7 @@ void Service::StopOrReset(int how) {
     }
 
     if (pid_) {
+        being_stopped_ = true;
         if (flags_ & SVC_GENTLE_KILL) {
             KillProcessGroup(SIGTERM);
             if (!process_cgroup_empty()) std::this_thread::sleep_for(200ms);
