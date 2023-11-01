@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cacfaea6_b44dd8b8",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-01T21:17:01Z",
+      "side": 1,
+      "message": "const",
+      "range": {
+        "startLine": 195,
+        "startChar": 4,
+        "endLine": 195,
+        "endChar": 10
+      },
+      "revId": "5deab5259a3d6f45edcb6bb11281fb8cbb7a6206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5a42c49_1c581d30",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-01T21:17:01Z",
+      "side": 1,
+      "message": "Log the offset and and maybe op info as well",
+      "revId": "5deab5259a3d6f45edcb6bb11281fb8cbb7a6206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fa0c609_2ab9b18e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-01T21:17:01Z",
+      "side": 1,
+      "message": "log the offset we are trying to write as well as `size`",
+      "revId": "5deab5259a3d6f45edcb6bb11281fb8cbb7a6206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
