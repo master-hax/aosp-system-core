@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2b4e9f8a_257533b0",
+        "filename": "libprocessgroup/include/processgroup/processgroup.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "I was originally thinking we could just directly return the result of this function when called from `KillProcessGroup`, but `KillProcessGroup` already returns -1 for errors so we\u0027ll always have to translate the result. I\u0027ll flip the return values.",
+      "parentUuid": "bc6760ab_2edd31c1",
+      "range": {
+        "startLine": 78,
+        "startChar": 3,
+        "endLine": 78,
+        "endChar": 78
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f9d4b163_38e641e9",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
@@ -37,6 +61,30 @@
       "writtenOn": "2023-11-01T00:40:01Z",
       "side": 1,
       "message": "should be in alphabetic order after \u003cchrono\u003e.",
+      "range": {
+        "startLine": 33,
+        "startChar": 9,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48c9c0eb_9925c7b3",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "I like to put libc headers before libc++ ones, but I can move this.",
+      "parentUuid": "f9d4b163_38e641e9",
       "range": {
         "startLine": 33,
         "startChar": 9,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f58eb1c_c19cbef6",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e139384d_7a453627",
+      "range": {
+        "startLine": 93,
+        "startChar": 25,
+        "endLine": 93,
+        "endChar": 27
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "592df1e5_4d696236",
@@ -93,6 +165,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0c098ea_3d1a779f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "This is equivalent to the `VERBOSE` log for the other/previous cases, so I\u0027ll convert this one to `VERBOSE`.",
+      "parentUuid": "592df1e5_4d696236",
+      "range": {
+        "startLine": 401,
+        "startChar": 8,
+        "endLine": 401,
+        "endChar": 99
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a6382fe7_7fb1add5",
@@ -106,6 +202,30 @@
       "writtenOn": "2023-11-01T00:40:01Z",
       "side": 1,
       "message": "Is this log really useful? If so, maybe log only once?",
+      "range": {
+        "startLine": 416,
+        "startChar": 0,
+        "endLine": 417,
+        "endChar": 36
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2106cfd_a0d2a962",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "-\u003e `VERBOSE`\nProbably only useful for debugging.",
+      "parentUuid": "a6382fe7_7fb1add5",
       "range": {
         "startLine": 416,
         "startChar": 0,
@@ -141,6 +261,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ee24f0eb_006a026b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "It doesn\u0027t matter whether we timeout or get an event here. Either way the calling function handles what to do next based on the current time, specified timeout, and whether the cgroup is still populated (which this function does not tell us, even if there is an event). In all cases we attempt at least one removal of the cgroup.",
+      "parentUuid": "3d9ed373_a59df6dc",
+      "range": {
+        "startLine": 496,
+        "startChar": 7,
+        "endLine": 496,
+        "endChar": 11
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d345cb03_e610a282",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
@@ -164,6 +308,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "55470757_9d3292c1",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "That could cause the retries to exceed the specified timeout. I\u0027m not sure about `poll`s, but when I see `EINTR` for other functions it doesn\u0027t typically happen just once. I\u0027m used to seeing a blast of `EINTR` return values across several attempts at the function call before it finally succeeds. I guess we could remove the entire loop if we say we don\u0027t care about that.",
+      "parentUuid": "d345cb03_e610a282",
+      "range": {
+        "startLine": 507,
+        "startChar": 37,
+        "endLine": 507,
+        "endChar": 66
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "95aa686a_24ad3c30",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
@@ -175,6 +343,30 @@
       "writtenOn": "2023-11-01T00:40:01Z",
       "side": 1,
       "message": "This is CPP, so let\u0027s try to avoid goto\u0027s. How about a while loop?",
+      "range": {
+        "startLine": 522,
+        "startChar": 0,
+        "endLine": 522,
+        "endChar": 10
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f98267de_21df78ad",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "C has while loops too, you should mention that to Linus. 😊 It\u0027s a bit harder to read with a while loop IMO.",
+      "parentUuid": "95aa686a_24ad3c30",
       "range": {
         "startLine": 522,
         "startChar": 0,
@@ -210,6 +402,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f707ab89_95169fd8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "This should **never** happen if we successfully read the file. And I think it might be the same for the case below too... partial reads should not be possible on this kernfs file. So I think there would have to be a serious kernel or libc bug to hit these, in which case I\u0027m not sure what we should do for calls to `killProcessGroup`. Maybe abort? If we can\u0027t remove because of these errors, we\u0027ll eventually run out of available cgroups, and I expect the system would crash at that point.",
+      "parentUuid": "774e7781_a8065852",
+      "range": {
+        "startLine": 537,
+        "startChar": 13,
+        "endLine": 537,
+        "endChar": 23
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "de412ea5_f9e6f473",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 6
@@ -221,6 +437,30 @@
       "writtenOn": "2023-11-01T00:40:01Z",
       "side": 1,
       "message": "Let\u0027s add a comment explaining the origin of this 2200ms.",
+      "range": {
+        "startLine": 549,
+        "startChar": 85,
+        "endLine": 549,
+        "endChar": 91
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2b68a9a_a196b496",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de412ea5_f9e6f473",
       "range": {
         "startLine": 549,
         "startChar": 85,
@@ -254,6 +494,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "34dc34b3_b9e0c1a1",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "Systems without cgroups do not currently retry process kills, nor is there any reason to if the signal is delivered successfully since exiting processes do not block (non-existent) cgroup removal in that case.",
+      "parentUuid": "c8947d85_146c2f42",
+      "range": {
+        "startLine": 553,
+        "startChar": 4,
+        "endLine": 554,
+        "endChar": 74
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6e9077f9_aa86cb09",
@@ -267,6 +531,30 @@
       "writtenOn": "2023-11-01T00:40:01Z",
       "side": 1,
       "message": "Should we check the return values and act accordingly? What\u0027s the point of polling if sendSignalToProcessGroup() failed?",
+      "range": {
+        "startLine": 583,
+        "startChar": 12,
+        "endLine": 584,
+        "endChar": 49
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70e0750e_64cb074b",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-01T15:52:28Z",
+      "side": 1,
+      "message": "We could but it doesn\u0027t get us much except more code. The signaling should fail only if the cgroup no longer exists (which should not be possible yet). But in that case the poll will also immediately return, and then `cgroupIsPopulated` will also be false and we\u0027ll move on. We\u0027ll also rightfully get an error about a failure to remove the cgroup, since it was removed from under us. Something is wrong elsewhere if that happened.",
+      "parentUuid": "6e9077f9_aa86cb09",
       "range": {
         "startLine": 583,
         "startChar": 12,
