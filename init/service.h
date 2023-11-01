@@ -183,6 +183,8 @@ class Service {
     android::base::boot_clock::time_point time_crashed_;  // first crash within inspection window
     int crash_count_;                     // number of times crashed within window
     bool upgraded_mte_ = false;           // whether we upgraded async MTE -> sync MTE before
+    // SIGTERM / SIGKILL has been sent but SIGCHLD has not yet been received
+    bool being_stopped_ = false;
     std::chrono::minutes fatal_crash_window_ = 4min;  // fatal() when more than 4 crashes in it
     std::optional<std::string> fatal_reboot_target_;  // reboot target of fatal handler
     bool was_last_exit_ok_ =

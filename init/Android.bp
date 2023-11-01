@@ -614,7 +614,7 @@ cc_defaults {
 cc_binary {
     name: "host_init_verifier",
     defaults: ["init_host_defaults"],
-    srcs: init_common_sources + init_host_sources,
+    srcs: init_common_sources + init_host_sources + [ "sigchld_handler.cpp" ],
 }
 
 cc_library_host_static {
