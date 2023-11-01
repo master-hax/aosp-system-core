@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ea913f0_ef579740",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c46b8edd_ee8c879a",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c4f700ff_f830f2fb",
@@ -48,6 +66,24 @@
       "writtenOn": "2023-10-31T20:12:15Z",
       "side": 1,
       "message": "explicitly mention static binaries?",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85e4ff60_2256cd19",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4f700ff_f830f2fb",
       "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ab9a72c_b101fa77",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "cf264338_7919d04b",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4b091777_5d308ffd",
@@ -82,6 +136,24 @@
       "writtenOn": "2023-10-31T20:12:15Z",
       "side": 1,
       "message": "don\u0027t forget C... and V... (see below, though, for whether we should even do this at all.)",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "deb07d97_4e6df832",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "4b091777_5d308ffd",
       "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -103,6 +175,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c53e7f0_4274ed92",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6575f346_955a78ef",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d5a15b55_5d398958",
@@ -116,6 +206,24 @@
       "writtenOn": "2023-10-31T20:12:15Z",
       "side": 1,
       "message": "was there any upstream kernel discussion about this gap?",
+      "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ada4d734_5d08f18f",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-01T11:16:15Z",
+      "side": 1,
+      "message": "Not from me. I basically cargo-culted this with some modifications from the sanitizer runtimes - and I agree that it has clear problems (like the \"what if a fault from the instruction pointer\" issue you mentioned).\n\nFor now, let\u0027s just not support riscv in these patches.",
+      "parentUuid": "d5a15b55_5d398958",
       "revId": "8846d8d51d066c211a15f72242f4935486ec8e5b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
