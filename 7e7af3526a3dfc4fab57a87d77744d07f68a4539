@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97834069_0d159892",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-01T21:14:31Z",
+      "side": 1,
+      "message": "num_blocks shouldn\u0027t be decrementing",
+      "parentUuid": "77adb1e8_1bdada8a",
+      "revId": "7e7af3526a3dfc4fab57a87d77744d07f68a4539",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b34c9217_4fa688d4",
@@ -31,6 +49,30 @@
       "writtenOn": "2023-11-01T20:22:30Z",
       "side": 1,
       "message": "PLOG(ERROR) before return false for ease of debugging",
+      "range": {
+        "startLine": 257,
+        "startChar": 0,
+        "endLine": 257,
+        "endChar": 25
+      },
+      "revId": "7e7af3526a3dfc4fab57a87d77744d07f68a4539",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b7101af_9aae550d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-01T21:14:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b34c9217_4fa688d4",
       "range": {
         "startLine": 257,
         "startChar": 0,

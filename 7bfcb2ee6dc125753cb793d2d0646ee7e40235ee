@@ -104,6 +104,24 @@
       "parentUuid": "b9e90089_4ecd7b3d",
       "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bac46cd4_fefb4d03",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-01T21:14:31Z",
+      "side": 1,
+      "message": "v3 format will have all operations contiguous, instead of intermittently having data. So next_data_pos_ should be after this entire operations space.",
+      "parentUuid": "ef2a2079_3f88a3f1",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
