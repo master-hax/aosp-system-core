@@ -16,6 +16,23 @@
       "message": "Looks fine to me, but you probably need an owner for +2 also.",
       "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "430f38fc_484e11be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-11-02T18:26:08Z",
+      "side": 1,
+      "message": "I\u0027m satisfied that the issue noted at https://android-review.git.corp.google.com/c/platform/system/core/+/2650212/3#message-486e4cf5bbfc55d6a5791024b90b14c545829fad is taken care of.  But someone more familiar should approve the overall CL.",
+      "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
