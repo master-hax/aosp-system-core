@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "824211e6_e48491fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T15:48:15Z",
+      "side": 1,
+      "message": "b/308868619 reverted previous changes because of an unimplemented pure virtual function. Should have nothing to do with this patch. OTA tested with this patch",
+      "revId": "c8a475fe850bba447abd165229c5f93720213a5a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
