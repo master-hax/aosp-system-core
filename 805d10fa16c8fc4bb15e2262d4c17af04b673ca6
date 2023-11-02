@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25daa79c_c76c283d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-02T21:52:07Z",
+      "side": 1,
+      "message": "this check should be unnecessary, `offset + len \u003e fd_size_` already covers it",
+      "range": {
+        "startLine": 605,
+        "startChar": 8,
+        "endLine": 605,
+        "endChar": 23
+      },
+      "revId": "805d10fa16c8fc4bb15e2262d4c17af04b673ca6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
