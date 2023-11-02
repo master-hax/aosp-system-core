@@ -93,6 +93,8 @@ bool CowWriterV3::ParseOptions() {
         return false;
     }
     auto algorithm = CompressionAlgorithmFromString(parts[0]);
+    header_.compression_algorithm = *algorithm;
+
     if (!algorithm) {
         LOG(ERROR) << "unrecognized compression: " << options_.compression;
         return false;
@@ -108,6 +110,7 @@ bool CowWriterV3::ParseOptions() {
     }
 
     compression_.algorithm = *algorithm;
+    compressor_ = ICompressor::Create(compression_, header_.block_size);
     return true;
 }
 
@@ -189,6 +192,39 @@ bool CowWriterV3::EmitXorBlocks(uint32_t new_block_start, const void* data, size
     return EmitBlocks(new_block_start, data, size, old_block, offset, kCowXorOp);
 }
 
+bool CowWriterV3::CompressBlocks(size_t num_blocks, const void* data) {
+    size_t num_threads = (num_blocks == 1) ? 1 : num_compress_threads_;
+    size_t num_blocks_per_thread = num_blocks / num_threads;
+    const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
+    compressed_buf_.clear();
+    if (num_threads <= 1) {
+        return CompressWorker::CompressBlocks(compressor_.get(), options_.block_size, data,
+                                              num_blocks, &compressed_buf_);
+    }
+    // Submit the blocks per thread. The retrieval of
+    // compressed buffers has to be done in the same order.
+    // We should not poll for completed buffers in a different order as the
+    // buffers are tightly coupled with block ordering.
+    for (size_t i = 0; i < num_threads; i++) {
+        CompressWorker* worker = compress_threads_[i].get();
+        if (i == num_threads - 1) {
+            num_blocks_per_thread = num_blocks;
+        }
+        worker->EnqueueCompressBlocks(iter, num_blocks_per_thread);
+        iter += (num_blocks_per_thread * header_.block_size);
+        num_blocks -= num_blocks_per_thread;
+    }
+
+    for (size_t i = 0; i < num_threads; i++) {
+        CompressWorker* worker = compress_threads_[i].get();
+        if (!worker->GetCompressedBuffers(&compressed_buf_)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
                              uint64_t old_block, uint16_t offset, uint8_t type) {
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
@@ -199,18 +235,34 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
         op.new_block = new_block_start + i;
 
         op.type = type;
-        op.data_length = static_cast<uint16_t>(header_.block_size);
-
         if (type == kCowXorOp) {
             op.source_info = (old_block + i) * header_.block_size + offset;
         } else {
             op.source_info = next_data_pos_;
         }
-        if (!WriteOperation(op, iter, header_.block_size)) {
-            LOG(ERROR) << "AddRawBlocks: write failed";
-            return false;
+        if (compression_.algorithm) {
+            auto data = [&, this]() {
+                if (num_compress_threads_ > 1) {
+                    auto data = std::move(*buf_iter_);
+                    buf_iter_++;
+                    return data;
+                } else {
+                    auto data = compressor_->Compress(iter, header_.block_size);
+                    return data;
+                }
+            }();
+            op.data_length = static_cast<uint16_t>(data.size());
+            if (!WriteOperation(op, data.data(), data.size())) {
+                PLOG(ERROR) << "AddRawBlocks with compression: write failed";
+                return false;
+            }
+        } else {
+            op.data_length = static_cast<uint16_t>(header_.block_size);
+            if (!WriteOperation(op, iter, header_.block_size)) {
+                LOG(ERROR) << "AddRawBlocks: write failed";
+                return false;
+            }
         }
-
         iter += header_.block_size;
     }
 
