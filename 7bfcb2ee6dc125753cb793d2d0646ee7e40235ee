@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f14c9aa0_27c77674",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T21:37:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8bf40353_65590613",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91ffe624_77cc6887",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "I think this was here because we had worker threads compressing blocks before writing to disk. In this implementation we write immediately, but once we support compression, we might want to have the limiter on how much we are bringing into memory?\n\nRegardless, I\u0027ll take this out for now",
       "parentUuid": "91ffe624_77cc6887",
+      "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20ba4ebd_325d7362",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T21:37:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f43d8a1f_d216b4b1",
       "revId": "7bfcb2ee6dc125753cb793d2d0646ee7e40235ee",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
