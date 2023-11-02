@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "adf8e9b5_2e5ad722",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-11-02T14:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "befeaedf_cf82860e",
+      "range": {
+        "startLine": 273,
+        "startChar": 4,
+        "endLine": 273,
+        "endChar": 6
+      },
+      "revId": "182ae445a0bea135b6d0a2b04e19b35cc0f5a443",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2986a6c7_f49e6de5",
@@ -54,6 +78,30 @@
       "writtenOn": "2023-11-02T09:21:27Z",
       "side": 1,
       "message": "For better readability, let\u0027s return early, if staged_props is empty. e.g.\n\n```\nif (staged_props.empty()) {\n    return *persistent_properties;\n}\n\n// new routine starts here.\n```",
+      "range": {
+        "startLine": 281,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 32
+      },
+      "revId": "182ae445a0bea135b6d0a2b04e19b35cc0f5a443",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3f516dd_accff4c9",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2023-11-02T14:22:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2986a6c7_f49e6de5",
       "range": {
         "startLine": 281,
         "startChar": 0,
