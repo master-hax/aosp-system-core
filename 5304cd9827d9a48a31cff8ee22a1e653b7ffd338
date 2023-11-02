@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daa64f93_a41a2a6e",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1867,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-11-02T03:54:17Z",
+      "side": 1,
+      "message": "we should just break here, as we don\u0027t want to destroy the backing device of \"userdata_gsi\" too",
+      "range": {
+        "startLine": 1866,
+        "startChar": 0,
+        "endLine": 1867,
+        "endChar": 23
+      },
+      "revId": "5304cd9827d9a48a31cff8ee22a1e653b7ffd338",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
