@@ -222,6 +222,30 @@
       },
       "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fef8bd7f_3ab2228b",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-02T09:21:27Z",
+      "side": 1,
+      "message": "Ok.",
+      "parentUuid": "753fc511_ec70ffb4",
+      "range": {
+        "startLine": 296,
+        "startChar": 20,
+        "endLine": 296,
+        "endChar": 47
+      },
+      "revId": "42d70e4a22e52b1c9dfa11643226ef87a4282786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

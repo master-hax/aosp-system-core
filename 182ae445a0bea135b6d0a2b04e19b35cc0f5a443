@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71d62ff5_6c9315d0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-02T09:21:27Z",
+      "side": 1,
+      "message": "Sorry for the late review. There are some nits, but other than that LGTM. Thanks.",
+      "revId": "182ae445a0bea135b6d0a2b04e19b35cc0f5a443",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "befeaedf_cf82860e",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-02T09:21:27Z",
+      "side": 1,
+      "message": "super nit, but important. This file uses 4 space indent. Please be consistent.",
+      "range": {
+        "startLine": 273,
+        "startChar": 4,
+        "endLine": 273,
+        "endChar": 6
+      },
+      "revId": "182ae445a0bea135b6d0a2b04e19b35cc0f5a443",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2986a6c7_f49e6de5",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-02T09:21:27Z",
+      "side": 1,
+      "message": "For better readability, let\u0027s return early, if staged_props is empty. e.g.\n\n```\nif (staged_props.empty()) {\n    return *persistent_properties;\n}\n\n// new routine starts here.\n```",
+      "range": {
+        "startLine": 281,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 32
+      },
+      "revId": "182ae445a0bea135b6d0a2b04e19b35cc0f5a443",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
