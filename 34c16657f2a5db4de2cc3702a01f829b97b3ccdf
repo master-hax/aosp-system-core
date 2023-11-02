@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "785e1576_991d4f28",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T15:49:10Z",
+      "side": 1,
+      "message": "This is the patch that previously broke the build. data_loc() is a pure virtual method that wasn\u0027t added in parser_v3",
+      "revId": "34c16657f2a5db4de2cc3702a01f829b97b3ccdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
