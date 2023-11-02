@@ -69,6 +69,24 @@
       "parentUuid": "ee54f869_0f57a68e",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfc80b9e_6873d846",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-11-02T22:18:44Z",
+      "side": 1,
+      "message": "While we are on this topic - how do you disassemble instructions from a tombstone memory dump? I\u0027ve got this monstrosity but there must be a better way:\n```\nperl -pe \u0027s/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2}) ?/0x$8,0x$7,0x$6,0x$5,0x$4,0x$3,0x$2,0x$1,/g\u0027 | llvm-mc -triple\u003daarch64 -disassemble\n```",
+      "parentUuid": "e195bae3_969459b5",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
