@@ -421,5 +421,42 @@ TEST_F(CowTestV3, AllOps) {
     }
     ASSERT_EQ(sink, data);
 }
+
+TEST_F(CowTestV3, GzCompression) {
+    CowOptions options;
+    options.op_count_max = 100;
+    options.compression = "gz";
+    auto writer = CreateCowWriter(3, options, GetCowFd());
+
+    std::string data = "This is some data, believe it";
+    data.resize(options.block_size, '\0');
+
+    ASSERT_TRUE(writer->AddRawBlocks(50, data.data(), data.size()));
+    ASSERT_TRUE(writer->Finalize());
+
+    ASSERT_EQ(lseek(cow_->fd, 0, SEEK_SET), 0);
+
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+
+    auto header = reader.header_v3();
+    ASSERT_EQ(header.compression_algorithm, kCowCompressGz);
+
+    auto iter = reader.GetOpIter();
+    ASSERT_NE(iter, nullptr);
+    ASSERT_FALSE(iter->AtEnd());
+    auto op = iter->Get();
+
+    std::string sink(data.size(), '\0');
+
+    ASSERT_EQ(op->type, kCowReplaceOp);
+    ASSERT_EQ(op->data_length, 56);  // compressed!
+    ASSERT_EQ(op->new_block, 50);
+    ASSERT_TRUE(ReadData(reader, op, sink.data(), sink.size()));
+    ASSERT_EQ(sink, data);
+
+    iter->Next();
+    ASSERT_TRUE(iter->AtEnd());
+}
 }  // namespace snapshot
 }  // namespace android
