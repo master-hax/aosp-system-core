@@ -39,6 +39,30 @@
       },
       "revId": "c8a475fe850bba447abd165229c5f93720213a5a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6007870_7e971c75",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v2.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T17:20:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "242447ae_689ae678",
+      "range": {
+        "startLine": 20,
+        "startChar": 9,
+        "endLine": 20,
+        "endChar": 35
+      },
+      "revId": "c8a475fe850bba447abd165229c5f93720213a5a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
