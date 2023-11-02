@@ -16,6 +16,23 @@
       "message": "enh@ - do you want to land your esr stuff before this, or shall we land both and just merge them later?",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee54f869_0f57a68e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-02T20:50:11Z",
+      "side": 1,
+      "message": "oh, i didn\u0027t notice +cferris wasn\u0027t here.\n\nhe can cast the deciding vote, but personally i\u0027m not convinced this is particularly useful? i think what i\u0027d really like (and have long wanted, and for SIGILL too) is to disassemble the faulting instruction... but with just a read/write/dunno flag, i\u0027m still going to end up doing that manually anyway.\n\n(plus, like i said earlier when i thought cferris was already cc:ed, i defer to him for how much breakage changing this oft-regexed line is likely to cause...)",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
