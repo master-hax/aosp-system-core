@@ -16,6 +16,29 @@
       "message": "b/308868619 reverted previous changes because of an unimplemented pure virtual function. Should have nothing to do with this patch. OTA tested with this patch",
       "revId": "c8a475fe850bba447abd165229c5f93720213a5a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "242447ae_689ae678",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v2.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-02T17:07:36Z",
+      "side": 1,
+      "message": "\u003clibsnapshot/cow_format.h\u003e",
+      "range": {
+        "startLine": 20,
+        "startChar": 9,
+        "endLine": 20,
+        "endChar": 35
+      },
+      "revId": "c8a475fe850bba447abd165229c5f93720213a5a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
