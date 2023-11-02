@@ -678,7 +678,6 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
             LOG(ERROR) << "Unknown compression type: " << GetCompressionType();
             return -1;
     }
-
     uint64_t offset;
     if (op->type == kCowXorOp) {
         offset = xor_data_loc_->at(op->new_block);
@@ -692,6 +691,7 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
 
     CowDataStream stream(this, offset, op->data_length);
     decompressor->set_stream(&stream);
+    LOG(INFO) << "ABOUT TO DECOMPRESS";
     return decompressor->Decompress(buffer, buffer_size, header_.block_size, ignore_bytes);
 }
 
