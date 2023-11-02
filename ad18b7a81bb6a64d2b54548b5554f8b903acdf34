@@ -16,6 +16,24 @@
       "message": "this should succeed? We are adding 1 zero block at block offset 1, looks legit to me.",
       "revId": "ad18b7a81bb6a64d2b54548b5554f8b903acdf34",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6da7a4c4_97107c64",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-02T21:50:38Z",
+      "side": 1,
+      "message": "the previous addZeroBlocks() call will succeed at writing 20 operations and fail on the last one. The next call will see 20 operations written and fail",
+      "parentUuid": "03e19564_8cfe0808",
+      "revId": "ad18b7a81bb6a64d2b54548b5554f8b903acdf34",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
