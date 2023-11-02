@@ -87,6 +87,24 @@
       "parentUuid": "e195bae3_969459b5",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cdb47d47_350d8fe0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-02T22:52:56Z",
+      "side": 1,
+      "message": "/me sheepishly admits \"that, except manually rather than with perl\" :-(\n\n(but, yeah, we should totally teach the script how to do this. iirc agampe@ wrote something, but we never got it integrated for some reason? i\u0027ll be very embarrassed if it\u0027s actually there and i\u0027ve just not been using it!)",
+      "parentUuid": "dfc80b9e_6873d846",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
