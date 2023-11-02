@@ -108,6 +108,8 @@ bool CowWriterV3::ParseOptions() {
     }
 
     compression_.algorithm = *algorithm;
+    compressor_ = ICompressor::Create(compression_, header_.block_size);
+
     return true;
 }
 
@@ -199,18 +201,30 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
         op.new_block = new_block_start + i;
 
         op.type = type;
-        op.data_length = static_cast<uint16_t>(header_.block_size);
-
         if (type == kCowXorOp) {
             op.source_info = (old_block + i) * header_.block_size + offset;
         } else {
             op.source_info = next_data_pos_;
         }
-        if (!WriteOperation(op, iter, header_.block_size)) {
-            LOG(ERROR) << "AddRawBlocks: write failed";
-            return false;
+        if (compression_.algorithm) {
+            auto data = [&, this]() {
+                if (num_compress_threads_ > 1) {
+                    auto data = std::move(*buf_iter_);
+                    buf_iter_++;
+                    return data;
+                } else {
+                    auto data = compressor_->Compress(iter, header_.block_size);
+                    return data;
+                }
+            }();
+            op.data_length = static_cast<uint16_t>(data.size());
+        } else {
+            op.data_length = static_cast<uint16_t>(header_.block_size);
+            if (!WriteOperation(op, iter, header_.block_size)) {
+                LOG(ERROR) << "AddRawBlocks: write failed";
+                return false;
+            }
         }
-
         iter += header_.block_size;
     }
 
