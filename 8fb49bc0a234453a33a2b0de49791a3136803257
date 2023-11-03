@@ -16,6 +16,24 @@
       "message": "Why is this needed? All paths through MapCowDevices should guarantee ueventd completion.",
       "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5670751_7c255a97",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3516,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-11-03T21:03:10Z",
+      "side": 1,
+      "message": "It\u0027s not guaranteed and the underlying bug should be fixed in libdm.\n\nPer the logs, soon after Mapping COW devices, device open failed\n\n```\n[1016/000831.408487] [INFO:snapshot.cpp(2596)] Mapped COW device for system_ext_b at /dev/block/dm-12\n[1016/000831.462131] [ERROR:snapshot.cpp(3504)] open /dev/block/dm-12 failed for snapshot system_ext_b: No such file or directory\n```\n\nMapCowDevice -\u003e dm_-\u003eCreateDevice -\u003e WaitForDevice\n\n\n`WaitForDevice` in libdm waits only from uuid path\n\nhttps://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/core/fs_mgr/libdm/dm.cpp;l\u003d207;drc\u003d56adfad7fecd97563fff59082c2c04502953aaf3;bpv\u003d1;bpt\u003d1\n\nIt doesn\u0027t wait for `dm-XX`. Thus, MapCowDevice immediately succeeds as soon as UUID is available. However, dm-XX is still not ready and subsequent Open fails.\n\nI will send a seperate patch for libdm fix",
+      "parentUuid": "22c5a439_93af1f1f",
+      "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
