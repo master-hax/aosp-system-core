@@ -105,6 +105,24 @@
       "parentUuid": "dfc80b9e_6873d846",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a42e131b_c1120258",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-03T12:40:01Z",
+      "side": 1,
+      "message": "A few reasons to do this:\n 1. There\u0027s a longstanding request from ASA as this would help with their analysis of external bug reports.\n 2. Feature parity with ASan and HWASan.\n 3. Understanding third-party app crashes and OEM device crashes easier, where we don\u0027t have access to the code immediately.\n 4. Convenience. I often want this feature for a quick at-a-glance :).",
+      "parentUuid": "cdb47d47_350d8fe0",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
