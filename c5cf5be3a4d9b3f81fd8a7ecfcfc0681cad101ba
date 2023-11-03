@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22203699_b1d2e2f9",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "Let\u0027s use `bool`",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 3
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62d70094_cde45005",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "Can you elaborate the reasoning of this?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 17
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07d416b8_2e45c0c3",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "Let\u0027s use libbase\u0027s ReadFileToString or similar. AFAIK, C++ fstream is not recommended in AOSP?. (btw, can\u0027t find a reference)",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 90
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac90242a_21991782",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "This should be more explicit. One apex name can be a prefix of another. We can avoid that by appending \"/bin/\"?",
+      "range": {
+        "startLine": 65,
+        "startChar": 12,
+        "endLine": 65,
+        "endChar": 68
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3e9996f_a525fcd5",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "use libbase.",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 82
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc32503e_833868ec",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "Parsing ld.config.txt seems to lead a tight coupling to linkerconfig\u0027s implementation, which IIRC is something we want to avoid.\n\nCan we reuse existing code from bionic linker?",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 5
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fea2175a_fc08cbc2",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-03T08:08:03Z",
+      "side": 1,
+      "message": "Let\u0027s cast explicitly to `int`",
+      "range": {
+        "startLine": 125,
+        "startChar": 11,
+        "endLine": 125,
+        "endChar": 31
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
