@@ -70,6 +70,24 @@
       "parentUuid": "01e7c88e_0b7a21ce",
       "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a307d9f_3bb902bc",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3516,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-03T21:12:56Z",
+      "side": 1,
+      "message": "https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/core/init/devices.cpp;l\u003d474;drc\u003d56adfad7fecd97563fff59082c2c04502953aaf3?q\u003ddevices.cpp\u0026sq\u003drepo:googleplex-android%2Fplatform%2Fsuperproject%2Fmain%20b:main\n\nWe call mknod() first, then symlink the uuid path. So as soon as WaitForFile on the uuid path returns, the mknod path should exist.\n\nSo the WaitForFile is likely addressing a symptom and not a root cause. It wouldn\u0027t be the first time we had issues in the ueventd dm handling code, but nothing jumps to mind right now.",
+      "parentUuid": "94e69131_779c3c59",
+      "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
