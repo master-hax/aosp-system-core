@@ -16,6 +16,7 @@ cc_library {
     local_include_dirs: ["include/vndksupport"],
     export_include_dirs: ["include"],
     shared_libs: [
+        "libbase",
         "libdl_android",
         "liblog",
     ],
