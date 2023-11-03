@@ -18,6 +18,7 @@
 
 #include <signal.h>
 #include <string.h>
+#include <sys/signalfd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -31,6 +32,7 @@
 
 #include <thread>
 
+#include "epoll.h"
 #include "init.h"
 #include "service.h"
 #include "service_list.h"
@@ -121,8 +123,20 @@ void ReapAnyOutstandingChildren() {
     }
 }
 
-void WaitToBeReaped(const std::vector<pid_t>& pids, std::chrono::milliseconds timeout) {
+static void DiscardSiginfo(int signal_fd) {
+    signalfd_siginfo siginfo;
+    ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
+    if (bytes_read != sizeof(siginfo)) {
+        LOG(WARNING) << "Unexpected: " << __func__ << " read " << bytes_read << " bytes instead of "
+                     << sizeof(siginfo);
+    }
+}
+
+void WaitToBeReaped(int sigchld_fd, const std::vector<pid_t>& pids,
+                    std::chrono::milliseconds timeout) {
     Timer t;
+    Epoll epoll;
+    epoll.RegisterHandler(sigchld_fd, [sigchld_fd]() { DiscardSiginfo(sigchld_fd); });
     std::vector<pid_t> alive_pids(pids.begin(), pids.end());
     while (!alive_pids.empty() && t.duration() < timeout) {
         pid_t pid;
@@ -135,7 +149,9 @@ void WaitToBeReaped(const std::vector<pid_t>& pids, std::chrono::milliseconds ti
         if (alive_pids.empty()) {
             break;
         }
-        std::this_thread::sleep_for(50ms);
+        epoll.Wait(timeout == std::chrono::milliseconds::max()
+                           ? timeout
+                           : std::max(timeout - t.duration(), 0ms));
     }
     LOG(INFO) << "Waiting for " << pids.size() << " pids to be reaped took " << t << " with "
               << alive_pids.size() << " of them still running";
