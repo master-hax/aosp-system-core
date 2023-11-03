@@ -26,6 +26,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7f43f22e_338738e3",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-03T16:09:34Z",
+      "side": 1,
+      "message": "wouldn\u0027t a readlink on /proc/self/exe make more sense/be less unreliable?",
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "62d70094_cde45005",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 1
