@@ -34,6 +34,24 @@
       "parentUuid": "22c5a439_93af1f1f",
       "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01e7c88e_0b7a21ce",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3516,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-03T21:06:56Z",
+      "side": 1,
+      "message": "This is guaranteed. the uuid path is carefully ordered to guarantee the dm path exists.",
+      "parentUuid": "b5670751_7c255a97",
+      "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
