@@ -1,0 +1,6 @@
+{
+  "kernel": "/data/local/tmp/lk.elf",
+  "platform_version": "1.0",
+  "memory_mib": 112,
+  "protected": true
+}

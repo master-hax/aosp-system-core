@@ -1,0 +1,5 @@
+{
+  "kernel": "/vendor/usr/share/lk.elf",
+  "platform_version": "1.0",
+  "memory_mib": 112
+}
