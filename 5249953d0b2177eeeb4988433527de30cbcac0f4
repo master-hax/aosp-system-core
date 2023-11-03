@@ -33,6 +33,23 @@
       "message": "I\u0027m satisfied that the issue noted at https://android-review.git.corp.google.com/c/platform/system/core/+/2650212/3#message-486e4cf5bbfc55d6a5791024b90b14c545829fad is taken care of.  But someone more familiar should approve the overall CL.",
       "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04c5b618_f34fdbd1",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_builder_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1958513
+      },
+      "writtenOn": "2023-11-03T15:28:49Z",
+      "side": 1,
+      "message": "Just for my own understanding, why is the slot count now limited between 0 and 1?",
+      "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
