@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22c5a439_93af1f1f",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3516,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-03T20:12:48Z",
+      "side": 1,
+      "message": "Why is this needed? All paths through MapCowDevices should guarantee ueventd completion.",
+      "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
