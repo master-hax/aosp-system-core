@@ -123,6 +123,24 @@
       "parentUuid": "cdb47d47_350d8fe0",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "610ffb42_67cf32a8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-03T15:43:43Z",
+      "side": 1,
+      "message": "\u003e There\u0027s a longstanding request from ASA as this would help with their analysis of external bug reports.\n\ndid they say _how_? (since that\u0027s a bit of a circular argument, since we\u0027re saying we don\u0027t believe that :-) )\n\n\u003e Feature parity with ASan and HWASan.\n\nfor me the useful part there is the information about the buffer, not whether it\u0027s a read or a write?\n\n\u003e Understanding third-party app crashes and OEM device crashes easier, where we don\u0027t have access to the code immediately.\n\nthat sounds like yet another vote for \"if we can\u0027t disassemble, at least dump the instruction\"...\n\n\u003e Convenience. I often want this feature for a quick at-a-glance :).\n\n_why_ though? what do you do with this information (and especially in non-asan/hwasan contexts)?",
+      "parentUuid": "a42e131b_c1120258",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
