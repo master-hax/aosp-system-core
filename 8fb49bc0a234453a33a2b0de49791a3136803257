@@ -52,6 +52,24 @@
       "parentUuid": "b5670751_7c255a97",
       "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94e69131_779c3c59",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3516,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-11-03T21:08:23Z",
+      "side": 1,
+      "message": "I can\u0027t explain why open will fail immediately right after MapCowDevice.. Error is clearly stating device does not exist",
+      "parentUuid": "01e7c88e_0b7a21ce",
+      "revId": "8fb49bc0a234453a33a2b0de49791a3136803257",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
