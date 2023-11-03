@@ -1,0 +1,10 @@
+# Add ro.hardware.trusty_vm_cid and ro.hardware.trusty_ipc_dev to
+# PRODUCT_PROPERTY_OVERRIDES to configure this service and direct hals to connect to the
+# trusty vm it starts
+
+# TODO: remove --disable-sandbox. This is workaround for a missing /var/empty directory
+service trusty_vm /vendor/bin/crosvm --syslog-tag=trusty-vm run /vendor/usr/share/lk.elf \
+        --disable-sandbox --vsock ${ro.hardware.trusty_vm_cid} --serial type=syslog
+    class early_hal
+    user system
+    group system
