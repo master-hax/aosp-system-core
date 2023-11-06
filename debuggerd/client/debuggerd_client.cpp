@@ -94,13 +94,13 @@ static std::string get_wchan_data(int fd, pid_t pid) {
 
   std::stringstream data;
   for (int tid : tids) {
-    std::string path = "/proc/" + std::to_string(pid) + "/task/" + std::to_string(tid) + "/wchan";
+    std::string path = "/proc/" + std::to_string(pid) + "/task/" + std::to_string(tid) + "/stack";
     std::string wchan_str;
     if (!ReadFileToString(path, &wchan_str, true)) {
       log_error(fd, errno, "failed to read \"%s\"", path.c_str());
       continue;
     }
-    data << "sysTid=" << std::left << std::setw(10) << tid << wchan_str << "\n";
+    data << "sysTid=" << std::left << std::setw(10) << tid << "\n" << wchan_str << "\n";
   }
 
   std::stringstream buffer;
