@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34fe7baa_f0bb10a3",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-06T01:34:48Z",
+      "side": 1,
+      "message": "We may want to show the signal number or name, otherwise we wouldn\u0027t know for which signal this function failed.",
+      "range": {
+        "startLine": 760,
+        "startChar": 26,
+        "endLine": 760,
+        "endChar": 54
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a744e3aa_4ecabbba",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-06T01:34:48Z",
+      "side": 1,
+      "message": "Consider using `ErrnoError` to show the error number as well.",
+      "range": {
+        "startLine": 760,
+        "startChar": 15,
+        "endLine": 760,
+        "endChar": 20
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ca0ddf4_c2d8f47e",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 804,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-06T01:34:48Z",
+      "side": 1,
+      "message": "Can this be replaced with `if (sigismember(\u0026mask, SIGTERM))`?",
+      "range": {
+        "startLine": 804,
+        "startChar": 4,
+        "endLine": 804,
+        "endChar": 29
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
