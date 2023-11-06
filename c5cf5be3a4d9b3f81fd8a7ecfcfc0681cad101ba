@@ -195,6 +195,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "556ef541_18ed999c",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-06T09:46:31Z",
+      "side": 1,
+      "message": "Yifan mentioned it in some review. https://android-review.git.corp.google.com/c/platform/system/libvintf/+/2318110/comment/4c03b91c_e1469f6b/\n\n\u003e Please use android::base::ReadFileToString or friends. ifstream may throw exceptions on I/O error.\n\nBut I can\u0027t find any reference either. Probably, it\u0027s outdated.",
+      "parentUuid": "528dac0e_cc258561",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 90
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ac90242a_21991782",
@@ -326,6 +350,30 @@
       "side": 1,
       "message": "I considered that, but I felt it would be a bit more complex to share partial code, as this part uses very partial of bionic linker config parser.",
       "parentUuid": "cc32503e_833868ec",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 5
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f56bfee_43030de4",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2023-11-06T09:46:31Z",
+      "side": 1,
+      "message": "Acknowledged. But then we might need more unit tests.",
+      "parentUuid": "78d53fd9_d4d4725c",
       "range": {
         "startLine": 80,
         "startChar": 0,
