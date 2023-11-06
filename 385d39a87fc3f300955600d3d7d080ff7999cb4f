@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8047143_e564382e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-06T23:47:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59c80e3c_7e27498d",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f11f4bc9_75141d21",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5db17eca_8ac7f86a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-06T23:47:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f11f4bc9_75141d21",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be8b2294_9b0195ba",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-11-06T22:26:11Z",
       "side": 1,
       "message": "No need to re-test all this basic stuff in every new unit test, you can keep the later additions streamlined.",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "883b8091_0e402886",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-06T23:47:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be8b2294_9b0195ba",
       "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
