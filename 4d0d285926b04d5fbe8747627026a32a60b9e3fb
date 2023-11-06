@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aeb80a81_07d915d1",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-06T22:16:13Z",
+      "side": 0,
+      "message": "Why is this check removed? We have seen actual cases when this happened. In such a case we want KillProcessGroup() to return success because the process is already gone but when !CgroupsAvailable() we won\u0027t get that with this change.",
+      "range": {
+        "startLine": 394,
+        "startChar": 12,
+        "endLine": 398,
+        "endChar": 0
+      },
+      "revId": "4d0d285926b04d5fbe8747627026a32a60b9e3fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
