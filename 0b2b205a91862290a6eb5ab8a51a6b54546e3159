@@ -307,6 +307,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5f26478_c5fa9756",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-06T21:45:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee24f0eb_006a026b",
+      "range": {
+        "startLine": 496,
+        "startChar": 7,
+        "endLine": 496,
+        "endChar": 11
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d345cb03_e610a282",
@@ -344,6 +368,30 @@
       "side": 1,
       "message": "That could cause the retries to exceed the specified timeout. I\u0027m not sure about `poll`s, but when I see `EINTR` for other functions it doesn\u0027t typically happen just once. I\u0027m used to seeing a blast of `EINTR` return values across several attempts at the function call before it finally succeeds. I guess we could remove the entire loop if we say we don\u0027t care about that.",
       "parentUuid": "d345cb03_e610a282",
+      "range": {
+        "startLine": 507,
+        "startChar": 37,
+        "endLine": 507,
+        "endChar": 66
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e35f3265_9870ac49",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-06T21:45:44Z",
+      "side": 1,
+      "message": "Replaced the loop with `TEMP_FAILURE_RETRY`",
+      "parentUuid": "55470757_9d3292c1",
       "range": {
         "startLine": 507,
         "startChar": 37,
@@ -438,6 +486,30 @@
       "side": 1,
       "message": "This should **never** happen if we successfully read the file. And I think it might be the same for the case below too... partial reads should not be possible on this kernfs file. So I think there would have to be a serious kernel or libc bug to hit these, in which case I\u0027m not sure what we should do for calls to `killProcessGroup`. Maybe abort? If we can\u0027t remove because of these errors, we\u0027ll eventually run out of available cgroups, and I expect the system would crash at that point.",
       "parentUuid": "774e7781_a8065852",
+      "range": {
+        "startLine": 537,
+        "startChar": 13,
+        "endLine": 537,
+        "endChar": 23
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86797d30_633c673f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-06T21:45:44Z",
+      "side": 1,
+      "message": "Will return -1 in error cases here.",
+      "parentUuid": "f707ab89_95169fd8",
       "range": {
         "startLine": 537,
         "startChar": 13,
@@ -579,6 +651,30 @@
       "side": 1,
       "message": "We could but it doesn\u0027t get us much except more code. The signaling should fail only if the cgroup no longer exists (which should not be possible yet). But in that case the poll will also immediately return, and then `cgroupIsPopulated` will also be false and we\u0027ll move on. We\u0027ll also rightfully get an error about a failure to remove the cgroup, since it was removed from under us. Something is wrong elsewhere if that happened.",
       "parentUuid": "6e9077f9_aa86cb09",
+      "range": {
+        "startLine": 583,
+        "startChar": 12,
+        "endLine": 584,
+        "endChar": 49
+      },
+      "revId": "0b2b205a91862290a6eb5ab8a51a6b54546e3159",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee298082_e426d175",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-06T21:45:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "70e0750e_64cb074b",
       "range": {
         "startLine": 583,
         "startChar": 12,
