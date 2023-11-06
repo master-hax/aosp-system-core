@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59c80e3c_7e27498d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:26:11Z",
+      "side": 1,
+      "message": "Can you wrap this calculation in a helper function like GetOpOffset? Maybe something like \"GetDataOffset\". This will make it easier to modify all the places that need to be changed when we add stuff like resume points/sequencing.",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f11f4bc9_75141d21",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:26:11Z",
+      "side": 1,
+      "message": "Just assign xor_data_loc_ directly?",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be8b2294_9b0195ba",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:26:11Z",
+      "side": 1,
+      "message": "No need to re-test all this basic stuff in every new unit test, you can keep the later additions streamlined.",
+      "revId": "385d39a87fc3f300955600d3d7d080ff7999cb4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
