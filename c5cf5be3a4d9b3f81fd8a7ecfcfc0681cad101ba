@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64a9cc93_e10b422d",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22203699_b1d2e2f9",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 3
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7f43f22e_338738e3",
@@ -59,6 +83,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1033f3ac_30e5b1c3",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c225f2a_7d19cd55",
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "62d70094_cde45005",
@@ -72,6 +114,30 @@
       "writtenOn": "2023-11-03T08:08:03Z",
       "side": 1,
       "message": "Can you elaborate the reasoning of this?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 17
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c118e047_8a1260b6",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "I don\u0027t think there is no answer for which value should be used in case of failure. I just assumed that consider as vendor process would be less critical(?).",
+      "parentUuid": "62d70094_cde45005",
       "range": {
         "startLine": 50,
         "startChar": 0,
@@ -107,6 +173,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "528dac0e_cc258561",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "I can find ifstream is being used from many other places (including linkerconfig). Can you please give me any doc or related guide if possible? std::getline gives more readability on the code in this case, so I\u0027d like to use std::getline if possible.",
+      "parentUuid": "07d416b8_2e45c0c3",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 90
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ac90242a_21991782",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 1
@@ -118,6 +208,30 @@
       "writtenOn": "2023-11-03T08:08:03Z",
       "side": 1,
       "message": "This should be more explicit. One apex name can be a prefix of another. We can avoid that by appending \"/bin/\"?",
+      "range": {
+        "startLine": 65,
+        "startChar": 12,
+        "endLine": 65,
+        "endChar": 68
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b174223c_c4cc3ae2",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac90242a_21991782",
       "range": {
         "startLine": 65,
         "startChar": 12,
@@ -153,6 +267,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "01d657e1_f4415976",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "This case more fits with ifstream, because it does not need to read all contents of ld.config.txt.",
+      "parentUuid": "d3e9996f_a525fcd5",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 82
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cc32503e_833868ec",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 1
@@ -176,6 +314,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "78d53fd9_d4d4725c",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "I considered that, but I felt it would be a bit more complex to share partial code, as this part uses very partial of bionic linker config parser.",
+      "parentUuid": "cc32503e_833868ec",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 5
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fea2175a_fc08cbc2",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 1
@@ -187,6 +349,30 @@
       "writtenOn": "2023-11-03T08:08:03Z",
       "side": 1,
       "message": "Let\u0027s cast explicitly to `int`",
+      "range": {
+        "startLine": 125,
+        "startChar": 11,
+        "endLine": 125,
+        "endChar": 31
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "793e74ea_4f8c9e31",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-06T07:21:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fea2175a_fc08cbc2",
       "range": {
         "startLine": 125,
         "startChar": 11,
