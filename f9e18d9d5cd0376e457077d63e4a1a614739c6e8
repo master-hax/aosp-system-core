@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2503e0e3_d1a7d801",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-06T15:29:40Z",
+      "side": 1,
+      "message": "android::base::Readlink() is a cleaner way to do this.",
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
