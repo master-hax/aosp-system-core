@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "905ddea2_6dc3d192",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 681,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:35:30Z",
+      "side": 0,
+      "message": "accidental change?",
+      "revId": "da15fd502f2116163407e55d124db4c83028b98f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

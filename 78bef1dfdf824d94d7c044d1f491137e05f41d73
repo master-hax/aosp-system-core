@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a770464f_8dbd6a2e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:35:30Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "78bef1dfdf824d94d7c044d1f491137e05f41d73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa4950f6_995b9824",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-06T22:35:30Z",
+      "side": 1,
+      "message": "I don\u0027t see that buf_iter_ is ever assigned anywhere?\n\nIf we\u0027re not supporting multithreaded compression yet, then let\u0027s remove the code for it in v3. Otherwise it will make things more confusing if it\u0027s partially there but not yet working.",
+      "revId": "78bef1dfdf824d94d7c044d1f491137e05f41d73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
