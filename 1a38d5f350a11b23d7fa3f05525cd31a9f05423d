@@ -16,6 +16,24 @@
       "message": "is there a case where we use v2 writer and the COMPRESSED_DATA.size() \u003d\u003d UNCOMPRESSED_DATA.size() and we can\u0027t read the directly without using a decompressor ?",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6602a2cb_4f4203c0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-07T19:28:00Z",
+      "side": 1,
+      "message": "There\u0027s a compatibility issue here which is why we haven\u0027t done this in V2. It\u0027s possible someone has a gz block that is 4096 bytes, so it\u0027s still technically compressed and needs to go through the decompressor.\n\nIn the V3 writer we can make sure the writer never does this.",
+      "parentUuid": "14e6ff9f_8ad4d50b",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
