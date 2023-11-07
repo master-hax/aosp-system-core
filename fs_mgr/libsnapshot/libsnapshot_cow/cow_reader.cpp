@@ -30,6 +30,7 @@
 #include "cow_decompress.h"
 #include "parser_v2.h"
 #include "parser_v3.h"
+#include "snapuserd/include/snapuserd/snapuserd_kernel.h"
 
 namespace android {
 namespace snapshot {
@@ -685,7 +686,7 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
     } else {
         offset = GetCowOpSourceInfoData(*op);
     }
-    if (!decompressor) {
+    if (!decompressor || op->data_length == header_.block_size) {
         CowDataStream stream(this, offset + ignore_bytes, op->data_length - ignore_bytes);
         return stream.ReadFully(buffer, buffer_size);
     }
