@@ -94,6 +94,16 @@ struct CowHeader {
 
 } __attribute__((packed));
 
+// Resume point structure used for resume buffer
+struct ResumePoint {
+    // monotonically increasing value used by update_engine
+    uint64_t label;
+    // Index of last CowOperation guaranteed to be resumable
+    uint32_t op_index;
+} __attribute__((packed));
+
+static constexpr uint8_t kNumResumePoints = 4;
+
 struct CowHeaderV3 : public CowHeader {
     // Location of sequence buffer in COW.
     uint64_t sequence_buffer_offset;
