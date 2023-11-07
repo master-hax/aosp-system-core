@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7786a4d_cb0a2d39",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-07T19:24:05Z",
+      "side": 1,
+      "message": "I think we should be able to refactor this to avoid some duplication. Eg,\n\n    std::basic_string\u003cuint8_t\u003e compressed_data;\n\n    void* out_data \u003d data;    \n    op.data_length \u003d header_.block_size();\n\n    if (compression_.algorithm) {\n        compressed_data \u003d compressor_-\u003eCompress(iter, header_.block_size);\n        if (compressed_data.size() \u003c op.data_length) {\n            out_data \u003d compressed_data.data();\n            op.data_length \u003d compressed_data.size();\n        }\n    }\n\n    if (!WriteOperation(...)",
+      "revId": "6e0b8068ed3dd0debb15f2bb84b8b3f3ed11ce81",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
