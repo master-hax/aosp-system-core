@@ -141,6 +141,24 @@
       "parentUuid": "a42e131b_c1120258",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3eaa7d7_ec629820",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2023-11-07T15:56:46Z",
+      "side": 1,
+      "message": "Here\u0027s a scenario that I believe summarises the value for ASA:\n\n 1. You get a GWP-ASan/MTE bug report with a tombstone. It doesn\u0027t have logcat or register contentx.\n 2. You throw it into go/as, which gives you nice pretty line numbers.\n 3. It symbolizes to a line that is `*v \u003d x[i];` It\u0027s not clear whether the OOB is from the read of `x[i]` or the write of `*v`.\n 4. You have to download the full symbols to look at the diassembly to figure out that it\u0027s a write access.\n 5a. Because the OOB was a write, you mark it as \"critical\" and move on with your day.\n 5b. Because the OOB was a read, you have to do the taint analysis to make sure that it doesn\u0027t end up a write, before you mark it as \"high\".\n \n#4 is unnecessary if you know that it\u0027s a write. Downloading full symbols sucks, as you know, and takes time.\n\nHere\u0027s a scenario that I want:\n\n 1. I get $VAST_QUANTITY of GWP-ASan bugs from OEM devices.\n 2. I want to figure out how many of them are reads vs. writes for a quick and dirty analysis of use-after-free bugs on Android.\n 3. I can then use this data to see how great asymmetric MTE is by the basis of \"the first bad memory access was caught synchronously).\n \nYes, I\u0027m happier with disassembly and disassembly would be a superset of this feature. But I\u0027m not looking to implement it right now and are very happy with the cheap read/write flag for the low time investment :).",
+      "parentUuid": "610ffb42_67cf32a8",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
