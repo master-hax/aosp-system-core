@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b345293f_b0531278",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T18:46:34Z",
+      "side": 1,
+      "message": "now we are in V3, let\u0027s do the optimization where if compressed data is \u003e\u003d uncompressed data, store data as uncompressed to save decompression CPU",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 212,
+        "endChar": 64
+      },
+      "revId": "74021031de4ee937910787977d70faccc87ef0e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
