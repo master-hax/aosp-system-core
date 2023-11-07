@@ -47,6 +47,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "87d022b5_8770c413",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-07T17:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "34fe7baa_f0bb10a3",
+      "range": {
+        "startLine": 760,
+        "startChar": 26,
+        "endLine": 760,
+        "endChar": 54
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8405e01a_86a5f5c5",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 760,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-07T17:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a744e3aa_4ecabbba",
+      "range": {
+        "startLine": 760,
+        "startChar": 15,
+        "endLine": 760,
+        "endChar": 20
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1ca0ddf4_c2d8f47e",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-11-06T01:34:48Z",
       "side": 1,
       "message": "Can this be replaced with `if (sigismember(\u0026mask, SIGTERM))`?",
+      "range": {
+        "startLine": 804,
+        "startChar": 4,
+        "endLine": 804,
+        "endChar": 29
+      },
+      "revId": "d83fe97890672888b887231b6a770ff2c606f1c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b1c9f4b_911a8b7d",
+        "filename": "init/init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 804,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-07T17:17:53Z",
+      "side": 1,
+      "message": "I think so.",
+      "parentUuid": "1ca0ddf4_c2d8f47e",
       "range": {
         "startLine": 804,
         "startChar": 4,
