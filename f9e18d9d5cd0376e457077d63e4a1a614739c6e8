@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5bfae953_ad6cbfbd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-07T04:11:47Z",
+      "side": 1,
+      "message": "With /proc/self/exe you can not check if the APEX is from system or not.",
+      "parentUuid": "c7d36658_ee461368",
+      "range": {
+        "startLine": 14,
+        "startChar": 15,
+        "endLine": 14,
+        "endChar": 50
+      },
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2503e0e3_d1a7d801",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 2
@@ -100,6 +124,24 @@
       "writtenOn": "2023-11-07T01:21:18Z",
       "side": 1,
       "message": "You can return true if `executable_path` starts with `/vendor` or `/odm` as well.",
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80492468_d8b80675",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-07T04:11:47Z",
+      "side": 1,
+      "message": "Getting namespace from path has more rules, which is described in the first part of ld.config.txt. We can filter with known patterns as you suggested, but in the end it may not be sufficient to cover every cases. For example, based on the former implementation product partitions are also handled as vendor partition from the function.",
+      "parentUuid": "4c7f2496_76dd8d82",
       "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
