@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ff54158d_46078fa5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-07T12:52:42Z",
+      "side": 1,
+      "message": "I could move this stuff up by itself, but that\u0027s not needed without `CgroupKillAvailable` which isn\u0027t needed until `sendSignalToProcessGroup` is modified. I guess I could separate out the `cgroup.kill` stuff into a second patch.",
+      "parentUuid": "a68c21f1_e8900d07",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 0
+      },
+      "revId": "66a983d75cc2bedc22154251c377acc867c6f74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "48b9274b_6fdc0d45",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 8

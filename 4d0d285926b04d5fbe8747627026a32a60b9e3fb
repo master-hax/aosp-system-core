@@ -22,6 +22,30 @@
       },
       "revId": "4d0d285926b04d5fbe8747627026a32a60b9e3fb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d80a1ee5_f64aceaf",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-07T12:52:42Z",
+      "side": 0,
+      "message": "Because it returned 0 (success), which it should not any longer. This function no longer has the job of determining how many processes are sent kill signals, only whether signals have been sent successfully to any processes that it can find. If `cgroup.procs` can\u0027t be opened for any reason here, it\u0027s always an error.\n\nIt\u0027s fine if KPG (which calls this) encounters an already-killed process (`cgroup.procs` still exists and is empty), but it should never encounter an already-removed cgroup (`cgroup.procs` does not exist), because libprocessgroup should be the only code removing cgroups. Of course someone could call this after calling KPG (which removes the cgroup), but I think it *should* return an error in that case since that\u0027s kind of like calling `kill` on a process that is already dead.",
+      "parentUuid": "aeb80a81_07d915d1",
+      "range": {
+        "startLine": 394,
+        "startChar": 12,
+        "endLine": 398,
+        "endChar": 0
+      },
+      "revId": "4d0d285926b04d5fbe8747627026a32a60b9e3fb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
