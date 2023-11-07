@@ -43,6 +43,7 @@ class CowWriterV3 : public CowWriterBase {
     void SetupHeaders();
     bool ParseOptions();
     bool OpenForWrite();
+    bool OpenForAppend();
     bool WriteOperation(const CowOperationV3& op, const void* data = nullptr, size_t size = 0);
     bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
                     uint16_t offset, uint8_t type);
@@ -52,6 +53,10 @@ class CowWriterV3 : public CowWriterBase {
         CHECK_LT(op_index, header_.op_count_max);
         return header_.prefix.header_size + header_.buffer_size +
                (op_index * sizeof(CowOperationV3));
+    }
+    off_t GetDataOffset() const {
+        return sizeof(CowHeaderV3) + header_.buffer_size + header_.resume_buffer_size +
+               header_.op_count_max * sizeof(CowOperation);
     }
 
   private:
