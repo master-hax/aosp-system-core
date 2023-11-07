@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6629155_1b353237",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T22:04:20Z",
+      "side": 1,
+      "message": "Move definition inside the if block atL214",
+      "revId": "338e34a0ecb318c77b6e3dc286038e8fe36f0c22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a3f62cd_a0100440",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T22:04:20Z",
+      "side": 1,
+      "message": "this would break when we increment data_iter later on",
+      "revId": "338e34a0ecb318c77b6e3dc286038e8fe36f0c22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
