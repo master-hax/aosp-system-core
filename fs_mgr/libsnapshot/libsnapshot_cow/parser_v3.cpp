@@ -59,7 +59,8 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
 }
 
 off_t CowParserV3::GetDataOffset() const {
-    return sizeof(CowHeaderV3) + header_.buffer_size + header_.op_count_max * sizeof(CowOperation);
+    return sizeof(CowHeaderV3) + header_.buffer_size + header_.resume_buffer_size +
+           header_.op_count_max * sizeof(CowOperation);
 }
 
 bool CowParserV3::ParseOps(borrowed_fd fd, std::optional<uint64_t> label) {
