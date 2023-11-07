@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cee19172_329c2fa3",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-07T14:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff54158d_46078fa5",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 0
+      },
+      "revId": "66a983d75cc2bedc22154251c377acc867c6f74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "48b9274b_6fdc0d45",
@@ -61,6 +85,30 @@
       "writtenOn": "2023-11-06T22:16:13Z",
       "side": 1,
       "message": "Please document return values. AFAIKT it\u0027s 1 - populated, 0 - not populated, -1 - error.",
+      "range": {
+        "startLine": 504,
+        "startChar": 7,
+        "endLine": 504,
+        "endChar": 10
+      },
+      "revId": "66a983d75cc2bedc22154251c377acc867c6f74e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b25b76c_b07e94e9",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-07T14:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48b9274b_6fdc0d45",
       "range": {
         "startLine": 504,
         "startChar": 7,
