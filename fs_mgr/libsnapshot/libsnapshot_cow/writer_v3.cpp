@@ -34,6 +34,7 @@
 #include <zlib.h>
 
 #include <fcntl.h>
+#include <libsnapshot_cow/parser_v3.h>
 #include <linux/fs.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -120,11 +121,14 @@ bool CowWriterV3::Initialize(std::optional<uint64_t> label) {
     if (!InitFd() || !ParseOptions()) {
         return false;
     }
-
-    CHECK(!label.has_value());
-
-    if (!OpenForWrite()) {
-        return false;
+    if (!label) {
+        if (!OpenForWrite()) {
+            return false;
+        }
+    } else {
+        if (!OpenForAppend(*label)) {
+            return false;
+        }
     }
 
     return true;
@@ -164,8 +168,27 @@ bool CowWriterV3::OpenForWrite() {
         LOG(ERROR) << "Header sync failed";
         return false;
     }
-    next_data_pos_ =
-            sizeof(CowHeaderV3) + header_.buffer_size + header_.op_count_max * sizeof(CowOperation);
+    next_data_pos_ = GetDataOffset();
+    return true;
+}
+
+bool CowWriterV3::OpenForAppend(uint64_t label) {
+    CHECK(label >= 0);
+    CowParserV3 parser;
+    if (!parser.Parse(fd_, header_, {})) {
+        return false;
+    }
+
+    options_.block_size = header_.block_size;
+    next_data_pos_ = GetDataOffset();
+
+    TranslatedCowOps ops;
+    parser.Translate(&ops);
+
+    for (const auto& op : *ops.ops) {
+        next_data_pos_ += op.data_length;
+    }
+
     return true;
 }
 
