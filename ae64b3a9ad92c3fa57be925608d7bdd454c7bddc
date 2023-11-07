@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e3012f2_ac0ba776",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T18:35:55Z",
+      "side": 1,
+      "message": "`algorithm` is an `optional` object, check for error",
+      "range": {
+        "startLine": 96,
+        "startChar": 37,
+        "endLine": 96,
+        "endChar": 46
+      },
+      "revId": "ae64b3a9ad92c3fa57be925608d7bdd454c7bddc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7653962_db532b32",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T18:35:55Z",
+      "side": 1,
+      "message": "log the new block start and compression algorithm for debugging",
+      "revId": "ae64b3a9ad92c3fa57be925608d7bdd454c7bddc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dfa78f7_b69ad341",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-07T18:35:55Z",
+      "side": 1,
+      "message": "log new block start for debugging",
+      "revId": "ae64b3a9ad92c3fa57be925608d7bdd454c7bddc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
