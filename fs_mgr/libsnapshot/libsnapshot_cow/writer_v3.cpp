@@ -34,6 +34,7 @@
 #include <zlib.h>
 
 #include <fcntl.h>
+#include <libsnapshot_cow/parser_v3.h>
 #include <linux/fs.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -120,12 +121,21 @@ bool CowWriterV3::Initialize(std::optional<uint64_t> label) {
     if (!InitFd() || !ParseOptions()) {
         return false;
     }
-
-    CHECK(!label.has_value());
-
-    if (!OpenForWrite()) {
-        return false;
+    if (!ReadCowHeader(fd_, &header_)) {
+        if (!OpenForWrite()) {
+            return false;
+        }
+    } else {
+        if (header_.prefix.major_version > 3) {
+            LOG(ERROR) << "CowWriterV3 tried to open incompatible version "
+                       << header_.prefix.major_version;
+            return false;
+        }
+        if (!OpenForAppend()) {
+            return false;
+        }
     }
+    CHECK(!label.has_value());
 
     return true;
 }
@@ -164,11 +174,28 @@ bool CowWriterV3::OpenForWrite() {
         LOG(ERROR) << "Header sync failed";
         return false;
     }
-    next_data_pos_ =
-            sizeof(CowHeaderV3) + header_.buffer_size + header_.op_count_max * sizeof(CowOperation);
+    next_data_pos_ = GetDataOffset();
     return true;
 }
 
+bool CowWriterV3::OpenForAppend() {
+    CowParserV3 parser;
+    if (!parser.Parse(fd_, header_, {})) {
+        return false;
+    }
+
+    options_.block_size = header_.block_size;
+    next_data_pos_ = GetDataOffset();
+
+    TranslatedCowOps ops;
+    parser.Translate(&ops);
+
+    for (const auto& op : *ops.ops) {
+        next_data_pos_ += op.data_length;
+    }
+
+    return true;
+}
 bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks) {
     for (size_t i = 0; i < num_blocks; i++) {
         CowOperationV3 op = {};
