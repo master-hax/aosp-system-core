@@ -34,6 +34,16 @@
 namespace android {
 namespace snapshot {
 
+bool ReadResumeBuffer(android::base::borrowed_fd fd, std::vector<ResumePoint>* resume_points,
+                      const CowHeaderV3& header) {
+    resume_points->clear();
+    resume_points->resize(header.resume_buffer_size);
+
+    return android::base::ReadFullyAtOffset(fd, resume_points->data(),
+                                            header.resume_buffer_size * sizeof(ResumePoint),
+                                            header.prefix.header_size + header.buffer_size);
+}
+
 bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header) {
     if (lseek(fd.get(), 0, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek header failed";
