@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c7d36658_ee461368",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-07T01:21:18Z",
+      "side": 1,
+      "message": "Why isn\u0027t checking /proc/self/exe enough?",
+      "range": {
+        "startLine": 14,
+        "startChar": 15,
+        "endLine": 14,
+        "endChar": 50
+      },
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2503e0e3_d1a7d801",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 2
@@ -14,6 +37,69 @@
       "writtenOn": "2023-11-06T15:29:40Z",
       "side": 1,
       "message": "android::base::Readlink() is a cleaner way to do this.",
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca6b40cb_0f69d429",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-07T01:21:18Z",
+      "side": 1,
+      "message": "I don\u0027t think you have to copy the buffer into string, because you don\u0027t append to it any more. char* or std::string_view should be enough.",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 54,
+        "endChar": 31
+      },
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f408ed6a_98cda1c6",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-07T01:21:18Z",
+      "side": 1,
+      "message": "is this `sizeof(\"/apex/\")`? You may want to have a constexpr for this, instead of using 6.",
+      "range": {
+        "startLine": 58,
+        "startChar": 55,
+        "endLine": 58,
+        "endChar": 56
+      },
+      "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c7f2496_76dd8d82",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-07T01:21:18Z",
+      "side": 1,
+      "message": "You can return true if `executable_path` starts with `/vendor` or `/odm` as well.",
       "revId": "f9e18d9d5cd0376e457077d63e4a1a614739c6e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
