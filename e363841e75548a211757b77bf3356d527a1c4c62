@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf296450_d40b1a5c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-07T23:57:57Z",
+      "side": 1,
+      "message": "compressor_ should always be initialized - you can DCHECK() this if you want.",
+      "revId": "e363841e75548a211757b77bf3356d527a1c4c62",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
