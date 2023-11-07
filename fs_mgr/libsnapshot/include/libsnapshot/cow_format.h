@@ -187,6 +187,14 @@ struct CowOperationV3 {
     uint64_t source_info;
 } __attribute__((packed));
 
+// Resume point structure used for resume buffer
+struct ResumePoint {
+    // monotonically increasing value used by update_engine
+    uint64_t label;
+    // Index of last CowOperation guaranteed to be
+    uint32_t op_index;
+};
+
 static_assert(sizeof(CowOperationV2) == sizeof(CowFooterOperation));
 
 static constexpr uint8_t kCowCopyOp = 1;
