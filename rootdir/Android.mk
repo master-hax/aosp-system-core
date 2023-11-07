@@ -72,6 +72,11 @@ ifneq ($(filter hwaddress,$(SANITIZE_TARGET)),)
   endif
 endif
 
+EXPORT_GLOBAL_SCUDO_OPTIONS :=
+ifneq ($(SCUDO_GLOBAL_OPTIONS),)
+  EXPORT_GLOBAL_SCUDO_OPTIONS := export SCUDO_OPTIONS $(SCUDO_GLOBAL_OPTIONS)
+endif
+
 EXPORT_GLOBAL_GCOV_OPTIONS :=
 ifeq ($(NATIVE_COVERAGE),true)
   EXPORT_GLOBAL_GCOV_OPTIONS := export GCOV_PREFIX /data/misc/trace
@@ -216,6 +221,7 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/init.environ.rc.in
 	$(hide) sed -i -e 's?%EXPORT_GLOBAL_GCOV_OPTIONS%?$(EXPORT_GLOBAL_GCOV_OPTIONS)?g' $@
 	$(hide) sed -i -e 's?%EXPORT_GLOBAL_CLANG_COVERAGE_OPTIONS%?$(EXPORT_GLOBAL_CLANG_COVERAGE_OPTIONS)?g' $@
 	$(hide) sed -i -e 's?%EXPORT_GLOBAL_HWASAN_OPTIONS%?$(EXPORT_GLOBAL_HWASAN_OPTIONS)?g' $@
+	$(hide) sed -i -e 's?%EXPORT_GLOBAL_SCUDO_OPTIONS%?$(EXPORT_GLOBAL_SCUDO_OPTIONS)?g' $@
 
 # Append PLATFORM_VNDK_VERSION to base name.
 define append_vndk_version

@@ -521,6 +521,33 @@ static void resend_signal(siginfo_t* info) {
   }
 }
 
+// If on ARM64 and permissive MTE is enabled, check whether we already reported
+// a crash at this PC and return false in that case.
+// Otherwise return true.
+static bool permissive_mte_should_log(const siginfo_t* info) {
+  #ifdef __aarch64__
+  if (info->si_signo == SIGSEGV &&
+      (info->si_code == SEGV_MTESERR || info->si_code == SEGV_MTEAERR) &&
+      is_permissive_mte()) {
+    constexpr auto kPreviousCrashCnt = 20;
+    static void* previous_crashes[kPreviousCrashCnt];
+    static size_t next_idx = 0;
+    if (next_idx == kPreviousCrashCnt) {
+      async_safe_format_log(ANDROID_LOG_ERROR, "libc", "MTE PERMISSIVE MODE: TOO MANY ERRORS.");
+      return false;
+    }
+    for (size_t i = 0; i < next_idx; ++i) {
+      if (previous_crashes[i]  == info->si_addr) {
+        return false;
+      }
+    }
+    previous_crashes[next_idx++] = info->si_addr;
+  }
+  #endif
+  (void)(info);
+  return true;
+}
+
 // Handler that does crash dumping by forking and doing the processing in the child.
 // Do this by ptracing the relevant thread, and then execing debuggerd to do the actual dump.
 static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* context) {
@@ -614,63 +641,65 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     async_safe_format_log(ANDROID_LOG_INFO, "libc", "pthread_mutex_lock failed: %s", strerror(ret));
     return;
   }
+  const bool should_log = permissive_mte_should_log(info);
+  if (should_log) {
+    log_signal_summary(info);
 
-  log_signal_summary(info);
+    // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
+    // this is not the main thread, which can cause the intercept logic to fail
+    // since the intercept is only looking for the main thread. In this case,
+    // setting crashing_tid to pid instead of the current thread's tid avoids
+    // the problem.
+    debugger_thread_info thread_info = {
+        .crashing_tid = (signal_number == BIONIC_SIGNAL_DEBUGGER) ? __getpid() : __gettid(),
+        .pseudothread_tid = -1,
+        .siginfo = info,
+        .ucontext = context,
+        .process_info = process_info,
+    };
 
-  // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
-  // this is not the main thread, which can cause the intercept logic to fail
-  // since the intercept is only looking for the main thread. In this case,
-  // setting crashing_tid to pid instead of the current thread's tid avoids
-  // the problem.
-  debugger_thread_info thread_info = {
-      .crashing_tid = (signal_number == BIONIC_SIGNAL_DEBUGGER) ? __getpid() : __gettid(),
-      .pseudothread_tid = -1,
-      .siginfo = info,
-      .ucontext = context,
-      .process_info = process_info,
-  };
-
-  // Set PR_SET_DUMPABLE to 1, so that crash_dump can ptrace us.
-  int orig_dumpable = prctl(PR_GET_DUMPABLE);
-  if (prctl(PR_SET_DUMPABLE, 1) != 0) {
-    fatal_errno("failed to set dumpable");
-  }
-
-  // On kernels with yama_ptrace enabled, also allow any process to attach.
-  bool restore_orig_ptracer = true;
-  if (prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY) != 0) {
-    if (errno == EINVAL) {
-      // This kernel does not support PR_SET_PTRACER_ANY, or Yama is not enabled.
-      restore_orig_ptracer = false;
-    } else {
-      fatal_errno("failed to set traceable");
+    // Set PR_SET_DUMPABLE to 1, so that crash_dump can ptrace us.
+    int orig_dumpable = prctl(PR_GET_DUMPABLE);
+    if (prctl(PR_SET_DUMPABLE, 1) != 0) {
+      fatal_errno("failed to set dumpable");
     }
-  }
 
-  // Essentially pthread_create without CLONE_FILES, so we still work during file descriptor
-  // exhaustion.
-  pid_t child_pid =
-    clone(debuggerd_dispatch_pseudothread, pseudothread_stack,
-          CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID,
-          &thread_info, nullptr, nullptr, &thread_info.pseudothread_tid);
-  if (child_pid == -1) {
-    fatal_errno("failed to spawn debuggerd dispatch thread");
-  }
+    // On kernels with yama_ptrace enabled, also allow any process to attach.
+    bool restore_orig_ptracer = true;
+    if (prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY) != 0) {
+      if (errno == EINVAL) {
+        // This kernel does not support PR_SET_PTRACER_ANY, or Yama is not enabled.
+        restore_orig_ptracer = false;
+      } else {
+        fatal_errno("failed to set traceable");
+      }
+    }
 
-  // Wait for the child to start...
-  futex_wait(&thread_info.pseudothread_tid, -1);
+    // Essentially pthread_create without CLONE_FILES, so we still work during file descriptor
+    // exhaustion.
+    pid_t child_pid =
+      clone(debuggerd_dispatch_pseudothread, pseudothread_stack,
+            CLONE_THREAD | CLONE_SIGHAND | CLONE_VM | CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID,
+            &thread_info, nullptr, nullptr, &thread_info.pseudothread_tid);
+    if (child_pid == -1) {
+      fatal_errno("failed to spawn debuggerd dispatch thread");
+    }
 
-  // and then wait for it to terminate.
-  futex_wait(&thread_info.pseudothread_tid, child_pid);
+    // Wait for the child to start...
+    futex_wait(&thread_info.pseudothread_tid, -1);
 
-  // Restore PR_SET_DUMPABLE to its original value.
-  if (prctl(PR_SET_DUMPABLE, orig_dumpable) != 0) {
-    fatal_errno("failed to restore dumpable");
-  }
+    // and then wait for it to terminate.
+    futex_wait(&thread_info.pseudothread_tid, child_pid);
 
-  // Restore PR_SET_PTRACER to its original value.
-  if (restore_orig_ptracer && prctl(PR_SET_PTRACER, 0) != 0) {
-    fatal_errno("failed to restore traceable");
+    // Restore PR_SET_DUMPABLE to its original value.
+    if (prctl(PR_SET_DUMPABLE, orig_dumpable) != 0) {
+      fatal_errno("failed to restore dumpable");
+    }
+
+    // Restore PR_SET_PTRACER to its original value.
+    if (restore_orig_ptracer && prctl(PR_SET_PTRACER, 0) != 0) {
+      fatal_errno("failed to restore traceable");
+    }
   }
 
   if (info->si_signo == BIONIC_SIGNAL_DEBUGGER) {
@@ -696,8 +725,10 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     if (prctl(PR_SET_TAGGED_ADDR_CTRL, tagged_addr_ctrl, 0, 0, 0) < 0) {
       fatal_errno("failed to PR_SET_TAGGED_ADDR_CTRL");
     }
-    async_safe_format_log(ANDROID_LOG_ERROR, "libc",
-                          "MTE ERROR DETECTED BUT RUNNING IN PERMISSIVE MODE. CONTINUING.");
+    if (should_log) {
+      async_safe_format_log(ANDROID_LOG_ERROR, "libc",
+                            "MTE ERROR DETECTED BUT RUNNING IN PERMISSIVE MODE. CONTINUING.");
+    }
     pthread_mutex_unlock(&crash_mutex);
   } else if (info->si_signo == SIGSEGV && info->si_code == SEGV_MTEAERR && getppid() == 1) {
     // Back channel to init (see system/core/init/service.cpp) to signal that
