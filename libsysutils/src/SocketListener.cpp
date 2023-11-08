@@ -92,8 +92,11 @@ int SocketListener::startListener(int backlog) {
     if (mListen && listen(mSock, backlog) < 0) {
         SLOGE("Unable to listen on socket (%s)", strerror(errno));
         return -1;
-    } else if (!mListen)
-        mClients[mSock] = new SocketClient(mSock, false, mUseCmdNum);
+    } else if (!mListen) {
+        auto sc = new SocketClient(mSock, false, mUseCmdNum);
+        if (!sc) abort();  // OOM during startup
+        mClients[mSock] = sc;
+    }
 
     if (pipe2(mCtrlPipe, O_CLOEXEC)) {
         SLOGE("pipe failed (%s)", strerror(errno));
@@ -187,8 +190,14 @@ void SocketListener::runListener() {
                 sleep(1);
                 continue;
             }
+            auto sc = new SocketClient(c, true, mUseCmdNum);
+            if (!sc) {
+                SLOGE("new failed - OOM?");
+                close(c);
+                continue;
+            }
             pthread_mutex_lock(&mClientsLock);
-            mClients[c] = new SocketClient(c, true, mUseCmdNum);
+            mClients[c] = sc;
             pthread_mutex_unlock(&mClientsLock);
         }
 
