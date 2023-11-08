@@ -275,7 +275,7 @@ static bool RemoveUidCgroups(const std::string& uid_path, bool empty_only) {
     return empty;
 }
 
-static void removeAllProcessGroupsInternal(bool empty_only) {
+void removeAllProcessGroupsInternal(bool empty_only) {
     std::vector<std::string> cgroups;
     std::string path, memcg_apps_path;
 
