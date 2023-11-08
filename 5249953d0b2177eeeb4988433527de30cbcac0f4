@@ -50,6 +50,24 @@
       "message": "Just for my own understanding, why is the slot count now limited between 0 and 1?",
       "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf6355c5_4ea03bdb",
+        "filename": "fs_mgr/liblp/fuzzer/liblp_builder_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1961659
+      },
+      "writtenOn": "2023-11-08T06:18:33Z",
+      "side": 1,
+      "message": "Valid number of slots is 2 , i.e. slots designated as 0 or 1.\nAs per above and Christopher Ferris\u0027 suggestion in b/307978015, slot count value range was updated in the fuzzer.\nhttps://b.corp.google.com/issues/307978015",
+      "parentUuid": "04c5b618_f34fdbd1",
+      "revId": "5249953d0b2177eeeb4988433527de30cbcac0f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
