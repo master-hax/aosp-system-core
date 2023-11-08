@@ -100,6 +100,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b5537811_5fd4196a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T21:43:39Z",
+      "side": 1,
+      "message": "I think we should change this to be in units of \"resume points\", rather than units of bytes. That\u0027s how we did ops. It\u0027s a little more work to calculate offsets but then there\u0027s no chance of weird stuff happening (like bytes not being even with resume point size), and no dividing to figure out resume point count.",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ea014df_9a9edb4b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T21:43:39Z",
+      "side": 1,
+      "message": "No need for a loop, this should just be a computation based on the last op written (eg DataOffset(ops_.back()) + ops_.back().data_len).",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4701e9d1_fb98b92a",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 19
@@ -111,6 +145,23 @@
       "writtenOn": "2023-11-08T21:33:16Z",
       "side": 1,
       "message": "Assuming that we always append labels to the end, you can simply remove label at resume_points[0]",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0507fdd8_48405ee7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T21:43:39Z",
+      "side": 1,
+      "message": "resume_points_",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

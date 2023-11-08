@@ -62,6 +62,30 @@
       },
       "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a82d31aa_2e62c707",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T21:43:39Z",
+      "side": 1,
+      "message": "Better yet: keep this private to parser_v3.cpp, there\u0027s no need to export it.",
+      "parentUuid": "f20e668e_a4a63b90",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
