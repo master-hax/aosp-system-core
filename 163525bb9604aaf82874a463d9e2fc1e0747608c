@@ -231,6 +231,24 @@
       "parentUuid": "b85af7df_a5c0c536",
       "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f3327eb_836958e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1137703
+      },
+      "writtenOn": "2023-11-08T23:39:37Z",
+      "side": 1,
+      "message": "ASA\u0027s perspective:\nYes, this would be helpful, for the reasons Mitch mentioned in his \"Here\u0027s a scenario...\" comment.  We need to know if it\u0027s a read or a write so we can understand the security impact/severity.  OOB writes are generally more concerning than reads (though it depends on the details).\n\nSeeing the disassembly would also be a way to answer this, but:\n1) It\u0027s not as fast.  We may not be able to glance at the disassembly and see that it\u0027s obviously a read or write.\n2) It may be ambiguous.  A \"movs\" is both a read and a write, and it\u0027d take some investigation to determine which side caused the segfault.  Possible, but again, it\u0027s not fast.\n\nThat being said, from talking with teams around ASA, while this change would be a \"nice to have\" and would save some time, we\u0027ll survive if we don\u0027t get it.",
+      "parentUuid": "b85af7df_a5c0c536",
+      "revId": "163525bb9604aaf82874a463d9e2fc1e0747608c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
