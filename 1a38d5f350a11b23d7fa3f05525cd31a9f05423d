@@ -142,6 +142,24 @@
       "parentUuid": "d77a1b07_de268aac",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "925208be_349f807c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T01:28:29Z",
+      "side": 1,
+      "message": "\u003e How does it know whether the v2 op is compressed or not?\n\nSame way current V2 reader determines if v2 op is compressed?",
+      "parentUuid": "e396a6e1_9fd2cc34",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
