@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0135a092_675c0669",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-11-08T18:22:57Z",
+      "side": 1,
+      "message": "yeah, after I sent this out and went to bed I also realized this probably all blows up in vector memory allocation...",
+      "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38ee6e2b_e4a5ec45",
