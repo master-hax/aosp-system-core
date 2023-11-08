@@ -88,6 +88,24 @@
       "parentUuid": "7c4bfedb_05cad3b6",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f831b1be_7c31dc69",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T00:23:03Z",
+      "side": 1,
+      "message": "I didn\u0027t quite understand what the problem is. The header contains the version number, the V2 writer will write a V2 cow, so guarding this optimization by cow_version\u003d\u003d3 should be enough, what is the edge case that would break?",
+      "parentUuid": "b5b0ddeb_561c703f",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
