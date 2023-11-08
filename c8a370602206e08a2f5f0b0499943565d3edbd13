@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6cc778c1_76c0e58e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8ec83dc_1095b0c8",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f49e9793_141c8292",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-11-08T21:33:16Z",
       "side": 1,
       "message": "consider C++ primitives like std::optional instead of return bool + out param",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "55d5f9dd_eed06750",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f49e9793_141c8292",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -54,6 +90,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bb4d852d_c29c3126",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Is there a way to log all of this in one line? std::cerr?",
+      "parentUuid": "e8e651a2_e646af73",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f525871_64259097",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
         "patchSetId": 19
@@ -65,6 +119,30 @@
       "writtenOn": "2023-11-08T21:33:16Z",
       "side": 1,
       "message": "There\u0027s already `GetOpOffset` , can we use that instead? Maybe add a `GetOpOffset` with no argument that returns beginning of ops?",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 90
+      },
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d88dad53_79fd87b7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "thinking of making this a common function in cow_format.h. Currently GetOpOffset is a member function for writer_v3.",
+      "parentUuid": "0f525871_64259097",
       "range": {
         "startLine": 90,
         "startChar": 0,
@@ -98,6 +176,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "77326804_e13be3e2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f9d3b40f_59156a71",
+      "range": {
+        "startLine": 51,
+        "startChar": 83,
+        "endLine": 51,
+        "endChar": 91
+      },
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b5537811_5fd4196a",
@@ -111,6 +213,24 @@
       "writtenOn": "2023-11-08T21:43:39Z",
       "side": 1,
       "message": "I think we should change this to be in units of \"resume points\", rather than units of bytes. That\u0027s how we did ops. It\u0027s a little more work to calculate offsets but then there\u0027s no chance of weird stuff happening (like bytes not being even with resume point size), and no dividing to figure out resume point count.",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6dde9564_78a45731",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5537811_5fd4196a",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -134,6 +254,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d0205f09_8b5ecfcc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "doesn\u0027t this miss the data_length of the ops before the last one ?",
+      "parentUuid": "2ea014df_9a9edb4b",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4701e9d1_fb98b92a",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 19
@@ -145,6 +283,24 @@
       "writtenOn": "2023-11-08T21:33:16Z",
       "side": 1,
       "message": "Assuming that we always append labels to the end, you can simply remove label at resume_points[0]",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8429fc28_985dc077",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "had this here for safety. But I think that works",
+      "parentUuid": "4701e9d1_fb98b92a",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -162,6 +318,24 @@
       "writtenOn": "2023-11-08T21:43:39Z",
       "side": 1,
       "message": "resume_points_",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "440e77dd_de4e4a1b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0507fdd8_48405ee7",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

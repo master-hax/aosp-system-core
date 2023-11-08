@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9b40a747_70906b03",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "we would have to change the current API for parser_base class which all uses uint64_t.",
+      "parentUuid": "09db2e70_27b2f5c3",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 12
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fe9f5d3b_bb5825ca",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 18
@@ -37,6 +61,24 @@
       "writtenOn": "2023-11-08T21:33:16Z",
       "side": 1,
       "message": "__attribute__((packed))",
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3612606e_6d00147f",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe9f5d3b_bb5825ca",
       "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -77,6 +119,30 @@
       "writtenOn": "2023-11-08T21:43:39Z",
       "side": 1,
       "message": "Better yet: keep this private to parser_v3.cpp, there\u0027s no need to export it.",
+      "parentUuid": "f20e668e_a4a63b90",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05c28e86_8648d25e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:42:26Z",
+      "side": 1,
+      "message": "Done",
       "parentUuid": "f20e668e_a4a63b90",
       "range": {
         "startLine": 197,
