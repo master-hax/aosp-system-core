@@ -124,6 +124,24 @@
       "parentUuid": "f831b1be_7c31dc69",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e396a6e1_9fd2cc34",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T00:59:29Z",
+      "side": 1,
+      "message": "we have the space to add the bit so that would work.  \n\nwhy wouldn\u0027t the guard work? If it\u0027s a v2 op, we always use the decompressor if compression was used ?",
+      "parentUuid": "d77a1b07_de268aac",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
