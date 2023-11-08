@@ -33,6 +33,24 @@
       "message": "+the experts, i don\u0027t think this does what you think it does. don\u0027t you need the no-throw new for this in C++? (and given autocommit this should basically never happen anyway.)\n\nfrom the bug, it sounds like the reporter hasn\u0027t actually _seen_ this, they\u0027re just doing static analysis?\n\n(\"if they don\u0027t like this, they\u0027ll hate any code that uses std::string or std::vector\" :-) )",
       "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dd67b4e_87c98160",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-11-08T18:25:57Z",
+      "side": 1,
+      "message": "I have a tentative guess, that they\u0027re leaking memory...\nThus eventually running out and seeing memory allocation failures,\nbut somehow nullptr is writable and doesn\u0027t segfault.\nWhich then results in memory sharing on nullptr and funky \u0027this cannot happen\u0027 mutations (we have reports of printing the same vector twice in a row showing different values).",
+      "parentUuid": "38ee6e2b_e4a5ec45",
+      "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
