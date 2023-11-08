@@ -87,6 +87,24 @@
       "parentUuid": "06e10b16_e8133c7d",
       "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8726d853_2dfa0a21",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-08T19:53:13Z",
+      "side": 1,
+      "message": "i\u0027ve weighed in on this one (and explicitly asked them if this is just the result of static analysis [which i\u0027d bet money on!] rather than something they\u0027ve _actually seen_), but feel free to add me on any others.",
+      "parentUuid": "4af9cf7f_a281c861",
+      "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
