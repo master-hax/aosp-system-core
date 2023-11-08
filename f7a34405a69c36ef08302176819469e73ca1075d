@@ -152,6 +152,30 @@
       },
       "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a3e8910_66c7c111",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T22:43:36Z",
+      "side": 1,
+      "message": "EmitLabel (v3_writer) \u0026\u0026 GetOpIndex (v3_parser) both need this function",
+      "parentUuid": "05c28e86_8648d25e",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
