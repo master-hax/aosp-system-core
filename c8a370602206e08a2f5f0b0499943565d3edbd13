@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8ec83dc_1095b0c8",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "angle bracket",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f49e9793_141c8292",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "consider C++ primitives like std::optional instead of return bool + out param",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8e651a2_e646af73",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "Maybe also log the labels we have as well as the label we try to resume when failed",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f525871_64259097",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "There\u0027s already `GetOpOffset` , can we use that instead? Maybe add a `GetOpOffset` with no argument that returns beginning of ops?",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 90
+      },
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9d3b40f_59156a71",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "mutable pointer for out param",
+      "range": {
+        "startLine": 51,
+        "startChar": 83,
+        "endLine": 51,
+        "endChar": 91
+      },
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4701e9d1_fb98b92a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "Assuming that we always append labels to the end, you can simply remove label at resume_points[0]",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

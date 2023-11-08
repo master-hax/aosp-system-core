@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09db2e70_27b2f5c3",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "uint32_t should suffice, we will have at most ~10K labels.",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 12
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe9f5d3b_bb5825ca",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "__attribute__((packed))",
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f20e668e_a4a63b90",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-08T21:33:16Z",
+      "side": 1,
+      "message": "mutable pointer for out params",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
