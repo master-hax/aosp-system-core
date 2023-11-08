@@ -160,6 +160,24 @@
       "parentUuid": "e396a6e1_9fd2cc34",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23a23012_cf051b85",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-08T05:45:43Z",
+      "side": 1,
+      "message": "v2 writes all data as compressed even if its greater than uncompressed size. So we can just use a decompressor for all data. In v3, we make this check here to see if we need a decompressor or not",
+      "parentUuid": "925208be_349f807c",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
