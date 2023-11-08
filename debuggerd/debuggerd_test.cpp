@@ -231,7 +231,8 @@ void CrasherTest::StartIntercept(unique_fd* output_fd, DebuggerdDumpType interce
 void CrasherTest::FinishIntercept(int* result) {
   InterceptResponse response;
 
-  ssize_t rc = TIMEOUT(30, read(intercept_fd.get(), &response, sizeof(response)));
+  ssize_t rc = TIMEOUT(30 * android::base::HwTimeoutMultiplier(),
+                       read(intercept_fd.get(), &response, sizeof(response)));
   if (rc == -1) {
     FAIL() << "failed to read response from tombstoned: " << strerror(errno);
   } else if (rc == 0) {
@@ -278,7 +279,7 @@ void CrasherTest::FinishCrasher() {
 
 void CrasherTest::AssertDeath(int signo) {
   int status;
-  pid_t pid = TIMEOUT(30, waitpid(crasher_pid, &status, 0));
+  pid_t pid = TIMEOUT(30 * android::base::HwTimeoutMultiplier(), waitpid(crasher_pid, &status, 0));
   if (pid != crasher_pid) {
     printf("failed to wait for crasher (expected pid %d, return value %d): %s\n", crasher_pid, pid,
            strerror(errno));
@@ -401,7 +402,8 @@ TEST_F(CrasherTest, heap_addr_in_register) {
   StartIntercept(&output_fd);
   FinishCrasher();
   int status;
-  ASSERT_EQ(crasher_pid, TIMEOUT(30, waitpid(crasher_pid, &status, 0)));
+  ASSERT_EQ(crasher_pid, TIMEOUT(30 * android::base::HwTimeoutMultiplier(),
+                                 waitpid(crasher_pid, &status, 0)));
   ASSERT_TRUE(WIFSIGNALED(status)) << "crasher didn't terminate via a signal";
   // Don't test the signal number because different architectures use different signals for
   // __builtin_trap().
