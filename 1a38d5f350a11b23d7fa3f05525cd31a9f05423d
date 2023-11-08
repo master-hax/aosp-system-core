@@ -70,6 +70,24 @@
       "parentUuid": "7f00a73b_ab1fdd4b",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b5b0ddeb_561c703f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T00:19:52Z",
+      "side": 1,
+      "message": "Actually I guess that wouldn\u0027t work. Do we need to re-add a bit somewhere in CowOperationV3 indicating that it\u0027s a compressed v2 op?",
+      "parentUuid": "7c4bfedb_05cad3b6",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
