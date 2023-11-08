@@ -178,6 +178,24 @@
       "parentUuid": "925208be_349f807c",
       "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bc0e7b9_b3816520",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-08T20:47:11Z",
+      "side": 1,
+      "message": "Ack, sorry for the tangent, this does work.",
+      "parentUuid": "23a23012_cf051b85",
+      "revId": "1a38d5f350a11b23d7fa3f05525cd31a9f05423d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
