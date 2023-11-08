@@ -69,6 +69,24 @@
       "parentUuid": "7dd67b4e_87c98160",
       "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4af9cf7f_a281c861",
+        "filename": "libsysutils/src/SocketListener.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2023-11-08T19:37:41Z",
+      "side": 1,
+      "message": "There\u0027s other bugs (like 3 by now I think) where they\u0027re reporting things that \u0027cannot\u0027 happen.\n\nie. vector\u003cunique_fd\u003e fds; ...; fds[0].get() is 66.  fds[0].release()  fds[0].get() is -1, then in the *same* LOG line it\u0027s printed again and is 66.\n\nI\u0027m leaning towards a cpu misexecution bug... cache flush not working, memory bug, or something like that.",
+      "parentUuid": "06e10b16_e8133c7d",
+      "revId": "f4335e68877e26207b71fc933d0bd66a6a1f591c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
