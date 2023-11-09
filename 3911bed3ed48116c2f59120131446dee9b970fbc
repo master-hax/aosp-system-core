@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ca074d4_b9d4d837",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 25
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:36:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f784881_cb2b5ef8",
+      "revId": "3911bed3ed48116c2f59120131446dee9b970fbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0ae447db_4a9300c2",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-11-09T19:30:52Z",
       "side": 1,
       "message": "return false here",
+      "revId": "3911bed3ed48116c2f59120131446dee9b970fbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "129aaba9_8d091454",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 25
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:36:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ae447db_4a9300c2",
       "revId": "3911bed3ed48116c2f59120131446dee9b970fbc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
