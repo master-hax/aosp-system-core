@@ -126,6 +126,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7cc97b4d_9b9bfe53",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-09T01:09:16Z",
+      "side": 1,
+      "message": "there\u0027s android::base::Join which lets you log everything in 1 line",
+      "parentUuid": "55e6a23e_a2922a3b",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f525871_64259097",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
         "patchSetId": 19
