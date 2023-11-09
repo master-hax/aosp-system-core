@@ -387,6 +387,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "09df93b4_15106302",
+        "filename": "libvndksupport/linker.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-09T06:22:41Z",
+      "side": 1,
+      "message": "Let me abandon this change and create a new change for clear history / comment on different approach.",
+      "parentUuid": "b444d7a8_990cefd9",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 82
+      },
+      "revId": "c5cf5be3a4d9b3f81fd8a7ecfcfc0681cad101ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cc32503e_833868ec",
         "filename": "libvndksupport/linker.cpp",
         "patchSetId": 1
