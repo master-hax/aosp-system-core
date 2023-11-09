@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ff59c9e_486ce8c5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-09T21:05:33Z",
+      "side": 0,
+      "message": "Why not simply add the logic here like this:\n\n```\n    std::string hierarchy_root_path, cgroup_v2_path;\n    if (CgroupsAvailable()) {\n        CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, \u0026hierarchy_root_path);\n        cgroup_v2_path \u003d ConvertUidPidToPath(hierarchy_root_path.c_str(), uid, initialPid);\n+        if (signal \u003d\u003d SIGKILL \u0026\u0026 CgroupKillAvailable()) {\n+            LOG(VERBOSE) \u003c\u003c \"Using \" \u003c\u003c PROCESSGROUP_CGROUP_KILL_FILE \u003c\u003c \" to SIGKILL \"\n+                         \u003c\u003c cgroup_v2_path;\n+            const std::string killfilepath \u003d cgroup_v2_path + \u0027/\u0027 + PROCESSGROUP_CGROUP_KILL_FILE;\n+            if (!WriteStringToFile(\"1\", killfilepath)) {\n+                PLOG(ERROR) \u003c\u003c \"Failed to write \u0027\" \u003c\u003c initialPid \u003c\u003c \" to \" \u003c\u003c killfilepath;\n+                return false;\n+            }\n+            return true;\n+        }           \n    }\n        \n        \n    }\n```",
+      "range": {
+        "startLine": 380,
+        "startChar": 8,
+        "endLine": 382,
+        "endChar": 91
+      },
+      "revId": "94ae84687a8649a5939aecd38ffc52be2fc617ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
