@@ -482,5 +482,39 @@ TEST_F(CowTestV3, ResumePointTest) {
     header = reader.header_v3();
     ASSERT_EQ(header.op_count, 15);
 }
+
+TEST_F(CowTestV3, SequenceTest) {
+    CowOptions options;
+    options.op_count_max = std::numeric_limits<uint32_t>::max();
+    auto writer = CreateCowWriter(3, options, GetCowFd());
+    // sequence data. This just an arbitrary set of integers that specify the merge order. The
+    // actual calculation is done by update_engine and passed to writer. All we care about here is
+    // writing that data correctly
+    const int seq_len = std::numeric_limits<uint16_t>::max() / sizeof(uint32_t) + 1;
+    uint32_t sequence[seq_len];
+    for (int i = 0; i < seq_len; i++) {
+        sequence[i] = i + 1;
+    }
+
+    ASSERT_TRUE(writer->AddSequenceData(seq_len, sequence));
+    ASSERT_TRUE(writer->AddZeroBlocks(1, seq_len));
+    ASSERT_TRUE(writer->Finalize());
+
+    ASSERT_EQ(lseek(cow_->fd, 0, SEEK_SET), 0);
+
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+    auto iter = reader.GetRevMergeOpIter();
+
+    for (int i = 0; i < seq_len; i++) {
+        ASSERT_TRUE(!iter->AtEnd());
+        const auto& op = iter->Get();
+
+        ASSERT_EQ(op->new_block, seq_len - i);
+
+        iter->Next();
+    }
+    ASSERT_TRUE(iter->AtEnd());
+}
 }  // namespace snapshot
 }  // namespace android
