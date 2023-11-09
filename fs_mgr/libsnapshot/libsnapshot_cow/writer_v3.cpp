@@ -81,7 +81,7 @@ void CowWriterV3::SetupHeaders() {
     header_.resume_point_count = 0;
     header_.resume_point_max = kNumResumePoints;
     header_.op_count = 0;
-    header_.op_count_max = 0;
+    header_.op_count_max = 10000;
     header_.compression_algorithm = kCowCompressNone;
     return;
 }
@@ -266,7 +266,6 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
             return false;
         }
     }
-
     return true;
 }
 
@@ -344,7 +343,6 @@ bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, siz
         next_data_pos_ += op.data_length;
         return true;
     }
-
     if (header_.op_count + 1 > header_.op_count_max) {
         LOG(ERROR) << "Maximum number of ops reached: " << header_.op_count_max;
         return false;
