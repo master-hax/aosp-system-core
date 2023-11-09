@@ -77,7 +77,7 @@ void CowWriterV3::SetupHeaders() {
     // v3 specific fields
     // WIP: not quite sure how some of these are calculated yet, assuming buffer_size is determined
     // during COW size estimation
-    header_.sequence_buffer_offset = 0;
+    header_.sequence_buffer_size = 0;
     header_.resume_point_count = 0;
     header_.resume_point_max = kNumResumePoints;
     header_.op_count = 0;
@@ -315,9 +315,11 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
 }
 
 bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-    if (num_ops && data) return false;
-    return false;
+    if (!android::base::WriteFullyAtOffset(fd_, data, sizeof(uint32_t) * num_ops,
+                                           GetSequenceOffset(header_))) {
+        PLOG(ERROR) << "writing sequence buffer failed";
+    }
+    return true;
 }
 
 bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, size_t size) {
