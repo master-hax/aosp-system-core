@@ -312,9 +312,22 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
 }
 
 bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-    if (num_ops && data) return false;
-    return false;
+    size_t to_add = 0;
+    size_t max_ops = (header_.block_size * 2) / sizeof(uint32_t);
+    while (num_ops > 0) {
+        CowOperationV3 op = {};
+        op.type = kCowSequenceOp;
+        op.source_info = next_data_pos_;
+        to_add = std::min(num_ops, max_ops);
+        op.data_length = static_cast<uint16_t>(to_add * sizeof(uint32_t));
+        if (!WriteOperation(op, data, op.data_length)) {
+            PLOG(ERROR) << "AddSequenceData: write failed";
+            return false;
+        }
+        num_ops -= to_add;
+        data += to_add;
+    }
+    return true;
 }
 
 bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, size_t size) {
