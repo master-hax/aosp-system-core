@@ -42,7 +42,7 @@ class ICowReader {
     virtual ~ICowReader() {}
 
     // Return the file header.
-    virtual CowHeader& GetHeader() = 0;
+    virtual CowHeaderV3& GetHeader() = 0;
 
     // Return the file footer.
     virtual bool GetFooter(CowFooter* footer) = 0;
@@ -80,11 +80,11 @@ class ICowReader {
     virtual bool GetSourceOffset(const CowOperation* op, uint64_t* source_offset) = 0;
 };
 
-static constexpr uint64_t GetBlockFromOffset(const CowHeader& header, uint64_t offset) {
+static constexpr uint64_t GetBlockFromOffset(const CowHeaderV3& header, uint64_t offset) {
     return offset / header.block_size;
 }
 
-static constexpr uint64_t GetBlockRelativeOffset(const CowHeader& header, uint64_t offset) {
+static constexpr uint64_t GetBlockRelativeOffset(const CowHeaderV3& header, uint64_t offset) {
     return offset % header.block_size;
 }
 
@@ -145,7 +145,7 @@ class CowReader final : public ICowReader {
     ssize_t ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
                      size_t ignore_bytes = 0) override;
 
-    CowHeader& GetHeader() override { return header_; }
+    CowHeaderV3& GetHeader() override { return header_; }
     const CowHeaderV3& header_v3() const { return header_; }
 
     bool GetRawBytes(const CowOperation* op, void* buffer, size_t len, size_t* read);

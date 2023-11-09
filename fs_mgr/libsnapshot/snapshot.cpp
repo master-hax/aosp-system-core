@@ -45,7 +45,6 @@
 #include <android/snapshot/snapshot.pb.h>
 #include <libsnapshot/snapshot_stats.h>
 #include "device_info.h"
-#include "libsnapshot_cow/parser_v2.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
 #include "utility.h"
@@ -504,7 +503,7 @@ bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
             return false;
         }
 
-        const auto& header = reader.GetHeader();
+        const auto& header = reader.header_v3();
         if (header.prefix.major_version > 2) {
             LOG(ERROR) << "COW format not supported";
             return false;
