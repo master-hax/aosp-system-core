@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "12a64999_70cccea2",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-09T01:03:48Z",
+      "side": 1,
+      "message": "And IIRC update_engine uses some labels that are based on numeric_limits\u003cuint64_t\u003e::max?",
+      "parentUuid": "9b40a747_70906b03",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 12
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fe9f5d3b_bb5825ca",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 18
@@ -168,6 +192,30 @@
       "side": 1,
       "message": "EmitLabel (v3_writer) \u0026\u0026 GetOpIndex (v3_parser) both need this function",
       "parentUuid": "05c28e86_8648d25e",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ec560a5_2968a363",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-09T01:03:48Z",
+      "side": 1,
+      "message": "Either way it should be in parser_v3 since it\u0027s specific to v3 parsing. writer_v3 includes parser_v3.h.\n\nBut I still think it can be private: CowParserV3::Parse() calls ReadResumeBuffer. Just store the resume points in the parser so that the writer can copy them over. Then it never has to re-read them in.",
+      "parentUuid": "7a3e8910_66c7c111",
       "range": {
         "startLine": 197,
         "startChar": 79,

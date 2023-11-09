@@ -108,6 +108,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "55e6a23e_a2922a3b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-09T01:03:48Z",
+      "side": 1,
+      "message": "I think one per line is fine, especially given the small # of resume points.",
+      "parentUuid": "bb4d852d_c29c3126",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f525871_64259097",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
         "patchSetId": 19
@@ -143,6 +161,30 @@
       "side": 1,
       "message": "thinking of making this a common function in cow_format.h. Currently GetOpOffset is a member function for writer_v3.",
       "parentUuid": "0f525871_64259097",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 90
+      },
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df991452_4b47c722",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-09T01:03:48Z",
+      "side": 1,
+      "message": "That\u0027s a good idea, they seem generally useful, and can take in a CowHeaderV3 struct.",
+      "parentUuid": "d88dad53_79fd87b7",
       "range": {
         "startLine": 90,
         "startChar": 0,
@@ -266,6 +308,24 @@
       "side": 1,
       "message": "doesn\u0027t this miss the data_length of the ops before the last one ?",
       "parentUuid": "2ea014df_9a9edb4b",
+      "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0846fa9_a3cdd9c9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-09T01:03:48Z",
+      "side": 1,
+      "message": "Sorry, you\u0027re right - this is safest.",
+      "parentUuid": "d0205f09_8b5ecfcc",
       "revId": "c8a370602206e08a2f5f0b0499943565d3edbd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
