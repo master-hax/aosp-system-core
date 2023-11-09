@@ -21,6 +21,7 @@
 #include <memory>
 #include <optional>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <android-base/unique_fd.h>
 #include <libsnapshot/cow_format.h>
@@ -169,6 +170,12 @@ class CowReader final : public ICowReader {
   private:
     bool ParseV2(android::base::borrowed_fd fd, std::optional<uint64_t> label);
     bool PrepMergeOps();
+    bool GetSequenceDataV2(std::vector<uint32_t>* merge_op_blocks, std::vector<int>& other_ops,
+                           std::unordered_set<uint32_t>& seq_ops_set,
+                           std::unordered_map<uint32_t, int>* block_map);
+    bool GetSequenceData(std::vector<uint32_t>* merge_op_blocks, std::vector<int>& other_ops,
+                         std::unordered_set<uint32_t>& seq_ops_set,
+                         std::unordered_map<uint32_t, int>* block_map);
     uint64_t FindNumCopyops();
     uint8_t GetCompressionType();
 

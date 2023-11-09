@@ -24,6 +24,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <zlib.h>
 
@@ -264,14 +265,13 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
 // Merge-2 - Batch-merge {Replace-op-7, Replace-op-6, Zero-op-8,
 //                        Replace-op-4, Zero-op-9, Replace-op-5 }
 //==============================================================
-bool CowReader::PrepMergeOps() {
-    auto merge_op_blocks = std::make_unique<std::vector<uint32_t>>();
-    std::vector<int> other_ops;
-    auto seq_ops_set = std::unordered_set<uint32_t>();
-    auto block_map = std::make_unique<std::unordered_map<uint32_t, int>>();
+
+bool CowReader::GetSequenceDataV2(std::vector<uint32_t>* merge_op_blocks,
+                                  std::vector<int>& other_ops,
+                                  std::unordered_set<uint32_t>& seq_ops_set,
+                                  std::unordered_map<uint32_t, int>* block_map) {
     size_t num_seqs = 0;
     size_t read;
-
     for (size_t i = 0; i < ops_->size(); i++) {
         auto& current_op = ops_->data()[i];
 
@@ -285,7 +285,7 @@ bool CowReader::PrepMergeOps() {
                 return false;
             }
             for (size_t j = num_seqs; j < num_seqs + seq_len; j++) {
-                seq_ops_set.insert(merge_op_blocks->data()[j]);
+                seq_ops_set.insert(merge_op_blocks->at(j));
             }
             num_seqs += seq_len;
         }
@@ -302,6 +302,53 @@ bool CowReader::PrepMergeOps() {
         }
         block_map->insert({current_op.new_block, i});
     }
+    return false;
+}
+
+bool CowReader::GetSequenceData(std::vector<uint32_t>* merge_op_blocks, std::vector<int>& other_ops,
+                                std::unordered_set<uint32_t>& seq_ops_set,
+                                std::unordered_map<uint32_t, int>* block_map) {
+    // read sequence ops data
+    merge_op_blocks->resize(header_.sequence_buffer_size / sizeof(uint32_t));
+    if (!android::base::ReadFullyAtOffset(fd_, merge_op_blocks->data(),
+                                          header_.sequence_buffer_size,
+                                          GetSequenceOffset(header_))) {
+        PLOG(ERROR) << "failed to read sequence buffer";
+    }
+    for (auto& i : *merge_op_blocks) {
+        seq_ops_set.insert(i);
+    }
+    // read ordered op data
+    for (size_t i = 0; i < ops_->size(); i++) {
+        auto& current_op = ops_->data()[i];
+        // Sequence ops must be the first ops in the stream.
+        if (seq_ops_set.empty()) {
+            merge_op_blocks->emplace_back(current_op.new_block);
+        } else if (seq_ops_set.count(current_op.new_block) == 0) {
+            other_ops.push_back(current_op.new_block);
+        }
+        block_map->insert({current_op.new_block, i});
+    }
+    return true;
+}
+
+bool CowReader::PrepMergeOps() {
+    auto merge_op_blocks = std::make_unique<std::vector<uint32_t>>();
+    std::vector<int> other_ops;
+    auto seq_ops_set = std::unordered_set<uint32_t>();
+    auto block_map = std::make_unique<std::unordered_map<uint32_t, int>>();
+    switch (header_.prefix.major_version) {
+        case 1:
+        case 2:
+            GetSequenceDataV2(merge_op_blocks.get(), other_ops, seq_ops_set, block_map.get());
+            break;
+        case 3:
+            GetSequenceData(merge_op_blocks.get(), other_ops, seq_ops_set, block_map.get());
+            break;
+        default:
+            break;
+    }
+
     for (auto block : *merge_op_blocks) {
         if (block_map->count(block) == 0) {
             LOG(ERROR) << "Invalid Sequence Ops. Could not find Cow Op for new block " << block;

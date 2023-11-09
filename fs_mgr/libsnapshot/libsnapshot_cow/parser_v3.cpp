@@ -34,6 +34,12 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
     fd_size_ = pos;
     header_ = header;
 
+    if (header_.sequence_buffer_size % sizeof(uint32_t) != 0) {
+        LOG(ERROR) << "Sequence buffer size is not a multiple of uint32_t"
+                   << header_.sequence_buffer_size;
+        return false;
+    }
+
     if (header_.footer_size != 0) {
         LOG(ERROR) << "Footer size isn't 0, read " << header_.footer_size;
         return false;
