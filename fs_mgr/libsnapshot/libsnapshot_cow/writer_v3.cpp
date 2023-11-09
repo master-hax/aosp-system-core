@@ -304,7 +304,10 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
     }
 
     CHECK_LE(resume_points_->size(), header_.resume_point_max);
-
+    LOG(INFO) << "WRITING LABEL: " << label;
+    for (auto i : *resume_points_) {
+        LOG(INFO) << i.label;
+    }
     if (!android::base::WriteFullyAtOffset(fd_, resume_points_->data(),
                                            resume_points_->size() * sizeof(ResumePoint),
                                            GetResumeOffset(header_))) {
@@ -315,9 +318,18 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
 }
 
 bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
-    LOG(ERROR) << __LINE__ << " " << __FILE__ << " <- function here should never be called";
-    if (num_ops && data) return false;
-    return false;
+    // TODO: size sequence buffer based on options
+    header_.sequence_data_count = num_ops;
+    if (num_ops > header_.sequence_data_count) {
+        LOG(ERROR) << "Data is too large to be written to sequence buffer. data size: " << num_ops
+                   << " into buffer size: " << header_.sequence_data_count;
+        return false;
+    }
+    if (!android::base::WriteFullyAtOffset(fd_, data, sizeof(data[0]) * num_ops,
+                                           GetSequenceOffset(header_))) {
+        PLOG(ERROR) << "writing sequence buffer failed";
+    }
+    return true;
 }
 
 bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, size_t size) {
