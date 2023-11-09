@@ -200,17 +200,12 @@ void Service::KillProcessGroup(int signal) {
     // the cgroup already and calling these functions a second time will simply result in an error.
     // This is true regardless of which signal was sent.
     // These functions handle their own logging, so no additional logging is needed.
-    if (!process_cgroup_empty_) {
-        LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
-                  << ") process group...";
-        int r;
-        if (signal == SIGTERM) {
-            r = killProcessGroupOnce(uid(), pid_, signal);
-        } else {
-            r = killProcessGroup(uid(), pid_, signal);
-        }
-
-        if (r == 0) process_cgroup_empty_ = true;
+    LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
+              << ") process group...";
+    if (signal == SIGTERM) {
+        killProcessGroupOnce(uid(), pid_, signal);
+    } else {
+        killProcessGroup(uid(), pid_, signal);
     }
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
@@ -694,7 +689,6 @@ Result<void> Service::Start() {
     pid_ = pid;
     flags_ |= SVC_RUNNING;
     start_order_ = next_start_order_++;
-    process_cgroup_empty_ = false;
 
     if (CgroupsAvailable()) {
         bool use_memcg = swappiness_ != -1 || soft_limit_in_bytes_ != -1 || limit_in_bytes_ != -1 ||
@@ -896,7 +890,7 @@ void Service::StopOrReset(int how) {
     if (pid_) {
         if (flags_ & SVC_GENTLE_KILL) {
             KillProcessGroup(SIGTERM);
-            if (!process_cgroup_empty()) std::this_thread::sleep_for(200ms);
+            std::this_thread::sleep_for(200ms);
         }
         KillProcessGroup(SIGKILL);
         NotifyStateChange("stopping");
