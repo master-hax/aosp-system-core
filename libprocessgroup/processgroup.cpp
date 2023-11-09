@@ -374,66 +374,100 @@ err:
     return false;
 }
 
-// Returns number of processes killed on success
-// Returns 0 if there are no processes in the process cgroup left to kill
-// Returns -1 on error
-static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid, int signal) {
-    // We separate all of the pids in the cgroup into those pids that are also the leaders of
-    // process groups (stored in the pgids set) and those that are not (stored in the pids set).
+enum class CollectPidsStatus {
+    kSuccess,
+    kNoCgroups,
+    kNoProcsFile,
+    kNoProcsAccess,
+    kInvalidProcsFile
+};
+
+struct CollectPidsResult {
+    enum CollectPidsStatus status;
+    int processes;
     std::set<pid_t> pgids;
-    pgids.emplace(initialPid);
     std::set<pid_t> pids;
-    int processes = 0;
+};
 
-    std::unique_ptr<FILE, decltype(&fclose)> fd(nullptr, fclose);
+// Collect all the process group IDs and process IDs associated with the cgroup identified by the function arguments.
+static CollectPidsResult CollectPids(const char* hierarchy_root, uid_t uid, int initialPid) {
+    CollectPidsResult result;
+    result.pgids.emplace(initialPid);
+    result.processes = 1;
 
-    if (CgroupsAvailable()) {
-        auto path = ConvertUidPidToPath(cgroup, uid, initialPid) + PROCESSGROUP_CGROUP_PROCS_FILE;
-        fd.reset(fopen(path.c_str(), "re"));
-        if (!fd) {
-            if (errno == ENOENT) {
-                // This happens when process is already dead
-                return 0;
-            }
-            PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
-                          << initialPid;
-            return -1;
+    if (!CgroupsAvailable()) {
+        result.status = CollectPidsStatus::kNoCgroups;
+        return result;
+    }
+
+    const std::string path =
+            ConvertUidPidToPath(hierarchy_root, uid, initialPid) + PROCESSGROUP_CGROUP_PROCS_FILE;
+    std::unique_ptr<FILE, decltype(&fclose)> fd(fopen(path.c_str(), "re"), fclose);
+    if (!fd) {
+        if (errno == ENOENT) {
+            // This happens when process is already dead
+            result.status = CollectPidsStatus::kNoProcsFile;
+            return result;
         }
-        pid_t pid;
-        bool file_is_empty = true;
-        while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
-            processes++;
-            file_is_empty = false;
-            if (pid == 0) {
-                // Should never happen...  but if it does, trying to kill this
-                // will boomerang right back and kill us!  Let's not let that happen.
-                LOG(WARNING)
-                        << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
-                continue;
-            }
-            pid_t pgid = getpgid(pid);
-            if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
-            if (pgid == pid) {
-                pgids.emplace(pid);
-            } else {
-                pids.emplace(pid);
-            }
+        PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
+                      << initialPid;
+        result.status = CollectPidsStatus::kNoProcsAccess;
+        return result;
+    }
+    pid_t pid;
+    while (fscanf(fd.get(), "%d\n", &pid) == 1) {
+        if (pid <= 0) {
+            // Should never happen.
+            LOG(WARNING) << "Encountered invalid PID in cgroup.procs: " << pid;
+            continue;
         }
-        if (!file_is_empty) {
-            // Erase all pids that will be killed when we kill the process groups.
-            for (auto it = pids.begin(); it != pids.end();) {
-                pid_t pgid = getpgid(*it);
-                if (pgids.count(pgid) == 1) {
-                    it = pids.erase(it);
-                } else {
-                    ++it;
-                }
-            }
+        if (pid != initialPid) {
+            result.processes++;
+        }
+        pid_t pgid = getpgid(pid);
+        if (pgid <= 0) {
+            PLOG(ERROR) << "getpgid(" << pid << ") failed";
+        } else if (pgid == pid) {
+            result.pgids.emplace(pid);
+        } else {
+            result.pids.emplace(pid);
+        }
+    }
+    // Erase all pids that will be killed when we kill the process groups.
+    for (auto it = result.pids.begin(); it != result.pids.end();) {
+        if (result.pgids.find(getpgid(*it)) != result.pgids.end()) {
+            it = result.pids.erase(it);
+        } else {
+            ++it;
         }
     }
 
+    result.status =
+            feof(fd.get()) ? CollectPidsStatus::kSuccess : CollectPidsStatus::kInvalidProcsFile;
+    return result;
+}
+
+// Returns number of processes killed on success
+// Returns 0 if there are no processes in the process cgroup left to kill
+// Returns -1 on error
+static int DoKillProcessGroupOnce(const char* hierarchy_root, uid_t uid, int initialPid, int signal) {
+    // We separate all of the pids in the cgroup into those pids that are also the leaders of
+    // process groups (stored in the pgids set) and those that are not (stored in the pids set).
+
+    const auto result = CollectPids(hierarchy_root, uid, initialPid);
+    switch (result.status) {
+        case CollectPidsStatus::kSuccess:
+        case CollectPidsStatus::kNoCgroups:
+        case CollectPidsStatus::kInvalidProcsFile:
+            break;
+        case CollectPidsStatus::kNoProcsFile:
+            return 0;
+        case CollectPidsStatus::kNoProcsAccess:
+            return -1;
+    }
+
     // Kill all process groups.
-    for (const auto pgid : pgids) {
+    for (const auto pgid : result.pgids) {
         LOG(VERBOSE) << "Killing process group " << -pgid << " in uid " << uid
                      << " as part of process cgroup " << initialPid;
 
@@ -443,7 +477,7 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
     }
 
     // Kill remaining pids.
-    for (const auto pid : pids) {
+    for (const auto pid : result.pids) {
         LOG(VERBOSE) << "Killing pid " << pid << " in uid " << uid << " as part of process cgroup "
                      << initialPid;
 
@@ -452,7 +486,7 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
         }
     }
 
-    return (!fd || feof(fd.get())) ? processes : -1;
+    return result.status != CollectPidsStatus::kInvalidProcsFile ? result.processes : -1;
 }
 
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
