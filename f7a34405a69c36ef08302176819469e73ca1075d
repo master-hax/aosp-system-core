@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a2f2aed_c78baf72",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94057fc7_1a9d798b",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 100,
+        "endChar": 12
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fe9f5d3b_bb5825ca",
@@ -240,6 +264,30 @@
       "side": 1,
       "message": "Either way it should be in parser_v3 since it\u0027s specific to v3 parsing. writer_v3 includes parser_v3.h.\n\nBut I still think it can be private: CowParserV3::Parse() calls ReadResumeBuffer. Just store the resume points in the parser so that the writer can copy them over. Then it never has to re-read them in.",
       "parentUuid": "7a3e8910_66c7c111",
+      "range": {
+        "startLine": 197,
+        "startChar": 79,
+        "endLine": 197,
+        "endChar": 92
+      },
+      "revId": "f7a34405a69c36ef08302176819469e73ca1075d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fac7d8f_cb75021f",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 18
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ec560a5_2968a363",
       "range": {
         "startLine": 197,
         "startChar": 79,

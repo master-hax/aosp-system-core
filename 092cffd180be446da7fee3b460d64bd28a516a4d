@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "78dab12a_ec47d93f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcee592b_16c6b786",
+      "revId": "092cffd180be446da7fee3b460d64bd28a516a4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5e24d0a8_b3683b96",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "898a14ff_c687980a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e24d0a8_b3683b96",
+      "revId": "092cffd180be446da7fee3b460d64bd28a516a4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ade056b6_5a2d139a",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-11-09T01:03:48Z",
       "side": 1,
       "message": "CHECK_EQ(resume_points_.size(), header_.resume_buffer_size);\n\nOr, _LE, and then adjust the write size below. We don\u0027t want to read past the in-memory buffer or write past the on-disk buffer.",
+      "revId": "092cffd180be446da7fee3b460d64bd28a516a4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b18a5f8_7490345a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-09T19:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ade056b6_5a2d139a",
       "revId": "092cffd180be446da7fee3b460d64bd28a516a4d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
