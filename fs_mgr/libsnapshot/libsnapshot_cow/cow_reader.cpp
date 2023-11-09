@@ -24,6 +24,7 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <zlib.h>
 
@@ -271,37 +272,68 @@ bool CowReader::PrepMergeOps() {
     auto block_map = std::make_unique<std::unordered_map<uint32_t, int>>();
     size_t num_seqs = 0;
     size_t read;
+    switch (header_.prefix.major_version) {
+        case 1:
+        case 2:
+            for (size_t i = 0; i < ops_->size(); i++) {
+                auto& current_op = ops_->data()[i];
 
-    for (size_t i = 0; i < ops_->size(); i++) {
-        auto& current_op = ops_->data()[i];
+                if (current_op.type == kCowSequenceOp) {
+                    size_t seq_len = current_op.data_length / sizeof(uint32_t);
 
-        if (current_op.type == kCowSequenceOp) {
-            size_t seq_len = current_op.data_length / sizeof(uint32_t);
+                    merge_op_blocks->resize(merge_op_blocks->size() + seq_len);
+                    if (!GetRawBytes(&current_op, &merge_op_blocks->data()[num_seqs],
+                                     current_op.data_length, &read)) {
+                        PLOG(ERROR) << "Failed to read sequence op!";
+                        return false;
+                    }
+                    for (size_t j = num_seqs; j < num_seqs + seq_len; j++) {
+                        seq_ops_set.insert(merge_op_blocks->data()[j]);
+                    }
+                    num_seqs += seq_len;
+                }
 
-            merge_op_blocks->resize(merge_op_blocks->size() + seq_len);
-            if (!GetRawBytes(&current_op, &merge_op_blocks->data()[num_seqs],
-                             current_op.data_length, &read)) {
-                PLOG(ERROR) << "Failed to read sequence op!";
-                return false;
+                if (IsMetadataOp(current_op)) {
+                    continue;
+                }
+
+                // Sequence ops must be the first ops in the stream.
+                if (seq_ops_set.empty() && IsOrderedOp(current_op)) {
+                    merge_op_blocks->emplace_back(current_op.new_block);
+                } else if (seq_ops_set.count(current_op.new_block) == 0) {
+                    other_ops.push_back(current_op.new_block);
+                }
+                block_map->insert({current_op.new_block, i});
             }
-            for (size_t j = num_seqs; j < num_seqs + seq_len; j++) {
-                seq_ops_set.insert(merge_op_blocks->data()[j]);
+            break;
+        case 3:
+            CHECK_EQ(header_.sequence_buffer_size % sizeof(uint32_t), 0);
+            // read sequence ops data
+            merge_op_blocks->resize(header_.sequence_buffer_size / sizeof(uint32_t));
+            if (!android::base::ReadFullyAtOffset(fd_, merge_op_blocks->data(),
+                                                  header_.sequence_buffer_size,
+                                                  GetSequenceOffset(header_))) {
+                PLOG(ERROR) << "failed to read sequence buffer";
             }
-            num_seqs += seq_len;
-        }
-
-        if (IsMetadataOp(current_op)) {
-            continue;
-        }
-
-        // Sequence ops must be the first ops in the stream.
-        if (seq_ops_set.empty() && IsOrderedOp(current_op)) {
-            merge_op_blocks->emplace_back(current_op.new_block);
-        } else if (seq_ops_set.count(current_op.new_block) == 0) {
-            other_ops.push_back(current_op.new_block);
-        }
-        block_map->insert({current_op.new_block, i});
+            for (auto& i : *merge_op_blocks) {
+                seq_ops_set.insert(i);
+            }
+            // read ordered op data
+            for (size_t i = 0; i < ops_->size(); i++) {
+                auto& current_op = ops_->data()[i];
+                // Sequence ops must be the first ops in the stream.
+                if (seq_ops_set.empty()) {
+                    merge_op_blocks->emplace_back(current_op.new_block);
+                } else if (seq_ops_set.count(current_op.new_block) == 0) {
+                    other_ops.push_back(current_op.new_block);
+                }
+                block_map->insert({current_op.new_block, i});
+            }
+            break;
+        default:
+            break;
     }
+
     for (auto block : *merge_op_blocks) {
         if (block_map->count(block) == 0) {
             LOG(ERROR) << "Invalid Sequence Ops. Could not find Cow Op for new block " << block;
