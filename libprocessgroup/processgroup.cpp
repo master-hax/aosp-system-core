@@ -457,16 +457,6 @@ static int DoKillProcessGroupOnce(const char* hierarchy_root, uid_t uid, int ini
     // process groups (stored in the pgids set) and those that are not (stored in the pids set).
 
     const auto result = CollectPids(hierarchy_root, uid, initialPid);
-    switch (result.status) {
-        case CollectPidsStatus::kSuccess:
-        case CollectPidsStatus::kNoCgroups:
-        case CollectPidsStatus::kInvalidProcsFile:
-            break;
-        case CollectPidsStatus::kNoProcsFile:
-            return 0;
-        case CollectPidsStatus::kNoProcsAccess:
-            return -1;
-    }
 
     // Kill all process groups.
     for (const auto pgid : result.pgids) {
@@ -488,7 +478,7 @@ static int DoKillProcessGroupOnce(const char* hierarchy_root, uid_t uid, int ini
         }
     }
 
-    return result.status != CollectPidsStatus::kInvalidProcsFile ? result.processes : -1;
+    return result.processes;
 }
 
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
