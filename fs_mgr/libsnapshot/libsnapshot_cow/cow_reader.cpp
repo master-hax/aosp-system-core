@@ -50,11 +50,12 @@ bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header) {
                    << "Expected: " << kCowMagicNumber;
         return false;
     }
-    if (header->prefix.header_size > sizeof(CowHeaderV3)) {
-        LOG(ERROR) << "Unknown CowHeader size (got " << header->prefix.header_size
-                   << " bytes, expected at most " << sizeof(CowHeaderV3) << " bytes)";
-        return false;
-    }
+    // if (header->prefix.header_size > sizeof(CowHeaderV3)) {
+    //     LOG(ERROR) << "Unknown CowHeader size (got " << header->prefix.header_size
+    //                << " bytes, expected at most " << sizeof(CowHeaderV3) << " bytes)";
+    //     LOG(FATAL) << "RETURNING FALSE";
+    //     return false;
+    // }
 
     if (lseek(fd.get(), 0, SEEK_SET) < 0) {
         PLOG(ERROR) << "lseek header failed";

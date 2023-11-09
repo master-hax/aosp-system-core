@@ -70,7 +70,7 @@ std::unique_ptr<CowReader> Snapuserd::CloneReaderForWorker() {
 }
 
 bool Snapuserd::CommitMerge(int num_merge_ops) {
-    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
     ch->num_merge_ops += num_merge_ops;
 
     if (read_ahead_feature_ && read_ahead_ops_.size() > 0) {
@@ -287,7 +287,7 @@ void Snapuserd::CheckMergeCompletionStatus() {
         return;
     }
 
-    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
 
     SNAP_LOG(INFO) << "Merge-status: Total-Merged-ops: " << ch->num_merge_ops
                    << " Total-data-ops: " << reader_->get_num_total_data_ops();

@@ -76,7 +76,7 @@ std::unique_ptr<CowReader> SnapshotHandler::CloneReaderForWorker() {
 }
 
 void SnapshotHandler::UpdateMergeCompletionPercentage() {
-    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
     merge_completion_percentage_ = (ch->num_merge_ops * 100.0) / reader_->get_num_total_data_ops();
 
     SNAP_LOG(DEBUG) << "Merge-complete %: " << merge_completion_percentage_
@@ -89,7 +89,7 @@ void SnapshotHandler::UpdateMergeCompletionPercentage() {
 }
 
 bool SnapshotHandler::CommitMerge(int num_merge_ops) {
-    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
     ch->num_merge_ops += num_merge_ops;
 
     if (scratch_space_) {
@@ -151,7 +151,7 @@ bool SnapshotHandler::CheckMergeCompletionStatus() {
         return false;
     }
 
-    struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+    struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
 
     SNAP_LOG(INFO) << "Merge-status: Total-Merged-ops: " << ch->num_merge_ops
                    << " Total-data-ops: " << reader_->get_num_total_data_ops();
@@ -263,7 +263,7 @@ bool SnapshotHandler::MmapMetadata() {
     } else {
         mapped_addr_ = mmap(NULL, total_mapped_addr_length_, PROT_READ | PROT_WRITE,
                             MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-        struct CowHeader* ch = reinterpret_cast<struct CowHeader*>(mapped_addr_);
+        struct CowHeaderV3* ch = reinterpret_cast<struct CowHeaderV3*>(mapped_addr_);
         ch->num_merge_ops = header.num_merge_ops;
     }
 
