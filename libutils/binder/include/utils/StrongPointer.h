@@ -98,6 +98,14 @@ public:
 
     void clear();
 
+    // Releases the ownership of the managed object, if any. The caller is now responsible for
+    // managing it.
+    [[nodiscard]] inline T* release() noexcept {
+        auto ret = m_ptr;
+        m_ptr = nullptr;
+        return ret;
+    }
+
     // Accessors
 
     inline T&       operator* () const     { return *m_ptr; }
