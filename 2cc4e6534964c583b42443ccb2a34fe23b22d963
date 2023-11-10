@@ -16,6 +16,23 @@
       "message": "Will merge after upstream commit https://github.com/llvm/llvm-project/pull/71703",
       "revId": "2cc4e6534964c583b42443ccb2a34fe23b22d963",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83d191ba_468f2a64",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-10T21:22:33Z",
+      "side": 1,
+      "message": "(defer to the scudo folks...)",
+      "revId": "2cc4e6534964c583b42443ccb2a34fe23b22d963",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
