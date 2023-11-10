@@ -195,6 +195,24 @@
       "parentUuid": "6fb14ea3_9afc8ef8",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71f3c00d_a46ab670",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T21:43:03Z",
+      "side": 1,
+      "message": "oh, thanks. Can you add a test case too? 😄 Maybe also add \"You should not assume you have exclusive ownership of this object, other sp\u003c\u003e may still point to it\".",
+      "parentUuid": "f22267a4_6faa9a24",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
