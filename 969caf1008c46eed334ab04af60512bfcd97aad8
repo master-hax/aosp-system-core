@@ -69,6 +69,24 @@
       "parentUuid": "b4267800_556a3d7c",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d74f5fbf_5bc6dcba",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T20:53:18Z",
+      "side": 1,
+      "message": "btw - you saw the cflag you can set to migrate to sp\u003cT\u003e::make, right? 😄 ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION - you should set this!\n\nAnyway, there is no std::shared_ptr::release. \u0027release\u0027 often carries the connotation that you now own the object, which is not true here, so I think there is some opportunity for confusion here.\n\nYou have the code now:\n\n```\n    sp\u003cgui::IScreenCaptureListener\u003e listener \u003d\n            sp\u003cScreenCaptureListenerWrapper\u003e::make(env, consumerObj);\n    listener-\u003eincStrong((void*)nativeCreateScreenCaptureListener);\n    return reinterpret_cast\u003cjlong\u003e(listener.get());\n```\n\nwith this change, it could be changed to:\n\n```\n    return reinterpret_cast\u003cjlong\u003e(sp\u003cScreenCaptureListenerWrapper\u003e::make(env, consumerObj).release());\n```\n\nOne downside actually is that you\u0027d lose the debug information \u0027(void*) nativeCreateScreenCaptureListener\u0027, but that seems okay. Also, if you use this API, you\u0027ll no longer have matching \u0027incStrong\u0027 and \u0027decStrong\u0027, which I honestly see as the biggest clarity issue - you have to know you are pairing decStrong with incStrong in the constructor.\n\nDo you think there\u0027s some other more explicit name we could use? I think the code I quoted above with incStrong and make is probably better than a shortcut - fewer things to think about at the cost of a few lines of code, but if you feel strongly about adding this API, I think it needs more docs, bigger name to distinguish it from \u0027release\u0027, and maybe add a test as well?\n\nbut yeah, I am not convinced we should encourage this type of thing, as necessary as it is. WDYT?",
+      "parentUuid": "03c81f43_63d70f37",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
