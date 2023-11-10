@@ -51,6 +51,24 @@
       "message": "This is only releasing one refcount of ownership. Maybe \u0027releaseOne\u0027 or similar? Or document more. In the commit message, you say instead of running ~sp. Of course, it\u0027s unsafe in generaly to call \u0027delete ret\u0027. You must call \u0027ret-\u003edecStrong()\u0027 because there may be something else that owns it. Or were you thinking something else?\n\nDo you have the case where you want to use this, so I can see what you mean? I can see how this API would be useful, but it\u0027s also probably better to avoid managing ownership like this.",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03c81f43_63d70f37",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-10T20:42:10Z",
+      "side": 1,
+      "message": "I called it `release()` because that\u0027s what `std::unique_ptr` calls it. It\u0027s on a specific sp\u003c\u003e, so I\u0027m not sure releaseOne would add much additional clarity?\n\nAs for usage, yeah any place we need to store a shared pointer in a jlong as a broadly common example. I want to migrate to using sp\u003cT\u003e::make() as a general rule, but then hit the issue with this missing\n\nExamples:\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/jni/android_graphics_RenderNode.cpp;drc\u003dcab4afeb64bbc6280990b34bd55270b19218ac04;l\u003d61\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/jni/Gainmap.cpp;drc\u003db1c20eea9e53c2ae1147ce44ed25e524a4e51cc1;l\u003d62\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/jni/android_window_ScreenCapture.cpp;drc\u003d20ca02e27015e8ae53f4283500fb20933d55053c;l\u003d239",
+      "parentUuid": "b4267800_556a3d7c",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
