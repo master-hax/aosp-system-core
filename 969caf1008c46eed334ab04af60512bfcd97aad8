@@ -105,6 +105,24 @@
       "parentUuid": "d74f5fbf_5bc6dcba",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "948c742d_c3b1889c",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T21:07:36Z",
+      "side": 1,
+      "message": "You can still do:\n\n`A* a \u003d new A(); a-\u003eincStrong();` with ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION\n\nThe only thing you can\u0027t do is use `sp(T* other);  // NOLINT(implicit)`. Instead, you would have to use `sp\u003cT\u003e::fromExisting(T* other)` which is the same, except if \u0027other\u0027 has zero refcounts at that point (it is actually unowned), it will abort.\n\nor if you have a code case where you get an sp and you need to take ownership from an sp\u003c\u003e, could you share this case as well? (I think https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/jni/Gainmap.cpp;l\u003d62;drc\u003db1c20eea9e53c2ae1147ce44ed25e524a4e51cc1 needs the extra atomic incStrong usage with or without this change).\n\n\u003e but if you feel strongly about adding this API, I think it needs more docs, bigger name to distinguish it from \u0027release\u0027, and maybe add a test as well?",
+      "parentUuid": "268f1145_7026d056",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
