@@ -141,6 +141,24 @@
       "parentUuid": "948c742d_c3b1889c",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26ad9f37_9e22a003",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T21:28:38Z",
+      "side": 1,
+      "message": "I think it keeps the sp\u003c\u003e intact here:\nhttps://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/hwui/Bitmap.h;l\u003d206;drc\u003dac175cc44ff40634aa9b8d8fb15cb5dd94ab8285\n\nright? So - after you call Gainmap_extractFromBitmap, both the Bitmap and the new Java Gainmap will be pointing to the same sp\u003c\u003e? So, before you have one refcount, and you must come up with another one? So I don\u0027t see a case where sp\u003cT\u003e::fromExisting wouldn\u0027t work.\n\nIt\u0027s unfortunate it would require an extra allocation to use \u0027struct MyJniObj { sp\u003cT\u003e t; }\u0027 so the JNI layer doesn\u0027t have to get involved with RefBase implementation details.\n\n\u003e Yeah but then I have to remember if RefBase\n\nMore APIs is strictly more complicated and more things people need to learn about to use in Android. An API being simpler doesn\u0027t mean we should add it - it\u0027s still more APIs. I think:\n1. we really don\u0027t want people using RefBase like this (or honestly using RefBase at all if possible - all the gotchas with internal refcounts..).\n2. we can already express this behavior with the existing APIs (pending discussion on Gainmap)\n\nSo I really am not convinced on this. That being said, I\u0027m also not totally opposed to the API. The situation here is beyond horrible already, so I don\u0027t feel like I can take the high-road position the excellent std::shared_ptr authors took by not including anything remotely similar to \u0027release\u0027 in their API 😄 - that is - I\u0027d prefer to keep everything behind managed pointers where the (already unfortunately VERY leaky) type system prevents mistakes, but if you really want it, okay 😊\n\nAnyway, if \u0027release\u0027 is used with other \u0027shared\u0027 things, then I wouldn\u0027t ask you to change the name, but I think we should still explicitly document how this is only one ref count, the client needs to manually call decStrong, it\u0027s not exclusive ownership. Also, add to the StrongPointer_test.cpp.",
+      "parentUuid": "394bb21b_b164b4bb",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
