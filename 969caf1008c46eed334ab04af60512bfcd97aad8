@@ -87,6 +87,24 @@
       "parentUuid": "03c81f43_63d70f37",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "268f1145_7026d056",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-10T20:59:54Z",
+      "side": 1,
+      "message": "\u003e Anyway, there is no std::shared_ptr::release. \u0027release\u0027 often carries the connotation that you now own the object\n\nYeah but that\u0027s because shared_ptr is an external refcount system, which StrongPointer is not.\n\n\u003e you have to know you are pairing decStrong with incStrong in the constructor.\n\nYeah but that\u0027s very well defined and very explicit since the type itself is the one doing the refcounting, not sp\u003c\u003e (unlike std::shared_ptr)\n\n\u003e One downside actually is that you\u0027d lose the debug information \u0027(void*) nativeCreateScreenCaptureListener\u0027, but that seems okay. \n\nIt\u0027s a no-op on LightRefBase which is all my chunk of sp\u003c\u003e usages cares about 😊\n\n\u003e but yeah, I am not convinced we should encourage this type of thing, as necessary as it is. WDYT?\n\nIt\u0027s pretty silly to force me to pay for 2 atomics I don\u0027t need, no? That\u0027s a pretty big discouragement to using `ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION`",
+      "parentUuid": "d74f5fbf_5bc6dcba",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
