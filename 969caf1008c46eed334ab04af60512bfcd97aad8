@@ -177,6 +177,24 @@
       "parentUuid": "26ad9f37_9e22a003",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f22267a4_6faa9a24",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-10T21:41:13Z",
+      "side": 1,
+      "message": "yes they point to the same instance, but there\u0027s ref\u003d2 because there\u0027s 2 different sp\u003c\u003e instances (the one on the stack and the one on Bitmap)\n\n\u003e but I think we should still explicitly document how this is only one ref count\n\nI tweaked the docs already to say you have to call decStrong",
+      "parentUuid": "6fb14ea3_9afc8ef8",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
