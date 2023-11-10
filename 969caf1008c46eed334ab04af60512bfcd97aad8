@@ -159,6 +159,24 @@
       "parentUuid": "394bb21b_b164b4bb",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fb14ea3_9afc8ef8",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T21:29:05Z",
+      "side": 1,
+      "message": "correction: both the Bitmap and the new Java Gainmap will be pointing to the same REFBASE INSTANCE?",
+      "parentUuid": "26ad9f37_9e22a003",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
