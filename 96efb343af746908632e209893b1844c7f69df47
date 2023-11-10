@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "594b9e46_3d6bb45a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-10T17:34:30Z",
+      "side": 1,
+      "message": "This isn\u0027t enough for the cow estimator though, right? I think the v3 estimator should take a struct/tuple/string or something that can pack the right parameters in.",
+      "revId": "96efb343af746908632e209893b1844c7f69df47",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
