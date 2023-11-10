@@ -22,6 +22,30 @@
       },
       "revId": "7bdb1537b3c18b42097ab0ea4cb8016a7f73ffeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2273c695_7ba4d256",
+        "filename": "init/security.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-11-10T20:56:38Z",
+      "side": 1,
+      "message": "Good point. Let me resend a new version",
+      "parentUuid": "eecce752_6545e214",
+      "range": {
+        "startLine": 125,
+        "startChar": 68,
+        "endLine": 125,
+        "endChar": 75
+      },
+      "revId": "7bdb1537b3c18b42097ab0ea4cb8016a7f73ffeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
