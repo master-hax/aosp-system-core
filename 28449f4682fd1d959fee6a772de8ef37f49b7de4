@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd1ac3d6_34854351",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-10T17:44:21Z",
+      "side": 1,
+      "message": "I can\u0027t figure out what this calculation is doing... but I do see that v2 writer does it as well. Please add a :TODO: here to embed this data in the v3 format way.",
+      "revId": "28449f4682fd1d959fee6a772de8ef37f49b7de4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
