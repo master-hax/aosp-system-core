@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7aa3a706_d9347114",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T20:31:16Z",
+      "side": 1,
+      "message": "This is only releasing one refcount of ownership.\n\nCall \u0027releaseOne\u0027 and add docs a bit, either on the method or in the Strong",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4267800_556a3d7c",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-10T20:31:16Z",
+      "side": 1,
+      "message": "This is only releasing one refcount of ownership. Maybe \u0027releaseOne\u0027 or similar? Or document more. In the commit message, you say instead of running ~sp. Of course, it\u0027s unsafe in generaly to call \u0027delete ret\u0027. You must call \u0027ret-\u003edecStrong()\u0027 because there may be something else that owns it. Or were you thinking something else?\n\nDo you have the case where you want to use this, so I can see what you mean? I can see how this API would be useful, but it\u0027s also probably better to avoid managing ownership like this.",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
