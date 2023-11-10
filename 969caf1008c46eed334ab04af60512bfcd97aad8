@@ -123,6 +123,24 @@
       "parentUuid": "268f1145_7026d056",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "394bb21b_b164b4bb",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-10T21:14:22Z",
+      "side": 1,
+      "message": "\u003e I think https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/libs/hwui/jni/Gainmap.cpp;l\u003d62;drc\u003db1c20eea9e53c2ae1147ce44ed25e524a4e51cc1 needs the extra atomic incStrong usage with or without this change\n\nIt wouldn\u0027t, the local sp\u003c\u003e already did the incStrong when it was constructed\n\n\u003e You can still do: `A* a \u003d new A(); a-\u003eincStrong();` with ANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION\n\nYeah but then I have to remember if RefBase initializes with refcount\u003d0 or refcount\u003d1 which is more error prone than a blanket rule of \"only use sp\u003cT\u003e::make()\" and then if I have an sp\u003c\u003e I always know I have an owned ref count, and can just .release() if I need to pass ownership to a jlong or a C callback or whatever.\n\n\u003e bigger name to distinguish it from \u0027release\u0027\n\nStill not following why it needs a different name? It\u0027s the same as unique_ptr? That is, the RAII wrapper stops managing it, and you now have to. See also unique_fd::release() https://cs.android.com/android/platform/superproject/+/master:system/libbase/include/android-base/unique_fd.h;drc\u003d7bc8db18d96e9c76d72aefe16826981fbf44fba4;l\u003d100\n\nThis is a pretty common pattern for RAII owning classes. sk_sp\u003c\u003e also has this and also calls it release(): https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:external/skia/include/core/SkRefCnt.h;l\u003d324",
+      "parentUuid": "948c742d_c3b1889c",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
