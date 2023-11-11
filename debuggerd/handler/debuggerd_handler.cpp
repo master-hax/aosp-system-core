@@ -52,6 +52,11 @@
 
 #include "handler/fallback.h"
 
+#include <android-base/stringprintf.h>
+#include <android-base/parseint.h>
+using ::android::base::ParseInt;
+#define MAX_CMD_NAME_LEN (128)
+
 using ::android::base::ParseBool;
 using ::android::base::ParseBoolResult;
 using ::android::base::Pipe;
@@ -114,6 +119,176 @@ static bool is_permissive_mte() {
          property_parse_bool(process_sysprop_name) ||
          (permissive_env && ParseBool(permissive_env) == ParseBoolResult::kTrue);
 }
+
+static bool get_cmd_name(char* buf, size_t len) {
+  unique_fd fd(open("/proc/self/cmdline", O_RDONLY | O_CLOEXEC));
+  if (fd == -1) {
+    return false;
+  }
+
+  ssize_t rc = read(fd, buf, len);
+  if (rc == -1) {
+    return false;
+  } else if (rc == 0) {
+    // Should never happen?
+    return false;
+  }
+
+  return true;
+}
+
+static int property_parse_int(const char* name) {
+  const prop_info* pi = __system_property_find(name);
+  if (!pi) return 0;
+  int cookie = 0;
+  __system_property_read_callback(
+      pi,
+      [](void* cookie, const char*, const char* value, uint32_t) {
+        if(!ParseInt(value, reinterpret_cast<int*>(cookie)))
+          *reinterpret_cast<int*>(cookie) = 0;
+      },
+      &cookie);
+  return cookie;
+}
+
+static bool is_failover_mte() {
+  // Environment variable for testing or local use from shell.
+  char* failover_env = getenv("MTE_FAILOVER");
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char process_sysprop_name[512];  
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "debug.mte.failover.process.%s",
+                             cmd_name);       
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "use get_cmd_name to get prop name %s", process_sysprop_name);
+  }
+  // DO NOT REPLACE this with GetBoolProperty. That uses std::string which allocates, so it is
+  // not async-safe (and this functiong gets used in a signal handler).
+  return property_parse_bool(process_sysprop_name) ||
+         property_parse_bool("debug.mte.failover") ||
+         property_parse_bool("persist.device_config.memory_safety_native.failover.default") ||      
+         (failover_env && ParseBool(failover_env) == ParseBoolResult::kTrue);
+}
+
+//must in (40,64)
+//bionic libc use 40: bionic/libc/platform/bionic/reserved_signals.h
+//less than 64 without this patch: https://lwn.net/Articles/880268/
+#define MTE_MODE_SIGNAL_NONE 50
+#define MTE_MODE_SIGNAL_SYNC 51
+#define MTE_MODE_SIGNAL_ASYNC 52 
+
+int g_delay_seconds = 0;
+
+static bool change_mte_mode(int tcf){
+    int tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0);
+    if (tagged_addr_ctrl < 0) {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "failed to PR_GET_TAGGED_ADDR_CTRL, check if mte is supported");
+      return false;
+    }
+    int origin_tcf = (tagged_addr_ctrl & ~PR_MTE_TCF_MASK);
+    if(tcf == origin_tcf) {
+      return true;
+    }
+    tagged_addr_ctrl = (tagged_addr_ctrl & ~PR_MTE_TCF_MASK) | tcf;
+    if (prctl(PR_SET_TAGGED_ADDR_CTRL, tagged_addr_ctrl, 0, 0, 0) < 0) {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "failed to PR_GET_TAGGED_ADDR_CTRL, check if mte is supported");
+      return false;
+    }
+    return true;
+}
+
+bool close_mte(void*){
+  return change_mte_mode(PR_MTE_TCF_NONE);
+}
+
+static void mte_mode_signal_handler(int signal_number, siginfo_t*, void*) {
+  bool result = false;
+  if(signal_number == MTE_MODE_SIGNAL_SYNC) {
+    result = change_mte_mode(PR_MTE_TCF_SYNC);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_SYNC(%d), change mte mode to sync %s", signal_number, result?"successfully":"failed");
+  } else if(signal_number == MTE_MODE_SIGNAL_SYNC) {
+    result = change_mte_mode(PR_MTE_TCF_ASYNC);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_ASYNC(%d), change mte mode to async %s", signal_number, result?"successfully":"failed");    
+  } else if(signal_number == MTE_MODE_SIGNAL_NONE) {
+    result = change_mte_mode(PR_MTE_TCF_NONE);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_NONE(%d), change mte mode to none %s", signal_number, result?"successfully":"failed");   
+  } else {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved unknown signal(%d), do nothing", signal_number); 
+  }
+}
+
+static void mte_mode_register_handlers() {
+    //we only regist once
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigfillset(&action.sa_mask);
+    action.sa_sigaction = mte_mode_signal_handler;
+    action.sa_flags = SA_RESTART | SA_SIGINFO;
+
+    sigaction(MTE_MODE_SIGNAL_SYNC, &action, nullptr);
+    sigaction(MTE_MODE_SIGNAL_ASYNC, &action, nullptr);
+    sigaction(MTE_MODE_SIGNAL_NONE, &action, nullptr);
+}
+
+
+void mte_mode_signal_send(int tid, int signal_number){
+  if (tgkill(__getpid(), tid, signal_number) == 0) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "send signal %d to tid(%d) success", signal_number, tid);
+  } else {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "send signal %d to tid(%d) failed", signal_number, tid); 
+  }
+}
+
+void* delay_open_mte(void *arg){
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char sysprop_name[64] = "debug.mte.failover.delayseconds";
+  char process_sysprop_name[512];  
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "%s.process.%s",
+                             sysprop_name, cmd_name);       
+    g_delay_seconds = property_parse_int(process_sysprop_name);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "delay_open_mte %s: %d", process_sysprop_name, g_delay_seconds);
+  } else {
+    g_delay_seconds = property_parse_int(sysprop_name);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "delay_open_mte %s: %d\n", sysprop_name, g_delay_seconds);    
+  }
+
+  int delay = g_delay_seconds != 0 ? g_delay_seconds : 1;
+  int target_thread = *reinterpret_cast<int*>(arg);
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "delay %d second then send signal to target thread %d", delay, target_thread);
+  sleep(delay);
+  mte_mode_signal_send(target_thread, MTE_MODE_SIGNAL_SYNC);
+  return NULL;              
+}
+
+static void stop_delay_start_mte(const char* reason) {
+  //need close mte, or we will come here constantly
+  close_mte(NULL);
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "close mte for %s", reason);
+
+  pthread_t tid;
+  int mytid = __gettid();
+  if(pthread_create(&tid, NULL, &delay_open_mte, &mytid)){
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "failed to create delay_open_mte thread for %s", reason);
+  } else{
+    pthread_detach(tid);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "create and detach delay_open_mte thread %ld for %s", tid, reason);
+  } 
+}
+
+static void init_failover_mode() {
+  mte_mode_register_handlers();
+}
+
 
 static inline void futex_wait(volatile void* ftx, int value) {
   syscall(__NR_futex, ftx, FUTEX_WAIT, value, nullptr, nullptr, 0);
@@ -712,6 +887,12 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     info->si_signo = BIONIC_SIGNAL_ART_PROFILER;
     resend_signal(info);
   }
+  else if (info->si_signo == SIGSEGV &&
+           (info->si_code == SEGV_MTESERR || info->si_code == SEGV_MTEAERR) &&
+           is_failover_mte()) {
+        stop_delay_start_mte("is_failover_mte");
+        pthread_mutex_unlock(&crash_mutex);               
+  }
 #endif
   else {
     // Resend the signal, so that either the debugger or the parent's waitpid sees it.
@@ -757,6 +938,8 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   action.sa_flags |= SA_EXPOSE_TAGBITS;
 
   debuggerd_register_handlers(&action);
+
+  init_failover_mode();
 }
 
 // When debuggerd's signal handler is the first handler called, it's great at
