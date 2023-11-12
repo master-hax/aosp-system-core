@@ -826,6 +826,8 @@ class SnapshotManager final : public ISnapshotManager {
     bool DeleteDeviceIfExists(const std::string& name,
                               const std::chrono::milliseconds& timeout_ms = {});
 
+    void SetReadAheadSize(const std::string& entry_block_device, off64_t size_kb);
+
     android::dm::IDeviceMapper& dm_;
     std::unique_ptr<IDeviceInfo> device_;
     std::string metadata_dir_;

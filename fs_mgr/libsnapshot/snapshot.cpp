@@ -30,6 +30,7 @@
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
@@ -82,6 +83,8 @@ using RepeatedPtrField = google::protobuf::RepeatedPtrField<T>;
 using std::chrono::duration_cast;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
+using android::base::StringPrintf;
+using android::base::Realpath;
 
 static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
         "/metadata/ota/snapshot-boot-without-slot-switch";
@@ -1747,6 +1750,9 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
                                base_path_merge;
                 snapuserd_argv->emplace_back(std::move(message));
             }
+
+            SetReadAheadSize(cow_image_device, 16);
+            SetReadAheadSize(source_device, 16);
 
             // Do not attempt to connect to the new snapuserd yet, it hasn't
             // been started. We do however want to wait for the misc device
@@ -4404,6 +4410,37 @@ bool SnapshotManager::PrepareDeviceToBootWithoutSnapshot() {
         return false;
     }
     return true;
+}
+
+void SnapshotManager::SetReadAheadSize(const std::string& entry_block_device, off64_t size_kb) {
+    std::string block_device;
+    if (!Realpath(entry_block_device, &block_device)) {
+        PLOG(ERROR) << "Failed to realpath " << entry_block_device;
+        return;
+    }
+
+    static constexpr std::string_view kDevBlockPrefix("/dev/block/");
+    if (!android::base::StartsWith(block_device, kDevBlockPrefix)) {
+        LOG(ERROR) << block_device << " is not a block device";
+        return;
+    }
+
+    std::string block_name = block_device;
+    if (android::base::StartsWith(block_device, kDevBlockPrefix)) {
+        block_name = block_device.substr(kDevBlockPrefix.length());
+    }
+    std::string sys_partition =
+        android::base::StringPrintf("/sys/class/block/%s/partition", block_name.c_str());
+    struct stat info;
+    if (lstat(sys_partition.c_str(), &info) == 0) {
+        // it has a partition like "sda12".
+        block_name += "/..";
+    }
+    std::string sys_ra = android::base::StringPrintf("/sys/class/block/%s/queue/read_ahead_kb",
+                                                         block_name.c_str());
+    std::string size = android::base::StringPrintf("%llu", (long long)size_kb);
+    android::base::WriteStringToFile(size, sys_ra.c_str());
+    LOG(INFO) << "SetReadAheadSize: Set readahead_kb: " << size << " on " << sys_ra;
 }
 
 }  // namespace snapshot

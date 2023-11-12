@@ -49,8 +49,8 @@ class UpdateVerify {
     std::condition_variable m_cv_;
 
     int kMinThreadsToVerify = 1;
-    int kMaxThreadsToVerify = 4;
-    uint64_t kThresholdSize = 512_MiB;
+    int kMaxThreadsToVerify = 2;
+    uint64_t kThresholdSize = 1_GiB;
     uint64_t kBlockSizeVerify = 1_MiB;
 
     bool IsBlockAligned(uint64_t read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
