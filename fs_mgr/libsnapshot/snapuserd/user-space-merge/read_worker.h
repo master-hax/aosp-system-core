@@ -60,6 +60,10 @@ class ReadWorker : public Worker, public IBlockServer::Delegate {
     std::string backing_store_device_;
     unique_fd backing_store_fd_;
 
+    unique_fd backing_store_direct_fd_;
+    void* aligned_addr;
+    bool direct_read_ = false;
+
     std::shared_ptr<IBlockServerOpener> block_server_opener_;
     std::unique_ptr<IBlockServer> block_server_;
 

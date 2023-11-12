@@ -31,6 +31,9 @@ using android::base::unique_fd;
 void ReadWorker::CloseFds() {
     block_server_ = {};
     backing_store_fd_ = {};
+    backing_store_direct_fd_ = {};
+    if (direct_read_)
+      free(aligned_addr);
     Worker::CloseFds();
 }
 
@@ -61,6 +64,15 @@ bool ReadWorker::ReadFromSourceDevice(const CowOperation* cow_op, void* buffer) 
     }
     SNAP_LOG(DEBUG) << " ReadFromBaseDevice...: new-block: " << cow_op->new_block
                     << " Op: " << *cow_op;
+
+    if (direct_read_ && IsBlockAligned(offset)) {
+        if (!android::base::ReadFullyAtOffset(backing_store_direct_fd_, aligned_addr, BLOCK_SZ, offset)) {
+            SNAP_PLOG(ERROR) << "O_DIRECT Read failed";
+            return false;
+        }
+        std::memcpy(buffer, aligned_addr, BLOCK_SZ);
+        return true;
+    }
     if (!android::base::ReadFullyAtOffset(backing_store_fd_, buffer, BLOCK_SZ, offset)) {
         std::string op;
         if (cow_op->type == kCowCopyOp)
@@ -198,6 +210,19 @@ bool ReadWorker::Init() {
     if (backing_store_fd_ < 0) {
         SNAP_PLOG(ERROR) << "Open Failed: " << backing_store_device_;
         return false;
+    }
+
+    backing_store_direct_fd_.reset(open(backing_store_device_.c_str(), O_RDONLY | O_DIRECT));
+    if (backing_store_direct_fd_ < 0) {
+        SNAP_PLOG(ERROR) << "Open Failed with O_DIRECT: " << backing_store_direct_fd_;
+    } else {
+        ssize_t page_size = getpagesize();
+        if (posix_memalign(&aligned_addr, page_size, page_size) < 0) {
+            SNAP_PLOG(ERROR) << "posix_memalign failed "
+                         << " page_size: " << page_size << " read_sz: " << page_size;
+        } else {
+            direct_read_ = true;
+        }
     }
 
     block_server_ = block_server_opener_->Open(this, PAYLOAD_BUFFER_SZ);
