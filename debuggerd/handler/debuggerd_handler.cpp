@@ -381,6 +381,276 @@ static bool crash_in_ignored_frames(void* context){
   return false;
 }
 
+#define MAX_CHECK_FRAME_NUM 256
+#define MAX_CHECK_FRAME_ITEM_LENGTH 256
+#define MAX_CHECK_FRAME_FILE_NUM 256
+static vector<vector<string>> g_crashes; 
+static unsigned int g_check_frame_num = 0;
+static unsigned int g_crash_cnt = 0;
+static bool g_crashes_inited = false;
+
+static bool get_check_frame_num_from_property(const char* property) {
+  g_check_frame_num = property_parse_int(property);
+  if (g_check_frame_num == 0) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "get_check_frame_num %s %d", property, g_check_frame_num);
+    return false;
+  }
+  if (g_check_frame_num > MAX_CHECK_FRAME_NUM)
+    g_check_frame_num = MAX_CHECK_FRAME_NUM;
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "get_check_frame_num %s %d", property, g_check_frame_num);
+  return true;
+}
+
+static void get_check_frame_num() {
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char process_sysprop_name[512] = "debug.mte.sigsegv.checkframes";
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "debug.mte.sigsegv.checkframes.process.%s",
+                             cmd_name);       
+  }
+  if (!get_check_frame_num_from_property(process_sysprop_name)) {
+    get_check_frame_num_from_property("debug.mte.sigsegv.checkframes");
+  }
+}
+
+static bool get_crash_file_dir(char* dir, int length) {
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    //deal with: processname=packagename:xxx, what we really need is the packagename
+    unsigned int i = 0;
+    while((cmd_name[i] != ':') && (i < strlen(cmd_name)))
+      i++;
+    if(i < strlen(cmd_name)){
+      cmd_name[i] = '\0';
+    }
+    async_safe_format_buffer(dir, length, "/data/data/%s/crash_files", cmd_name);
+    return true;
+  }
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "get_crash_file_dir get packagename failed");  
+  return false;
+}
+
+static bool create_dir(char *dir){
+  if(0 != access(dir, 0)){
+    if(0 != mkdir(dir, 0777)){
+      async_safe_format_log(ANDROID_LOG_INFO, "libc", "create_dir failed create crash dir %s", dir);
+      return false;
+    }
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "create_dir create crash dir %s", dir);
+    return true;  
+  }
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "create_dir %s exist", dir);  
+  return true;  
+}
+
+static bool get_crash_file_name(char* filename, int length) {
+  char dirname[MAX_CMD_NAME_LEN];
+  if(get_crash_file_dir(dirname, MAX_CMD_NAME_LEN) && create_dir(dirname)){
+    async_safe_format_buffer(filename, length, "%s/crash_%d.txt", dirname, g_crash_cnt);    
+    return true;     
+  }
+  return false;
+}
+
+static void store_frames(unwindstack::UnwinderFromPid *unwinder) {
+  if (g_check_frame_num == 0) {
+    return;
+  }
+  g_crashes[g_crash_cnt].clear();
+  char frames_file[512] = {0};
+  get_crash_file_name(frames_file, 512);
+  FILE *fd = fopen(frames_file, "wb");
+  if( fd == NULL){
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "store_frames failed to open file %s, frames will only store in mem", frames_file);
+  } else {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "store_frames frames will also store in file %s", frames_file);
+  }
+  unsigned int i = 0;
+  for (const auto& frame : unwinder->frames()) {
+    if (i == g_check_frame_num) {
+      break;
+    }
+    string formated_frame = unwinder->FormatFrame(frame);
+    formated_frame.erase(std::remove_if(formated_frame.begin(), formated_frame.end(), ::isspace), formated_frame.end());
+    const char *frame_str = formated_frame.c_str();
+    if(fd != NULL){
+        fprintf(fd, "%s\n", frame_str);  
+    } 
+    g_crashes[g_crash_cnt].push_back(formated_frame);
+    i++;    
+    async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "frames[%d]: %s", i, frame_str);    
+  }
+  if(fd != NULL){
+    fclose(fd);
+  }
+  g_crash_cnt = (g_crash_cnt + 1) % MAX_CHECK_FRAME_FILE_NUM;
+}
+
+static bool load_frames_from_file(char* frames_file){
+  FILE *fd = fopen(frames_file, "rb");
+  if(fd == NULL) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "load_frames_from_file failed to open file %s, only use mem frames", frames_file);
+    return false;
+  }
+  int i = 0;
+  g_crashes[g_crash_cnt].clear();
+  char tmp[MAX_CHECK_FRAME_ITEM_LENGTH];
+  memset(tmp, 0, MAX_CHECK_FRAME_ITEM_LENGTH);
+  while(fgets(tmp, MAX_CHECK_FRAME_ITEM_LENGTH, fd) != NULL){
+    int j = 0;
+    while((tmp[j] != '\n') && (j < MAX_CHECK_FRAME_ITEM_LENGTH - 1))
+      j++;
+    tmp[j] = '\0';
+    string s(tmp);
+    g_crashes[g_crash_cnt].push_back(s);
+    i++;
+    if (i == MAX_CHECK_FRAME_NUM)
+      break;
+  }
+  fclose(fd);
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "load_frames_from_file load %d frames from file %s", i, frames_file);
+  return true;
+}
+
+static bool load_frames_from_dir() {
+  char dirname[MAX_CMD_NAME_LEN];
+  if (!get_crash_file_dir(dirname, MAX_CMD_NAME_LEN))
+      return false;
+  DIR *crash_dir = opendir(dirname);
+  char crash_file[512];
+  g_crash_cnt = 0;
+  if (crash_dir) {
+    struct dirent *entry;
+    while ((entry = readdir(crash_dir)) != NULL) {
+      if (entry->d_name[0] == '.')
+        continue;
+      async_safe_format_buffer(crash_file, sizeof(crash_file),
+                                     "%s/%s", dirname, entry->d_name);
+      if (load_frames_from_file(crash_file)) {
+        g_crash_cnt++;
+      }
+      if (g_crash_cnt >= MAX_CHECK_FRAME_FILE_NUM) {
+        async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                            "load_frames_from_dir too many files in %s, just load %d files", dirname, MAX_CHECK_FRAME_FILE_NUM);
+        break;
+      }
+    }
+    closedir(crash_dir);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "load_frames_from_dir load %d files in %s",
+                            g_crash_cnt, dirname);
+  }
+  return g_crash_cnt > 0;
+}
+
+bool need_delete_crash_frame_files() {
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char process_sysprop_name[512] = "";
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "debug.mte.sigsegv.checkframes.process.%s",
+                             cmd_name);   
+    if (property_parse_int(process_sysprop_name) == 0) {
+      return true;
+    }  
+  }
+  return false;
+}
+
+void init_crash_frame_files() {
+  if(g_crashes_inited){
+    return;
+  }
+  g_crashes.clear();
+  for(int i = 0; i < MAX_CHECK_FRAME_FILE_NUM; i++){
+    vector<string> tmp;
+    g_crashes.push_back(tmp);
+  }
+  g_crash_cnt = 0;
+  if(need_delete_crash_frame_files()) {
+    char dirname[MAX_CMD_NAME_LEN];
+    if(!get_crash_file_dir(dirname, MAX_CMD_NAME_LEN)){
+      return;
+    }
+    if(0 != access(dirname, 0)){
+      return;
+    }
+    DIR *crash_dir = opendir(dirname);
+    if (crash_dir) {
+        struct dirent *entry;
+        while ((entry = readdir(crash_dir)) != NULL) {
+            if (entry->d_name[0] == '.')
+                continue;
+            char filename[512];
+            async_safe_format_buffer(filename, sizeof(filename),
+                             "%s/%s", dirname, entry->d_name); 
+            remove(filename);
+        }
+        closedir(crash_dir);
+        async_safe_format_log(ANDROID_LOG_INFO, "libc", "delete_crash_frame_files delete all files in %s", dirname);
+    }
+  } else {
+    load_frames_from_dir();
+  }
+  g_crashes_inited = true;
+}
+
+static bool check_frames(unwindstack::UnwinderFromPid* unwinder, int crash_index){
+  if(g_crashes[crash_index].size() == 0){
+    return false;
+  }
+  unsigned int i = 0;
+  for (const auto& frame : unwinder->frames()) {
+    if (i == g_check_frame_num || i == g_crashes[crash_index].size()) {
+      break;
+    }
+    string formated_frame = unwinder->FormatFrame(frame);
+    formated_frame.erase(std::remove_if(formated_frame.begin(), formated_frame.end(), ::isspace), formated_frame.end());
+    if(formated_frame != g_crashes[crash_index][i]){
+      async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "check_frames frame[%d] not match: [%s] [%s]", 
+                            i, formated_frame.c_str(), g_crashes[crash_index][i].c_str());
+      return false;
+    } else {
+      async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "crash_in_same_frames frame[%d] match: [%s] [%s]", 
+                            i, formated_frame.c_str(), g_crashes[crash_index][i].c_str());      
+    }
+    i++;
+  }
+  return true;
+}
+
+static bool crash_in_same_frames(void* context) {
+  get_check_frame_num();
+  if (g_check_frame_num == 0) {
+    return false;
+  }
+  ThreadInfo info;
+  info.pid = __getpid();
+  info.tid = __gettid();
+  info.uid = getuid();
+  info.registers.reset(unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(), context));
+  auto process_memory = unwindstack::Memory::CreateProcessMemoryCached(__getpid());
+  unwindstack::UnwinderFromPid unwinder(kMaxFrames, __getpid(), process_memory);
+  unwinder.SetRegs(info.registers.get());
+  unwinder.Unwind();
+  if (unwinder.NumFrames() == 0) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "crash_in_ignored_frames unwinder failed for thread %d\n",info.tid);
+    return false;
+  }
+  for(int i = 0; i < MAX_CHECK_FRAME_FILE_NUM; i++){
+    if(g_crashes[i].size() > 0){
+      async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "crash_in_same_frames try to match crash %d", i);
+      if(check_frames(&unwinder, i)){
+        async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "crash_in_same_frames match crash %d", i);
+        return true;
+      }
+    }
+  }
+  store_frames(&unwinder);
+  async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "crash_in_same_frames not match any crash, record it");
+  return false;  
+}
+
 static inline void futex_wait(volatile void* ftx, int value) {
   syscall(__NR_futex, ftx, FUTEX_WAIT, value, nullptr, nullptr, 0);
 }
@@ -885,6 +1155,11 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
 
   if(crash_in_ignored_frames(context)) {
     stop_delay_start_mte("crash_in_ignored_frames");
+    pthread_mutex_unlock(&crash_mutex);  
+    return;
+  }
+  if (crash_in_same_frames(context)) {
+    stop_delay_start_mte("crash_in_same_frames");
     pthread_mutex_unlock(&crash_mutex);  
     return;
   }
