@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c8dc917_d43698a7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-13T19:57:04Z",
+      "side": 1,
+      "message": "What\u0027s the motivation for this?\n\nI don\u0027t think this is a good idea unless there is some really good reason for this.",
+      "revId": "fefc5681683c29e67a61752a2207908ea38249cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
