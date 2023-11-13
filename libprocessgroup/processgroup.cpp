@@ -382,6 +382,53 @@ err:
     return false;
 }
 
+static int CollectPidsInCgroup(const std::string& cgroup_pid_subdir, std::set<pid_t>* pgids,
+                               std::set<pid_t>* pids) {
+    std::unique_ptr<FILE, decltype(&fclose)> fd(nullptr, fclose);
+    auto path = cgroup_pid_subdir + PROCESSGROUP_CGROUP_PROCS_FILE;
+    fd.reset(fopen(path.c_str(), "re"));
+    if (!fd) {
+        if (errno == ENOENT) {
+            // This happens when process is already dead
+            return 0;
+        }
+        PLOG(WARNING) << __func__ << " failed to open process cgroup " << cgroup_pid_subdir;
+        return 0;
+    }
+    int processes = 0;
+    pid_t pid = 0;
+    bool file_is_empty = true;
+    while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
+        processes++;
+        file_is_empty = false;
+        if (pid == 0) {
+            // Should never happen...  but if it does, trying to kill this
+            // will boomerang right back and kill us!  Let's not let that happen.
+            LOG(WARNING) << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
+            continue;
+        }
+        pid_t pgid = getpgid(pid);
+        if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
+        if (pgid == pid) {
+            pgids->emplace(pid);
+        } else {
+            pids->emplace(pid);
+        }
+    }
+    if (!file_is_empty) {
+        // Erase all pids that will be killed when we kill the process groups.
+        for (auto it = pids->begin(); it != pids->end();) {
+            pid_t pgid = getpgid(*it);
+            if (pgids->count(pgid) == 1) {
+                it = pids->erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+    return processes;
+}
+
 // Returns number of processes killed on success
 // Returns 0 if there are no processes in the process cgroup left to kill
 // Returns -1 on error
@@ -391,53 +438,11 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
     std::set<pid_t> pgids;
     pgids.emplace(initialPid);
     std::set<pid_t> pids;
+    pids.emplace(initialPid);
     int processes = 0;
-
-    std::unique_ptr<FILE, decltype(&fclose)> fd(nullptr, fclose);
-
     if (CgroupsAvailable()) {
-        auto path = ConvertUidPidToPath(cgroup, uid, initialPid) + PROCESSGROUP_CGROUP_PROCS_FILE;
-        fd.reset(fopen(path.c_str(), "re"));
-        if (!fd) {
-            if (errno == ENOENT) {
-                // This happens when process is already dead
-                return 0;
-            }
-            PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
-                          << initialPid;
-            return -1;
-        }
-        pid_t pid;
-        bool file_is_empty = true;
-        while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
-            processes++;
-            file_is_empty = false;
-            if (pid == 0) {
-                // Should never happen...  but if it does, trying to kill this
-                // will boomerang right back and kill us!  Let's not let that happen.
-                LOG(WARNING)
-                        << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
-                continue;
-            }
-            pid_t pgid = getpgid(pid);
-            if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
-            if (pgid == pid) {
-                pgids.emplace(pid);
-            } else {
-                pids.emplace(pid);
-            }
-        }
-        if (!file_is_empty) {
-            // Erase all pids that will be killed when we kill the process groups.
-            for (auto it = pids.begin(); it != pids.end();) {
-                pid_t pgid = getpgid(*it);
-                if (pgids.count(pgid) == 1) {
-                    it = pids.erase(it);
-                } else {
-                    ++it;
-                }
-            }
-        }
+        auto cgroup_pid_subdir = ConvertUidPidToPath(cgroup, uid, initialPid);
+        processes = CollectPidsInCgroup(cgroup_pid_subdir, &pgids, &pids);
     }
 
     // Kill all process groups.
@@ -460,7 +465,7 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
         }
     }
 
-    return (!fd || feof(fd.get())) ? processes : -1;
+    return processes;
 }
 
 static int KillProcessGroup(uid_t uid, int initialPid, int signal, int retries) {
