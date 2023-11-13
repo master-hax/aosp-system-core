@@ -248,27 +248,13 @@ static bool RemoveUidCgroups(const std::string& uid_path, bool empty_only) {
             }
 
             auto path = StringPrintf("%s/%s", uid_path.c_str(), dir->d_name);
-            if (empty_only) {
-                struct stat st;
-                auto procs_file = StringPrintf("%s/%s", path.c_str(),
-                                               PROCESSGROUP_CGROUP_PROCS_FILE);
-                if (stat(procs_file.c_str(), &st) == -1) {
-                    PLOG(ERROR) << "Failed to get stats for " << procs_file;
-                    continue;
-                }
-                if (st.st_size > 0) {
-                    // skip non-empty groups
-                    LOG(VERBOSE) << "Skipping non-empty group " << path;
-                    empty = false;
-                    continue;
-                }
-            }
-            LOG(VERBOSE) << "Removing " << path;
             if (rmdir(path.c_str()) == -1) {
                 if (errno != EBUSY) {
                     PLOG(WARNING) << "Failed to remove " << path;
                 }
                 empty = false;
+            } else {
+                LOG(VERBOSE) << "Removing " << path;
             }
         }
     }
