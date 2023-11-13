@@ -69,6 +69,24 @@
       "parentUuid": "bba0fc9e_93339a1e",
       "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82ddadd6_4bef216a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-13T23:45:54Z",
+      "side": 1,
+      "message": "using a wider type should not have any truncation issues? We only need to worry about this if we are using a narrower type",
+      "parentUuid": "81c40f17_71c81d3c",
+      "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
