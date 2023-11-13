@@ -24,8 +24,8 @@ class MockCowWriter : public ICowWriter {
     using FileDescriptor = chromeos_update_engine::FileDescriptor;
 
     MOCK_METHOD(bool, Finalize, (), (override));
-
-    MOCK_METHOD(uint64_t, GetCowSize, (), (override));
+    MOCK_METHOD(CowInfo, GetCowInfo, (), (const, override));
+    MOCK_METHOD(uint64_t, GetCowSize, (), (const, override));
 
     MOCK_METHOD(bool, AddCopy, (uint64_t, uint64_t, uint64_t), (override));
     MOCK_METHOD(bool, AddRawBlocks, (uint64_t, const void*, size_t), (override));
