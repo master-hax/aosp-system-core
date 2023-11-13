@@ -64,6 +64,10 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
             PLOG(ERROR) << "Failed to read resume buffer";
             return false;
         }
+        if (label.value() > std::numeric_limits<uint64_t>::max()) {
+            LOG(ERROR) << "label value is greater than uint64_t: " << label.value();
+            return false;
+        }
         op_index = FindResumeOp(label.value());
         if (op_index == std::nullopt) {
             LOG(ERROR) << "failed to get op index from given label: " << label.value();
@@ -82,7 +86,7 @@ bool CowParserV3::ReadResumeBuffer(borrowed_fd fd) {
                                             header_.prefix.header_size + header_.buffer_size);
 }
 
-std::optional<uint32_t> CowParserV3::FindResumeOp(const uint32_t label) {
+std::optional<uint32_t> CowParserV3::FindResumeOp(const uint64_t label) {
     for (auto& resume_point : *resume_points_) {
         if (resume_point.label == label) {
             return resume_point.op_index;
