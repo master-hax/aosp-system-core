@@ -75,14 +75,14 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
 }
 
 bool CowParserV3::ReadResumeBuffer(borrowed_fd fd) {
-    resume_points_ = std::make_shared<std::vector<ResumePoint>>(header_.resume_buffer_size);
+    resume_points_ = std::make_shared<std::vector<ResumePoint>>(header_.resume_point_count);
 
     return android::base::ReadFullyAtOffset(fd, resume_points_->data(),
-                                            header_.resume_buffer_size * sizeof(ResumePoint),
+                                            header_.resume_point_count * sizeof(ResumePoint),
                                             header_.prefix.header_size + header_.buffer_size);
 }
 
-std::optional<uint32_t> CowParserV3::FindResumeOp(const uint32_t label) {
+std::optional<uint32_t> CowParserV3::FindResumeOp(const uint64_t label) {
     for (auto& resume_point : *resume_points_) {
         if (resume_point.label == label) {
             return resume_point.op_index;
