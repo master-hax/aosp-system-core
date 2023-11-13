@@ -105,6 +105,24 @@
       "parentUuid": "82ddadd6_4bef216a",
       "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36d8859d_ce2c21bb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-13T23:48:06Z",
+      "side": 1,
+      "message": "Anyway, +2 assuming the always-true check gets dropped.\n\n(Or, write a test case w/ a 64-bit label, that would break if this code uses the wrong type)",
+      "parentUuid": "7de2b71a_eb0aadec",
+      "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
