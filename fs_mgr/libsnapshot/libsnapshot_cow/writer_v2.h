@@ -27,7 +27,16 @@ class CowWriterV2 : public CowWriterBase {
 
     bool Initialize(std::optional<uint64_t> label = {}) override;
     bool Finalize() override;
-    uint64_t GetCowSize() override;
+    CowInfo GetCowInfo() const override;
+
+    // TODO: take out once CowInfo is used
+    uint64_t GetCowSize() const override {
+        if (current_data_size_ > 0) {
+            return next_data_pos_ + sizeof(footer_);
+        } else {
+            return next_op_pos_ + sizeof(footer_);
+        }
+    }
 
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
