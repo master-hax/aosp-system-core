@@ -51,6 +51,24 @@
       "parentUuid": "e6914f25_211b7b80",
       "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81c40f17_71c81d3c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-13T23:13:58Z",
+      "side": 1,
+      "message": "I\u0027m not sure if it\u0027d help in this case, but clang has a sanitizer called UBSan (enabled by default) that catches various integer truncation and narrowing issues.",
+      "parentUuid": "bba0fc9e_93339a1e",
+      "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
