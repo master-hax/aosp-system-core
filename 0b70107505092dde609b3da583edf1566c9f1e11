@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d516d9cb_b84cb8b0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-13T23:00:20Z",
+      "side": 1,
+      "message": "This approach seems fine, but alternately, just make sure the resume point buffer is all zeroes on creation and then ignore 0 entries on readback.",
+      "revId": "0b70107505092dde609b3da583edf1566c9f1e11",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
