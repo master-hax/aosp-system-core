@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b28c4aaa_f0776f0a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-13T19:58:05Z",
+      "side": 1,
+      "message": "As with the other CL, why do this?\n\nI don\u0027t think this is a good idea, maybe for testing purposes, but not to be included in the main code.",
+      "revId": "316e1a7e8d0e41c9a855f07ad74ef3b73c8dbbfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
