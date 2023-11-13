@@ -71,6 +71,12 @@ struct CowHeaderPrefix {
     uint16_t header_size;  // size of CowHeader.
 } __attribute__((packed));
 
+struct CowInfo {
+    uint64_t cow_size;
+    uint64_t op_buffer_size;
+    uint32_t seq_buffer_size;
+};
+
 struct CowHeader {
     CowHeaderPrefix prefix;
 

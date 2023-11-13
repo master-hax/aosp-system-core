@@ -372,8 +372,10 @@ bool CowWriterV3::Finalize() {
     return Sync();
 }
 
-uint64_t CowWriterV3::GetCowSize() {
-    return next_data_pos_;
+CowInfo CowWriterV3::GetCowInfo() {
+    CowInfo info;
+    info.cow_size = next_data_pos_;
+    return info;
 }
 
 }  // namespace snapshot
