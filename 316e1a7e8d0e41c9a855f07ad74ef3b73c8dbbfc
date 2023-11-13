@@ -16,6 +16,24 @@
       "message": "As with the other CL, why do this?\n\nI don\u0027t think this is a good idea, maybe for testing purposes, but not to be included in the main code.",
       "revId": "316e1a7e8d0e41c9a855f07ad74ef3b73c8dbbfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9e6f473_c5d88d3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-13T20:01:01Z",
+      "side": 1,
+      "message": "To be clear, finding other bugs is not good motivation because there is no telling that just ignoring the first problem will not result in other crashes/failures.\n\nNow, it might be useful to enable a mode to never crash and produce as many tombstones as possible, but that really should only be in a debug mode. I would still caution that this is not the best idea though since you are likely to have other false failures.",
+      "parentUuid": "b28c4aaa_f0776f0a",
+      "revId": "316e1a7e8d0e41c9a855f07ad74ef3b73c8dbbfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
