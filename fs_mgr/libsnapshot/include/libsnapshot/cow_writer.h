@@ -93,7 +93,7 @@ class ICowWriter {
     virtual bool Finalize() = 0;
 
     // Return number of bytes the cow image occupies on disk.
-    virtual uint64_t GetCowSize() = 0;
+    virtual CowInfo GetCowInfo() = 0;
 
     virtual uint32_t GetBlockSize() const = 0;
     virtual std::optional<uint32_t> GetMaxBlocks() const = 0;
