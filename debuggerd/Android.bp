@@ -106,6 +106,8 @@ cc_library_static {
         "libasync_safe",
         "libcutils",
         "libdebuggerd",
+        "libunwindstack_no_dex",
+        "liblzma",
     ],
 
     export_header_lib_headers: ["libdebuggerd_common_headers"],
