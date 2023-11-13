@@ -316,7 +316,7 @@ SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p
     FdCacheHelper::Init(controller_.GetProcsFilePath(path_, 0, 0), fd_[ProfileAction::RCT_PROCESS]);
 }
 
-bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_name) {
+bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_name) const {
     if (tid <= 0) {
         return true;
     }
@@ -345,7 +345,11 @@ bool SetCgroupAction::AddTidToCgroup(int tid, int fd, const char* controller_nam
                    << "' into cpuset because all cpus in that cpuset are offline";
         empty_cpuset_reported = true;
     } else {
-        PLOG(ERROR) << "AddTidToCgroup failed to write '" << value << "'; fd=" << fd;
+        static const std::array<const char*, 3> fd_name = {/*RCT_TASK*/ "task",
+                                                           /*RCT_PROCESS*/ "process", "?"};
+        const auto it = std::find(fd_.begin(), fd_.end(), fd);
+        PLOG(ERROR) << "AddTidToCgroup failed to write '" << value << "'; path=" << path_ << "; "
+                    << fd_name[std::min<uint32_t>(it - fd_.begin(), fd_name.size() - 1)];
     }
 
     return false;

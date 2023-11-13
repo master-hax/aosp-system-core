@@ -18,6 +18,7 @@
 
 #include <sys/cdefs.h>
 #include <sys/types.h>
+#include <array>
 #include <functional>
 #include <map>
 #include <mutex>
@@ -157,10 +158,10 @@ class SetCgroupAction : public ProfileAction {
   private:
     CgroupController controller_;
     std::string path_;
-    android::base::unique_fd fd_[ProfileAction::RCT_COUNT];
+    std::array<android::base::unique_fd, ProfileAction::RCT_COUNT> fd_;
     mutable std::mutex fd_mutex_;
 
-    static bool AddTidToCgroup(int tid, int fd, const char* controller_name);
+    bool AddTidToCgroup(int tid, int fd, const char* controller_name) const;
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, int id) const;
 };
 
