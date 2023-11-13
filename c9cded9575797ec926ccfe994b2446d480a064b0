@@ -16,6 +16,23 @@
       "message": "Is there a better way to check for expected argument values than in the caller? Is there some way to check in the callee function. From my testing it seemed that the function would segfault before even running the first line of the callee function (I tried logging something)",
       "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6914f25_211b7b80",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-13T23:01:17Z",
+      "side": 1,
+      "message": "This condition shouldn\u0027t be possible?",
+      "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
