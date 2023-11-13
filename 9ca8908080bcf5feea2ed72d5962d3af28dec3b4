@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdb7e3ae_7b326f2b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-13T22:41:23Z",
+      "side": 1,
+      "message": "Maybe also make findopindex() resistant to errors? We would want to avoid crashing update_engine if possible",
+      "revId": "9ca8908080bcf5feea2ed72d5962d3af28dec3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc80fd31_b30b2405",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-13T22:41:23Z",
+      "side": 1,
+      "message": "this changes semantic of the cow format. Let\u0027s do that in a separate CL",
+      "range": {
+        "startLine": 113,
+        "startChar": 13,
+        "endLine": 113,
+        "endChar": 29
+      },
+      "revId": "9ca8908080bcf5feea2ed72d5962d3af28dec3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
