@@ -26,6 +26,7 @@ namespace snapshot {
 using android::base::borrowed_fd;
 
 bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional<uint64_t> label) {
+    LOG(INFO) << "PARSE BEGINNING";
     auto pos = lseek(fd.get(), 0, SEEK_END);
     if (pos < 0) {
         PLOG(ERROR) << "lseek end failed";
@@ -59,6 +60,7 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
     }
 
     std::optional<uint32_t> op_index = header_.op_count;
+
     if (label) {
         if (!ReadResumeBuffer(fd)) {
             PLOG(ERROR) << "Failed to read resume buffer";
@@ -75,14 +77,14 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
 }
 
 bool CowParserV3::ReadResumeBuffer(borrowed_fd fd) {
-    resume_points_ = std::make_shared<std::vector<ResumePoint>>(header_.resume_buffer_size);
+    resume_points_ = std::make_shared<std::vector<ResumePoint>>(header_.resume_point_count);
 
     return android::base::ReadFullyAtOffset(fd, resume_points_->data(),
-                                            header_.resume_buffer_size * sizeof(ResumePoint),
+                                            header_.resume_point_count * sizeof(ResumePoint),
                                             header_.prefix.header_size + header_.buffer_size);
 }
 
-std::optional<uint32_t> CowParserV3::FindResumeOp(const uint32_t label) {
+std::optional<uint32_t> CowParserV3::FindResumeOp(const uint64_t label) {
     for (auto& resume_point : *resume_points_) {
         if (resume_point.label == label) {
             return resume_point.op_index;
