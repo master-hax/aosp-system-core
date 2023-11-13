@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93580e6d_9fe04bb0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-13T22:58:34Z",
+      "side": 1,
+      "message": "Is there a better way to check for expected argument values than in the caller? Is there some way to check in the callee function. From my testing it seemed that the function would segfault before even running the first line of the callee function (I tried logging something)",
+      "revId": "c9cded9575797ec926ccfe994b2446d480a064b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
