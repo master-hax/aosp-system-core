@@ -222,12 +222,20 @@ static int RemoveCgroup(const char* cgroup, uid_t uid, int pid, unsigned int ret
         if (!ret || errno != EBUSY || !retries) break;
         std::this_thread::sleep_for(5ms);
     }
+    // If we get an error 2 'No such file or directory' , that means the cgroup
+    // is already removed, treat it as success and return 0 for Idempotency.
+    if (ret == ENOENT) {
+        ret = 0;
+    }
 
     if (!ret && uid >= AID_ISOLATED_START && uid <= AID_ISOLATED_END) {
         // Isolated UIDs are unlikely to be reused soon after removal,
         // so free up the kernel resources for the UID level cgroup.
         const auto uid_path = ConvertUidToPath(cgroup, uid);
         ret = rmdir(uid_path.c_str());
+        if (ret == ENOENT) {
+            ret = 0;
+        }
     }
 
     return ret;
