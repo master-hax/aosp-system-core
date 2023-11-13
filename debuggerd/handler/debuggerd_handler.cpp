@@ -57,6 +57,19 @@
 using ::android::base::ParseInt;
 #define MAX_CMD_NAME_LEN (128)
 
+#include <unwindstack/Maps.h>
+#include <unwindstack/Memory.h>
+#include <unwindstack/Regs.h>
+#include <unwindstack/Unwinder.h>
+#include "libdebuggerd/tombstone.h"
+#include <stdatomic.h>
+#include <semaphore.h>
+#include <vector>
+#include <sys/stat.h>
+
+using std::vector;
+using std::string;
+
 using ::android::base::ParseBool;
 using ::android::base::ParseBoolResult;
 using ::android::base::Pipe;
@@ -289,6 +302,84 @@ static void init_failover_mode() {
   mte_mode_register_handlers();
 }
 
+static vector<string> g_target_frames;
+
+static bool property_parse_string_list(const char* name) {
+  const prop_info* pi = __system_property_find(name);
+  if (!pi) return false;
+  __system_property_read_callback(
+      pi,
+      [](void* , const char*, const char* value, uint32_t) {
+        char* token = strtok((char*)value, ",");
+        g_target_frames.clear();
+        while (token != NULL) {
+          g_target_frames.push_back(token);
+          token = strtok(NULL, ",");
+        }
+      },
+      nullptr);
+  return true;
+}
+
+static bool get_ignore_frames_from_property(const char* property) {
+  if(property_parse_string_list(property)) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "get_ignore_frames read %zu targets from %s", g_target_frames.size(), property);
+    for(unsigned int i = 0; i < g_target_frames.size(); i++) {
+      async_safe_format_log(ANDROID_LOG_DEBUG, "libc", "targets[%d]: %s", i, g_target_frames[i].c_str());
+    }    
+    return true;
+  } else {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "get_ignore_frames read failed from %s",property);
+    return false;
+  }
+}
+
+static void get_ignore_frames(){
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char process_sysprop_name[512] = "debug.mte.sigsegv.ignoreframe";
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "debug.mte.sigsegv.ignoreframe.process.%s",
+                             cmd_name);       
+  } 
+  if (!get_ignore_frames_from_property(process_sysprop_name)) {
+    get_ignore_frames_from_property("debug.mte.sigsegv.ignoreframe");
+  }
+}
+
+static bool crash_in_ignored_frames(void* context){
+  get_ignore_frames();
+  if (g_target_frames.size() == 0) {
+    return false;
+  }
+
+  ThreadInfo info;
+  info.pid = __getpid();
+  info.tid = __gettid();
+  info.uid = getuid();
+  info.registers.reset(unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(), context));
+  auto process_memory = unwindstack::Memory::CreateProcessMemoryCached(__getpid());
+  unwindstack::UnwinderFromPid unwinder(kMaxFrames, __getpid(), process_memory);
+  unwinder.SetRegs(info.registers.get());
+  unwinder.Unwind();
+  if (unwinder.NumFrames() == 0) {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "crash_in_ignored_frames unwinder failed for thread %d",info.tid);
+    return false;
+  }
+  for (const auto& frame : unwinder.frames()) {
+    string formated_frame = unwinder.FormatFrame(frame);
+    const char *frame_name = formated_frame.c_str();
+    for(unsigned int i = 0; i < g_target_frames.size(); i++) {
+      if(formated_frame.find(g_target_frames[i]) != std::string::npos) {
+        async_safe_format_log(ANDROID_LOG_INFO, "libc", "target %s in %s", g_target_frames[i].c_str(), frame_name);
+        return true;
+      }
+    }
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "no target in %s", frame_name);
+  }
+  async_safe_format_log(ANDROID_LOG_INFO, "libc", "no target frames in stack");
+  return false;
+}
 
 static inline void futex_wait(volatile void* ftx, int value) {
   syscall(__NR_futex, ftx, FUTEX_WAIT, value, nullptr, nullptr, 0);
@@ -791,6 +882,12 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   }
 
   log_signal_summary(info);
+
+  if(crash_in_ignored_frames(context)) {
+    stop_delay_start_mte("crash_in_ignored_frames");
+    pthread_mutex_unlock(&crash_mutex);  
+    return;
+  }
 
   // If we got here due to the signal BIONIC_SIGNAL_DEBUGGER, it's possible
   // this is not the main thread, which can cause the intercept logic to fail
