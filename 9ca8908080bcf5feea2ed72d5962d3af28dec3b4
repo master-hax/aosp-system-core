@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6503363d_d69413b2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:31:55Z",
+      "side": 1,
+      "message": "in this case the crash happened when findOpIndex was called with 64bit int, but we only accepted 32bit int.",
+      "parentUuid": "fdb7e3ae_7b326f2b",
+      "revId": "9ca8908080bcf5feea2ed72d5962d3af28dec3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bc80fd31_b30b2405",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 7
@@ -31,6 +49,30 @@
       "writtenOn": "2023-11-13T22:41:23Z",
       "side": 1,
       "message": "this changes semantic of the cow format. Let\u0027s do that in a separate CL",
+      "range": {
+        "startLine": 113,
+        "startChar": 13,
+        "endLine": 113,
+        "endChar": 29
+      },
+      "revId": "9ca8908080bcf5feea2ed72d5962d3af28dec3b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a1c704a_3073cf16",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:31:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc80fd31_b30b2405",
       "range": {
         "startLine": 113,
         "startChar": 13,
