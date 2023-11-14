@@ -33,6 +33,9 @@ using namespace android;
 using namespace android::dm;
 using android::base::unique_fd;
 
+static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
+        "/metadata/ota/snapshot-boot-without-slot-switch";
+
 SnapshotHandler::SnapshotHandler(std::string misc_name, std::string cow_device,
                                  std::string backing_device, std::string base_path_merge,
                                  std::shared_ptr<IBlockServerOpener> opener, int num_worker_threads,
@@ -317,6 +320,12 @@ bool SnapshotHandler::Start() {
 
     std::future<bool> merge_thread =
             std::async(std::launch::async, &MergeWorker::Run, merge_thread_.get());
+
+    // No need to do verification when device boots over snapshot without slot
+    // switch
+    if (access(std::string(kBootSnapshotsWithoutSlotSwitch).c_str(), F_OK) == 0) {
+        perform_verification_ = false;
+    }
 
     // Now that the worker threads are up, scan the partitions.
     // If the snapshot-merge is being resumed, there is no need to scan as the
