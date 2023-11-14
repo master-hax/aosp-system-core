@@ -16,6 +16,24 @@
       "message": "Use header.prefix.header_size instead (in GetDataOffset too)",
       "revId": "2c6b80f1dc89bce77e9e1f9ebb378e9417fb0f88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc8c7e2f_410843be",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:27:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a19794bb_89d69592",
+      "revId": "2c6b80f1dc89bce77e9e1f9ebb378e9417fb0f88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
