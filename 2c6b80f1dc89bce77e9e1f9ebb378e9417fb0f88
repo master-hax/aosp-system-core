@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3506cf47_fffa724e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:28:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82cda5c3_a3f2023b",
+      "range": {
+        "startLine": 235,
+        "startChar": 7,
+        "endLine": 235,
+        "endChar": 13
+      },
+      "revId": "2c6b80f1dc89bce77e9e1f9ebb378e9417fb0f88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "afb84027_071be770",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7ac2c3b_cd581bcf",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:28:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afb84027_071be770",
+      "range": {
+        "startLine": 239,
+        "startChar": 7,
+        "endLine": 239,
+        "endChar": 13
+      },
+      "revId": "2c6b80f1dc89bce77e9e1f9ebb378e9417fb0f88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a2c91784_3bbb7862",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-11-14T20:27:28Z",
       "side": 1,
       "message": "constexpr",
+      "range": {
+        "startLine": 244,
+        "startChar": 7,
+        "endLine": 244,
+        "endChar": 13
+      },
+      "revId": "2c6b80f1dc89bce77e9e1f9ebb378e9417fb0f88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee3a1a04_e68ccbf9",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:28:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a2c91784_3bbb7862",
       "range": {
         "startLine": 244,
         "startChar": 7,
