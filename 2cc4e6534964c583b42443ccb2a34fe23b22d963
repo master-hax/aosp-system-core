@@ -52,6 +52,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f507413_bb1839d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-11-14T10:52:13Z",
+      "side": 1,
+      "message": "Yeah. I will wait with the submission until the upstream change has made it to AOSP scudo",
+      "parentUuid": "a8449486_1e141d37",
+      "revId": "2cc4e6534964c583b42443ccb2a34fe23b22d963",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5c4691ab_3c9cfc10",
@@ -65,6 +83,30 @@
       "writtenOn": "2023-11-13T21:05:58Z",
       "side": 1,
       "message": "Use spaces instead of tabs.",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 1
+      },
+      "revId": "2cc4e6534964c583b42443ccb2a34fe23b22d963",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eec7c6d8_1d7da00c",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-11-14T10:52:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c4691ab_3c9cfc10",
       "range": {
         "startLine": 77,
         "startChar": 0,
