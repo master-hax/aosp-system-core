@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c4cedfc_2a2ea6d3",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:34:24Z",
+      "side": 1,
+      "message": "const CowHeaderV3\u0026",
+      "range": {
+        "startLine": 235,
+        "startChar": 44,
+        "endLine": 235,
+        "endChar": 55
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b020871_c7f7bd96",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:34:24Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 235,
+        "startChar": 7,
+        "endLine": 235,
+        "endChar": 13
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "839bc00e_0467a3aa",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:34:24Z",
+      "side": 1,
+      "message": "const CowHeaderV3\u0026",
+      "range": {
+        "startLine": 239,
+        "startChar": 42,
+        "endLine": 239,
+        "endChar": 53
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fe75a90_6b59e27a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:34:24Z",
+      "side": 1,
+      "message": "constexpr",
+      "range": {
+        "startLine": 239,
+        "startChar": 7,
+        "endLine": 239,
+        "endChar": 13
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea6711ef_018a8853",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:34:24Z",
+      "side": 1,
+      "message": "angle bracket",
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
