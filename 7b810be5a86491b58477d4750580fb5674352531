@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d69ea02f_c549c81d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-14T19:33:28Z",
+      "side": 1,
+      "message": "Let\u0027s do this under aosp/2812813 instead of refactoring here only to replace it?",
+      "revId": "7b810be5a86491b58477d4750580fb5674352531",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
