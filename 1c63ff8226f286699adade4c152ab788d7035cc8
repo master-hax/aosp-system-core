@@ -34,6 +34,24 @@
       "parentUuid": "dd0b9c94_b6d0c84a",
       "revId": "1c63ff8226f286699adade4c152ab788d7035cc8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f6c8196_3ee9fee5",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 876,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T23:50:41Z",
+      "side": 1,
+      "message": "Let\u0027s try to get the profile name in the error message. It helps a lot when looking at a big task_profiles.json for debugging.",
+      "parentUuid": "b411b1ae_1106b159",
+      "revId": "1c63ff8226f286699adade4c152ab788d7035cc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
