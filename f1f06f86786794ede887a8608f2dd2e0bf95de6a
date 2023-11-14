@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae187f99_c526cb78",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T18:03:37Z",
+      "side": 1,
+      "message": "Do we need this after the lock issue is fixed?",
+      "revId": "f1f06f86786794ede887a8608f2dd2e0bf95de6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
