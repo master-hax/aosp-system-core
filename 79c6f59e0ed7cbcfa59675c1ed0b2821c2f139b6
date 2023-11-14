@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0302e5f4_b4933a29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-14T01:50:02Z",
+      "side": 1,
+      "message": "As with the other cls, I don\u0027t think this is a good idea. I don\u0027t know what the point of this is, some of the cls seem to be trying to suppress failures, and now you are not reporting some.\n\nThis kind of suppression should be done at a different level, not at the platform level.\n\nThis seems like debug code, not something we want in the platform.",
+      "revId": "79c6f59e0ed7cbcfa59675c1ed0b2821c2f139b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
