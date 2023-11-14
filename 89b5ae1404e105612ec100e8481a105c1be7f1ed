@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "956293a3_a81bbc8e",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-14T19:31:11Z",
+      "side": 1,
+      "message": "Looks like you should be checking `errno` here when `ret` is non-zero. Same below.",
+      "range": {
+        "startLine": 227,
+        "startChar": 8,
+        "endLine": 227,
+        "endChar": 11
+      },
+      "revId": "89b5ae1404e105612ec100e8481a105c1be7f1ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
