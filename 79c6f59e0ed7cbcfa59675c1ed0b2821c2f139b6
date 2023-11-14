@@ -16,6 +16,24 @@
       "message": "As with the other cls, I don\u0027t think this is a good idea. I don\u0027t know what the point of this is, some of the cls seem to be trying to suppress failures, and now you are not reporting some.\n\nThis kind of suppression should be done at a different level, not at the platform level.\n\nThis seems like debug code, not something we want in the platform.",
       "revId": "79c6f59e0ed7cbcfa59675c1ed0b2821c2f139b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a432e10f_570cf4ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2023-11-14T19:40:20Z",
+      "side": 1,
+      "message": "This is a natural extension of permissive mode (see: is_permissive_mte) which is a testing mode that disables MTE per-thread when a fault is detected with the goal of detecting issues without degrading user experience (in dogfood or similar). By re-enabling MTE after a delay, we can keep catching more bugs, eliminating the developer latency in the detect-fix-detect-more loop.\n\nI think this code can be simplified a little, but not sure if it can be moved out of the platform entirely. In particular, timer_create with SIGEV_THREAD_ID might skip all the thread management code, but I have not tried it myself.\n\nPerhaps the filtering logic in the other CL could be moved to off-device post processing, but we need at least some way to stop reporting the same fault over and over.",
+      "parentUuid": "0302e5f4_b4933a29",
+      "revId": "79c6f59e0ed7cbcfa59675c1ed0b2821c2f139b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
