@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c7fe0af_7a0dda18",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:40:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8895ff36_f0bcff1b",
+      "revId": "5018b66263ac6c4ccf5b034b8dc097f9124e3d48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b39e7630_4d44c61e",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-11-14T20:36:34Z",
       "side": 1,
       "message": "you don\u0027t have to do it in this CL... but maybe mark this method as const",
+      "revId": "5018b66263ac6c4ccf5b034b8dc097f9124e3d48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae93e895_cebd0d1e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:40:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b39e7630_4d44c61e",
       "revId": "5018b66263ac6c4ccf5b034b8dc097f9124e3d48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
