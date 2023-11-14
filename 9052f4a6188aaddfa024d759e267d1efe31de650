@@ -304,6 +304,24 @@
       "parentUuid": "25d42dc9_4bdcf974",
       "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f08d9a8e_809a658f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T21:44:09Z",
+      "side": 1,
+      "message": "Yeah. But, this code is more complicated than I thought. It depends on ops_, it has multiple out params, it depends on fd_ and compressor_. Moving it out of the reader would be tricky.\n\nIn this CL, let\u0027s at least factor it into helper functions so we don\u0027t have the giant switch here. We can think of something more clever later.",
+      "parentUuid": "a9495fcd_36df0bdb",
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66501389_e0f15174",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T21:44:09Z",
+      "side": 1,
+      "message": "This should be a check in ParserV3::Parse when it validates the header. We shouldn\u0027t crash update_engine on a bad snapshot.",
+      "revId": "7466ce2f2f7c9a89126e3a60de3e520d8ec86581",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
