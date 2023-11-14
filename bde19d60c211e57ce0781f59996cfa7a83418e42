@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29d878d7_0d4f4e30",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_core.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T19:32:41Z",
+      "side": 1,
+      "message": "I think this should go in UserSnapshotServer, and store it in SnapshotHandlerManager, and then we can eliminate the \"perform_verification\" argument to AddHandler().\n\nNot that we have tests around verification, but this at least puts us in a better position to have them.",
+      "revId": "bde19d60c211e57ce0781f59996cfa7a83418e42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
