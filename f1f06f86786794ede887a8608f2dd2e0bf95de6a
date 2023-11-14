@@ -16,6 +16,24 @@
       "message": "Do we need this after the lock issue is fixed?",
       "revId": "f1f06f86786794ede887a8608f2dd2e0bf95de6a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58c57383_92a0065c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T18:04:50Z",
+      "side": 1,
+      "message": "Short-term , No.\n\nLong-term, we don\u0027t want to bet on the lock contention issue not happening again. It\u0027s better to remove any indefinite lock wait on critical reboot path.",
+      "parentUuid": "ae187f99_c526cb78",
+      "revId": "f1f06f86786794ede887a8608f2dd2e0bf95de6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
