@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "31e98e23_b1083a33",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T20:40:31Z",
+      "side": 1,
+      "message": "\"Size of the block sequence buffer, in bytes.\"\n\nparser_v3 should check that the size % sizeof(uint32_t) \u003d\u003d 0.",
+      "range": {
+        "startLine": 109,
+        "startChar": 13,
+        "endLine": 109,
+        "endChar": 33
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c4cedfc_2a2ea6d3",
         "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
         "patchSetId": 20
@@ -106,6 +129,23 @@
       "writtenOn": "2023-11-14T20:34:24Z",
       "side": 1,
       "message": "angle bracket",
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25d42dc9_4bdcf974",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-14T20:40:31Z",
+      "side": 1,
+      "message": "This function is getting pretty big. Can we factor these cases into helpers?\n\nI was initially hoping we could do this in the parser, but I don\u0027t see a nice way. (Well, maybe if parser was shared_ptr, and stored on CowReader, and we made sure to zap v2_ops_ to curb memory use...)",
       "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
