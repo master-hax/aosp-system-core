@@ -232,6 +232,19 @@ static inline uint64_t GetCowOpSourceInfoData(const CowOperation& op) {
     return op.source_info & kCowOpSourceInfoDataMask;
 }
 
+static inline off_t GetOpOffset(uint32_t op_index, const CowHeaderV3 header) {
+    return header.prefix.header_size + header.buffer_size +
+           (header.resume_point_max * sizeof(ResumePoint)) + (op_index * sizeof(CowOperationV3));
+}
+static inline off_t GetDataOffset(const CowHeaderV3 header) {
+    return header.prefix.header_size + header.buffer_size +
+           (header.resume_point_max * sizeof(ResumePoint)) +
+           header.op_count_max * sizeof(CowOperation);
+}
+static inline off_t GetResumeOffset(const CowHeaderV3 header) {
+    return header.prefix.header_size + header.buffer_size;
+}
+
 struct CowFooter {
     CowFooterOperation op;
     uint8_t unused[64];
