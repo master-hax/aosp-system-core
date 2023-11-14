@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8895ff36_f0bcff1b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:36:34Z",
+      "side": 1,
+      "message": "If this struct stored on disk anywhere? cow_format.h is for specifying the on disk format. if this struct is only used in memory, let\u0027s move it to a different file(e.g. cow_writer.h)",
+      "revId": "5018b66263ac6c4ccf5b034b8dc097f9124e3d48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b39e7630_4d44c61e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-14T20:36:34Z",
+      "side": 1,
+      "message": "you don\u0027t have to do it in this CL... but maybe mark this method as const",
+      "revId": "5018b66263ac6c4ccf5b034b8dc097f9124e3d48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
