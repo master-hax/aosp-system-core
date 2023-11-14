@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa3ec810_d4991ad8",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31e98e23_b1083a33",
+      "range": {
+        "startLine": 109,
+        "startChar": 13,
+        "endLine": 109,
+        "endChar": 33
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2c4cedfc_2a2ea6d3",
@@ -65,6 +89,54 @@
         "startChar": 7,
         "endLine": 235,
         "endChar": 13
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1711b728_27238df1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b020871_c7f7bd96",
+      "range": {
+        "startLine": 235,
+        "startChar": 7,
+        "endLine": 235,
+        "endChar": 13
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0506926_60c301bd",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2c4cedfc_2a2ea6d3",
+      "range": {
+        "startLine": 235,
+        "startChar": 44,
+        "endLine": 235,
+        "endChar": 55
       },
       "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
@@ -116,6 +188,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bda82f3_f92cc99f",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4fe75a90_6b59e27a",
+      "range": {
+        "startLine": 239,
+        "startChar": 7,
+        "endLine": 239,
+        "endChar": 13
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28341901_ae2ac578",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 20
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "839bc00e_0467a3aa",
+      "range": {
+        "startLine": 239,
+        "startChar": 42,
+        "endLine": 239,
+        "endChar": 53
+      },
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ea6711ef_018a8853",
@@ -133,6 +253,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c159d146_85b2b19c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea6711ef_018a8853",
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "25d42dc9_4bdcf974",
@@ -146,6 +284,24 @@
       "writtenOn": "2023-11-14T20:40:31Z",
       "side": 1,
       "message": "This function is getting pretty big. Can we factor these cases into helpers?\n\nI was initially hoping we could do this in the parser, but I don\u0027t see a nice way. (Well, maybe if parser was shared_ptr, and stored on CowReader, and we made sure to zap v2_ops_ to curb memory use...)",
+      "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9495fcd_36df0bdb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-14T20:56:58Z",
+      "side": 1,
+      "message": "sure, to make things easier, could I leave the refactoring to another CL? \n\nwhen you say \"zap v2_ops_\", do you mean emptying the vector?",
+      "parentUuid": "25d42dc9_4bdcf974",
       "revId": "9052f4a6188aaddfa024d759e267d1efe31de650",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
