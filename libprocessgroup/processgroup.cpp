@@ -370,41 +370,42 @@ static int DoKillProcessGroupOnce(const char* cgroup, uid_t uid, int initialPid,
         fd.reset(fopen(path.c_str(), "re"));
         if (!fd) {
             if (errno == ENOENT) {
-                // This happens when process is already dead
-                return 0;
-            }
-            PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
-                          << initialPid;
-            return -1;
-        }
-        pid_t pid;
-        bool file_is_empty = true;
-        while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
-            processes++;
-            file_is_empty = false;
-            if (pid == 0) {
-                // Should never happen...  but if it does, trying to kill this
-                // will boomerang right back and kill us!  Let's not let that happen.
-                LOG(WARNING)
-                        << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
-                continue;
-            }
-            pid_t pgid = getpgid(pid);
-            if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
-            if (pgid == pid) {
-                pgids.emplace(pid);
+                // This happens when process is already dead or if, as the result of a bug, it has
+                // been moved to another cgroup.
             } else {
-                pids.emplace(pid);
+                PLOG(WARNING) << __func__ << " failed to open process cgroup uid " << uid << " pid "
+                              << initialPid;
             }
-        }
-        if (!file_is_empty) {
-            // Erase all pids that will be killed when we kill the process groups.
-            for (auto it = pids.begin(); it != pids.end();) {
-                pid_t pgid = getpgid(*it);
-                if (pgids.count(pgid) == 1) {
-                    it = pids.erase(it);
+        } else {
+            pid_t pid;
+            bool file_is_empty = true;
+            while (fscanf(fd.get(), "%d\n", &pid) == 1 && pid >= 0) {
+                processes++;
+                file_is_empty = false;
+                if (pid == 0) {
+                    // Should never happen...  but if it does, trying to kill this
+                    // will boomerang right back and kill us!  Let's not let that happen.
+                    LOG(WARNING)
+                            << "Yikes, we've been told to kill pid 0!  How about we don't do that?";
+                    continue;
+                }
+                pid_t pgid = getpgid(pid);
+                if (pgid == -1) PLOG(ERROR) << "getpgid(" << pid << ") failed";
+                if (pgid == pid) {
+                    pgids.emplace(pid);
                 } else {
-                    ++it;
+                    pids.emplace(pid);
+                }
+            }
+            if (!file_is_empty) {
+                // Erase all pids that will be killed when we kill the process groups.
+                for (auto it = pids.begin(); it != pids.end();) {
+                    pid_t pgid = getpgid(*it);
+                    if (pgids.count(pgid) == 1) {
+                        it = pids.erase(it);
+                    } else {
+                        ++it;
+                    }
                 }
             }
         }
