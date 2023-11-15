@@ -196,22 +196,20 @@ void Service::NotifyStateChange(const std::string& new_state) const {
 }
 
 void Service::KillProcessGroup(int signal) {
-    // Always attempt the process kill if process is still running.
-    // Cgroup clean up routines are idempotent. It's safe to call
-    // killProcessGroup repeatedly. During shutdown, `init` will
-    // call this function to send SIGTERM/SIGKILL to all processes.
-    // These signals must be sent for a successful shutdown.
-    if (!process_cgroup_empty_ || IsRunning()) {
-        LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
-                  << ") process group...";
-        int r;
-        if (signal == SIGTERM) {
-            r = killProcessGroupOnce(uid(), pid_, signal);
-        } else {
-            r = killProcessGroup(uid(), pid_, signal);
-        }
+    DCHECK(IsRunning());
+    DCHECK_GT(pid_, 0);
+    if (!IsRunning() || pid_ <= 0) {
+        return;
+    }
 
-        if (r == 0) process_cgroup_empty_ = true;
+    // During shutdown, `init` will call this function to send SIGTERM/SIGKILL to all processes of a
+    // service. These signals must be sent for a successful shutdown.
+    LOG(INFO) << "Sending signal " << signal << " to service '" << name_ << "' (pid " << pid_
+              << ") process group...";
+    if (signal == SIGTERM) {
+        killProcessGroupOnce(uid(), pid_, signal);
+    } else {
+        killProcessGroup(uid(), pid_, signal);
     }
 
     if (oom_score_adjust_ != DEFAULT_OOM_SCORE_ADJUST) {
@@ -695,7 +693,6 @@ Result<void> Service::Start() {
     pid_ = pid;
     flags_ |= SVC_RUNNING;
     start_order_ = next_start_order_++;
-    process_cgroup_empty_ = false;
 
     if (CgroupsAvailable()) {
         bool use_memcg = swappiness_ != -1 || soft_limit_in_bytes_ != -1 || limit_in_bytes_ != -1 ||
@@ -897,7 +894,7 @@ void Service::StopOrReset(int how) {
     if (pid_) {
         if (flags_ & SVC_GENTLE_KILL) {
             KillProcessGroup(SIGTERM);
-            if (!process_cgroup_empty()) std::this_thread::sleep_for(200ms);
+            std::this_thread::sleep_for(200ms);
         }
         KillProcessGroup(SIGKILL);
         NotifyStateChange("stopping");
