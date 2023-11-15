@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c23cfce_448d0df6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-15T13:17:53Z",
+      "side": 1,
+      "message": "If this is the case then we should simply revert aosp/2080618 and change aosp/2080619 to call `removeAllProcessGroups`",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 35
+      },
+      "revId": "712c5fc8e7f5334bbb44a74dc6483a3372fde32f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
