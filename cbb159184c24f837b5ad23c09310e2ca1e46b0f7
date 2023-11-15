@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a44605b_d181c0f0",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-15T13:27:28Z",
+      "side": 1,
+      "message": "Do we really need an additional array here? cache_type will never be anything other than RCT_TASK or RCT_PROCESS (this library is the only user), so why not chose the right string when outputting the logs like this:\n\n```\nPLOG(ERROR) \u003c\u003c \"AddTidToCgroup failed to write \u0027\" \u003c\u003c value \u003c\u003c \"\u0027; path\u003d\" \u003c\u003c path_ \u003c\u003c \"; \"\n                    \u003c\u003c cache_type \u003d\u003d RCT_TASK ? \"task\" : \"process\";\n```\n?",
+      "range": {
+        "startLine": 349,
+        "startChar": 7,
+        "endLine": 350,
+        "endChar": 91
+      },
+      "revId": "cbb159184c24f837b5ad23c09310e2ca1e46b0f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5258e438_22e70634",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-15T13:27:28Z",
+      "side": 1,
+      "message": "This conversion is unrelated to the patch description. If we decide to convert arrays to std:array we should do that in a separate patch but historically we do not rewrite older code unless necessary.",
+      "revId": "cbb159184c24f837b5ad23c09310e2ca1e46b0f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
