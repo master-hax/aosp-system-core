@@ -34,6 +34,24 @@
       "parentUuid": "0302e5f4_b4933a29",
       "revId": "79c6f59e0ed7cbcfa59675c1ed0b2821c2f139b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "306dd85a_fb84dda3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2023-11-15T09:05:15Z",
+      "side": 1,
+      "message": "yes, this patch is an extention to the permissive mode.\nEvgenii explains the motivation quite clearly. \nbtw, i\u0027ll try the timer_create with SIGEV_THREAD_ID way.\n\nAbout the filtering logic in other CL, we surely need a way to stop reporting the same fault, especially when tombstoned.max_tombstone_count is not large enough(50). Testers may encounter many identical tombstones.",
+      "parentUuid": "0302e5f4_b4933a29",
+      "revId": "79c6f59e0ed7cbcfa59675c1ed0b2821c2f139b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
