@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4859dd80_cb1f712f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-15T17:49:51Z",
+      "side": 1,
+      "message": "Can anyone explain to me why this function is called by KillProcessGroup() instead of Service::Reap()? Attempting to remove a cgroup immediately after a process has been killed can fail. Removing a cgroup from inside Service::Reap() does not fail because the latter function is called after SIGCHLD has been received.",
+      "range": {
+        "startLine": 216,
+        "startChar": 11,
+        "endLine": 216,
+        "endChar": 23
+      },
+      "revId": "459edb0bd09abe8a56a8b0c279fcb69ee44257bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
