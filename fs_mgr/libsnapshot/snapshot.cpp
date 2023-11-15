@@ -30,6 +30,7 @@
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
 #include <android-base/properties.h>
+#include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 #include <cutils/sockets.h>
@@ -82,12 +83,16 @@ using RepeatedPtrField = google::protobuf::RepeatedPtrField<T>;
 using std::chrono::duration_cast;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
+using android::base::Realpath;
+using android::base::StringPrintf;
 
 static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
         "/metadata/ota/snapshot-boot-without-slot-switch";
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
 static constexpr auto kUpdateStateCheckInterval = 2s;
+static constexpr auto kCowReadAheadSizeKb = 32;
+static constexpr auto kSourceReadAheadSizeKb = 32;
 
 // Note: IImageManager is an incomplete type in the header, so the default
 // destructor doesn't work.
@@ -1747,6 +1752,9 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
                                base_path_merge;
                 snapuserd_argv->emplace_back(std::move(message));
             }
+
+            SetReadAheadSize(cow_image_device, kCowReadAheadSizeKb);
+            SetReadAheadSize(source_device, kSourceReadAheadSizeKb);
 
             // Do not attempt to connect to the new snapuserd yet, it hasn't
             // been started. We do however want to wait for the misc device
@@ -4402,6 +4410,35 @@ bool SnapshotManager::PrepareDeviceToBootWithoutSnapshot() {
         return false;
     }
     return true;
+}
+
+void SnapshotManager::SetReadAheadSize(const std::string& entry_block_device, off64_t size_kb) {
+    std::string block_device;
+    if (!Realpath(entry_block_device, &block_device)) {
+        PLOG(ERROR) << "Failed to realpath " << entry_block_device;
+        return;
+    }
+
+    static constexpr std::string_view kDevBlockPrefix("/dev/block/");
+    if (!android::base::StartsWith(block_device, kDevBlockPrefix)) {
+        LOG(ERROR) << block_device << " is not a block device";
+        return;
+    }
+
+    std::string block_name = block_device;
+    if (android::base::StartsWith(block_device, kDevBlockPrefix)) {
+        block_name = block_device.substr(kDevBlockPrefix.length());
+    }
+    std::string sys_partition =
+            android::base::StringPrintf("/sys/class/block/%s/partition", block_name.c_str());
+    struct stat info;
+    if (lstat(sys_partition.c_str(), &info) == 0) {
+        block_name += "/..";
+    }
+    std::string sys_ra = android::base::StringPrintf("/sys/class/block/%s/queue/read_ahead_kb",
+                                                     block_name.c_str());
+    std::string size = android::base::StringPrintf("%llu", (long long)size_kb);
+    android::base::WriteStringToFile(size, sys_ra.c_str());
 }
 
 }  // namespace snapshot
