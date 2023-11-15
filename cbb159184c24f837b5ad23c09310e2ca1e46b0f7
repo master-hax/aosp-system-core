@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "09e3a1c3_42637265",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-15T18:28:08Z",
+      "side": 1,
+      "message": "The array has been removed.",
+      "parentUuid": "5a44605b_d181c0f0",
+      "range": {
+        "startLine": 349,
+        "startChar": 7,
+        "endLine": 350,
+        "endChar": 91
+      },
+      "revId": "cbb159184c24f837b5ad23c09310e2ca1e46b0f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5258e438_22e70634",
@@ -37,6 +61,24 @@
       "writtenOn": "2023-11-15T13:27:28Z",
       "side": 1,
       "message": "This conversion is unrelated to the patch description. If we decide to convert arrays to std:array we should do that in a separate patch but historically we do not rewrite older code unless necessary.",
+      "revId": "cbb159184c24f837b5ad23c09310e2ca1e46b0f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d00e87f8_eb948d08",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-15T18:28:08Z",
+      "side": 1,
+      "message": "Thanks for the feedback. The std::array\u003c\u003e change has been reverted.",
+      "parentUuid": "5258e438_22e70634",
       "revId": "cbb159184c24f837b5ad23c09310e2ca1e46b0f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
