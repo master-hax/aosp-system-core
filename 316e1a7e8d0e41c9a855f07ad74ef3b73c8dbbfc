@@ -34,6 +34,24 @@
       "parentUuid": "b28c4aaa_f0776f0a",
       "revId": "316e1a7e8d0e41c9a855f07ad74ef3b73c8dbbfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6c5edb8_f73086ae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2023-11-15T09:10:13Z",
+      "side": 1,
+      "message": "Developers use this feature only if they can be sure that ignoring the first problem will not result in other crashes.\n\nEnabling a mode to never crash and produce tombstones can be helpful. but this will produce many identical tombstones.\n\nDebug mode may be not suitable as many app developers can only use phones in user mode. can we enable it in developer option?",
+      "parentUuid": "b9e6f473_c5d88d3d",
+      "revId": "316e1a7e8d0e41c9a855f07ad74ef3b73c8dbbfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
