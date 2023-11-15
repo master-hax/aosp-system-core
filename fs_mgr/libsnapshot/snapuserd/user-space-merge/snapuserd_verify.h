@@ -48,10 +48,13 @@ class UpdateVerify {
     std::mutex m_lock_;
     std::condition_variable m_cv_;
 
+    // The primary goal here is to verify the partitions after selinux
+    // transition and make sure that verification is complete before
+    // marking the slot as boot successful.
     int kMinThreadsToVerify = 1;
-    int kMaxThreadsToVerify = 4;
-    uint64_t kThresholdSize = 512_MiB;
-    uint64_t kBlockSizeVerify = 1_MiB;
+    int kMaxThreadsToVerify = 3;
+    uint64_t kThresholdSize = 750_MiB;
+    uint64_t kBlockSizeVerify = 2_MiB;
 
     bool IsBlockAligned(uint64_t read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
     void UpdatePartitionVerificationState(UpdateVerifyState state);
