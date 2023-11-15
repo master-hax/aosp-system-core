@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a9ece9f_1b6a5e0c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-15T13:35:20Z",
+      "side": 1,
+      "message": "The message could be improved by including the profile name and explaining what the problem is. Something like this:\n\n```\nLOG(ERROR) \u003c\u003c \"JoinCgroup action in the \" \u003c\u003c profile_name\n           \u003c\u003c \" profile is used for \" \u003c\u003c controller_name \n           \u003c\u003c \" controlled in cgroup v2 hierarchy and will be ignored\";\n```",
+      "range": {
+        "startLine": 876,
+        "startChar": 24,
+        "endLine": 877,
+        "endChar": 64
+      },
+      "revId": "e44628b5bf09b407e19ae04a2214daf7684fa1a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
