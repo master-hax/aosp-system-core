@@ -16,6 +16,24 @@
       "message": "What\u0027s the motivation for this?\n\nI don\u0027t think this is a good idea unless there is some really good reason for this.",
       "revId": "fefc5681683c29e67a61752a2207908ea38249cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eedd8d44_bf8b6994",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2023-11-15T09:06:39Z",
+      "side": 1,
+      "message": "this is mainly for testing purpose.\nwhen app crashed in a 3rd part library, the app developers can\u0027t test their own codes until the library developer to resolve the problem. this could be a long time.\nif the app developers known the 3rd part library won\u0027t effect their own code and result other failures, they can skip the crash safely, especially when MTE enabled as many 3rd part libraries are not fully tested with MTE.",
+      "parentUuid": "0c8dc917_d43698a7",
+      "revId": "fefc5681683c29e67a61752a2207908ea38249cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
