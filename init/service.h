@@ -129,7 +129,6 @@ class Service {
     int priority() const { return proc_attr_.priority; }
     int oom_score_adjust() const { return oom_score_adjust_; }
     bool is_override() const { return override_; }
-    bool process_cgroup_empty() const { return process_cgroup_empty_; }
     unsigned long start_order() const { return start_order_; }
     void set_sigstop(bool value) { sigstop_ = value; }
     std::chrono::seconds restart_period() const {
