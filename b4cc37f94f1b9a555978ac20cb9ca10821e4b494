@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27c3957b_b2629012",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 613,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2023-11-15T20:07:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7936bcd_85184839",
+      "revId": "b4cc37f94f1b9a555978ac20cb9ca10821e4b494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94997306_7fbbba67",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-11-15T19:11:52Z",
       "side": 1,
       "message": "This will loop infinitely if a link points to itself.\n\nMaybe using `Realpath()` would be a cleaner solution?\n\n```\n    std::string real_path;\n    if (!android::base::Realpath(path, \u0026real_path)) {\n        real_path \u003d path;\n    }\n    if (android::base::StartsWith(real_path, kDevBlockPrefix)) {\n        return real_path.substr(kDevBlockPrefix.length());\n    }\n    return {};\n```",
+      "revId": "b4cc37f94f1b9a555978ac20cb9ca10821e4b494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e97ca125_909815ab",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2023-11-15T20:07:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94997306_7fbbba67",
       "revId": "b4cc37f94f1b9a555978ac20cb9ca10821e4b494",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
