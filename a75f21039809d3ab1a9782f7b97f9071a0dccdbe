@@ -16,6 +16,24 @@
       "message": "epoll.open() is never called. Is this expected to work?",
       "revId": "a75f21039809d3ab1a9782f7b97f9071a0dccdbe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fea3f885_55d0e271",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-16T22:44:35Z",
+      "side": 1,
+      "message": "Thank you for having reported this. Please take a look at https://android-review.git.corp.google.com/c/platform/system/core/+/2834997.",
+      "parentUuid": "cd36af59_7b80b88e",
+      "revId": "a75f21039809d3ab1a9782f7b97f9071a0dccdbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
