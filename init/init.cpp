@@ -117,7 +117,6 @@ namespace init {
 
 static int property_triggers_enabled = 0;
 
-int sigchld_fd = -1;
 static int sigterm_fd = -1;
 static int property_fd = -1;
 
@@ -717,7 +716,7 @@ static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
 
 static void HandleSignalFd(int signal) {
     signalfd_siginfo siginfo;
-    const int signal_fd = signal == SIGCHLD ? sigchld_fd : sigterm_fd;
+    const int signal_fd = signal == SIGCHLD ? Service::GetSigchldFd() : sigterm_fd;
     ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
     if (bytes_read != sizeof(siginfo)) {
         PLOG(ERROR) << "Failed to read siginfo from signal_fd";
@@ -751,22 +750,26 @@ static void UnblockSignals() {
     }
 }
 
-static Result<int> CreateAndRegisterSignalFd(Epoll* epoll, int signal) {
+static Result<int> CreateAndRegisterSignalFd(Epoll* epoll, int signal, int fd) {
+    unique_fd signal_fd;
     sigset_t mask;
     sigemptyset(&mask);
     sigaddset(&mask, signal);
-    unique_fd signal_fd(signalfd(-1, &mask, SFD_CLOEXEC));
-    if (signal_fd == -1) {
-        return ErrnoError() << "failed to create signalfd for signal " << signal;
+    if (fd < 0) {
+        signal_fd.reset(signalfd(-1, &mask, SFD_CLOEXEC));
+        fd = signal_fd.get();
+        if (fd == -1) {
+            return ErrnoError() << "failed to create signalfd for signal " << signal;
+        }
     }
-
     auto result = epoll->RegisterHandler(
-            signal_fd.get(), [signal]() { HandleSignalFd(signal); }, EPOLLIN | EPOLLPRI);
+            fd, [signal]() { HandleSignalFd(signal); }, EPOLLIN | EPOLLPRI);
     if (!result.ok()) {
         return result.error();
     }
 
-    return signal_fd.release();
+    signal_fd.reset();
+    return fd;
 }
 
 static void InstallSignalFdHandler(Epoll* epoll) {
@@ -795,15 +798,13 @@ static void InstallSignalFdHandler(Epoll* epoll) {
         LOG(FATAL) << "Failed to register a fork handler: " << strerror(result);
     }
 
-    Result<int> cs_result = CreateAndRegisterSignalFd(epoll, SIGCHLD);
+    Result<int> cs_result = CreateAndRegisterSignalFd(epoll, SIGCHLD, Service::GetSigchldFd());
     if (!cs_result.ok()) {
         PLOG(FATAL) << cs_result.error();
     }
-    sigchld_fd = cs_result.value();
-    Service::SetSigchldFd(sigchld_fd);
 
     if (sigismember(&mask, SIGTERM)) {
-        Result<int> cs_result = CreateAndRegisterSignalFd(epoll, SIGTERM);
+        Result<int> cs_result = CreateAndRegisterSignalFd(epoll, SIGTERM, -1);
         if (!cs_result.ok()) {
             PLOG(FATAL) << cs_result.error();
         }
