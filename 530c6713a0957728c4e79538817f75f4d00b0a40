@@ -16,6 +16,23 @@
       "message": "PTAL",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69411373_5c5ca9c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-16T21:10:51Z",
+      "side": 1,
+      "message": "since this is (only?) for MTE, mention that in the commit message for future archaeologists? (without a bug the only way to get more context is the gerrit topic, which is inconvenient for most...)\n\nalso note whether this is something we want permanently, or this is just useful during not-previously-mte device bringup?",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
