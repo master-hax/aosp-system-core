@@ -165,6 +165,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7ca5d07_5c704ebb",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-16T19:01:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "260af585_ec6b2314",
+      "range": {
+        "startLine": 179,
+        "startChar": 25,
+        "endLine": 179,
+        "endChar": 54
+      },
+      "revId": "9dbf31e8a614e36191396fb6b176963ad62e1736",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be281c69_1787f8ab",
@@ -178,6 +202,30 @@
       "writtenOn": "2023-11-16T17:59:03Z",
       "side": 1,
       "message": "looks like seq_ops_set is not used after this line. We do not need caller to create this variable. Let\u0027s move it inside the `GetSequenceData*` functions.",
+      "range": {
+        "startLine": 279,
+        "startChar": 62,
+        "endLine": 279,
+        "endChar": 73
+      },
+      "revId": "9dbf31e8a614e36191396fb6b176963ad62e1736",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad15a873_8ceebecc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 26
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-16T19:01:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be281c69_1787f8ab",
       "range": {
         "startLine": 279,
         "startChar": 62,

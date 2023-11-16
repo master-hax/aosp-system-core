@@ -22,6 +22,30 @@
       },
       "revId": "e30f9be3627046d6d49231048563216dd1fd7c4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7bd2d4d_ea8a5af8",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-16T19:01:01Z",
+      "side": 1,
+      "message": "ah good point",
+      "parentUuid": "e40b272a_bdecc7ed",
+      "range": {
+        "startLine": 248,
+        "startChar": 54,
+        "endLine": 248,
+        "endChar": 96
+      },
+      "revId": "e30f9be3627046d6d49231048563216dd1fd7c4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
