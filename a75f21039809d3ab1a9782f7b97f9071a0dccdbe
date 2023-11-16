@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd36af59_7b80b88e",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T00:37:07Z",
+      "side": 1,
+      "message": "epoll.open() is never called. Is this expected to work?",
+      "revId": "a75f21039809d3ab1a9782f7b97f9071a0dccdbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
