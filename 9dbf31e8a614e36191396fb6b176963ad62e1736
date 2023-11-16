@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6453a26_e7a9c63d",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T17:53:30Z",
+      "side": 1,
+      "message": "GetSequenceOffset(header)",
+      "range": {
+        "startLine": 240,
+        "startChar": 11,
+        "endLine": 240,
+        "endChar": 57
+      },
+      "revId": "9dbf31e8a614e36191396fb6b176963ad62e1736",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c7ab38a_04ee33fa",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T17:53:30Z",
+      "side": 1,
+      "message": "GetResumeOffset(header)",
+      "range": {
+        "startLine": 244,
+        "startChar": 11,
+        "endLine": 244,
+        "endChar": 87
+      },
+      "revId": "9dbf31e8a614e36191396fb6b176963ad62e1736",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8453d669_5f4ed626",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 26
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T17:53:30Z",
+      "side": 1,
+      "message": "GetOpOffset(header.op_count_max, header)",
+      "range": {
+        "startLine": 249,
+        "startChar": 11,
+        "endLine": 251,
+        "endChar": 53
+      },
+      "revId": "9dbf31e8a614e36191396fb6b176963ad62e1736",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
