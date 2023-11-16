@@ -117,7 +117,6 @@ namespace init {
 
 static int property_triggers_enabled = 0;
 
-int sigchld_fd = -1;
 static int sigterm_fd = -1;
 static int property_fd = -1;
 
@@ -717,7 +716,7 @@ static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
 
 static void HandleSignalFd(int signal) {
     signalfd_siginfo siginfo;
-    const int signal_fd = signal == SIGCHLD ? sigchld_fd : sigterm_fd;
+    const int signal_fd = signal == SIGCHLD ? Service::GetSigchldFd() : sigterm_fd;
     ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
     if (bytes_read != sizeof(siginfo)) {
         PLOG(ERROR) << "Failed to read siginfo from signal_fd";
@@ -799,8 +798,7 @@ static void InstallSignalFdHandler(Epoll* epoll) {
     if (!cs_result.ok()) {
         PLOG(FATAL) << cs_result.error();
     }
-    sigchld_fd = cs_result.value();
-    Service::SetSigchldFd(sigchld_fd);
+    Service::SetSigchldFd(cs_result.value());
 
     if (sigismember(&mask, SIGTERM)) {
         Result<int> cs_result = CreateAndRegisterSignalFd(epoll, SIGTERM);

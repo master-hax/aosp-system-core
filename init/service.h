@@ -155,7 +155,11 @@ class Service {
     const Subcontext* subcontext() const { return subcontext_; }
     const std::string& filename() const { return filename_; }
     void set_filename(const std::string& name) { filename_ = name; }
-    static void SetSigchldFd(int sigchld_fd) { sigchld_fd_ = sigchld_fd; }
+    static int GetSigchldFd() { return sigchld_fd_; }
+    static int SetSigchldFd(int sigchld_fd) {
+        std::swap(sigchld_fd_, sigchld_fd);
+        return sigchld_fd;
+    }
 
   private:
     void NotifyStateChange(const std::string& new_state) const;
