@@ -16,6 +16,24 @@
       "message": "this is backwards compatible, meaning it will continue to work for upgrading vendor devices or devices with old kernels, right?",
       "revId": "810a3d28c18015cbef17be77f07ccd58bf551cd9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64dbeb2d_d10d2e4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-16T19:03:23Z",
+      "side": 1,
+      "message": "Yes. Because the \"io\" controller has been declared optional in cgroups.json, failures to activate that cgroup controller will be ignored. This covers the case in which the io cgroup controller has been disabled in the kernel configuration.",
+      "parentUuid": "7d838d58_5b0f7db9",
+      "revId": "810a3d28c18015cbef17be77f07ccd58bf551cd9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
