@@ -78,8 +78,7 @@ void CowWriterV3::SetupHeaders() {
     // WIP: not quite sure how some of these are calculated yet, assuming buffer_size is determined
     // during COW size estimation
     header_.sequence_data_count = 0;
-    header_.resume_point_count = 0;
-    header_.resume_point_max = kNumResumePoints;
+    header_.resume_point_count = kNumResumePoints;
     header_.op_count = 0;
     header_.op_count_max = 0;
     header_.compression_algorithm = kCowCompressNone;
@@ -164,8 +163,19 @@ bool CowWriterV3::OpenForWrite() {
         }
     }
     header_.op_count_max = options_.op_count_max;
-    resume_points_ = std::make_shared<std::vector<ResumePoint>>();
 
+    resume_points_ = std::make_shared<std::vector<ResumePoint>>();
+    for (size_t i = 0; i < header_.resume_point_count; i++) {
+        resume_points_->emplace_back(ResumePoint({0, 0}));
+    }
+
+    // Ensure that resume points are initialized with empty points.
+    if (!android::base::WriteFullyAtOffset(fd_, resume_points_->data(),
+                                           header_.resume_point_count * sizeof(ResumePoint),
+                                           GetResumeOffset(header_))) {
+        PLOG(ERROR) << "writing resume buffer failed";
+        return false;
+    }
     if (!Sync()) {
         LOG(ERROR) << "Header sync failed";
         return false;
@@ -288,6 +298,7 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
     // remove all labels greater than this current one. we want to avoid the situation of adding
     // in
     // duplicate labels with differing op values
+
     auto remove_if_callback = [&](const auto& resume_point) -> bool {
         if (resume_point.label >= label) return true;
         return false;
@@ -295,21 +306,22 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
     resume_points_->erase(
             std::remove_if(resume_points_->begin(), resume_points_->end(), remove_if_callback),
             resume_points_->end());
-
     resume_points_->push_back({label, header_.op_count});
-    header_.resume_point_count++;
     // remove the oldest resume point if resume_buffer is full
-    while (resume_points_->size() > header_.resume_point_max) {
-        resume_points_->erase(resume_points_->begin());
+    while (resume_points_->size() != header_.resume_point_count) {
+        if (resume_points_->size() > header_.resume_point_count) {
+            resume_points_->erase(resume_points_->begin());
+        } else {
+            resume_points_->emplace_back(ResumePoint({0, 0}));
+        }
     }
 
-    CHECK_LE(resume_points_->size(), header_.resume_point_max);
-    LOG(INFO) << "WRITING LABEL: " << label;
-    for (auto i : *resume_points_) {
-        LOG(INFO) << i.label;
-    }
+    CHECK_LE(resume_points_->size(), header_.resume_point_count);
+
+    LOG(INFO) << "WRITING: " << header_.resume_point_count << " " << GetResumeOffset(header_);
+
     if (!android::base::WriteFullyAtOffset(fd_, resume_points_->data(),
-                                           resume_points_->size() * sizeof(ResumePoint),
+                                           header_.resume_point_count * sizeof(ResumePoint),
                                            GetResumeOffset(header_))) {
         PLOG(ERROR) << "writing resume buffer failed";
         return false;

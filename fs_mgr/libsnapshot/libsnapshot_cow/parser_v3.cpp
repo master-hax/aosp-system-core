@@ -77,6 +77,7 @@ bool CowParserV3::Parse(borrowed_fd fd, const CowHeaderV3& header, std::optional
 bool CowParserV3::ReadResumeBuffer(borrowed_fd fd) {
     resume_points_ = std::make_shared<std::vector<ResumePoint>>(header_.resume_point_count);
 
+    LOG(INFO) << "RESUME BUFFER SIZE: " << header_.resume_point_count;
     return android::base::ReadFullyAtOffset(fd, resume_points_->data(),
                                             header_.resume_point_count * sizeof(ResumePoint),
                                             GetResumeOffset(header_));

@@ -114,7 +114,6 @@ struct CowHeaderV3 : public CowHeader {
     // Number of max resume points that can be written
 >>>>>>> b51bc4798 (libsnapshot: add sequence data)
     uint32_t resume_point_count;
-    uint32_t resume_point_max;
     // Number of CowOperationV3 structs in the operation buffer, currently and total
     // region size.
     uint32_t op_count;
