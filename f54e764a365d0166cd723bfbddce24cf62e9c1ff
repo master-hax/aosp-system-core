@@ -62,6 +62,23 @@
       },
       "revId": "f54e764a365d0166cd723bfbddce24cf62e9c1ff",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b667f630_bdcb6e48",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/parser_v3.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T19:11:36Z",
+      "side": 1,
+      "message": "You don\u0027t have to do it in this CL, but consider adding a check that the offset of last operation does not exceed size of COW image.",
+      "revId": "f54e764a365d0166cd723bfbddce24cf62e9c1ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
