@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e40b272a_bdecc7ed",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T18:02:18Z",
+      "side": 1,
+      "message": "not needed. GetOpOffset already did the computation",
+      "range": {
+        "startLine": 248,
+        "startChar": 54,
+        "endLine": 248,
+        "endChar": 96
+      },
+      "revId": "e30f9be3627046d6d49231048563216dd1fd7c4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
