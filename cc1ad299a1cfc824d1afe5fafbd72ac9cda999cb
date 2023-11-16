@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0adeeb4_86442ec7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T18:01:20Z",
+      "side": 1,
+      "message": "also check that `num_ops*sizeof(data[0])` is \u003c\u003d size of sequence buffer?",
+      "revId": "cc1ad299a1cfc824d1afe5fafbd72ac9cda999cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b41d5f93_f76fd078",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T18:01:20Z",
+      "side": 1,
+      "message": "data[0]",
+      "range": {
+        "startLine": 320,
+        "startChar": 61,
+        "endLine": 320,
+        "endChar": 69
+      },
+      "revId": "cc1ad299a1cfc824d1afe5fafbd72ac9cda999cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
