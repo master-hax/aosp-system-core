@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5331ab52_3fdb7212",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 30
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T19:10:31Z",
+      "side": 1,
+      "message": "Other fields in the cow header(resume_point_count, op_count) are measured in size of number of elements, but sequence buffer is measured in number of bytes. Let\u0027s keep everything consistent and use number of elements for sequence_buffer as well. This would also save an extra `header_.sequence_buffer_size % sizeof(uint32_t)` check",
+      "range": {
+        "startLine": 109,
+        "startChar": 13,
+        "endLine": 109,
+        "endChar": 33
+      },
+      "revId": "f54e764a365d0166cd723bfbddce24cf62e9c1ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a9212c2_0c1cf97d",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 30
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T19:10:31Z",
+      "side": 1,
+      "message": "Not this CL, but, before V3 format goes to production, add a static_assert here to make sure the size of V3 header/operation/resumepoint is what we expecct.",
+      "revId": "f54e764a365d0166cd723bfbddce24cf62e9c1ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "440d6c4e_7d764f0d",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 30
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-16T19:10:31Z",
+      "side": 1,
+      "message": "use out pointer",
+      "range": {
+        "startLine": 177,
+        "startChar": 81,
+        "endLine": 177,
+        "endChar": 84
+      },
+      "revId": "f54e764a365d0166cd723bfbddce24cf62e9c1ff",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
