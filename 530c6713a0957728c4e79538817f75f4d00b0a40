@@ -51,6 +51,24 @@
       "parentUuid": "69411373_5c5ca9c8",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19426e3c_bc4b537e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-16T22:32:05Z",
+      "side": 1,
+      "message": "what exactly is a \"fullmte\" build? even if this is configured in BuildConfig.mk, i\u0027m wondering whether this should actually be a system property rather than an environment variable?",
+      "parentUuid": "ad87203a_107c612c",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
