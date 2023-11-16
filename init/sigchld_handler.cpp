@@ -123,37 +123,58 @@ void ReapAnyOutstandingChildren() {
     }
 }
 
-static void DiscardSiginfo(int signal_fd) {
+static void ReapAndRemove(std::vector<pid_t>& alive_pids) {
+    while (!alive_pids.empty()) {
+        const pid_t pid = ReapOneProcess();
+        if (pid <= 0) {
+            break;
+        }
+        auto it = std::find(alive_pids.begin(), alive_pids.end(), pid);
+        if (it != alive_pids.end()) {
+            alive_pids.erase(it);
+        }
+    }
+}
+
+static void HandleSignal(int signal_fd, std::vector<pid_t>& alive_pids) {
     signalfd_siginfo siginfo;
     ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
     if (bytes_read != sizeof(siginfo)) {
         LOG(WARNING) << "Unexpected: " << __func__ << " read " << bytes_read << " bytes instead of "
                      << sizeof(siginfo);
     }
+    ReapAndRemove(alive_pids);
 }
 
 void WaitToBeReaped(int sigchld_fd, const std::vector<pid_t>& pids,
                     std::chrono::milliseconds timeout) {
     Timer t;
     Epoll epoll;
-    // The init process passes a valid sigchld_fd argument but unit tests do not.
-    if (sigchld_fd >= 0) {
-        epoll.RegisterHandler(sigchld_fd, [sigchld_fd]() { DiscardSiginfo(sigchld_fd); });
+    if (auto result = epoll.Open(); !result.ok()) {
+        LOG(WARNING) << __func__ << "Epoll::Open() failed " << result.error();
+        sigchld_fd = -1;
     }
-    std::vector<pid_t> alive_pids(pids.begin(), pids.end());
-    while (!alive_pids.empty() && t.duration() < timeout) {
-        pid_t pid;
-        while ((pid = ReapOneProcess()) != 0) {
-            auto it = std::find(alive_pids.begin(), alive_pids.end(), pid);
-            if (it != alive_pids.end()) {
-                alive_pids.erase(it);
-            }
+    std::vector<pid_t> alive_pids(pids);
+    // The init process passes a valid sigchld_fd argument but some unit tests do not.
+    if (sigchld_fd >= 0) {
+        auto result = epoll.RegisterHandler(
+                sigchld_fd, [sigchld_fd, &alive_pids]() { HandleSignal(sigchld_fd, alive_pids); });
+        if (!result.ok()) {
+            LOG(WARNING) << __func__ << "RegisterHandler() failed " << result.error();
+            sigchld_fd = -1;
         }
+    }
+    while (!alive_pids.empty() && t.duration() < timeout) {
+        ReapAndRemove(alive_pids);
         if (alive_pids.empty()) {
             break;
         }
         if (sigchld_fd >= 0) {
-            epoll.Wait(std::max(timeout - t.duration(), 0ms));
+            auto result = epoll.Wait(std::max(timeout - t.duration(), 0ms));
+            if (!result.ok()) {
+                LOG(WARNING) << "Epoll::Wait() failed " << result.error();
+                std::this_thread::sleep_for(50ms);
+            }
         } else {
             std::this_thread::sleep_for(50ms);
         }
