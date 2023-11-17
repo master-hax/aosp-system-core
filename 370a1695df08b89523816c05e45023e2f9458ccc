@@ -16,6 +16,24 @@
       "message": "This needs a test case for the problem being fixed and a \"Test:\" stanza in the commit message.",
       "revId": "370a1695df08b89523816c05e45023e2f9458ccc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "511e4b34_023dc0a8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T00:35:49Z",
+      "side": 1,
+      "message": "The text \"Test: CtsInitTestCases:ServiceStopTest\" has been added. See also the next CL in this series (https://android-review.git.corp.google.com/c/platform/system/core/+/2832973).",
+      "parentUuid": "f8d531b2_e90c2e27",
+      "revId": "370a1695df08b89523816c05e45023e2f9458ccc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
