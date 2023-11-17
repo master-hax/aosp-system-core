@@ -22,6 +22,30 @@
       },
       "revId": "ab35a7e818118056e4734d9000d72d6fd2843eda",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e3ab2e1_c8b5ca91",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T17:52:25Z",
+      "side": 1,
+      "message": "Isn\u0027t renaming the `controller()` method something that falls outside the scope of this CL?",
+      "parentUuid": "e88d9820_19a0a160",
+      "range": {
+        "startLine": 335,
+        "startChar": 34,
+        "endLine": 335,
+        "endChar": 44
+      },
+      "revId": "ab35a7e818118056e4734d9000d72d6fd2843eda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
