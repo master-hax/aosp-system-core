@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8699d398_0ef14cef",
+        "filename": "init/security.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-17T18:04:35Z",
+      "side": 1,
+      "message": "write this closer to how it is in the comment above using std::log2p1? (it\u0027s been renamed to std::bit_width since the version of libc++ we have, but +rprichard will be along shortly to clean up that kind of thing anyway. or we could just hack this into libc++ now?)\n\n(or we could just literally use libm\u0027s log2() and say no-one cares because this is called exactly once per boot?)",
+      "revId": "b0bb584e0967657bd1c10fd82d17e762fd04263d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
