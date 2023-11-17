@@ -41,6 +41,7 @@ std::shared_ptr<T> addService(Args&&... args) {
     return service;
 }
 
+static bool add_service_before_connect;
 static const char* _sopts = "hD:";
 static const struct option _lopts[] = {
         {"help", no_argument, 0, 'h'},
@@ -79,6 +80,18 @@ static void parse_options(int argc, char** argv) {
         switch (c) {
             case 'D':
                 trusty_keymaster_set_dev_name(optarg);
+                if (strncmp(optarg, "VSOCK:", 6) == 0) {
+                    /*
+                     * keystore will timeout and never retry if the hal is not
+                     * found very quickly after keystore starts. Add the hal
+                     * service before connecting if we are connecting to a vsock
+                     * since the vm we are connecting to might still be booting.
+                     *
+                     * TODO: remove when keystore has been fixed to wait for the
+                     * hal.
+                     */
+                    add_service_before_connect = true;
+                }
                 break;
 
             case 'h':
@@ -94,10 +107,12 @@ static void parse_options(int argc, char** argv) {
 int main(int argc, char** argv) {
     parse_options(argc, argv);
     auto trustyKeymaster = std::make_shared<keymaster::TrustyKeymaster>();
-    int err = trustyKeymaster->Initialize(keymaster::KmVersion::KEYMINT_3);
-    if (err != 0) {
-        LOG(FATAL) << "Could not initialize TrustyKeymaster for KeyMint (" << err << ")";
-        return -1;
+    if (!add_service_before_connect) {
+        int err = trustyKeymaster->Initialize(keymaster::KmVersion::KEYMINT_3);
+        if (err != 0) {
+            LOG(FATAL) << "Could not initialize TrustyKeymaster for KeyMint (" << err << ")";
+            return -1;
+        }
     }
 
     // Zero threads seems like a useless pool but below we'll join this thread to it, increasing
@@ -109,6 +124,13 @@ int main(int argc, char** argv) {
     auto sharedSecret = addService<TrustySharedSecret>(trustyKeymaster);
     auto remotelyProvisionedComponent =
             addService<TrustyRemotelyProvisionedComponentDevice>(trustyKeymaster);
+    if (add_service_before_connect) {
+        int err = trustyKeymaster->Initialize(keymaster::KmVersion::KEYMINT_3);
+        if (err != 0) {
+            LOG(FATAL) << "Could not initialize TrustyKeymaster for KeyMint (" << err << ")";
+            return -1;
+        }
+    }
     ABinderProcess_joinThreadPool();
     return EXIT_FAILURE;  // should not reach
 }
