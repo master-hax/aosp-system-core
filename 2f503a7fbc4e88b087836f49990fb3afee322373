@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8078b367_d99ae17e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-17T08:30:38Z",
+      "side": 1,
+      "message": "just nits on style",
+      "revId": "2f503a7fbc4e88b087836f49990fb3afee322373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca3f598f_10fd5adc",
+        "filename": "init/service_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-17T08:30:38Z",
+      "side": 1,
+      "message": "can be `result{ctx}`",
+      "range": {
+        "startLine": 54,
+        "startChar": 16,
+        "endLine": 54,
+        "endChar": 42
+      },
+      "revId": "2f503a7fbc4e88b087836f49990fb3afee322373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0ac9c7f_310e8b18",
+        "filename": "init/service_test.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-17T08:30:38Z",
+      "side": 1,
+      "message": "this can be omitted thanks to the default param.",
+      "range": {
+        "startLine": 225,
+        "startChar": 32,
+        "endLine": 225,
+        "endChar": 51
+      },
+      "revId": "2f503a7fbc4e88b087836f49990fb3afee322373",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
