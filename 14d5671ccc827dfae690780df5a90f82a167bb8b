@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d4f20067_e41a7a95",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T17:50:25Z",
+      "side": 1,
+      "message": "I don\u0027t think that it is possible to check whether a cgroup is empty without introducing a TOCTOU race.",
+      "parentUuid": "76e5088a_7eb2bf50",
+      "range": {
+        "startLine": 10,
+        "startChar": 46,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "1a30bf87_e0286337",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -101,6 +125,30 @@
       "writtenOn": "2023-11-17T14:45:04Z",
       "side": 1,
       "message": "Can we just rename this to `removeAllEmptyProcessGroups` and get rid of this name if we want to keep the \"only remove empty cgroups\" behavior? Looks like only a couple of callsites would need upating.",
+      "range": {
+        "startLine": 263,
+        "startChar": 0,
+        "endLine": 264,
+        "endChar": 31
+      },
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f6de74a_7e4b648e",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T17:50:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5b2b3a7_626cd671",
       "range": {
         "startLine": 263,
         "startChar": 0,
