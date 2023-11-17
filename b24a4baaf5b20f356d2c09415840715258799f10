@@ -22,6 +22,23 @@
       },
       "revId": "b24a4baaf5b20f356d2c09415840715258799f10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bbe1444_aa356fff",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-17T18:27:43Z",
+      "side": 1,
+      "message": "add \"falling back to sleep() instead of epoll_wait()\" so reader know what the effect is",
+      "revId": "b24a4baaf5b20f356d2c09415840715258799f10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
