@@ -22,6 +22,30 @@
       },
       "revId": "90703b86d9d787ba69d67566cb75d8378b56171d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2632fe25_7a8e40fc",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 833,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2023-11-17T19:12:53Z",
+      "side": 1,
+      "message": "Something like 1. read(/proc/mounts), 2. grab(/data), 3. get dm-X.",
+      "parentUuid": "a1539fac_d5d86ad9",
+      "range": {
+        "startLine": 832,
+        "startChar": 59,
+        "endLine": 833,
+        "endChar": 70
+      },
+      "revId": "90703b86d9d787ba69d67566cb75d8378b56171d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
