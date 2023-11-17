@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d287bb3_efe08596",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-17T22:27:25Z",
+      "side": 1,
+      "message": "I saw this while looking at the person\u0027s cl to make this into a library. Since it makes sense to me to remove this file\u0027s dependency on async_safe might as well do it.",
+      "revId": "c7cc571fa186f5eceb7f52726a156c348b33866e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
