@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d3d66ba_dd306693",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-17T13:14:01Z",
+      "side": 1,
+      "message": "For other invalid configs we either warn and continue or error and return false. I think here we should probably `LOG(WARNING)` instead of `LOG(ERROR)`.",
+      "range": {
+        "startLine": 873,
+        "startChar": 22,
+        "endLine": 877,
+        "endChar": 21
+      },
+      "revId": "d199c268dae02ec5385667e4edce8c06ac51f9a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
