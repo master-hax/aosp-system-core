@@ -70,4 +70,8 @@ bool tombstone_proto_to_text(
 void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& frame);
 void set_human_readable_cause(Cause* cause, uint64_t fault_addr);
 
+std::string describe_tagged_addr_ctrl(long ctrl);
+std::string describe_pac_enabled_keys(long keys);
+std::string describe_end(long value, std::string& desc);
+
 #endif  // _DEBUGGERD_TOMBSTONE_H
