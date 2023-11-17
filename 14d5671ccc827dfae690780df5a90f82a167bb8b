@@ -62,6 +62,53 @@
       },
       "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "637ef4a1_7156f7ea",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-17T14:45:04Z",
+      "side": 1,
+      "message": "Oh this just doesn\u0027t warn for populated cgroups when we\u0027re trying to remove empty ones... but that could be a little confusing after the unconditional `\"Removing \" \u003c\u003c path` log above.",
+      "parentUuid": "cf539845_913e5c6a",
+      "range": {
+        "startLine": 253,
+        "startChar": 16,
+        "endLine": 255,
+        "endChar": 17
+      },
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5b2b3a7_626cd671",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-11-17T14:45:04Z",
+      "side": 1,
+      "message": "Can we just rename this to `removeAllEmptyProcessGroups` and get rid of this name if we want to keep the \"only remove empty cgroups\" behavior? Looks like only a couple of callsites would need upating.",
+      "range": {
+        "startLine": 263,
+        "startChar": 0,
+        "endLine": 264,
+        "endChar": 31
+      },
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
