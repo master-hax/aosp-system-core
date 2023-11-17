@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76e5088a_7eb2bf50",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-17T08:01:40Z",
+      "side": 1,
+      "message": "Then shouldn\u0027t we find another way of checking the group is empty or not, instead of ignoring the case?",
+      "range": {
+        "startLine": 10,
+        "startChar": 46,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
