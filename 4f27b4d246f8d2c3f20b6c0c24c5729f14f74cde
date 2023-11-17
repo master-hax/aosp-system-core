@@ -22,6 +22,30 @@
       },
       "revId": "4f27b4d246f8d2c3f20b6c0c24c5729f14f74cde",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1393346d_e4f673ef",
+        "filename": "init/init.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 758,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T17:55:01Z",
+      "side": 1,
+      "message": "A different solution has been implemented: the function `CreateAndRegisterSignalFd()` has been split and the `fd \u003c 0` test has been removed.",
+      "parentUuid": "de9e4a15_b3a4e66c",
+      "range": {
+        "startLine": 758,
+        "startChar": 4,
+        "endLine": 758,
+        "endChar": 17
+      },
+      "revId": "4f27b4d246f8d2c3f20b6c0c24c5729f14f74cde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
