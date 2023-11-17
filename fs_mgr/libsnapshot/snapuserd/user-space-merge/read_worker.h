@@ -59,11 +59,13 @@ class ReadWorker : public Worker, public IBlockServer::Delegate {
 
     std::string backing_store_device_;
     unique_fd backing_store_fd_;
+    unique_fd backing_store_direct_fd_;
 
     std::shared_ptr<IBlockServerOpener> block_server_opener_;
     std::unique_ptr<IBlockServer> block_server_;
 
     std::basic_string<uint8_t> xor_buffer_;
+    std::unique_ptr<void, decltype(&::free)> aligned_buffer_;
 };
 
 }  // namespace snapshot
