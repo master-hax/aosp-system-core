@@ -34,6 +34,46 @@
       "parentUuid": "f8d531b2_e90c2e27",
       "revId": "370a1695df08b89523816c05e45023e2f9458ccc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77a6d1a7_2bfd272b",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-17T16:14:50Z",
+      "side": 1,
+      "message": "Remove debugging log",
+      "revId": "370a1695df08b89523816c05e45023e2f9458ccc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e870efa_dcc30866",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-17T16:14:50Z",
+      "side": 1,
+      "message": "zero initialize variables.",
+      "range": {
+        "startLine": 134,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 14
+      },
+      "revId": "370a1695df08b89523816c05e45023e2f9458ccc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
