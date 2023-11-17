@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f0120ee_05f7f4fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-17T19:45:37Z",
+      "side": 1,
+      "message": "heh, i felt a bit dirty suggesting it at the time, but now i\u0027ve seen it, yeah, that does seem like the clearest option anyway.\n\n(this has made me think that maybe i do need to implement C23\u0027s \u003cstdbit.h\u003e too at some point...)",
+      "revId": "24a47eccf7666e0c68d56bfa9dba972c92ab603e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
