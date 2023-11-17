@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a09da352_02c90fdc",
+        "filename": "trusty/keymaster/keymint/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-11-17T21:37:42Z",
+      "side": 1,
+      "message": "@drysdale@google.com: I have not tried that option yet. Do you think keystore can be fixed to wait for the hal service instead of permanently failing if it does not exist when it first tries to use it?",
+      "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
