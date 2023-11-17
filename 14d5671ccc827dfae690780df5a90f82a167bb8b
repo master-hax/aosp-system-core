@@ -65,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e727392_1cd3931b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T17:51:49Z",
+      "side": 1,
+      "message": "The \"cgroup empty\" test did not cause any code to fail so no bug has been created so far for this revert. Please let me know if you would like me to create a bug for this revert.",
+      "parentUuid": "1a30bf87_e0286337",
+      "revId": "14d5671ccc827dfae690780df5a90f82a167bb8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cf539845_913e5c6a",
