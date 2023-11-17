@@ -87,6 +87,24 @@
       "parentUuid": "19426e3c_bc4b537e",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b40f7fd_676f0b6c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-17T21:20:14Z",
+      "side": 1,
+      "message": "\u003e This makes it easier to change for OEMs.\n\ndo they need to?\n\n\u003e Also it\u0027s not that easy to detect fullmte build in the code.\n\nyeah, but you can add the relevant -D.\n\n\u003e i actually tried using a sysprop as an experiment, but the value is needed too early\n\ni thought scudo already uses system properties (which is why we can\u0027t allocate within the system properties implementation)?\n\nanyway, my main point was really \"since you can\u0027t guarantee that an environment variable gets inherited, an environment variable only gets you a subset of processes\". it\u0027s worth explicitly stating that that\u0027s okay (and why!)...",
+      "parentUuid": "7d19621c_5a782ecf",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
