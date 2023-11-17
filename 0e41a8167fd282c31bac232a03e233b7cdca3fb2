@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe15240d_5c87b9e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-17T00:24:28Z",
+      "side": 1,
+      "message": "Please add a standalone test case for this in snapuserd_test, that exercises the behavior without needing the sysprop.\n\n(Either by using the property fetcher that uses dependency injection, or by plumbing a boolean through works.)",
+      "revId": "0e41a8167fd282c31bac232a03e233b7cdca3fb2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
