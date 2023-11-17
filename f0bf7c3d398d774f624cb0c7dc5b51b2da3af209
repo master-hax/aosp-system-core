@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af0c2428_246fcd76",
+        "filename": "init/service.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-17T00:13:45Z",
+      "side": 1,
+      "message": "I rather we turn this into a static initializer, something like\n\n```\n\n    static int GetSigchldFd() { \n        static sigchld_fd_ \u003d CreateSigChldFd();\n        return sigchld_fd_;\n    }\n    \n```\n\nAnd remove the setter completely.",
+      "revId": "f0bf7c3d398d774f624cb0c7dc5b51b2da3af209",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
