@@ -69,6 +69,24 @@
       "parentUuid": "ad87203a_107c612c",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d19621c_5a782ecf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-11-17T11:10:53Z",
+      "side": 1,
+      "message": "\u003e since this is (only?) for MTE, mention that in the commit message for future archaeologists? (without a bug the only way to get more context is the gerrit topic, which is inconvenient for most...)\n\nDone\n\n\u003e also note whether this is something we want permanently, or this is just useful during not-previously-mte device bringup?\n\npermanently for fullmte builds.\n\n\n\u003e related: is there a reason why this is configured this way, rather than being an if (mte) limit \u003d MOAR; somewhere in the code?\n\n\nThis makes it easier to change for OEMs. Also it\u0027s not that easy to detect fullmte build in the code.\n\n\u003e wondering whether this should actually be a system property rather than an environment variable?\n\ntwo reasons why not: \n\n* it would make things even more confusing if there was a sysprop and a SCUDO_OPTIONS env variable to control the same thing rather than two different env variables\n* i actually tried using a sysprop as an experiment, but the value is needed too early",
+      "parentUuid": "19426e3c_bc4b537e",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
