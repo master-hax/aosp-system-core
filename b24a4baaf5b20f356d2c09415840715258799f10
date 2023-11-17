@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cab50bb5_ba70b480",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-17T18:25:56Z",
+      "side": 1,
+      "message": "space before \"Epoll::Open()\"",
+      "range": {
+        "startLine": 154,
+        "startChar": 37,
+        "endLine": 154,
+        "endChar": 50
+      },
+      "revId": "b24a4baaf5b20f356d2c09415840715258799f10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
