@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a97db543_a9b8097c",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T18:17:35Z",
+      "side": 1,
+      "message": "This log statement has been removed.",
+      "parentUuid": "b749b77a_e8b4d04d",
+      "range": {
+        "startLine": 127,
+        "startChar": 8,
+        "endLine": 127,
+        "endChar": 12
+      },
+      "revId": "f88987465e900d06648774e5fab75f57d53b5b58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0ad451b7_8b987d8e",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cde0b006_8f4ec5aa",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T18:17:35Z",
+      "side": 1,
+      "message": "A new function has been introduced.",
+      "parentUuid": "0ad451b7_8b987d8e",
+      "range": {
+        "startLine": 163,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 9
+      },
+      "revId": "f88987465e900d06648774e5fab75f57d53b5b58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c01c82d9_b6bbf603",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-11-17T08:26:12Z",
       "side": 1,
       "message": "can this be \n\n```\nif (sigchld_fd \u003e\u003d 0) {\n    ...\n    if (result.ok()) continue; // happy case. no delay.\n    LOG(...);\n}\nstd::this_thread::sleep_for(50ms);\n```",
+      "range": {
+        "startLine": 173,
+        "startChar": 0,
+        "endLine": 181,
+        "endChar": 9
+      },
+      "revId": "f88987465e900d06648774e5fab75f57d53b5b58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e85917b7_dc2ea12a",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-17T18:17:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c01c82d9_b6bbf603",
       "range": {
         "startLine": 173,
         "startChar": 0,
