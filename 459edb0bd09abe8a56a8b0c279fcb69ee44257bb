@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "76e2374b_2acabd5d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-19T23:13:06Z",
+      "side": 1,
+      "message": "What does this mean?",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 8
+      },
+      "revId": "459edb0bd09abe8a56a8b0c279fcb69ee44257bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4859dd80_cb1f712f",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 4
