@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "124649c7_492b0245",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-19T19:15:14Z",
+      "side": 0,
+      "message": "A nit: I think moving this code into a separate function would make things simpler.",
+      "range": {
+        "startLine": 379,
+        "startChar": 0,
+        "endLine": 409,
+        "endChar": 9
+      },
+      "revId": "304881205579d65819711d8fe733c31f100977fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4adefb6_84d800b0",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-11-19T19:15:14Z",
+      "side": 1,
+      "message": "So, IIUC, the goal here is to change this case so that we kill the process even if it was migrated into another cgroup? If so, then you only need to change the `errno \u003d\u003d ENOENT` case, however your change also affects the cases when `errno !\u003d ENOENT`. For that case, before the change we would do:\n```\nPLOG(WARNING) \u003c\u003c __func__ \u003c\u003c \" failed to open process cgroup uid \"\n              \u003c\u003c uid \u003c\u003c \" pid \" \u003c\u003c initialPid;\nreturn -1;\n```\nbut now we will be unnecessarily sending SIGKILLS and returning 0, won\u0027t we?",
+      "range": {
+        "startLine": 372,
+        "startChar": 16,
+        "endLine": 374,
+        "endChar": 0
+      },
+      "revId": "4061b6e9fda2460022891699db66ce07512e03e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
