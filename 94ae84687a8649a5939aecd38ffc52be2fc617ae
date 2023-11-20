@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3caa4f01_7f0336ca",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 466,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-20T19:59:13Z",
+      "side": 1,
+      "message": "This code is called by the `init` process. The `init` process is event driven. This means that no code in the `init` process should sleep except the `Epoll::Wait()` call in `SecondStageMain()`.",
+      "range": {
+        "startLine": 466,
+        "startChar": 33,
+        "endLine": 466,
+        "endChar": 81
+      },
+      "revId": "94ae84687a8649a5939aecd38ffc52be2fc617ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
