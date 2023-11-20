@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9627a7d5_946c0cee",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2023-11-20T17:47:23Z",
+      "side": 1,
+      "message": "Typo: authentication",
+      "range": {
+        "startLine": 138,
+        "startChar": 17,
+        "endLine": 138,
+        "endChar": 30
+      },
+      "revId": "83f5b0755c5ef2f8a32b28cc9d6b05d37fb23e73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09f657c4_07558601",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2023-11-20T17:47:23Z",
+      "side": 1,
+      "message": "Have you considered using the `vsock` crate which we have in Android? It provides a safe wrapper around vsock connections, which I think includes everything you\u0027re doing here.",
+      "revId": "83f5b0755c5ef2f8a32b28cc9d6b05d37fb23e73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
