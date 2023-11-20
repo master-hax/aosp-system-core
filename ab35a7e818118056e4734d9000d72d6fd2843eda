@@ -46,6 +46,30 @@
       },
       "revId": "ab35a7e818118056e4734d9000d72d6fd2843eda",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "818d04fb_0cb06025",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-20T01:24:14Z",
+      "side": 1,
+      "message": "Yeah, it\u0027s outside of the scope.",
+      "parentUuid": "9e3ab2e1_c8b5ca91",
+      "range": {
+        "startLine": 335,
+        "startChar": 34,
+        "endLine": 335,
+        "endChar": 44
+      },
+      "revId": "ab35a7e818118056e4734d9000d72d6fd2843eda",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
