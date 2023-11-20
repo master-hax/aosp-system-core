@@ -127,6 +127,51 @@ static std::unique_ptr<PersistWriteThread> persist_write_thread;
 
 static PropertyInfoAreaFile property_info_area;
 
+class AsyncRestorecon {
+  public:
+
+    void start() {
+	std::thread{&AsyncRestorecon::ThreadFunction, this}.detach();
+    }
+
+    void TriggerRestorecon(const std::string& path) {
+        auto guard = std::lock_guard{mutex_};
+        paths_.emplace(path);
+	//notify the run thread.
+	queueCV_.notify_all();
+    }
+
+  private:
+    void ThreadFunction() {
+        //the restorecon thread don't exit, wait request.
+        while(true) {
+            auto lock = std::unique_lock{mutex_};
+
+            while (paths_.empty()) {
+                queueCV_.wait(lock);
+            }
+
+            while (!paths_.empty()) {
+                auto path = paths_.front();
+                paths_.pop();
+
+                lock.unlock();
+                if (selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
+                    LOG(ERROR) << "Asynchronous restorecon of '" << path << "' failed'";
+                }
+                android::base::SetProperty(kRestoreconProperty, path);
+                lock.lock();
+            }
+        }
+    }
+
+    std::mutex mutex_;
+    std::condition_variable queueCV_;
+    std::queue<std::string> paths_;
+};
+
+static AsyncRestorecon async_restorecon;
+
 struct PropertyAuditData {
     const ucred* cr;
     const char* name;
@@ -195,42 +240,6 @@ void NotifyPropertyChange(const std::string& name, const std::string& value) {
         PropertyChanged(name, value);
     }
 }
-
-class AsyncRestorecon {
-  public:
-    void TriggerRestorecon(const std::string& path) {
-        auto guard = std::lock_guard{mutex_};
-        paths_.emplace(path);
-
-        if (!thread_started_) {
-            thread_started_ = true;
-            std::thread{&AsyncRestorecon::ThreadFunction, this}.detach();
-        }
-    }
-
-  private:
-    void ThreadFunction() {
-        auto lock = std::unique_lock{mutex_};
-
-        while (!paths_.empty()) {
-            auto path = paths_.front();
-            paths_.pop();
-
-            lock.unlock();
-            if (selinux_android_restorecon(path.c_str(), SELINUX_ANDROID_RESTORECON_RECURSE) != 0) {
-                LOG(ERROR) << "Asynchronous restorecon of '" << path << "' failed'";
-            }
-            android::base::SetProperty(kRestoreconProperty, path);
-            lock.lock();
-        }
-
-        thread_started_ = false;
-    }
-
-    std::mutex mutex_;
-    std::queue<std::string> paths_;
-    bool thread_started_ = false;
-};
 
 class SocketConnection {
   public:
@@ -565,7 +574,6 @@ std::optional<uint32_t> HandlePropertySet(const std::string& name, const std::st
     // We use a thread to do this restorecon operation to prevent holding up init, as it may take
     // a long time to complete.
     if (name == kRestoreconProperty && cr.pid != 1 && !value.empty()) {
-        static AsyncRestorecon async_restorecon;
         async_restorecon.TriggerRestorecon(value);
         return {PROP_SUCCESS};
     }
@@ -1510,6 +1518,8 @@ void StartPropertyService(int* epoll_socket) {
     }
 
     listen(property_set_fd, 8);
+
+    async_restorecon.start();
 
     auto new_thread = std::thread{PropertyServiceThread};
     property_service_thread.swap(new_thread);
