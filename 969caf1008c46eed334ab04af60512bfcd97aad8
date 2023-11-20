@@ -213,6 +213,24 @@
       "parentUuid": "f22267a4_6faa9a24",
       "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b86b08c2_95a22e5f",
+        "filename": "libutils/binder/include/utils/StrongPointer.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-20T17:00:17Z",
+      "side": 1,
+      "message": "Add a test case",
+      "parentUuid": "71f3c00d_a46ab670",
+      "revId": "969caf1008c46eed334ab04af60512bfcd97aad8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
