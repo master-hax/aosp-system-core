@@ -16,6 +16,24 @@
       "message": "@drysdale@google.com: I have not tried that option yet. Do you think keystore can be fixed to wait for the hal service instead of permanently failing if it does not exist when it first tries to use it?",
       "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e57df1fb_92cdc706",
+        "filename": "trusty/keymaster/keymint/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-11-20T11:25:35Z",
+      "side": 1,
+      "message": "Possibly, but it might be bit awkward -- what happens if requests (esp. from `vold`) to use KeyMint arrive at Keystore while it\u0027s waiting?  Will we end up needing to build a queue of pending requests that get processed once KeyMint is up and running?\n\n(The same worry applies with this change -- what happens if an early `vold` request after between service-registration but before the socket is connected?)",
+      "parentUuid": "a09da352_02c90fdc",
+      "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
