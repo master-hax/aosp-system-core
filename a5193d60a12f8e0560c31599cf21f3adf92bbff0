@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "653e1f2a_bf8c08d9",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 36
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "move after `uint32_t resume_point_count;`",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f4df6ad_3fa526d3",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_reader.h",
+        "patchSetId": 36
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "not used in this header, remove",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "904ad8bf_0163e428",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 36
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "`std::unordered_set\u003cuint32_t\u003e seq_ops_set;`",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41a685f9_7db338bd",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 36
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "return false after PLOG?",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd77e6a6_144de211",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 36
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "call `seq_ops_set.reserve()` before inserting everything in a loop. As we already know the expected size.",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4cce71d0_dd954162",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 36
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:45:58Z",
+      "side": 1,
+      "message": "this check is trivial as you just overwrite `header_.sequence_data_count`",
+      "revId": "a5193d60a12f8e0560c31599cf21f3adf92bbff0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
