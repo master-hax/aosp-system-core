@@ -40,6 +40,7 @@ class CowWriterV3 : public CowWriterBase {
     virtual bool EmitSequenceData(size_t num_ops, const uint32_t* data) override;
 
   private:
+    bool SyncBufferMetadata();
     void SetupHeaders();
     bool ParseOptions();
     bool OpenForWrite();
