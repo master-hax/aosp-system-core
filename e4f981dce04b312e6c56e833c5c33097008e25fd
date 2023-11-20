@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfec651e_e6ce31b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1455782
+      },
+      "writtenOn": "2023-11-20T23:30:13Z",
+      "side": 1,
+      "message": "Discussed over chat:\n\nThis change sets the default `ueventd` rule for this path, but (similar to SELinux `file_contexts` labels) if a device already defines a rule for this path in its vendor `ueventd` then that vendor `ueventd` rule will win at runtime and the path will have owner/group permissions as defined by the vendor rule.\n\nDefining the default here means that the feature works for many devices (those whose vendor doesn\u0027t overwrite it) for free. We can\u0027t *guarantee* that older vendor builds won\u0027t overwrite this value, but we\u0027ll follow the standard Android partner communication process to explain the importance of proper ueventd labeling for this path, support them with updating to remove the overwrite, and (pending PartnerEng confirmation) include VTS tests that check this on relevant builds.",
+      "parentUuid": "5fd19155_2d3d7f49",
+      "revId": "e4f981dce04b312e6c56e833c5c33097008e25fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dedbd8db_8b1d8d85",
