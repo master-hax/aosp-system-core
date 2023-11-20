@@ -34,6 +34,24 @@
       "parentUuid": "a09da352_02c90fdc",
       "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c22e929_07fe349c",
+        "filename": "trusty/keymaster/keymint/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-11-20T17:51:00Z",
+      "side": 1,
+      "message": "They need to block. With keymint in trustzone it will also block until storageproxyd is ready on some requests, so there is not much difference to the higher layers if you have to also block waiting to connect to the keymint ta itself.",
+      "parentUuid": "e57df1fb_92cdc706",
+      "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
