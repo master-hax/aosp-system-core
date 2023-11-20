@@ -77,7 +77,7 @@ void CowWriterV3::SetupHeaders() {
     // v3 specific fields
     // WIP: not quite sure how some of these are calculated yet, assuming buffer_size is determined
     // during COW size estimation
-    header_.sequence_buffer_offset = 0;
+    header_.sequence_data_count = 0;
     header_.resume_point_count = 0;
     header_.resume_point_max = kNumResumePoints;
     header_.op_count = 0;
@@ -311,7 +311,7 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
         PLOG(ERROR) << "writing resume buffer failed";
         return false;
     }
-    return Sync();
+    return SyncBufferMetadata();
 }
 
 bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
@@ -363,6 +363,22 @@ bool CowWriterV3::Finalize() {
 
 uint64_t CowWriterV3::GetCowSize() {
     return next_data_pos_;
+}
+
+bool CowWriterV3::SyncBufferMetadata() {
+    if (!android::base::WriteFullyAtOffset(fd_, &header_.sequence_data_count,
+                                           sizeof(header_.sequence_data_count),
+                                           sizeof(CowHeader))) {
+        return false;
+    }
+
+    if (!android::base::WriteFullyAtOffset(
+                fd_, &header_.resume_point_count, sizeof(header_.resume_point_count),
+                sizeof(header_.sequence_data_count) + sizeof(CowHeader))) {
+        return false;
+    }
+
+    return Sync();
 }
 
 }  // namespace snapshot
