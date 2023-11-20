@@ -298,6 +298,9 @@ void ColdBoot::Run() {
 
 static UeventdConfiguration GetConfiguration() {
     auto hardware = android::base::GetProperty("ro.hardware", "");
+    if (hardware == "microdroid") {
+        return ParseConfig({"/system/etc/ueventd.rc", "/vendor/etc/ueventd.rc"});
+    }
 
     struct LegacyPathInfo {
         std::string legacy_path;
