@@ -39,6 +39,30 @@
       },
       "revId": "e4f981dce04b312e6c56e833c5c33097008e25fd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fdece937_d7cee51a",
+        "filename": "rootdir/ueventd.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-20T21:26:32Z",
+      "side": 1,
+      "message": "nvm - Daniel mentioned vendor has priority.",
+      "parentUuid": "dedbd8db_8b1d8d85",
+      "range": {
+        "startLine": 74,
+        "startChar": 0,
+        "endLine": 74,
+        "endChar": 50
+      },
+      "revId": "e4f981dce04b312e6c56e833c5c33097008e25fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
