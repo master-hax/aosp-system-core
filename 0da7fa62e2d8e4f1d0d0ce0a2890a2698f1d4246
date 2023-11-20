@@ -16,6 +16,24 @@
       "message": "std::vector is already heap allocated. No need to wrap it inside a unique ptr.",
       "revId": "0da7fa62e2d8e4f1d0d0ce0a2890a2698f1d4246",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6becd5de_990d4723",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 31
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2023-11-20T16:10:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7109580d_4736fc49",
+      "revId": "0da7fa62e2d8e4f1d0d0ce0a2890a2698f1d4246",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
