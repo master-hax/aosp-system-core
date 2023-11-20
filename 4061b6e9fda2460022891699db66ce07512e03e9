@@ -22,6 +22,30 @@
       },
       "revId": "4061b6e9fda2460022891699db66ce07512e03e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58216422_578b240f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-20T17:32:38Z",
+      "side": 1,
+      "message": "It is not clear to me why sending SIGKILL if errno !\u003d ENOENT would be unneccessary? My understanding is that DoKillProcessGroupOnce() is only called if SIGCHLD has not yet been received. I think not sending SIGKILL in some cases introduces a risk that a service is not stopped at all.",
+      "parentUuid": "f4adefb6_84d800b0",
+      "range": {
+        "startLine": 372,
+        "startChar": 16,
+        "endLine": 374,
+        "endChar": 0
+      },
+      "revId": "4061b6e9fda2460022891699db66ce07512e03e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
