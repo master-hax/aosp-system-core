@@ -123,6 +123,19 @@ void ReapAnyOutstandingChildren() {
     }
 }
 
+static void ReapAndRemove(std::vector<pid_t>& alive_pids) {
+    while (!alive_pids.empty()) {
+        const pid_t pid = ReapOneProcess();
+        if (pid <= 0) {
+            break;
+        }
+        auto it = std::find(alive_pids.begin(), alive_pids.end(), pid);
+        if (it != alive_pids.end()) {
+            alive_pids.erase(it);
+        }
+    }
+}
+
 static void DiscardSiginfo(int signal_fd) {
     signalfd_siginfo siginfo;
     ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
@@ -142,13 +155,7 @@ void WaitToBeReaped(int sigchld_fd, const std::vector<pid_t>& pids,
     }
     std::vector<pid_t> alive_pids(pids.begin(), pids.end());
     while (!alive_pids.empty() && t.duration() < timeout) {
-        pid_t pid;
-        while ((pid = ReapOneProcess()) != 0) {
-            auto it = std::find(alive_pids.begin(), alive_pids.end(), pid);
-            if (it != alive_pids.end()) {
-                alive_pids.erase(it);
-            }
-        }
+        ReapAndRemove(alive_pids);
         if (alive_pids.empty()) {
             break;
         }
