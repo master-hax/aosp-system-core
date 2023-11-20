@@ -36,6 +36,7 @@
 #include <sys/uio.h>
 #include <sys/un.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <android-base/macros.h>
@@ -56,6 +57,10 @@ using ::android::base::ParseBool;
 using ::android::base::ParseBoolResult;
 using ::android::base::Pipe;
 
+#include <android-base/parseint.h>
+#define MAX_CMD_NAME_LEN (128)
+
+using ::android::base::ParseInt;
 // We muck with our fds in a 'thread' that doesn't share the same fd table.
 // Close fds in that thread with a raw close syscall instead of going through libc.
 struct FdsanBypassCloser {
@@ -113,6 +118,165 @@ static bool is_permissive_mte() {
          property_parse_bool("persist.device_config.memory_safety_native.permissive.default") ||
          property_parse_bool(process_sysprop_name) ||
          (permissive_env && ParseBool(permissive_env) == ParseBoolResult::kTrue);
+}
+
+static bool get_cmd_name(char* buf, size_t len) {
+  unique_fd fd(open("/proc/self/cmdline", O_RDONLY | O_CLOEXEC));
+  if (fd == -1) {
+    return false;
+  }
+
+  ssize_t rc = read(fd, buf, len);
+  if (rc == -1) {
+    return false;
+  } else if (rc == 0) {
+    // Should never happen?
+    return false;
+  }
+
+  return true;
+}
+
+static int property_parse_int(const char* name) {
+  const prop_info* pi = __system_property_find(name);
+  if (!pi) return 0;
+  int cookie = 0;
+  __system_property_read_callback(
+      pi,
+      [](void* cookie, const char*, const char* value, uint32_t) {
+        if(!ParseInt(value, reinterpret_cast<int*>(cookie)))
+          *reinterpret_cast<int*>(cookie) = 0;
+      },
+      &cookie);
+  return cookie;
+}
+
+static bool is_failover_mte() {
+  // Environment variable for testing or local use from shell.
+  char* failover_env = getenv("MTE_FAILOVER");
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char process_sysprop_name[512];  
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "debug.mte.failover.process.%s",
+                             cmd_name);       
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "use get_cmd_name to get prop name %s", process_sysprop_name);
+  }
+  // DO NOT REPLACE this with GetBoolProperty. That uses std::string which allocates, so it is
+  // not async-safe (and this functiong gets used in a signal handler).
+  return property_parse_bool(process_sysprop_name) ||
+         property_parse_bool("debug.mte.failover") ||
+         property_parse_bool("persist.device_config.memory_safety_native.failover.default") ||      
+         (failover_env && ParseBool(failover_env) == ParseBoolResult::kTrue);
+}
+
+#define MTE_MODE_SIGNAL_NONE 50
+#define MTE_MODE_SIGNAL_SYNC 51
+#define MTE_MODE_SIGNAL_ASYNC 52 
+
+static bool change_mte_mode(int tcf){
+    int tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0);
+    if (tagged_addr_ctrl < 0) {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "failed to PR_GET_TAGGED_ADDR_CTRL, check if mte is supported");
+      return false;
+    }
+    int origin_tcf = (tagged_addr_ctrl & ~PR_MTE_TCF_MASK);
+    if(tcf == origin_tcf) {
+      return true;
+    }
+    tagged_addr_ctrl = (tagged_addr_ctrl & ~PR_MTE_TCF_MASK) | tcf;
+    if (prctl(PR_SET_TAGGED_ADDR_CTRL, tagged_addr_ctrl, 0, 0, 0) < 0) {
+      async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "failed to PR_GET_TAGGED_ADDR_CTRL, check if mte is supported");
+      return false;
+    }
+    return true;
+}
+
+static void mte_mode_signal_handler(int signal_number, siginfo_t* , void* ) {
+  bool result = false;
+  if(signal_number == MTE_MODE_SIGNAL_SYNC) {
+    result = change_mte_mode(PR_MTE_TCF_SYNC);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_SYNC(%d), change mte mode to sync %s", signal_number, result?"successfully":"failed");
+  } else if(signal_number == MTE_MODE_SIGNAL_SYNC) {
+    result = change_mte_mode(PR_MTE_TCF_ASYNC);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_ASYNC(%d), change mte mode to async %s", signal_number, result?"successfully":"failed");    
+  } else if(signal_number == MTE_MODE_SIGNAL_NONE) {
+    result = change_mte_mode(PR_MTE_TCF_NONE);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved MTE_MODE_SIGNAL_NONE(%d), change mte mode to none %s", signal_number, result?"successfully":"failed");   
+  } else {
+    async_safe_format_log(ANDROID_LOG_INFO, "libc",
+                          "recieved unknown signal(%d), do nothing", signal_number); 
+  }
+}
+
+static void mte_mode_register_handlers() {
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigfillset(&action.sa_mask);
+    action.sa_sigaction = mte_mode_signal_handler;
+    action.sa_flags = SA_RESTART | SA_SIGINFO;
+
+    sigaction(MTE_MODE_SIGNAL_SYNC, &action, nullptr);
+    sigaction(MTE_MODE_SIGNAL_ASYNC, &action, nullptr);
+    sigaction(MTE_MODE_SIGNAL_NONE, &action, nullptr);
+}
+
+static int get_failover_timer_sec(){
+  char cmd_name[MAX_CMD_NAME_LEN + 1];
+  char sysprop_name[64] = "debug.mte.failover.delayseconds";
+  char process_sysprop_name[512];  
+  int sec = 0;
+  if (get_cmd_name(cmd_name, sizeof(cmd_name))) {
+    async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
+                             "%s.process.%s",
+                             sysprop_name, cmd_name);
+    sec = property_parse_int(process_sysprop_name);       
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "delay_open_mte %s: %d", process_sysprop_name, sec);    
+  } else {
+    sec = property_parse_int(sysprop_name);
+    async_safe_format_log(ANDROID_LOG_INFO, "libc", "delay_open_mte %s: %d\n", sysprop_name, sec);        
+  }
+  return sec > 0 ? sec : 1;
+}
+
+static void close_mte_open_late(){
+#if defined(__aarch64__)
+  if(!change_mte_mode(PR_MTE_TCF_NONE)){
+    return;
+  }
+  struct sigevent event = {};
+  static timer_t timer;
+  event.sigev_notify = SIGEV_THREAD_ID;
+  event.sigev_signo = MTE_MODE_SIGNAL_SYNC;
+  event.sigev_notify_thread_id = __gettid();
+
+  if (timer_create(CLOCK_REALTIME, &event, &timer) == -1) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc",
+                          "Failed to create MTE reopen timer: %m");
+    return;
+  }
+
+  struct itimerspec timerspec = {};
+  timerspec.it_value.tv_sec = get_failover_timer_sec();
+  if (timer_settime(timer, /* flags= */ 0, &timerspec, nullptr) == -1) {
+    async_safe_format_log(ANDROID_LOG_ERROR, "libc",
+                          "Failed to arm MTE reopen timer: %m");
+    timer_delete(timer);
+    return;
+  }
+  async_safe_format_log(
+      ANDROID_LOG_INFO, "libc", "Armed MTE reopen timer for %ds",
+      get_failover_timer_sec());
+#endif  
+}
+
+static void init_failover_mode() {
+  mte_mode_register_handlers();
 }
 
 static inline void futex_wait(volatile void* ftx, int value) {
@@ -711,6 +875,11 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
     // like this.
     info->si_signo = BIONIC_SIGNAL_ART_PROFILER;
     resend_signal(info);
+  }  else if (info->si_signo == SIGSEGV &&
+           (info->si_code == SEGV_MTESERR || info->si_code == SEGV_MTEAERR) &&
+           is_failover_mte()) {
+        close_mte_open_late();
+        pthread_mutex_unlock(&crash_mutex);               
   }
 #endif
   else {
@@ -757,6 +926,7 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   action.sa_flags |= SA_EXPOSE_TAGBITS;
 
   debuggerd_register_handlers(&action);
+  init_failover_mode();
 }
 
 // When debuggerd's signal handler is the first handler called, it's great at

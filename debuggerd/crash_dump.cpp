@@ -142,6 +142,19 @@ static bool ptrace_interrupt(pid_t tid, int* received_signal) {
   return false;
 }
 
+static bool need_notify_am(siginfo_t* siginfo) {
+  if(siginfo->si_signo != SIGSEGV) {
+    LOG(INFO) << "not sigsegv, should notify am";
+    return true;
+  }
+  if(android::base::GetBoolProperty("debug.mte.failover", false)) {
+    LOG(INFO) << "debug.mte.failover true, should not notify am";
+    return false;   
+  }
+  LOG(INFO) << "debug.mte.failover false, should notify am";
+  return true;
+}
+
 static bool activity_manager_notify(pid_t pid, int signal, const std::string& amfd_data,
                                     bool recoverable_gwp_asan_crash) {
   ATRACE_CALL();
@@ -668,7 +681,9 @@ int main(int argc, char** argv) {
   if (fatal_signal) {
     // Don't try to notify ActivityManager if it just crashed, or we might hang until timeout.
     if (thread_info[target_process].thread_name != "system_server") {
-      activity_manager_notify(target_process, signo, amfd_data, recoverable_gwp_asan_crash);
+      if(need_notify_am(&siginfo)) {        
+        activity_manager_notify(target_process, signo, amfd_data, recoverable_gwp_asan_crash);
+      }
     }
   }
 
