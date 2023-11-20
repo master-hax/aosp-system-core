@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a5b9e6b_ed9eb714",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:34:42Z",
+      "side": 1,
+      "message": "I thought we updated this before? If not this is worth its own CL, as it changes the semantic of fields, both parser and writer need update.",
+      "range": {
+        "startLine": 109,
+        "startChar": 13,
+        "endLine": 109,
+        "endChar": 32
+      },
+      "revId": "774f0dd75c37e208a7ca712ddb30a0aad561ba98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
