@@ -22,6 +22,29 @@
       },
       "revId": "774f0dd75c37e208a7ca712ddb30a0aad561ba98",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6919d47d_3de54a4a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-20T17:35:44Z",
+      "side": 1,
+      "message": "Just write the entire header, it\u0027s not that big(\u003c 100 bytes?) The latency of I/O far out weights the amount of time it takes to write 100b bytes.",
+      "range": {
+        "startLine": 369,
+        "startChar": 0,
+        "endLine": 386,
+        "endChar": 5
+      },
+      "revId": "774f0dd75c37e208a7ca712ddb30a0aad561ba98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
