@@ -52,6 +52,24 @@
       "parentUuid": "e57df1fb_92cdc706",
       "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7634f9a5_ff7cc73c",
+        "filename": "trusty/keymaster/keymint/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2023-11-21T16:12:33Z",
+      "side": 1,
+      "message": "Sure, but my point is just that that involves creating some new blocking/serialization mechanism in Keystore that\u0027s not currently present.",
+      "parentUuid": "2c22e929_07fe349c",
+      "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
