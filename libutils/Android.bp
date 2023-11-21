@@ -69,10 +69,6 @@ cc_defaults {
         "-DANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION",
     ],
 
-    shared_libs: [
-        "libcutils",
-        "liblog",
-    ],
     sanitize: {
         misc_undefined: ["integer"],
     },
@@ -127,6 +123,10 @@ cc_defaults {
 
     whole_static_libs: ["libutils_binder"],
 
+    shared_libs: [ // TODO: move to libutils_binder_impl_defaults_with_deps?
+        "libcutils",
+        "liblog",
+    ],
     header_libs: [
         "libbase_headers",
         "libutils_headers",
@@ -235,6 +235,7 @@ cc_library {
     ],
 
     shared_libs: [
+        "liblog", // TODO: move to libutils_binder_impl_defaults_with_deps?
         "libutils",
         "libunwindstack",
     ],

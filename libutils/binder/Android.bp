@@ -33,11 +33,34 @@ cc_defaults {
 cc_library {
     name: "libutils_binder",
     defaults: ["libutils_binder_impl_defaults"],
+
+    shared_libs: [ // TODO: move to libutils_binder_impl_defaults_with_deps?
+        "libcutils",
+        "liblog",
+    ],
+}
+
+cc_library_host_shared {
+    name: "libutils_binder_sdk",
+    defaults: ["libutils_binder_impl_defaults"],
+
+    header_libs: [
+        "liblog_stub",
+    ],
+
+    cflags: [
+        "-DANDROID_UTILS_CALLSTACK_ENABLED=0",
+    ],
 }
 
 cc_library {
     name: "libutils_binder_test_compile",
     defaults: ["libutils_binder_impl_defaults"],
+
+    shared_libs: [ // TODO: move to libutils_binder_impl_defaults_with_deps?
+        "libcutils",
+        "liblog",
+    ],
 
     cflags: [
         "-DDEBUG_REFS=1",
