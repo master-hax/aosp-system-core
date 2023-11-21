@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5e7f773_5b3660ee",
+        "filename": "init/ueventd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T00:56:52Z",
+      "side": 1,
+      "message": "Please use the function `IsMicrodroid()` in util.h",
+      "range": {
+        "startLine": 301,
+        "startChar": 4,
+        "endLine": 301,
+        "endChar": 35
+      },
+      "revId": "c4014759c28004c2b93055c659e130c6e4821716",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
