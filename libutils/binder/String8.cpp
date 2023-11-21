@@ -448,38 +448,4 @@ String8 String8::getPathDir(void) const
         return String8(str, cp - str);
 }
 
-/*
- * Helper function for finding the start of an extension in a pathname.
- *
- * Returns a pointer inside mString, or NULL if no extension was found.
- */
-static const char* find_extension(const char* str) {
-    const char* lastSlash;
-    const char* lastDot;
-
-    // only look at the filename
-    lastSlash = strrchr(str, OS_PATH_SEPARATOR);
-    if (lastSlash == nullptr)
-        lastSlash = str;
-    else
-        lastSlash++;
-
-    // find the last dot
-    lastDot = strrchr(lastSlash, '.');
-    if (lastDot == nullptr)
-        return nullptr;
-
-    // looks good, ship it
-    return lastDot;
-}
-
-String8 String8::getPathExtension(void) const
-{
-    auto ext = find_extension(mString);
-    if (ext != nullptr)
-        return String8(ext);
-    else
-        return String8("");
-}
-
 }; // namespace android
