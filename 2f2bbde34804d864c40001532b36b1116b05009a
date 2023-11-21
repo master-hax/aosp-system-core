@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b422fc9c_fcca181a",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "MAX_VENDOR_API_LEVEL",
+      "range": {
+        "startLine": 115,
+        "startChar": 15,
+        "endLine": 115,
+        "endChar": 37
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7087ede0_3fe2801f",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1092,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "This is not what the calculation below depends on. The calculation depends on the \"plan\" that SDK API level bumps once a year... at least for now.",
+      "range": {
+        "startLine": 1092,
+        "startChar": 7,
+        "endLine": 1092,
+        "endChar": 46
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "615fe158_127b238c",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1104,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "let\u0027s not bring \u0027board\u0027 to variable names. Let\u0027s call this just \u0027vendor_api_level\u0027.",
+      "range": {
+        "startLine": 1104,
+        "startChar": 9,
+        "endLine": 1104,
+        "endChar": 14
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f11fdd4_bcbc8274",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1105,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "Add `using` directive so that we don\u0027t have to repeat this.",
+      "range": {
+        "startLine": 1105,
+        "startChar": 12,
+        "endLine": 1105,
+        "endChar": 27
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6556ee3_9d9bcb2d",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1113,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "Strictly speaking, using this here is incorrect, because product_first_api_level is for SDK API level while MAX_API_LEVEL_IF_UNSET is for vendor API level.\n\nI think this should be `__ANDROID_API_FUTURE__`",
+      "range": {
+        "startLine": 1113,
+        "startChar": 72,
+        "endLine": 1113,
+        "endChar": 94
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04c07573_5c0670d1",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1114,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1114,
+        "startChar": 40,
+        "endLine": 1114,
+        "endChar": 41
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6657c10d_f6c15cbf",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1117,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1117,
+        "startChar": 70,
+        "endLine": 1117,
+        "endChar": 92
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b6c8c94_e026e0aa",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1120,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T10:38:48Z",
+      "side": 1,
+      "message": "vendor_api_level",
+      "range": {
+        "startLine": 1120,
+        "startChar": 9,
+        "endLine": 1120,
+        "endChar": 18
+      },
+      "revId": "2f2bbde34804d864c40001532b36b1116b05009a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
