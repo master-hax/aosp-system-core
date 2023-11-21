@@ -33,6 +33,11 @@ cc_defaults {
 cc_library {
     name: "libutils_binder",
     defaults: ["libutils_binder_impl_defaults"],
+
+    vndk: {
+        enabled: true,
+        support_system_process: true,
+    },
 }
 
 cc_library {
