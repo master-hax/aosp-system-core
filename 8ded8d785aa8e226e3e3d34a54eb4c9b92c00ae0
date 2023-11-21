@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cce9d675_15ecfb9a",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-11-21T00:55:12Z",
+      "side": 1,
+      "message": "The semantic of this function doesn\u0027t look conventional. It tries to reap as much as processes possible, but it stops when it hits an error. Furthermore, `alive_pids` doesn\u0027t indicate processes to be reaped. There can be a case that a reaped process is not in `alive_pids`. \n\nI would refactor this into something like the below:\n\n```\nstatic std::set\u003cpid_t\u003e TryReapMultipleProcesses() {\n    std::set\u003cpid_t\u003e reaped_pids;\n    pid_t pid;\n    while((pid \u003d ReapOneProcess()) !\u003d 0) {\n        reaped_pids.insert(pid);\n    }\n    return reaped_pids;\n}\n\nstd::vector\u003cpid_t\u003e active_pids \u003d ...\nstd::set\u003cpid_t\u003e reaped_pids \u003d TryReapMultipleProcesses();\nstd::erase_if(active_pids, [\u0026reaped_pids](pid_t p) { reaped_pids.contains(p); });\n```",
+      "range": {
+        "startLine": 125,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 1
+      },
+      "revId": "8ded8d785aa8e226e3e3d34a54eb4c9b92c00ae0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
