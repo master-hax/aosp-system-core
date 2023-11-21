@@ -22,6 +22,30 @@
       },
       "revId": "8ded8d785aa8e226e3e3d34a54eb4c9b92c00ae0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "254fb920_9a0e14bf",
+        "filename": "init/sigchld_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2023-11-21T17:41:41Z",
+      "side": 1,
+      "message": "std::erase_if() only accepts std::vector\u003c\u003e as first argument in C++20 and later while I think that system/core is built with -std\u003dgnu++17. Anyway, I have modified ReapAnyOutstandingChildren() such that it implements the functionality mentioned above.",
+      "parentUuid": "cce9d675_15ecfb9a",
+      "range": {
+        "startLine": 125,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 1
+      },
+      "revId": "8ded8d785aa8e226e3e3d34a54eb4c9b92c00ae0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
