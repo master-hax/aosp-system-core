@@ -37,7 +37,6 @@
 
 #include <array>
 #include <chrono>
-#include <functional>
 #include <map>
 #include <memory>
 #include <string>
@@ -736,21 +735,32 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
     auto& mount_point = alt_mount_point.empty() ? entry.mount_point : alt_mount_point;
     // We need this because sometimes we have legacy symlinks that are
     // lingering around and need cleaning up.
-    struct stat info;
+    struct stat info {};
     if (lstat(mount_point.c_str(), &info) == 0 && (info.st_mode & S_IFMT) == S_IFLNK) {
         unlink(mount_point.c_str());
     }
     mkdir(mount_point.c_str(), 0755);
 
+    const bool ureadahead_record = access("/metadata/ota/ureadahead", F_OK) != 0 ||
+                                   access("/metadata/ota/ureadahead_force", F_OK) == 0;
     // Don't need to return error, since it's a salt
-    if (entry.readahead_size_kb != -1) {
+    if (ureadahead_record && entry.mount_point != "/data" && entry.mount_point != "/metadata") {
+        LOG(INFO) << "ureadhead record command detected, setting readahead size to 4KB for block "
+                     "device "
+                  << blk_device << " @ " << entry.mount_point;
+        SetReadAheadSize(blk_device, 4);
+    } else if (entry.readahead_size_kb != -1) {
+        LOG(INFO) << "Setting readahead size to  " << entry.readahead_size_kb
+                  << "KB for block "
+                     "device "
+                  << blk_device << " @ " << entry.mount_point;
         SetReadAheadSize(blk_device, entry.readahead_size_kb);
     }
 
     int fs_stat = 0;
 
     if (is_extfs(entry.fs_type)) {
-        struct ext4_super_block sb;
+        struct ext4_super_block sb {};
 
         if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
             if ((sb.s_feature_incompat & EXT4_FEATURE_INCOMPAT_RECOVER) != 0 ||
@@ -780,7 +790,7 @@ static int prepare_fs_for_mount(const std::string& blk_device, const FstabEntry&
     if (is_extfs(entry.fs_type) &&
         (entry.reserved_size != 0 || entry.fs_mgr_flags.file_encryption ||
          entry.fs_mgr_flags.fs_verity || entry.fs_mgr_flags.ext_meta_csum)) {
-        struct ext4_super_block sb;
+        struct ext4_super_block sb {};
 
         if (read_ext4_superblock(blk_device, &sb, &fs_stat)) {
             tune_reserved_size(blk_device, entry, &sb, &fs_stat);

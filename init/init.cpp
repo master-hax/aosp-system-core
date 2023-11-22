@@ -26,6 +26,7 @@
 #include <sys/eventfd.h>
 #include <sys/mount.h>
 #include <sys/signalfd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
@@ -33,8 +34,6 @@
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
-#include <filesystem>
-#include <fstream>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -69,7 +68,6 @@
 #include "apex_init_util.h"
 #include "epoll.h"
 #include "first_stage_init.h"
-#include "first_stage_mount.h"
 #include "import_parser.h"
 #include "keychords.h"
 #include "lmkd_service.h"
@@ -114,6 +112,119 @@ using android::snapshot::SnapshotManager;
 namespace android {
 namespace init {
 
+#if !defined(RECOVERY) && !defined(MICRODROID)
+// The enclosing block handles code that prefetches data from
+// filesystem that is needed during boot time.
+// Any error encountered during prefetch is not fatal but may prevent boot
+// time optimizations.
+//
+// prefetch_record and prefetch_replay are rust exported "C" language ffi.
+// We do not have sanitizers enabled for them yet.
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) extern "C" int
+prefetch_record(const char* path, int8_t debug, const uint16_t duration,
+                const uint64_t* trace_buffer_size, const char* tracing_subsystem,
+                int8_t setup_tracing, const char* tracing_instance);
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) extern "C" int
+prefetch_replay(const char* path, const uint16_t* io_depth, const uint16_t* max_fds,
+                int8_t exit_on_error, const char* config_path);
+
+static int CallPrefetch() {
+    const std::string path = "/metadata/ota/ureadahead";
+    const bool ureadahead_replay = access(path.c_str(), F_OK) == 0;
+    const bool ureadahead_record_force = access("/metadata/ota/ureadahead_force", F_OK) == 0;
+    // if (access(path.c_str(), F_OK) != 0) {
+    //     ureadahead_replay = false;
+    // }
+    if (!ureadahead_replay || ureadahead_record_force) {
+        LOG(INFO) << "prefetch record requested";
+        unlink(path.c_str());
+        // std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
+        int duration =
+                static_cast<int>(atoi((GetProperty("ro.boot.kiwi.prefetch.duration", "").c_str())));
+        if (duration < 0) {
+            LOG(ERROR) << "Failed to parse duration from:"
+                       << GetProperty("ro.boot.kiwi.prefetch.duration", "");
+            return 1;
+        }
+        if (duration == 0) {
+            duration = 12;
+            LOG(INFO) << "Using default duration of " << duration << " for prefetch";
+        }
+        const int debug = GetProperty("ro.boot.kiwi.prefetch.debug", "") == "true" ? 1 : 0;
+        const int setup = GetProperty("ro.boot.kiwi.prefetch.setup", "true") == "true" ? 1 : 0;
+        const std::string instance = GetProperty("ro.boot.kiwi.prefetch.instance", "ureadahead");
+
+        LOG(INFO) << "boot time prefetch args processed.";
+
+        int ret = prefetch_record(path.c_str(), debug, duration, nullptr, "mem", setup,
+                                  instance.c_str());
+        LOG(INFO) << "prefetch record complete: " << ret;
+        return ret;
+    } else {
+        LOG(INFO) << "prefetch replay requested";
+        struct stat st {};
+        if (stat(path.c_str(), &st) == 0 && st.st_size == 0) {
+            LOG(INFO) << "prefetch replay file " << path << " is empty, return early";
+            return 0;
+        }
+
+        // std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
+        int depth = atol(GetProperty("ro.boot.kiwi.prefetch.io_depth", "").c_str());
+        if (depth <= 0) {
+            LOG(INFO) << "Failed to parse io_depth from:"
+                      << GetProperty("ro.boot.kiwi.prefetch.io_depth", "")
+                      << " , using default of 8";
+            depth = 8;
+        }
+        uint16_t io_depth = static_cast<uint16_t>(depth);
+        int fds = atol(GetProperty("ro.boot.kiwi.prefetch.max_fds", "").c_str());
+        if (fds <= 0) {
+            LOG(INFO) << "Failed to parse max_fds from:"
+                      << GetProperty("ro.boot.kiwi.prefetch.max_fds", "")
+                      << " , using default of 1024";
+            fds = 1024;
+        }
+        uint16_t max_fds = static_cast<uint16_t>(fds);
+        int exit_on_error =
+                GetProperty("ro.boot.kiwi.prefetch.exit_on_error", "") == "true" ? 1 : 0;
+        LOG(INFO) << "Calling rust replay with path " << path << " io_depth: " << io_depth
+                  << " max_fds: " << max_fds << " exit_on_error: " << exit_on_error;
+        int ret = prefetch_replay(path.c_str(), &io_depth, &max_fds, exit_on_error, "");
+        LOG(INFO) << "prefetch replay complete: " << ret;
+        return ret;
+    }
+    return 1;
+}
+
+static Result<void> InitializePrefetch(const BuiltinArguments&) {
+    int pid = fork();
+
+    if (pid == -1) {
+        LOG(ERROR) << "Failed to fork for prefetch";
+    } else if (pid == 0) {
+        int std_out_err = TEMP_FAILURE_RETRY(open("/dev/kmsg", O_RDWR | O_CLOEXEC));
+        if (std_out_err < 0) {
+            LOG(ERROR) << "Cannot open kmsg for prefetch: " << strerror(errno);
+        }
+
+        dup2(std_out_err, 1);
+        dup2(std_out_err, 2);
+        close(std_out_err);
+        LOG(INFO) << "forked prefetch";
+        _exit(CallPrefetch());
+    }
+    return {};
+}
+#else
+// We do not run prefetch in recovery mode.
+static Result<void> InitializePrefetch(const BuiltinArguments&) {
+    LOG(INFO) << "skipping prefetch in recovery mode";
+    return {};
+}
+#endif
+
 static int property_triggers_enabled = 0;
 
 static int sigterm_fd = -1;
@@ -141,7 +252,7 @@ static void InstallInitNotifier(Epoll* epoll) {
         PLOG(FATAL) << "Failed to create eventfd for waking init";
     }
     auto clear_eventfd = [] {
-        uint64_t counter;
+        uint64_t counter{};
         TEMP_FAILURE_RETRY(read(wake_main_thread_fd, &counter, sizeof(counter)));
     };
 
@@ -290,7 +401,7 @@ struct LibXmlErrorHandler {
     static void ErrorHandler(void*, const char* msg, ...) {
         va_list args;
         va_start(args, msg);
-        char* formatted;
+        char* formatted{};
         if (vasprintf(&formatted, msg, args) >= 0) {
             LOG(ERROR) << formatted;
         }
@@ -680,7 +791,7 @@ static void SetUsbController() {
     std::unique_ptr<DIR, decltype(&closedir)>dir(opendir("/sys/class/udc"), closedir);
     if (!dir) return;
 
-    dirent* dp;
+    dirent* dp{};
     while ((dp = readdir(dir.get())) != nullptr) {
         if (dp->d_name[0] == '.') continue;
 
@@ -693,8 +804,8 @@ static void SetUsbController() {
 /// Set ro.kernel.version property to contain the major.minor pair as returned
 /// by uname(2).
 static void SetKernelVersion() {
-    struct utsname uts;
-    unsigned int major, minor;
+    struct utsname uts {};
+    unsigned int major{}, minor{};
 
     if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
         LOG(ERROR) << "Could not parse the kernel version from uname";
@@ -714,7 +825,7 @@ static void HandleSigtermSignal(const signalfd_siginfo& siginfo) {
 }
 
 static void HandleSignalFd(int signal) {
-    signalfd_siginfo siginfo;
+    signalfd_siginfo siginfo{};
     const int signal_fd = signal == SIGCHLD ? Service::GetSigchldFd() : sigterm_fd;
     ssize_t bytes_read = TEMP_FAILURE_RETRY(read(signal_fd, &siginfo, sizeof(siginfo)));
     if (bytes_read != sizeof(siginfo)) {
@@ -739,7 +850,7 @@ static void UnblockSignals() {
     const struct sigaction act { .sa_handler = SIG_DFL };
     sigaction(SIGCHLD, &act, nullptr);
 
-    sigset_t mask;
+    sigset_t mask{};
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
     sigaddset(&mask, SIGTERM);
@@ -755,7 +866,7 @@ static Result<void> RegisterSignalFd(Epoll* epoll, int signal, int fd) {
 }
 
 static Result<int> CreateAndRegisterSignalFd(Epoll* epoll, int signal) {
-    sigset_t mask;
+    sigset_t mask{};
     sigemptyset(&mask);
     sigaddset(&mask, signal);
     if (sigprocmask(SIG_BLOCK, &mask, nullptr) == -1) {
@@ -1068,6 +1179,7 @@ int SecondStageMain(int argc, char** argv) {
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
     am.QueueEventTrigger("early-init");
     am.QueueBuiltinAction(ConnectEarlyStageSnapuserdAction, "ConnectEarlyStageSnapuserd");
+    am.QueueBuiltinAction(InitializePrefetch, "InitializePrefetch");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
     am.QueueBuiltinAction(wait_for_coldboot_done_action, "wait_for_coldboot_done");
