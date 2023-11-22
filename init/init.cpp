@@ -33,8 +33,6 @@
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
-#include <filesystem>
-#include <fstream>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -69,7 +67,6 @@
 #include "apex_init_util.h"
 #include "epoll.h"
 #include "first_stage_init.h"
-#include "first_stage_mount.h"
 #include "import_parser.h"
 #include "keychords.h"
 #include "lmkd_service.h"
@@ -113,6 +110,104 @@ using android::snapshot::SnapshotManager;
 
 namespace android {
 namespace init {
+
+#if !defined(RECOVERY) && !defined(MICRODROID)
+// The enclosing block handles code that prefetches data from
+// filesystem that is needed during boot time.
+// Any error encountered during prefetch is not fatal but may prevent boot
+// time optimizations.
+//
+// prefetch_record and prefetch_replay are rust exported "C" language ffi.
+// We do not have sanitizers enabled for them yet.
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) extern "C" int
+prefetch_record(const char* path, int8_t debug, const uint16_t duration,
+                const uint64_t* trace_buffer_size, const char* tracing_subsystem,
+                int8_t setup_tracing, const char* tracing_instance);
+
+__attribute__((no_sanitize("address", "memory", "thread", "undefined"))) extern "C" int
+prefetch_replay(const char* path, const uint16_t* io_depth, const uint16_t* max_fds,
+                int8_t exit_on_error);
+
+static int CallPrefetch() {
+    std::string path = "/metadata/ota/ureadahead-boot";
+    // std::string subcommand = GetProperty("ro.boot.kiwi.prefetch", "");
+    const bool ureadahead_replay = access(path.c_str(), F_OK) == 0;
+    // if (access(path.c_str(), F_OK) != 0) {
+    //     ureadahead_replay = false;
+    // }
+    if (!ureadahead_replay) {
+        LOG(INFO) << "prefetch record requested";
+        std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
+        int duration =
+                static_cast<int>(atoi((GetProperty("ro.boot.kiwi.prefetch.duration", "").c_str())));
+        if (duration < 0) {
+            LOG(ERROR) << "Failed to parse duration from:"
+                       << GetProperty("ro.boot.kiwi.prefetch.duration", "");
+            return 1;
+        }
+        int debug = GetProperty("ro.boot.kiwi.prefetch.debug", "") == "true" ? 1 : 0;
+        int setup = GetProperty("ro.boot.kiwi.prefetch.setup", "") == "true" ? 1 : 0;
+        std::string instance = GetProperty("ro.boot.kiwi.prefetch.instance", "");
+
+        LOG(INFO) << "boot time prefetch args processed.";
+
+        int ret = prefetch_record(path.c_str(), debug, duration, nullptr, "mem", setup,
+                                  instance.c_str());
+        LOG(INFO) << "prefetch record complete: " << ret;
+        return ret;
+    } else {
+        LOG(INFO) << "prefetch replay requested";
+        std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
+        int depth = atol(GetProperty("ro.boot.kiwi.prefetch.io_depth", "").c_str());
+        if (depth < 0) {
+            LOG(ERROR) << "Failed to parse io_depth from:"
+                       << GetProperty("ro.boot.kiwi.prefetch.io_depth", "");
+            return 1;
+        }
+        uint16_t io_depth = static_cast<uint16_t>(depth);
+        int fds = atol(GetProperty("ro.boot.kiwi.prefetch.max_fds", "").c_str());
+        if (fds < 0) {
+            LOG(ERROR) << "Failed to parse max_fds from:"
+                       << GetProperty("ro.boot.kiwi.prefetch.max_fds", "");
+            return 1;
+        }
+        uint16_t max_fds = static_cast<uint16_t>(fds);
+        int exit_on_error =
+                GetProperty("ro.boot.kiwi.prefetch.exit_on_error", "") == "true" ? 1 : 0;
+        int ret = prefetch_replay(path.c_str(), &io_depth, &max_fds, exit_on_error);
+        LOG(INFO) << "prefetch replay complete: " << ret;
+        return ret;
+    }
+    return 1;
+}
+
+static Result<void> InitializePrefetch(const BuiltinArguments&) {
+    int pid = fork();
+
+    if (pid == -1) {
+        LOG(ERROR) << "Failed to fork for prefetch";
+    } else if (pid == 0) {
+        int std_out_err = TEMP_FAILURE_RETRY(open("/dev/kmsg", O_RDWR | O_CLOEXEC));
+        if (std_out_err < 0) {
+            LOG(ERROR) << "Cannot open kmsg for prefetch: " << strerror(errno);
+        }
+
+        dup2(std_out_err, 1);
+        dup2(std_out_err, 2);
+        close(std_out_err);
+        LOG(INFO) << "forked prefetch";
+        _exit(CallPrefetch());
+    }
+    return {};
+}
+#else
+// We do not run prefetch in recovery mode.
+static Result<void> InitializePrefetch(const BuiltinArguments&) {
+    LOG(INFO) << "skipping prefetch in recovery mode";
+    return {};
+}
+#endif
 
 static int property_triggers_enabled = 0;
 
@@ -1068,6 +1163,7 @@ int SecondStageMain(int argc, char** argv) {
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
     am.QueueEventTrigger("early-init");
     am.QueueBuiltinAction(ConnectEarlyStageSnapuserdAction, "ConnectEarlyStageSnapuserd");
+    am.QueueBuiltinAction(InitializePrefetch, "InitializePrefetch");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...
     am.QueueBuiltinAction(wait_for_coldboot_done_action, "wait_for_coldboot_done");
