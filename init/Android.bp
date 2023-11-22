@@ -289,6 +289,7 @@ cc_defaults {
             cflags: ["-DRECOVERY"],
             exclude_static_libs: [
                 "libxml2",
+		"libprefetch_c",
             ],
             exclude_shared_libs: [
                 "libbinder",
@@ -309,7 +310,10 @@ cc_defaults {
 cc_binary {
     name: "init_second_stage",
     defaults: ["init_second_stage_defaults"],
-    static_libs: ["libinit"],
+    static_libs: [
+        "libinit",
+        "libprefetch_c",
+    ],
 }
 
 cc_binary {
