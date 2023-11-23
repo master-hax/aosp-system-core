@@ -70,6 +70,24 @@
       "parentUuid": "2c22e929_07fe349c",
       "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "722a261b_7ebc958a",
+        "filename": "trusty/keymaster/keymint/service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-11-23T01:09:08Z",
+      "side": 1,
+      "message": "aosp/2845273 seems to fix the issue without modifying the hal, although it is a little noisier than this CL in the logs since it delays creating the keystore service itself. I tested that with the rust HAL which did not seem as easy to modify in the same way as this CL.",
+      "parentUuid": "7634f9a5_ff7cc73c",
+      "revId": "e59e564a3fa470e48e9fd4b44dda5acc2f8c3ee0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
