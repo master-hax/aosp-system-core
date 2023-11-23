@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8493c7a9_c364e0c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-11-23T00:40:43Z",
+      "side": 1,
+      "message": "I\u0027ll probably squash this with 2837176, but the C code here is ready for review",
+      "revId": "501189fa563bc7f6991b06cb2eeb3f7505a119e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
