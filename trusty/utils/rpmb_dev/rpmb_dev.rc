@@ -1,8 +1,7 @@
 # RPMB Mock
 on post-fs
     mkdir /mnt/vendor/persist/ss 0770 root system
-    exec -- /system/bin/rm -f /mnt/vendor/persist/ss/rpmb_sock
-    start rpmb_mock_init
+    exec_start rpmb_mock_init
     start rpmb_mock
 
 on post-fs-data
@@ -15,7 +14,7 @@ on post-fs-data
     restart storageproxyd
 
 service storageproxyd /vendor/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev:-/dev/trusty-ipc-dev0} \
-        -r /mnt/vendor/persist/ss/rpmb_sock -p /data/vendor/ss -t sock
+        -r /dev/socket/rpmb_mock -p /data/vendor/ss -t sock
     class early_hal
     user system
     group system
@@ -27,8 +26,9 @@ service rpmb_mock_init /vendor/bin/rpmb_dev --dev /mnt/vendor/persist/ss/RPMB_DA
     oneshot
 
 service rpmb_mock /vendor/bin/rpmb_dev --dev /mnt/vendor/persist/ss/RPMB_DATA \
-                          --sock /mnt/vendor/persist/ss/rpmb_sock
+                          --sock rpmb_mock
     class main
     disabled
     user system
     group system
+    socket rpmb_mock stream 660 system system
