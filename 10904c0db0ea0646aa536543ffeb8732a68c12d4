@@ -46,6 +46,30 @@
       },
       "revId": "10904c0db0ea0646aa536543ffeb8732a68c12d4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf568514_2e5e43be",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-23T00:22:22Z",
+      "side": 1,
+      "message": "oh - it only works on arm64 lunch product? (\u0027m libutils\u0027 should also include building libutils.vendor)\n\nI see - so we would only notice it in presubmit (this won\u0027t pass presubmit).\n\nAny chance to try the multi-OUT_DIR approach?",
+      "parentUuid": "1e0d4e28_f3ac9c2a",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 49
+      },
+      "revId": "10904c0db0ea0646aa536543ffeb8732a68c12d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
