@@ -194,6 +194,30 @@
       },
       "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1945c71e_6452c2c7",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2023-11-23T02:24:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0c29c12_74143fe7",
+      "range": {
+        "startLine": 138,
+        "startChar": 26,
+        "endLine": 138,
+        "endChar": 37
+      },
+      "revId": "89d359ee2c7354803b11871cb5b9f8830bf7930f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
