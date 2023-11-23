@@ -70,6 +70,30 @@
       },
       "revId": "10904c0db0ea0646aa536543ffeb8732a68c12d4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3350e55e_651db964",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2023-11-23T01:57:25Z",
+      "side": 1,
+      "message": "As we discussed, we submitted the dumps for only arm64 in order to update them fast.",
+      "parentUuid": "bf568514_2e5e43be",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 49
+      },
+      "revId": "10904c0db0ea0646aa536543ffeb8732a68c12d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
