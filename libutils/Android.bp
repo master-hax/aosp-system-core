@@ -206,6 +206,7 @@ cc_library {
         "-DDEBUG_POLL_AND_WAKE=1",
         "-DDEBUG_REFS=1",
         "-DDEBUG_TOKENIZER=1",
+        "-DDEBUG_CALLBACKS=1",
     ],
 
     visibility: [":__subpackages__"],
