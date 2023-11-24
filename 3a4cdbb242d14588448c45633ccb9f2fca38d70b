@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad375138_e2055cc0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-11-24T09:03:09Z",
+      "side": 1,
+      "message": "Not sure what is SIU.\n\nmaybe we can have some general statments?\ne.g., manually check that exfat can be mounted in recovery mode.",
+      "range": {
+        "startLine": 12,
+        "startChar": 6,
+        "endLine": 12,
+        "endChar": 9
+      },
+      "revId": "3a4cdbb242d14588448c45633ccb9f2fca38d70b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
