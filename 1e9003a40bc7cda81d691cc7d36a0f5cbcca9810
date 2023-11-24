@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d512852f_ebbb9d40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-11-24T10:04:53Z",
+      "side": 1,
+      "message": "change LGTM, but it\u0027s better if someone from OTA team can ack this change too",
+      "revId": "1e9003a40bc7cda81d691cc7d36a0f5cbcca9810",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
