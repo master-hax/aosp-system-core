@@ -16,6 +16,23 @@
       "message": "Hi there! I\u0027m new to contributing to the Android Open Source Project. I\u0027d really appreciate your feedback on my recent code contribution. Your insights mean a lot to me. Thanks for reviewing!",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "449bc699_0da550d6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-27T21:22:43Z",
+      "side": 1,
+      "message": "(smoreland: note that the new AOSP rules mean you\u0027ll need to +2 too...)",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
