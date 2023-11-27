@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4333e986_ea6f216c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-27T22:58:33Z",
+      "side": 1,
+      "message": "does this mean we can remove the libkeyutils dependency from the fuzzer subdirectory\u0027s .bp file too?",
+      "revId": "4ac9b85c77bc5c16d006d69f9b114e07baad7423",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
