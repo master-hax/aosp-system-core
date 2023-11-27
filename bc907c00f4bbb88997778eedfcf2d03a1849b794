@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f04a601a_93ca2a58",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-11-27T07:59:04Z",
+      "side": 0,
+      "message": "This is removed, should we keep it? (or removing it in a separate CL?)",
+      "range": {
+        "startLine": 1607,
+        "startChar": 4,
+        "endLine": 1607,
+        "endChar": 29
+      },
+      "revId": "bc907c00f4bbb88997778eedfcf2d03a1849b794",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
