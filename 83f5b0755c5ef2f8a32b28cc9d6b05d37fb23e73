@@ -81,6 +81,24 @@
       "parentUuid": "09f657c4_07558601",
       "revId": "83f5b0755c5ef2f8a32b28cc9d6b05d37fb23e73",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c140bb6_a787ddd8",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2023-11-27T16:42:55Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "350e8fa7_b8be8894",
+      "revId": "83f5b0755c5ef2f8a32b28cc9d6b05d37fb23e73",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
