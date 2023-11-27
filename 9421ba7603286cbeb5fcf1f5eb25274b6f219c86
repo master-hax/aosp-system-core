@@ -69,6 +69,54 @@
       },
       "revId": "9421ba7603286cbeb5fcf1f5eb25274b6f219c86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "420c5f3a_445d9a73",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1391,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-11-27T09:20:29Z",
+      "side": 1,
+      "message": "I pass the \"try_mount_scratch\" flag in to MountOverlayfs() so that we don\u0027t check fs_mgr_overlayfs_already_mounted() multiple times.",
+      "parentUuid": "75e82299_abd55520",
+      "range": {
+        "startLine": 1391,
+        "startChar": 29,
+        "endLine": 1391,
+        "endChar": 33
+      },
+      "revId": "9421ba7603286cbeb5fcf1f5eb25274b6f219c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b608d88c_27a126ad",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1391,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-11-27T09:20:29Z",
+      "side": 1,
+      "message": "let\u0027s keep it consistent with fs_mgr_overlayfs_mount_all and use scratch_can_be_mounted.\n\nI prefer not to use \u0027scratch_mounted\u0027 because it is possible that \u0027scratch\u0027 failed to mount. In that case we should just fallback to use /cache as overlay directory, or just mount nothing",
+      "parentUuid": "5fa684c5_69d722b0",
+      "range": {
+        "startLine": 1391,
+        "startChar": 9,
+        "endLine": 1391,
+        "endChar": 26
+      },
+      "revId": "9421ba7603286cbeb5fcf1f5eb25274b6f219c86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
