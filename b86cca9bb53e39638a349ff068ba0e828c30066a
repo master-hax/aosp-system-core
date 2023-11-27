@@ -33,6 +33,23 @@
       "message": "(smoreland: note that the new AOSP rules mean you\u0027ll need to +2 too...)",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a46250c_870e56b1",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-11-27T22:14:29Z",
+      "side": 1,
+      "message": "can you add \"-DDEBUG_CALLBACKS\u003d1\", here so it\u0027ll always get compiled and tested?",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
