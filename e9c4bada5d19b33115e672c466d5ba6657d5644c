@@ -34,6 +34,24 @@
       "parentUuid": "fcea7350_9a4fd8b1",
       "revId": "e9c4bada5d19b33115e672c466d5ba6657d5644c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54c37854_27e9d1d7",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-11-28T21:01:52Z",
+      "side": 1,
+      "message": "Removed the C++ 20 bump, use hard coded aliases instead.",
+      "parentUuid": "82d6bd7d_72a572f6",
+      "revId": "e9c4bada5d19b33115e672c466d5ba6657d5644c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
