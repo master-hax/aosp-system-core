@@ -345,7 +345,7 @@ bool CowReader::GetSequenceDataV2(std::vector<uint32_t>* merge_op_blocks,
     for (size_t i = 0; i < ops_->size(); i++) {
         auto& current_op = ops_->data()[i];
 
-        if (current_op.type == kCowSequenceOp) {
+        if (current_op.type() == kCowSequenceOp) {
             size_t seq_len = current_op.data_length / sizeof(uint32_t);
 
             merge_op_blocks->resize(merge_op_blocks->size() + seq_len);
@@ -637,7 +637,7 @@ std::unique_ptr<ICowOpIter> CowReader::GetMergeOpIter(bool ignore_progress) {
 }
 
 bool CowReader::GetRawBytes(const CowOperation* op, void* buffer, size_t len, size_t* read) {
-    switch (op->type) {
+    switch (op->type()) {
         case kCowSequenceOp:
         case kCowReplaceOp:
         case kCowXorOp:
@@ -730,7 +730,7 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
     }
 
     uint64_t offset;
-    if (op->type == kCowXorOp) {
+    if (op->type() == kCowXorOp) {
         offset = xor_data_loc_->at(op->new_block);
     } else {
         offset = GetCowOpSourceInfoData(*op);
@@ -747,7 +747,7 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
 }
 
 bool CowReader::GetSourceOffset(const CowOperation* op, uint64_t* source_offset) {
-    switch (op->type) {
+    switch (op->type()) {
         case kCowCopyOp:
             *source_offset = GetCowOpSourceInfoData(*op) * header_.block_size;
             return true;

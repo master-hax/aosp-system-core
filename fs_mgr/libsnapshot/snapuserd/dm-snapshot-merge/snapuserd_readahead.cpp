@@ -192,7 +192,7 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_offset, int* pending_ops
         const CowOperation* cow_op = GetRAOpIter();
         CHECK_NE(cow_op, nullptr);
         *source_offset = GetCowOpSourceInfoData(*cow_op);
-        if (cow_op->type == kCowCopyOp) {
+        if (cow_op->type() == kCowCopyOp) {
             *source_offset *= BLOCK_SZ;
         }
         RAIterNext();
@@ -211,7 +211,7 @@ void ReadAheadThread::PrepareReadAhead(uint64_t* source_offset, int* pending_ops
             const CowOperation* op = GetRAOpIter();
             CHECK_NE(op, nullptr);
             uint64_t next_offset = GetCowOpSourceInfoData(*op);
-            if (op->type == kCowCopyOp) {
+            if (op->type() == kCowCopyOp) {
                 next_offset *= BLOCK_SZ;
             }
             if (next_offset + nr_consecutive * BLOCK_SZ != *source_offset) {
