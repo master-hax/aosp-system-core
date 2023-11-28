@@ -86,6 +86,24 @@
       "parentUuid": "527983ef_e7e8fd3a",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4edc143_b8623149",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-28T16:14:59Z",
+      "side": 1,
+      "message": "(...because the more of this kind of thing we have, if it\u0027s not sorted, we always seem to end up with accidental duplicates :-( \"nearly sorted\" is actually the worst case, because humans are then more prone to missing things. at least when it\u0027s obviously random they know they have to look at every line very carefully!)",
+      "parentUuid": "80da9e15_0bbbde37",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
