@@ -34,6 +34,24 @@
       "parentUuid": "c4a2f00a_d4644347",
       "revId": "5d7c35ce205f1b4afadd6a1725c0b5e03962a97c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f4e8fb1_b4f48f52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-28T00:15:37Z",
+      "side": 1,
+      "message": "having been partly responsible for mini-keyctl, \"just fsverity stuff\" ... https://source.corp.google.com/search?q\u003dmini-keyctl\u0026sq\u003drepo:android%2Fplatform%2Fsuperproject%2Fmain%20b:main%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F\n\n(though i never understood the use cases enough -- i was just shuffling data back and forth between userspace and kernel! -- to know whether that\u0027s included in the subset of this stuff that\u0027s \"obsolete too and will be removed\". i hope so though! not least because it also means i can cross \"write a proper keyctl(1) for toybox\" off my to-do list :-) )",
+      "parentUuid": "1cae25e8_7d62d289",
+      "revId": "5d7c35ce205f1b4afadd6a1725c0b5e03962a97c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
