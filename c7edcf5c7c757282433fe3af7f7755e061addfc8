@@ -34,6 +34,24 @@
       "parentUuid": "2924347c_86af9f89",
       "revId": "c7edcf5c7c757282433fe3af7f7755e061addfc8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64fc57a3_b2a23c0a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-11-28T22:34:40Z",
+      "side": 1,
+      "message": "After all, it wasn\u0027t needed indeed.",
+      "parentUuid": "fad2ab64_6398a6fd",
+      "revId": "c7edcf5c7c757282433fe3af7f7755e061addfc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
