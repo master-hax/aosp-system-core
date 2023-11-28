@@ -406,9 +406,9 @@ bool Snapuserd::ReadMetadata() {
             break;
         }
 
-        if (cow_op->type == kCowReplaceOp) {
+        if (cow_op->type() == kCowReplaceOp) {
             replace_ops++;
-        } else if (cow_op->type == kCowZeroOp) {
+        } else if (cow_op->type() == kCowZeroOp) {
             zero_ops++;
         }
 
@@ -540,7 +540,7 @@ bool Snapuserd::ReadMetadata() {
             chunk_vec_.push_back(std::make_pair(ChunkToSector(data_chunk_id), cow_op));
             offset += sizeof(struct disk_exception);
             num_ops += 1;
-            if (cow_op->type == kCowCopyOp) {
+            if (cow_op->type() == kCowCopyOp) {
                 copy_ops++;
             }
 
