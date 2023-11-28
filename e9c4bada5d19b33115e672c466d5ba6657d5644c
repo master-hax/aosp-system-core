@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcea7350_9a4fd8b1",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-11-28T19:21:02Z",
+      "side": 1,
+      "message": "Any reason why is this required ?",
+      "revId": "e9c4bada5d19b33115e672c466d5ba6657d5644c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
