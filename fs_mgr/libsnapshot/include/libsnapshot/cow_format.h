@@ -16,6 +16,7 @@
 
 #include <stdint.h>
 
+#include <limits>
 #include <optional>
 #include <string_view>
 
@@ -119,10 +120,30 @@ struct CowHeaderV3 : public CowHeader {
     uint32_t compression_algorithm;
 } __attribute__((packed));
 
+enum class CowOperationType : uint8_t {
+    kCowCopyOp = 1,
+    kCowReplaceOp = 2,
+    kCowZeroOp = 3,
+    kCowLabelOp = 4,
+    kCowClusterOp = 5,
+    kCowXorOp = 6,
+    kCowSequenceOp = 7,
+    kCowFooterOp = std::numeric_limits<uint8_t>::max(),
+};
+
+static constexpr CowOperationType kCowCopyOp = CowOperationType::kCowCopyOp;
+static constexpr CowOperationType kCowReplaceOp = CowOperationType::kCowReplaceOp;
+static constexpr CowOperationType kCowZeroOp = CowOperationType::kCowZeroOp;
+static constexpr CowOperationType kCowLabelOp = CowOperationType::kCowLabelOp;
+static constexpr CowOperationType kCowClusterOp = CowOperationType::kCowClusterOp;
+static constexpr CowOperationType kCowXorOp = CowOperationType::kCowXorOp;
+static constexpr CowOperationType kCowSequenceOp = CowOperationType::kCowSequenceOp;
+static constexpr CowOperationType kCowFooterOp = CowOperationType::kCowFooterOp;
+
 // This structure is the same size of a normal Operation, but is repurposed for the footer.
 struct CowFooterOperation {
     // The operation code (always kCowFooterOp).
-    uint8_t type;
+    CowOperationType type;
 
     // If this operation reads from the data section of the COW, this contains
     // the compression type of that data (see constants below).
@@ -141,7 +162,7 @@ struct CowFooterOperation {
 // V2 version of COW. On disk format for older devices
 struct CowOperationV2 {
     // The operation code (see the constants and structures below).
-    uint8_t type;
+    CowOperationType type;
 
     // If this operation reads from the data section of the COW, this contains
     // the compression type of that data (see constants below).
@@ -173,11 +194,11 @@ struct CowOperationV2 {
     uint64_t source;
 } __attribute__((packed));
 
+static constexpr uint64_t kCowOpSourceInfoTypeBit = 60;
+static constexpr uint64_t kCowOpSourceInfoTypeNumBits = 4;
+static constexpr uint64_t kCowOpSourceInfoTypeMask = (1ULL << kCowOpSourceInfoTypeNumBits) - 1;
 // The on disk format of cow (currently ==  CowOperation)
 struct CowOperationV3 {
-    // The operation code (see the constants and structures below).
-    uint8_t type;
-
     // If this operation reads from the data section of the COW, this contains
     // the length.
     uint16_t data_length;
@@ -185,6 +206,10 @@ struct CowOperationV3 {
     // The block of data in the new image that this operation modifies.
     uint32_t new_block;
 
+    // source_info with have the following layout
+    // |---4 bits ---| ---12 bits---| --- 48 bits ---|
+    // |--- type --- | -- unused -- | --- source --- |
+    //
     // The value of |source| depends on the operation code.
     //
     // CopyOp: a 32-bit block location in the source image.
@@ -197,18 +222,18 @@ struct CowOperationV3 {
     //  Bits 47-62 are reserved and must be zero.
     // A block is compressed if it’s data is < block_sz
     uint64_t source_info;
+    constexpr CowOperationType type() const {
+        // this is a mask to grab the first 4 bits of a 64 bit integer
+        const auto type = (source_info >> kCowOpSourceInfoTypeBit) & kCowOpSourceInfoTypeMask;
+        return static_cast<CowOperationType>(type);
+    }
+    constexpr void set_type(CowOperationType type) {
+        source_info |= (static_cast<uint64_t>(type) & kCowOpSourceInfoTypeMask)
+                       << kCowOpSourceInfoTypeBit;
+    }
 } __attribute__((packed));
 
 static_assert(sizeof(CowOperationV2) == sizeof(CowFooterOperation));
-
-static constexpr uint8_t kCowCopyOp = 1;
-static constexpr uint8_t kCowReplaceOp = 2;
-static constexpr uint8_t kCowZeroOp = 3;
-static constexpr uint8_t kCowLabelOp = 4;
-static constexpr uint8_t kCowClusterOp = 5;
-static constexpr uint8_t kCowXorOp = 6;
-static constexpr uint8_t kCowSequenceOp = 7;
-static constexpr uint8_t kCowFooterOp = -1;
 
 enum CowCompressionAlgorithm : uint8_t {
     kCowCompressNone = 0,

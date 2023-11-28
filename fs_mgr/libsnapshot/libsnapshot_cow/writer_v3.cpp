@@ -176,7 +176,7 @@ bool CowWriterV3::OpenForWrite() {
 }
 
 bool CowWriterV3::OpenForAppend(uint64_t label) {
-    CowHeaderV3 header_v3;
+    CowHeaderV3 header_v3{};
     if (!ReadCowHeader(fd_, &header_v3)) {
         LOG(ERROR) << "Couldn't read Cow Header";
         return false;
@@ -209,7 +209,7 @@ bool CowWriterV3::OpenForAppend(uint64_t label) {
 bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks) {
     for (size_t i = 0; i < num_blocks; i++) {
         CowOperationV3 op = {};
-        op.type = kCowCopyOp;
+        op.set_type(kCowCopyOp);
         op.new_block = new_block + i;
         op.source_info = old_block + i;
         if (!WriteOperation(op)) {
@@ -230,7 +230,7 @@ bool CowWriterV3::EmitXorBlocks(uint32_t new_block_start, const void* data, size
 }
 
 bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
-                             uint64_t old_block, uint16_t offset, uint8_t type) {
+                             uint64_t old_block, uint16_t offset, CowOperationType type) {
     const size_t num_blocks = (size / header_.block_size);
     for (size_t i = 0; i < num_blocks; i++) {
         const uint8_t* const iter =
@@ -239,7 +239,7 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
         CowOperation op = {};
         op.new_block = new_block_start + i;
 
-        op.type = type;
+        op.set_type(type);
         if (type == kCowXorOp) {
             op.source_info = (old_block + i) * header_.block_size + offset;
         } else {
@@ -273,8 +273,8 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
 
 bool CowWriterV3::EmitZeroBlocks(uint64_t new_block_start, uint64_t num_blocks) {
     for (uint64_t i = 0; i < num_blocks; i++) {
-        CowOperationV3 op;
-        op.type = kCowZeroOp;
+        CowOperationV3 op{};
+        op.set_type(kCowZeroOp);
         op.data_length = 0;
         op.new_block = new_block_start + i;
         op.source_info = 0;
