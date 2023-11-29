@@ -122,6 +122,24 @@
       "parentUuid": "b4edc143_b8623149",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58afc2d8_765eeb70",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 3088198
+      },
+      "writtenOn": "2023-11-29T05:37:07Z",
+      "side": 1,
+      "message": "I looked at the contents of the cflags array again, you mean we should sort by character order, right? In this case, DDEBUG_CALLBACKS should be placed at the head of the array? Should I modify it this way? Thanks",
+      "parentUuid": "401c6930_2ffbedc4",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
