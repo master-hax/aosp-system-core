@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c07a4dbc_b68c524a",
+        "filename": "libvndksupport/include/vndksupport/linker.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-29T08:35:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8345d36f_13cdc6d6",
+      "range": {
+        "startLine": 23,
+        "startChar": 3,
+        "endLine": 23,
+        "endChar": 13
+      },
+      "revId": "269b3e0271095312f39f5b35d192f99aa0107494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f7bdb176_0d0950ee",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-11-29T06:56:43Z",
       "side": 1,
       "message": "I don\u0027t think we want to change the version of the deprecated symbol. You could just drop #llndk and #systemapi tags.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 2
+      },
+      "revId": "269b3e0271095312f39f5b35d192f99aa0107494",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75996654_f4673fb1",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1413436
+      },
+      "writtenOn": "2023-11-29T08:35:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7bdb176_0d0950ee",
       "range": {
         "startLine": 9,
         "startChar": 0,
