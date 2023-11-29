@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d840c27_7105cfcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-29T22:45:44Z",
+      "side": 1,
+      "message": "It looks like there are a bunch of merge conflicts.\n\nFor the suggestion I\u0027m making, let me see how hard it is to modify this code to do this.",
+      "revId": "c49e266c9de6221044c3a07df8135577bd63d270",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ec75683_03edf326",
+        "filename": "debuggerd/libdebuggerd/test/tombstone_proto_to_text_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-29T22:45:44Z",
+      "side": 1,
+      "message": "I think it would be better to add tests for the tombstone_proto_to_text call and custom create the protobuf structure to test these features.\n\nThat would remove the need to move the prototypes into another header file, and would be better tests for the code.",
+      "revId": "c49e266c9de6221044c3a07df8135577bd63d270",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
