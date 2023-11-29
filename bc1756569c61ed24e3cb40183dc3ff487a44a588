@@ -16,6 +16,24 @@
       "message": "This makes me a bit nervous since there\u0027s almost certainly sensitive stuff in these buffers. Would it be fine to just allow this on local builds from `adb root` or does it really need to apply to all userdebug builds?",
       "revId": "bc1756569c61ed24e3cb40183dc3ff487a44a588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56af61c3_9a205bcf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060289
+      },
+      "writtenOn": "2023-11-29T22:29:39Z",
+      "side": 1,
+      "message": "I mentioned in the other change, but this is roughly the contents of a screen shot and can only be triggered by a service call by AID_SYSTEM.\n\nI think it would be useful on all userdebug builds in the case where one has a repro case on a specific older build.",
+      "parentUuid": "674b59a4_2fa1addc",
+      "revId": "bc1756569c61ed24e3cb40183dc3ff487a44a588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
