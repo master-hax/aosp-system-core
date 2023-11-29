@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "674b59a4_2fa1addc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-11-29T20:20:02Z",
+      "side": 1,
+      "message": "This makes me a bit nervous since there\u0027s almost certainly sensitive stuff in these buffers. Would it be fine to just allow this on local builds from `adb root` or does it really need to apply to all userdebug builds?",
+      "revId": "bc1756569c61ed24e3cb40183dc3ff487a44a588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
