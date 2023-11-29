@@ -104,6 +104,24 @@
       "parentUuid": "80da9e15_0bbbde37",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "401c6930_2ffbedc4",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 3088198
+      },
+      "writtenOn": "2023-11-29T03:52:35Z",
+      "side": 1,
+      "message": "Hi @enh@google.com. It is indeed more important to maintain the order. I added the new configuration to the end. There seems to be no way to enforce the order in which the configuration is added? Do I need to modify the submit? Thank you for your review",
+      "parentUuid": "b4edc143_b8623149",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
