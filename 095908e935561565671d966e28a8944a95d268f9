@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b1e7c5d_9246c36d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-30T17:24:00Z",
+      "side": 1,
+      "message": "use spaces instead of tabs",
+      "revId": "095908e935561565671d966e28a8944a95d268f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2967163a_6e56879b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-30T17:24:00Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "095908e935561565671d966e28a8944a95d268f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5eb0154d_726ba15c",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-30T17:24:00Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "095908e935561565671d966e28a8944a95d268f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62f1bc89_1161571a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-11-30T17:24:00Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "095908e935561565671d966e28a8944a95d268f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
