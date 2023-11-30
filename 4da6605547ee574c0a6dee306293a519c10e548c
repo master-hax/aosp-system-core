@@ -50,6 +50,24 @@
       "message": "+Daniele FYI\n\nAlso we have few bits left on atrace. I shtere a doc/bug with the context about this work?",
       "revId": "4da6605547ee574c0a6dee306293a519c10e548c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32f4f557_9b2261b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-11-30T15:57:51Z",
+      "side": 1,
+      "message": "(might be worth adding a code comment here if we\u0027re trying to move people in the direction of perfetto events instead... i\u0027d +2 that, especially if there\u0027s documentation we can link to.)",
+      "parentUuid": "bd3666c5_09722a89",
+      "revId": "4da6605547ee574c0a6dee306293a519c10e548c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
