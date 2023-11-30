@@ -34,6 +34,24 @@
       "parentUuid": "674b59a4_2fa1addc",
       "revId": "bc1756569c61ed24e3cb40183dc3ff487a44a588",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8984ca9_1536bdf9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-11-30T07:53:16Z",
+      "side": 1,
+      "message": "\u003e roughly the contents of a screen shot\n\nIs that supposed to make me feel better or worse? ;)\n\nScreenshots are super-duper sensitive and can only occur under specific conditions and with a number of limitations. As an example, are you checking if FLAG_SECURE is being set on this buffer before saving it to disk?",
+      "parentUuid": "56af61c3_9a205bcf",
+      "revId": "bc1756569c61ed24e3cb40183dc3ff487a44a588",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
