@@ -86,6 +86,24 @@
       "parentUuid": "82113ac4_945ea778",
       "revId": "4da6605547ee574c0a6dee306293a519c10e548c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3bec19e_4f5d835a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2023-11-30T16:53:45Z",
+      "side": 1,
+      "message": "Oh I had a vague memory that something somewhere had a uint32 cast... but maybe I just remember wrong",
+      "parentUuid": "ab8b1425_6a19e016",
+      "revId": "4da6605547ee574c0a6dee306293a519c10e548c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
