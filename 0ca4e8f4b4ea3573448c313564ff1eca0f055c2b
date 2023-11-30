@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10b86853_4ad0573e",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-11-30T16:25:54Z",
+      "side": 0,
+      "message": "I don\u0027t think you can remove it from these stubs just yet, it needs to go through a round of being deprecated first unless you can guarantee no vendor is using it.",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
