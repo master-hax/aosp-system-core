@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd3666c5_09722a89",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2009465
+      },
+      "writtenOn": "2023-11-30T13:37:45Z",
+      "side": 1,
+      "message": "(primiano@ to CC for Perfetto knowledge)\n\nI am not very well versed in graphics tracing but I have seen that Perfetto has a render stage event trace packet:\nhttps://perfetto.dev/docs/reference/trace-packet-proto#GpuRenderStageEvent\n\nEmitting Perfetto events instead of atrace may be something worth conisdering - Perfetto has significantly (3-10x) less overhead on enabled and disabled tracepoints",
+      "revId": "4da6605547ee574c0a6dee306293a519c10e548c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
