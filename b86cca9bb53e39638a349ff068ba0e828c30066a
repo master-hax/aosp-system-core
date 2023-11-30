@@ -158,6 +158,24 @@
       "parentUuid": "b4edc143_b8623149",
       "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35844a13_5c37555e",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 3088198
+      },
+      "writtenOn": "2023-11-30T02:19:59Z",
+      "side": 1,
+      "message": "Thanks for the review. It\u0027s a great honor to contribute code to AOSP, and I hope there will be more opportunities for cooperation in the future. Thanks Stenven, Thanks Elliott! ^_^",
+      "parentUuid": "3e82e358_5a0e0641",
+      "revId": "b86cca9bb53e39638a349ff068ba0e828c30066a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
