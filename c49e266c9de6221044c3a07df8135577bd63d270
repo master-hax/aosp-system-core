@@ -33,6 +33,24 @@
       "message": "I think it would be better to add tests for the tombstone_proto_to_text call and custom create the protobuf structure to test these features.\n\nThat would remove the need to move the prototypes into another header file, and would be better tests for the code.",
       "revId": "c49e266c9de6221044c3a07df8135577bd63d270",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2def1387_11414928",
+        "filename": "debuggerd/libdebuggerd/test/tombstone_proto_to_text_test.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-11-30T03:57:52Z",
+      "side": 1,
+      "message": "I made this change, and I think it\u0027s much better and allows us to add more unit tests for the tombstone_proto_to_text function in the future.",
+      "parentUuid": "5ec75683_03edf326",
+      "revId": "c49e266c9de6221044c3a07df8135577bd63d270",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
