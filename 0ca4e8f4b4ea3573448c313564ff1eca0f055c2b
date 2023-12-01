@@ -46,6 +46,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6285ff52_f514a757",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-01T17:38:39Z",
+      "side": 0,
+      "message": "\u003e old chipsets will be built from old branches\n\nOnly if it\u0027s a frozen vendor partition setup which isn\u0027t what all chipsets do, old or otherwise, and isn\u0027t what LLNDK requires in general regardless (and definitely isn\u0027t applicable to systemapi either which is what this was also marked as being)\n\nSo I don\u0027t think this can be removed from the stubs yet.",
+      "parentUuid": "f2cab8bb_8a163387",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
