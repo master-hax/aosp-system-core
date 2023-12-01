@@ -34,6 +34,24 @@
       "parentUuid": "66d82325_528888ae",
       "revId": "6a3e9d110edfee25eedbf24e759dfd8cf5415cf1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31532c18_99ed19d3",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-01T16:32:03Z",
+      "side": 1,
+      "message": "Follow-up is fine. The fallback makes sense, but in snapuserd we tend to not verify the optimal case or the fallback logic. We should start to address this.",
+      "parentUuid": "626ec561_9859a0ce",
+      "revId": "6a3e9d110edfee25eedbf24e759dfd8cf5415cf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
