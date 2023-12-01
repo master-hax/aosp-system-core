@@ -231,6 +231,24 @@
       "parentUuid": "36d01e2d_f6eb5f9a",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a856490a_d3bd47b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-12-01T01:55:04Z",
+      "side": 1,
+      "message": "i asked the same question offline, and this was just his stream of consciousness getting to a \"yeah, this seems like the least worst option\" :-)",
+      "parentUuid": "d7b69d59_882ac902",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
