@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66d82325_528888ae",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-01T00:05:13Z",
+      "side": 1,
+      "message": "This would read better as a helper function that can early return, and only set direct_read_ at the end on success.\n\nSince we safely fallback to non-direct reads, there\u0027s nothing in the tests that will fail if open(O_DIRECT) fails. We could be tricked into thinking it\u0027s working when it isn\u0027t.\n\nMaybe we could split direct_read into \"want_direct_read_\" and \"direct_read_\", and then in some of the centralized setup code in snapuserd_test, loop over each worker and ASSERT_EQ(worker-\u003edirect_read(), \u003cconfig-value\u003e)? (Or expose that in the handler or something).",
+      "revId": "6a3e9d110edfee25eedbf24e759dfd8cf5415cf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
