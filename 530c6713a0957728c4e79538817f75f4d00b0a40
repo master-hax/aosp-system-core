@@ -249,6 +249,24 @@
       "parentUuid": "d7b69d59_882ac902",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0ac5a7a_07dfa387",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2023-12-01T02:15:29Z",
+      "side": 1,
+      "message": "The reason I\u0027m uncomfortable about this particular option because it allows setting an arbitrary value. There is a chance, that depending on the value chosen, you could expose a bug in Scudo, or cause other issues. We can\u0027t test every single possible value.\n\nHowever, it seems unlikely this particular value is going to cause a problem, and we already have some other mallopts that set arbitrary values.",
+      "parentUuid": "a856490a_d3bd47b8",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
