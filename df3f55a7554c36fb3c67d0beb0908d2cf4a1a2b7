@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f29f22ac_208ac144",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4429,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-01T00:15:42Z",
+      "side": 1,
+      "message": "Is this duplicating the check above?",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "586cda14_3d69a441",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4440,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-01T00:15:42Z",
+      "side": 1,
+      "message": "std::to_string() might work here since you don\u0027t need hex?",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0030f5d6_5cdb954f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-01T00:15:42Z",
+      "side": 1,
+      "message": "For these numbers, as well as the \"32\" ones in snapshot.cpp, there should be a comment either in the code or commit message explaining how to reproduce deriving these values. Eg, \"These values were derived empirically by booting after full OTA, then looking at /sys/metric/x/y/z\".",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
