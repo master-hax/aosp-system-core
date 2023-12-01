@@ -213,6 +213,24 @@
       "parentUuid": "5c380f1b_0aab3706",
       "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7b69d59_882ac902",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-12-01T01:32:14Z",
+      "side": 1,
+      "message": "\u003e To be honest, this makes me a bit uncomfortable. This changes the way Scudo works so it makes it a little more difficult to replicate their config.\n\n\nCan you clarify what \"this\" is?",
+      "parentUuid": "36d01e2d_f6eb5f9a",
+      "revId": "530c6713a0957728c4e79538817f75f4d00b0a40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
