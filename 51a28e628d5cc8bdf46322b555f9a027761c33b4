@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dda3dc24_75b52ebf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-02T06:38:20Z",
+      "side": 1,
+      "message": "nice, very clean patch",
+      "revId": "51a28e628d5cc8bdf46322b555f9a027761c33b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0792bf6_b827e26f",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-02T06:38:20Z",
+      "side": 1,
+      "message": "nice:)",
+      "range": {
+        "startLine": 59,
+        "startChar": 28,
+        "endLine": 59,
+        "endChar": 35
+      },
+      "revId": "51a28e628d5cc8bdf46322b555f9a027761c33b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8271d1ad_0162a2b0",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-02T06:38:20Z",
+      "side": 1,
+      "message": "could this ever cause some things to get doubled up? since libutils_defaults and libutils_defaults_nodeps are included?",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 28
+      },
+      "revId": "51a28e628d5cc8bdf46322b555f9a027761c33b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
