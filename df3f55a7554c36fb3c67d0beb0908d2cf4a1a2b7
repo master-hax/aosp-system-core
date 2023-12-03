@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b0819c4_588d732f",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4429,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-03T06:38:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f29f22ac_208ac144",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "586cda14_3d69a441",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a106237_2fb27b00",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4440,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-03T06:38:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "586cda14_3d69a441",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0030f5d6_5cdb954f",
@@ -48,6 +84,24 @@
       "writtenOn": "2023-12-01T00:15:42Z",
       "side": 1,
       "message": "For these numbers, as well as the \"32\" ones in snapshot.cpp, there should be a comment either in the code or commit message explaining how to reproduce deriving these values. Eg, \"These values were derived empirically by booting after full OTA, then looking at /sys/metric/x/y/z\".",
+      "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da31d411_3e6caf0b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-03T06:38:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0030f5d6_5cdb954f",
       "revId": "df3f55a7554c36fb3c67d0beb0908d2cf4a1a2b7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
