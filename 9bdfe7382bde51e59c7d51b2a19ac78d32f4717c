@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bee6bb51_69ce66f4",
+        "filename": "debugstore/debug_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1898965
+      },
+      "writtenOn": "2023-12-04T11:43:23Z",
+      "side": 1,
+      "message": "We should probably use a monotonic clock here that doesn\u0027t include sleep (since ANR timers exclude sleep).",
+      "revId": "9bdfe7382bde51e59c7d51b2a19ac78d32f4717c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52190ad3_c86e4590",
+        "filename": "debugstore/debug_store_events.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1898965
+      },
+      "writtenOn": "2023-12-04T11:43:23Z",
+      "side": 1,
+      "message": "nit: can we include an example of the string encoding as a comment?",
+      "revId": "9bdfe7382bde51e59c7d51b2a19ac78d32f4717c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03ba49d3_78199a29",
+        "filename": "debugstore/include/debugstore/debug_store_sotrage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1898965
+      },
+      "writtenOn": "2023-12-04T11:43:23Z",
+      "side": 1,
+      "message": "typo in file name: sotrage -\u003e storage",
+      "revId": "9bdfe7382bde51e59c7d51b2a19ac78d32f4717c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8011471_f21dc850",
+        "filename": "debugstore/include/debugstore/debug_store_sotrage.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1898965
+      },
+      "writtenOn": "2023-12-04T11:43:23Z",
+      "side": 1,
+      "message": "nit: can we add a comment explaining the lock/miss behaviour in this class?",
+      "revId": "9bdfe7382bde51e59c7d51b2a19ac78d32f4717c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
