@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70127001_c409f0a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-12-04T19:49:08Z",
+      "side": 1,
+      "message": "new native code --- why isn\u0027t this in rust?\n\n(and if this is for art, why isn\u0027t it in art/?)",
+      "revId": "101f99e4ba91d297623b78c8f8c948b64b52916b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
