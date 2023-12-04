@@ -16,6 +16,23 @@
       "message": "Just a observation here..\n\nThe type and source field in CowOperation() should never be accessed directly with this change and should use Get/Set ops.. \n\nIt would be good to enforce that at compile time else its easy to trip; ofcourse, we do have testing to catch but we have been bitten by that in the past.",
       "revId": "2bf1da5d2c1ec19ad9f1f74976b65a28401daf00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65cfe750_e7e31ef4",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-04T23:27:36Z",
+      "side": 1,
+      "message": "drive-by: Reconstructing the entire source_info is safer here, since if you call set_type() twice it won\u0027t work.",
+      "revId": "2bf1da5d2c1ec19ad9f1f74976b65a28401daf00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
