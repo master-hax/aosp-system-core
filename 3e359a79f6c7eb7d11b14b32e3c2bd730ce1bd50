@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66ebbcd2_b05b9a0b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_verify.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-04T16:15:21Z",
+      "side": 1,
+      "message": "Please explicitly say how, so these numbers can be re-derived if needed.",
+      "range": {
+        "startLine": 61,
+        "startChar": 37,
+        "endLine": 61,
+        "endChar": 47
+      },
+      "revId": "3e359a79f6c7eb7d11b14b32e3c2bd730ce1bd50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
