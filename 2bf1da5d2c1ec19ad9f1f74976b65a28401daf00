@@ -33,6 +33,24 @@
       "message": "drive-by: Reconstructing the entire source_info is safer here, since if you call set_type() twice it won\u0027t work.",
       "revId": "2bf1da5d2c1ec19ad9f1f74976b65a28401daf00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f543ca2_b8825c5e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-05T18:28:37Z",
+      "side": 1,
+      "message": "Uploaded aosp/2860565 to fix",
+      "parentUuid": "65cfe750_e7e31ef4",
+      "revId": "2bf1da5d2c1ec19ad9f1f74976b65a28401daf00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
