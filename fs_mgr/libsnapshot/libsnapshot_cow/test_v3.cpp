@@ -15,17 +15,15 @@
 #include <sys/stat.h>
 
 #include <cstdio>
-#include <iostream>
 #include <memory>
-#include <string_view>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/unique_fd.h>
 #include <gtest/gtest.h>
+#include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
 #include <libsnapshot/cow_writer.h>
-#include "cow_decompress.h"
-#include "libsnapshot/cow_format.h"
 #include "writer_v2.h"
 #include "writer_v3.h"
 
@@ -656,6 +654,26 @@ TEST_F(CowTestV3, SetTypeSourceInverleave) {
     op.set_type(kCowReplaceOp);
     ASSERT_EQ(op.source(), 0x010203040506);
     ASSERT_EQ(op.type(), kCowReplaceOp);
+}
+
+TEST_F(CowTestV3, CowSizeEstimate) {
+    CowOptions options{};
+    options.block_size = 4096;
+    options.compression = "none";
+    auto estimator = android::snapshot::CreateCowEstimator(3, options);
+    ASSERT_TRUE(estimator->AddZeroBlocks(0, 1024 * 1024));
+    const auto cow_size = estimator->GetCowSize();
+    LOG(INFO) << "Cow size: " << cow_size;
+    TemporaryFile tmpfile;
+    android::base::unique_fd fd(open(tmpfile.path, O_RDWR | O_CLOEXEC));
+    ASSERT_TRUE(fd.ok()) << " Failed to open " << tmpfile.path << " " << strerror(errno);
+    options.op_count_max = 1024 * 1024;
+    options.max_blocks = 1024 * 1024;
+    CowWriterV3 writer(options, std::move(fd));
+    ASSERT_TRUE(writer.Initialize());
+    ASSERT_TRUE(writer.AddZeroBlocks(0, 1024 * 1024));
+
+    ASSERT_LE(writer.GetCowSize(), cow_size);
 }
 
 }  // namespace snapshot
