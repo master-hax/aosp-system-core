@@ -70,6 +70,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00c77cb3_1a5bcd5b",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-05T08:29:40Z",
+      "side": 0,
+      "message": "old chipsets that are upgrading to newer Android may experience a build error due to this (if they have been using this api), but that\u0027s outside of our guarantee. the situation is the same as other vendor-available libraries; we don\u0027t guarantee source-level stability across different releases.",
+      "parentUuid": "6285ff52_f514a757",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
