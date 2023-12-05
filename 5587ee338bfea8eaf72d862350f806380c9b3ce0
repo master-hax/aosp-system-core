@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d209a197_f8877e74",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "Ok, I guess it\u0027s valuable to have this if there is something wrong with the system and we hit this often.",
+      "parentUuid": "65ac7161_1ddac0c8",
+      "range": {
+        "startLine": 232,
+        "startChar": 7,
+        "endLine": 232,
+        "endChar": 71
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5dba86df_142ded21",
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "Even if we have cgroups we should still always attempt to kill the leader regardless of `cgroup.procs` content. This was changed recently by Bart for the case where the leader was (erroneously) migrated out of the cgroup under aosp/2832972. We do that in the error case for cgroups above (`kill(-initialPid,...)`), but you asked me to remove that in the next commit. So we can add the `kill:` goto label above this line and change the kill above to a `goto`, or keep this and drop the comment.",
       "parentUuid": "5dba86df_142ded21",
+      "range": {
+        "startLine": 413,
+        "startChar": 32,
+        "endLine": 413,
+        "endChar": 54
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3efbe8c8_8f9881c2",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "Then sounds like that comment is incorrect or partial? It\u0027s used not only for non-cgroup case.",
+      "parentUuid": "a3c24e48_ffc33640",
       "range": {
         "startLine": 413,
         "startChar": 32,
@@ -191,6 +239,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3d644be1_4d617c9e",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "The poll() can return a negative value indicating that there was an error. Your current implementation ignores that. I\u0027m pointing out that you might want to handle that case instead of ignoring it and that would also let you move the log outside of this function making it more generic. If eliminating this function and calling poll() directly makes more send then let it be so.",
+      "parentUuid": "dc52f6cf_e59c74ba",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 453,
+        "endChar": 11
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0339472e_d3d0fe62",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -226,6 +298,30 @@
       "side": 1,
       "message": "I actually want to use `std::expected` here, but that\u0027s blocked by b/175635923.",
       "parentUuid": "0339472e_d3d0fe62",
+      "range": {
+        "startLine": 460,
+        "startChar": 1,
+        "endLine": 462,
+        "endChar": 24
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39298862_149af4cb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "Ok, in the meantime enum?",
+      "parentUuid": "01084c0b_e37c15e8",
       "range": {
         "startLine": 460,
         "startChar": 1,
@@ -332,6 +428,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "92522d69_17955aa5",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "I might be overprotective here but that stems from the experience with weird errors we have got from process groups being removed from under us in the past.",
+      "parentUuid": "8ca795c1_4450e133",
+      "range": {
+        "startLine": 475,
+        "startChar": 8,
+        "endLine": 475,
+        "endChar": 18
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "92f13983_587e3ea9",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -367,6 +487,30 @@
       "side": 1,
       "message": "No, `sendSignalToProcessGroup` is a public API.",
       "parentUuid": "92f13983_587e3ea9",
+      "range": {
+        "startLine": 515,
+        "startChar": 4,
+        "endLine": 516,
+        "endChar": 75
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "186b1569_d3a252e8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "Ah, I see. Ok.",
+      "parentUuid": "ee5dbb70_458762cd",
       "range": {
         "startLine": 515,
         "startChar": 4,
@@ -414,6 +558,30 @@
       "side": 1,
       "message": "Having had to try to guess what\u0027s going on from libprocessgroup logs in bugreports, I do not like this idea. The logs do not include enough info to really understand what is happening when and who triggered them, and having one log hides the duration of each step. There are two operations here, both of which can fail or be delayed for various reasons and I think we should have a log for success or failure of each.",
       "parentUuid": "44a1e4f8_236e12f2",
+      "range": {
+        "startLine": 566,
+        "startChar": 12,
+        "endLine": 566,
+        "endChar": 61
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b116ea2b_9d676d6f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "I\u0027m fine with logging the right error message but logging two \"success\" logs is an overkill.",
+      "parentUuid": "89b41fa2_b97231de",
       "range": {
         "startLine": 566,
         "startChar": 12,
