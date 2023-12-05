@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e72e38b5_910175de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-12-05T22:40:56Z",
+      "side": 1,
+      "message": "I can confirm this seems to make the issue in b/312817490 go away.  But someone with more understanding of the code should +2.",
+      "revId": "249c3db101c5c13eb8cc4e10d0f3d42149f079aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
