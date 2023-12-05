@@ -94,6 +94,30 @@
       },
       "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea405b0e_67a0fe8c",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T22:49:00Z",
+      "side": 1,
+      "message": "I agree that this would be an abnormal case but it makes sense to me to try the alternative method if we failed to use cgroup.kill for whatever reason (likely a misconfigured system).",
+      "parentUuid": "a99096cc_cacd9715",
+      "range": {
+        "startLine": 387,
+        "startChar": 16,
+        "endLine": 388,
+        "endChar": 29
+      },
+      "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
