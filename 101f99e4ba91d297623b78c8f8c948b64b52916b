@@ -34,6 +34,24 @@
       "parentUuid": "70127001_c409f0a1",
       "revId": "101f99e4ba91d297623b78c8f8c948b64b52916b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10af2c6d_3a9d0326",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2023-12-05T15:45:50Z",
+      "side": 1,
+      "message": "\u003e I only wrote it in c++ because I wasn\u0027t aware of any policy preferring Rust for AOSP and because I\u0027m more familiar with cpp, if there is a preference or policy for using Rust in AOSP that I might have overlooked, please let me know.\n\nsee go/android-new-c++-policy for when it becomes _required_, but it\u0027s already recommended for new native code.\n\n\u003e It is intended to be used by art and by frameworks (libandroid_runtime), that\u0027s why I placed it under /system/core, please let me know if it should be placed elsewhere\n\nyes, either the ART folks or the frameworks folks would need to accept long-term ownership of this, and it would want to live in their project.",
+      "parentUuid": "7566cc0f_20060306",
+      "revId": "101f99e4ba91d297623b78c8f8c948b64b52916b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
