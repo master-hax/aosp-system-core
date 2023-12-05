@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6ebc216_f6e02230",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "above we use !ret, here ret \u003c 0. Let\u0027s be consistent, one way or the other.",
+      "range": {
+        "startLine": 230,
+        "startChar": 8,
+        "endLine": 230,
+        "endChar": 15
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96c65297_539e96e8",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "This is a new warning. Why does the user care if the cgroup was already removed? Why is this a warning?",
+      "range": {
+        "startLine": 232,
+        "startChar": 7,
+        "endLine": 232,
+        "endChar": 71
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dba86df_142ded21",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "why not place into the `else` branch of `if (CgroupsAvailable())` and drop the comment?",
+      "range": {
+        "startLine": 413,
+        "startChar": 32,
+        "endLine": 413,
+        "endChar": 54
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65c46cac_9fd2a3d1",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "Why not make this function return `ret` and log in the caller. That way this function would not have to assume it\u0027s always used against PROCESSGROUP_CGROUP_EVENTS_FILE. Also the caller can make different decision based on the return value.",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 453,
+        "endChar": 11
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0339472e_d3d0fe62",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "enum would be more readable.",
+      "range": {
+        "startLine": 460,
+        "startChar": 1,
+        "endLine": 462,
+        "endChar": 24
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0745f69_dca19604",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "you can do this with one pread() syscall",
+      "range": {
+        "startLine": 469,
+        "startChar": 4,
+        "endLine": 470,
+        "endChar": 78
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a915cfc_4b47ad14",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "Do we want an error even on ENOENT?",
+      "range": {
+        "startLine": 475,
+        "startChar": 8,
+        "endLine": 475,
+        "endChar": 18
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92f13983_587e3ea9",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "we do this in sendSignalToProcessGroup() too. Can we do that once here and pass to that function?",
+      "range": {
+        "startLine": 515,
+        "startChar": 4,
+        "endLine": 516,
+        "endChar": 75
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44a1e4f8_236e12f2",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "This results in 2 log messages for every successful invocation of this function. Let\u0027s change it to one indicating that we successfully killed processes and removed a process group.",
+      "range": {
+        "startLine": 566,
+        "startChar": 12,
+        "endLine": 566,
+        "endChar": 61
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82781eb1_ce893373",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:39:58Z",
+      "side": 1,
+      "message": "can we break this up into separate `if (...) break;`, otherwise it\u0027s really hard to follow all these conditions. Smth like:\n```\n    if (once) break;\n    if (std::chrono::steady_clock::now() \u003c until) break;\n} while (ret \u0026\u0026 errno \u003d\u003d EBUSY);\n\n```",
+      "range": {
+        "startLine": 579,
+        "startChar": 6,
+        "endLine": 579,
+        "endChar": 89
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
