@@ -119,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4179c43_adc08de9",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T23:30:55Z",
+      "side": 1,
+      "message": "If we see this warning it\u0027s an indication we should be looking at what callers are doing. Everything should still be functional though.",
+      "parentUuid": "d209a197_f8877e74",
+      "range": {
+        "startLine": 232,
+        "startChar": 7,
+        "endLine": 232,
+        "endChar": 71
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5dba86df_142ded21",
@@ -180,6 +204,30 @@
       "side": 1,
       "message": "Then sounds like that comment is incorrect or partial? It\u0027s used not only for non-cgroup case.",
       "parentUuid": "a3c24e48_ffc33640",
+      "range": {
+        "startLine": 413,
+        "startChar": 32,
+        "endLine": 413,
+        "endChar": 54
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5ecaf99_2bd593c7",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T23:30:55Z",
+      "side": 1,
+      "message": "It is meant for the non-cgroup case but it\u0027s subtle. initialPid should always be in cgroup.procs, so it should get added to pgids in the while loop that reads from cgroup.procs. That makes this line a no-op in the cgroups case. So the only time pgids would not contain initialPid here is if a) cgroups are not enabled or b) there is a bug causing the migration of the leader out of the cgroup. Putting this in an else case would miss scenario b which we currently protect against. It sounds like the comment is confusing, so probably better to remove it.",
+      "parentUuid": "3efbe8c8_8f9881c2",
       "range": {
         "startLine": 413,
         "startChar": 32,
@@ -334,6 +382,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f89cf455_1115310f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T23:30:55Z",
+      "side": 1,
+      "message": "Ok, should be able to reuse too.",
+      "parentUuid": "39298862_149af4cb",
+      "range": {
+        "startLine": 460,
+        "startChar": 1,
+        "endLine": 462,
+        "endChar": 24
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d0745f69_dca19604",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -440,6 +512,30 @@
       "side": 1,
       "message": "I might be overprotective here but that stems from the experience with weird errors we have got from process groups being removed from under us in the past.",
       "parentUuid": "8ca795c1_4450e133",
+      "range": {
+        "startLine": 475,
+        "startChar": 8,
+        "endLine": 475,
+        "endChar": 18
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03ab1cae_06d185cd",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T23:30:55Z",
+      "side": 1,
+      "message": "Consider what would happen in this case. We don\u0027t know if the cgroup is populated or not so we assume it\u0027s been removed and don\u0027t consider it an error (return 0). Then we don\u0027t send any further kill signals and we log that we killed all the processes under a cgroup which doesn\u0027t actually exist anymore. That\u0027s a lie. So we\u0027d need another return value from this function to avoid that lie. Would you like to see a `return -2` or `return Enum::DoesNotExist` for the ENODEV case here? It\u0027d be just to avoid the \"Killed all processes under cgroup\" log in KillProcessGroup which we\u0027re already getting by returning -1.",
+      "parentUuid": "92522d69_17955aa5",
       "range": {
         "startLine": 475,
         "startChar": 8,
