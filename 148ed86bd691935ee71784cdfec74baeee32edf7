@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "945728d5_c6ed8499",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-05T18:56:07Z",
+      "side": 1,
+      "message": "I think we should fallback to the previous mechanism in this case instead of simply calling kill(-initialPid).",
+      "range": {
+        "startLine": 387,
+        "startChar": 16,
+        "endLine": 388,
+        "endChar": 29
+      },
+      "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
