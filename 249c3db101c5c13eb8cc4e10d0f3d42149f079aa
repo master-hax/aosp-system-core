@@ -16,6 +16,29 @@
       "message": "I can confirm this seems to make the issue in b/312817490 go away.  But someone with more understanding of the code should +2.",
       "revId": "249c3db101c5c13eb8cc4e10d0f3d42149f079aa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14580190_442a2943",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1256,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2023-12-05T22:43:13Z",
+      "side": 1,
+      "message": "Relying on the name of the device node like this is error-prone, as the need for this fix demonstrates.  A more robust solution would be to `stat()` the device node to get its device number, then use `/sys/dev/block/$major:$minor`.",
+      "range": {
+        "startLine": 1247,
+        "startChar": 0,
+        "endLine": 1256,
+        "endChar": 5
+      },
+      "revId": "249c3db101c5c13eb8cc4e10d0f3d42149f079aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
