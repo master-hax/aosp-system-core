@@ -70,6 +70,30 @@
       },
       "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a99096cc_cacd9715",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T22:44:32Z",
+      "side": 1,
+      "message": "Oh. Ok, I can setup that fallback, but I think something would have to be misconfigured to hit that. The other scenario is a caller who tries to remove the cgroup twice, but in that case we\u0027ll end up just doing `kill(-initialPid, signal)` on line 408 anyways instead of using `cgroup.procs` in the fallback path.",
+      "parentUuid": "447f2e8f_e9bf271c",
+      "range": {
+        "startLine": 387,
+        "startChar": 16,
+        "endLine": 388,
+        "endChar": 29
+      },
+      "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
