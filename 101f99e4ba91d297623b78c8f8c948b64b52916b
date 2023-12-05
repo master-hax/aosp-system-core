@@ -16,6 +16,24 @@
       "message": "new native code --- why isn\u0027t this in rust?\n\n(and if this is for art, why isn\u0027t it in art/?)",
       "revId": "101f99e4ba91d297623b78c8f8c948b64b52916b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7566cc0f_20060306",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1951730
+      },
+      "writtenOn": "2023-12-05T15:25:06Z",
+      "side": 1,
+      "message": "\u003e new native code --- why isn\u0027t this in rust?\n\nI only wrote it in c++ because I wasn\u0027t aware of any policy preferring Rust for AOSP and because I\u0027m more familiar with cpp, if there is a preference or policy for using Rust in AOSP that I might have overlooked, please let me know.\n\n\u003e  if this is for art, why isn\u0027t it in art/?\nIt is intended to be used by art and by frameworks (libandroid_runtime), that\u0027s why I placed it under /system/core, please let me know if it should be placed elsewhere",
+      "parentUuid": "70127001_c409f0a1",
+      "revId": "101f99e4ba91d297623b78c8f8c948b64b52916b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
