@@ -22,6 +22,30 @@
       },
       "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "640666c5_aa3fc692",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-05T22:27:13Z",
+      "side": 1,
+      "message": "you mean the `goto kill` which goes to the end of this function? I did it this way just to avoid a local return variable that I\u0027d have to set here, but either way is fine with me.",
+      "parentUuid": "945728d5_c6ed8499",
+      "range": {
+        "startLine": 387,
+        "startChar": 16,
+        "endLine": 388,
+        "endChar": 29
+      },
+      "revId": "148ed86bd691935ee71784cdfec74baeee32edf7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
