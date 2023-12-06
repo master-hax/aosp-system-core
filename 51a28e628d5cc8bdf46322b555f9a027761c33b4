@@ -62,6 +62,30 @@
       },
       "revId": "51a28e628d5cc8bdf46322b555f9a027761c33b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d044a2b_08c50fa5",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2023-12-06T17:22:22Z",
+      "side": 1,
+      "message": "A quick check suggest no: https://paste.googleplex.com/6516824414355456?raw\n\nWhile `libutils_defaults_nodeps` is required twice (through `libutils_binder_impl_defaults_nodeps` and `libutils_defaults`), `DANDROID_UTILS_REF_BASE_DISABLE_IMPLICIT_CONSTRUCTION` appears only once in the build output.",
+      "parentUuid": "8271d1ad_0162a2b0",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 28
+      },
+      "revId": "51a28e628d5cc8bdf46322b555f9a027761c33b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
