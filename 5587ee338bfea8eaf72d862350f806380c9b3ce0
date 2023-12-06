@@ -311,6 +311,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7d94ce5a_fb89884a",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-06T00:05:18Z",
+      "side": 1,
+      "message": "The only error we could get here is ENOMEM. It\u0027d be logged below, but there\u0027s nothing else we can really do about an error from poll. Maybe revert back to 5ms sleeps, but I think that\u0027s about it. This function is not meant to be generic. It\u0027s meant to make the single caller more readable by grouping code for this blocking behavior to avoid a 100+ line function.",
+      "parentUuid": "3d644be1_4d617c9e",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 453,
+        "endChar": 11
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0339472e_d3d0fe62",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 11
@@ -678,6 +702,30 @@
       "side": 1,
       "message": "I\u0027m fine with logging the right error message but logging two \"success\" logs is an overkill.",
       "parentUuid": "89b41fa2_b97231de",
+      "range": {
+        "startLine": 566,
+        "startChar": 12,
+        "endLine": 566,
+        "endChar": 61
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5382b4d3_e7066e0d",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2023-12-06T00:05:18Z",
+      "side": 1,
+      "message": "Ok, line 558 is now VERBOSE.",
+      "parentUuid": "b116ea2b_9d676d6f",
       "range": {
         "startLine": 566,
         "startChar": 12,
