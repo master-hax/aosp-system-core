@@ -52,6 +52,24 @@
       "parentUuid": "05dc525a_7b89bded",
       "revId": "97fe2e79b7678cd88f799c53009ececf8b261e40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a74b05d_5d056605",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952023
+      },
+      "writtenOn": "2023-12-06T18:31:59Z",
+      "side": 1,
+      "message": "Not sure I am following.\n\nHere\u0027s how I plan to use the new AID:\n1. uprobestats.rc would specify that the uprobestats process run as user uprobestats.\n2. A few BPF maps would be created with uprobestats as the owner.\n3. init.rc would create a config directory with uprobestats as the owner. (this is already included in this change)\n\nDid you mean that you\u0027d like to have 1 and/or 2 included in this same change? I can add 1. uprobestats.rc. The BPF maps won\u0027t be ready for review in a while and I am hoping to get the other parts of the project checked in first.",
+      "parentUuid": "abbfcc5a_16cdbd7e",
+      "revId": "97fe2e79b7678cd88f799c53009ececf8b261e40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
