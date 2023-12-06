@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a429bfe_652aac29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2023-12-06T00:28:24Z",
+      "side": 1,
+      "message": "Verified that Patch Set 2 also works as expected.",
+      "revId": "b1f4f53dc0c6975124f65f23b040395f3c7d1877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94612197_7d866014",
