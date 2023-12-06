@@ -238,6 +238,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecf45564_d495ae61",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "d5ecaf99_2bd593c7",
+      "range": {
+        "startLine": 413,
+        "startChar": 32,
+        "endLine": 413,
+        "endChar": 54
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "65c46cac_9fd2a3d1",
@@ -333,6 +357,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b7e55bd_30e78f71",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "7d94ce5a_fb89884a",
+      "range": {
+        "startLine": 453,
+        "startChar": 8,
+        "endLine": 453,
+        "endChar": 11
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0339472e_d3d0fe62",
@@ -418,6 +466,30 @@
       "side": 1,
       "message": "Ok, should be able to reuse too.",
       "parentUuid": "39298862_149af4cb",
+      "range": {
+        "startLine": 460,
+        "startChar": 1,
+        "endLine": 462,
+        "endChar": 24
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e92ff3c_137abe70",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "f89cf455_1115310f",
       "range": {
         "startLine": 460,
         "startChar": 1,
@@ -560,6 +632,30 @@
       "side": 1,
       "message": "Consider what would happen in this case. We don\u0027t know if the cgroup is populated or not so we assume it\u0027s been removed and don\u0027t consider it an error (return 0). Then we don\u0027t send any further kill signals and we log that we killed all the processes under a cgroup which doesn\u0027t actually exist anymore. That\u0027s a lie. So we\u0027d need another return value from this function to avoid that lie. Would you like to see a `return -2` or `return Enum::DoesNotExist` for the ENODEV case here? It\u0027d be just to avoid the \"Killed all processes under cgroup\" log in KillProcessGroup which we\u0027re already getting by returning -1.",
       "parentUuid": "92522d69_17955aa5",
+      "range": {
+        "startLine": 475,
+        "startChar": 8,
+        "endLine": 475,
+        "endChar": 18
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9d09ff3_bf26f880",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "03ab1cae_06d185cd",
       "range": {
         "startLine": 475,
         "startChar": 8,
@@ -773,6 +869,30 @@
       "side": 1,
       "message": "These are all anded together. The multiple lines look harder to read through to me, not easier. But I\u0027ll do whatever here.",
       "parentUuid": "82781eb1_ce893373",
+      "range": {
+        "startLine": 579,
+        "startChar": 6,
+        "endLine": 579,
+        "endChar": 89
+      },
+      "revId": "5587ee338bfea8eaf72d862350f806380c9b3ce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fac31f49_af242de6",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "145d7498_be54d34d",
       "range": {
         "startLine": 579,
         "startChar": 6,

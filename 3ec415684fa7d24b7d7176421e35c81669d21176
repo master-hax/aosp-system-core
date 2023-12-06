@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6b7328d_93412d81",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-06T22:15:01Z",
+      "side": 1,
+      "message": "This can be moved outside of the loop. Don\u0027t think it\u0027s changing on each iteration.",
+      "range": {
+        "startLine": 539,
+        "startChar": 12,
+        "endLine": 543,
+        "endChar": 0
+      },
+      "revId": "3ec415684fa7d24b7d7176421e35c81669d21176",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
