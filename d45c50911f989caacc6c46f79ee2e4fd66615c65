@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb685187_52a4aaca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-06T05:30:27Z",
+      "side": 1,
+      "message": "How was this bug observed ? Any test failures or during local ota tests ?",
+      "revId": "d45c50911f989caacc6c46f79ee2e4fd66615c65",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
