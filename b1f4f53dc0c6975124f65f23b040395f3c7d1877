@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94612197_7d866014",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1255,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-06T00:23:20Z",
+      "side": 1,
+      "message": "PLOG(ERROR)",
+      "revId": "b1f4f53dc0c6975124f65f23b040395f3c7d1877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "afa14f8e_d357c301",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1257,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-06T00:23:20Z",
+      "side": 1,
+      "message": "Add an S_ISBLK check here.",
+      "revId": "b1f4f53dc0c6975124f65f23b040395f3c7d1877",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
