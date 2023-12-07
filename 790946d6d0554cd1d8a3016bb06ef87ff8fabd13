@@ -16,6 +16,29 @@
       "message": "woo! finally! 😊",
       "revId": "790946d6d0554cd1d8a3016bb06ef87ff8fabd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cce72d29_cb26be3e",
+        "filename": "libvndksupport/include/vndksupport/linker.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2023-12-07T20:17:15Z",
+      "side": 1,
+      "message": "Do builds that consume LL-NDK libraries use a versioned target? If so, `__attribute__((availability(android,introduced\u003dwhatever,deprecated\u003d35)))` might suit your needs better (would it help with the migration issues discussed in the other thread?), and when you eventually add `obsoleted\u003dwhatever` it\u0027ll give a better error message than just \"decl not found\".",
+      "range": {
+        "startLine": 24,
+        "startChar": 8,
+        "endLine": 24,
+        "endChar": 18
+      },
+      "revId": "790946d6d0554cd1d8a3016bb06ef87ff8fabd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
