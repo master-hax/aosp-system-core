@@ -38,6 +38,25 @@ class IByteStream {
     ssize_t ReadFully(void* buffer, size_t length);
 };
 
+class MemoryStream final : public IByteStream {
+  public:
+    explicit MemoryStream(std::basic_string_view<uint8_t> input) : input_(input) {}
+
+    ssize_t Read(void* buffer, size_t length) override {
+        if (pos_ >= input_.size()) {
+            return 0;
+        }
+        length = std::min(length, input_.size() - pos_);
+        std::memcpy(buffer, input_.data(), length);
+        return length;
+    }
+    size_t Size() const override { return input_.size(); }
+
+  private:
+    std::basic_string_view<uint8_t> input_;
+    size_t pos_ = 0;
+};
+
 class IDecompressor {
   public:
     virtual ~IDecompressor() {}

@@ -115,12 +115,12 @@ bool CowReader::InitForMerge(android::base::unique_fd&& fd) {
     return true;
 }
 
-bool CowReader::Parse(android::base::unique_fd&& fd, std::optional<uint64_t> label) {
+bool CowReader::Parse(android::base::unique_fd&& fd, std::optional<uint64_t> label, bool merge) {
     owned_fd_ = std::move(fd);
-    return Parse(android::base::borrowed_fd{owned_fd_}, label);
+    return Parse(android::base::borrowed_fd{owned_fd_}, label, merge);
 }
 
-bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> label) {
+bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> label, bool merge) {
     fd_ = fd;
 
     if (!ReadCowHeader(fd, &header_)) {
@@ -158,6 +158,9 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
 
     // If we're resuming a write, we're not ready to merge
     if (label.has_value()) return true;
+    if (!merge) {
+        return true;
+    }
     return PrepMergeOps();
 }
 
