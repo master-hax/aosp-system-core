@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f205f4e9_93bef431",
+        "filename": "fastboot/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1954115
+      },
+      "writtenOn": "2023-12-07T14:29:40Z",
+      "side": 0,
+      "message": "Is moving this from static to shared intentional?",
+      "revId": "c52d6416b7c16b9db5e9d0a2d43aa0f6140cd9a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
