@@ -46,7 +46,9 @@ class CowWriterV3 : public CowWriterBase {
     bool OpenForWrite();
     bool OpenForAppend(uint64_t label);
     bool WriteOperation(std::basic_string_view<CowOperationV3> op,
-                        std::basic_string_view<uint8_t> data);
+                        std::basic_string_view<struct iovec> data);
+    bool WriteOperation(std::basic_string_view<CowOperationV3> op, const void* data = nullptr,
+                        size_t size = 0);
     bool WriteOperation(const CowOperationV3& op, const void* data = nullptr, size_t size = 0);
     bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
                     uint16_t offset, CowOperationType type);
