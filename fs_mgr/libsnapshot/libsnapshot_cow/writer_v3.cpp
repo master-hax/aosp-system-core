@@ -123,6 +123,9 @@ bool CowWriterV3::ParseOptions() {
             LOG(ERROR) << "Failed to create compressor for " << compression_.algorithm;
             return false;
         }
+        if (options_.batch_write && options_.cluster_ops) {
+            batch_size_ = options_.cluster_ops;
+        }
     }
     return true;
 }
@@ -224,11 +227,8 @@ bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_
         op.new_block = new_block + i;
         op.set_source(old_block + i);
     }
-    if (!WriteOperation({ops.data(), ops.size()}, {})) {
-        return false;
-    }
 
-    return true;
+    return WriteOperation({ops.data(), ops.size()});
 }
 
 bool CowWriterV3::EmitRawBlocks(uint64_t new_block_start, const void* data, size_t size) {
@@ -249,6 +249,9 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     }
     const size_t num_blocks = (size / header_.block_size);
     if (compression_.algorithm == kCowCompressNone) {
+        if (!FlushCacheOps()) {
+            return false;
+        }
         std::vector<CowOperationV3> ops(num_blocks);
         for (size_t i = 0; i < num_blocks; i++) {
             CowOperation& op = ops[i];
@@ -319,16 +322,17 @@ bool CowWriterV3::EmitZeroBlocks(uint64_t new_block_start, const uint64_t num_bl
         op.set_type(kCowZeroOp);
         op.new_block = new_block_start + i;
     }
-    if (!WriteOperation({ops.data(), ops.size()})) {
-        return false;
-    }
-    return true;
+    return WriteOperation({ops.data(), ops.size()});
 }
 
 bool CowWriterV3::EmitLabel(uint64_t label) {
     // remove all labels greater than this current one. we want to avoid the situation of adding
     // in
     // duplicate labels with differing op values
+    if (!FlushCacheOps()) {
+        LOG(ERROR) << "Failed to flush cached ops before emitting label " << label;
+        return false;
+    }
     auto remove_if_callback = [&](const auto& resume_point) -> bool {
         if (resume_point.label >= label) return true;
         return false;
@@ -378,6 +382,40 @@ bool CowWriterV3::WriteOperation(std::basic_string_view<CowOperationV3> op, cons
     return WriteOperation(op, {&vec, 1});
 }
 
+bool CowWriterV3::FlushCacheOps() {
+    if (cached_ops_.empty()) {
+        if (!data_vec_.empty()) {
+            LOG(ERROR) << "Cached ops is empty, but data iovec has size: " << data_vec_.size()
+                       << " this is definitely a bug.";
+            return false;
+        }
+        return true;
+    }
+    const off_t offset = GetOpOffset(header_.op_count, header_);
+    if (!android::base::WriteFullyAtOffset(fd_, cached_ops_.data(),
+                                           cached_ops_.size() * sizeof(cached_ops_[0]), offset)) {
+        PLOG(ERROR) << "Write failed for " << cached_ops_.size() << " ops at " << offset;
+        return false;
+    }
+    const auto total_data_size =
+            std::transform_reduce(data_vec_.begin(), data_vec_.end(), 0, std::plus<size_t>{},
+                                  [](const struct iovec& a) { return a.iov_len; });
+    if (!data_vec_.empty()) {
+        const auto ret = pwritev(fd_, data_vec_.data(), data_vec_.size(), next_data_pos_);
+        if (ret != total_data_size) {
+            PLOG(ERROR) << "write failed for data of size: " << total_data_size
+                        << " at offset: " << next_data_pos_ << " " << ret;
+            return false;
+        }
+    }
+    header_.op_count += cached_data_.size();
+    next_data_pos_ += total_data_size;
+    cached_ops_.clear();
+    cached_data_.clear();
+    data_vec_.clear();
+    return true;
+}
+
 bool CowWriterV3::WriteOperation(std::basic_string_view<CowOperationV3> ops,
                                  std::basic_string_view<struct iovec> data) {
     const auto total_data_size =
@@ -395,27 +433,34 @@ bool CowWriterV3::WriteOperation(std::basic_string_view<CowOperationV3> ops,
         return true;
     }
 
-    if (header_.op_count + ops.size() > header_.op_count_max) {
-        LOG(ERROR) << "Current op count " << header_.op_count << ", attempting to write "
-                   << ops.size() << " ops will exceed the max of " << header_.op_count_max;
+    if (header_.op_count + cached_ops_.size() + ops.size() > header_.op_count_max) {
+        LOG(ERROR) << "Current op count " << header_.op_count + cached_ops_.size()
+                   << ", attempting to write " << ops.size() << " ops will exceed the max of "
+                   << header_.op_count_max;
         return false;
     }
-
-    const off_t offset = GetOpOffset(header_.op_count, header_);
-    if (!android::base::WriteFullyAtOffset(fd_, ops.data(), ops.size() * sizeof(ops[0]), offset)) {
-        PLOG(ERROR) << "Write failed for " << ops.size() << " ops at " << offset;
-        return false;
-    }
-    if (!data.empty()) {
-        const auto ret = pwritev(fd_, data.data(), data.size(), next_data_pos_);
-        if (ret != total_data_size) {
-            PLOG(ERROR) << "write failed for data of size: " << data.size()
-                        << " at offset: " << next_data_pos_ << " " << ret;
+    if (ops.size() >= batch_size_ || ops.size() + cached_ops_.size() > batch_size_) {
+        FlushCacheOps();
+        const off_t offset = GetOpOffset(header_.op_count, header_);
+        if (!android::base::WriteFullyAtOffset(fd_, ops.data(), ops.size() * sizeof(ops[0]),
+                                               offset)) {
+            PLOG(ERROR) << "Write failed for " << ops.size() << " ops at " << offset;
             return false;
         }
+        if (!data.empty()) {
+            const auto ret = pwritev(fd_, data.data(), data.size(), next_data_pos_);
+            if (ret != total_data_size) {
+                PLOG(ERROR) << "write failed for data of size: " << data.size()
+                            << " at offset: " << next_data_pos_ << " " << ret;
+                return false;
+            }
+        }
+        header_.op_count += ops.size();
+        next_data_pos_ += total_data_size;
+    } else {
+        cached_ops_.insert(cached_ops_.end(), ops.begin(), ops.end());
+        data_vec_.insert(data_vec_.end(), data.begin(), data.end());
     }
-    header_.op_count += ops.size();
-    next_data_pos_ += total_data_size;
 
     return true;
 }
@@ -427,6 +472,9 @@ bool CowWriterV3::WriteOperation(const CowOperationV3& op, const void* data, siz
 bool CowWriterV3::Finalize() {
     CHECK_GE(header_.prefix.header_size, sizeof(CowHeaderV3));
     CHECK_LE(header_.prefix.header_size, sizeof(header_));
+    if (!FlushCacheOps()) {
+        return false;
+    }
     if (!android::base::WriteFullyAtOffset(fd_, &header_, header_.prefix.header_size, 0)) {
         return false;
     }
