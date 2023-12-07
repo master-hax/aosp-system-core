@@ -214,6 +214,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1820a62_d934d8ff",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-07T19:10:19Z",
+      "side": 0,
+      "message": "\u003e we could keep \u0027# llndk systemapi\u0027 here (it won\u0027t hurt anything)\n\nYeah this is imo the only problem with this CL, that\u0027d be equivalent to jumping straight past deprecation and to build breaking which is a lot more aggressive than is typical. If we keep that here then LGTM",
+      "parentUuid": "0f89d83a_777c40b7",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
