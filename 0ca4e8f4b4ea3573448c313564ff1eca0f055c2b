@@ -190,6 +190,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f89d83a_777c40b7",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-07T19:08:22Z",
+      "side": 0,
+      "message": "\u003e Also, Jiyong should be defining the policy for LL-NDK - there really shouldn\u0027t be a policy other than the one Jiyong/me/a few others are setting - e.g. what I have documented in http://go/system-vendor-boundary, not the NDK council docs.\n\nI skimmed through go/system-vendor-boundary and it seems mostly aligned with what\u0027s in the NDK council docs. But if the NDK docs are incorrect do please propose the updated wording so we know what policy is needed to be enforced.\n\n_that said_ this is also removing it from #systemapi which isn\u0027t treble-owned policy, and we (NDK API council) defaulted to following the policy from API council ( go/android-api-types#systemapi which specifies 4 years)",
+      "parentUuid": "99e8013d_4fcf21c6",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
