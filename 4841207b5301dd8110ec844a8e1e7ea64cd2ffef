@@ -52,6 +52,24 @@
       "parentUuid": "7180f9fb_0f94049f",
       "revId": "4841207b5301dd8110ec844a8e1e7ea64cd2ffef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb5cde05_8d0ea563",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2023-12-07T01:07:40Z",
+      "side": 1,
+      "message": "actually this one is also good, sorry, because right now __scudo_get_stack_depot_size will never return 0, and once we make it return that we will also handle that case in getErrorInfo. sorry for confusion",
+      "parentUuid": "b6893915_b150421f",
+      "revId": "4841207b5301dd8110ec844a8e1e7ea64cd2ffef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
