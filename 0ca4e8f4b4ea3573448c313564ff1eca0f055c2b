@@ -166,6 +166,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99e8013d_4fcf21c6",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-07T18:48:58Z",
+      "side": 0,
+      "message": "Btw - I think Jiyong is right on the technical details. However, in order to make this change, we are really relying on b/136506169. We should have a way in version script to say \"llndk deprecated\" or similar. Also, Jiyong should be defining the policy for LL-NDK - there really shouldn\u0027t be a policy other than the one Jiyong/me/a few others are setting - e.g. what I have documented in http://go/system-vendor-boundary, not the NDK council docs. That being said, yeah, these should be aligned, but it would have been good to be consulted. It\u0027s not the first time this blurb has obstructed things. Jiyong, want to submit a doc update so we can get these on the same page?\n\nAnyway, after this change is made, we no longer have documentation in this file that this API used to be LLNDK. I think we should have a way to document this.\n\nHow about:\n- we could keep \u0027# llndk systemapi\u0027 here (it won\u0027t hurt anything)\n- focus on removing use of this API\n- mark deprecated now\n- cleanup process/add a way to note \u0027llndk deprecated\u0027 in vendorscript later\n\nI don\u0027t think it would block anything?",
+      "parentUuid": "4d7a20ee_806faf45",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
