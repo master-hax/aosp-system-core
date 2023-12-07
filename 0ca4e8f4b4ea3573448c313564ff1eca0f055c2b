@@ -118,6 +118,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8992e35_277f6f9f",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-07T04:13:53Z",
+      "side": 0,
+      "message": "I think Dan wrote cl/515445352 on behalf of our team, at least on the LLNDK part. I\u0027d like to suggest to focus on actuality rather than what\u0027s written which may be incomplete or wrong (in which case we need to amend).\n\nDoes the removal of this from the txt file break existing vendor partitions? No, because we keep the symbol in the *.so file itself.\n\nDoes this break new vendor partitions? Yes, if they are using this symbol (which TBH is very unlikely) but anyway that\u0027s not we have guaranteed.\n\nWhat about dropping it from systemapi? We (Google) are good because we fixed it. Partners are good as well because they can\u0027t have updatable APEXes.",
+      "parentUuid": "6e0b1dc0_6718d1fa",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
