@@ -15,8 +15,10 @@
 #pragma once
 
 #include <android-base/logging.h>
+#include <string>
 #include <string_view>
 
+#include "libsnapshot/cow_format.h"
 #include "writer_base.h"
 
 namespace android {
@@ -55,6 +57,7 @@ class CowWriterV3 : public CowWriterBase {
     bool CompressBlocks(size_t num_blocks, const void* data);
 
   private:
+    bool FlushCacheOps();
     CowHeaderV3 header_{};
     CowCompression compression_;
     // in the case that we are using one thread for compression, we can store and re-use the same
@@ -65,11 +68,14 @@ class CowWriterV3 : public CowWriterBase {
     std::shared_ptr<std::vector<ResumePoint>> resume_points_;
 
     uint64_t next_data_pos_ = 0;
-    std::vector<std::basic_string<uint8_t>> compressed_buf_;
 
     // in the case that we are using one thread for compression, we can store and re-use the same
     // compressor
     int num_compress_threads_ = 1;
+    size_t batch_size = 0;
+    std::vector<CowOperationV3> cached_ops_;
+    std::vector<std::basic_string<uint8_t>> cached_data_;
+    std::vector<struct iovec> data_vec_;
 };
 
 }  // namespace snapshot
