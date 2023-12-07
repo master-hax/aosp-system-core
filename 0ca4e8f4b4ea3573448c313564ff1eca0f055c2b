@@ -238,6 +238,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e68f1b6_174beda6",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2023-12-07T20:14:08Z",
+      "side": 0,
+      "message": "Sorry, I\u0027m usually better about CCing people on doc reviews, but I guess I forgot that time.",
+      "parentUuid": "f1820a62_d934d8ff",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
