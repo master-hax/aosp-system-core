@@ -69,6 +69,24 @@
       "parentUuid": "37591391_d0f5308d",
       "revId": "29192395bc6f8c6697b4d1f2234e68d2a2e2ed42",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5038ee1_bb9b43b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-08T05:37:15Z",
+      "side": 1,
+      "message": "Ok, then I will +2 this after that fix is uploaded.",
+      "parentUuid": "37591391_d0f5308d",
+      "revId": "29192395bc6f8c6697b4d1f2234e68d2a2e2ed42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
