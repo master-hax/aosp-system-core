@@ -262,6 +262,53 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d8dfdec_0238c8d3",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-08T06:40:32Z",
+      "side": 0,
+      "message": "\u003e We should have a way in version script to say \"llndk deprecated\" or similar.\n\nWe say that via header using the `__attribute__((deprecated)` annotation, not the version script.\n\n\u003e Jiyong, want to submit a doc update so we can get these on the same page?\n\nYes I will.\n\n\u003e we could keep \u0027# llndk systemapi\u0027 here (it won\u0027t hurt anything)\n\nI\u0027d like to drop the line. Dropping the line doesn\u0027t hurt anything either.\n\n\u003e focus on removing use of this API\n\nYes, and dropping it from the txt file is for that.\n\n\u003e mark deprecated now\n\nAlready done. See the change in the header.",
+      "parentUuid": "5e68f1b6_174beda6",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7182264b_bc3383c8",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-08T06:40:32Z",
+      "side": 0,
+      "message": "@kiyoungkim could you drop only this part?",
+      "range": {
+        "startLine": 3,
+        "startChar": 36,
+        "endLine": 3,
+        "endChar": 41
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
