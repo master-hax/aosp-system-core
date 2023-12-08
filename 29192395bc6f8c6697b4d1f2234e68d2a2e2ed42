@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a12ea20_4838995b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-08T00:20:29Z",
+      "side": 1,
+      "message": "Can you tell me where the forward fix?",
+      "revId": "29192395bc6f8c6697b4d1f2234e68d2a2e2ed42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "124f7bfa_cf6d5968",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-08T00:20:29Z",
+      "side": 1,
+      "message": "Can you tell me where the forward fix?",
+      "revId": "29192395bc6f8c6697b4d1f2234e68d2a2e2ed42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
