@@ -333,6 +333,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e1d36b3_5a58e2f9",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-08T17:09:23Z",
+      "side": 0,
+      "message": "\u003e I\u0027d like to drop the line. Dropping the line doesn\u0027t hurt anything either.\n\nDropping the line indicates an intention to break the ABI. It\u0027s only thanks to a different bug that it ends up having no impact, but it\u0027s communicating the wrong intention and the wrong reality.\n\nI think you can remove the function from the header long before you can remove the export from the map file, even. It cannot be removed from the map file until we\u0027re ready to break the ABI, which is definitely not now.\n\nAlso no annotation doesn\u0027t mean not available, it defaults to NDK availability most commonly which is _definitely_ not what you want here. See: https://android.googlesource.com/platform/build/soong/+/refs/heads/main/docs/map_files.md#introduced\n\nspecifically:\n\u003e Symbol names for which no other rule applies will implicitly be introduced in first_version.",
+      "parentUuid": "1d8dfdec_0238c8d3",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
