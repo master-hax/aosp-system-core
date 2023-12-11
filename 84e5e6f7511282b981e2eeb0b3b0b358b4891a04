@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e62b1ce5_7d9a18fd",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-11T23:19:01Z",
+      "side": 1,
+      "message": "TIL you can do this :)",
+      "revId": "84e5e6f7511282b981e2eeb0b3b0b358b4891a04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
