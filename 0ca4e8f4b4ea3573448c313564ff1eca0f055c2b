@@ -357,6 +357,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ee216b8_424bd9d6",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-11T07:07:17Z",
+      "side": 0,
+      "message": "The line is not dropped. Only the llndk annotation is dropped. See the latest patchset.\n\n\u003e it defaults to NDK availability\n\nThat\u0027s correct in the context of the map file. But this library as a whole is not part of NDK. This library is not accessible to the NDK clients either at build time or at run time.",
+      "parentUuid": "5e1d36b3_5a58e2f9",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
