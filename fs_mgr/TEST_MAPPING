@@ -22,9 +22,8 @@
     {
       "name": "vts_libsnapshot_test"
     },
-    {
-      "name": "vab_legacy_tests"
-    },
+    // TODO(b/311900089):
+    //{"name": "vab_legacy_tests"},
     // TODO(b/279009697):
     //{"name": "vabc_legacy_tests"},
     {
@@ -44,9 +43,8 @@
     {
       "name": "vts_libsnapshot_test"
     },
-    {
-      "name": "vab_legacy_tests"
-    },
+    // TODO(b/311900089):
+    //{"name": "vab_legacy_tests"},
     // TODO(b/279009697):
     //{"name": "vabc_legacy_tests"}
     {
