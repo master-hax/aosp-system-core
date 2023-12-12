@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "979e2865_d32b27ae",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-12T01:23:36Z",
+      "side": 1,
+      "message": "Just a thought here.. Since we run the same algorithm on the host side, can\u0027t we not pass the information of those blocks which cannot be compressed as part of the OTA payload.\n\nWhen I was doing prototype of variable block size, I saw that there were thousands of blocks which couldn\u0027t be compressed (both for lz4 and gz) and we end up paying penalty here. This is especially true when we increase the block size as well..\n\nAnyways, just wanted to bring this up here - this will require a far more thought and design change and beyond the scope of this CL.",
+      "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdf94b1f_4629828c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-12T01:23:36Z",
+      "side": 1,
+      "message": "If I am reading this flow correctly, we are effectively writing to disk during each call to AddRawBlocks().\n\nI do see batching through iovec but this slightly deviates from the existing logic wherein we avoid flushing to disk but instead cache the data and return immediately and that is what makes the install speed up; The flush from the internal cache to disk is done as later based on the the label and other cluster.\n \nDo we plan to do this in follow up CL ?\n\nAlso, we should probably have a 1:1 install time comparison between v2 and v3 so that we don\u0027t regress.",
+      "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
