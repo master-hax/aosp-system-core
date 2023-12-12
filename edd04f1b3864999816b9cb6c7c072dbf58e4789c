@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2453bd2_9a5eb050",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-12T07:42:34Z",
+      "side": 1,
+      "message": "I am ok with the changes. +David\n\nHowever, there is a big caveat here which we have to be very careful. We do a lot of backports to support OEM\u0027s and other verticals. Thus, if we end up backporting this CL, then there is a hard dependency wherein the corresponding bionic changes also have to be backported; else this will be a huge regression.\n\nThe last time this caused a massive break in the dogfood population. Hence, we have to be careful here.",
+      "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
