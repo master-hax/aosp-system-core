@@ -16,6 +16,24 @@
       "message": "I am ok with the changes. +David\n\nHowever, there is a big caveat here which we have to be very careful. We do a lot of backports to support OEM\u0027s and other verticals. Thus, if we end up backporting this CL, then there is a hard dependency wherein the corresponding bionic changes also have to be backported; else this will be a huge regression.\n\nThe last time this caused a massive break in the dogfood population. Hence, we have to be careful here.",
       "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ead0c1a_0f15c629",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087625
+      },
+      "writtenOn": "2023-12-12T07:49:29Z",
+      "side": 1,
+      "message": "\u003e if we end up backporting this CL, then there is a hard dependency wherein the corresponding bionic changes also have to be backported\n\nThis wouldn\u0027t break older Android releases. Older release do not enable ThinLTO by default. We fixed the Bionic issue before making global ThinLTO default.\n\nLast time it broke dogfood was for a special global ThinLTO build flavour (bramble_64). This is not the default and we do not expect any OEM that ships a system with that option.",
+      "parentUuid": "c2453bd2_9a5eb050",
+      "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
