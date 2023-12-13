@@ -34,6 +34,24 @@
       "parentUuid": "c2453bd2_9a5eb050",
       "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41ff66bb_f035cced",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:17:40Z",
+      "side": 1,
+      "message": "I guess I\u0027m ok with this, since it\u0027s easy enough to revert if we need to. But the risk seems high  and the reward is unclear.",
+      "parentUuid": "4ead0c1a_0f15c629",
+      "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
