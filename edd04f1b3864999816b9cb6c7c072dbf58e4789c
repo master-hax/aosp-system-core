@@ -70,6 +70,24 @@
       "parentUuid": "41ff66bb_f035cced",
       "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37f7dabb_eb02dd54",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087625
+      },
+      "writtenOn": "2023-12-13T23:24:58Z",
+      "side": 1,
+      "message": "\u003e There is no guarantee that OEM\u0027s can\u0027t use it. Isn\u0027t it ?\n\nAlmost impossible, since the bionic bug broke every static binary. We only disabled snapuserd because it is more broken than the others during the limited dogfooding.\n\n\u003e How much are the benefits do we see with this change ?\n\nsnapuserd is one of the few remaining opt-outs from LTO (http://go/android-thinlto-optouts). Going forward, non-LTO will be a less tested compilation mode, and the test coverage will be lower (we rely on building a lot of code and running a lot of tests to uncover compiler bugs). Another nice benefit is reduced build time. We have to build a non-LTO variant of all its direct and indirect static dependencies. Moving to LTO allows it to reuse the same LTO variant built for other projects.",
+      "parentUuid": "19f5d478_2dc4b4a9",
+      "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
