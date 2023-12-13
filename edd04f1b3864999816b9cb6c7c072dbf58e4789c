@@ -52,6 +52,24 @@
       "parentUuid": "4ead0c1a_0f15c629",
       "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19f5d478_2dc4b4a9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-13T20:27:40Z",
+      "side": 1,
+      "message": "\u003e This is not the default and we do not expect any OEM that ships a system with that option.\n\nThere is no guarantee that OEM\u0027s can\u0027t use it. Isn\u0027t it ? \n\nTo be clearn, I am not against the change; just thinking about the ramifications.. How much are the benefits do we see with this change ?",
+      "parentUuid": "41ff66bb_f035cced",
+      "revId": "edd04f1b3864999816b9cb6c7c072dbf58e4789c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
