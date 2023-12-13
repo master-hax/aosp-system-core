@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66729b04_66cd8ab7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-13T00:26:08Z",
+      "side": 1,
+      "message": "I have merged a fix for this: https://r.android.com/2871223\n\nLets monitor the builds.",
+      "revId": "a6c7abbfee4030c58b4592a236bfbdcc6684d8d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
