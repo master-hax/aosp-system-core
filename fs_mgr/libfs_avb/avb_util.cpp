@@ -227,13 +227,15 @@ std::string AvbPartitionToDevicePatition(const std::string& avb_partition_name,
 //       "/dev/block/by-name/system_b", slot_select_other => "system_other".
 //
 // Or for a logical partition (with ab_suffix):
-// e.g., "system_a", slot_select       => "system",
-//       "system_b", slot_select_other => "system_other".
+// e.g., "system_a", slot_select                         => "system",
+//       "system_b", slot_select_other                   => "system_other",
+//       "/dev/block/mapper/system_a", slot_select       => "system".
+//       "/dev/block/mapper/system_b", slot_select_other => "system_other".
 std::string DeriveAvbPartitionName(const FstabEntry& fstab_entry, const std::string& ab_suffix,
                                    const std::string& ab_other_suffix) {
     std::string partition_name;
     if (fstab_entry.fs_mgr_flags.logical) {
-        partition_name = fstab_entry.logical_partition_name;
+        partition_name = Basename(fstab_entry.logical_partition_name);
     } else {
         partition_name = Basename(fstab_entry.blk_device);
     }
