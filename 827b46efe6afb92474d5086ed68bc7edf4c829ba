@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1b6755a_bc93baf9",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "can we call `SetOverlaysActiveFlag(false);` unconditionally here before any other operations? This way we ensure no matter `fs_mgr_overlayfs_teardown_scratch` succeeded or failed, the overlays_active flag is cleared, and any stale scratch would not be mounted after reboot.",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce6e7322_f23ec6dc",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "should we just call this in the caller of this function, so we don\u0027t have to call this in two different places? continue below...",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "185ae1ac_7fa1f4e3",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "I think we should call `TeardownDataScratch(images.get(), partition_name, false /* was_mounted */);` here like L571-L574",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4893233_d3281d04",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "```suggestion\n    if (!fs_mgr_overlayfs_create_scratch(fstab, \u0026scratch_device, \u0026partition_exists)) {\n        LOG(ERROR) \u003c\u003c \"Failed to create scratch partition\";\n        return false;\n    }\n    if (!SetOverlaysActiveFlag(true)) {\n        LOG(ERROR) \u003c\u003c \"Failed to set flag ...\";\n        fs_mgr_overlayfs_teardown_scratch();\n        return false;\n    }\n    \n```",
+      "range": {
+        "startLine": 628,
+        "startChar": 0,
+        "endLine": 632,
+        "endChar": 0
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c3a1e70_20191bf0",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "why not just do:\n\n```suggestion\n    if (!GetOverlaysActiveFlag()) {\n        return;\n    }\n    if (ScratchIsOnData()) {\n        if (auto images \u003d IImageManager::Open(\"remount\", 0ms)) {\n            images-\u003eMapAllImages(init);\n        }\n    }\n```",
+      "range": {
+        "startLine": 896,
+        "startChar": 0,
+        "endLine": 901,
+        "endChar": 5
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6576dc2_67ad0298",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 923,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-13T07:39:21Z",
+      "side": 1,
+      "message": "why does `RemoveDisabledImages` need to be guarded? Can\u0027t this just be:\n```suggestion\n        images-\u003eRemoveDisabledImages();\n        if (!GetOverlaysActiveFlag()) {\n            fs_mgr_overlayfs_teardown_scratch(kScratchMountPoint, nullptr);\n        }\n```",
+      "range": {
+        "startLine": 919,
+        "startChar": 0,
+        "endLine": 923,
+        "endChar": 9
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
