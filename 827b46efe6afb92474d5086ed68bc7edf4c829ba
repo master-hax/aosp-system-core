@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4dcbf2e6_793a257c",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1b6755a_bc93baf9",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce6e7322_f23ec6dc",
@@ -31,6 +49,24 @@
       "writtenOn": "2023-12-13T07:39:21Z",
       "side": 1,
       "message": "should we just call this in the caller of this function, so we don\u0027t have to call this in two different places? continue below...",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9755f6cf_cb35cfdf",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce6e7322_f23ec6dc",
       "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1292e9bd_0c741a32",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "185ae1ac_7fa1f4e3",
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d4893233_d3281d04",
@@ -65,6 +119,30 @@
       "writtenOn": "2023-12-13T07:39:21Z",
       "side": 1,
       "message": "```suggestion\n    if (!fs_mgr_overlayfs_create_scratch(fstab, \u0026scratch_device, \u0026partition_exists)) {\n        LOG(ERROR) \u003c\u003c \"Failed to create scratch partition\";\n        return false;\n    }\n    if (!SetOverlaysActiveFlag(true)) {\n        LOG(ERROR) \u003c\u003c \"Failed to set flag ...\";\n        fs_mgr_overlayfs_teardown_scratch();\n        return false;\n    }\n    \n```",
+      "range": {
+        "startLine": 628,
+        "startChar": 0,
+        "endLine": 632,
+        "endChar": 0
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d40b57c2_669af3fa",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 632,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4893233_d3281d04",
       "range": {
         "startLine": 628,
         "startChar": 0,
@@ -98,6 +176,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "34a6b451_d3023f2e",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c3a1e70_20191bf0",
+      "range": {
+        "startLine": 896,
+        "startChar": 0,
+        "endLine": 901,
+        "endChar": 5
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e6576dc2_67ad0298",
@@ -111,6 +213,30 @@
       "writtenOn": "2023-12-13T07:39:21Z",
       "side": 1,
       "message": "why does `RemoveDisabledImages` need to be guarded? Can\u0027t this just be:\n```suggestion\n        images-\u003eRemoveDisabledImages();\n        if (!GetOverlaysActiveFlag()) {\n            fs_mgr_overlayfs_teardown_scratch(kScratchMountPoint, nullptr);\n        }\n```",
+      "range": {
+        "startLine": 919,
+        "startChar": 0,
+        "endLine": 923,
+        "endChar": 9
+      },
+      "revId": "827b46efe6afb92474d5086ed68bc7edf4c829ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3be62220_6fa65317",
+        "filename": "fs_mgr/fs_mgr_overlayfs_control.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 923,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2023-12-13T20:09:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6576dc2_67ad0298",
       "range": {
         "startLine": 919,
         "startChar": 0,
