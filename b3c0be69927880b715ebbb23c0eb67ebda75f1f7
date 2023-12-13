@@ -22,6 +22,30 @@
       },
       "revId": "b3c0be69927880b715ebbb23c0eb67ebda75f1f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4b8a107_1830b39b",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1859275
+      },
+      "writtenOn": "2023-12-13T07:11:53Z",
+      "side": 1,
+      "message": "I see. It can be my mistake in making the fstab.postinstall for my project. I\u0027ll remove the logical keyword and comeback to abandon this change if it works.\n\nThank you!",
+      "parentUuid": "e7782067_4ffff3cd",
+      "range": {
+        "startLine": 238,
+        "startChar": 46,
+        "endLine": 238,
+        "endChar": 68
+      },
+      "revId": "b3c0be69927880b715ebbb23c0eb67ebda75f1f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
