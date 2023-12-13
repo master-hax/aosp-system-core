@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7782067_4ffff3cd",
+        "filename": "fs_mgr/libfs_avb/avb_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-12-13T07:04:45Z",
+      "side": 1,
+      "message": "Hi,\n\nIIRC, fstab.logical_partition_name is usually a simple partition name, e.g., system, vendor, etc. And it will be set when \u0027logical\u0027 fs_mgr flags is specified.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/fs_mgr/libfstab/fstab.cpp;l\u003d569;drc\u003de54c0be60f5aa32ce06f4366a3c55db45c41093c\n\nFor the folowing change, the three added new lines doesn\u0027t specify \u0027logical\u0027 in the \u003cfs_mgr_flags\u003e. In this case, will fstab.logical_partition_name be set to \u0027/dev/block/mapper/system_a\u0027?\n\nhttps://android-review.git.corp.google.com/c/platform/system/extras/+/2165248/2/cppreopts/fstab.postinstall",
+      "range": {
+        "startLine": 238,
+        "startChar": 46,
+        "endLine": 238,
+        "endChar": 68
+      },
+      "revId": "b3c0be69927880b715ebbb23c0eb67ebda75f1f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
