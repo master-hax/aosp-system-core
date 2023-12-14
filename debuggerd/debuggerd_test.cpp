@@ -850,6 +850,90 @@ TEST_F(CrasherTest, mte_fault_tag_dump_rear_truncated) {
 #endif
 }
 
+
+template <int N, typename Fn>
+static auto unique_stack(int x, Fn f) __attribute__((optnone, noinline)){
+  if (x == 0) {
+    return f();
+  }
+  if ((x & 0x7) == 0) {
+    return unique_stack<0, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 1) {
+    return unique_stack<1, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 2) {
+    return unique_stack<2, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 3) {
+    return unique_stack<3, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 4) {
+    return unique_stack<4, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 5) {
+    return unique_stack<5, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 6) {
+    return unique_stack<6, Fn>(x >> 1, f);
+  }
+  if ((x & 0x7) == 7) {
+    return unique_stack<7, Fn>(x >> 1, f);
+  }
+  __builtin_unreachable();
+}
+
+TEST_P(SizeParamCrasherTest, mte_resize_buffer) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  // Any UAF on a zero-sized allocation will be out-of-bounds so it won't be reported.
+  if (GetParam() == 0) {
+    return;
+  }
+
+  LogcatCollector logcat_collector;
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    ASSERT_EQ(mallopt(M_HEAP_TAGGING_SET_ALLOCATION_BUFFER_SIZE, GetParam()), 1);
+    volatile int* p = unique_stack<0>(0, [] { return (volatile int*)malloc(5); });
+    for (unsigned long i = 1; i < GetParam() / 2 - 1; ++i) {
+      volatile int* x = unique_stack<0>(i, [] { return (volatile int*)malloc(5); });
+      unique_stack<0>(i, [x] { free((void*)x); });
+    }
+    free((void *)p);
+    p[0] = 42;
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::vector<std::string> log_sources(2);
+  ConsumeFd(std::move(output_fd), &log_sources[0]);
+  logcat_collector.Collect(&log_sources[1]);
+  // Tag dump only available in the tombstone, not logcat.
+  ASSERT_MATCH(log_sources[0], "Memory tags around the fault address");
+
+  for (const auto& result : log_sources) {
+    ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\))");
+    ASSERT_MATCH(result, R"(Cause: \[MTE\]: Use After Free, 0 bytes into a 5-byte allocation)");
+    ASSERT_MATCH(result, R"(deallocated by thread .*?\n.*#00 pc)");
+    ASSERT_MATCH(result, R"((^|\s)allocated by thread .*?\n.*#00 pc)");
+  }
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
 TEST_F(CrasherTest, LD_PRELOAD) {
   int intercept_result;
   unique_fd output_fd;
