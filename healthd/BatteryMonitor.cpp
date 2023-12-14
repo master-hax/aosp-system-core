@@ -220,7 +220,6 @@ BatteryHealth getBatteryHealth(const char* status) {
             {"Warm", BatteryHealth::GOOD},
             {"Cool", BatteryHealth::GOOD},
             {"Hot", BatteryHealth::OVERHEAT},
-            {"Calibration required", BatteryHealth::INCONSISTENT},
             {NULL, BatteryHealth::UNKNOWN},
     };
 
