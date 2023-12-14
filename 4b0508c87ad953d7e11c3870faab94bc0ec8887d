@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee9692ab_15b3f237",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2023-12-14T22:30:00Z",
+      "side": 1,
+      "message": "I forgot to check that this was actually writable:\n```\n\u003e touch /tmp/foo\ntouch: \u0027/tmp/foo\u0027: Permission denied\n```\nWill need to check the selinux rules.",
+      "revId": "4b0508c87ad953d7e11c3870faab94bc0ec8887d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
