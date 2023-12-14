@@ -850,6 +850,104 @@ TEST_F(CrasherTest, mte_fault_tag_dump_rear_truncated) {
 #endif
 }
 
+// This builds a unique callstack for every x that calls f at its leaf.
+template <int N, typename Fn>
+static auto unique_stack(int x, Fn f) __attribute__((optnone, noinline)) {
+  if (x == 0) {
+    return f();
+  }
+#define UNIQUE_STACK_BRANCH(n)             \
+  if ((x & 0xf) == n) {                    \
+    return unique_stack<n, Fn>(x >> 4, f); \
+  }
+  UNIQUE_STACK_BRANCH(0);
+  UNIQUE_STACK_BRANCH(1);
+  UNIQUE_STACK_BRANCH(2);
+  UNIQUE_STACK_BRANCH(3);
+  UNIQUE_STACK_BRANCH(4);
+  UNIQUE_STACK_BRANCH(5);
+  UNIQUE_STACK_BRANCH(6);
+  UNIQUE_STACK_BRANCH(7);
+  UNIQUE_STACK_BRANCH(8);
+  UNIQUE_STACK_BRANCH(9);
+  UNIQUE_STACK_BRANCH(10);
+  UNIQUE_STACK_BRANCH(11);
+  UNIQUE_STACK_BRANCH(12);
+  UNIQUE_STACK_BRANCH(13);
+  UNIQUE_STACK_BRANCH(14);
+  UNIQUE_STACK_BRANCH(15);
+#undef UNIQUE_STACK_BRANCH
+  __builtin_unreachable();
+}
+
+TEST_F(CrasherTest, mte_resize_buffer) {
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  constexpr auto kNewSize = 524288;
+  constexpr auto kRetries = 10;
+  bool done = false;
+  // We store the alocation stacks in a hash table, and we don't handle collisions.
+  // We override the previous value with the new one. As such, there is a possibility
+  // that the stack gets overwritten by a new one, dependent on ASLR. To work around this,
+  // we retry with a different initial stack (because ASLR won't change, because we only fork,
+  // not exec).
+  for (int initStack = 0; initStack < kRetries; ++initStack) {
+    LogcatCollector logcat_collector;
+    int intercept_result;
+    unique_fd output_fd;
+    StartProcess([&]() {
+      SetTagCheckingLevelSync();
+      ASSERT_EQ(mallopt(M_HEAP_TAGGING_SET_ALLOCATION_BUFFER_SIZE, kNewSize), 1);
+      // Mess up the return address. We aren't going to need it, and that makes our frames
+      // smaller because the unwinder thinks this is the root of the callstack.
+      // Otherwise we need too many frames per callstack to fit into the stack depot
+      // because gtest adds too much stuff.
+      __asm__("mov fp, #0");
+      volatile int* p = unique_stack<0>(initStack, [] { return (volatile int*)malloc(5); });
+      for (unsigned long i = 1; i < kNewSize - 2; ++i) {
+        volatile int* x = unique_stack<0>(i, [] { return (volatile int*)malloc(5); });
+        unique_stack<0>(i, [x] { free((void*)x); });
+      }
+      free((void*)p);
+      p[0] = 42;
+    });
+
+    StartIntercept(&output_fd);
+    FinishCrasher();
+    AssertDeath(SIGSEGV);
+    FinishIntercept(&intercept_result);
+
+    ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+    std::vector<std::string> log_sources(2);
+    ConsumeFd(std::move(output_fd), &log_sources[0]);
+    logcat_collector.Collect(&log_sources[1]);
+    // Tag dump only available in the tombstone, not logcat.
+    ASSERT_MATCH(log_sources[0], "Memory tags around the fault address");
+
+    bool all_stacks = true;
+    for (const auto& result : log_sources) {
+      ASSERT_MATCH(result, R"(signal 11 \(SIGSEGV\))");
+      ASSERT_MATCH(result, R"(Cause: \[MTE\]: Use After Free, 0 bytes into a 5-byte allocation)");
+      bool found_stacks =
+          std::regex_search(result, std::regex((R"(deallocated by thread .*?\n.*#00 pc)"))) &&
+          std::regex_search(result, std::regex((R"((^|\s)allocated by thread .*?\n.*#00 pc)")));
+      all_stacks = all_stacks && found_stacks;
+    }
+    if (all_stacks) {
+      done = true;
+      break;
+    }
+  }
+  ASSERT_TRUE(done);
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
 TEST_F(CrasherTest, LD_PRELOAD) {
   int intercept_result;
   unique_fd output_fd;
