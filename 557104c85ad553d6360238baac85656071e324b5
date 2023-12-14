@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ac379dd_00753f6e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-14T18:02:07Z",
+      "side": 1,
+      "message": "since pwritev accepts an array of iovec, why can\u0027t we have the array of iovec in the  header and populate it directly in EmitBlocks() ? \n\n std::unique_ptr\u003cstruct iovec[]\u003e vec in the v3 header; and then directly populate the vec and toss the entire vec to pwritev. Wouldn\u0027t that simplify this a bit by not having this new WriteOperation()?",
+      "revId": "557104c85ad553d6360238baac85656071e324b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

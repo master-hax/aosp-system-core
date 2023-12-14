@@ -51,6 +51,24 @@
       "parentUuid": "fdf94b1f_4629828c",
       "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a42cdb3a_f8e3e191",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-14T18:02:07Z",
+      "side": 1,
+      "message": "\u003e The performance improvement of batched writes mostly comes from reduction of syscalls.\n\nTrue; but it\u0027s not just the reduction in syscalls but caching those clustered data in-memory and freeing up the update-engine thread to download the next set of ops.\n\n\u003e I will implement cross call buffering in a follow up CL.\n\nFair enough. Thanks.",
+      "parentUuid": "f3c8eaa2_e4c878e5",
+      "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
