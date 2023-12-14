@@ -33,6 +33,24 @@
       "message": "If I am reading this flow correctly, we are effectively writing to disk during each call to AddRawBlocks().\n\nI do see batching through iovec but this slightly deviates from the existing logic wherein we avoid flushing to disk but instead cache the data and return immediately and that is what makes the install speed up; The flush from the internal cache to disk is done as later based on the the label and other cluster.\n \nDo we plan to do this in follow up CL ?\n\nAlso, we should probably have a 1:1 install time comparison between v2 and v3 so that we don\u0027t regress.",
       "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3c8eaa2_e4c878e5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-14T17:49:08Z",
+      "side": 1,
+      "message": "The performance improvement of batched writes mostly comes from reduction of syscalls. Instead of calling `write` twice per block, we call `pwritev` twice per cluster(each cluster is ~200 blocks), and this reduces number of syscalls by at most factor of 200.\n\nThis CL currently does not support caching ops data across multiple Add*Blocks calls, it only supports splitting up a single Add*Blocks call into multiple clusters. I will implement cross call buffering in a follow up CL.\n\n\u003e Also, we should probably have a 1:1 install time comparison between v2 and v3 so that we don\u0027t regress.\n\n\nGood point, this CL is currently on-par with V2 performance on dessert incremental OTAs, and 2% slower than V2 on full OTAs. I will do the measurements again after next CL is ready.",
+      "parentUuid": "fdf94b1f_4629828c",
+      "revId": "a5c3a546ae20e4a2a024b536512d72114bf9765a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
