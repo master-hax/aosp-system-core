@@ -16,6 +16,24 @@
       "message": "since pwritev accepts an array of iovec, why can\u0027t we have the array of iovec in the  header and populate it directly in EmitBlocks() ? \n\n std::unique_ptr\u003cstruct iovec[]\u003e vec in the v3 header; and then directly populate the vec and toss the entire vec to pwritev. Wouldn\u0027t that simplify this a bit by not having this new WriteOperation()?",
       "revId": "557104c85ad553d6360238baac85656071e324b5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "915ae4cd_602e6a9c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-14T18:06:03Z",
+      "side": 1,
+      "message": "We still need to do a const_cast somewhere, as the input is `const void*` , but iovec requires `void *` . I added this method to keep the const_cast in a small scope. I didn\u0027t re-use the iovec[] in member variable to keep this function modify as little state as possible. Less state -\u003e easier to reason about.",
+      "parentUuid": "9ac379dd_00753f6e",
+      "revId": "557104c85ad553d6360238baac85656071e324b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
