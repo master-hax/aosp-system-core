@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "542da2af_4e4caaab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-14T21:47:36Z",
+      "side": 1,
+      "message": "Please  mention the reasons for the original revert and how the issue was fixed.",
+      "revId": "01e39c9ac227ade259ad0d2bcbcb2e315e8fd472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d90c5362_a96ff6b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-12-14T21:47:36Z",
+      "side": 1,
+      "message": "still needs the bug number",
+      "revId": "01e39c9ac227ade259ad0d2bcbcb2e315e8fd472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
