@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73610e00_94264c71",
+        "filename": "fastboot/task_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-14T02:34:31Z",
+      "side": 1,
+      "message": "is this accidentally reverted?",
+      "revId": "75967036bb217385a46c92104feca802ba242671",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
