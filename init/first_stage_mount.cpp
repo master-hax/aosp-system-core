@@ -499,7 +499,9 @@ void FirstStageMountVBootV2::PreloadAvbKeys() {
 // this case, we mount system first then pivot to it.  From that point on,
 // we are effectively identical to a system-as-root device.
 bool FirstStageMountVBootV2::TrySwitchSystemAsRoot() {
-    UseDsuIfPresent();
+    if (!IsRecoveryMode()) {
+        UseDsuIfPresent();
+    }
     // Preloading all AVB keys from the ramdisk before switching root to /system.
     PreloadAvbKeys();
 
