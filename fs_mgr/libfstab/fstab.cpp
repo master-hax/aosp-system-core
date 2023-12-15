@@ -286,6 +286,8 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             }
         } else if (StartsWith(flag, "avb_keys=")) {  // must before the following "avb"
             entry->avb_keys = arg;
+        } else if (StartsWith(flag, "avb_hashtree_descriptor_root_digest=")) {
+            entry->avb_hashtree_descriptor_digest = arg;
         } else if (StartsWith(flag, "avb")) {
             entry->fs_mgr_flags.avb = true;
             entry->vbmeta_partition = arg;
