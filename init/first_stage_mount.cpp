@@ -629,6 +629,10 @@ void FirstStageMountVBootV2::CopyDsuAvbKeys() {
 void FirstStageMountVBootV2::UseDsuIfPresent() {
     std::string error;
 
+    if (IsRecoveryMode()) {
+        LOG(INFO) << "Skip DSU in reocvery mode";
+	return;
+    }
     if (!android::gsi::CanBootIntoGsi(&error)) {
         LOG(INFO) << "DSU " << error << ", proceeding with normal boot";
         return;
