@@ -289,6 +289,9 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
         } else if (StartsWith(flag, "avb")) {
             entry->fs_mgr_flags.avb = true;
             entry->vbmeta_partition = arg;
+        } else if (StartsWith(flag, "avb_hashtree_descriptor_root_digest=")) {
+            // The path where hex-encoded hashtree descriptor root digest is located.
+            entry->avb_hashtree_descriptor_digest = arg;
         } else if (StartsWith(flag, "keydirectory=")) {
             // The keydirectory flag enables metadata encryption.  It is
             // followed by an = and the directory containing the metadata
