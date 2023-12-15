@@ -381,6 +381,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59cff812_b1e20f10",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-15T16:05:15Z",
+      "side": 0,
+      "message": "I still don\u0027t like removing the llndk here. Why are you wanting to do that? As mentioned it signifies an intention to be an ABI breakage, which per earlier comments is not actually a goal. So why are you trying to remove it anyway?",
+      "parentUuid": "2ee216b8_424bd9d6",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
