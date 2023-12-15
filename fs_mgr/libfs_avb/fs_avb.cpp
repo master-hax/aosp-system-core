@@ -290,12 +290,6 @@ static bool IsAvbPermissive() {
 
 AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry,
                                             const std::vector<std::string>& preload_avb_key_blobs) {
-    // At least one of the following should be provided for public key matching.
-    if (preload_avb_key_blobs.empty() && fstab_entry.avb_keys.empty()) {
-        LERROR << "avb_keys=/path/to/key(s) is missing for " << fstab_entry.mount_point;
-        return nullptr;
-    }
-
     // Binds allow_verification_error and rollback_protection to device unlock state.
     bool allow_verification_error = IsAvbPermissive();
     bool rollback_protection = !allow_verification_error;
@@ -333,41 +327,98 @@ AvbUniquePtr AvbHandle::LoadAndVerifyVbmeta(const FstabEntry& fstab_entry,
             return nullptr;
     }
 
-    bool public_key_match = false;
-    // Performs key matching for preload_avb_key_blobs first, if it is present.
-    if (!public_key_data.empty() && !preload_avb_key_blobs.empty()) {
-        if (std::find(preload_avb_key_blobs.begin(), preload_avb_key_blobs.end(),
-                      public_key_data) != preload_avb_key_blobs.end()) {
-            public_key_match = true;
-        }
-    }
-    // Performs key matching for fstab_entry.avb_keys if necessary.
-    // Note that it is intentional to match both preload_avb_key_blobs and fstab_entry.avb_keys.
-    // Some keys might only be availble before init chroots into /system, e.g., /avb/key1
-    // in the first-stage ramdisk, while other keys might only be available after the chroot,
-    // e.g., /system/etc/avb/key2.
-    if (!public_key_data.empty() && !public_key_match) {
-        // fstab_entry.avb_keys might be either a directory containing multiple keys,
-        // or a string indicating multiple keys separated by ':'.
-        std::vector<std::string> allowed_avb_keys;
-        auto list_avb_keys_in_dir = ListFiles(fstab_entry.avb_keys);
-        if (list_avb_keys_in_dir.ok()) {
-            std::sort(list_avb_keys_in_dir->begin(), list_avb_keys_in_dir->end());
-            allowed_avb_keys = *list_avb_keys_in_dir;
-        } else {
-            allowed_avb_keys = Split(fstab_entry.avb_keys, ":");
-        }
-        if (ValidatePublicKeyBlob(public_key_data, allowed_avb_keys)) {
-            public_key_match = true;
-        }
-    }
-
-    if (!public_key_match) {
-        avb_handle->status_ = AvbHandleStatus::kVerificationError;
-        LWARNING << "Found unknown public key used to sign " << fstab_entry.mount_point;
-        if (!allow_verification_error) {
-            LERROR << "Unknown public key is not allowed";
+    if (!fstab_entry.avb_hashtree_descriptor_digest.empty()) {
+        std::string root_digest_expected;
+        if (!ReadFileToString(fstab_entry.avb_hashtree_descriptor_digest, &root_digest_expected)) {
+            LERROR << "Failed to load expected root digest for " << fstab_entry.mount_point;
             return nullptr;
+        }
+
+        bool is_root_digest_verification_error = false;
+        std::unique_ptr<FsAvbHashtreeDescriptor> hashtree_descriptor =
+                android::fs_mgr::GetHashtreeDescriptor(fstab_entry, avb_handle->vbmeta_images_,
+                                                       avb_handle->slot_suffix_,
+                                                       avb_handle->other_slot_suffix_);
+        if (!hashtree_descriptor) {
+            LERROR << "Not found hashtree descriptor for " << fstab_entry.mount_point;
+            is_root_digest_verification_error = true;
+        } else if (hashtree_descriptor->root_digest != root_digest_expected) {
+            LERROR << "root digest (" << hashtree_descriptor->root_digest
+                   << ") is different from expected value (" << root_digest_expected << ")";
+            is_root_digest_verification_error = true;
+        }
+
+        if (is_root_digest_verification_error && !allow_verification_error) {
+            LERROR << "Verification failed either root digest. Not allowed.";
+            return nullptr;
+        }
+    } else {
+        // At least one of the following should be provided for public key matching.
+        if (preload_avb_key_blobs.empty() && fstab_entry.avb_keys.empty()) {
+            LERROR << "avb_keys=/path/to/key(s) is missing for " << fstab_entry.mount_point;
+            return nullptr;
+        }
+
+        bool public_key_match = false;
+        // Performs key matching for preload_avb_key_blobs first, if it is present.
+        if (!public_key_data.empty() && !preload_avb_key_blobs.empty()) {
+            if (std::find(preload_avb_key_blobs.begin(), preload_avb_key_blobs.end(),
+                          public_key_data) != preload_avb_key_blobs.end()) {
+                public_key_match = true;
+            }
+        }
+        // Performs key matching for fstab_entry.avb_keys if necessary.
+        // Note that it is intentional to match both preload_avb_key_blobs and fstab_entry.avb_keys.
+        // Some keys might only be availble before init chroots into /system, e.g., /avb/key1
+        // in the first-stage ramdisk, while other keys might only be available after the chroot,
+        // e.g., /system/etc/avb/key2.
+        if (!public_key_data.empty() && !public_key_match) {
+            // fstab_entry.avb_keys might be either a directory containing multiple keys,
+            // or a string indicating multiple keys separated by ':'.
+            std::vector<std::string> allowed_avb_keys;
+            auto list_avb_keys_in_dir = ListFiles(fstab_entry.avb_keys);
+            if (list_avb_keys_in_dir.ok()) {
+                std::sort(list_avb_keys_in_dir->begin(), list_avb_keys_in_dir->end());
+                allowed_avb_keys = *list_avb_keys_in_dir;
+            } else {
+                allowed_avb_keys = Split(fstab_entry.avb_keys, ":");
+            }
+            if (ValidatePublicKeyBlob(public_key_data, allowed_avb_keys)) {
+                public_key_match = true;
+            }
+        }
+
+        if (!public_key_match) {
+            if (!fstab_entry.avb_hashtree_descriptor_digest.empty()) {
+                bool is_root_digest_verification_error = false;
+                std::unique_ptr<FsAvbHashtreeDescriptor> hashtree_descriptor =
+                        android::fs_mgr::GetHashtreeDescriptor(
+                                fstab_entry, avb_handle->vbmeta_images_, avb_handle->slot_suffix_,
+                                avb_handle->other_slot_suffix_);
+                if (!hashtree_descriptor) {
+                    LERROR << "Not found hashtree descriptor for " << fstab_entry.mount_point;
+                    is_root_digest_verification_error = true;
+                } else if (hashtree_descriptor->root_digest !=
+                           fstab_entry.avb_hashtree_descriptor_digest) {
+                    LERROR << "root digest (" << hashtree_descriptor->root_digest
+                           << ") is different from expected value ("
+                           << fstab_entry.avb_hashtree_descriptor_digest << ")";
+                    is_root_digest_verification_error = true;
+                }
+
+                if (is_root_digest_verification_error && !allow_verification_error) {
+                    LERROR << "Verification failed either with public key or root digest. Not "
+                              "allowed.";
+                    return nullptr;
+                }
+            } else {
+                avb_handle->status_ = AvbHandleStatus::kVerificationError;
+                LWARNING << "Found unknown public key used to sign " << fstab_entry.mount_point;
+                if (!allow_verification_error) {
+                    LERROR << "Unknown public key is not allowed";
+                    return nullptr;
+                }
+            }
         }
     }
 

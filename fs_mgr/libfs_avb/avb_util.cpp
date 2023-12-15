@@ -175,21 +175,26 @@ std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
     return hashtree_desc;
 }
 
+std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
+        const FstabEntry& fstab_entry, const std::vector<VBMetaData>& vbmeta_images,
+        const std::string& ab_suffix, const std::string& ab_other_suffix) {
+    // Derives partition_name from blk_device to query the corresponding AVB HASHTREE descriptor
+    // to setup dm-verity. The partition_names in AVB descriptors are without A/B suffix.
+    std::string partition_name = DeriveAvbPartitionName(fstab_entry, ab_suffix, ab_other_suffix);
+    if (partition_name.empty()) {
+        LERROR << "partition name is empty, cannot lookup AVB descriptors";
+        return nullptr;
+    }
+
+    return GetHashtreeDescriptor(partition_name, vbmeta_images);
+}
+
 bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity_dev,
                                    const std::vector<VBMetaData>& vbmeta_images,
                                    const std::string& ab_suffix,
                                    const std::string& ab_other_suffix) {
-    // Derives partition_name from blk_device to query the corresponding AVB HASHTREE descriptor
-    // to setup dm-verity. The partition_names in AVB descriptors are without A/B suffix.
-    std::string partition_name = DeriveAvbPartitionName(*fstab_entry, ab_suffix, ab_other_suffix);
-
-    if (partition_name.empty()) {
-        LERROR << "partition name is empty, cannot lookup AVB descriptors";
-        return false;
-    }
-
     std::unique_ptr<FsAvbHashtreeDescriptor> hashtree_descriptor =
-            GetHashtreeDescriptor(partition_name, vbmeta_images);
+            GetHashtreeDescriptor(*fstab_entry, vbmeta_images, ab_suffix, ab_other_suffix);
     if (!hashtree_descriptor) {
         return false;
     }

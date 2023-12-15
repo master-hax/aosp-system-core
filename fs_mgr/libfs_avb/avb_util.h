@@ -41,6 +41,10 @@ struct ChainInfo {
 std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
         const std::string& partition_name, const std::vector<VBMetaData>& vbmeta_images);
 
+std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
+        const FstabEntry& fstab_entry, const std::vector<VBMetaData>& vbmeta_images,
+        const std::string& ab_suffix, const std::string& ab_other_suffix);
+
 bool ConstructVerityTable(const FsAvbHashtreeDescriptor& hashtree_desc,
                           const std::string& blk_device, android::dm::DmTable* table);
 
