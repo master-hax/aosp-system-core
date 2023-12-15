@@ -735,9 +735,13 @@ bool FirstStageMountVBootV2::GetDmVerityDevices(std::set<std::string>* devices) 
 bool FirstStageMountVBootV2::SetUpDmVerity(FstabEntry* fstab_entry) {
     AvbHashtreeResult hashtree_result;
 
-    // It's possible for a fstab_entry to have both avb_keys and avb flag.
-    // In this case, try avb_keys first, then fallback to avb flag.
-    if (!fstab_entry->avb_keys.empty()) {
+    if (IsMicrodroid() && !fstab_entry->avb_hashtree_descriptor_digest.empty()) {
+        auto avb_standalone_handle = AvbHandle::LoadAndVerifyVbmeta(*fstab_entry);
+        hashtree_result = avb_standalone_handle->SetUpAvbHashtree(fstab_entry,
+                                                                  false /* wait_for_verity_dev */);
+    } else if (!fstab_entry->avb_keys.empty()) {
+        // It's possible for a fstab_entry to have both avb_keys and avb flag.
+        // In this case, try avb_keys first, then fallback to avb flag.
         if (!InitAvbHandle()) return false;
         // Checks if hashtree should be disabled from the top-level /vbmeta.
         if (avb_handle_->status() == AvbHandleStatus::kHashtreeDisabled ||
