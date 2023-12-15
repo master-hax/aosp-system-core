@@ -233,7 +233,7 @@ TEST_F(ParseTest, CorrectTaskLists) {
             << "size of fastboot-info task list: " << fastboot_info_tasks.size()
             << " size of hardcoded task list: " << hardcoded_tasks.size();
 }
-TEST_F(ParseTest, IsDynamicPartitiontest) {
+TEST_F(ParseTest, IsDynamicParitiontest) {
     if (!get_android_product_out()) {
         GTEST_SKIP();
     }
@@ -258,7 +258,7 @@ TEST_F(ParseTest, IsDynamicPartitiontest) {
                 ParseFastbootInfoLine(fp.get(), android::base::Tokenize(test.first, " "));
         auto flash_task = task->AsFlashTask();
         ASSERT_FALSE(flash_task == nullptr);
-        ASSERT_EQ(FlashTask::IsDynamicPartition(fp->source.get(), flash_task), test.second);
+        ASSERT_EQ(FlashTask::IsDynamicParitition(fp->source.get(), flash_task), test.second);
     }
 }
 
@@ -358,7 +358,7 @@ TEST_F(ParseTest, OptimizedFlashSuperPatternMatchTest) {
                     contains_optimized_task = true;
                 }
                 if (auto flash_task = task->AsFlashTask()) {
-                    if (FlashTask::IsDynamicPartition(fp->source.get(), flash_task)) {
+                    if (FlashTask::IsDynamicParitition(fp->source.get(), flash_task)) {
                         return false;
                     }
                 }
