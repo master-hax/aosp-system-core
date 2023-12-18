@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e31f18d_72094f6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2023-12-18T22:56:23Z",
+      "side": 1,
+      "message": "@dvander@google.com should be the one reviewing this. He is out of office right now, though.",
+      "revId": "222ffc59197a80b3a92e4755e14a570243b8bcbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
