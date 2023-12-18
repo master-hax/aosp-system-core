@@ -113,8 +113,18 @@ bool DeviceMapper::DeleteDevice(const std::string& name,
     struct dm_ioctl io;
     InitIo(&io, name);
 
-    if (ioctl(fd_, DM_DEV_REMOVE, &io)) {
-        PLOG(ERROR) << "DM_DEV_REMOVE failed for [" << name << "]";
+    int i = 0;
+    for (i=0; i<5; i++) {
+        if (ioctl(fd_, DM_DEV_REMOVE, &io)) {
+            PLOG(ERROR) << "DM_DEV_REMOVE failed for [" << name << "]";
+            //return false;
+        } else {
+            break;
+        }
+        sleep(1);
+    }
+
+    if (i==5) {
         return false;
     }
 
