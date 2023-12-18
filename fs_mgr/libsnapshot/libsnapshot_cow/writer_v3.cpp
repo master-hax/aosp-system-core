@@ -356,7 +356,6 @@ bool CowWriterV3::EmitLabel(uint64_t label) {
 }
 
 bool CowWriterV3::EmitSequenceData(size_t num_ops, const uint32_t* data) {
-    // TODO: size sequence buffer based on options
     header_.sequence_data_count = num_ops;
     if (!android::base::WriteFullyAtOffset(fd_, data, sizeof(data[0]) * num_ops,
                                            GetSequenceOffset(header_))) {
