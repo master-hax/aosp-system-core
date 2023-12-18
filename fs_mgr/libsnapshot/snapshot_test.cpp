@@ -2864,15 +2864,17 @@ void SnapshotTestEnvironment::TearDown() {
 }
 
 void KillSnapuserd() {
+    // Detach the daemon if it's alive
+    auto snapuserd_client = SnapuserdClient::TryConnect(kSnapuserdSocket, 5s);
+    if (snapuserd_client) {
+        snapuserd_client->DetachSnapuserd();
+    }
+
+    // Stop the service
     auto status = android::base::GetProperty("init.svc.snapuserd", "stopped");
     if (status == "stopped") {
         return;
     }
-    auto snapuserd_client = SnapuserdClient::Connect(kSnapuserdSocket, 5s);
-    if (!snapuserd_client) {
-        return;
-    }
-    snapuserd_client->DetachSnapuserd();
 }
 
 }  // namespace snapshot
