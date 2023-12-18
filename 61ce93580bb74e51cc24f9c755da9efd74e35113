@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "756aface_dcfc01e6",
+        "filename": "fs_mgr/libfs_avb/avb_util.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "Do we still use this one? Otherwise, let\u0027s dedup it with the new one.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 89
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f42cfd4_f6c6e66c",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "This block is too big. Consider refactoring as a function.",
+      "range": {
+        "startLine": 331,
+        "startChar": 0,
+        "endLine": 331,
+        "endChar": 62
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8de10301_e6e8b844",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "Same here",
+      "range": {
+        "startLine": 356,
+        "startChar": 0,
+        "endLine": 356,
+        "endChar": 12
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f77b30f3_4e78f707",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "Did you miss a closing bracket here?",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 390,
+        "endChar": 9
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2ad8d52_64bebdd3",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "This condition is always false here.",
+      "range": {
+        "startLine": 393,
+        "startChar": 12,
+        "endLine": 393,
+        "endChar": 70
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d33c437b_3c2a67bf",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "Add a description saying that this is not the digest itself, but the path of the file having the digest. In addition, make it clear that the digest is encoded in hex string.",
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a119e4ab_4b7981d3",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 741,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-18T12:17:57Z",
+      "side": 1,
+      "message": "Why is this only for Microdroid? If it is only for Microdroid, it should be clearly stated and generate an error if this option is used in Android.",
+      "range": {
+        "startLine": 741,
+        "startChar": 8,
+        "endLine": 741,
+        "endChar": 22
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
