@@ -105,6 +105,7 @@ bool CowWriterV3::ParseOptions() {
     }
     header_.compression_algorithm = *algorithm;
     header_.op_count_max = options_.op_count_max;
+    header_.sequence_data_count = options_.seq_buffer_size;
 
     if (parts.size() > 1) {
         if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
