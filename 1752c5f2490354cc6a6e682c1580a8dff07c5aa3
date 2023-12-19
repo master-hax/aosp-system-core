@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7fa730d_f56d2802",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-19T07:56:48Z",
+      "side": 1,
+      "message": "This fix should mitigate the problem.\n\nThe actual race is tracked in b/316040872. I will update the bug once I have more details. For now, this should help unblock the test failures.",
+      "revId": "1752c5f2490354cc6a6e682c1580a8dff07c5aa3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
