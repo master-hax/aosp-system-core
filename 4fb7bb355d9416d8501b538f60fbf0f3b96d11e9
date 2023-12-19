@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f005bbd7_fc6870b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-19T20:29:19Z",
+      "side": 1,
+      "message": "One question below. Looks good",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "adffafd2_5b1ffe9c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-19T20:29:19Z",
+      "side": 1,
+      "message": "don\u0027t we need cached_ops_.size() \u003e\u003d batch_size_ check as well  ?",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
