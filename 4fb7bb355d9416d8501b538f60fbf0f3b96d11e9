@@ -51,6 +51,24 @@
       "parentUuid": "adffafd2_5b1ffe9c",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb386702_799c4e15",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-19T22:31:06Z",
+      "side": 1,
+      "message": "Fair enough; however, if we have a mix of zero/copy and replace ops, cached_ops_ can still overflow.\n\nI see that you have those checks in EmitCopy() and EmitZeroBlocks(). What prevents cached_ops_ not overflowing ?",
+      "parentUuid": "3b5cd837_76dee951",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
