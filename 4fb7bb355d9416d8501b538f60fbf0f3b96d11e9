@@ -33,6 +33,24 @@
       "message": "don\u0027t we need cached_ops_.size() \u003e\u003d batch_size_ check as well  ?",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b5cd837_76dee951",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-19T22:24:35Z",
+      "side": 1,
+      "message": "some ops do not have data associated(ZERO and COPY), and the amount of memory used by these ops is tiny(14 bytes each). Therefore I intentionally allowed more aggressive caching for these ops.",
+      "parentUuid": "adffafd2_5b1ffe9c",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
