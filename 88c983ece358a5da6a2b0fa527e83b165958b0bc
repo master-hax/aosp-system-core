@@ -22,6 +22,30 @@
       },
       "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa8c6d85_6b2a4af8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T05:20:53Z",
+      "side": 1,
+      "message": "I thought that `avb_standalone_handle` gives quite a lot of information, since it symbolizes that AvbHandle doesn\u0027t rely on built-in vbmeta image.",
+      "parentUuid": "f6521544_bb4c2e52",
+      "range": {
+        "startLine": 772,
+        "startChar": 13,
+        "endLine": 772,
+        "endChar": 34
+      },
+      "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
