@@ -69,6 +69,24 @@
       "parentUuid": "3b5cd837_76dee951",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7436930_d2aa740b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-19T22:52:06Z",
+      "side": 1,
+      "message": "Added a NeedsFlush() function to maintain a consistent criteria on when is flushing needed. We flush if amount of REPLACE/XOR ops exceeds batch_size_, or number of non-data ops exceeds block size.",
+      "parentUuid": "eb386702_799c4e15",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
