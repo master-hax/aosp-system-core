@@ -46,6 +46,30 @@
       },
       "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38f3572b_b80dadc8",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-19T13:18:56Z",
+      "side": 1,
+      "message": "+1 to \"standalone\", as it differentiates this handle from the other handle (`avb_handle_`) which we are explicitly not using here.",
+      "parentUuid": "fa8c6d85_6b2a4af8",
+      "range": {
+        "startLine": 772,
+        "startChar": 13,
+        "endLine": 772,
+        "endChar": 34
+      },
+      "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "143bb01f_1e18ec1d",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-19T13:18:56Z",
+      "side": 1,
+      "message": "nit:\n\n```suggestion\n    return ValidatePublicKeyBlob(public_key_data, allowed_avb_keys));\n```",
+      "range": {
+        "startLine": 328,
+        "startChar": 0,
+        "endLine": 332,
+        "endChar": 17
+      },
+      "revId": "66dc2722ccff1f69b1c535006876c8ffa49e55b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b74e057f_19e9e6b6",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-19T13:18:56Z",
+      "side": 1,
+      "message": "could we make this more concise, like `avb_hashtree_root_digest` or just `avb_hashtree_digest`?",
+      "range": {
+        "startLine": 289,
+        "startChar": 37,
+        "endLine": 289,
+        "endChar": 72
+      },
+      "revId": "66dc2722ccff1f69b1c535006876c8ffa49e55b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
