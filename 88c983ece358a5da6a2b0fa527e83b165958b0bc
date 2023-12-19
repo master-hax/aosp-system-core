@@ -70,6 +70,30 @@
       },
       "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab949751_5c1f613e",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-19T15:05:49Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "38f3572b_b80dadc8",
+      "range": {
+        "startLine": 772,
+        "startChar": 13,
+        "endLine": 772,
+        "endChar": 34
+      },
+      "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
