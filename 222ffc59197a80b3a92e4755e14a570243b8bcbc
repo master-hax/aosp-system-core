@@ -33,6 +33,23 @@
       "message": "LGTM, but it\u0027s better to get Yi-yo\u0027s approval since Yi-yo is the author of these lines.",
       "revId": "222ffc59197a80b3a92e4755e14a570243b8bcbc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e78217e_2881d5a8",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 720,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2023-12-19T03:47:16Z",
+      "side": 1,
+      "message": "i see. when booting from DSU mode into recovery mode, the kGsiBootedIndicatorFile status file would still contain true. However we don\u0027t want fstab to be modified with DSU bits when running in recovery.",
+      "revId": "222ffc59197a80b3a92e4755e14a570243b8bcbc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
