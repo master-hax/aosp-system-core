@@ -47,6 +47,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "80d3011d_2d42630d",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T04:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f42cfd4_f6c6e66c",
+      "range": {
+        "startLine": 331,
+        "startChar": 0,
+        "endLine": 331,
+        "endChar": 62
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8de10301_e6e8b844",
@@ -60,6 +84,30 @@
       "writtenOn": "2023-12-18T12:17:57Z",
       "side": 1,
       "message": "Same here",
+      "range": {
+        "startLine": 356,
+        "startChar": 0,
+        "endLine": 356,
+        "endChar": 12
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9da7e34_0d013fd2",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T04:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8de10301_e6e8b844",
       "range": {
         "startLine": 356,
         "startChar": 0,
@@ -93,6 +141,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6a2c01a_89dfe49c",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T04:02:08Z",
+      "side": 1,
+      "message": "I think I didn\u0027t miss the closing bracket. However, the code is disappeared while doing massive refactoring. Mark as resolved.",
+      "parentUuid": "f77b30f3_4e78f707",
+      "range": {
+        "startLine": 390,
+        "startChar": 0,
+        "endLine": 390,
+        "endChar": 9
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e2ad8d52_64bebdd3",
@@ -116,6 +188,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "154afb2c_6311513a",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T04:02:08Z",
+      "side": 1,
+      "message": "Done, thanks for mentioning! I missed that one.",
+      "parentUuid": "e2ad8d52_64bebdd3",
+      "range": {
+        "startLine": 393,
+        "startChar": 12,
+        "endLine": 393,
+        "endChar": 70
+      },
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d33c437b_3c2a67bf",
@@ -129,6 +225,24 @@
       "writtenOn": "2023-12-18T12:17:57Z",
       "side": 1,
       "message": "Add a description saying that this is not the digest itself, but the path of the file having the digest. In addition, make it clear that the digest is encoded in hex string.",
+      "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "815a19a5_5384657a",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-19T04:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d33c437b_3c2a67bf",
       "revId": "61ce93580bb74e51cc24f9c755da9efd74e35113",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
