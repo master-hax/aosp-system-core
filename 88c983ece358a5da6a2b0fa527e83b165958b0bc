@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6521544_bb4c2e52",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-19T04:25:19Z",
+      "side": 1,
+      "message": "nit: just handle or even h because the name doesn\u0027t give much information.",
+      "range": {
+        "startLine": 772,
+        "startChar": 13,
+        "endLine": 772,
+        "endChar": 34
+      },
+      "revId": "88c983ece358a5da6a2b0fa527e83b165958b0bc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
