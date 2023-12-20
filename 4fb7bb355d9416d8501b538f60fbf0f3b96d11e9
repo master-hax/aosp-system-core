@@ -105,6 +105,24 @@
       "parentUuid": "a7436930_d2aa740b",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70215c81_e74eae32",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-20T00:21:09Z",
+      "side": 1,
+      "message": "We can\u0027t just use `batch_size_` because data ops and non-data ops should follow different caching restrictions. 200 data ops takes up to 4K * 200 \u003d 800K memory, vs. 200 non-data ops take only ~2.8K memory.\n\nYes we flush after every InstallOp, but a single SOURCE_COPY op can convert to a mixture of REPLACE and COPY COW ops(determined by merge sequence). So in between two EmitLabel() calls there can be a mixtures of different ops going through. E.g. 100 REPLACE ops + 300 COPY ops. To best utilize memory, it\u0027s preferable to allow a bigger caching size for non-data ops. Here the choice of `header_.block_size` is somewhat arbitrary, it can be something like `if (cached_ops_.size() \u003e batch_size_ * 8 || cached_data_.size() \u003e batch_size)`",
+      "parentUuid": "bbc86c73_35c43684",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
