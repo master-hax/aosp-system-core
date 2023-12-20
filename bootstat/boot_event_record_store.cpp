@@ -35,10 +35,10 @@ namespace {
 
 const char BOOTSTAT_DATA_DIR[] = "/data/misc/bootstat/";
 
-// Given a boot even record file at |path|, extracts the event's relative time
+// Given a boot event record file at |path|, extracts the event's relative time
 // from the record into |uptime|.
-bool ParseRecordEventTime(const std::string& path, int32_t* uptime) {
-  DCHECK_NE(static_cast<int32_t*>(nullptr), uptime);
+bool ParseRecordEventTime(const std::string& path, timespec* uptime) {
+  DCHECK_NE(static_cast<timespec*>(nullptr), uptime);
 
   struct stat file_stat;
   if (stat(path.c_str(), &file_stat) == -1) {
@@ -46,7 +46,7 @@ bool ParseRecordEventTime(const std::string& path, int32_t* uptime) {
     return false;
   }
 
-  *uptime = file_stat.st_mtime;
+  *uptime = file_stat.st_mtim;
 
   return true;
 }
@@ -63,10 +63,21 @@ void BootEventRecordStore::AddBootEvent(const std::string& event) {
   AddBootEventWithValue(event, uptime.count());
 }
 
-// The implementation of AddBootEventValue makes use of the mtime file
+void BootEventRecordStore::AddBootEventWithValue(const std::string& event, int32_t value) {
+  AddBootEventWithTimespec(event, {value, 0});
+}
+
+void BootEventRecordStore::AddBootEventWithDuration(const std::string& event,
+                                                    std::chrono::nanoseconds duration) {
+  auto s = std::chrono::duration_cast<std::chrono::seconds>(duration);
+  AddBootEventWithTimespec(
+      event, {static_cast<time_t>(s.count()), static_cast<long>((duration - s).count())});
+}
+
+// The implementation of AddBootEventTimespec makes use of the mtime file
 // attribute to store the value associated with a boot event in order to
 // optimize on-disk size requirements and small-file thrashing.
-void BootEventRecordStore::AddBootEventWithValue(const std::string& event, int32_t value) {
+void BootEventRecordStore::AddBootEventWithTimespec(const std::string& event, timespec ts) {
   std::string record_path = GetBootEventPath(event);
   int record_fd = creat(record_path.c_str(), S_IRUSR | S_IWUSR);
   if (record_fd == -1) {
@@ -85,8 +96,8 @@ void BootEventRecordStore::AddBootEventWithValue(const std::string& event, int32
 
   // Set the |modtime| of the file to store the value of the boot event while
   // preserving the |actime| (as read by stat).
-  struct utimbuf times = {/* actime */ file_stat.st_atime, /* modtime */ value};
-  if (utime(record_path.c_str(), &times) == -1) {
+  timespec times[2] = {/* actime */ file_stat.st_atim, /* modtime */ ts};
+  if (utimensat(AT_FDCWD, record_path.c_str(), times, 0) == -1) {
     PLOG(ERROR) << "Failed to set mtime for " << record_path;
     close(record_fd);
     return;
@@ -100,7 +111,7 @@ bool BootEventRecordStore::GetBootEvent(const std::string& event, BootEventRecor
   CHECK(!event.empty());
 
   const std::string record_path = GetBootEventPath(event);
-  int32_t uptime;
+  timespec uptime;
   if (!ParseRecordEventTime(record_path, &uptime)) {
     LOG(ERROR) << "Failed to parse boot time record: " << record_path;
     return false;

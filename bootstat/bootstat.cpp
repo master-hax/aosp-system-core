@@ -149,11 +149,11 @@ void LogBootEvents() {
       if (info->second.atom == android::util::BOOT_TIME_EVENT_ERROR_CODE_REPORTED) {
         android::util::stats_write(static_cast<int32_t>(info->second.atom),
                                    static_cast<int32_t>(info->second.event),
-                                   static_cast<int32_t>(event.second));
+                                   static_cast<int32_t>(event.second.tv_sec));
       } else {
         android::util::stats_write(static_cast<int32_t>(info->second.atom),
                                    static_cast<int32_t>(info->second.event),
-                                   static_cast<int64_t>(event.second));
+                                   static_cast<int64_t>(event.second.tv_sec));
       }
     } else {
       notSupportedEvents.push_back(name);
@@ -187,7 +187,8 @@ void PrintBootEvents() {
   BootEventRecordStore boot_event_store;
   auto events = boot_event_store.GetAllBootEvents();
   for (auto i = events.cbegin(); i != events.cend(); ++i) {
-    printf("%s\t%d\n", i->first.c_str(), i->second);
+    printf("%s\t%lu.%09lu\n", i->first.c_str(), (unsigned long)i->second.tv_sec,
+           (unsigned long)i->second.tv_nsec);
   }
 }
 
@@ -1151,7 +1152,7 @@ std::string CalculateBootCompletePrefix() {
     boot_complete_prefix = "factory_reset_" + boot_complete_prefix;
     boot_event_store.AddBootEventWithValue(kBuildDateKey, build_date);
     BootReasonAddToHistory("reboot,factory_reset");
-  } else if (build_date != record.second) {
+  } else if (build_date != record.second.tv_sec) {
     boot_complete_prefix = "ota_" + boot_complete_prefix;
     boot_event_store.AddBootEventWithValue(kBuildDateKey, build_date);
     BootReasonAddToHistory("reboot,ota");
@@ -1313,12 +1314,11 @@ void RecordBootComplete() {
   BootEventRecordStore::BootEventRecord record;
 
   auto uptime_ns = GetUptime();
-  auto uptime_s = std::chrono::duration_cast<std::chrono::seconds>(uptime_ns);
   time_t current_time_utc = time(nullptr);
   time_t time_since_last_boot = 0;
 
   if (boot_event_store.GetBootEvent("last_boot_time_utc", &record)) {
-    time_t last_boot_time_utc = record.second;
+    time_t last_boot_time_utc = record.second.tv_sec;
     time_since_last_boot = difftime(current_time_utc, last_boot_time_utc);
     boot_event_store.AddBootEventWithValue("time_since_last_boot", time_since_last_boot);
   }
@@ -1338,13 +1338,12 @@ void RecordBootComplete() {
   // over from a time when encryption meant "full-disk encryption".  But Android
   // now always uses file-based encryption instead of full-disk encryption.  At
   // some point, these misleading and redundant events should be removed.
-  boot_event_store.AddBootEventWithValue(boot_complete_prefix + "_no_encryption",
-                                         uptime_s.count());
+  boot_event_store.AddBootEventWithDuration(boot_complete_prefix + "_no_encryption", uptime_ns);
 
   // Record the total time from device startup to boot complete.  Note: we are
   // recording seconds here even though the field in statsd atom specifies
   // milliseconds.
-  boot_event_store.AddBootEventWithValue(boot_complete_prefix, uptime_s.count());
+  boot_event_store.AddBootEventWithDuration(boot_complete_prefix, uptime_ns);
 
   RecordInitBootTimeProp(&boot_event_store, "ro.boottime.init");
   RecordInitBootTimeProp(&boot_event_store, "ro.boottime.init.first_stage");
@@ -1447,7 +1446,7 @@ void RecordFactoryReset() {
 
   // Calculate and record the difference in time between now and the
   // factory_reset time.
-  time_t factory_reset_utc = record.second;
+  time_t factory_reset_utc = record.second.tv_sec;
   android::util::stats_write(
       static_cast<int32_t>(android::util::BOOT_TIME_EVENT_UTC_TIME_REPORTED),
       static_cast<int32_t>(
