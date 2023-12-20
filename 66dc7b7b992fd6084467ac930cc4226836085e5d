@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49faf96b_f606fe17",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2023-12-20T03:50:25Z",
+      "side": 1,
+      "message": "LGTM, thanks Seungjae for some clean-ups!",
+      "revId": "66dc7b7b992fd6084467ac930cc4226836085e5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
