@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f4c7625_2ec059f1",
+        "filename": "fs_mgr/libfs_avb/fs_avb.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-20T01:22:53Z",
+      "side": 1,
+      "message": "Fix applied, thanks for finding the missing point :)",
+      "parentUuid": "143bb01f_1e18ec1d",
+      "range": {
+        "startLine": 328,
+        "startChar": 0,
+        "endLine": 332,
+        "endChar": 17
+      },
+      "revId": "66dc2722ccff1f69b1c535006876c8ffa49e55b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b74e057f_19e9e6b6",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-12-19T13:18:56Z",
       "side": 1,
       "message": "could we make this more concise, like `avb_hashtree_root_digest` or just `avb_hashtree_digest`?",
+      "range": {
+        "startLine": 289,
+        "startChar": 37,
+        "endLine": 289,
+        "endChar": 72
+      },
+      "revId": "66dc2722ccff1f69b1c535006876c8ffa49e55b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a018bcb_227b876a",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-20T01:22:53Z",
+      "side": 1,
+      "message": "No strong opinion about here. If you make this more concise, I\u0027ll refactor with `avb_hashtree_digest` which is simpler.",
+      "parentUuid": "b74e057f_19e9e6b6",
       "range": {
         "startLine": 289,
         "startChar": 37,
