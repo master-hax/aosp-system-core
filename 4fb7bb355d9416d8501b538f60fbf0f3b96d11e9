@@ -141,6 +141,24 @@
       "parentUuid": "70215c81_e74eae32",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3131787_acf30a35",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2023-12-20T00:33:16Z",
+      "side": 1,
+      "message": "DONE, replaced with batch_size_ * 16",
+      "parentUuid": "2e275afc_f695acc6",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
