@@ -139,7 +139,7 @@ TEST_F(BootEventRecordStoreTest, AddSingleBootEvent) {
   auto events = store.GetAllBootEvents();
   ASSERT_EQ(1U, events.size());
   EXPECT_EQ("cenozoic", events[0].first);
-  EXPECT_TRUE(FuzzUptimeEquals(uptime, events[0].second));
+  EXPECT_TRUE(FuzzUptimeEquals(uptime, events[0].second.tv_sec));
 }
 
 TEST_F(BootEventRecordStoreTest, AddMultipleBootEvents) {
@@ -164,7 +164,7 @@ TEST_F(BootEventRecordStoreTest, AddMultipleBootEvents) {
   std::vector<int32_t> timestamps;
   for (auto i = events.begin(); i != events.end(); ++i) {
     names.push_back(i->first);
-    timestamps.push_back(i->second);
+    timestamps.push_back(i->second.tv_sec);
   }
 
   EXPECT_THAT(names, UnorderedElementsAreArray(EXPECTED_NAMES));
@@ -183,7 +183,7 @@ TEST_F(BootEventRecordStoreTest, AddBootEventWithValue) {
   auto events = store.GetAllBootEvents();
   ASSERT_EQ(1U, events.size());
   EXPECT_EQ("permian", events[0].first);
-  EXPECT_EQ(42, events[0].second);
+  EXPECT_EQ(42, events[0].second.tv_sec);
 }
 
 TEST_F(BootEventRecordStoreTest, GetBootEvent) {
@@ -203,7 +203,7 @@ TEST_F(BootEventRecordStoreTest, GetBootEvent) {
   result = store.GetBootEvent("carboniferous", &record);
   EXPECT_EQ(true, result);
   EXPECT_EQ("carboniferous", record.first);
-  EXPECT_EQ(314, record.second);
+  EXPECT_EQ(314, record.second.tv_sec);
 
   // Null |record|.
   EXPECT_DEATH(store.GetBootEvent("carboniferous", nullptr), std::string());
@@ -221,5 +221,5 @@ TEST_F(BootEventRecordStoreTest, GetBootEventNoFileContent) {
   bool result = store.GetBootEvent("devonian", &record);
   EXPECT_EQ(true, result);
   EXPECT_EQ("devonian", record.first);
-  EXPECT_EQ(2718, record.second);
+  EXPECT_EQ(2718, record.second.tv_sec);
 }

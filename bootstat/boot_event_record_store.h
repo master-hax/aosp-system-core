@@ -19,6 +19,7 @@
 
 #include <android-base/macros.h>
 #include <gtest/gtest_prod.h>
+#include <chrono>
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -30,7 +31,7 @@ class BootEventRecordStore {
  public:
   // A BootEventRecord consists of the event name and the timestamp the event
   // occurred.
-  typedef std::pair<std::string, int32_t> BootEventRecord;
+  typedef std::pair<std::string, timespec> BootEventRecord;
 
   BootEventRecordStore();
 
@@ -39,6 +40,13 @@ class BootEventRecordStore {
 
   // Persists the boot |event| with the associated |value| in the record store.
   void AddBootEventWithValue(const std::string& event, int32_t value);
+
+  // Persists the boot |event| with the associated |duration| in the record store.
+  void AddBootEventWithDuration(const std::string& event,
+                                std::chrono::nanoseconds duration);
+
+  // Persists the boot |event| with the associated |ts| in the record store.
+  void AddBootEventWithTimespec(const std::string& event, timespec ts);
 
   // Queries the named boot |event|. |record| must be non-null. |record|
   // contains the boot event data on success. Returns true iff the query is
