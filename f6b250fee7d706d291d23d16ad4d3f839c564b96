@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93b3dba0_1d82fb9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2023-12-20T17:33:56Z",
+      "side": 1,
+      "message": "I left some nits and questions, but mostly looks good. Have you verified that ultimately that the top level UMA boottime histogram is unaltered?",
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b990b893_e248f732",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2023-12-20T17:33:56Z",
+      "side": 1,
+      "message": "nit while you\u0027re here: s/even/event/",
+      "range": {
+        "startLine": 38,
+        "startChar": 16,
+        "endLine": 38,
+        "endChar": 20
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1eb041ed_86e6db0c",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2023-12-20T17:33:56Z",
+      "side": 1,
+      "message": "nit: I think this comment should be moved to AddBootEventWithTimepec.",
+      "range": {
+        "startLine": 66,
+        "startChar": 25,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "916f0166_8e55a58c",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2023-12-20T17:33:56Z",
+      "side": 1,
+      "message": "Why is AT_FDCWD necessary? Is |record_path| ever relative? (I couldn\u0027t see any cases that were.)",
+      "range": {
+        "startLine": 100,
+        "startChar": 16,
+        "endLine": 100,
+        "endChar": 24
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce056103_e559eed3",
+        "filename": "bootstat/boot_event_record_store.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1081159
+      },
+      "writtenOn": "2023-12-20T17:33:56Z",
+      "side": 1,
+      "message": "Admittedly the existing methods didn\u0027t do a good job of this, but will you add a comment to explain how this is intended to be used?",
+      "range": {
+        "startLine": 45,
+        "startChar": 7,
+        "endLine": 45,
+        "endChar": 31
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
