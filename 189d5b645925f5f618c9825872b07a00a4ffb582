@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de195109_5b9b85b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1014443
+      },
+      "writtenOn": "2023-12-20T17:32:27Z",
+      "side": 1,
+      "message": "Sorry for the delay - I was away on vacation. Hope to be back janitoring some day.",
+      "revId": "189d5b645925f5f618c9825872b07a00a4ffb582",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
