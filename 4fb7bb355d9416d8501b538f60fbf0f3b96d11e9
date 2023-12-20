@@ -123,6 +123,24 @@
       "parentUuid": "bbc86c73_35c43684",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e275afc_f695acc6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-20T00:27:49Z",
+      "side": 1,
+      "message": "Right - Moving this to a constant `batch_size_ * 8` and then the `if` check is what I was suggesting.. \n\nIt\u0027s ok.. we can do that later to see if it really helps..",
+      "parentUuid": "70215c81_e74eae32",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
