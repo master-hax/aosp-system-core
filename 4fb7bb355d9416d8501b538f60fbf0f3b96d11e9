@@ -87,6 +87,24 @@
       "parentUuid": "eb386702_799c4e15",
       "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbc86c73_35c43684",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2023-12-20T00:13:44Z",
+      "side": 1,
+      "message": "\u003e number of non-data ops exceeds block size.\n\nWhy can\u0027t it be just batch size instead of comparing it with header_.block_size ? As you mention in the comment, with 4096 ops, it takes just about 56k. We should be able to cache much bigger chunks - since we are sure to flush during EmitLabel(), all copy and zero ops between two EmitLabel() calls should just zip through.",
+      "parentUuid": "a7436930_d2aa740b",
+      "revId": "4fb7bb355d9416d8501b538f60fbf0f3b96d11e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
