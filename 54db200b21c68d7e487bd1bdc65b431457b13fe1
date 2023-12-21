@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "28b928ca_f5207d60",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-21T22:49:13Z",
+      "side": 1,
+      "message": "ack - b/317293882#comment2 so I don\u0027t forget, thanks!",
+      "parentUuid": "69ff0af1_31958c15",
+      "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "83e68b5e_0e357b95",
         "filename": "libvndksupport/libvndksupport.map.txt",
         "patchSetId": 2
