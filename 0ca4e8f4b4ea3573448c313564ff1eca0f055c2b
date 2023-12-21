@@ -453,6 +453,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de199cb3_6f103a4d",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-21T19:05:00Z",
+      "side": 0,
+      "message": "I put them in the same topic, and they are ready to merge. If you\u0027re okay with it, we can merge now and save work, for limited downside. I\u0027ll make sure to fix the bug too 😊 You know, presubmit runs cost at least a bit of $$$ :P\n\nI did it separately just to preserve authorship history and avoid overwriting Kiyoung\u0027s work, since I hadn\u0027t communicated with him directly. So, that\u0027s why it\u0027s separate.",
+      "parentUuid": "bbe15062_71bc9f2c",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
