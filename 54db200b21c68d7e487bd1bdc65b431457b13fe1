@@ -46,6 +46,30 @@
       },
       "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aba789d4_c5f211c2",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-21T18:00:34Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "31b906de_f4f0006c",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 4
+      },
+      "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
