@@ -22,6 +22,30 @@
       },
       "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31b906de_f4f0006c",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2023-12-21T02:54:35Z",
+      "side": 1,
+      "message": "it should be the platform version because it\u0027s part of the platform. 35 should be fine.",
+      "parentUuid": "83e68b5e_0e357b95",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 4
+      },
+      "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
