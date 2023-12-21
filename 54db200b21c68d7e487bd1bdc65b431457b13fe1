@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fbab311d_1ce7a22b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-21T22:28:29Z",
+      "side": 1,
+      "message": "Document this to make it more clear for now and gives us the information we need to resolve b/136506169. For instance, you might remove a symbol from _PLATFORM version script if it contains \u0027#llndk\u0027, so we shouldn\u0027t remove \u0027#llndk\u0027 symbols, so we couldn\u0027t remove \u0027#llndk\u0027, but by putting \u0027#llndk-deprecate\u003d#\u0027 there we can safely remove \u0027#llndk\u0027 because we will know not to ever remove the symbol there. (whether you can actually put \u0027#llndk\u0027 in _PLATFORM, I\u0027m not sure) anyway - that is the immediate benefit.\n\nI\u0027ll implement type/number checking for this in b/317293882.",
+      "parentUuid": "dc8c1ced_265aac52",
+      "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "83e68b5e_0e357b95",
         "filename": "libvndksupport/libvndksupport.map.txt",
         "patchSetId": 2
