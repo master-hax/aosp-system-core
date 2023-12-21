@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "69ff0af1_31958c15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2023-12-21T22:38:48Z",
+      "side": 1,
+      "message": "Gotcha, so informative only, no tool changes needed. Please update https://cs.android.com/android/platform/superproject/main/+/main:build/soong/docs/map_files.md",
+      "parentUuid": "fbab311d_1ce7a22b",
+      "revId": "54db200b21c68d7e487bd1bdc65b431457b13fe1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "83e68b5e_0e357b95",
         "filename": "libvndksupport/libvndksupport.map.txt",
         "patchSetId": 2
