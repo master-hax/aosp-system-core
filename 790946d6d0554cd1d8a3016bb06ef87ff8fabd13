@@ -39,6 +39,30 @@
       },
       "revId": "790946d6d0554cd1d8a3016bb06ef87ff8fabd13",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d132bc0_e948846f",
+        "filename": "libvndksupport/include/vndksupport/linker.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2023-12-21T22:29:12Z",
+      "side": 1,
+      "message": "They don\u0027t btw, but let\u0027s talk about this because I\u0027d like to understand the versioned target. Will send an email thread.",
+      "parentUuid": "cce72d29_cb26be3e",
+      "range": {
+        "startLine": 24,
+        "startChar": 8,
+        "endLine": 24,
+        "endChar": 18
+      },
+      "revId": "790946d6d0554cd1d8a3016bb06ef87ff8fabd13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
