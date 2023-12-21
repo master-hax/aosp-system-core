@@ -429,6 +429,30 @@
       },
       "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bbe15062_71bc9f2c",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2023-12-21T18:45:31Z",
+      "side": 0,
+      "message": "can we flatten these two CLs?",
+      "parentUuid": "260c8791_8210f6fe",
+      "range": {
+        "startLine": 3,
+        "startChar": 34,
+        "endLine": 3,
+        "endChar": 51
+      },
+      "revId": "0ca4e8f4b4ea3573448c313564ff1eca0f055c2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
