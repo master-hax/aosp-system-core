@@ -34,6 +34,24 @@
       "parentUuid": "cb21a3e6_e59ede70",
       "revId": "731972b0860c8f5430dfddcd61cd55632f3c1184",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "812d047e_a2dc3dd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-12-22T08:17:56Z",
+      "side": 1,
+      "message": "Ah ok. I really appreciate you all burning down this tech-debt. Please consider this for future improvements.",
+      "parentUuid": "830783d5_45c1eeea",
+      "revId": "731972b0860c8f5430dfddcd61cd55632f3c1184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
