@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb21a3e6_e59ede70",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2023-12-22T06:49:34Z",
+      "side": 1,
+      "message": "Should all or part of this be in per-user CE (credential encrypted) storage? VPNs are per-user right?",
+      "revId": "731972b0860c8f5430dfddcd61cd55632f3c1184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
