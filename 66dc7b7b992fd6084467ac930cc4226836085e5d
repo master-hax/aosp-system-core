@@ -33,6 +33,24 @@
       "message": "Do we want to pass the second argument by const reference, instead of making a copy of the string?  i.e. `const std::string\u0026 mount_point`.",
       "revId": "66dc7b7b992fd6084467ac930cc4226836085e5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63f264ea_361a6e10",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1950816
+      },
+      "writtenOn": "2023-12-22T01:14:32Z",
+      "side": 1,
+      "message": "Thanks for checking it! I uploaded new patch for that, aosp/2889806.",
+      "parentUuid": "3d8cfe10_b9141c98",
+      "revId": "66dc7b7b992fd6084467ac930cc4226836085e5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
