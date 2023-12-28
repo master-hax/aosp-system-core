@@ -56,7 +56,8 @@ cc_binary {
 cc_fuzz {
     name: "android.hardware.confirmationui-service.trusty_fuzzer",
     defaults: ["service_fuzzer_defaults"],
-    vendor: true,
+    // TODO(b/307611931): use vendor when isolation is fixed
+    // vendor: true,
     shared_libs: [
         "android.hardware.confirmationui-V1-ndk",
         "android.hardware.confirmationui.not-so-secure-input",
@@ -76,7 +77,7 @@ cc_library {
     defaults: [
         "keymint_use_latest_hal_aidl_ndk_shared",
     ],
-    vendor: true,
+    vendor_available: true,
     shared_libs: [
         "android.hardware.confirmationui-V1-ndk",
         "libbase",
@@ -104,7 +105,7 @@ cc_library {
 
 cc_library {
     name: "android.hardware.confirmationui.not-so-secure-input",
-    vendor: true,
+    vendor_available: true,
     shared_libs: [
         "libbase",
         "libcrypto",
