@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4227e491_dd1d0658",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 7
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-02T22:38:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "217c65a3_c34c839a",
+      "range": {
+        "startLine": 122,
+        "startChar": 0,
+        "endLine": 122,
+        "endChar": 42
+      },
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a86e8fa5_fa5ad848",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "328cc991_bb0c6d2e",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-02T22:38:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a86e8fa5_fa5ad848",
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "89448c32_e31953be",
@@ -54,6 +96,24 @@
       "writtenOn": "2024-01-02T22:32:23Z",
       "side": 1,
       "message": "not needed",
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f278540_d09c7831",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3669,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-02T22:38:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89448c32_e31953be",
       "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
