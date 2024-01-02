@@ -34,6 +34,24 @@
       "parentUuid": "e65f69fa_e8ce879d",
       "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c3eb0d24_e88c50c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-01-02T23:28:24Z",
+      "side": 1,
+      "message": "Yeah, I was looking at the code to see how easy it would be to fix this. No need for you to do anything else.\n\nBut if this fixes the bug, don\u0027t leave it open because I\u0027m not sure when I can fix this.",
+      "parentUuid": "823b4286_fbf69a8b",
+      "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
