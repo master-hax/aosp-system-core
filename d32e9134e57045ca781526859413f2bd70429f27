@@ -16,6 +16,24 @@
       "message": "we should not need this, update_engine passes the sequence buffer size to V3 writer on `AddSequenceData`, V3 writer is written to adjust buffer sizes accordinghly.",
       "revId": "d32e9134e57045ca781526859413f2bd70429f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bda73233_880ddcd8",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-02T22:28:44Z",
+      "side": 1,
+      "message": "this here is sizing the ops buffer, not the sequence buffer. V3 writer would need to know at what offset to write data to",
+      "parentUuid": "13eba490_a171a12a",
+      "revId": "d32e9134e57045ca781526859413f2bd70429f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
