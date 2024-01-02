@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c3b4ba0_8d2bffe1",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 29
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-02T17:10:19Z",
+      "side": 1,
+      "message": "This name is just a little too generic. How about \"CowSizeInfo\"?",
+      "revId": "3170688e34a8005ecfc64d90d864a08cc12c2ffb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
