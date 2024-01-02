@@ -16,6 +16,24 @@
       "message": "Looks fine to me, but the real fix would be to change this to remove the sleep.",
       "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "823b4286_fbf69a8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-02T23:24:23Z",
+      "side": 1,
+      "message": "I mean, take over the bug. This is limited delluge sandbagging.",
+      "parentUuid": "e65f69fa_e8ce879d",
+      "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
