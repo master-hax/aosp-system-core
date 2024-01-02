@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "217c65a3_c34c839a",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 7
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-02T22:32:23Z",
+      "side": 1,
+      "message": "not needed.",
+      "range": {
+        "startLine": 122,
+        "startChar": 0,
+        "endLine": 122,
+        "endChar": 42
+      },
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a86e8fa5_fa5ad848",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_writer.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-02T22:32:23Z",
+      "side": 1,
+      "message": "not needed",
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89448c32_e31953be",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3669,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-02T22:32:23Z",
+      "side": 1,
+      "message": "not needed",
+      "revId": "f85b7868df91ba60de2dc42957687dda612fa635",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
