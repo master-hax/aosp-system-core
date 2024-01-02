@@ -34,6 +34,24 @@
       "parentUuid": "13eba490_a171a12a",
       "revId": "d32e9134e57045ca781526859413f2bd70429f27",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "551c917e_25ad43e3",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-02T22:31:24Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "bda73233_880ddcd8",
+      "revId": "d32e9134e57045ca781526859413f2bd70429f27",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
