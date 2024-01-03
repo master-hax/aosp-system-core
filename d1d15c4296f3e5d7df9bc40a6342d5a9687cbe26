@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fd44244f_ad24c929",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-03T19:07:16Z",
+      "side": 1,
+      "message": "we don\u0027t need sequence buffer size because it\u0027s sized when we call EmitSequenceData (which happens before we write any op or op data). \n\nWill take out the comment to reflect that",
+      "parentUuid": "d9f93c8b_86dd79ce",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f52fb0d6_5253589b",
         "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
         "patchSetId": 10
@@ -37,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "862c3363_2435cc55",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-03T19:07:16Z",
+      "side": 1,
+      "message": "I figured v2 writer wouldn\u0027t need the op buffer sizing so we would just have it set as 0.",
+      "parentUuid": "f52fb0d6_5253589b",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "47ac36c7_9f5cce51",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 10
@@ -48,6 +84,24 @@
       "writtenOn": "2024-01-03T18:31:06Z",
       "side": 1,
       "message": "It\u0027s \"count\" on one side and \"size\" on the other. Let\u0027s make sure they match.",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "670a675f_d9fa1dc7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 3669,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-03T19:07:16Z",
+      "side": 1,
+      "message": "updated ops_buffer_size -\u003e op_count_max in CowSizeInfo and protobuf fields",
+      "parentUuid": "47ac36c7_9f5cce51",
       "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
