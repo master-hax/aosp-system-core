@@ -93,6 +93,30 @@
       },
       "revId": "96f0e92ceb0dff6183ccdbf7fda9ea21f7d5ba0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba717ddb_5d91180e",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2263,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-01-03T21:06:17Z",
+      "side": 1,
+      "message": "It\u0027s easier to use an auto this way, which avoids the need to name duration type.",
+      "parentUuid": "a9fc1a55_d795b98e",
+      "range": {
+        "startLine": 2263,
+        "startChar": 29,
+        "endLine": 2263,
+        "endChar": 49
+      },
+      "revId": "96f0e92ceb0dff6183ccdbf7fda9ea21f7d5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
