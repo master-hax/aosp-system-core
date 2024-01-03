@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "828dfd56_789802b5",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2224,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-03T02:57:22Z",
+      "side": 1,
+      "message": "ooh, fancy :-)",
+      "range": {
+        "startLine": 2224,
+        "startChar": 51,
+        "endLine": 2224,
+        "endChar": 64
+      },
+      "revId": "96f0e92ceb0dff6183ccdbf7fda9ea21f7d5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "613cd7a8_f88d6d6d",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-03T02:57:22Z",
+      "side": 1,
+      "message": "isn\u0027t the whole point of `operator\"\"s` that you don\u0027t need the std::chrono::seconds?",
+      "range": {
+        "startLine": 2263,
+        "startChar": 29,
+        "endLine": 2263,
+        "endChar": 49
+      },
+      "revId": "96f0e92ceb0dff6183ccdbf7fda9ea21f7d5ba0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
