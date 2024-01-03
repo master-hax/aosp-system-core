@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a85ea995_18768530",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-03T18:58:07Z",
+      "side": 1,
+      "message": "Thanks. \n\nvts_libsnapshot_test is run independently over here:\n\nhttps://source.corp.google.com/piper///depot/google3/configs/wireless/android/testing/atp/prod/android-gki/config.gcl;l\u003d94\n\nWe should probably remove this http://cl/595222381 once this CL lands.",
+      "revId": "9376b7d8d09ed9aca4d8fd3a7835ec4a68ff906d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
