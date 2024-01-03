@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8aa5461c_c7c93aa9",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-03T11:29:08Z",
+      "side": 1,
+      "message": "What I can recall is that the sepolicy is using this value before the vendor APIs are frozen (aosp/2867998).\nBut usually, we bump up the api level to the next version after api freeze, instead of setting it to the future value.",
+      "parentUuid": "697f4d38_b469e779",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "209a69b2_345a9557",
         "filename": "libvendorsupport/include/vendorsupport/api_level.h",
         "patchSetId": 1
@@ -60,6 +84,30 @@
       "writtenOn": "2024-01-03T08:09:35Z",
       "side": 1,
       "message": "Can we just let users use 202404 directly?",
+      "range": {
+        "startLine": 25,
+        "startChar": 8,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca4f60c9_550411fb",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-03T11:29:08Z",
+      "side": 1,
+      "message": "Do you mean to remove this definition and use 202404 to each code directly?\nI still think using constants is safer way than using direct number to avoid any typos.",
+      "parentUuid": "209a69b2_345a9557",
       "range": {
         "startLine": 25,
         "startChar": 8,
@@ -95,6 +143,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "27a16bb2_acd4094f",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-03T11:29:08Z",
+      "side": 1,
+      "message": "This is used when comparing ro.product.shipping_api_level and ro.board.api_level.\nIn case of missing shipping api_level, it will return the maximum value.",
+      "parentUuid": "1d9fd2fa_3470d532",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6181fb2f_e509ccbd",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
@@ -118,6 +190,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "474babab_6b4bd82c",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-03T11:29:08Z",
+      "side": 1,
+      "message": "Let me define a negative value to use here.",
+      "parentUuid": "6181fb2f_e509ccbd",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 38
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2d56a1ac_4b47857b",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
@@ -129,6 +225,30 @@
       "writtenOn": "2024-01-03T08:09:35Z",
       "side": 1,
       "message": "Why would one want to call `sdk_api_level_of(1000000)`?",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 34
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4069ebc8_2e069982",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-03T11:29:08Z",
+      "side": 1,
+      "message": "Same here. This is to compare sdk and vendor worlds with the simple conversion.",
+      "parentUuid": "2d56a1ac_4b47857b",
       "range": {
         "startLine": 42,
         "startChar": 4,
