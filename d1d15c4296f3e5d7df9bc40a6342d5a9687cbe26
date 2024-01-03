@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db8b4a97_7f50cc53",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-03T20:57:02Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "fd44244f_ad24c929",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f52fb0d6_5253589b",
