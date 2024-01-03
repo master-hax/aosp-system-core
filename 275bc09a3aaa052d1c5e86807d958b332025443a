@@ -73,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6662d7a1_4e09c28d",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-03T12:44:52Z",
+      "side": 1,
+      "message": "I can\u0027t remember why we have to use 100000.0 in sepolicy versions. @inseob@google.com could you remind me again?",
+      "parentUuid": "8aa5461c_c7c93aa9",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "209a69b2_345a9557",
         "filename": "libvendorsupport/include/vendorsupport/api_level.h",
         "patchSetId": 1
@@ -120,6 +144,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4c1d95b8_06cdb357",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-03T12:44:52Z",
+      "side": 1,
+      "message": "But you also used numeric literals in the source code below. 😊\n\nIf 202404 has a special meaning (as it\u0027s the first vendor API level which diverged from SDK API level), name it accordingly; for example, `FIRST_VENDOR_API_LEVEL_WITH_YYYYMM_FORMAT` or similar.",
+      "parentUuid": "ca4f60c9_550411fb",
+      "range": {
+        "startLine": 25,
+        "startChar": 8,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1d9fd2fa_3470d532",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
@@ -155,6 +203,30 @@
       "side": 1,
       "message": "This is used when comparing ro.product.shipping_api_level and ro.board.api_level.\nIn case of missing shipping api_level, it will return the maximum value.",
       "parentUuid": "1d9fd2fa_3470d532",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4637f77e_f6720175",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-03T12:44:52Z",
+      "side": 1,
+      "message": "the case of missing shipping api_level could be handled at the call site, not in this function.",
+      "parentUuid": "27a16bb2_acd4094f",
       "range": {
         "startLine": 28,
         "startChar": 4,
@@ -249,6 +321,30 @@
       "side": 1,
       "message": "Same here. This is to compare sdk and vendor worlds with the simple conversion.",
       "parentUuid": "2d56a1ac_4b47857b",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 34
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77b86685_a31ea17f",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-03T12:44:52Z",
+      "side": 1,
+      "message": "I would rather make it an error to discourage the use of \"future\" API levels.",
+      "parentUuid": "4069ebc8_2e069982",
       "range": {
         "startLine": 42,
         "startChar": 4,
