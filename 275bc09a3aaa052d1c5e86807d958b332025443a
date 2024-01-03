@@ -168,6 +168,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "984982c5_2ae2ef28",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-03T21:51:34Z",
+      "side": 1,
+      "message": "my \"literals are better than names\" argument from the NDK side of things is \"it\u0027s a lot easier to backport/forward port literals, plus you don\u0027t get screwed when marketing decides to change the format of the names\". the NDK constants now mean we have a _third_ incompatible versioning scheme that no-one but us is really still using. whereas if we\u0027d just used the raw api levels all along, we\u0027d have one less problem...",
+      "parentUuid": "4c1d95b8_06cdb357",
+      "range": {
+        "startLine": 25,
+        "startChar": 8,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1d9fd2fa_3470d532",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
