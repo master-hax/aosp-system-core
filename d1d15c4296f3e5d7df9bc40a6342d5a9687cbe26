@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9f93c8b_86dd79ce",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 10
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-03T18:31:06Z",
+      "side": 1,
+      "message": "Do we need the sequence buffer size too? Or does that get folded into estimated_cow_size? (Looking at the TODO comment in EmitSquenceData).",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f52fb0d6_5253589b",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-03T18:31:06Z",
+      "side": 1,
+      "message": "I think this needs to be something like:\n\n    if (cow_version \u003e\u003d 3) {\n        ret.snapshot_status.set_estimated_ops_buffer_size(update-\u003eestimate_ops_buffer_size());\n    } else {\n        ret.snapshot_status.set_estimated_ops_buffer_size(ret.snapshot_status.device_size() / block_size);\n    }\n\nOtherwise OpenCompressedSnapshotWriter will see a wrong value for v2 snapshots.",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47ac36c7_9f5cce51",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 3669,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-03T18:31:06Z",
+      "side": 1,
+      "message": "It\u0027s \"count\" on one side and \"size\" on the other. Let\u0027s make sure they match.",
+      "revId": "d1d15c4296f3e5d7df9bc40a6342d5a9687cbe26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
