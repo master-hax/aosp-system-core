@@ -70,6 +70,24 @@
       "parentUuid": "c3eb0d24_e88c50c1",
       "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df449a2a_5209875e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-01-03T02:09:26Z",
+      "side": 1,
+      "message": "I\u0027m actually doing that right now, but I\u0027m still using a timeout, just something around 5 seconds so that it\u0027s more obvious if it fails. Otherwise, we would not get any information about what actually timed out.",
+      "parentUuid": "be3be197_515fd5b4",
+      "revId": "2be4bedea1f493e4843ce9d14a5707b6b60d87b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
