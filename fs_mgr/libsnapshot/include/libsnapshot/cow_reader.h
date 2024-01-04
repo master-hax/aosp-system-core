@@ -76,6 +76,9 @@ class ICowReader {
     // Get the absolute source offset, in bytes, of a CowOperation. Returns
     // false if the operation does not read from source partitions.
     virtual bool GetSourceOffset(const CowOperation* op, uint64_t* source_offset) = 0;
+
+    // Get the max compression size used for this op.
+    virtual size_t CowOpCompressionSize(const CowOperation* op) = 0;
 };
 
 static constexpr uint64_t GetBlockFromOffset(const CowHeader& header, uint64_t offset) {
@@ -140,6 +143,7 @@ class CowReader final : public ICowReader {
     std::unique_ptr<ICowOpIter> GetRevMergeOpIter(bool ignore_progress = false) override;
     std::unique_ptr<ICowOpIter> GetMergeOpIter(bool ignore_progress = false) override;
 
+    size_t CowOpCompressionSize(const CowOperation* op);
     ssize_t ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
                      size_t ignore_bytes = 0) override;
 

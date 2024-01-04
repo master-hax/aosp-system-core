@@ -45,6 +45,9 @@ class CowWriterV3 : public CowWriterBase {
     void SetupHeaders();
     bool NeedsFlush() const;
     bool ParseOptions();
+    void SetCompressionFactor();
+    std::pair<CompressionFactor, size_t> GetCompressionFactor(
+            const size_t pending_blocks_to_compress);
     bool OpenForWrite();
     bool OpenForAppend(uint64_t label);
     bool WriteOperation(std::basic_string_view<CowOperationV3> op,
@@ -72,6 +75,8 @@ class CowWriterV3 : public CowWriterBase {
     // compressor
     int num_compress_threads_ = 1;
     size_t batch_size_ = 1;
+    // Default set to 4k compression
+    CompressionFactor factor_ = kCompress4k;
     std::vector<CowOperationV3> cached_ops_;
     std::vector<std::basic_string<uint8_t>> cached_data_;
     std::vector<struct iovec> data_vec_;

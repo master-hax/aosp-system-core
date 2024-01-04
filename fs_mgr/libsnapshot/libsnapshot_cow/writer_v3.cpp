@@ -36,6 +36,7 @@
 #include <fcntl.h>
 #include <libsnapshot_cow/parser_v3.h>
 #include <linux/fs.h>
+#include <storage_literals/storage_literals.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <numeric>
@@ -53,6 +54,7 @@ namespace snapshot {
 
 static_assert(sizeof(off_t) == sizeof(uint64_t));
 
+using namespace android::storage_literals;
 using android::base::unique_fd;
 
 CowWriterV3::CowWriterV3(const CowOptions& options, unique_fd&& fd)
@@ -85,7 +87,23 @@ void CowWriterV3::SetupHeaders() {
     header_.op_count = 0;
     header_.op_count_max = 0;
     header_.compression_algorithm = kCowCompressNone;
-    return;
+}
+
+void CowWriterV3::SetCompressionFactor() {
+    // This should be derived from property. For now, just set it from CowOptions
+    int compression_factor = options_.compression_factor;
+    if (compression_factor == 64_KiB) {
+        factor_ = kCompress64k;
+    } else if (compression_factor == 32_KiB) {
+        factor_ = kCompress32k;
+    } else if (compression_factor == 16_KiB) {
+        factor_ = kCompress16k;
+    } else if (compression_factor == 8_KiB) {
+        factor_ = kCompress8k;
+    } else {
+        // Default - Fallback to 4k
+        factor_ = kCompress4k;
+    }
 }
 
 bool CowWriterV3::ParseOptions() {
@@ -135,6 +153,8 @@ bool CowWriterV3::ParseOptions() {
     } else {
         LOG(INFO) << "Batch writes: disabled";
     }
+
+    SetCompressionFactor();
     return true;
 }
 
@@ -282,6 +302,44 @@ bool CowWriterV3::NeedsFlush() const {
     return cached_data_.size() >= batch_size_ || cached_ops_.size() >= batch_size_ * 16;
 }
 
+std::pair<CompressionFactor, size_t> CowWriterV3::GetCompressionFactor(
+        const size_t pending_blocks_to_compress) {
+    switch (factor_) {
+        case kCompress64k: {
+            size_t num_blocks = (64_KiB / header_.block_size);
+            if (pending_blocks_to_compress >= num_blocks) {
+                return std::make_pair(kCompress64k, num_blocks);
+            }
+            [[fallthrough]];
+        }
+        case kCompress32k: {
+            size_t num_blocks = (32_KiB / header_.block_size);
+            if (pending_blocks_to_compress >= num_blocks) {
+                return std::make_pair(kCompress32k, num_blocks);
+            }
+            [[fallthrough]];
+        }
+        case kCompress16k: {
+            size_t num_blocks = (16_KiB / header_.block_size);
+            if (pending_blocks_to_compress >= num_blocks) {
+                return std::make_pair(kCompress16k, num_blocks);
+            }
+            [[fallthrough]];
+        }
+        case kCompress8k: {
+            size_t num_blocks = (8_KiB / header_.block_size);
+            if (pending_blocks_to_compress >= num_blocks) {
+                return std::make_pair(kCompress8k, num_blocks);
+            }
+            [[fallthrough]];
+        }
+        default: {
+            size_t num_blocks = (4_KiB / header_.block_size);
+            return std::make_pair(kCompress4k, num_blocks);
+        }
+    }
+}
+
 bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t size,
                              uint64_t old_block, uint16_t offset, CowOperationType type) {
     if (compression_.algorithm != kCowCompressNone && compressor_ == nullptr) {
@@ -292,10 +350,11 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     const size_t num_blocks = (size / header_.block_size);
 
     for (size_t i = 0; i < num_blocks;) {
-        const auto blocks_to_write =
-                std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
+        auto blocks_to_write = std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
         size_t compressed_bytes = 0;
-        for (size_t j = 0; j < blocks_to_write; j++) {
+
+        size_t j = 0;
+        while (blocks_to_write) {
             const uint8_t* const iter =
                     reinterpret_cast<const uint8_t*>(data) + (header_.block_size * (i + j));
 
@@ -305,29 +364,44 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
             op.new_block = new_block_start + i + j;
 
             op.set_type(type);
+
+            std::pair<CompressionFactor, size_t> compression_factor;
             if (type == kCowXorOp) {
                 op.set_source((old_block + i + j) * header_.block_size + offset);
+                // No variable block support for XOR ops yet.
+                compression_factor.first = kCompress4k;
+                compression_factor.second = 4_KiB / header_.block_size;
             } else {
                 op.set_source(next_data_pos_ + compressed_bytes);
+                compression_factor = GetCompressionFactor(blocks_to_write);
             }
+
+            size_t block_size = compression_factor.second * header_.block_size;
             if (compression_.algorithm == kCowCompressNone) {
                 compressed_data.resize(header_.block_size);
             } else {
-                compressed_data = compressor_->Compress(iter, header_.block_size);
+                compressed_data = compressor_->Compress(iter, block_size);
                 if (compressed_data.empty()) {
                     LOG(ERROR) << "Compression failed during EmitBlocks(" << new_block_start << ", "
-                               << num_blocks << ");";
+                               << num_blocks << ")"
+                               << " Block-size: " << block_size;
                     return false;
                 }
             }
-            if (compressed_data.size() >= header_.block_size) {
-                compressed_data.resize(header_.block_size);
-                std::memcpy(compressed_data.data(), iter, header_.block_size);
+
+            op.set_compression_factor(compression_factor.first);
+            if (compressed_data.size() >= block_size) {
+                compressed_data.resize(block_size);
+                std::memcpy(compressed_data.data(), iter, block_size);
             }
+
             vec = {.iov_base = compressed_data.data(), .iov_len = compressed_data.size()};
             op.data_length = vec.iov_len;
             compressed_bytes += op.data_length;
+            j += compression_factor.second;
+            blocks_to_write -= compression_factor.second;
         }
+
         if (NeedsFlush() && !FlushCacheOps()) {
             LOG(ERROR) << "EmitBlocks with compression: write failed. new block: "
                        << new_block_start << " compression: " << compression_.algorithm

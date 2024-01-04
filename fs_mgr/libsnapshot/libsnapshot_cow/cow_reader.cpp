@@ -26,6 +26,7 @@
 #include <android-base/logging.h>
 #include <libsnapshot/cow_format.h>
 #include <libsnapshot/cow_reader.h>
+#include <storage_literals/storage_literals.h>
 #include <zlib.h>
 
 #include "cow_decompress.h"
@@ -34,6 +35,8 @@
 
 namespace android {
 namespace snapshot {
+
+using namespace android::storage_literals;
 
 bool ReadCowHeader(android::base::borrowed_fd fd, CowHeaderV3* header) {
     if (lseek(fd.get(), 0, SEEK_SET) < 0) {
@@ -702,9 +705,38 @@ uint8_t CowReader::GetCompressionType() {
     return header_.compression_algorithm;
 }
 
+size_t CowReader::CowOpCompressionSize(const CowOperation* op) {
+    CompressionFactor compression_factor = op->compression_factor();
+    switch (compression_factor) {
+        case kCompress64k: {
+            return 64_KiB;
+        }
+        case kCompress32k: {
+            return 32_KiB;
+        }
+        case kCompress16k: {
+            return 16_KiB;
+        }
+        case kCompress8k: {
+            return 8_KiB;
+        }
+        case kCompress4k: {
+            return 4_KiB;
+        }
+        default: {
+            return 0;
+        }
+    }
+}
+
 ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_size,
                             size_t ignore_bytes) {
     std::unique_ptr<IDecompressor> decompressor;
+    size_t op_buf_size = CowOpCompressionSize(op);
+    if (!op_buf_size) {
+        LOG(ERROR) << "Compression size is zero";
+        return -1;
+    }
     switch (GetCompressionType()) {
         case kCowCompressNone:
             break;
@@ -715,12 +747,12 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
             decompressor = IDecompressor::Brotli();
             break;
         case kCowCompressZstd:
-            if (header_.block_size != op->data_length) {
+            if (op_buf_size != op->data_length) {
                 decompressor = IDecompressor::Zstd();
             }
             break;
         case kCowCompressLz4:
-            if (header_.block_size != op->data_length) {
+            if (op_buf_size != op->data_length) {
                 decompressor = IDecompressor::Lz4();
             }
             break;
@@ -743,7 +775,7 @@ ssize_t CowReader::ReadData(const CowOperation* op, void* buffer, size_t buffer_
 
     CowDataStream stream(this, offset, op->data_length);
     decompressor->set_stream(&stream);
-    return decompressor->Decompress(buffer, buffer_size, header_.block_size, ignore_bytes);
+    return decompressor->Decompress(buffer, buffer_size, op_buf_size, ignore_bytes);
 }
 
 bool CowReader::GetSourceOffset(const CowOperation* op, uint64_t* source_offset) {
