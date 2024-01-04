@@ -115,8 +115,8 @@ struct CowHeaderV3 : public CowHeader {
     uint32_t resume_point_max;
     // Number of CowOperationV3 structs in the operation buffer, currently and total
     // region size.
-    uint32_t op_count;
-    uint32_t op_count_max;
+    uint64_t op_count;
+    uint64_t op_count_max;
     // Compression Algorithm
     uint32_t compression_algorithm;
 } __attribute__((packed));

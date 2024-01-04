@@ -104,6 +104,13 @@ bool CowWriterV3::ParseOptions() {
     header_.compression_algorithm = *algorithm;
     header_.op_count_max = options_.op_count_max;
 
+    if (header_.op_count_max == 0) {
+        LOG(INFO) << "op count max is read in as 0. Setting to "
+                     "num blocks in partition "
+                  << options_.max_blocks.value();
+        header_.op_count_max = options_.max_blocks.value();
+    }
+
     if (parts.size() > 1) {
         if (!android::base::ParseUint(parts[1], &compression_.compression_level)) {
             LOG(ERROR) << "failed to parse compression level invalid type: " << parts[1];
