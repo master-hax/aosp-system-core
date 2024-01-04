@@ -60,6 +60,9 @@ struct CowOptions {
 
     // Size of the cow operation buffer; used in v3 only.
     uint64_t op_count_max = 0;
+
+    // Compression factor
+    uint64_t compression_factor = 4096;
 };
 
 // Interface for writing to a snapuserd COW. All operations are ordered; merges
@@ -116,9 +119,9 @@ class ICowWriter {
 
 class CompressWorker {
   public:
-    CompressWorker(std::unique_ptr<ICompressor>&& compressor, uint32_t block_size);
+    CompressWorker(std::unique_ptr<ICompressor>&& compressor);
     bool RunThread();
-    void EnqueueCompressBlocks(const void* buffer, size_t num_blocks);
+    void EnqueueCompressBlocks(const void* buffer, size_t block_size, size_t num_blocks);
     bool GetCompressedBuffers(std::vector<std::basic_string<uint8_t>>* compressed_buf);
     void Finalize();
     static uint32_t GetDefaultCompressionLevel(CowCompressionAlgorithm compression);
@@ -131,20 +134,22 @@ class CompressWorker {
     struct CompressWork {
         const void* buffer;
         size_t num_blocks;
+        size_t block_size;
         bool compression_status = false;
         std::vector<std::basic_string<uint8_t>> compressed_data;
     };
 
     std::unique_ptr<ICompressor> compressor_;
-    uint32_t block_size_;
 
     std::queue<CompressWork> work_queue_;
     std::queue<CompressWork> compressed_queue_;
     std::mutex lock_;
     std::condition_variable cv_;
     bool stopped_ = false;
+    size_t total_submitted_ = 0;
+    size_t total_processed_ = 0;
 
-    bool CompressBlocks(const void* buffer, size_t num_blocks,
+    bool CompressBlocks(const void* buffer, size_t num_blocks, size_t block_size,
                         std::vector<std::basic_string<uint8_t>>* compressed_data);
 };
 
