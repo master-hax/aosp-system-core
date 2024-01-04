@@ -204,6 +204,10 @@ cc_library_static {
         "libsnapshot_cow/writer_v2.cpp",
         "libsnapshot_cow/writer_v3.cpp",
     ],
+
+    header_libs: [
+        "libstorage_literals_headers",
+    ],
     export_include_dirs: ["include"],
     host_supported: true,
     recovery_available: true,
