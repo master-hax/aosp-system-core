@@ -21,6 +21,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <libsnapshot/cow_format.h>
+#include <storage_literals/storage_literals.h>
 #include "writer_v2.h"
 #include "writer_v3.h"
 
@@ -28,6 +29,7 @@ namespace android {
 namespace snapshot {
 
 using android::base::unique_fd;
+using namespace android::storage_literals;
 
 std::ostream& EmitCowTypeString(std::ostream& os, CowOperationType cow_type) {
     switch (cow_type) {
@@ -172,6 +174,39 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
 
 std::unique_ptr<ICowWriter> CreateCowEstimator(uint32_t version, const CowOptions& options) {
     return CreateCowWriter(version, options, unique_fd{-1}, std::nullopt);
+}
+
+size_t CowOpCompressionSize(const CowOperation* op) {
+    CompressionFactor compression_factor = op->compression_factor();
+    switch (compression_factor) {
+        case kCompress512k: {
+            return 512_KiB;
+        }
+        case kCompress256k: {
+            return 256_KiB;
+        }
+        case kCompress128k: {
+            return 128_KiB;
+        }
+        case kCompress64k: {
+            return 64_KiB;
+        }
+        case kCompress32k: {
+            return 32_KiB;
+        }
+        case kCompress16k: {
+            return 16_KiB;
+        }
+        case kCompress8k: {
+            return 8_KiB;
+        }
+        case kCompress4k: {
+            return 4_KiB;
+        }
+        default: {
+            return 0;
+        }
+    }
 }
 
 }  // namespace snapshot
