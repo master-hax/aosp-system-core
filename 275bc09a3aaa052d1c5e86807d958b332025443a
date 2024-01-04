@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6376c72_68b0fa05",
+        "filename": "libvendorsupport/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45410021_6beea4da",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 34,
+        "endChar": 15
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "697f4d38_b469e779",
@@ -143,6 +167,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7cd8f38_f15cec94",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "I renamed the FUTURE with MAX to show that it is not for future api level.",
+      "parentUuid": "9b38929e_1437c883",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "209a69b2_345a9557",
@@ -238,6 +286,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a10a2a2_d1fa5b63",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "Removed it and replaced with the literals.",
+      "parentUuid": "984982c5_2ae2ef28",
+      "range": {
+        "startLine": 25,
+        "startChar": 8,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1d9fd2fa_3470d532",
@@ -311,6 +383,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f81e403b_a510f5f1",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "We still need this conversion to handle `__ANDROID_API_FUTURE__`, for example, \nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/init/property_service.cpp;l\u003d1119?q\u003dproperty_initialize_ro_vendor_api_level\nLet me rename the vendor version to `__ANDROID_VENDOR_API_MAX__` instead.",
+      "parentUuid": "4637f77e_f6720175",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6181fb2f_e509ccbd",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
@@ -346,6 +442,30 @@
       "side": 1,
       "message": "Let me define a negative value to use here.",
       "parentUuid": "6181fb2f_e509ccbd",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 38
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "59487b94_b7b38b1f",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "474babab_6b4bd82c",
       "range": {
         "startLine": 37,
         "startChar": 0,
@@ -417,6 +537,30 @@
       "side": 1,
       "message": "I would rather make it an error to discourage the use of \"future\" API levels.",
       "parentUuid": "4069ebc8_2e069982",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 34
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "145c10f2_6e735f49",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-04T09:35:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77b86685_a31ea17f",
       "range": {
         "startLine": 42,
         "startChar": 4,
