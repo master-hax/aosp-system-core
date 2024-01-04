@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "da3039fe_c24c8c60",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-01-04T01:07:07Z",
+      "side": 1,
+      "message": "I\u0027m not sure about the exact question, but vFRC version will be in the format \"YYYYMM\", and IIRC we decided to use `1000000` (greater than 9999\u002799) as a new ToT, instead of `10000`.",
+      "parentUuid": "6662d7a1_4e09c28d",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "209a69b2_345a9557",
         "filename": "libvendorsupport/include/vendorsupport/api_level.h",
         "patchSetId": 1
