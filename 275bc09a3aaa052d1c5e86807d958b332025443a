@@ -407,6 +407,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "94682ad4_8b84f988",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-04T12:26:25Z",
+      "side": 1,
+      "message": "hold on. When can ro.product.first_api_level be ANDROID_API_FUTURE? Isn\u0027t it supposed to be set to a sensible value (other than 10000) always?",
+      "parentUuid": "f81e403b_a510f5f1",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6181fb2f_e509ccbd",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
