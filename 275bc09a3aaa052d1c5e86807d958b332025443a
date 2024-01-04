@@ -121,6 +121,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9b38929e_1437c883",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-04T09:06:42Z",
+      "side": 1,
+      "message": "The real question is why would we even need to have a concept of \"future\" version in sepolicy.",
+      "parentUuid": "da3039fe_c24c8c60",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 45
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "209a69b2_345a9557",
         "filename": "libvendorsupport/include/vendorsupport/api_level.h",
         "patchSetId": 1
