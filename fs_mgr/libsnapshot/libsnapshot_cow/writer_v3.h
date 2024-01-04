@@ -19,6 +19,7 @@
 #include <thread>
 #include <vector>
 
+#include <libsnapshot/cow_format.h>
 #include "writer_base.h"
 
 namespace android {
@@ -43,6 +44,11 @@ class CowWriterV3 : public CowWriterBase {
     virtual bool EmitSequenceData(size_t num_ops, const uint32_t* data) override;
 
   private:
+    struct CompressedBuffer {
+        CompressionFactor factor;
+        size_t num_blocks;
+        std::basic_string<uint8_t> compressed_data;
+    };
     void SetupHeaders();
     bool NeedsFlush() const;
     bool ParseOptions();
@@ -54,8 +60,21 @@ class CowWriterV3 : public CowWriterBase {
                     uint16_t offset, CowOperationType type);
 
   private:
-    std::vector<std::basic_string<uint8_t>> CompressBlocks(const size_t num_blocks,
-                                                           const void* data);
+    std::vector<CompressedBuffer> ProcessBlocksWithNoCompression(const size_t num_blocks,
+                                                                 const void* data,
+                                                                 CowOperationType type);
+    std::vector<CompressedBuffer> ProcessBlocksWithCompression(const size_t num_blocks,
+                                                               const void* data,
+                                                               CowOperationType type);
+    std::vector<CompressedBuffer> ProcessBlocksWithThreadedCompression(const size_t num_blocks,
+                                                                       const void* data,
+                                                                       CowOperationType type);
+    std::vector<CompressedBuffer> CompressBlocks(const size_t num_blocks, const void* data,
+                                                 CowOperationType type);
+    void SetCompressionFactor();
+    std::pair<CompressionFactor, size_t> GetCompressionFactor(const size_t blocks_to_compress,
+                                                              CowOperationType type);
+
     bool ReadBackVerification();
     bool FlushCacheOps();
     void InitWorkers();
@@ -74,6 +93,8 @@ class CowWriterV3 : public CowWriterBase {
     // compressor
     int num_compress_threads_ = 1;
     size_t batch_size_ = 1;
+    // Default set to 4k compression
+    CompressionFactor factor_ = kCompress4k;
     std::vector<CowOperationV3> cached_ops_;
     std::vector<std::basic_string<uint8_t>> cached_data_;
     std::vector<struct iovec> data_vec_;
