@@ -16,11 +16,10 @@
 
 #define LOG_TAG "trusty-fuzz-counters"
 
-#include <FuzzerDefs.h>
-
 #include <trusty/fuzz/counters.h>
 
 #include <android-base/logging.h>
+#include <assert.h>
 #include <log/log.h>
 #include <trusty/coverage/coverage.h>
 #include <trusty/coverage/tipc.h>
@@ -45,9 +44,6 @@ ExtraCounters::ExtraCounters(coverage::CoverageRecord* record) : record_(record)
         return;
     }
 
-    assert(fuzzer::ExtraCountersBegin());
-    assert(fuzzer::ExtraCountersEnd());
-
     volatile uint8_t* begin = NULL;
     volatile uint8_t* end = NULL;
     record_->GetRawCounts(&begin, &end);
@@ -62,13 +58,19 @@ ExtraCounters::~ExtraCounters() {
     Flush();
 }
 
+__attribute__((no_sanitize("address", "hwaddress"))) static void ClearExtraCounters() {
+    for (size_t i = 0; i < kMaxNumCounters; ++i) {
+        counters[i] = 0;
+        __asm__ __volatile__("" : : : "memory");
+    }
+}
+
 void ExtraCounters::Reset() {
     if (!record_->IsOpen()) {
         return;
     }
-
     record_->ResetCounts();
-    fuzzer::ClearExtraCounters();
+    ClearExtraCounters();
 }
 
 void ExtraCounters::Flush() {
