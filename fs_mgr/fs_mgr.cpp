@@ -16,7 +16,6 @@
 
 #include "fs_mgr.h"
 
-#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -819,9 +818,13 @@ bool fs_mgr_is_device_unlocked() {
 // __mount(): wrapper around the mount() system call which also
 // sets the underlying block device to read-only if the mount is read-only.
 // See "man 2 mount" for return values.
-static int __mount(const std::string& source, const std::string& target, const FstabEntry& entry) {
+static int __mount(const std::string& source, const std::string& target, const FstabEntry& entry,
+                   bool read_only = false) {
     errno = 0;
     unsigned long mountflags = entry.flags;
+    if (read_only) {
+        mountflags |= MS_RDONLY;
+    }
     int ret = 0;
     int save_errno = 0;
     int gc_allowance = 0;
@@ -922,8 +925,8 @@ static bool fs_match(const std::string& in1, const std::string& in2) {
 // attempted_idx: On return, will indicate which fstab entry
 //     succeeded. In case of failure, it will be the start_idx.
 // Sets errno to match the 1st mount failure on failure.
-static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx,
-                                    int* attempted_idx) {
+static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx, int* attempted_idx,
+                                    bool read_only = false) {
     unsigned long i;
     int mount_errno = 0;
     bool mounted = false;
@@ -962,7 +965,7 @@ static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx,
 
         int retry_count = 2;
         while (retry_count-- > 0) {
-            if (!__mount(fstab[i].blk_device, fstab[i].mount_point, fstab[i])) {
+            if (!__mount(fstab[i].blk_device, fstab[i].mount_point, fstab[i], read_only)) {
                 *attempted_idx = i;
                 mounted = true;
                 if (i != start_idx) {
@@ -1520,8 +1523,9 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         int top_idx = i;
         int attempted_idx = -1;
 
-        bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx);
         auto& attempted_entry = (*fstab)[attempted_idx];
+        bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx,
+                                            should_use_metadata_encryption(attempted_entry));
         i = last_idx_inspected;
         int mount_errno = errno;
 
@@ -1978,6 +1982,8 @@ int fs_mgr_do_mount(Fstab* fstab, const std::string& n_name, const std::string& 
                 if (retry_count <= 0) break;  // run check_fs only once
                 if (!first_mount_errno) first_mount_errno = errno;
                 mount_errors++;
+                PERROR << "Cannot mount filesystem on " << n_blk_device << " at " << mount_point
+                       << " with fstype " << fstab_entry.fs_type;
                 fs_stat |= FS_STAT_FULL_MOUNT_FAILED;
                 // try again after fsck
                 check_fs(n_blk_device, fstab_entry.fs_type, mount_point, &fs_stat);
