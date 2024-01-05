@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cd91c3b_ba86b5d2",
+        "filename": "trusty/fuzz/counters.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-01-05T07:08:47Z",
+      "side": 1,
+      "message": "It\u0027s not clear to me if the `ATTRIBUTE_NO_SANITIZE_ALL` (or even the `__asm__` optimization/memory barrier) from libFuzzer\u0027s ClearExtraCounters is needed here.",
+      "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
