@@ -431,6 +431,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "25ae2d4e_fc4f3f58",
+        "filename": "libvendorsupport/version_props.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-01-05T04:40:51Z",
+      "side": 1,
+      "message": "Yes, that\u0027s true. I don\u0027t mean to show you that the shipping api level can be ANDROID_API_FUTURE but we still can have ANDROID_API_FUTURE for the sdk version and that can be converted to the vendor api level to compare with.",
+      "parentUuid": "94682ad4_8b84f988",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 41
+      },
+      "revId": "275bc09a3aaa052d1c5e86807d958b332025443a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6181fb2f_e509ccbd",
         "filename": "libvendorsupport/version_props.c",
         "patchSetId": 1
