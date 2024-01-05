@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b5c9701_a5cbdd66",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-05T23:25:28Z",
+      "side": 1,
+      "message": "i\u0027m surprised there\u0027s no better home for this than system/core/ -- surely there are other vendor image libraries? -- but i assume jiyoung would have said if there were, so...",
+      "revId": "a68aa856247fa0019cde92782b792b23c567d9a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
