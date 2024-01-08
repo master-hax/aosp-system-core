@@ -401,7 +401,9 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
                        << blocks.size();
             return false;
         }
-
+        if (!CheckOpCount(blocks.size())) {
+            return false;
+        }
         size_t j = 0;
         for (size_t k = 0; k < blocks.size(); k++) {
             CowOperation& op = cached_ops_.emplace_back();

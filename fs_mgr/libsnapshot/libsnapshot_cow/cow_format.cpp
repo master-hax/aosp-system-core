@@ -204,9 +204,36 @@ size_t CowOpCompressionSize(const CowOperation* op) {
             return 4_KiB;
         }
         default: {
-            return 0;
+            // Default compression factor is always 4kb for V2 version
+            return 4_KiB;
         }
     }
+}
+
+bool GetBlockOffset(const CowOperation* op, uint64_t io_block, size_t block_size, off_t* offset) {
+    const uint64_t new_block = op->new_block;
+
+    if (op->type() != kCowReplaceOp || io_block < new_block) {
+        LOG(ERROR) << "Invalid IO request for block: " << io_block
+                   << " CowOperation: new_block: " << new_block;
+        return false;
+    }
+
+    // Get the actual compression size
+    const size_t compression_size = CowOpCompressionSize(op);
+    // Find the number of blocks spanned
+    const size_t num_blocks = compression_size / block_size;
+    // Find the distance of the I/O block which this
+    // CowOperation encompasses
+    const uint8_t block_distance = io_block - new_block;
+    // Check if this block is within this range;
+    // if so, return the relative offset
+    if (block_distance <= (num_blocks - 1)) {
+        *offset = block_distance * block_size;
+        return true;
+    }
+
+    return false;
 }
 
 }  // namespace snapshot
