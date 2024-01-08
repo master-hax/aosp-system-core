@@ -34,6 +34,24 @@
       "parentUuid": "5b5c9701_a5cbdd66",
       "revId": "a68aa856247fa0019cde92782b792b23c567d9a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12d4b576_95900148",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-08T15:30:23Z",
+      "side": 1,
+      "message": "\u003e system/core IMO has already become a home for Android-made native libs, similar to framework/base for Java\n\nyes, but that\u0027s a _bug_ in the same way frameworks/base is --- hence system/memory/ and system/unwinding/ etc. but since i don\u0027t have a good \"category\" for this library right now, i suppose we\u0027ll have to wait for more to come along first!",
+      "parentUuid": "7c291559_2fa48318",
+      "revId": "a68aa856247fa0019cde92782b792b23c567d9a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
