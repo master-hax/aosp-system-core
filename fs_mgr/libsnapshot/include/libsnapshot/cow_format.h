@@ -119,6 +119,8 @@ struct CowHeaderV3 : public CowHeader {
     uint32_t op_count_max;
     // Compression Algorithm
     uint32_t compression_algorithm;
+    // Max compression size supported
+    uint16_t max_compression_size;
 } __attribute__((packed));
 
 enum class CowOperationType : uint8_t {
@@ -365,5 +367,9 @@ std::optional<CowCompressionAlgorithm> CompressionAlgorithmFromString(std::strin
 
 // Return block size used for compression
 size_t CowOpCompressionSize(const CowOperation* op);
+
+// Return the relative offset of the I/O block which the CowOperation
+// multi-block compression
+bool GetBlockOffset(const CowOperation* op, uint64_t io_block, size_t block_size, off_t* offset);
 }  // namespace snapshot
 }  // namespace android
