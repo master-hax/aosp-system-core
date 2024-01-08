@@ -124,6 +124,7 @@ void CowWriterV3::SetCompressionFactor() {
     // could bump this to uint32_t down the line to support
     // bigger block sizes.
     int compression_factor = options_.compression_factor;
+    header_.max_compression_size = compression_factor;
 
     if (compression_factor == 32_KiB) {
         factor_ = kCompress32k;
@@ -134,6 +135,7 @@ void CowWriterV3::SetCompressionFactor() {
     } else {
         // Default - Fallback to 4k
         factor_ = kCompress4k;
+        header_.max_compression_size = 4_KiB;
     }
 }
 
