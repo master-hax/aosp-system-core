@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d6afde4_20337692",
+        "filename": "fs_mgr/tests/vts_fs_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1044551
+      },
+      "writtenOn": "2024-01-08T22:59:47Z",
+      "side": 1,
+      "message": "So non-readonly, non-data partitions can be anything?",
+      "revId": "442345b734560b08733ef8dec1af1944e92fcedf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
