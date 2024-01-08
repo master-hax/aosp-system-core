@@ -16,6 +16,24 @@
       "message": "i\u0027m surprised there\u0027s no better home for this than system/core/ -- surely there are other vendor image libraries? -- but i assume jiyoung would have said if there were, so...",
       "revId": "a68aa856247fa0019cde92782b792b23c567d9a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c291559_2fa48318",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-08T00:20:26Z",
+      "side": 1,
+      "message": "These are not installed to the vendor partition (but to the system partition), but are made available to the things in the partition. They certainly are not \"core\", but system/core IMO has already become a home for Android-made native libs, similar to framework/base for Java.",
+      "parentUuid": "5b5c9701_a5cbdd66",
+      "revId": "a68aa856247fa0019cde92782b792b23c567d9a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
