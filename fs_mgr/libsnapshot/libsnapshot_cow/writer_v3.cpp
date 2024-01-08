@@ -117,6 +117,7 @@ void CowWriterV3::SetupHeaders() {
 
 void CowWriterV3::SetCompressionFactor() {
     const auto compression_factor = options_.compression_factor;
+    header_.max_compression_size = compression_factor;
     switch (compression_factor) {
         case 512_KiB: {
             factor_ = kCompress512k;
@@ -148,9 +149,11 @@ void CowWriterV3::SetCompressionFactor() {
         }
         default: {
             factor_ = kCompress4k;
+            header_.max_compression_size = 4_KiB;
             break;
         }
     }
+    LOG(INFO) << "Compression factor: " << header_.max_compression_size;
 }
 
 bool CowWriterV3::ParseOptions() {
@@ -375,7 +378,6 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     }
     const auto bytes = reinterpret_cast<const uint8_t*>(data);
     const size_t num_blocks = (size / header_.block_size);
-
     for (size_t i = 0; i < num_blocks;) {
         const size_t blocks_to_write =
                 std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
@@ -387,7 +389,9 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
                        << blocks.size();
             return false;
         }
-
+        if (!CheckOpCount(blocks.size())) {
+            return false;
+        }
         size_t j = 0;
         for (size_t k = 0; k < blocks.size(); k++) {
             CowOperation& op = cached_ops_.emplace_back();
