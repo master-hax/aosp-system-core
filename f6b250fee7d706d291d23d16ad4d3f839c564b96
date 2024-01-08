@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "faba1bfa_e94ed071",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-01-08T19:30:50Z",
+      "side": 1,
+      "message": "\u003e Have you verified that ultimately that the top level UMA boottime histogram is unaltered?\n\nNo, how can I check?",
+      "parentUuid": "93b3dba0_1d82fb9c",
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b990b893_e248f732",
         "filename": "bootstat/boot_event_record_store.cpp",
         "patchSetId": 1
@@ -31,6 +49,30 @@
       "writtenOn": "2023-12-20T17:33:56Z",
       "side": 1,
       "message": "nit while you\u0027re here: s/even/event/",
+      "range": {
+        "startLine": 38,
+        "startChar": 16,
+        "endLine": 38,
+        "endChar": 20
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09f4f571_808aa739",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-01-08T19:30:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b990b893_e248f732",
       "range": {
         "startLine": 38,
         "startChar": 16,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5eb5947c_737cf459",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-01-08T19:30:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1eb041ed_86e6db0c",
+      "range": {
+        "startLine": 66,
+        "startChar": 25,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "916f0166_8e55a58c",
@@ -87,6 +153,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "69d50ac5_b146d3cf",
+        "filename": "bootstat/boot_event_record_store.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-01-08T19:30:50Z",
+      "side": 1,
+      "message": "No it won\u0027t be relative, but we need to pass something here, so we might as well pass AT_FDCWD since it makes this syscall act like other syscalls that don\u0027t take a dirfd argument.",
+      "parentUuid": "916f0166_8e55a58c",
+      "range": {
+        "startLine": 100,
+        "startChar": 16,
+        "endLine": 100,
+        "endChar": 24
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce056103_e559eed3",
@@ -100,6 +190,30 @@
       "writtenOn": "2023-12-20T17:33:56Z",
       "side": 1,
       "message": "Admittedly the existing methods didn\u0027t do a good job of this, but will you add a comment to explain how this is intended to be used?",
+      "range": {
+        "startLine": 45,
+        "startChar": 7,
+        "endLine": 45,
+        "endChar": 31
+      },
+      "revId": "f6b250fee7d706d291d23d16ad4d3f839c564b96",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f37927b5_a2459456",
+        "filename": "bootstat/boot_event_record_store.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-01-08T19:30:50Z",
+      "side": 1,
+      "message": "I\u0027m not sure what I could add here that wouldn\u0027t be repeating what is already implied by the method name and argument types.",
+      "parentUuid": "ce056103_e559eed3",
       "range": {
         "startLine": 45,
         "startChar": 7,
