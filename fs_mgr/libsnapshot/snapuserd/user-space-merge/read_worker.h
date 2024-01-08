@@ -44,9 +44,11 @@ class ReadWorker : public Worker, public IBlockServer::Delegate {
     bool ProcessXorOp(const CowOperation* cow_op, void* buffer);
     bool ProcessOrderedOp(const CowOperation* cow_op, void* buffer);
     bool ProcessCopyOp(const CowOperation* cow_op, void* buffer);
-    bool ProcessReplaceOp(const CowOperation* cow_op, void* buffer);
+    bool ProcessReplaceOp(const CowOperation* cow_op, void* buffer, size_t buffer_size);
     bool ProcessZeroOp(void* buffer);
 
+    bool IsMappingPresent(const CowOperation* cow_op, loff_t requested_offset,
+                          loff_t cow_op_offset);
     bool ReadAlignedSector(sector_t sector, size_t sz);
     bool ReadUnalignedSector(sector_t sector, size_t size);
     int ReadUnalignedSector(sector_t sector, size_t size,
@@ -56,6 +58,7 @@ class ReadWorker : public Worker, public IBlockServer::Delegate {
 
     constexpr bool IsBlockAligned(size_t size) { return ((size & (BLOCK_SZ - 1)) == 0); }
     constexpr sector_t ChunkToSector(chunk_t chunk) { return chunk << CHUNK_SHIFT; }
+    constexpr chunk_t SectorToChunk(sector_t sector) { return sector >> CHUNK_SHIFT; }
 
     std::string backing_store_device_;
     unique_fd backing_store_fd_;
