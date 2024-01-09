@@ -931,6 +931,10 @@ on post-fs-data
     mkdir /data/vendor_ce 0551 root root encryption=None
     mkdir /data/vendor_de 0551 root root encryption=None
 
+    # Similar to the top-level CE and DE directories, /data/storage_area must
+    # itself be unencrypted, since it contains encrypted directories.
+    mkdir /data/storage_area 0551 root root encryption=None
+
     # Set the casefold flag on /data/media.  For upgrades, a restorecon can be
     # needed first to relabel the directory from media_rw_data_file.
     restorecon /data/media
