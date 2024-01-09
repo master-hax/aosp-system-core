@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b825f18_581ca911",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-09T23:57:18Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Check Contents: Please remove the trailing whitespace.\n\nAnalyzer Description: Validates that changes do not have prohibited expressions in them.\nOwner: ayeaye-team@google.com\n\nPlease remove the trailing whitespace.",
+      "range": {
+        "startLine": 122,
+        "startChar": 35,
+        "endLine": 122,
+        "endChar": 36
+      },
+      "revId": "51f8f15b7e1417f5f35e09778d82a58cd27580ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37a0524f_ac309ae0",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-09T23:57:18Z",
+      "side": 1,
+      "message": "can it be negative? if not use unsigned types such as size_t",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 7
+      },
+      "revId": "51f8f15b7e1417f5f35e09778d82a58cd27580ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
