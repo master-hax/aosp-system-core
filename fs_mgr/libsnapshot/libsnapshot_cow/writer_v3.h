@@ -52,7 +52,6 @@ class CowWriterV3 : public CowWriterBase {
                         std::basic_string_view<struct iovec> data);
     bool EmitBlocks(uint64_t new_block_start, const void* data, size_t size, uint64_t old_block,
                     uint16_t offset, CowOperationType type);
-    bool CheckOpCount(size_t op_count);
 
   private:
     std::vector<std::basic_string<uint8_t>> CompressBlocks(const size_t num_blocks,
