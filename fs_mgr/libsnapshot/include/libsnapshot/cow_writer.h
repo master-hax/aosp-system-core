@@ -62,7 +62,7 @@ struct CowOptions {
     uint64_t op_count_max = 0;
 
     // Compression factor
-    int compression_factor = 4096;
+    uint64_t compression_factor = 4096;
 };
 
 // Interface for writing to a snapuserd COW. All operations are ordered; merges
