@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6a65c2f_737ea2fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1569742
+      },
+      "writtenOn": "2024-01-09T12:38:51Z",
+      "side": 1,
+      "message": "Doesn\u0027t uclamp rely on the cpu controller too? Will this kill all uclamp configs applied to each of those groups?",
+      "revId": "93da9f40409bcf6e5d1bb4bfd05b1c200a902743",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
