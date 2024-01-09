@@ -179,6 +179,9 @@ std::unique_ptr<ICowWriter> CreateCowEstimator(uint32_t version, const CowOption
 size_t CowOpCompressionSize(const CowOperation* op) {
     CompressionFactor compression_factor = op->compression_factor();
     switch (compression_factor) {
+        case kCompress64k: {
+            return 64_KiB;
+        }
         case kCompress32k: {
             return 32_KiB;
         }

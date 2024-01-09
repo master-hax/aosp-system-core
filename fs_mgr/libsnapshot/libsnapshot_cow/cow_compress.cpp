@@ -44,10 +44,13 @@ std::optional<CowCompressionAlgorithm> CompressionAlgorithmFromString(std::strin
     } else if (name == "brotli") {
         return {kCowCompressBrotli};
     } else if (name == "lz4") {
+        LOG(INFO) << "lz4 compression set";
         return {kCowCompressLz4};
     } else if (name == "zstd") {
+        LOG(INFO) << "zstd compression set";
         return {kCowCompressZstd};
     } else if (name == "none" || name.empty()) {
+        LOG(INFO) << "none compression set";
         return {kCowCompressNone};
     } else {
         LOG(ERROR) << "unable to determine default compression algorithm for: " << name;

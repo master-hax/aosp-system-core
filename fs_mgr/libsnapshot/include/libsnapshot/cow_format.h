@@ -120,7 +120,7 @@ struct CowHeaderV3 : public CowHeader {
     // Compression Algorithm
     uint32_t compression_algorithm;
     // Max compression size supported
-    uint16_t max_compression_size;
+    uint32_t max_compression_size;
 } __attribute__((packed));
 
 enum class CowOperationType : uint8_t {
@@ -225,7 +225,7 @@ static constexpr uint64_t kCowOpSourceInfoCompressionMask =
 struct CowOperationV3 {
     // If this operation reads from the data section of the COW, this contains
     // the length.
-    uint16_t data_length;
+    uint32_t data_length;
 
     // The block of data in the new image that this operation modifies.
     uint32_t new_block;

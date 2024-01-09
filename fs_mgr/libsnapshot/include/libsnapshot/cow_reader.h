@@ -163,7 +163,7 @@ class CowReader final : public ICowReader {
     std::unique_ptr<CowReader> CloneCowReader();
 
     // Get the max compression size
-    uint16_t GetMaxCompressionSize();
+    uint32_t GetMaxCompressionSize();
 
     void UpdateMergeOpsCompleted(int num_merge_ops) { header_.num_merge_ops += num_merge_ops; }
 

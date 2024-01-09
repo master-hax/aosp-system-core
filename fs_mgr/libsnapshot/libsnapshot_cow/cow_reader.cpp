@@ -164,7 +164,7 @@ bool CowReader::Parse(android::base::borrowed_fd fd, std::optional<uint64_t> lab
     return PrepMergeOps();
 }
 
-uint16_t CowReader::GetMaxCompressionSize() {
+uint32_t CowReader::GetMaxCompressionSize() {
     switch (header_.prefix.major_version) {
         case 1:
         case 2:

@@ -856,13 +856,16 @@ TEST_P(VariableBlockTest, VaraibleBlockCompressionTest) {
 std::vector<TestParam> GetTestConfigs() {
     std::vector<TestParam> testParams;
 
-    std::vector<int> block_sizes = {4096, 8192, 16384, 32768};
+    // Different block size
+    std::vector<int> block_sizes = {4096, 8192, 16384, 32768, 65536};
+    // Supported compression algorithm
     std::vector<std::string> compression_algo = {"none", "lz4", "zstd", "gz"};
+    // Threads for compression
     std::vector<int> threads = {1, 2};
     // This will also test batch size
     std::vector<size_t> cluster_ops = {1, 200};
 
-    // This should test 64 combination
+    // This will test 80 combination
     for (auto block : block_sizes) {
         for (auto compression : compression_algo) {
             for (auto thread : threads) {

@@ -117,16 +117,13 @@ void CowWriterV3::SetupHeaders() {
 void CowWriterV3::SetCompressionFactor() {
     // This should be derived from property. For now, just set it from CowOptions
     //
-    // Compression factor supported: 4k, 8k, 16k, 32k.
-    //
-    // We can't support more than 32k as CowOperationV3 "data_length"
-    // field is uint16_t which can support max of 65535. We
-    // could bump this to uint32_t down the line to support
-    // bigger block sizes.
+    // Compression factor supported: 4k, 8k, 16k, 32k, 64k
     int compression_factor = options_.compression_factor;
     header_.max_compression_size = compression_factor;
 
-    if (compression_factor == 32_KiB) {
+    if (compression_factor == 64_KiB) {
+        factor_ = kCompress64k;
+    } else if (compression_factor == 32_KiB) {
         factor_ = kCompress32k;
     } else if (compression_factor == 16_KiB) {
         factor_ = kCompress16k;
@@ -137,6 +134,7 @@ void CowWriterV3::SetCompressionFactor() {
         factor_ = kCompress4k;
         header_.max_compression_size = 4_KiB;
     }
+    LOG(INFO) << "Compression factor set to: " << header_.max_compression_size;
 }
 
 bool CowWriterV3::ParseOptions() {
@@ -402,7 +400,7 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
             }
 
             vec = {.iov_base = compressed_data.data(), .iov_len = compressed_data.size()};
-            op.data_length = static_cast<uint16_t>(vec.iov_len);
+            op.data_length = vec.iov_len;
             compressed_bytes += op.data_length;
             j += buffer.num_blocks;
         }
@@ -540,6 +538,13 @@ std::pair<CompressionFactor, size_t> CowWriterV3::GetCompressionFactor(
     }
 
     switch (factor_) {
+        case kCompress64k: {
+            size_t num_blocks = (64_KiB / header_.block_size);
+            if (blocks_to_compress >= num_blocks) {
+                return std::make_pair(kCompress64k, num_blocks);
+            }
+            [[fallthrough]];
+        }
         case kCompress32k: {
             size_t num_blocks = (32_KiB / header_.block_size);
             if (blocks_to_compress >= num_blocks) {
