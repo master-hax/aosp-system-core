@@ -3553,6 +3553,7 @@ Return SnapshotManager::InitializeUpdateSnapshots(
             options.compression = it->second.compression_algorithm();
             if (cow_version >= 3) {
                 options.op_count_max = it->second.estimated_ops_buffer_size();
+                options.compression_factor = it->second.compression_factor();
             }
 
             auto writer = CreateCowWriter(cow_version, options, std::move(fd));
