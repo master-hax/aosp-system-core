@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b422b049_b4a4acd3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2024-01-10T00:28:29Z",
+      "side": 1,
+      "message": "I wonder if the APIs should be exported since they seem to be designed to be called by the fuzzer-user.  If so, should the fuzzer-with-internalized-libc++ still export these functions?\n\n(cc: @mitchp@google.com)",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 48
+      },
+      "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3cd91c3b_ba86b5d2",
         "filename": "trusty/fuzz/counters.cpp",
         "patchSetId": 2
