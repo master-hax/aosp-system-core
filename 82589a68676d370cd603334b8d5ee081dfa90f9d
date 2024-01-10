@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79cc8884_f4ad0b7a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "`0ULL` for short",
+      "range": {
+        "startLine": 489,
+        "startChar": 42,
+        "endLine": 489,
+        "endChar": 66
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bad39e0_ed060292",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "Please fix this ERROR reported by Common Typos: Common typo found: \"Varaible\" -- should it be \"Variable\"?\n\nAnalyzer Description: Linter for catching common typos motivated by go/todo-fail and go/lol-codesearch. Shared with google3 common typos library go/common-typos.\nOwner: ayeaye-team@google.com\n\nCommon typo found: \"Varaible\" -- should it be \"Variable\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 735,
+        "startChar": 26,
+        "endLine": 735,
+        "endChar": 34
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c78e58cc_4dd6e5f0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "can we put this in the constructor and mark factor_ as const? It\u0027s better to avoid mutations inside member functions",
+      "range": {
+        "startLine": 117,
+        "startChar": 18,
+        "endLine": 117,
+        "endChar": 38
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dd685cb_7ea418ec",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "RHS is uint64_t I believe? Use `const auto` for covariant",
+      "range": {
+        "startLine": 126,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 7
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2578303f_efcc79d4",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "Please fix this ERROR reported by Common Typos: Common typo found: \"compresssed\" -- should it be \"compressed\"?\n\nAnalyzer Description: Linter for catching common typos motivated by go/todo-fail and go/lol-codesearch. Shared with google3 common typos library go/common-typos.\nOwner: ayeaye-team@google.com\n\nCommon typo found: \"compresssed\" -- should it be \"compressed\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 387,
+        "startChar": 33,
+        "endLine": 387,
+        "endChar": 44
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30ce9ae5_718b1be7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "const",
+      "range": {
+        "startLine": 505,
+        "startChar": 63,
+        "endLine": 505,
+        "endChar": 64
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b6770ba_a5fc356f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "`const auto\u0026 [factor, num_blocks] \u003d GetCompressionFactor(blocks_to_compress, type);`\n\nto get better clarity.",
+      "range": {
+        "startLine": 553,
+        "startChar": 8,
+        "endLine": 553,
+        "endChar": 37
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a67f068_1b682d97",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "`compression_factor.second` is `num_blocks` , should this be compression_factor.first?",
+      "range": {
+        "startLine": 554,
+        "startChar": 28,
+        "endLine": 554,
+        "endChar": 53
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -3,6 +3,40 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "89d3b5ce_d5dc60dd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "worth testing if lz4hc gives better results here",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "828cda41_ff731ff8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "what about zstd?",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "fccd0e99_2862c11c",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -14,6 +48,69 @@
       "writtenOn": "2024-01-10T02:18:46Z",
       "side": 1,
       "message": "Performance test - work is in progress. Daniel and myself will update it once we have full set of numbers.",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "688d882c_85c657a1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "const size_t",
+      "range": {
+        "startLine": 711,
+        "startChar": 4,
+        "endLine": 711,
+        "endChar": 10
+      },
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d47394d8_a50200db",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "log the value of `op` here for easier debugging",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63b6ebfa_639b032c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 863,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:19:30Z",
+      "side": 1,
+      "message": "consider 256, which is what\u0027s actually used in update_engine",
+      "range": {
+        "startLine": 863,
+        "startChar": 42,
+        "endLine": 863,
+        "endChar": 45
+      },
       "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
