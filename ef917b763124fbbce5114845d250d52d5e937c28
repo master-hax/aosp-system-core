@@ -34,6 +34,24 @@
       "parentUuid": "b007e351_8e367a6b",
       "revId": "ef917b763124fbbce5114845d250d52d5e937c28",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "edf5bfac_e15348c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-10T21:21:54Z",
+      "side": 1,
+      "message": "This make sense, moving forward let\u0027s make sure we perform the op count check as soon as the number of ops is known and before any ops are written. Atomicity of `Emit*Blocks` can make our software easier to debug.",
+      "parentUuid": "b4d69f34_e824ba41",
+      "revId": "ef917b763124fbbce5114845d250d52d5e937c28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
