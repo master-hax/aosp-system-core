@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "76d8ce40_5838fedf",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 9
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-01-10T16:49:53Z",
+      "side": 1,
+      "message": "```\n$ adb shell ls -l /dev/trusty-ipc-dev0\ncrw-rw---- 1 system drmrpc 501,   0 2024-01-10 16:49 /dev/trusty-ipc-dev0\n```\n\nso neither `group nobody` nor `group system` work:\n\n```\nFailed to connect to Trusty port com.android.trusty.secretkeeper.authgraph because of .. PermissionDenied\n```",
+      "parentUuid": "425c810e_dc679bcc",
+      "range": {
+        "startLine": 4,
+        "startChar": 10,
+        "endLine": 4,
+        "endChar": 16
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "20fddb8c_7a858356",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-01-10T15:43:59Z",
       "side": 1,
       "message": "Mmm, I\u0027d be very tempted to use a build-time flag here, as we do for other SK things.",
+      "range": {
+        "startLine": 38,
+        "startChar": 7,
+        "endLine": 38,
+        "endChar": 18
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52b5ad99_7bd002e4",
+        "filename": "trusty/trusty-base.mk",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-01-10T16:49:53Z",
+      "side": 1,
+      "message": "Well, that\u0027s exactly what the TODO says. Do we already have a suitable build-time flag?",
+      "parentUuid": "20fddb8c_7a858356",
       "range": {
         "startLine": 38,
         "startChar": 7,
