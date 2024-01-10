@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c06137f4_c7293fa2",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-10T01:10:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b825f18_581ca911",
+      "range": {
+        "startLine": 122,
+        "startChar": 35,
+        "endLine": 122,
+        "endChar": 36
+      },
+      "revId": "51f8f15b7e1417f5f35e09778d82a58cd27580ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "37a0524f_ac309ae0",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-01-09T23:57:18Z",
       "side": 1,
       "message": "can it be negative? if not use unsigned types such as size_t",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 7
+      },
+      "revId": "51f8f15b7e1417f5f35e09778d82a58cd27580ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b27be3b6_0065139d",
+        "filename": "fs_mgr/libsnapshot/partition_cow_creator.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-10T01:10:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37a0524f_ac309ae0",
       "range": {
         "startLine": 62,
         "startChar": 4,
