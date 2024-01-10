@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "425c810e_dc679bcc",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 9
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-01-10T15:43:59Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 4,
+        "startChar": 10,
+        "endLine": 4,
+        "endChar": 16
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20fddb8c_7a858356",
+        "filename": "trusty/trusty-base.mk",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-01-10T15:43:59Z",
+      "side": 1,
+      "message": "Mmm, I\u0027d be very tempted to use a build-time flag here, as we do for other SK things.",
+      "range": {
+        "startLine": 38,
+        "startChar": 7,
+        "endLine": 38,
+        "endChar": 18
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
