@@ -16,6 +16,24 @@
       "message": "I\u0027m slightly confused, why would the same check pass in WriteOperation() but fail in `Emit*Blocks` routines? Are we changing the meaning of `cache_op_vec_` ?",
       "revId": "ef917b763124fbbce5114845d250d52d5e937c28",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4d69f34_e824ba41",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-10T21:16:41Z",
+      "side": 1,
+      "message": "at the beginning of emit blocks, we assume that we are writing a number of operations equal to data.size() / block size (which is always 4k). In variable block size, we could have one operation span a larger portion of data, so the number of operations written could be less. This final operation number isn\u0027t known until after addrawblocks call is made (Akilesh\u0027s variable block logic). There probably is a way of determining ahead of time, but that would require a change in this check\u0027s logic.",
+      "parentUuid": "b007e351_8e367a6b",
+      "revId": "ef917b763124fbbce5114845d250d52d5e937c28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
