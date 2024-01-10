@@ -16,6 +16,24 @@
       "message": "this is a redundant check with :771 below. I think it\u0027s okay to keep here but we should also make the check for if Cow Version \u003d\u003d 3. Otherwise we\u0027re gonna run into the bug again where if a block is compressed to same size as it was before, we won\u0027t be able to read it.",
       "revId": "be5effce23f06c22a9ddaa1ba940c51c8e2ee64f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bece1a02_31ccd60b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 750,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-10T02:18:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e200e5a2_d5c83c82",
+      "revId": "be5effce23f06c22a9ddaa1ba940c51c8e2ee64f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
