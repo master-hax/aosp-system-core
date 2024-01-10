@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e58b867_4d8c9cd4",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 9
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-01-10T16:56:21Z",
+      "side": 1,
+      "message": "Aha! Thanks.\n\nAnd I suspect it\u0027s impossible to change the legacy name now.",
+      "parentUuid": "76d8ce40_5838fedf",
+      "range": {
+        "startLine": 4,
+        "startChar": 10,
+        "endLine": 4,
+        "endChar": 16
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "20fddb8c_7a858356",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Well, that\u0027s exactly what the TODO says. Do we already have a suitable build-time flag?",
       "parentUuid": "20fddb8c_7a858356",
+      "range": {
+        "startLine": 38,
+        "startChar": 7,
+        "endLine": 38,
+        "endChar": 18
+      },
+      "revId": "844dcadf1190d228f91eea91071e00e8bfbed3f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a22af22_6d4ea8b7",
+        "filename": "trusty/trusty-base.mk",
+        "patchSetId": 9
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-01-10T16:56:21Z",
+      "side": 1,
+      "message": "We have RELEASE_AVF_ENABLE_LLPVM_CHANGES, but I\u0027m not entirely convinced that would work here",
+      "parentUuid": "52b5ad99_7bd002e4",
       "range": {
         "startLine": 38,
         "startChar": 7,
