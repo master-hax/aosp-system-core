@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "54388bb4_18409600",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-01-11T20:58:00Z",
+      "side": 1,
+      "message": "Aside: Making the APIs public wouldn\u0027t be sufficient to fix b/315079422, by itself, because we would still have the `LLVMFuzzerTestOneInput` undefined symbol. I think that problem is easy to fix by linking libtrusty_fuzz_utils.so against libclang_rt.fuzzer_no_main-*.a instead of libFuzzer.a. (The trouble is that consolidating all the fuzzer objects into libFuzzer.a(fuzzer.o) resulted in the fuzzer\u0027s main function being linked into the shared object.)",
+      "parentUuid": "b422b049_b4a4acd3",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 48
+      },
+      "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3cd91c3b_ba86b5d2",
         "filename": "trusty/fuzz/counters.cpp",
         "patchSetId": 2
