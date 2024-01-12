@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d130acb8_c586e1ec",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-01-12T22:05:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46e3026e_2d27e7af",
+      "range": {
+        "startLine": 96,
+        "startChar": 20,
+        "endLine": 96,
+        "endChar": 31
+      },
+      "revId": "fae6d983db445a6ad2d2afeee8449a3e6b21df95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bae5ef10_a691bc8e",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-01-12T16:21:24Z",
       "side": 1,
       "message": "use ReadFileToString/WriteStringToFile in this code.",
+      "revId": "fae6d983db445a6ad2d2afeee8449a3e6b21df95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebc500bf_36f24887",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-01-12T22:05:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bae5ef10_a691bc8e",
       "revId": "fae6d983db445a6ad2d2afeee8449a3e6b21df95",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
