@@ -188,6 +188,7 @@ cc_library {
 
             srcs: [
                 "trace-host.cpp",
+                "ashmem-host.cpp",
             ],
 
             enabled: true,
