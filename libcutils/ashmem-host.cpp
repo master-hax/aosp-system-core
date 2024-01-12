@@ -34,6 +34,10 @@
 
 #include <utils/Compat.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 static bool ashmem_validate_stat(int fd, struct stat* buf) {
     int result = fstat(fd, buf);
     if (result == -1) {
@@ -58,8 +62,22 @@ int ashmem_valid(int fd) {
 }
 
 int ashmem_create_region(const char* /*ignored*/, size_t size) {
+#ifdef _WIN32
+    char tempPath[MAX_PATH];
+    char pattern[MAX_PATH];
+    DWORD pathLen = GetTempPath(MAX_PATH, tempPath);
+    if (pathLen == 0) {
+        return -1;
+    }
+    // Remove trailing back slash if present, it will be added below.
+    if (tempPath[pathLen - 1] == '\\') {
+        tempPath[pathLen - 1] = '\0';
+    }
+    snprintf(pattern, sizeof(pattern), "%s\\android-ashmem-%d-XXXXXXXXX", tempPath, getpid());
+#else
     char pattern[PATH_MAX];
     snprintf(pattern, sizeof(pattern), "/tmp/android-ashmem-%d-XXXXXXXXX", getpid());
+#endif
     int fd = mkstemp(pattern);
     if (fd == -1) return -1;
 
