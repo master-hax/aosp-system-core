@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <fstream>
 #include <limits>
 #include <string_view>
 #include <thread>
@@ -88,6 +89,23 @@ int main(int argc, char* argv[]) {
       err(1, "cannot send signal to process %d", pid);
     } else {
       err(1, "cannot send signal to main thread %d (requested thread %d)", proc_info.pid, pid);
+    }
+  }
+
+  // unfreeze if pid is frozen.
+  const std::string freeze_file = std::string("/sys/fs/cgroup/uid_")
+                                      .append(std::to_string(proc_info.uid))
+                                      .append("/pid_")
+                                      .append(std::to_string(proc_info.pid))
+                                      .append("/cgroup.freeze");
+  std::ifstream freeze_in(freeze_file);
+  if (!freeze_in.fail()) {
+    const bool frozen = freeze_in.get() == '1';
+    freeze_in.close();
+    if (frozen) {
+      std::ofstream freeze_out(freeze_file);
+      freeze_out.put('0');
+      // we don't restore the frozen state as this is considered benign change.
     }
   }
 
