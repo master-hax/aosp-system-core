@@ -179,8 +179,8 @@ cc_library {
         },
         not_windows: {
             srcs: libcutils_nonwindows_sources + [
-                "ashmem-host.cpp",
                 "trace-host.cpp",
+                "ashmem-host.cpp",
             ],
         },
         windows: {
@@ -188,6 +188,7 @@ cc_library {
 
             srcs: [
                 "trace-host.cpp",
+                "ashmem-host.cpp",
             ],
 
             enabled: true,
