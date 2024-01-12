@@ -177,23 +177,18 @@ cc_library {
                 "fs_config.cpp",
             ],
         },
-        not_windows: {
-            srcs: libcutils_nonwindows_sources + [
-                "ashmem-host.cpp",
-                "trace-host.cpp",
-            ],
-        },
-        windows: {
-            host_ldlibs: ["-lws2_32"],
-
+        host: {
             srcs: [
                 "trace-host.cpp",
+                "ashmem-host.cpp",
             ],
-
+        },
+        not_windows: {
+            srcs: libcutils_nonwindows_sources,
+        },
+        windows: {
             enabled: true,
-            cflags: [
-                "-D_GNU_SOURCE",
-            ],
+            host_ldlibs: ["-lws2_32"],
         },
         android: {
             sanitize: {
@@ -286,6 +281,12 @@ cc_defaults {
                 "str_parms_test.cpp",
             ],
         },
+
+        host: {
+            srcs: [
+                "ashmem_host_test.cpp",
+            ],
+        },
     },
 
     cflags: [
@@ -350,4 +351,21 @@ cc_test {
     test_suites: ["general-tests", "vts"],
     defaults: ["libcutils_test_static_defaults"],
     test_config: "KernelLibcutilsTest.xml",
+}
+
+cc_test_host {
+    name: "libcutils_ashmem_host_test",
+    static_libs: ["libbase", "libcutils", "liblog"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+
+    srcs: ["ashmem_host_test.cpp"],
+    target: {
+        windows: {
+            enabled: true,
+        },
+    },
 }
