@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bae5ef10_a691bc8e",
+        "filename": "debuggerd/debuggerd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-12T16:21:24Z",
+      "side": 1,
+      "message": "use ReadFileToString/WriteStringToFile in this code.",
+      "revId": "fae6d983db445a6ad2d2afeee8449a3e6b21df95",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
