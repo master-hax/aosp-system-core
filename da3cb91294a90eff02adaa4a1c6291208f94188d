@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "08ce0268_00fcea1c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2024-01-12T22:23:24Z",
+      "side": 1,
+      "message": "Let\u0027s merge this if it\u0027s ok with the trusty team.  This problem should affect Linux fuzzers as well but the API seems like a niche use case that I didn\u0027t find any examples in google3.\n\n\u003e  linking libtrusty_fuzz_utils.so against libclang_rt.fuzzer_no_main-*.a instead of libFuzzer.a.\n\nThis seems like a good idea anyway?",
+      "parentUuid": "54388bb4_18409600",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 48
+      },
+      "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3cd91c3b_ba86b5d2",
