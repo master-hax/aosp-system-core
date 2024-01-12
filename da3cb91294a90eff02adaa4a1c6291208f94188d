@@ -87,6 +87,24 @@
       "message": "It\u0027s not clear to me if the `ATTRIBUTE_NO_SANITIZE_ALL` (or even the `__asm__` optimization/memory barrier) from libFuzzer\u0027s ClearExtraCounters is needed here.",
       "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7ab5eb8_5a0e9b38",
+        "filename": "trusty/fuzz/counters.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1058860
+      },
+      "writtenOn": "2024-01-12T22:28:35Z",
+      "side": 1,
+      "message": "The original implementation did this in a loop (prob. to avoid getting dependencies to libc or libc++) and needed the `no_sanitize` attribute.  We probably don\u0027t need it here.\n\nNot sure about the memory barrier though.",
+      "parentUuid": "3cd91c3b_ba86b5d2",
+      "revId": "da3cb91294a90eff02adaa4a1c6291208f94188d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
