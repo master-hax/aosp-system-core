@@ -34,6 +34,8 @@
 
 #include <utils/Compat.h>
 
+#include <android-base/file.h>
+
 static bool ashmem_validate_stat(int fd, struct stat* buf) {
     int result = fstat(fd, buf);
     if (result == -1) {
@@ -45,10 +47,17 @@ static bool ashmem_validate_stat(int fd, struct stat* buf) {
      * TODO: This is very hacky, and can easily break.
      * We need some reliable indicator.
      */
-    if (!(buf->st_nlink == 0 && S_ISREG(buf->st_mode))) {
+    if (!S_ISREG(buf->st_mode)) {
         errno = ENOTTY;
         return false;
     }
+#ifndef _WIN32
+    // In Win32, it is not possible to unlink an open file.
+    if (buf->st_nlink != 0) {
+        errno = ENOTTY;
+        return false;
+    }
+#endif
     return true;
 }
 
@@ -58,18 +67,13 @@ int ashmem_valid(int fd) {
 }
 
 int ashmem_create_region(const char* /*ignored*/, size_t size) {
-    char pattern[PATH_MAX];
-    snprintf(pattern, sizeof(pattern), "/tmp/android-ashmem-%d-XXXXXXXXX", getpid());
-    int fd = mkstemp(pattern);
-    if (fd == -1) return -1;
-
-    unlink(pattern);
-
+    TemporaryFile tempFile;
+    // Release to avoid closing the tempFile fd in the destructor (unlink is ok)
+    int fd = tempFile.release();
     if (TEMP_FAILURE_RETRY(ftruncate(fd, size)) == -1) {
-      close(fd);
-      return -1;
+        close(fd);
+        return -1;
     }
-
     return fd;
 }
 
