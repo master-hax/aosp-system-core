@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "006e6da1_5400486e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-12T23:31:44Z",
+      "side": 1,
+      "message": "btw, what\u0027s the CI plan to test this stuff? do we have something setup? I\u0027m currently relying on the AndroidStudio infra to test AIDL Windows",
+      "revId": "7bed18dc3480832dd80dc75322d966654cb70eac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e6ee71d_4210a7c5",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-12T23:31:44Z",
+      "side": 1,
+      "message": "can you remove it from here, and add it to \u0027host: {}\u0027 instead?",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 182,
+        "endChar": 34
+      },
+      "revId": "7bed18dc3480832dd80dc75322d966654cb70eac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27d1b0d6_9b481b78",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-12T23:31:44Z",
+      "side": 1,
+      "message": "idk who did this 😞",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 190,
+        "endChar": 33
+      },
+      "revId": "7bed18dc3480832dd80dc75322d966654cb70eac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
