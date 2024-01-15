@@ -1083,7 +1083,7 @@ void HandlePowerctlMessage(const std::string& command) {
                         return;
                     }
                 }
-            } else if (reboot_target == "quiescent") {
+            } else if (reboot_target == "quiescent" || (reboot_target == "userrequested" && cmd_params[2] == "quiescent")) {
                 bootloader_message boot = {};
                 if (std::string err; !read_bootloader_message(&boot, &err)) {
                     LOG(ERROR) << "Failed to read bootloader message: " << err;
