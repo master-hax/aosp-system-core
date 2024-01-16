@@ -24,12 +24,35 @@
 #define __USE_GNU
 #include <sys/mman.h>
 #include <sys/uio.h>
+#include <time.h>
 
 #include <BufferAllocator/BufferAllocatorWrapper.h>
 
 #include <trusty/tipc.h>
 
 #define TIPC_DEFAULT_DEVNAME "/dev/trusty-ipc-dev0"
+
+/* clang-format off */
+static const char* bench_result_tpl =
+"{"
+"    \"schema_version\": 3,"
+"    \"suite_name\": \"crypto\","
+"    \"bench_name\": \"%s\","
+"    \"results\": ["
+"        {"
+"            \"metric_name\": \"time_micro_sec\","
+"            \"min\": \"%lu\","
+"            \"max\": \"%lu\","
+"            \"avg\": \"%lu\","
+"            \"cold\": \"%lu\","
+"            \"raw_min\": %lu,"
+"            \"raw_max\": %lu,"
+"            \"raw_avg\": %lu,"
+"            \"raw_cold\": %lu"
+"        },"
+"    ]"
+"}";
+/* clang-format on */
 
 static const char *dev_name = NULL;
 static const char *test_name = NULL;
@@ -46,7 +69,7 @@ static const char *main_ctrl_name = "com.android.ipc-unittest.ctrl";
 static const char* receiver_name = "com.android.trusty.memref.receiver";
 static const size_t memref_chunk_size = 4096;
 
-static const char* _sopts = "hsvDS:t:r:m:b:";
+static const char* _sopts = "hsvDS:t:r:m:b:B:";
 /* clang-format off */
 static const struct option _lopts[] =  {
     {"help",    no_argument,       0, 'h'},
@@ -57,6 +80,8 @@ static const struct option _lopts[] =  {
     {"repeat",  required_argument, 0, 'r'},
     {"burst",   required_argument, 0, 'b'},
     {"msgsize", required_argument, 0, 'm'},
+    {"test",    required_argument, 0, 't'},
+    {"bench",   required_argument, 0, 'B'},
     {0, 0, 0, 0}
 };
 /* clang-format on */
@@ -74,6 +99,7 @@ static const char* usage =
         "  -m, --msgsize size    max message size\n"
         "  -v, --variable        variable message size\n"
         "  -s, --silent          silent\n"
+        "  -B, --bench           Run as Benchmark N times\n"
         "\n";
 
 static const char* usage_long =
@@ -101,6 +127,7 @@ static uint opt_msgsize = 32;
 static uint opt_msgburst = 32;
 static bool opt_variable = false;
 static bool opt_silent = false;
+static uint opt_bench = 0;
 static char* srv_name = NULL;
 
 static void print_usage_and_exit(const char *prog, int code, bool verbose)
@@ -150,6 +177,10 @@ static void parse_options(int argc, char **argv)
 
             case 's':
                 opt_silent = true;
+                break;
+
+            case 'B':
+                opt_bench = atoi(optarg);
                 break;
 
             case 'h':
@@ -948,6 +979,103 @@ cleanup:
     return ret;
 }
 
+uint64_t get_time_us() {
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return spec.tv_sec * 1000000 + spec.tv_nsec / 1000;
+}
+
+static int run_as_bench() {
+    int rc = 0;
+    int64_t min = INT64_MAX;
+    int64_t max = 0;
+    int64_t avg = 0;
+    int64_t cold = 0;
+
+    uint64_t start;
+    uint64_t end;
+
+    for (size_t i = 0; (i < opt_bench + 1) && rc == 0; ++i) {
+        if (strcmp(test_name, "connect") == 0) {
+            start = get_time_us();
+            rc |= connect_test(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "connect_foo") == 0) {
+            start = get_time_us();
+            rc |= connect_foo(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "burst_write") == 0) {
+            start = get_time_us();
+            rc |= burst_write_test(opt_repeat, opt_msgburst, opt_msgsize, opt_variable);
+            end = get_time_us();
+        } else if (strcmp(test_name, "select") == 0) {
+            start = get_time_us();
+            rc |= select_test(opt_repeat, opt_msgburst, opt_msgsize);
+            end = get_time_us();
+        } else if (strcmp(test_name, "blocked_read") == 0) {
+            start = get_time_us();
+            rc |= blocked_read_test(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "closer1") == 0) {
+            start = get_time_us();
+            rc |= closer1_test(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "closer2") == 0) {
+            start = get_time_us();
+            rc |= closer2_test(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "closer3") == 0) {
+            start = get_time_us();
+            rc |= closer3_test(opt_repeat);
+            end = get_time_us();
+        } else if (strcmp(test_name, "echo") == 0) {
+            start = get_time_us();
+            rc |= echo_test(opt_repeat, opt_msgsize, opt_variable);
+            end = get_time_us();
+        } else if (strcmp(test_name, "ta2ta-ipc") == 0) {
+            start = get_time_us();
+            rc |= ta2ta_ipc_test();
+            end = get_time_us();
+        } else if (strcmp(test_name, "dev-uuid") == 0) {
+            start = get_time_us();
+            rc |= dev_uuid_test();
+            end = get_time_us();
+        } else if (strcmp(test_name, "ta-access") == 0) {
+            start = get_time_us();
+            rc |= ta_access_test();
+            end = get_time_us();
+        } else if (strcmp(test_name, "writev") == 0) {
+            start = get_time_us();
+            rc |= writev_test(opt_repeat, opt_msgsize, opt_variable);
+            end = get_time_us();
+        } else if (strcmp(test_name, "readv") == 0) {
+            start = get_time_us();
+            rc |= readv_test(opt_repeat, opt_msgsize, opt_variable);
+            end = get_time_us();
+        } else if (strcmp(test_name, "send-fd") == 0) {
+            start = get_time_us();
+            rc |= send_fd_test();
+            end = get_time_us();
+        } else {
+            fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
+        }
+        int64_t t = end - start;
+
+        if (i == 0) {
+            cold = t;
+        } else {
+            min = (t < min) ? t : min;
+            max = (t > max) ? t : max;
+            avg += t;
+        }
+    }
+    avg /= opt_bench;
+
+    fprintf(stderr, bench_result_tpl, test_name, min, max, avg, cold);
+    return rc;
+}
+
 int main(int argc, char **argv)
 {
     int rc = 0;
@@ -967,40 +1095,44 @@ int main(int argc, char **argv)
         print_usage_and_exit(argv[0], EXIT_FAILURE, true);
     }
 
-    if (strcmp(test_name, "connect") == 0) {
-        rc = connect_test(opt_repeat);
-    } else if (strcmp(test_name, "connect_foo") == 0) {
-        rc = connect_foo(opt_repeat);
-    } else if (strcmp(test_name, "burst_write") == 0) {
-        rc = burst_write_test(opt_repeat, opt_msgburst, opt_msgsize, opt_variable);
-    } else if (strcmp(test_name, "select") == 0) {
-        rc = select_test(opt_repeat, opt_msgburst, opt_msgsize);
-    } else if (strcmp(test_name, "blocked_read") == 0) {
-        rc = blocked_read_test(opt_repeat);
-    } else if (strcmp(test_name, "closer1") == 0) {
-        rc = closer1_test(opt_repeat);
-    } else if (strcmp(test_name, "closer2") == 0) {
-        rc = closer2_test(opt_repeat);
-    } else if (strcmp(test_name, "closer3") == 0) {
-        rc = closer3_test(opt_repeat);
-    } else if (strcmp(test_name, "echo") == 0) {
-        rc = echo_test(opt_repeat, opt_msgsize, opt_variable);
-    } else if (strcmp(test_name, "ta2ta-ipc") == 0) {
-        rc = ta2ta_ipc_test();
-    } else if (strcmp(test_name, "dev-uuid") == 0) {
-        rc = dev_uuid_test();
-    } else if (strcmp(test_name, "ta-access") == 0) {
-        rc = ta_access_test();
-    } else if (strcmp(test_name, "writev") == 0) {
-        rc = writev_test(opt_repeat, opt_msgsize, opt_variable);
-    } else if (strcmp(test_name, "readv") == 0) {
-        rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
-    } else if (strcmp(test_name, "send-fd") == 0) {
-        rc = send_fd_test();
+    if (opt_bench > 0) {
+        rc = run_as_bench();
+        opt_bench = 0;
     } else {
-        fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
-        print_usage_and_exit(argv[0], EXIT_FAILURE, true);
+        if (strcmp(test_name, "connect") == 0) {
+            rc = connect_test(opt_repeat);
+        } else if (strcmp(test_name, "connect_foo") == 0) {
+            rc = connect_foo(opt_repeat);
+        } else if (strcmp(test_name, "burst_write") == 0) {
+            rc = burst_write_test(opt_repeat, opt_msgburst, opt_msgsize, opt_variable);
+        } else if (strcmp(test_name, "select") == 0) {
+            rc = select_test(opt_repeat, opt_msgburst, opt_msgsize);
+        } else if (strcmp(test_name, "blocked_read") == 0) {
+            rc = blocked_read_test(opt_repeat);
+        } else if (strcmp(test_name, "closer1") == 0) {
+            rc = closer1_test(opt_repeat);
+        } else if (strcmp(test_name, "closer2") == 0) {
+            rc = closer2_test(opt_repeat);
+        } else if (strcmp(test_name, "closer3") == 0) {
+            rc = closer3_test(opt_repeat);
+        } else if (strcmp(test_name, "echo") == 0) {
+            rc = echo_test(opt_repeat, opt_msgsize, opt_variable);
+        } else if (strcmp(test_name, "ta2ta-ipc") == 0) {
+            rc = ta2ta_ipc_test();
+        } else if (strcmp(test_name, "dev-uuid") == 0) {
+            rc = dev_uuid_test();
+        } else if (strcmp(test_name, "ta-access") == 0) {
+            rc = ta_access_test();
+        } else if (strcmp(test_name, "writev") == 0) {
+            rc = writev_test(opt_repeat, opt_msgsize, opt_variable);
+        } else if (strcmp(test_name, "readv") == 0) {
+            rc = readv_test(opt_repeat, opt_msgsize, opt_variable);
+        } else if (strcmp(test_name, "send-fd") == 0) {
+            rc = send_fd_test();
+        } else {
+            fprintf(stderr, "Unrecognized test name '%s'\n", test_name);
+            print_usage_and_exit(argv[0], EXIT_FAILURE, true);
+        }
     }
-
     return rc == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
