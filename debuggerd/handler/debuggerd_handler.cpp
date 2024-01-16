@@ -720,6 +720,10 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   }
 }
 
+debuggerd_callbacks_t* debuggerd_get_callbacks() {
+  return &g_callbacks;
+}
+
 void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   if (callbacks) {
     g_callbacks = *callbacks;
