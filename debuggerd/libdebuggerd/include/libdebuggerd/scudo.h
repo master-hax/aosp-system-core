@@ -32,6 +32,9 @@ class AndroidUnwinder;
 class Memory;
 }  // namespace unwindstack
 
+bool GetScudoErrorInfo(unwindstack::Memory* process_memory, const ProcessInfo& process_info,
+                       scudo_error_info* error_info, bool in_process = false);
+
 class ScudoCrashData {
  public:
   ScudoCrashData() = delete;
