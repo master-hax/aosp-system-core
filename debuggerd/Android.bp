@@ -312,7 +312,7 @@ cc_library_static {
         malloc_not_svelte: {
             cflags: ["-DUSE_SCUDO"],
             whole_static_libs: ["libscudo"],
-            srcs: ["libdebuggerd/scudo.cpp"],
+            srcs: ["libdebuggerd/scudo.cpp", "libdebuggerd/scudo_error_info.cpp"],
             header_libs: ["scudo_headers"],
         },
     },
@@ -575,4 +575,48 @@ prebuilt_etc {
             src: "seccomp_policy/crash_dump.x86.policy",
         },
     },
+}
+
+ndk_headers {
+    name: "libdebuggerd_ndk_headers",
+    from: "libdebuggerd/include/ndk/android",
+    to: "android",
+    srcs: [
+        "libdebuggerd/include/ndk/android/*.h",
+    ],
+    license: "MODULE_LICENSE_APACHE2",
+}
+
+// This gets linked into libandroid to get exposed in the NDK.
+cc_library_static {
+    name: "libdebuggerd_ndk",
+    host_supported: false,
+    srcs: [
+        "libdebuggerd/ndk/memtag-error.cpp",
+    ],
+    defaults: ["debuggerd_defaults"],
+    export_include_dirs: [
+        "libdebuggerd/include/ndk/",
+    ],
+
+    product_variables: {
+        malloc_not_svelte: {
+            cflags: ["-DUSE_SCUDO"],
+            header_libs: [
+                "bionic_libc_platform_headers",
+                "libasync_safe_headers",
+                "scudo_headers",
+            ],
+            whole_static_libs: [
+                "libscudo_no_frame_pointer",
+            ],
+            shared_libs: [
+                "libbase",
+                "libunwindstack",
+                "liblog",
+            ],
+            srcs: ["libdebuggerd/scudo_error_info.cpp"],
+        },
+    },
+    local_include_dirs: ["libdebuggerd/include"],
 }
