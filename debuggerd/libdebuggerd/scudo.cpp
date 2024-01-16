@@ -17,6 +17,7 @@
 #include "libdebuggerd/scudo.h"
 #include "libdebuggerd/tombstone.h"
 
+#include "scudo/interface.h"
 #include "unwindstack/AndroidUnwinder.h"
 #include "unwindstack/Memory.h"
 
@@ -26,64 +27,13 @@
 
 #include "tombstone.pb.h"
 
-std::unique_ptr<char[]> AllocAndReadFully(unwindstack::Memory* process_memory, uint64_t addr,
-                                          size_t size) {
-  auto buf = std::make_unique<char[]>(size);
-  if (!process_memory->ReadFully(addr, buf.get(), size)) {
-    return std::unique_ptr<char[]>();
-  }
-  return buf;
-}
-
 ScudoCrashData::ScudoCrashData(unwindstack::Memory* process_memory,
                                const ProcessInfo& process_info) {
   if (!process_info.has_fault_address) {
     return;
   }
-
-  auto region_info = AllocAndReadFully(process_memory, process_info.scudo_region_info,
-                                       __scudo_get_region_info_size());
-  std::unique_ptr<char[]> ring_buffer;
-  if (process_info.scudo_ring_buffer_size != 0) {
-    ring_buffer = AllocAndReadFully(process_memory, process_info.scudo_ring_buffer,
-                                    process_info.scudo_ring_buffer_size);
-  }
-  std::unique_ptr<char[]> stack_depot;
-  if (process_info.scudo_stack_depot_size != 0) {
-    stack_depot = AllocAndReadFully(process_memory, process_info.scudo_stack_depot,
-                                    process_info.scudo_stack_depot_size);
-  }
-  if (!region_info) {
-    return;
-  }
-
   untagged_fault_addr_ = process_info.untagged_fault_address;
-  uintptr_t fault_page = untagged_fault_addr_ & ~(getpagesize() - 1);
-
-  uintptr_t memory_begin = fault_page - getpagesize() * 16;
-  if (memory_begin > fault_page) {
-    return;
-  }
-
-  uintptr_t memory_end = fault_page + getpagesize() * 16;
-  if (memory_end < fault_page) {
-    return;
-  }
-
-  auto memory = std::make_unique<char[]>(memory_end - memory_begin);
-  for (auto i = memory_begin; i != memory_end; i += getpagesize()) {
-    process_memory->ReadFully(i, memory.get() + i - memory_begin, getpagesize());
-  }
-
-  auto memory_tags = std::make_unique<char[]>((memory_end - memory_begin) / kTagGranuleSize);
-  for (auto i = memory_begin; i != memory_end; i += kTagGranuleSize) {
-    memory_tags[(i - memory_begin) / kTagGranuleSize] = process_memory->ReadTag(i);
-  }
-
-  __scudo_get_error_info(&error_info_, process_info.maybe_tagged_fault_address, stack_depot.get(),
-                         process_info.scudo_stack_depot_size, region_info.get(), ring_buffer.get(),
-                         process_info.scudo_ring_buffer_size, memory.get(), memory_tags.get(),
-                         memory_begin, memory_end - memory_begin);
+  GetScudoErrorInfo(process_memory, process_info, &error_info_);
 }
 
 bool ScudoCrashData::CrashIsMine() const {
