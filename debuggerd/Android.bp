@@ -312,7 +312,7 @@ cc_library_static {
         malloc_not_svelte: {
             cflags: ["-DUSE_SCUDO"],
             whole_static_libs: ["libscudo"],
-            srcs: ["libdebuggerd/scudo.cpp"],
+            srcs: ["libdebuggerd/scudo.cpp", "libdebuggerd/scudo_error_info.cpp"],
             header_libs: ["scudo_headers"],
         },
     },
@@ -360,6 +360,7 @@ cc_test {
             srcs: [
                 "client/debuggerd_client_test.cpp",
                 "debuggerd_test.cpp",
+                "libdebuggerd/test/memtag_error_test.cpp",
             ],
             static_libs: [
                 "libasync_safe",
@@ -374,6 +375,7 @@ cc_test {
         "libdebuggerd_client",
         "liblog",
         "libnativehelper",
+        "libdebuggerd_ndk",
         "libunwindstack",
     ],
 
@@ -575,4 +577,65 @@ prebuilt_etc {
             src: "seccomp_policy/crash_dump.x86.policy",
         },
     },
+}
+
+ndk_headers {
+    name: "libdebuggerd_ndk_headers",
+    from: "libdebuggerd/include/ndk/android",
+    to: "android",
+    srcs: [
+        "libdebuggerd/include/ndk/android/*.h",
+    ],
+    license: "MODULE_LICENSE_APACHE2",
+}
+
+cc_library {
+    name: "libdebuggerd_ndk",
+    host_supported: false,
+    stubs: {
+        symbol_file: "libdebuggerd_ndk.map.txt",
+        versions: [
+            "VanillaIceCream",
+        ],
+    },
+    srcs: [
+        "libdebuggerd/ndk/memtag-error.cpp",
+    ],
+    defaults: ["debuggerd_defaults"],
+    export_include_dirs: [
+        "libdebuggerd/include/ndk/",
+    ],
+
+    product_variables: {
+        malloc_not_svelte: {
+            cflags: ["-DUSE_SCUDO"],
+            header_libs: [
+                "bionic_libc_platform_headers",
+                "libasync_safe_headers",
+                "scudo_headers",
+            ],
+            static_libs: [
+                "libscudo_no_frame_pointer",
+            ],
+            shared_libs: [
+                "libbase",
+                "libunwindstack",
+                "liblog",
+            ],
+            srcs: ["libdebuggerd/scudo_error_info.cpp"],
+        },
+    },
+    apex_available: [
+       "//apex_available:platform",
+    ],
+    local_include_dirs: ["libdebuggerd/include"],
+}
+
+ndk_library {
+    name: "libdebuggerd_ndk",
+    symbol_file: "libdebuggerd_ndk.map.txt",
+    first_version: "VanillaIceCream",
+    export_header_libs: [
+        "libdebuggerd_ndk_headers",
+    ],
 }
