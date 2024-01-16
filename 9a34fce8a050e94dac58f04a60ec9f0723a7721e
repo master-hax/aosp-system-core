@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "41727ba1_7c3ee2e5",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 986,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-16T13:11:20Z",
+      "side": 1,
+      "message": "I like it better with an exponent. But fair enough.",
+      "parentUuid": "d435b5d1_59461213",
+      "range": {
+        "startLine": 986,
+        "startChar": 25,
+        "endLine": 986,
+        "endChar": 30
+      },
+      "revId": "9a34fce8a050e94dac58f04a60ec9f0723a7721e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5460e904_4991fe29",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-01-16T13:05:14Z",
       "side": 1,
       "message": "Should this be comparing to 0?  The for loop iterator is 0 based",
+      "range": {
+        "startLine": 1065,
+        "startChar": 12,
+        "endLine": 1065,
+        "endChar": 18
+      },
+      "revId": "9a34fce8a050e94dac58f04a60ec9f0723a7721e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "421831ea_7021c973",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1065,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-16T13:11:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5460e904_4991fe29",
       "range": {
         "startLine": 1065,
         "startChar": 12,
