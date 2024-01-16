@@ -1,0 +1,16 @@
+LIBDEBUGGERD_NDK {
+    global:
+        AMemtagCrashInfo_get;
+        AMemtagCrashInfo_getSize;
+        AMemtagError_get;
+        AMemtagError_getCause;
+        AMemtagCause_getType;
+        AMemtagCause_getAllocationAddress;
+        AMemtagCause_getAllocationStack;
+        AMemtagCause_getAllocationTid;
+        AMemtagCause_getFreeStack;
+        AMemtagCause_getFreeTid;
+        AMemtagStackTrace_getPC;
+    local:
+        *;
+};
