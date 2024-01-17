@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90d883aa_6766f99b",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T13:40:07Z",
+      "side": 1,
+      "message": "nit: technically `-B 0` should be rejected?",
+      "range": {
+        "startLine": 200,
+        "startChar": 15,
+        "endLine": 200,
+        "endChar": 45
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a493adf_5362df1e",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 1004,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T13:40:07Z",
+      "side": 1,
+      "message": "nit: could be `static` and could be inside `get_test_function()`.",
+      "range": {
+        "startLine": 987,
+        "startChar": 0,
+        "endLine": 1004,
+        "endChar": 0
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "560e5a0e_477ac4c8",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T13:40:07Z",
+      "side": 1,
+      "message": "nit: it might be better to have the format string directly here.  That will make it easier to read / maintain, and I\u0027m not sure, but this form may circumvent `-Wformat` checking.",
+      "range": {
+        "startLine": 1043,
+        "startChar": 20,
+        "endLine": 1043,
+        "endChar": 36
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
