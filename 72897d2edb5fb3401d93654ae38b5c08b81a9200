@@ -46,6 +46,30 @@
       },
       "revId": "72897d2edb5fb3401d93654ae38b5c08b81a9200",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1548f609_d572cd99",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T09:04:32Z",
+      "side": 1,
+      "message": "You can either pass all the `opt_` parameters to each function and let them simply ignore the params they don\u0027t use, or noting that the `opt_` vars are all file scope anyway, the functions can simply access them copying them to local vars on entry as needed.  I think that later might be most compact and readable.",
+      "parentUuid": "de3777dd_724d85b6",
+      "range": {
+        "startLine": 1000,
+        "startChar": 8,
+        "endLine": 1059,
+        "endChar": 32
+      },
+      "revId": "72897d2edb5fb3401d93654ae38b5c08b81a9200",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
