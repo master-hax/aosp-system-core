@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8cf1560b_c31d8302",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T11:06:39Z",
+      "side": 1,
+      "message": "It doesn\u0027t look like any of the tests modify `*params`, so it\u0027s helpful to declare the pointer `const` here.",
+      "range": {
+        "startLine": 207,
+        "startChar": 23,
+        "endLine": 207,
+        "endChar": 56
+      },
+      "revId": "1cee09babc92fc720b333e547a7aeb0dd17ebf26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a39b1964_b78f6872",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 974,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T11:06:39Z",
+      "side": 1,
+      "message": "In C I think technically you need a `void` in here.",
+      "range": {
+        "startLine": 974,
+        "startChar": 20,
+        "endLine": 974,
+        "endChar": 22
+      },
+      "revId": "1cee09babc92fc720b333e547a7aeb0dd17ebf26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1192d595_3f849150",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 981,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T11:06:39Z",
+      "side": 1,
+      "message": "A typedef for the function pointer type would make this much easier to read.",
+      "range": {
+        "startLine": 981,
+        "startChar": 5,
+        "endLine": 981,
+        "endChar": 57
+      },
+      "revId": "1cee09babc92fc720b333e547a7aeb0dd17ebf26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fe729ad_60ceee71",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 1011,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T11:06:39Z",
+      "side": 1,
+      "message": "A helper structure and something like the following would be much neater:\n```\n  struct test_def {\n    char *name;\n    test_func func;\n  };\n \n const struct test_def tests[] \u003d {\n   { \"connect\", connect_test} ,\n   ....\n };\n \n for (i \u003d 0; i \u003c countof(tests); i++) {\n   if (strcmp(params-\u003etest_name, tests[i].name) \u003d\u003d 0) {\n     return test[i].func;\n   }\n }\n \n return NULL;\n ```",
+      "range": {
+        "startLine": 982,
+        "startChar": 3,
+        "endLine": 1011,
+        "endChar": 28
+      },
+      "revId": "1cee09babc92fc720b333e547a7aeb0dd17ebf26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26b82693_ac6047e8",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 1074,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-01-17T11:06:39Z",
+      "side": 1,
+      "message": "A typedef for the function pointer type makes this more readable.",
+      "range": {
+        "startLine": 1074,
+        "startChar": 7,
+        "endLine": 1074,
+        "endChar": 45
+      },
+      "revId": "1cee09babc92fc720b333e547a7aeb0dd17ebf26",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
