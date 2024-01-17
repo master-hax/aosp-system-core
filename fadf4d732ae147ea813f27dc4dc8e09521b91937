@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "41f96dd2_a02562d5",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-17T14:00:28Z",
+      "side": 1,
+      "message": "It would act as \"False\" flag telling it is not a benchmark. \n0 --\u003e False\nN --\u003e N runs bench + 1 Cold Run.\n\nIt is a valid value. Even the default one in fact.",
+      "parentUuid": "90d883aa_6766f99b",
+      "range": {
+        "startLine": 200,
+        "startChar": 15,
+        "endLine": 200,
+        "endChar": 45
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6a493adf_5362df1e",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b0323a6_1fb2789b",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 1004,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-17T14:00:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a493adf_5362df1e",
+      "range": {
+        "startLine": 987,
+        "startChar": 0,
+        "endLine": 1004,
+        "endChar": 0
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "560e5a0e_477ac4c8",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-01-17T13:40:07Z",
       "side": 1,
       "message": "nit: it might be better to have the format string directly here.  That will make it easier to read / maintain, and I\u0027m not sure, but this form may circumvent `-Wformat` checking.",
+      "range": {
+        "startLine": 1043,
+        "startChar": 20,
+        "endLine": 1043,
+        "endChar": 36
+      },
+      "revId": "fadf4d732ae147ea813f27dc4dc8e09521b91937",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a220ea5_5471f423",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-17T14:00:28Z",
+      "side": 1,
+      "message": "Made it a macro so `-Wformat` applies. But inside the function is not very nice.",
+      "parentUuid": "560e5a0e_477ac4c8",
       "range": {
         "startLine": 1043,
         "startChar": 20,
