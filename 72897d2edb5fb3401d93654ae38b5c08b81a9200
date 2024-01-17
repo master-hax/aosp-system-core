@@ -70,6 +70,30 @@
       },
       "revId": "72897d2edb5fb3401d93654ae38b5c08b81a9200",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d577a6a_5ee65b40",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 1970665
+      },
+      "writtenOn": "2024-01-17T13:07:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1548f609_d572cd99",
+      "range": {
+        "startLine": 1000,
+        "startChar": 8,
+        "endLine": 1059,
+        "endChar": 32
+      },
+      "revId": "72897d2edb5fb3401d93654ae38b5c08b81a9200",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
