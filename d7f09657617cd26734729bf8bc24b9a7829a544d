@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff0a5f20_fd00dccf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2005646
+      },
+      "writtenOn": "2024-01-18T01:45:33Z",
+      "side": 1,
+      "message": "Possible to also remove `ImageManager::MapImageWithDeviceMapper()` entirely now that `MapImageDevice()` no longer supports the non-dm path?\n\n\u003e we can recommend they make WrapUserdataIfNeeded() unconditional\n\nWhat are the downsides of always wrapping userdata, even if the underlying block device has 0 holders? Sounds like that way we could remove loop mapping code without breaking any functionality on devices that for whatever reason[*] don\u0027t have metadata encryption enabled.\n\n[*] Perhaps just haven\u0027t enabled it yet during early bringup stages?",
+      "revId": "d7f09657617cd26734729bf8bc24b9a7829a544d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
