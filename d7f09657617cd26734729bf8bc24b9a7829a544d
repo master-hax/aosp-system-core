@@ -16,6 +16,24 @@
       "message": "Possible to also remove `ImageManager::MapImageWithDeviceMapper()` entirely now that `MapImageDevice()` no longer supports the non-dm path?\n\n\u003e we can recommend they make WrapUserdataIfNeeded() unconditional\n\nWhat are the downsides of always wrapping userdata, even if the underlying block device has 0 holders? Sounds like that way we could remove loop mapping code without breaking any functionality on devices that for whatever reason[*] don\u0027t have metadata encryption enabled.\n\n[*] Perhaps just haven\u0027t enabled it yet during early bringup stages?",
       "revId": "d7f09657617cd26734729bf8bc24b9a7829a544d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c4367b_b7fb464c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-18T17:26:40Z",
+      "side": 1,
+      "message": "Yeah, we can remove a lot of code, but I\u0027d like to see how this settles first (which takes a long time). It\u0027s hard to predict how stuff gets used in the wild. I\u0027m still getting bugs filed over AVB 1.0 removal.\n\nI\u0027m not aware of any downsides of always wrapping userdata, but we have no way of regularly testing it.",
+      "parentUuid": "ff0a5f20_fd00dccf",
+      "revId": "d7f09657617cd26734729bf8bc24b9a7829a544d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
