@@ -215,6 +215,10 @@ static int process_raw_chunk(struct sparse_file* s, unsigned int chunk_size,
   int ret;
   int64_t len = (int64_t)blocks * s->block_size;
 
+  if (chunk_size == 0) {
+    return -EINVAL;
+  }
+
   if (chunk_size % s->block_size != 0) {
     return -EINVAL;
   }
