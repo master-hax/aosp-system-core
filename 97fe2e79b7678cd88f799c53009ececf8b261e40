@@ -88,6 +88,24 @@
       "parentUuid": "9a74b05d_5d056605",
       "revId": "97fe2e79b7678cd88f799c53009ececf8b261e40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df673ad2_acd7a7b7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952023
+      },
+      "writtenOn": "2024-01-19T18:26:10Z",
+      "side": 1,
+      "message": "The BPF map and the uprobestats RC files were merged, and will be updated to use AID_UPROBESTATS as soon as the new AID is available. Could we move forward with this change?",
+      "parentUuid": "2c57bff4_1702c337",
+      "revId": "97fe2e79b7678cd88f799c53009ececf8b261e40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
