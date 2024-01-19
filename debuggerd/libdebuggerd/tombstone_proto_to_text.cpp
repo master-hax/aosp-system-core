@@ -448,6 +448,19 @@ static std::string oct_encode(const std::string& data) {
   return oct_encoded;
 }
 
+static bool has_any_allocation_deallocation_stacks(const Tombstone& tombstone) {
+  for (const Cause& cause : tombstone.causes()) {
+    if (cause.has_memory_error() && cause.memory_error().has_heap()) {
+      const HeapObject& heap_object = cause.memory_error().heap();
+      if (heap_object.deallocation_backtrace_size() != 0 ||
+          heap_object.allocation_backtrace_size() != 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
                               const Thread& thread) {
   print_thread_header(callback, tombstone, thread, true);
@@ -498,10 +511,19 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
   }
 
   print_thread_registers(callback, tombstone, thread, true);
-  if (is_async_mte_crash) {
-    CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
-    CBL("      in this process. The stack trace below is the first system call or context");
-    CBL("      switch that was executed after the memory corruption happened.");
+  if (is_mte_crash) {
+    bool is_async_mte_requested = thread.tagged_addr_ctrl() & PR_MTE_TCF_ASYNC;
+    if (is_async_mte_crash) {
+      CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
+      CBL("      in this process. The stack trace below is the first system call or context");
+      CBL("      switch that was executed after the memory corruption happened.");
+    }
+    if (!is_async_mte_crash && is_async_mte_requested &&
+        !has_any_allocation_deallocation_stacks(tombstone)) {
+      CBL("Note: This is a sync (precise) MTE crash in an async MTE binary. You may get");
+      CBL("      additional diagnostic information by setting the system property");
+      CBL("      \"arm64.memtag.track_allocation_stacks\" to 1.");
+    }
   }
   print_thread_backtrace(callback, tombstone, thread, true);
 
@@ -553,6 +575,14 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
     CBS("");
     CBL("Learn more about MTE reports: "
         "https://source.android.com/docs/security/test/memory-safety/mte-reports");
+    bool is_eng_build = tombstone.build_fingerprint().ends_with(":eng/dev-keys");
+    if (is_eng_build) {
+      CBL("Note: Some devices unconditionally enable MTE in -eng build variant. This is");
+      CBL("      an MTE crash, and likely a memory safety issue in the code that should");
+      CBL("      be fixed. If you wish to ignore it and get on with your day, consider");
+      CBL("      rebuilding with PRODUCT_ENG_VARIANT_WITH_MEMTAG=false, or switching to");
+      CBL("      a -userdebug build variant.");
+    }
   }
 
   print_thread_memory_dump(callback, tombstone, thread);
