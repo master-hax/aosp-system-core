@@ -79,7 +79,9 @@ unsigned int sparse_count_chunks(struct sparse_file* s) {
       chunks++;
     }
     chunks++;
-    last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+    if (backed_block_len(bb) != 0) {
+      last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+    }
   }
   if (last_block < DIV_ROUND_UP(s->len, s->block_size)) {
     chunks++;
@@ -124,7 +126,9 @@ static int write_all_blocks(struct sparse_file* s, struct output_file* out) {
     }
     ret = sparse_file_write_block(out, bb);
     if (ret) return ret;
-    last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+    if (backed_block_len(bb) != 0) {
+      last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), s->block_size);
+    }
   }
 
   pad = s->len - (int64_t)last_block * s->block_size;
@@ -288,7 +292,9 @@ static int move_chunks_up_to_len(struct sparse_file* from, struct sparse_file* t
   for (bb = start; bb; bb = backed_block_iter_next(bb)) {
     count = 0;
     if (backed_block_block(bb) > last_block) count += sizeof(chunk_header_t);
-    last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), to->block_size);
+    if (backed_block_len(bb) != 0) {
+      last_block = backed_block_block(bb) + DIV_ROUND_UP(backed_block_len(bb), to->block_size);
+    }
 
     /* will call out_counter_write to update count */
     ret = sparse_file_write_block(out_counter, bb);
