@@ -345,6 +345,16 @@ public:
     int removeFd(int fd);
 
     /**
+     * Tell the kernel to check for the same events we're already checking for
+     * with this FD. This is to be used when there is a kernel bug where the
+     * kernel does not properly mark itself as having new data available, in
+     * order to force "fd_op->poll()" to be called.
+     *
+     * Returns 1 if successfully repolled, 0 if not.
+     */
+    int repoll(int fd);
+
+    /**
      * Enqueues a message to be processed by the specified handler.
      *
      * The handler must not be null.
