@@ -22,6 +22,30 @@
       },
       "revId": "236c7060cd5c743bbe844afd25ae78d98de1889b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "caffa250_f0d770a7",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1693933
+      },
+      "writtenOn": "2024-01-22T08:08:30Z",
+      "side": 1,
+      "message": "Can\u0027t, as I mentioned in https://android-review.git.corp.google.com/c/platform/system/sepolicy/+/2891476/comment/bfede9b5_d3990f38/.\n\not-daemon is a component in the tethering mainline module, and the action (\"on init\") support in apex init file is explicitly disabled by aosp/2101572.\n\nSo this is not very nice the tethering module now needs to depend on the platform to create specific dirs.\n\nI don\u0027t really know the benefits of moving the socket to /dev/socket...\n\nThe ot-daemon was able to have all its files under apexdata/com.android.tethering/ot-daemon/.",
+      "parentUuid": "938e9b0d_dde6228c",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 113,
+        "endChar": 66
+      },
+      "revId": "236c7060cd5c743bbe844afd25ae78d98de1889b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
