@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92534761_2669cdab",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-22T21:41:02Z",
+      "side": 1,
+      "message": "i assume the \"kernel _driver_ bug\" in the commit message was more strictly correct?\n\nhow would one know one needed to call this? (and when would that make sense, versus fixing the broken driver?)",
+      "range": {
+        "startLine": 349,
+        "startChar": 56,
+        "endLine": 349,
+        "endChar": 66
+      },
+      "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23e6f67a_39fb65eb",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-22T21:41:02Z",
+      "side": 1,
+      "message": "`bool`?",
+      "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
