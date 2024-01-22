@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "938e9b0d_dde6228c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-01-22T08:01:07Z",
+      "side": 1,
+      "message": "Can/should this go in your own init.rc file?",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 113,
+        "endChar": 66
+      },
+      "revId": "236c7060cd5c743bbe844afd25ae78d98de1889b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
