@@ -46,6 +46,30 @@
       },
       "revId": "236c7060cd5c743bbe844afd25ae78d98de1889b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71b753a8_47102d28",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-01-22T08:11:07Z",
+      "side": 1,
+      "message": "Thanks Kangping. Makes sense to me.",
+      "parentUuid": "caffa250_f0d770a7",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 113,
+        "endChar": 66
+      },
+      "revId": "236c7060cd5c743bbe844afd25ae78d98de1889b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
