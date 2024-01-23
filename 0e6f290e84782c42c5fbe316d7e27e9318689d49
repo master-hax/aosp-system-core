@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "14cb21e4_904be636",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-23T18:42:46Z",
+      "side": 1,
+      "message": "\u003e how would one know one needed to call this?\n\nIf poll is broken and you need \u0027fd_op-\u003epoll\u0027 to be called again to use it (what the comment says it wants). I think it\u0027s unlikely anyone would need to use this, which is unfortunate, but if I were to rewrite servicemanager to use epoll directly, that\u0027s a lot more dangerous change.",
+      "parentUuid": "26764190_3b5b3b65",
+      "range": {
+        "startLine": 349,
+        "startChar": 56,
+        "endLine": 349,
+        "endChar": 66
+      },
+      "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "23e6f67a_39fb65eb",
         "filename": "libutils/include/utils/Looper.h",
         "patchSetId": 1
