@@ -157,9 +157,11 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
     switch (version) {
         case 1:
         case 2:
+            LOG(INFO) << "creating cow writer v2";
             base = std::make_unique<CowWriterV2>(options, std::move(fd));
             break;
         case 3:
+            LOG(INFO) << "creating cow writer v3";
             base = std::make_unique<CowWriterV3>(options, std::move(fd));
             break;
         default:
