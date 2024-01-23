@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d6d2119_bc788ac0",
+        "filename": "libutils/abi-dumps/arm64/source-based/libutils.so.lsdump",
+        "patchSetId": 2
+      },
+      "lineNbr": 2552,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-23T18:40:28Z",
+      "side": 1,
+      "message": "These hashes seem wrong?",
+      "revId": "89982cc76d4bc593e5839167c3927ee7adc0e873",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
