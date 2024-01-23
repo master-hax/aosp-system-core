@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85e85870_71df4271",
+        "filename": "trusty/secretkeeper/src/hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-01-23T12:17:41Z",
+      "side": 1,
+      "message": "There\u0027s an asymmetry here - every request gets a response, but we may get extra responses. I guess that\u0027s fine?",
+      "range": {
+        "startLine": 82,
+        "startChar": 8,
+        "endLine": 82,
+        "endChar": 65
+      },
+      "revId": "7171c676c09b378f94cc5b1485d6213fb176c8f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
