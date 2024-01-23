@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b619a7e7_245ef04e",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-23T21:51:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ce4ae41b_98cacadb",
+      "range": {
+        "startLine": 349,
+        "startChar": 56,
+        "endLine": 349,
+        "endChar": 66
+      },
+      "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "23e6f67a_39fb65eb",
@@ -145,6 +169,24 @@
       "side": 1,
       "message": "yeah, that makes it a hard enough question that i\u0027ll leave it to your discretion, but fwiw we\u0027ve mostly been using bool for new api in places that used int, where there\u0027s no guarantee that errno is meaningful. (and then we try to use the usual -1/errno vs 0 dichotomy instead of 0 vs 1.)",
       "parentUuid": "2842ff65_2d6335c3",
+      "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc769f8f_2396d68e",
+        "filename": "libutils/include/utils/Looper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-01-23T21:51:22Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1ca04078_2e8dfb1b",
       "revId": "0e6f290e84782c42c5fbe316d7e27e9318689d49",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
