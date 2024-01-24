@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a6f19c66_45ef003c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:52:19Z",
+      "side": 1,
+      "message": "lz4hc will require some work. Perhaps, we can do that for boot camp to further analysis as we may also need to check if compression level helps.",
+      "parentUuid": "89d3b5ce_d5dc60dd",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "828cda41_ff731ff8",
         "filename": "/COMMIT_MSG",
         "patchSetId": 6
@@ -31,6 +49,24 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "what about zstd?",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "879ed329_cd0c4079",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:52:19Z",
+      "side": 1,
+      "message": "updated with zstd numbers.",
+      "parentUuid": "828cda41_ff731ff8",
       "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
