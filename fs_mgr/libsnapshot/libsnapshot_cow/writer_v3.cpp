@@ -315,6 +315,7 @@ bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_
     if (!CheckOpCount(num_blocks)) {
         return false;
     }
+    numCopyOps += num_blocks;
     for (size_t i = 0; i < num_blocks; i++) {
         CowOperationV3& op = cached_ops_.emplace_back();
         op.set_type(kCowCopyOp);
@@ -398,6 +399,14 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     if (!CheckOpCount(num_blocks)) {
         return false;
     }
+    if (type == CowOperationType::kCowReplaceOp) {
+        numReplaceOps += num_blocks;
+    } else if (type == kCowXorOp) {
+        numXorOps += num_blocks;
+    } else {
+        LOG(ERROR) << "unexpected Cow Op Type in emit blocks: " << type;
+        return false;
+    }
     for (size_t i = 0; i < num_blocks;) {
         const size_t blocks_to_write =
                 std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
@@ -424,6 +433,7 @@ bool CowWriterV3::EmitZeroBlocks(uint64_t new_block_start, const uint64_t num_bl
     if (!CheckOpCount(num_blocks)) {
         return false;
     }
+    numZeroOps += num_blocks;
     for (uint64_t i = 0; i < num_blocks; i++) {
         auto& op = cached_ops_.emplace_back();
         op.set_type(kCowZeroOp);
@@ -734,6 +744,12 @@ bool CowWriterV3::Finalize() {
     if (!android::base::WriteFullyAtOffset(fd_, &header_, header_.prefix.header_size, 0)) {
         return false;
     }
+    LOG(INFO) << "Number of Ops: " << header_.op_count;
+    LOG(INFO) << "Replace:" << numReplaceOps;
+    LOG(INFO) << "Copy: " << numCopyOps;
+    LOG(INFO) << "Zero: " << numZeroOps;
+    LOG(INFO) << "Xor: " << numXorOps;
+    LOG(INFO) << "Size of data section: " << next_data_pos_ - GetDataOffset(header_);
     return Sync();
 }
 

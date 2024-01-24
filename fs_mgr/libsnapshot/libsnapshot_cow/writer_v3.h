@@ -113,7 +113,7 @@ class CowWriterV3 : public CowWriterBase {
     std::vector<CowOperationV3> cached_ops_;
     std::vector<std::basic_string<uint8_t>> cached_data_;
     std::vector<struct iovec> data_vec_;
-
+    int numCopyOps = 0, numReplaceOps = 0, numXorOps = 0, numZeroOps = 0;
     std::vector<std::thread> threads_;
 };
 
