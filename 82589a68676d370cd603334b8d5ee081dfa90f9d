@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f1a97ba_89f6cebe",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "0ULL also ends up with ubsan.. This was observed only on Pixel 6 - Hence, the forceful cast here..",
+      "parentUuid": "79cc8884_f4ad0b7a",
+      "range": {
+        "startLine": 489,
+        "startChar": 42,
+        "endLine": 489,
+        "endChar": 66
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bad39e0_ed060292",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "Please fix this ERROR reported by Common Typos: Common typo found: \"Varaible\" -- should it be \"Variable\"?\n\nAnalyzer Description: Linter for catching common typos motivated by go/todo-fail and go/lol-codesearch. Shared with google3 common typos library go/common-typos.\nOwner: ayeaye-team@google.com\n\nCommon typo found: \"Varaible\" -- should it be \"Variable\"?\nNote: a line containing \"common_typos_disable\" or \"common_typos_enable\" will turn off or on (respectively) the linter for subsequent lines in the file. Alternatively include the token \"NOTYPO\" within a line to skip typo linting that line or include \u0027No-Typo-Check: \u003creason\u003e\u0027in the commit message.",
+      "range": {
+        "startLine": 735,
+        "startChar": 26,
+        "endLine": 735,
+        "endChar": 34
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c55a9e6e_553c6bc5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1bad39e0_ed060292",
       "range": {
         "startLine": 735,
         "startChar": 26,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "093a6531_9a5f92bf",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c78e58cc_4dd6e5f0",
+      "range": {
+        "startLine": 117,
+        "startChar": 18,
+        "endLine": 117,
+        "endChar": 38
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7dd685cb_7ea418ec",
@@ -83,6 +155,30 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "RHS is uint64_t I believe? Use `const auto` for covariant",
+      "range": {
+        "startLine": 126,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 7
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "652c8e76_455b07ad",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7dd685cb_7ea418ec",
       "range": {
         "startLine": 126,
         "startChar": 4,
@@ -116,6 +212,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2102b330_aedede08",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2578303f_efcc79d4",
+      "range": {
+        "startLine": 387,
+        "startChar": 33,
+        "endLine": 387,
+        "endChar": 44
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "30ce9ae5_718b1be7",
@@ -129,6 +249,30 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "const",
+      "range": {
+        "startLine": 505,
+        "startChar": 63,
+        "endLine": 505,
+        "endChar": 64
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31900ab0_1a8a2386",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30ce9ae5_718b1be7",
       "range": {
         "startLine": 505,
         "startChar": 63,
@@ -162,6 +306,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab811a41_d2196718",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b6770ba_a5fc356f",
+      "range": {
+        "startLine": 553,
+        "startChar": 8,
+        "endLine": 553,
+        "endChar": 37
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3a67f068_1b682d97",
@@ -175,6 +343,30 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "`compression_factor.second` is `num_blocks` , should this be compression_factor.first?",
+      "range": {
+        "startLine": 554,
+        "startChar": 28,
+        "endLine": 554,
+        "endChar": 53
+      },
+      "revId": "82589a68676d370cd603334b8d5ee081dfa90f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "713aaa1f_908282bd",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "No. compression_factor.first is used to mark the bits in the source_info_ field.\n\n`block_size` is the total run length (a.k.a total num_blocks this operation encapsulates)",
+      "parentUuid": "3a67f068_1b682d97",
       "range": {
         "startLine": 554,
         "startChar": 28,

@@ -75,6 +75,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cdc9869_d69bc511",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 711,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "688d882c_85c657a1",
+      "range": {
+        "startLine": 711,
+        "startChar": 4,
+        "endLine": 711,
+        "endChar": 10
+      },
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d47394d8_a50200db",
@@ -92,6 +116,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a12b29b_e24bf456",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_reader.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d47394d8_a50200db",
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "63b6ebfa_639b032c",
@@ -105,6 +147,30 @@
       "writtenOn": "2024-01-10T21:19:30Z",
       "side": 1,
       "message": "consider 256, which is what\u0027s actually used in update_engine",
+      "range": {
+        "startLine": 863,
+        "startChar": 42,
+        "endLine": 863,
+        "endChar": 45
+      },
+      "revId": "8765a781b0a4a602a4062c6d51e9bab232a7c472",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "406fccac_944578a2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/test_v3.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 863,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-24T07:50:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "63b6ebfa_639b032c",
       "range": {
         "startLine": 863,
         "startChar": 42,
