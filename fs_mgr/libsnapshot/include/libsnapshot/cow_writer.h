@@ -101,7 +101,7 @@ class ICowWriter {
     // Return number of bytes the cow image occupies on disk + the size of sequence && ops buffer
     // The latter two fields are used in v3 cow format and left as 0 for v2 cow format
     virtual CowSizeInfo GetCowSizeInfo() const = 0;
-
+    virtual void PrintOpInfo() const = 0;
     virtual uint32_t GetBlockSize() const = 0;
     virtual std::optional<uint32_t> GetMaxBlocks() const = 0;
 
