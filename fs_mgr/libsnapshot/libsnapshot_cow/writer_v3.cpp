@@ -305,6 +305,7 @@ bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_
     if (!CheckOpCount(num_blocks)) {
         return false;
     }
+    numCopyOps += num_blocks;
     for (size_t i = 0; i < num_blocks; i++) {
         CowOperationV3& op = cached_ops_.emplace_back();
         op.set_type(kCowCopyOp);
@@ -389,9 +390,7 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     const auto bytes = reinterpret_cast<const uint8_t*>(data);
     const size_t num_blocks = (size / header_.block_size);
     for (size_t i = 0; i < num_blocks;) {
-        const size_t blocks_to_write =
-                std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
-
+        const size_t blocks_to_write = num_blocks - i;
         if (!ConstructCowOpCompressedBuffers(new_block_start + i, bytes + header_.block_size * i,
                                              old_block + i, offset, type, blocks_to_write)) {
             return false;
@@ -414,6 +413,7 @@ bool CowWriterV3::EmitZeroBlocks(uint64_t new_block_start, const uint64_t num_bl
     if (!CheckOpCount(num_blocks)) {
         return false;
     }
+    numZeroOps += num_blocks;
     for (uint64_t i = 0; i < num_blocks; i++) {
         auto& op = cached_ops_.emplace_back();
         op.set_type(kCowZeroOp);
@@ -729,6 +729,7 @@ bool CowWriterV3::Finalize() {
     if (!android::base::WriteFullyAtOffset(fd_, &header_, header_.prefix.header_size, 0)) {
         return false;
     }
+
     return Sync();
 }
 
@@ -737,6 +738,20 @@ CowSizeInfo CowWriterV3::GetCowSizeInfo() const {
     info.cow_size = next_data_pos_;
     info.op_count_max = header_.op_count_max;
     return info;
+}
+
+void CowWriterV3::PrintOpInfo() const {
+    LOG(INFO) << "Number of Ops: " << header_.op_count;
+    LOG(INFO) << "Replace:" << numReplaceOps;
+    LOG(INFO) << "Copy: " << numCopyOps;
+    LOG(INFO) << "Zero: " << numZeroOps;
+    LOG(INFO) << "Xor: " << numXorOps;
+    LOG(INFO) << "Size of data section: " << next_data_pos_ - GetDataOffset(header_);
+    LOG(INFO) << "Cow Size given: " << next_data_pos_;
+    LOG(INFO) << "Acutal Cow Size: "
+              << (next_data_pos_ - GetDataOffset(header_)) + GetOpOffset(header_.op_count, header_);
+    LOG(INFO) << "other actual cow calcuation: "
+              << next_data_pos_ - (GetDataOffset(header_) - GetOpOffset(header_.op_count, header_));
 }
 
 }  // namespace snapshot
