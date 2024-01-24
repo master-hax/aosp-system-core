@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1f4bda8_88460785",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-24T16:06:28Z",
+      "side": 1,
+      "message": "(see my comments on the internal change, minus the one about the change needing to be in AOSP :-) )",
+      "revId": "364a43a802ef8060dda2f83ff8375e5d488ac637",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
