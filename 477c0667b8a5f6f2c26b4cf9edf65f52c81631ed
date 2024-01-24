@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d0eaf006_683160f8",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/snapshot_reader.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-24T21:48:17Z",
+      "side": 1,
+      "message": "It looks like with latest patch, we are failing cow_api_test. I\u0027m seeing failures with reading replace ops, so there might be some missing logic here?",
+      "revId": "477c0667b8a5f6f2c26b4cf9edf65f52c81631ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "551ed54e_5b9c75e5",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 27
