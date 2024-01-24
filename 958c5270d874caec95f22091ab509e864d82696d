@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52758e86_985a0279",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "Do we need this enum, constexprs, and switch case? Would something like this work instead?\n\n    size_t GetCompressionFactorFromBits(uint64_t bits) {\n        if (!bits) {\n            return 0;\n        }\n        // Or header.block_size \u003c\u003c ...\n        return 4_KiB \u003c\u003c (bits - 1);\n    }\n\n    size_t compression_factor() const {\n        ....\n        return GetCompressionFactorFromBits(bits);\n    }\n\nAlso, what does it mean when header_.block_size \u003c compression_factor? For example, if block_size is 4096 and compression_factor is 0. Is that the same as compression_factor \u003d\u003d 1 or does it imply no compression at all?\n\n(Having bits 0000 \u003d\u003d 1 block of compression would make it clearer)",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "beb70923_f1117791",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "Tracking extra state is an easy way to get in trouble in this class. Can we use options_.compression_factor directly instead, and have an accessor to recalculate it as needed? Eg,:\n\n    compression_factor() const { return options_.compression_factor \u003e\u003e N; }",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f188577_0848f0c6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "Why are we checking cluster_ops in v3?",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a012a403_7b54e86a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "no TODO without bug linked",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38d69f5a_0f02b2ca",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "Nested loop, with limited data dependencies (\"blocks\" and \"new_block\"). Good candidate for a helper function, especially given the potential to mistype iterators as we\u0027ve got \"i\", \"j\", and \"k\" in here.",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6c1bbfc_5210c078",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-24T17:06:39Z",
+      "side": 1,
+      "message": "If compression_factor is written as above, I think this gets a lot simpler, and probably std::pair can go away too:\n\n    auto best_factor \u003d compression_factor();\n    while (best_factor \u003e header_.block_size) {\n        size_t num_blocks \u003d best_factor / header_.block_size;\n        if (blocks_to_compress \u003e\u003d num_blocks) {\n            return best_factor;\n        }\n        best_factor \u003e\u003e\u003d 1;\n    }\n    return header_.block_size;",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
