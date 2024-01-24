@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8ec6d197_587650c6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-24T18:21:40Z",
+      "side": 1,
+      "message": "it looks like header_.max_compression isn\u0027t set here. We want to set this from given options. So snapuserd can detect what compression size was used to perform reads correctly.",
+      "parentUuid": "beb70923_f1117791",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f188577_0848f0c6",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 22
