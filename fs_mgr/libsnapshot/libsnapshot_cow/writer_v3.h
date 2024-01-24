@@ -37,6 +37,7 @@ class CowWriterV3 : public CowWriterBase {
     bool Initialize(std::optional<uint64_t> label = {}) override;
     bool Finalize() override;
     CowSizeInfo GetCowSizeInfo() const override;
+    void PrintOpInfo() const override;
 
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
@@ -113,7 +114,7 @@ class CowWriterV3 : public CowWriterBase {
     std::vector<CowOperationV3> cached_ops_;
     std::vector<std::vector<uint8_t>> cached_data_;
     std::vector<struct iovec> data_vec_;
-
+    int numCopyOps = 0, numReplaceOps = 0, numXorOps = 0, numZeroOps = 0;
     std::vector<std::thread> threads_;
 };
 
