@@ -28,6 +28,7 @@ class CowWriterV2 : public CowWriterBase {
     bool Initialize(std::optional<uint64_t> label = {}) override;
     bool Finalize() override;
     CowSizeInfo GetCowSizeInfo() const override;
+    void PrintOpInfo() const; 
 
   protected:
     virtual bool EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks = 1) override;
