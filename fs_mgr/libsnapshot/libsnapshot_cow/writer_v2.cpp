@@ -715,5 +715,8 @@ bool CowWriterV2::Truncate(off_t length) {
     return true;
 }
 
+void CowWriterV2::PrintOpInfo() const {
+    LOG(INFO) << "Cow size: " << next_data_pos_ + sizeof(footer_);
+}
 }  // namespace snapshot
 }  // namespace android
