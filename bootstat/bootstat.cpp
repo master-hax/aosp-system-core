@@ -1081,8 +1081,7 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
       // Check for kernel panics, allowed to override reboot command.
       if (!addKernelPanicSubReason(console, ret) &&
           // check for long-press power down
-          ((console.rfind("Power held for ") != std::string::npos) ||
-           (console.rfind("charger: [") != std::string::npos))) {
+          (console.rfind("Long Press Power Key") != std::string::npos)) {
         ret = "cold";
       }
     }
