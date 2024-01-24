@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0cc5cad7_84ef3fae",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-24T21:51:18Z",
+      "side": 1,
+      "message": "We should still be able to everything needed(writing compression factor to disk, passing to snapuserd etc) after changing `factor_` to an accessor method. I don\u0027t see anywhere else mutating `factor_` , making it a const or accessor method would make the code easier to reason about.",
+      "parentUuid": "8ec6d197_587650c6",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0f188577_0848f0c6",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 22
