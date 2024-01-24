@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f4452643_f77cab6b",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-24T18:05:43Z",
+      "side": 1,
+      "message": "compression factor has to be set at 4k, 16k, or one of other predesignated. although we should check that compression_factor is \u003e header_.block_size",
+      "parentUuid": "52758e86_985a0279",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "beb70923_f1117791",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 22
