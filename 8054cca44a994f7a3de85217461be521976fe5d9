@@ -16,6 +16,24 @@
       "message": "If possible, let\u0027s merge the reader changes before the writer changes. So that at any given commit we have an OTA stack that\u0027s fully backwards compatible. If there\u0027s a lot of merge conflicts, it\u0027s fine.",
       "revId": "8054cca44a994f7a3de85217461be521976fe5d9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "51c87b47_004ef122",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 29
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T20:48:45Z",
+      "side": 1,
+      "message": "I would like to merge both the CL\u0027s in one shot as it has been well tested.\n\nTechnically, there is no dependency here as the daemon is oblivious of v2/v3 writer. I don\u0027t see any presubmit OTA tests failing here.. If this is a real blocker, I will have to split the patch and re-structure it.",
+      "parentUuid": "2c2a1993_5ee0d021",
+      "revId": "8054cca44a994f7a3de85217461be521976fe5d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
