@@ -33,6 +33,24 @@
       "message": "armellel: Can you approve this change and/or test it? I\u0027d also be OK with just submitting it as-is. It should be quite safe.",
       "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4f8d7cd_929d84fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-01-25T09:48:46Z",
+      "side": 1,
+      "message": "This change is blocking the Android libc++ update.",
+      "parentUuid": "59ed1c9b_4c48907d",
+      "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
