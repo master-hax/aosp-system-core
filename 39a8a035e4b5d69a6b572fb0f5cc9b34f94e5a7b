@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a230d80c_d70b7663",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-25T17:58:48Z",
+      "side": 1,
+      "message": "According to https://en.cppreference.com/w/c/numeric/math/log\n\n\n```\nIf the argument is ±0, -∞ is returned and FE_DIVBYZERO is raised.\n```\n\nMaybe use `log2(4K)` right now as a baseline?",
+      "range": {
+        "startLine": 188,
+        "startChar": 70,
+        "endLine": 188,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ce80552_36840d93",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-25T17:58:48Z",
+      "side": 1,
+      "message": "The storage format seems to only support compression factor that\u0027s an exponential of 4K, but here we are only checking if max_compression_size is a multiple of 4K. Is this intended?",
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c5ca4d6_7f8f02de",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-25T17:58:48Z",
+      "side": 1,
+      "message": "This parameter is always used as an additional offset on top of `old_block` . Consider removing this parameter, and change the callsite to\n\n```\n        if (!ConstructCowOpCompressedBuffers(new_block_start + i, data + header_.block_size * i, old_block + i, offset, type,\n                                             blocks_to_write)) {\n```",
+      "range": {
+        "startLine": 344,
+        "startChar": 57,
+        "endLine": 344,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
