@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b368826_2f1a2f0e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/snapshot_reader.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0eaf006_683160f8",
+      "revId": "477c0667b8a5f6f2c26b4cf9edf65f52c81631ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "551ed54e_5b9c75e5",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e827a3ab_25de7968",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "551ed54e_5b9c75e5",
+      "revId": "477c0667b8a5f6f2c26b4cf9edf65f52c81631ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0031e361_1a213f21",
@@ -48,6 +84,24 @@
       "writtenOn": "2024-01-24T18:28:36Z",
       "side": 1,
       "message": "Let\u0027s at a check here to make sure maxCompressionSize() doesn\u0027t return a bad value so we can avoid the bug from last time",
+      "revId": "477c0667b8a5f6f2c26b4cf9edf65f52c81631ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bc9e30a8_cb6ed766",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0031e361_1a213f21",
       "revId": "477c0667b8a5f6f2c26b4cf9edf65f52c81631ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
