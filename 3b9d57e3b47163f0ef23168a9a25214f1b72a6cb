@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f7cf78a_3c84c588",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 21
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-01-25T00:23:22Z",
+      "side": 1,
+      "message": "do you mean async-safe in the in-process case?",
+      "revId": "3b9d57e3b47163f0ef23168a9a25214f1b72a6cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7715eca9_d79dc742",
+        "filename": "debuggerd/libdebuggerd/ndk/memtag-error.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-01-25T00:23:22Z",
+      "side": 1,
+      "message": "Use named constants.",
+      "revId": "3b9d57e3b47163f0ef23168a9a25214f1b72a6cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
