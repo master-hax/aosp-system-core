@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceeb0e75_9c0ab691",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T20:41:24Z",
+      "side": 1,
+      "message": "Right.. I have moved it to max_compression_size.\n\nHowever, we will have to recheck the performance numbers and tune it as required.",
+      "parentUuid": "47221096_3f70dea7",
+      "range": {
+        "startLine": 188,
+        "startChar": 70,
+        "endLine": 188,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7ce80552_36840d93",
@@ -89,6 +113,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a7ad045_ce4bbd60",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T20:41:24Z",
+      "side": 1,
+      "message": "Good catch !",
+      "parentUuid": "7ce80552_36840d93",
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0c5ca4d6_7f8f02de",
@@ -102,6 +144,30 @@
       "writtenOn": "2024-01-25T17:58:48Z",
       "side": 1,
       "message": "This parameter is always used as an additional offset on top of `old_block` . Consider removing this parameter, and change the callsite to\n\n```\n        if (!ConstructCowOpCompressedBuffers(new_block_start + i, data + header_.block_size * i, old_block + i, offset, type,\n                                             blocks_to_write)) {\n```",
+      "range": {
+        "startLine": 344,
+        "startChar": 57,
+        "endLine": 344,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5adf8fd_ef3f5c8d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T20:41:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c5ca4d6_7f8f02de",
       "range": {
         "startLine": 344,
         "startChar": 57,
