@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "47221096_3f70dea7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-25T18:38:31Z",
+      "side": 1,
+      "message": "when we tried this I think we ran into some read/write issues. Maybe we had forgotten to update the header last time we tried. It might work now",
+      "parentUuid": "5b59dec3_1aaf95b7",
+      "range": {
+        "startLine": 188,
+        "startChar": 70,
+        "endLine": 188,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7ce80552_36840d93",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 24
