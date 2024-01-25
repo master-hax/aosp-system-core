@@ -16,6 +16,23 @@
       "message": "I don\u0027t really know this code but if it still works, it should be OK to submit",
       "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "59ed1c9b_4c48907d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-01-25T09:46:02Z",
+      "side": 1,
+      "message": "armellel: Can you approve this change and/or test it? I\u0027d also be OK with just submitting it as-is. It should be quite safe.",
+      "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
