@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5b59dec3_1aaf95b7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-25T18:32:36Z",
+      "side": 1,
+      "message": "According to https://facebook.github.io/zstd/zstd_manual.html\n\n```\n  Note 2 : If the intention is to diff some large src data blob with some prior version of itself,\n           ensure that the window size is large enough to contain the entire source.\n           See ZSTD_c_windowLog.\n```\n\nProbably safe to set it as log2(header_.max_compression_size)",
+      "parentUuid": "a230d80c_d70b7663",
+      "range": {
+        "startLine": 188,
+        "startChar": 70,
+        "endLine": 188,
+        "endChar": 77
+      },
+      "revId": "39a8a035e4b5d69a6b572fb0f5cc9b34f94e5a7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7ce80552_36840d93",
         "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
         "patchSetId": 24
