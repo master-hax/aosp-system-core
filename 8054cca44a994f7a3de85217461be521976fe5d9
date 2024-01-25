@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c2a1993_5ee0d021",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 29
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-25T18:05:49Z",
+      "side": 1,
+      "message": "If possible, let\u0027s merge the reader changes before the writer changes. So that at any given commit we have an OTA stack that\u0027s fully backwards compatible. If there\u0027s a lot of merge conflicts, it\u0027s fine.",
+      "revId": "8054cca44a994f7a3de85217461be521976fe5d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
