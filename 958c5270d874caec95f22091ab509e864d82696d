@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "030deb4f_b06909c4",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 22
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Thanks. That was indeed a good suggestion. All of this is cleaned up with some added comments.",
+      "parentUuid": "54fb9d11_9dc8d556",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "beb70923_f1117791",
@@ -107,6 +125,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0e260bc_17d534f0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "All this is now tracked through header_.max_compression_size.",
+      "parentUuid": "0cc5cad7_84ef3fae",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a7a194e_ad967a63",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0cc5cad7_84ef3fae",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0f188577_0848f0c6",
@@ -120,6 +174,24 @@
       "writtenOn": "2024-01-24T17:06:39Z",
       "side": 1,
       "message": "Why are we checking cluster_ops in v3?",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39fc0c87_42feb9c7",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "cluster_ops is used to set the batch size for writes. This is the same check we have for v2 as well for batch writes.",
+      "parentUuid": "0f188577_0848f0c6",
       "revId": "958c5270d874caec95f22091ab509e864d82696d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -141,6 +213,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f3794f6_1803cc1b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a012a403_7b54e86a",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38d69f5a_0f02b2ca",
@@ -158,6 +248,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "30ea03ce_bfc62b33",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38d69f5a_0f02b2ca",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f6c1bbfc_5210c078",
@@ -171,6 +279,42 @@
       "writtenOn": "2024-01-24T17:06:39Z",
       "side": 1,
       "message": "If compression_factor is written as above, I think this gets a lot simpler, and probably std::pair can go away too:\n\n    auto best_factor \u003d compression_factor();\n    while (best_factor \u003e header_.block_size) {\n        size_t num_blocks \u003d best_factor / header_.block_size;\n        if (blocks_to_compress \u003e\u003d num_blocks) {\n            return best_factor;\n        }\n        best_factor \u003e\u003e\u003d 1;\n    }\n    return header_.block_size;",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee8df33a_49459106",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f6c1bbfc_5210c078",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1df58816_c2664584",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-25T08:57:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f6c1bbfc_5210c078",
       "revId": "958c5270d874caec95f22091ab509e864d82696d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
