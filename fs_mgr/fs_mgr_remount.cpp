@@ -42,6 +42,7 @@
 #include <fstab/fstab.h>
 #include <libavb_user/libavb_user.h>
 #include <libgsi/libgsid.h>
+#include <selinux/selinux.h>
 
 #include "fs_mgr_overlayfs_control.h"
 #include "fs_mgr_overlayfs_mount.h"
@@ -609,6 +610,25 @@ int main(int argc, char* argv[]) {
 
     // Make sure we are root.
     if (::getuid() != 0) {
+        // If requesting auto reboot, also try to auto gain root.
+        if (auto_reboot) {
+            bool is_shell_context = false;
+            char* context = nullptr;
+            if (getcon(&context) == 0) {
+                is_shell_context = (strcmp(context, "u:r:shell:s0") == 0);
+                freecon(context);
+            }
+            if (is_shell_context && access("/system/xbin/su", F_OK) == 0) {
+                std::vector<char*> args{const_cast<char*>("/system/xbin/su"),
+                                        const_cast<char*>("root")};
+                for (int i = 0; i < argc; ++i) {
+                    args.push_back(argv[i]);
+                }
+                args.push_back(nullptr);
+                execv(args[0], args.data());
+                PLOG(ERROR) << "Failed to execute 'su root'";
+            }
+        }
         LOG(ERROR) << "Not running as root. Try \"adb root\" first.";
         return EXIT_FAILURE;
     }
