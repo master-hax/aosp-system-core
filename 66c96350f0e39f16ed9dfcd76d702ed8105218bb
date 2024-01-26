@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40d0e589_3de43744",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1894651
+      },
+      "writtenOn": "2024-01-26T23:55:27Z",
+      "side": 1,
+      "message": "Is fixing this here instead of in libselinux the right thing to do? To the kernel \u0027foo\\0\u0027 *is* the right security context, isn\u0027t it?",
+      "revId": "66c96350f0e39f16ed9dfcd76d702ed8105218bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
