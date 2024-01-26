@@ -71,6 +71,10 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
 
   std::string selinux_label;
   android::base::ReadFileToString("/proc/self/attr/current", &selinux_label);
+  // https://github.com/android/ndk/issues/1993
+  if (!selinux_label.empty() && selinux_label.back() == '\0') {
+    selinux_label.pop_back();
+  }
 
   std::map<pid_t, ThreadInfo> threads;
   threads[target_tid] = ThreadInfo {

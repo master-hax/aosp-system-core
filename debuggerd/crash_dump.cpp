@@ -511,6 +511,10 @@ int main(int argc, char** argv) {
       if (!android::base::ReadFdToString(attr_fd, &info.selinux_label)) {
         PLOG(WARNING) << "failed to read selinux label";
       }
+      // https://github.com/android/ndk/issues/1993
+      if (!info.selinux_label.empty() && info.selinux_label.back() == '\0') {
+        info.selinux_label.pop_back();
+      }
 
       if (!ptrace_interrupt(thread, &info.signo)) {
         PLOG(WARNING) << "failed to ptrace interrupt thread " << thread;
