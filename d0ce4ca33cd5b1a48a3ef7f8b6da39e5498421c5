@@ -16,6 +16,24 @@
       "message": "-1 because this topic breaks blkcg support entirely.",
       "revId": "d0ce4ca33cd5b1a48a3ef7f8b6da39e5498421c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed8ffb25_040cf380",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2024-01-26T14:37:20Z",
+      "side": 1,
+      "message": "Changed my vote into +2 since I just noticed that the rootdir changes are included.",
+      "parentUuid": "1007dfb4_0fbe81e8",
+      "revId": "d0ce4ca33cd5b1a48a3ef7f8b6da39e5498421c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
