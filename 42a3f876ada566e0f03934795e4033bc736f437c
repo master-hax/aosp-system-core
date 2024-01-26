@@ -51,6 +51,24 @@
       "parentUuid": "59ed1c9b_4c48907d",
       "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d079544_7bc9358c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-01-26T05:12:49Z",
+      "side": 1,
+      "message": "I verified that the fuzzers still work with this CL applied.",
+      "parentUuid": "cde603c7_1ee4ebc1",
+      "revId": "42a3f876ada566e0f03934795e4033bc736f437c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
