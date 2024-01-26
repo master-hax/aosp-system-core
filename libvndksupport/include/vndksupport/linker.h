@@ -27,6 +27,10 @@ void* android_load_sphal_library(const char* name, int flag);
 
 int android_unload_sphal_library(void* handle);
 
+__attribute__((warn_unused_result)) void* android_load_sphal_library_ext(const char* name,
+                                                                         const char* apexName,
+                                                                         int flag);
+
 #ifdef __cplusplus
 }
 #endif

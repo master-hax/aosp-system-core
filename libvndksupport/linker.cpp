@@ -25,6 +25,7 @@
 #include <unistd.h>
 
 #include <initializer_list>
+#include <string>
 
 extern "C" android_namespace_t* android_get_exported_namespace(const char*);
 
@@ -82,4 +83,25 @@ void* android_load_sphal_library(const char* name, int flag) {
 
 int android_unload_sphal_library(void* handle) {
     return dlclose(handle);
+}
+
+void* android_load_sphal_library_ext(const char* name, const char* apexName, int flag) {
+    if (apexName == nullptr || strlen(apexName) == 0) {
+        return android_load_sphal_library(name, flag);
+    }
+    // convert the apex name into the linker namespace name
+    std::string namespaceName = apexName;
+    std::replace(namespaceName.begin(), namespaceName.end(), '.', '_');
+
+    android_namespace_t* ns = android_get_exported_namespace(namespaceName.c_str());
+    if (ns == nullptr) {
+        ALOGE("Could not find namespace for %s APEX. Is it visible?", apexName);
+        return nullptr;
+    }
+
+    const android_dlextinfo dlextinfo = {
+            .flags = ANDROID_DLEXT_USE_NAMESPACE,
+            .library_namespace = ns,
+    };
+    return android_dlopen_ext(name, flag, &dlextinfo);
 }
