@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1007dfb4_0fbe81e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2024-01-26T13:57:01Z",
+      "side": 1,
+      "message": "-1 because this topic breaks blkcg support entirely.",
+      "revId": "d0ce4ca33cd5b1a48a3ef7f8b6da39e5498421c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
