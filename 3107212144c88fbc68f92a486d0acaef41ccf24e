@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3b3a4b3_56a08527",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 26
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-01-27T00:18:27Z",
+      "side": 1,
+      "message": "Made this a static library which gets linked into libandroid.so. Moved the test to cts/",
+      "revId": "3107212144c88fbc68f92a486d0acaef41ccf24e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
