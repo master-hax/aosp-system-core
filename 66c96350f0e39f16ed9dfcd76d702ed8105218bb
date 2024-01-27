@@ -16,6 +16,24 @@
       "message": "Is fixing this here instead of in libselinux the right thing to do? To the kernel \u0027foo\\0\u0027 *is* the right security context, isn\u0027t it?",
       "revId": "66c96350f0e39f16ed9dfcd76d702ed8105218bb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "114f90a7_ae236bdd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-27T00:06:04Z",
+      "side": 1,
+      "message": "yeah, i\u0027m trying to talk to the security folks into that, but it\u0027s been like that for over a decade now[1] (and the kernel side was weird too), so i wasn\u0027t optimistic...\n\n____\n1. now you\u0027ve made me look harder, it was like this in the original git commit when they switched from svn 16 years ago.",
+      "parentUuid": "40d0e589_3de43744",
+      "revId": "66c96350f0e39f16ed9dfcd76d702ed8105218bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
