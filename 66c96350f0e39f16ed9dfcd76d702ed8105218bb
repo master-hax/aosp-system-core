@@ -34,6 +34,24 @@
       "parentUuid": "40d0e589_3de43744",
       "revId": "66c96350f0e39f16ed9dfcd76d702ed8105218bb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "228d81d0_134e9351",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-29T23:07:29Z",
+      "side": 1,
+      "message": "filed https://github.com/SELinuxProject/selinux/issues/417...",
+      "parentUuid": "114f90a7_ae236bdd",
+      "revId": "66c96350f0e39f16ed9dfcd76d702ed8105218bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
