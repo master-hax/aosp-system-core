@@ -22,6 +22,30 @@
       },
       "revId": "7171c676c09b378f94cc5b1485d6213fb176c8f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "916c23a3_88c4ebb1",
+        "filename": "trusty/secretkeeper/src/hal_main.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-01-29T16:19:43Z",
+      "side": 1,
+      "message": "Seems to be (I manually tested with a max size of 40 bytes in each direction).",
+      "parentUuid": "85e85870_71df4271",
+      "range": {
+        "startLine": 82,
+        "startChar": 8,
+        "endLine": 82,
+        "endChar": 65
+      },
+      "revId": "7171c676c09b378f94cc5b1485d6213fb176c8f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
