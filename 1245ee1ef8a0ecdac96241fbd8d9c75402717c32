@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd849fcc_1bb441d7",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:57:37Z",
+      "side": 1,
+      "message": "When would max compression be zero?\n\n(Also, this function is close to 200 lines now - maybe some of the longer if conditions can be split into helpers? Only if it would help readability.)",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
