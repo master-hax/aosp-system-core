@@ -119,6 +119,8 @@ struct CowHeaderV3 : public CowHeader {
     uint32_t op_count_max;
     // Compression Algorithm
     uint32_t compression_algorithm;
+    // Max compression size supported
+    uint32_t max_compression_size;
 } __attribute__((packed));
 
 enum class CowOperationType : uint8_t {
@@ -151,7 +153,7 @@ struct CowFooterOperation {
     uint8_t compression;
 
     // Length of Footer Data. Currently 64.
-    uint16_t data_length;
+    uint32_t data_length;
 
     // The amount of file space used by Cow operations
     uint64_t ops_size;
