@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "a37b0c3e_be98f03f",
+        "filename": "fs_mgr/libsnapshot/Android.bp",
+        "patchSetId": 28
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-29T21:51:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Bpfmt: This file is not formatted.\n\nAnalyzer Description: Formats Android.bp files.\nOwner: soong-team@google.com\n\nThis file is not formatted.\n\nRun `prebuilts/build-tools/linux-x86/bin/bpfmt -w {filename}` to format the file, or apply the suggested fix.",
+      "range": {
+        "startLine": 0,
+        "startChar": 0,
+        "endLine": 0,
+        "endChar": 0
+      },
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "a75a6346_9de31147",
@@ -48,6 +71,29 @@
       "writtenOn": "2024-01-29T21:50:40Z",
       "side": 1,
       "message": "Better to error/explicitly reject bad values",
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c54b47d0_14a0de0f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-01-29T21:51:19Z",
+      "side": 1,
+      "message": "rename to blocks_written\n```suggestion\n    size_t blocks_written \u003d 0;\n```",
+      "range": {
+        "startLine": 351,
+        "startChar": 12,
+        "endLine": 351,
+        "endChar": 13
+      },
       "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
