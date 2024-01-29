@@ -34,6 +34,24 @@
       "parentUuid": "dd849fcc_1bb441d7",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b542c0f_0562a10d",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T22:15:16Z",
+      "side": 1,
+      "message": "Okay, this should be validated in cow_writer then (and if really needed, reader). In general we shouldn\u0027t have to re-validate downstream.",
+      "parentUuid": "de258f9a_7cf39f7b",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
