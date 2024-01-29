@@ -196,6 +196,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "93076a99_05dc597d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:50:40Z",
+      "side": 1,
+      "message": "Okay, we should comment in CowOptions then (or split it into a separate option)",
+      "parentUuid": "39fc0c87_42feb9c7",
+      "revId": "958c5270d874caec95f22091ab509e864d82696d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a012a403_7b54e86a",

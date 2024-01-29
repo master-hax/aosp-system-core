@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a75a6346_9de31147",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:50:40Z",
+      "side": 1,
+      "message": "Alternate idea: you only need three bits, right? Steal them from source_info :) \n\n(Would be a refactoring though, so feel free to totally ignore)",
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "efbbe8bb_16fc13a2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_compress.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:50:40Z",
+      "side": 1,
+      "message": "might be cleaner with a lambda",
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca010ae4_283e7997",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:50:40Z",
+      "side": 1,
+      "message": "Better to error/explicitly reject bad values",
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "534d1220_f5a7d577",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-29T21:50:40Z",
+      "side": 1,
+      "message": "Use storage literals?",
+      "revId": "37933dd864a10ce7c492c1574577029f07d99c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
