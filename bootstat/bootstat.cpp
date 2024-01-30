@@ -1077,14 +1077,6 @@ std::string BootReasonStrToReason(const std::string& boot_reason) {
           ret = "shutdown";
         }
       }
-
-      // Check for kernel panics, allowed to override reboot command.
-      if (!addKernelPanicSubReason(console, ret) &&
-          // check for long-press power down
-          ((console.rfind("Power held for ") != std::string::npos) ||
-           (console.rfind("charger: [") != std::string::npos))) {
-        ret = "cold";
-      }
     }
 
     // TODO: use the HAL to get battery level (http://b/77725702).
