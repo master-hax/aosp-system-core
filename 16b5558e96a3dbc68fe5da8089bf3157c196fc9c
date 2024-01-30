@@ -16,6 +16,24 @@
       "message": "Can you go into more detail about why this change is needed?",
       "revId": "16b5558e96a3dbc68fe5da8089bf3157c196fc9c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aae21c2d_ab721496",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1758183
+      },
+      "writtenOn": "2024-01-30T18:57:38Z",
+      "side": 1,
+      "message": "It allows to retrofit dynamic partitions even on devices where some variants have a smaller system partition size, by specifying the smallest value for the system block device",
+      "parentUuid": "f8848bb2_6f12d320",
+      "revId": "16b5558e96a3dbc68fe5da8089bf3157c196fc9c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
