@@ -22,6 +22,30 @@
       },
       "revId": "75070b37e280dd76c0f00d5bf2a8eb96053b1483",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27bc5323_d682532f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-01-30T02:19:55Z",
+      "side": 1,
+      "message": "I will do the clean up of course, but as a separate change.",
+      "parentUuid": "50ace8a0_8939ed36",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 15
+      },
+      "revId": "75070b37e280dd76c0f00d5bf2a8eb96053b1483",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
