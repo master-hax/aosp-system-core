@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50ace8a0_8939ed36",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-30T01:29:15Z",
+      "side": 1,
+      "message": "such as...? that seems like a terribly misleading way to leave things?\n\nthe ARC++ stuff isn\u0027t in presubmit anyway, right, so we can just leave that for the ARC++ folks to clean up themselves?",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 15
+      },
+      "revId": "75070b37e280dd76c0f00d5bf2a8eb96053b1483",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
