@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0608ebda_d1c63a2c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-31T20:03:48Z",
+      "side": 1,
+      "message": "the existing naming is correct. this seems _more_ confusing?",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e05d0c11_783e423a",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-01-31T20:03:48Z",
+      "side": 1,
+      "message": "(this is much more confusing with your change, for example.)",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
