@@ -35,6 +35,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <binderdebug/BinderDebug.h>
 #include <bionic/reserved_signals.h>
 #include <cutils/sockets.h>
 #include <procinfo/process.h>
@@ -312,6 +313,16 @@ int dump_backtrace_to_file_timeout(pid_t pid, DebuggerdDumpType dump_type, int t
   android::base::unique_fd copy(dup(fd));
   if (copy == -1) {
     return -1;
+  }
+
+  std::string binderState;
+  android::status_t status = android::getBinderStateInfo(pid, binderState);
+  if (status == android::OK) {
+    if (!WriteStringToFd(binderState, fd)) {
+      LOG(WARNING) << TAG "Failed to dump binder state info for pid: " << pid;
+    }
+  } else {
+    LOG(WARNING) << TAG "Failed to get binder state info for pid: " << pid << " status: " << status;
   }
 
   // debuggerd_trigger_dump results in every thread in the process being interrupted
