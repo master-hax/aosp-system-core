@@ -88,6 +88,24 @@
       "parentUuid": "2964be04_1d50dc59",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6baed239_8181db05",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T20:37:19Z",
+      "side": 1,
+      "message": "The problem here is that if the daemon crashes, then device will fail to boot and dm-user will start sending EIO. Eventually, device will rollback.\n\nHowever, if we gracefully fail the I/O, device will immediately rollback. We saw this in CF test as well.",
+      "parentUuid": "2e9f3bd5_059e26cf",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
