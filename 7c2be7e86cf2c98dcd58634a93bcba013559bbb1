@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3afb2ba_1c1cb8c3",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_format.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-31T17:43:04Z",
+      "side": 1,
+      "message": "`block_distance \u003c num_blocks` for simplicity",
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0adc1ee8_bbb47125",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/snapshot_reader.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-31T17:43:04Z",
+      "side": 1,
+      "message": "off_t block_offset{}; to avoid uninitialized variables.",
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9fc9abb_ae36bacb",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-01-31T17:43:04Z",
+      "side": 1,
+      "message": "I see that other places are using `block_size_` , but here the block sizes are hard-coded. Is this intended?",
+      "range": {
+        "startLine": 55,
+        "startChar": 63,
+        "endLine": 55,
+        "endChar": 71
+      },
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
