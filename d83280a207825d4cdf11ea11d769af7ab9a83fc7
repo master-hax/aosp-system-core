@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "884c1834_508bada1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-01-31T21:15:46Z",
+      "side": 1,
+      "message": "Hmmm, all of the clients of each of these methods are using PIDs for the `tid` parameter as far as I can see (debuggerd uses `proc_info.pid`), logs here in the implementation are calling the tid \"PID\", the function `get_wchan_data(int fd, pid_t pid)` takes a pid but we pass `tid` to it in `dump_backtrace_to_file_timeout`.\n\nI\u0027ll change it back if you want, but the current state is more confusing to me and maybe also confusing to all of the clients since they all use pids.",
+      "parentUuid": "0608ebda_d1c63a2c",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e05d0c11_783e423a",
         "filename": "debuggerd/client/debuggerd_client.cpp",
         "patchSetId": 1
