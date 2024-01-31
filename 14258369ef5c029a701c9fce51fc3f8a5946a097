@@ -22,6 +22,30 @@
       },
       "revId": "14258369ef5c029a701c9fce51fc3f8a5946a097",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ac4e23b_d02a2573",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1082,
+      "author": {
+        "id": 1994660
+      },
+      "writtenOn": "2024-01-31T01:31:55Z",
+      "side": 0,
+      "message": "This line means if generic reason is not found by `addKernelPanicSubReason()` then check `Power held for` or `charger: [`, the two strings match cause false positive. `charger: [` is a very common string which doesn\u0027t mean long press power down.",
+      "parentUuid": "847d9d45_75a5e9f7",
+      "range": {
+        "startLine": 1082,
+        "startChar": 12,
+        "endLine": 1082,
+        "endChar": 34
+      },
+      "revId": "14258369ef5c029a701c9fce51fc3f8a5946a097",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
