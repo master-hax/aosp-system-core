@@ -70,6 +70,24 @@
       "parentUuid": "1b542c0f_0562a10d",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e9f3bd5_059e26cf",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-31T20:33:25Z",
+      "side": 1,
+      "message": "There are lots of places where the COW could be corrupted though. snapuserd core logic isn\u0027t the right place to catch that.",
+      "parentUuid": "2964be04_1d50dc59",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
