@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "001f5a50_922d4743",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2024-01-31T22:20:15Z",
+      "side": 1,
+      "message": "pid is a confused term: it means both process id and thread id depending on context (userspace pid/tid \u003d\u003d kernel tgid/pid). If you want to be unambiguous, using tid and tgid is the way to go. IMO the only thing that\u0027s potentially worth changing here is removing `pid_t pid` entirely and just doing `tid \u003d procinfo.pid` in debuggerd_trigger_dump.",
+      "parentUuid": "884c1834_508bada1",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e05d0c11_783e423a",
         "filename": "debuggerd/client/debuggerd_client.cpp",
         "patchSetId": 1
