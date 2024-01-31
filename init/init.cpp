@@ -130,11 +130,13 @@ prefetch_replay(const char* path, const uint16_t* io_depth, const uint16_t* max_
                 int8_t exit_on_error);
 
 static int CallPrefetch() {
-    std::string subcommand = GetProperty("ro.boot.kiwi.prefetch", "");
-    if (subcommand.empty()) {
-        LOG(ERROR) << "Skipping prefetch record and replay";
-        return 1;
-    } else if (subcommand == "record") {
+    std::string path = "/metadata/ota/ureadahead-boot";
+    // std::string subcommand = GetProperty("ro.boot.kiwi.prefetch", "");
+    const bool ureadahead_replay = access(path.c_str(), F_OK) == 0;
+    // if (access(path.c_str(), F_OK) != 0) {
+    //     ureadahead_replay = false;
+    // }
+    if (!ureadahead_replay) {
         LOG(INFO) << "prefetch record requested";
         std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
         int duration =
@@ -154,7 +156,7 @@ static int CallPrefetch() {
                                   instance.c_str());
         LOG(INFO) << "prefetch record complete: " << ret;
         return ret;
-    } else if (subcommand == "replay") {
+    } else {
         LOG(INFO) << "prefetch replay requested";
         std::string path = GetProperty("ro.boot.kiwi.prefetch.path", "");
         int depth = atol(GetProperty("ro.boot.kiwi.prefetch.io_depth", "").c_str());
@@ -176,9 +178,6 @@ static int CallPrefetch() {
         int ret = prefetch_replay(path.c_str(), &io_depth, &max_fds, exit_on_error);
         LOG(INFO) << "prefetch replay complete: " << ret;
         return ret;
-    } else {
-        LOG(ERROR) << "Unknown prefetch command:" << subcommand;
-        return 1;
     }
     return 1;
 }

@@ -17,6 +17,8 @@
 #include "action_manager.h"
 
 #include <android-base/logging.h>
+#include <variant>
+#include "action.h"
 
 namespace android {
 namespace init {
@@ -42,6 +44,7 @@ void ActionManager::AddAction(std::unique_ptr<Action> action) {
 
 void ActionManager::QueueEventTrigger(const std::string& trigger) {
     auto lock = std::lock_guard{event_queue_lock_};
+    LOG(INFO) << "Queued event " << trigger;
     event_queue_.emplace(trigger);
 }
 
@@ -74,6 +77,17 @@ void ActionManager::ExecuteOneCommand() {
                                event_queue_.front())) {
                     current_executing_actions_.emplace(action.get());
                 }
+            }
+            const auto& ev = event_queue_.front();
+            if (std::holds_alternative<EventTrigger>(ev)) {
+                LOG(INFO) << "Poped event " << std::get<EventTrigger>(ev);
+            } else if (std::holds_alternative<PropertyChange>(ev)) {
+                const auto& prop = std::get<PropertyChange>(ev);
+                LOG(INFO) << "Poped event " << prop.first << " -> " << prop.second;
+            } else if (std::holds_alternative<BuiltinAction>(ev)) {
+                const auto& action = std::get<BuiltinAction>(ev);
+                LOG(INFO) << "Poped event " << action->filename() << ":" << action->line() << " "
+                          << action->NumCommands() << " commands";
             }
             event_queue_.pop();
         }

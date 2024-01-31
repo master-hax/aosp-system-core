@@ -37,6 +37,7 @@
 
 #include <array>
 #include <chrono>
+#include <cstring>
 #include <functional>
 #include <map>
 #include <memory>
@@ -1615,6 +1616,11 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 encryptable = FS_MGR_MNTALL_DEV_NEEDS_RECOVERY;
                 continue;
             }
+        } else {
+            LOG(INFO) << "Skip formatting " << current_entry.blk_device << " , wiped: " << wiped
+                      << " error: " << strerror(mount_errno)
+                      << " flags: " << current_entry.fs_mgr_flags.formattable
+                      << " mount point: " << current_entry.mount_point;
         }
 
         // mount(2) returned an error, handle the encryptable/formattable case.
