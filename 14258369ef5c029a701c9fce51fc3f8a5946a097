@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "847d9d45_75a5e9f7",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1082,
+      "author": {
+        "id": 1247518
+      },
+      "writtenOn": "2024-01-31T01:22:16Z",
+      "side": 0,
+      "message": "many of the reasons in addKernelPanicSubReason look pretty generic to the linux kernel. Are you concerned about these causing false positives, or just the two comparisons after the \u0026\u0026 ?\n\nNote: this is a public review forum.",
+      "range": {
+        "startLine": 1082,
+        "startChar": 12,
+        "endLine": 1082,
+        "endChar": 34
+      },
+      "revId": "14258369ef5c029a701c9fce51fc3f8a5946a097",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
