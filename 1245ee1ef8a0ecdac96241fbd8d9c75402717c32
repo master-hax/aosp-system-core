@@ -124,6 +124,24 @@
       "parentUuid": "6baed239_8181db05",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05c60d60_dc22e449",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T21:31:22Z",
+      "side": 1,
+      "message": "Makes sense. Thanks.\n\nI have moved this to the initialization of the reader and will bail out immediately if it\u0027s not set.",
+      "parentUuid": "fe8bcf66_a8fb8d2f",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
