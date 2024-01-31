@@ -52,6 +52,24 @@
       "parentUuid": "de258f9a_7cf39f7b",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2964be04_1d50dc59",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T20:32:06Z",
+      "side": 1,
+      "message": "I have kept the check here because, daemon shouldn\u0027t crash if we end up with a bad value. The check will gracefully fail the I/O. \n\n(In fact we should remove all assertions and convert them into an error; but that is for a different CL. @zhengdaniel@google.com)\n\nv3 writer does the validation and errors out if it\u0027s not set.",
+      "parentUuid": "1b542c0f_0562a10d",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

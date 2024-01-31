@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "17ad2b4c_1c3b50c6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/cow_format.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T20:32:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3afb2ba_1c1cb8c3",
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0adc1ee8_bbb47125",
@@ -37,6 +55,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "e11e90b5_5c7c751f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/snapshot_reader.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T20:32:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0adc1ee8_bbb47125",
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c9fc9abb_ae36bacb",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
         "patchSetId": 32
@@ -48,6 +84,30 @@
       "writtenOn": "2024-01-31T17:43:04Z",
       "side": 1,
       "message": "I see that other places are using `block_size_` , but here the block sizes are hard-coded. Is this intended?",
+      "range": {
+        "startLine": 55,
+        "startChar": 63,
+        "endLine": 55,
+        "endChar": 71
+      },
+      "revId": "7c2be7e86cf2c98dcd58634a93bcba013559bbb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a6d2925_0fd6816a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 32
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-01-31T20:32:06Z",
+      "side": 1,
+      "message": "yes. This is intended; we should fix this hard coded value but not in this CL.",
+      "parentUuid": "c9fc9abb_ae36bacb",
       "range": {
         "startLine": 55,
         "startChar": 63,
