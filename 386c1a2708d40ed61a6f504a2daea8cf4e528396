@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4cd2aee3_07f36d32",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-01-31T19:53:56Z",
+      "side": 1,
+      "message": "I don\u0027t think this is good. Instead, we could make a simpler function to load a library from a \"visible\" apex: say, `android_load_apex_library(libname, apexname, flag)`. Then a client could do ..\n```\nauto apexname \u003d getApexNameForMyLibrary();\nif (apexname.empty()) so \u003d android_load_sphal_library(mylibrary, flag);\nelse so \u003d android_load_apex_library(mylibrary, apexname, flag);\n```\n\nBtw, if it\u0027s `android_load_apex_library`, libvndksupport might not be a good place to have it. libapexsupport might be a good candidate.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 58
+      },
+      "revId": "386c1a2708d40ed61a6f504a2daea8cf4e528396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1244f3f4_b6a1dbe9",
+        "filename": "libvndksupport/libvndksupport.map.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-01-31T19:53:56Z",
+      "side": 1,
+      "message": "For now this doesn\u0027t need to be LLNDK or NDK.",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 34
+      },
+      "revId": "386c1a2708d40ed61a6f504a2daea8cf4e528396",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
