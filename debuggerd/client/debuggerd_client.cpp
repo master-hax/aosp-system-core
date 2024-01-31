@@ -114,14 +114,13 @@ static std::string get_wchan_data(int fd, pid_t pid) {
   return buffer.str();
 }
 
-bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int timeout_ms,
+bool debuggerd_trigger_dump(pid_t pid, DebuggerdDumpType dump_type, unsigned int timeout_ms,
                             unique_fd output_fd) {
-  pid_t pid = tid;
   if (dump_type == kDebuggerdJavaBacktrace) {
     // Java dumps always get sent to the tgid, so we need to resolve our tid to a tgid.
     android::procinfo::ProcessInfo procinfo;
     std::string error;
-    if (!android::procinfo::GetProcessInfo(tid, &procinfo, &error)) {
+    if (!android::procinfo::GetProcessInfo(pid, &procinfo, &error)) {
       log_error(output_fd, 0, "failed to get process info: %s", error.c_str());
       return false;
     }
@@ -304,11 +303,11 @@ bool debuggerd_trigger_dump(pid_t tid, DebuggerdDumpType dump_type, unsigned int
   return true;
 }
 
-int dump_backtrace_to_file(pid_t tid, DebuggerdDumpType dump_type, int fd) {
-  return dump_backtrace_to_file_timeout(tid, dump_type, 0, fd);
+int dump_backtrace_to_file(pid_t pid, DebuggerdDumpType dump_type, int fd) {
+  return dump_backtrace_to_file_timeout(pid, dump_type, 0, fd);
 }
 
-int dump_backtrace_to_file_timeout(pid_t tid, DebuggerdDumpType dump_type, int timeout_secs,
+int dump_backtrace_to_file_timeout(pid_t pid, DebuggerdDumpType dump_type, int timeout_secs,
                                    int fd) {
   android::base::unique_fd copy(dup(fd));
   if (copy == -1) {
@@ -317,15 +316,15 @@ int dump_backtrace_to_file_timeout(pid_t tid, DebuggerdDumpType dump_type, int t
 
   // debuggerd_trigger_dump results in every thread in the process being interrupted
   // by a signal, so we need to fetch the wchan data before calling that.
-  std::string wchan_data = get_wchan_data(fd, tid);
+  std::string wchan_data = get_wchan_data(fd, pid);
 
   int timeout_ms = timeout_secs > 0 ? timeout_secs * 1000 : 0;
-  int ret = debuggerd_trigger_dump(tid, dump_type, timeout_ms, std::move(copy)) ? 0 : -1;
+  int ret = debuggerd_trigger_dump(pid, dump_type, timeout_ms, std::move(copy)) ? 0 : -1;
 
   // Dump wchan data, since only privileged processes (CAP_SYS_ADMIN) can read
   // kernel stack traces (/proc/*/stack).
   if (!WriteStringToFd(wchan_data, fd)) {
-    LOG(WARNING) << TAG "Failed to dump wchan data for pid: " << tid;
+    LOG(WARNING) << TAG "Failed to dump wchan data for pid: " << pid;
   }
 
   return ret;
