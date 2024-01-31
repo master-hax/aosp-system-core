@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4d39cfd_f87dbb12",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-01-31T23:48:52Z",
+      "side": 1,
+      "message": "Got it, thanks. Removed the `pid_t pid` and changed the `debuggerd_trigger_dump` parameter name to `tid` in the header like it is in the cpp file.",
+      "parentUuid": "001f5a50_922d4743",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e05d0c11_783e423a",
@@ -67,6 +85,24 @@
       "writtenOn": "2024-01-31T20:03:48Z",
       "side": 1,
       "message": "(this is much more confusing with your change, for example.)",
+      "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f66a8ddd_2fcec209",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-01-31T23:48:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e05d0c11_783e423a",
       "revId": "d83280a207825d4cdf11ea11d769af7ab9a83fc7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
