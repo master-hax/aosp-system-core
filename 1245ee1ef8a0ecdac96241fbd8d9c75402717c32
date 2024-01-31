@@ -106,6 +106,24 @@
       "parentUuid": "2e9f3bd5_059e26cf",
       "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe8bcf66_a8fb8d2f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 30
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-01-31T20:52:01Z",
+      "side": 1,
+      "message": "Sure, but we should have caught it much earlier. We\u0027re validating a readonly field on every single sector read. That should have been done during startup or snapshot creation, right?\n\nI\u0027m nudging on this is because this is a very critical, complex function. The check adds code, but it\u0027s not clear why it belongs here or what could lead to this failure (\"forgot some code during development\" isn\u0027t super compelling).",
+      "parentUuid": "6baed239_8181db05",
+      "revId": "1245ee1ef8a0ecdac96241fbd8d9c75402717c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
