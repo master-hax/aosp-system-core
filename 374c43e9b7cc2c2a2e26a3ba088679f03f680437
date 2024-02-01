@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b1b1727_d259bba1",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-01T23:01:04Z",
+      "side": 1,
+      "message": "Oh, using libstatssocket_lazy when libstatssocket is not available causes crash!\n\nHow can we check availability before calling lazy APIs? Can we add an extra helper to check?",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 23
+      },
+      "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
