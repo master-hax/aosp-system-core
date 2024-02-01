@@ -140,8 +140,9 @@
 #define AID_JC_IDENTITYCRED 1089  /* Javacard Identity Cred HAL - to manage omapi ARA rules */
 #define AID_SDK_SANDBOX 1090      /* SDK sandbox virtual UID */
 #define AID_SECURITY_LOG_WRITER 1091 /* write to security log */
-#define AID_PRNG_SEEDER 1092         /* PRNG seeder daemon */
-#define AID_UPROBESTATS 1093         /* uid for uprobestats */
+#define AID_PRNG_SEEDER 1092      /* PRNG seeder daemon */
+#define AID_UPROBESTATS 1093      /* uid for uprobestats */
+#define AID_PUSH_CHANNEL 1094     /* uid for push channel socket/connection */
 /* Changes to this file must be made in AOSP, *not* in internal branches. */
 
 #define AID_SHELL 2000 /* adb and debug shell user */
