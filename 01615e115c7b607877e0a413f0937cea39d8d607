@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "561d7ed4_f004c691",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-01T17:13:54Z",
+      "side": 1,
+      "message": "Please also add a unit test for DmTargetStripe. It doesn\u0027t have to be a full I/O test, just a test that the string formatting is working correctly.\n\nSee the \"DefaultKeyArgs\" test in dm_test.cpp for an example.",
+      "revId": "01615e115c7b607877e0a413f0937cea39d8d607",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "abb993d3_c4cded8d",
