@@ -69,6 +69,24 @@
       "message": "should there just be a \"connectivity\" directory (with a \"db\" subdirectory), on the assumption you\u0027ll want more connectivity stuff sooner or later?",
       "revId": "731972b0860c8f5430dfddcd61cd55632f3c1184",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b52bc60_e91ee4d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1966927
+      },
+      "writtenOn": "2024-02-01T09:05:00Z",
+      "side": 1,
+      "message": "I think the usage of the /data/misc/ directory will be rare. I think this is a special case just to replace the current keystore file in /data/misc.",
+      "parentUuid": "119dbc61_bab8ebae",
+      "revId": "731972b0860c8f5430dfddcd61cd55632f3c1184",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
