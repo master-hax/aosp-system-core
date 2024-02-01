@@ -126,22 +126,23 @@
 #define AID_FSVERITY_CERT 1075   /* fs-verity key ownership in keystore */
 #define AID_CREDSTORE 1076       /* identity credential manager service */
 #define AID_EXTERNAL_STORAGE 1077 /* Full external storage access including USB OTG volumes */
-#define AID_EXT_DATA_RW 1078      /* GID for app-private data directories on external storage */
-#define AID_EXT_OBB_RW 1079       /* GID for OBB directories on external storage */
-#define AID_CONTEXT_HUB 1080      /* GID for access to the Context Hub */
+#define AID_EXT_DATA_RW 1078     /* GID for app-private data directories on external storage */
+#define AID_EXT_OBB_RW 1079      /* GID for OBB directories on external storage */
+#define AID_CONTEXT_HUB 1080     /* GID for access to the Context Hub */
 #define AID_VIRTUALIZATIONSERVICE 1081 /* VirtualizationService daemon */
-#define AID_ARTD 1082             /* ART Service daemon */
-#define AID_UWB 1083              /* UWB subsystem */
-#define AID_THREAD_NETWORK 1084   /* Thread Network subsystem */
-#define AID_DICED 1085            /* Android's DICE daemon */
-#define AID_DMESGD 1086           /* dmesg parsing daemon for kernel report collection */
-#define AID_JC_WEAVER 1087        /* Javacard Weaver HAL - to manage omapi ARA rules */
-#define AID_JC_STRONGBOX 1088     /* Javacard Strongbox HAL - to manage omapi ARA rules */
-#define AID_JC_IDENTITYCRED 1089  /* Javacard Identity Cred HAL - to manage omapi ARA rules */
-#define AID_SDK_SANDBOX 1090      /* SDK sandbox virtual UID */
+#define AID_ARTD 1082            /* ART Service daemon */
+#define AID_UWB 1083             /* UWB subsystem */
+#define AID_THREAD_NETWORK 1084  /* Thread Network subsystem */
+#define AID_DICED 1085           /* Android's DICE daemon */
+#define AID_DMESGD 1086          /* dmesg parsing daemon for kernel report collection */
+#define AID_JC_WEAVER 1087       /* Javacard Weaver HAL - to manage omapi ARA rules */
+#define AID_JC_STRONGBOX 1088    /* Javacard Strongbox HAL - to manage omapi ARA rules */
+#define AID_JC_IDENTITYCRED 1089 /* Javacard Identity Cred HAL - to manage omapi ARA rules */
+#define AID_SDK_SANDBOX 1090     /* SDK sandbox virtual UID */
 #define AID_SECURITY_LOG_WRITER 1091 /* write to security log */
-#define AID_PRNG_SEEDER 1092         /* PRNG seeder daemon */
-#define AID_UPROBESTATS 1093         /* uid for uprobestats */
+#define AID_PRNG_SEEDER 1092     /* PRNG seeder daemon */
+#define AID_UPROBESTATS 1093     /* uid for uprobestats */
+#define AID_PUSH_CHANNEL 1094    /* uid for push channel socket/connection */
 /* Changes to this file must be made in AOSP, *not* in internal branches. */
 
 #define AID_SHELL 2000 /* adb and debug shell user */
