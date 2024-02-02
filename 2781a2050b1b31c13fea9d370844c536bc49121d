@@ -67,6 +67,24 @@
       "message": "do you actually want something in this range?",
       "revId": "2781a2050b1b31c13fea9d370844c536bc49121d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c431427_79c4f302",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-02-02T04:04:50Z",
+      "side": 1,
+      "message": "Not per the current doc (of these being supplemental groups)...\n\nthat said I think the current thoughts are moving more to using an \u0027invincible\u0027 tag instead of a uid (and having the tag value be chosen by the app and simply registered with the system).\n\nie. something building on top of something like https://android-review.git.corp.google.com/c/platform/packages/modules/Connectivity/+/2945925",
+      "parentUuid": "b299b944_8c4b9082",
+      "revId": "2781a2050b1b31c13fea9d370844c536bc49121d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
