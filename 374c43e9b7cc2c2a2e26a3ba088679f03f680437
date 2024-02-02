@@ -70,6 +70,30 @@
       },
       "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f2efa40_25663d79",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-02T13:52:52Z",
+      "side": 1,
+      "message": "\u003e If you would like to add a helper to check availability, feel free to send a cl and I can review.\n\nSure, I\u0027d love to. What would be the right condition for availability check? As a simple test, I thought about calling `LoadLibstatssocket` and check if the returned handle is non-null. But I think `libstatssocket` also needs to talk to the daemon via socket. Then I think we might need to check the socket? `libstatssocket` looks having buffer internally. Does it handle waiting until the daemon is available?",
+      "parentUuid": "0c4322c1_fdf168ed",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 23
+      },
+      "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
