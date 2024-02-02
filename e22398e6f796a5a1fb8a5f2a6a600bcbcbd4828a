@@ -1,0 +1,261 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "296c81be_0b16d50f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "Tests?\n\n+enh too, because he had an idea about how to make this more generally useful for all types of crash metadata rather than being MTE specific. I\u0027ll let him explain that so I don\u0027t mislead you since I don\u0027t remember exactly what he said...",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e720f7d_8272e644",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "go/android-ndk-api-guidelines#well-documented (point 6)",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24c0334e_ad049352",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "go/android-ndk-api-guidelines#naming (point 2)",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b2339eb_87114cb4",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "When? In the signal handler, presumably? Add that to the docs.",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 39,
+        "endChar": 36
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad7ec40a_98794696",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "API doc comments need to be doxygen formatted: go/android-ndk-api-guidelines#well-documented (point 6)\n\nAlso missing \"Introduced in API ...\"",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "568f15f2_077cf784",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "What does this actually mean? It seems like there are some assumptions made about how the crash handlers are implemented. Those need to be documented.",
+      "range": {
+        "startLine": 40,
+        "startChar": 3,
+        "endLine": 40,
+        "endChar": 42
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b1649af_405589e1",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "the result\n\nProbably worth a \"See AMemtagCrashInfo_getSize...\" (IDEs aren\u0027t going to show anything more than the docs for this function, so that\u0027s a very helpful hint if the developer isn\u0027t looking at the header or online API docs)",
+      "range": {
+        "startLine": 40,
+        "startChar": 8,
+        "endLine": 40,
+        "endChar": 12
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "411e7d95_71e15fb5",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "Needs `__INTRODUCED_IN` tag.",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af70f0a2_9cd4f667",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "Same comments as above for all API docs.",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5816d115_7fe739f1",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "const? (same comment for all the pointer arguments below, none of these APIs look like they mutate)",
+      "range": {
+        "startLine": 47,
+        "startChar": 32,
+        "endLine": 47,
+        "endChar": 48
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b85d168_2bf7cd0e",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "to this. (or just delete \"this\")",
+      "range": {
+        "startLine": 50,
+        "startChar": 63,
+        "endLine": 50,
+        "endChar": 67
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d126c13a_c500866f",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "\"memory-safety violation\" (or however you want to phrase it, but that\u0027s what you\u0027ve used elsewhere)",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 37
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c825811_472d13ba",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-02T01:27:47Z",
+      "side": 1,
+      "message": "... the memory involved in the memory-safety violation.",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
