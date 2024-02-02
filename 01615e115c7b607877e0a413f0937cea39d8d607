@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "46070710_751ae3c9",
+        "filename": "fs_mgr/libdm/include/libdm/dm_target.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1827690
+      },
+      "writtenOn": "2024-02-02T04:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abb993d3_c4cded8d",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 121,
+        "endChar": 105
+      },
+      "revId": "01615e115c7b607877e0a413f0937cea39d8d607",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dab06c85_5a614c85",
@@ -54,6 +78,30 @@
       "writtenOn": "2024-02-01T16:20:57Z",
       "side": 1,
       "message": "here too",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 120
+      },
+      "revId": "01615e115c7b607877e0a413f0937cea39d8d607",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2987e55_b06d694c",
+        "filename": "fs_mgr/libdm/include/libdm/dm_target.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1827690
+      },
+      "writtenOn": "2024-02-02T04:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab06c85_5a614c85",
       "range": {
         "startLine": 123,
         "startChar": 0,
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "96fae7d8_12809e36",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1827690
+      },
+      "writtenOn": "2024-02-02T04:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8716d228_3b79267a",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 108
+      },
+      "revId": "01615e115c7b607877e0a413f0937cea39d8d607",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ec644114_75cd6e82",
@@ -100,6 +172,30 @@
       "writtenOn": "2024-02-01T16:20:57Z",
       "side": 1,
       "message": "here too",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 121
+      },
+      "revId": "01615e115c7b607877e0a413f0937cea39d8d607",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47c6aff9_1890a3fd",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1827690
+      },
+      "writtenOn": "2024-02-02T04:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec644114_75cd6e82",
       "range": {
         "startLine": 130,
         "startChar": 0,
