@@ -46,6 +46,30 @@
       },
       "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c4322c1_fdf168ed",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2024-02-02T07:50:13Z",
+      "side": 1,
+      "message": "This library exists to get around the mainline bootstrap namespace problem where libraries (libstatssocket) that are shipped from apexes cannot be linked by bootstrap processes. As long as the call comes from a process started from the regular namespace, it should work. It will fail if it comes from a bootstrap process. I\u0027ve communicated this to Kenn as well.\n\nIf you would like to add a helper to check availability, feel free to send a cl and I can review.",
+      "parentUuid": "9b35e852_072fc18a",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 23
+      },
+      "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
