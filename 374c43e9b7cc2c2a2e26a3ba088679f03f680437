@@ -118,6 +118,30 @@
       },
       "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "918c80fc_5672b32d",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-02T18:01:04Z",
+      "side": 1,
+      "message": "Thanks Tej for confirmation. (I\u0027m still a bit worried about the second part though ;-))\n\nKenn, can you do this as a follow-up? Or, I can do it next week. (back in Korea)",
+      "parentUuid": "aaafa1d1_a89a4c92",
+      "range": {
+        "startLine": 92,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 23
+      },
+      "revId": "374c43e9b7cc2c2a2e26a3ba088679f03f680437",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
