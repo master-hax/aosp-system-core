@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "46689602_589f3c23",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-03T00:15:55Z",
+      "side": 1,
+      "message": "well, i think the opposite transformation makes more sense --- basically fix http://b/155462331 \"FR: crash metadata: a buffer attached to a tombstone in case of a crash\". that solves a general problem we\u0027ve had for years and will have for years, without us getting involved in such a niche api as this that\u0027s mostly not applicable, and has a questionable future.\n\ni guess the other strong argument for changes here would be \"and it makes gwp-asan [or whatever] simpler too\"... some argument that we\u0027re reducing rather than creating tech debt.",
+      "parentUuid": "296c81be_0b16d50f",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2e720f7d_8272e644",
         "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
         "patchSetId": 27
