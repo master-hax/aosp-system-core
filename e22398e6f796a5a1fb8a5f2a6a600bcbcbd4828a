@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b6f28da_bf2c0333",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e720f7d_8272e644",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24c0334e_ad049352",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-02-02T01:27:47Z",
       "side": 1,
       "message": "go/android-ndk-api-guidelines#naming (point 2)",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80c3edac_18eb2f58",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24c0334e_ad049352",
       "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -88,6 +124,48 @@
       "writtenOn": "2024-02-02T01:27:47Z",
       "side": 1,
       "message": "API doc comments need to be doxygen formatted: go/android-ndk-api-guidelines#well-documented (point 6)\n\nAlso missing \"Introduced in API ...\"",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c371b3ac_2d6a9388",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad7ec40a_98794696",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9eb358e_66e21a2e",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b2339eb_87114cb4",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 39,
+        "endChar": 36
+      },
       "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -138,6 +216,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4581b47c_adde0182",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "568f15f2_077cf784",
+      "range": {
+        "startLine": 40,
+        "startChar": 3,
+        "endLine": 40,
+        "endChar": 42
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "955f980b_29072e9c",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b1649af_405589e1",
+      "range": {
+        "startLine": 40,
+        "startChar": 8,
+        "endLine": 40,
+        "endChar": 12
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "411e7d95_71e15fb5",
@@ -151,6 +277,24 @@
       "writtenOn": "2024-02-02T01:27:47Z",
       "side": 1,
       "message": "Needs `__INTRODUCED_IN` tag.",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2dd017a0_c21edf2c",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "411e7d95_71e15fb5",
       "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -172,6 +316,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "10b2b2f7_2664e046",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af70f0a2_9cd4f667",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5816d115_7fe739f1",
@@ -185,6 +347,30 @@
       "writtenOn": "2024-02-02T01:27:47Z",
       "side": 1,
       "message": "const? (same comment for all the pointer arguments below, none of these APIs look like they mutate)",
+      "range": {
+        "startLine": 47,
+        "startChar": 32,
+        "endLine": 47,
+        "endChar": 48
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffc36c0b_0caa7b49",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5816d115_7fe739f1",
       "range": {
         "startLine": 47,
         "startChar": 32,
@@ -218,6 +404,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "23f40b04_3f2e1cd8",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b85d168_2bf7cd0e",
+      "range": {
+        "startLine": 50,
+        "startChar": 63,
+        "endLine": 50,
+        "endChar": 67
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d126c13a_c500866f",
@@ -241,6 +451,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d92fec96_b18e041b",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d126c13a_c500866f",
+      "range": {
+        "startLine": 60,
+        "startChar": 24,
+        "endLine": 60,
+        "endChar": 37
+      },
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c825811_472d13ba",
@@ -254,6 +488,24 @@
       "writtenOn": "2024-02-02T01:27:47Z",
       "side": 1,
       "message": "... the memory involved in the memory-safety violation.",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fabca42_69a7cbb5",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 27
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-03T00:15:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c825811_472d13ba",
       "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
