@@ -16,6 +16,41 @@
       "message": "Have you tried running debuggerd on a MTE enabled device that has a media.swcodec process? I ask because that process doesn\u0027t use the crash_dump policy for an unknown reason. I tried fixing it (include the debuggerd policy directly), so I should get back to that at some point.",
       "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4c279ff_f493d0e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-02-06T23:43:58Z",
+      "side": 1,
+      "message": "Indeed, that does not work.\n```\n5291  socket(AF_UNIX, SOCK_SEQPACKET|SOCK_CLOEXEC, 0) \u003d 14\n5291  setsockopt(14, SOL_SOCKET, SO_SNDTIMEO, \"\\5\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\", 16) \u003d 0\n5291  setsockopt(14, SOL_SOCKET, SO_RCVTIMEO, \"\\5\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\", 16) \u003d 0\n5291  connect(14, {sa_family\u003dAF_UNIX, sun_path\u003d\"/dev/socket/logdr\"}, 110) \u003d 0\n5291  write(14, \"dumpAndClose lids\u003d3 tail\u003d500 pid\"..., 37) \u003d 37\n5291  recvfrom(14, \"\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\", 5120, 0, NULL, NULL) \u003d 14\n5291  --- SIGSYS {si_signo\u003dSIGSYS, si_code\u003dSYS_SECCOMP, si_call_addr\u003d0x76fbcaaac8, si_syscall\u003d__NR_recvfrom, si_arch\u003dAUDIT_ARCH_AARCH64} ---\n5295  \u003c... ioctl resumed\u003e \u003cunfinished ...\u003e) \u003d ?\n5294  \u003c... ioctl resumed\u003e \u003cunfinished ...\u003e) \u003d ?\n5293  \u003c... ioctl resumed\u003e \u003cunfinished ...\u003e) \u003d ?\n5292  \u003c... ioctl resumed\u003e \u003cunfinished ...\u003e) \u003d ?\n5295  +++ killed by SIGSYS +++\n5294  +++ killed by SIGSYS +++\n5293  +++ killed by SIGSYS +++\n5292  +++ killed by SIGSYS +++\n5291  +++ killed by SIGSYS +++\n```",
+      "parentUuid": "1674402f_7d4e8c60",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bf2c731_8acd099f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-02-06T23:43:58Z",
+      "side": 1,
+      "message": "This comment is kind of obvious (\"we untag these pointers because they might be tagged :)\"), but I\u0027ll leave it up to the maintainers",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
