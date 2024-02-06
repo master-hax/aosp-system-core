@@ -1,0 +1,209 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36eb7689_f153c7f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 28
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "+cferris/chiahungduan: enh suggested that we should check with you in case this might impact scudo at all",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe0e83be_779d2e3e",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "Check that this actually shows up on the group docs properly with http://ac/development/tools/ndk/build_ndk_docs.py. Reading the doxygen docs, I think the body of the docs needs to follow the `@defgroup` but precede `@{`, but I\u0027m not sure.",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d11201ff_021b9b50",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "This isn\u0027t actually something the caller does, right? This is implicit in `fork`? If so, I\u0027d just remove this. To me it reads like there\u0027s some other step that I don\u0027t understand.\n\nOr is it redundant with the next bullet? In which case also just remove.",
+      "range": {
+        "startLine": 24,
+        "startChar": 45,
+        "endLine": 25,
+        "endChar": 38
+      },
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3be20449_993854e7",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "Is this actually used on the host?",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "254ac54f_7ad97fc1",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "Is this truly \"we\u0027ve got no idea at all\", or can we document some hints here? Does this mean maybe out of bounds, maybe UAF, but we can\u0027t determine which it is? Or does this mean neither of those, but some other error that we can\u0027t diagnose?\n\nIf it\u0027s entirely unknown then this is fine as-is, but if we can give any sort of info to the user about what sort of problems unknown covers, we should do that.",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a2fddef_9b16e12a",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "As discussed yesterday, should add another function to detect whether the API is at all useable for the running process.",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f846b573_41d13346",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "I think this isn\u0027t actually safe? Multiple threads might concurrently segfault, and I don\u0027t think there\u0027s a good way to synchronize those calls (I\u0027m a noob at this though, so maybe that\u0027s wrong)",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d838914_d53f97e5",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "Error behaviors should be documented (for all APIs). You can omit \"if you pass null for this non-null thing, it aborts\", but anything less obvious than that should be documented.\n\nFor this specific API, the obvious failure case here would be passing an address that was not actually involved with a fault. What happens in that case? The return is `_Nullable`. Under what conditions will it return nullptr?",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "573c92e6_d0458779",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "Missing `\\return` (in all of them)\n\nI know it\u0027s sometimes clear from the narrative docs and for some of the APIs it\u0027s going to look damn redundant, but the `\\return` is what makes doxygen and IDEs present it in a scannable format.",
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8b107e4_e6530db8",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "All parameters need `\\param`",
+      "range": {
+        "startLine": 92,
+        "startChar": 46,
+        "endLine": 92,
+        "endChar": 78
+      },
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f45be32_f220e04c",
+        "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1043845
+      },
+      "writtenOn": "2024-02-06T23:06:18Z",
+      "side": 1,
+      "message": "The docs above say this might contain embedded nulls. Don\u0027t you need a size argument? (and shouldn\u0027t this be `uint8_t` rather than `char`?)",
+      "range": {
+        "startLine": 115,
+        "startChar": 66,
+        "endLine": 115,
+        "endChar": 86
+      },
+      "revId": "63932f0e80aa2dad1293ff28665ec020d8d662db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
