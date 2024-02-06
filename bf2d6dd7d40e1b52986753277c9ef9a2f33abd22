@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1674402f_7d4e8c60",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-06T21:47:50Z",
+      "side": 1,
+      "message": "Have you tried running debuggerd on a MTE enabled device that has a media.swcodec process? I ask because that process doesn\u0027t use the crash_dump policy for an unknown reason. I tried fixing it (include the debuggerd policy directly), so I should get back to that at some point.",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
