@@ -101,7 +101,7 @@ bool CowWriterBase::AddCopy(uint64_t new_block, uint64_t old_block, uint64_t num
 }
 
 bool CowWriterBase::AddRawBlocks(uint64_t new_block_start, const void* data, size_t size) {
-    if (size % options_.block_size != 0) {
+    if (int(size) == 0 || size % options_.block_size != 0) {
         LOG(ERROR) << "AddRawBlocks: size " << size << " is not a multiple of "
                    << options_.block_size;
         return false;
