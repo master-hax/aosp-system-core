@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b3fd032_7e8e08da",
+        "filename": "fs_mgr/libdm/include/libdm/dm_target.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-06T18:54:27Z",
+      "side": 1,
+      "message": "It still looks like clang-format maybe didn\u0027t run? There are hard tabs here instead of spaces.",
+      "revId": "21a491665572228b9515fec4563da4a9f04399ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae5ea454_dfa8bf8f",
+        "filename": "fs_mgr/tools/dmctl.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-06T18:54:27Z",
+      "side": 1,
+      "message": "Here and below too.",
+      "revId": "21a491665572228b9515fec4563da4a9f04399ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
