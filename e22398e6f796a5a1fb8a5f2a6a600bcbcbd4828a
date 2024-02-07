@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ac63b585_504241d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-07T22:16:33Z",
+      "side": 1,
+      "message": "\u003e As one final question, have you tested this on a jemalloc based system? We don\u0027t require partners use Scudo, and some aren\u0027t.\n\nThis won\u0027t work out of the box in jemalloc, of course; but jemalloc also doesn\u0027t support MTE out of the box. If anyone teaches jemalloc about MTE, they will also have to implement this API.",
+      "parentUuid": "5e131a94_7116b40c",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2e720f7d_8272e644",
         "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
         "patchSetId": 27
