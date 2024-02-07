@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "4e8cd5d9_d929d345",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121894
+      },
+      "writtenOn": "2024-02-07T04:29:28Z",
+      "side": 1,
+      "message": "Thanks for the heads up. This requires a new fastboot binary deployment right?\n\nIf so, feel free to file a bug for me so we can look at deploying this, or if you feel this needs some testing pre-release, let me know as well.",
+      "parentUuid": "14e0f711_fa09507d",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "5aa49987_12298782",
         "filename": "fastboot/usb_linux.cpp",
         "patchSetId": 1
