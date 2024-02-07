@@ -51,6 +51,24 @@
       "message": "Curious, why can\u0027t this be done through io_uring..\n\nFrom the flow here, we could probably push the commands to the SQE and reap them later ?\n\nI guess the problem here is the ioctl support which io_uring doesn\u0027t have native support yet.",
       "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7557710_2eb00afc",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-02-07T20:41:20Z",
+      "side": 1,
+      "message": "Yes, I don\u0027t think io_uring has support for ioctl ops yet, but the existing ioctl-based interface is a bit awkward so I\u0027m not sure it is the right way to go. I think it would be better to extend usbfs so it can support normal read/write syscalls for bulk endpoints (for example, with an ioctl to open an fd for an endpoint) without the existing limits on buffer size. And at that point we wouldn\u0027t really need asynchronous I/O here, we could just do a normal write or even a copy_file_range from the image file and let the kernel handle the I/O in the most efficient way.\n\nEven if that were implemented in the kernel, rolling it out to users would take time so a fallback path would be needed in any case.",
+      "parentUuid": "5aa49987_12298782",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
