@@ -87,6 +87,24 @@
       "parentUuid": "c7557710_2eb00afc",
       "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87399d24_398b099f",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-02-07T21:31:12Z",
+      "side": 1,
+      "message": "I don\u0027t think it would work. As far as I can tell IORING_OP_URING_CMD triggers a call to a uring_cmd callback on the file_operations, which is separate from the ioctl callback.\n\nBut even if there were an ioctl op I wouldn\u0027t expect it to help much. In this case io_uring can be used to reduce syscall entry/exit overhead, but if the overhead has been moved to being in parallel with waiting for I/O (which I believe is what this CL does), it won\u0027t affect the speed of the transfer.",
+      "parentUuid": "4eb2b63e_ac97e90d",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
