@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c07aa843_52a9edb3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-07T22:27:56Z",
+      "side": 1,
+      "message": "I was reading this as \"get the [partial] tombstone without actually crashing to get MTE crash information\"",
+      "parentUuid": "b3666004_2321f21c",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2e720f7d_8272e644",
         "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
         "patchSetId": 27
