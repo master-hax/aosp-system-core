@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14e0f711_fa09507d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-07T03:41:22Z",
+      "side": 1,
+      "message": "This looks good to me, and thanks for doing this!\n\n+Julien for visibility. Since fastboot is a fairly critical infrastructure tool, and USB is not known to always play nicely, I think EngProd should be aware of this change and maybe run it through the ringer.",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
