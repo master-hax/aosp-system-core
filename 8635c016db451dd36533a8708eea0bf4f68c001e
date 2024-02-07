@@ -69,6 +69,24 @@
       "parentUuid": "5aa49987_12298782",
       "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eb2b63e_ac97e90d",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-07T21:06:27Z",
+      "side": 1,
+      "message": "I think this is possible by using IORING_OP_URING_CMD wherein `sqe-\u003ecmd_op` would embed the ioctl payload and `sqe-\u003eopcode` would point to USBDEVFS_SUBMITURB. \n\nNVMe passthrough has a similar example here: https://github.com/axboe/liburing/blob/master/test/io_uring_passthrough.c#L133\n\nHowever, I am not sure if all of this complexity is required here..",
+      "parentUuid": "c7557710_2eb00afc",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
