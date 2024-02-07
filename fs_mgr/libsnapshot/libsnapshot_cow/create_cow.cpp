@@ -71,6 +71,8 @@ class CreateSnapshot {
 
     const int kNumThreads = 6;
     const size_t kBlockSizeToRead = 1_MiB;
+    const size_t compression_factor_ = 64_KiB;
+    size_t replace_ops = 0, copy_ops = 0, zero_ops = 0, in_place_ops = 0;
 
     std::unordered_map<std::string, int> source_block_hash_;
     std::mutex source_block_hash_lock_;
@@ -83,6 +85,11 @@ class CreateSnapshot {
     std::string compression_ = "lz4";
     unique_fd fd_;
 
+    std::vector<uint64_t> zero_blocks_;
+    std::vector<uint64_t> replace_blocks_;
+    std::unordered_map<uint64_t, uint64_t> copy_blocks_;
+    std::vector<std::pair<uint64_t, uint64_t>> merge_sequence_;
+
     const int BLOCK_SZ = 4_KiB;
     void SHA256(const void* data, size_t length, uint8_t out[32]);
     bool IsBlockAligned(uint64_t read_size) { return ((read_size & (BLOCK_SZ - 1)) == 0); }
@@ -93,7 +100,9 @@ class CreateSnapshot {
     bool FindSourceBlockHash();
     bool PrepareParse(std::string& parsing_file, const bool createSnapshot);
     bool ParsePartition();
-    bool WriteSnapshot(const void* buffer, uint64_t block, std::string& block_hash);
+    void PrepareMergeBlocks(const void* buffer, uint64_t block, std::string& block_hash);
+    bool WriteV3Snapshots();
+    int PrepareWrite(int* pending_ops, size_t start_index);
 };
 
 void CreateSnapshotLogger(android::base::LogId, android::base::LogSeverity severity, const char*,
@@ -126,13 +135,6 @@ bool CreateSnapshot::PrepareParse(std::string& parsing_file, const bool createSn
 
         zblock_ = std::make_unique<uint8_t[]>(BLOCK_SZ);
         std::memset(zblock_.get(), 0, BLOCK_SZ);
-
-        CowOptions options;
-        options.compression = compression_;
-        options.num_compress_threads = 2;
-        options.batch_write = true;
-        options.cluster_ops = 600;
-        writer_ = CreateCowWriter(2, options, std::move(fd_));
     }
     return true;
 }
@@ -187,19 +189,136 @@ std::string CreateSnapshot::ToHexString(const uint8_t* buf, size_t len) {
     return out;
 }
 
-bool CreateSnapshot::WriteSnapshot(const void* buffer, uint64_t block, std::string& block_hash) {
+void CreateSnapshot::PrepareMergeBlocks(const void* buffer, uint64_t block,
+                                        std::string& block_hash) {
     if (std::memcmp(zblock_.get(), buffer, BLOCK_SZ) == 0) {
         std::lock_guard<std::mutex> lock(write_lock_);
-        return writer_->AddZeroBlocks(block, 1);
+        zero_blocks_.push_back(block);
+        return;
     }
 
     auto iter = source_block_hash_.find(block_hash);
     if (iter != source_block_hash_.end()) {
         std::lock_guard<std::mutex> lock(write_lock_);
-        return writer_->AddCopy(block, iter->second, 1);
+        // In-place copy is skipped
+        if (block != iter->second) {
+            copy_blocks_[block] = iter->second;
+        } else {
+            in_place_ops += 1;
+        }
+        return;
     }
     std::lock_guard<std::mutex> lock(write_lock_);
-    return writer_->AddRawBlocks(block, buffer, BLOCK_SZ);
+    replace_blocks_.push_back(block);
+}
+
+int CreateSnapshot::PrepareWrite(int* pending_ops, size_t start_index) {
+    int num_ops = *pending_ops;
+    uint64_t start_block = replace_blocks_[start_index];
+    int nr_consecutive = 1;
+    num_ops -= 1;
+    while (num_ops) {
+        uint64_t next_block = replace_blocks_[start_index + nr_consecutive];
+        if (next_block != start_block + nr_consecutive) {
+            break;
+        }
+        nr_consecutive += 1;
+        num_ops -= 1;
+    }
+    return nr_consecutive;
+}
+
+bool CreateSnapshot::WriteV3Snapshots() {
+    unique_fd fd(TEMP_FAILURE_RETRY(open(parsing_file_.c_str(), O_RDONLY)));
+    if (fd < 0) {
+        LOG(ERROR) << "open failed: " << parsing_file_;
+        return false;
+    }
+    uint64_t dev_sz = lseek(fd.get(), 0, SEEK_END);
+    CowOptions options;
+    options.compression = compression_;
+    options.num_compress_threads = 2;
+    options.batch_write = true;
+    options.cluster_ops = 600;
+    options.compression_factor = compression_factor_;
+    options.max_blocks = {dev_sz / options.block_size};
+    writer_ = CreateCowWriter(3, options, std::move(fd_));
+
+    uint64_t overwritten = 0;
+    std::unordered_map<uint64_t, uint64_t> overwritten_blocks;
+    for (auto it = copy_blocks_.begin(); it != copy_blocks_.end(); it++) {
+        if (overwritten_blocks.count(it->second)) {
+            overwritten += 1;
+            replace_blocks_.push_back(it->first);
+            continue;
+        }
+        overwritten_blocks[it->first] = it->second;
+        merge_sequence_.emplace_back(std::make_pair(it->first, it->second));
+    }
+    copy_ops = merge_sequence_.size();
+    for (auto it = merge_sequence_.begin(); it != merge_sequence_.end(); it++) {
+        if (!writer_->AddCopy(it->first, it->second, 1)) {
+            return false;
+        }
+    }
+
+    zero_ops = zero_blocks_.size();
+    for (auto it = zero_blocks_.begin(); it != zero_blocks_.end(); it++) {
+        if (!writer_->AddZeroBlocks(*it, 1)) {
+            return false;
+        }
+    }
+
+    std::sort(replace_blocks_.begin(), replace_blocks_.end());
+    auto buffer = std::make_unique<uint8_t[]>(compression_factor_);
+
+    replace_ops = replace_blocks_.size();
+    size_t blocks_to_compress = replace_blocks_.size();
+    int num_ops = 0;
+    size_t block_index = 0;
+    while (blocks_to_compress) {
+        num_ops = std::min((compression_factor_ / BLOCK_SZ), blocks_to_compress);
+        int linear_blocks = PrepareWrite(&num_ops, block_index);
+        if (!android::base::ReadFullyAtOffset(fd, buffer.get(), (linear_blocks * BLOCK_SZ),
+                                              replace_blocks_[block_index] * BLOCK_SZ)) {
+            LOG(ERROR) << "Failed to read at offset: " << replace_blocks_[block_index] * BLOCK_SZ
+                       << " size: " << linear_blocks * BLOCK_SZ;
+            return false;
+        }
+        if (!writer_->AddRawBlocks(replace_blocks_[block_index], buffer.get(),
+                                   linear_blocks * BLOCK_SZ)) {
+            LOG(ERROR) << "AddRawBlocks failed";
+            return false;
+        }
+
+        block_index += linear_blocks;
+        blocks_to_compress -= linear_blocks;
+    }
+    if (!writer_->Finalize()) {
+        return false;
+    }
+    LOG(INFO) << "In-place: " << in_place_ops << " Zero: " << zero_ops
+              << " Replace: " << replace_ops << " copy: " << copy_ops
+              << " overwritten-blocks: " << overwritten;
+
+    unique_fd read_fd;
+    read_fd.reset(open(patch_file_.c_str(), O_RDONLY));
+    if (read_fd < 0) {
+        PLOG(ERROR) << "Failed to open the snapshot-patch file: " << patch_file_;
+        return false;
+    }
+    CowReader reader;
+    if (!reader.Parse(read_fd)) {
+        LOG(ERROR) << "Parse failed";
+        return false;
+    }
+
+    if (!reader.VerifyMergeOps()) {
+        LOG(ERROR) << "MergeOps Order is wrong";
+        return false;
+    }
+
+    return true;
 }
 
 bool CreateSnapshot::ReadBlocks(off_t offset, const int skip_blocks, const uint64_t dev_sz) {
@@ -241,10 +360,7 @@ bool CreateSnapshot::ReadBlocks(off_t offset, const int skip_blocks, const uint6
             std::string hash = ToHexString(checksum, sizeof(checksum));
 
             if (create_snapshot_patch_) {
-                if (!WriteSnapshot(bufptr, blkindex, hash)) {
-                    LOG(ERROR) << "WriteSnapshot failed for block: " << blkindex;
-                    return false;
-                }
+                PrepareMergeBlocks(bufptr, blkindex, hash);
             } else {
                 std::lock_guard<std::mutex> lock(source_block_hash_lock_);
                 {
@@ -306,8 +422,8 @@ bool CreateSnapshot::ParsePartition() {
         ret = t.get() && ret;
     }
 
-    if (ret && create_snapshot_patch_ && !writer_->Finalize()) {
-        LOG(ERROR) << "Finzalize failed";
+    if (ret && create_snapshot_patch_ && !WriteV3Snapshots()) {
+        LOG(ERROR) << "Snapshot Write failed";
         return false;
     }
 
