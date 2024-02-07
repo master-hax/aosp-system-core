@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5e131a94_7116b40c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-07T22:14:36Z",
+      "side": 1,
+      "message": "I really don\u0027t like this. It\u0027s moving some of this into a first class API. What happens if we want to change any of the data structures that were internal and are now owned by bionic and maybe exposed in the ndk?\n\nThis is a lot of code churn to expose this very particular api. Do you have any people who want this data? I saw the bug and design doc, but is this a build it and someone will come? Or do you have a partner in mind?\n\nI think we\u0027ve talked about some method of exposing the tomstone proto as the best way to really handle this kind of thing. However, even maybe exposing part of the proto might be a better way since we can version it without hard-coding a data structure.\n\nAs one final question, have you tested this on a jemalloc based system? We don\u0027t require partners use Scudo, and some aren\u0027t.",
+      "parentUuid": "46689602_589f3c23",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2e720f7d_8272e644",
         "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
         "patchSetId": 27
