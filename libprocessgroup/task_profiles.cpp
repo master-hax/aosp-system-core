@@ -489,7 +489,7 @@ WriteFileAction::WriteFileAction(const std::string& task_path, const std::string
 }
 
 bool WriteFileAction::WriteValueToFile(const std::string& value_, ResourceCacheType cache_type,
-                                       uid_t uid, int pid, bool logfailures) const {
+                                       int uid, int pid, bool logfailures) const {
     std::string value(value_);
 
     value = StringReplace(value, "<uid>", std::to_string(uid), true);
