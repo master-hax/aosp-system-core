@@ -16,6 +16,29 @@
       "message": "elsk: any thoughts/background on this? (otherwise ps3 does seem less implausible than ps1 did...)",
       "revId": "2479db395b3d57ccb7c890c9dc08cfe8777c427f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "480bbe27_34deac8f",
+        "filename": "bootstat/bootstat.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1082,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-02-07T00:59:51Z",
+      "side": 1,
+      "message": "nit:\n\n```\n(void)addKernelPanicSubReason(...)\n```\n\nto explicitly discard the return boolean\n\n```suggestion\n      (void)addKernelPanicSubReason(console, ret);\n```",
+      "range": {
+        "startLine": 1082,
+        "startChar": 6,
+        "endLine": 1082,
+        "endChar": 29
+      },
+      "revId": "2479db395b3d57ccb7c890c9dc08cfe8777c427f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
