@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "76970d2f_0e18137b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 27
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-07T22:20:53Z",
+      "side": 1,
+      "message": "Sent too early..\n\n\u003e What happens if we want to change any of the data structures that were internal and are now owned by bionic and maybe exposed in the ndk?\n\nThe data structures aren\u0027t actually exposed in the NDK, only wrappers around them with opaque accessors.\n\n\n\u003e Do you have any people who want this data? \n\nYes. I forwarded you a relevant email.\n\n\u003e we\u0027ve talked about some method of exposing the tomstone proto \n\nI don\u0027t recall this, but this will require any users of this API to link in protocol buffers, and the tombstone pb.",
+      "parentUuid": "ac63b585_504241d7",
+      "revId": "e22398e6f796a5a1fb8a5f2a6a600bcbcbd4828a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2e720f7d_8272e644",
         "filename": "debuggerd/libdebuggerd/include/ndk/android/memtag-error.h",
         "patchSetId": 27
