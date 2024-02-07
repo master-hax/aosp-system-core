@@ -16,6 +16,23 @@
       "message": "This looks good to me, and thanks for doing this!\n\n+Julien for visibility. Since fastboot is a fairly critical infrastructure tool, and USB is not known to always play nicely, I think EngProd should be aware of this change and maybe run it through the ringer.",
       "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aa49987_12298782",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-07T04:02:34Z",
+      "side": 1,
+      "message": "Curious, why can\u0027t this be done through io_uring..\n\nFrom the flow here, we could probably push the commands to the SQE and reap them later ?\n\nI guess the problem here is the ioctl support which io_uring doesn\u0027t have native support yet.",
+      "revId": "8635c016db451dd36533a8708eea0bf4f68c001e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
