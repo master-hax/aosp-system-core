@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fefd3b28_8f877b49",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-02-08T01:00:12Z",
+      "side": 1,
+      "message": "there\u0027s android::base::Trim",
+      "range": {
+        "startLine": 272,
+        "startChar": 12,
+        "endLine": 272,
+        "endChar": 14
+      },
+      "revId": "28f4807dd3f0c1e9ddaf517122c97fe84e6ff1b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
