@@ -52,6 +52,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d35e2414_d3323ad5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000835
+      },
+      "writtenOn": "2024-02-08T08:54:12Z",
+      "side": 1,
+      "message": "IIRC we had decided that instead we\u0027d prefer to keep the UID the same and add an API that allows the app to specify a tag that is exempt from restrictions?",
+      "revId": "2781a2050b1b31c13fea9d370844c536bc49121d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b299b944_8c4b9082",
