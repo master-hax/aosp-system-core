@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21f81509_f794eb3d",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "+cferris generally, but in particular because i don\u0027t remember why we stopped bumping the version. (we should probably add a comment?)",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a047de99_3cea0d3d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "(\"%m\" is more convenient and will probably save you having to wrap)",
+      "range": {
+        "startLine": 262,
+        "startChar": 91,
+        "endLine": 263,
+        "endChar": 43
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e112baf_8c18bc5b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "read the name first, so you can use it in the error?",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8c6af2b_bf22f6ad",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "include the name?",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4c1c482_0b8a2c02",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "what does that do for binary?",
+      "range": {
+        "startLine": 473,
+        "startChar": 21,
+        "endLine": 473,
+        "endChar": 32
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc026b0e_543db030",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T20:31:27Z",
+      "side": 1,
+      "message": "not `bytes`?",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
