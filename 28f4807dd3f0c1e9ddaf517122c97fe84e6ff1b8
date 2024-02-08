@@ -22,6 +22,30 @@
       },
       "revId": "28f4807dd3f0c1e9ddaf517122c97fe84e6ff1b8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe2fb72b_f00d9ac1",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 2001322
+      },
+      "writtenOn": "2024-02-08T01:08:18Z",
+      "side": 1,
+      "message": "I thought about using a `Trim` method but I decided against it just in case there is some weird corner case. Maybe a device interface name does start with a space or end with a space (I\u0027m not sure if that\u0027s even possible). Since I did not take time to do the research to figure it out, I stuck with the safe case of removing 1 newline character.",
+      "parentUuid": "fefd3b28_8f877b49",
+      "range": {
+        "startLine": 272,
+        "startChar": 12,
+        "endLine": 272,
+        "endChar": 14
+      },
+      "revId": "28f4807dd3f0c1e9ddaf517122c97fe84e6ff1b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
