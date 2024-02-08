@@ -425,6 +425,19 @@ static void print_memory_maps(CallbackType callback, const Tombstone& tombstone)
   }
 }
 
+static std::string ToHex(const char* data, size_t size) {
+  std::string hex(2 * size + 1, 'x');
+  for (size_t i = 0; i < size; ++i) {
+    // snprintf prints 3 characters, the two hex digits and a null byte. As we
+    // write left to right, we keep overwriting the nullbytes, except for the
+    // last call to snprintf.
+    snprintf(&(hex[2 * i]), 3, "%02hhx", data[i]);
+  }
+  // Remove the trailing nullbyte produced by the last snprintf.
+  hex.resize(2 * size);
+  return hex;
+}
+
 static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
                               const Thread& thread) {
   print_thread_header(callback, tombstone, thread, true);
@@ -466,6 +479,22 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
 
   if (!tombstone.abort_message().empty()) {
     CBL("Abort message: '%s'", tombstone.abort_message().c_str());
+  }
+
+  for (const auto& crash_detail : tombstone.crash_detail()) {
+    switch (crash_detail.data_case()) {
+      case CrashDetail::kStringData:
+        CBL("Extra crash detail: %s: '%s'", crash_detail.name().c_str(),
+            crash_detail.string_data().c_str());
+        break;
+      case CrashDetail::kBytesData: {
+        std::string as_hex =
+            ToHex(crash_detail.bytes_data().c_str(), crash_detail.bytes_data().size());
+        CBL("Extra crash detail HEX: %s: '%s'", crash_detail.name().c_str(), as_hex.c_str());
+      } break;
+      case CrashDetail::DATA_NOT_SET:
+        break;
+    }
   }
 
   print_thread_registers(callback, tombstone, thread, true);
