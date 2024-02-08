@@ -16,6 +16,24 @@
       "message": "After this change, e2fsdroid can not be compiled in macos. Is that expected?",
       "revId": "94ccdc06d0bb9725441c7340a2d1606bb32fa303",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4959763e_a5158edc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-08T18:32:49Z",
+      "side": 1,
+      "message": "in the sense of \"that\u0027s not something we support\", yes. only host tools that are used by Studio/app developers are supported on macOS.",
+      "parentUuid": "ffdbfe18_04b9822e",
+      "revId": "94ccdc06d0bb9725441c7340a2d1606bb32fa303",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
