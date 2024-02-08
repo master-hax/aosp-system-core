@@ -1,0 +1,129 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a62a9e16_5c601b5c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "These are missing _ suffixes",
+      "range": {
+        "startLine": 75,
+        "startChar": 11,
+        "endLine": 75,
+        "endChar": 22
+      },
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "564f3bdd_fb3981cc",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "\"PrepareMergeBlock\" since it only operates on one at a time.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6708803_1b66e155",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "unsigned int, here and for pending_ops and nr_consecutive",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e33e010_b08cdecf",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "This function is pretty difficult to read and could do with some better factoring. Here, for example, we\u0027re modifying some shared state but also building a temporary structure. The shared state doesn\u0027t seem to be used outside of this function. It looks like it could be pulled out as a helper and some of the member variables made into locals.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bed5f2ba_19f7c631",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "Why does it have to be sorted? (Add a comment). Also consider moving closer to where replace_blocks_ construction is finished.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87b8c558_12f63f28",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "std::string buffer(compression_factor_);",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3b04e42_92d35cb9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-08T19:31:52Z",
+      "side": 1,
+      "message": "Move this into the constructor of read_fd.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
