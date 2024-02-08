@@ -939,6 +939,171 @@ TEST_F(CrasherTest, abort_message) {
   ASSERT_MATCH(result, R"(Abort message: 'x{4045}')");
 }
 
+static char g_crash_detail_value_changes[] = "crash_detail_value";
+static char g_crash_detail_value[] = "crash_detail_value";
+static char g_crash_detail_value2[] = "crash_detail_value2";
+
+inline ACrashDetail* ACrashDetail_registerFromCStrs(const char* name, const char* data) {
+  return ACrashDetail_register(name, strlen(name), data, strlen(data));
+}
+
+TEST(tombstoned, crash_detail_return_value) {
+  const char data[] = "hello";
+  ACrashDetail* cd = ACrashDetail_registerFromCStrs("hello", data);
+  EXPECT_EQ(ACrashDetail_unregister(cd), data);
+}
+
+TEST_F(CrasherTest, crash_detail_single) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME", g_crash_detail_value);
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME: 'crash_detail_value')");
+}
+
+TEST_F(CrasherTest, crash_detail_single_bytes) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    ACrashDetail_register("CRASH_DETAIL_NAME", strlen("CRASH_DETAIL_NAME"), "\1", sizeof("\1"));
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME: '\\1\\0')");
+}
+
+TEST_F(CrasherTest, crash_detail_mixed) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    const char data[] = "helloworld\1\255\3";
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME", data);
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME: 'helloworld\\1\\255\\3')");
+}
+
+TEST_F(CrasherTest, crash_detail_many) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    for (int i = 0; i < 1000; ++i) {
+      std::string name = "CRASH_DETAIL_NAME" + std::to_string(i);
+      std::string value = "CRASH_DETAIL_VALUE" + std::to_string(i);
+      auto* h = ACrashDetail_registerFromCStrs(name.data(), value.data());
+      ACrashDetail_unregister(h);
+    }
+
+    ACrashDetail_registerFromCStrs("FINAL_NAME", "FINAL_VALUE");
+    ACrashDetail_registerFromCStrs("FINAL_NAME2", "FINAL_VALUE2");
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_NOT_MATCH(result, "CRASH_DETAIL_NAME");
+  ASSERT_NOT_MATCH(result, "CRASH_DETAIL_VALUE");
+  ASSERT_MATCH(result, R"(FINAL_NAME: 'FINAL_VALUE')");
+  ASSERT_MATCH(result, R"(FINAL_NAME2: 'FINAL_VALUE2')");
+}
+
+TEST_F(CrasherTest, crash_detail_single_changes) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME", g_crash_detail_value_changes);
+    g_crash_detail_value_changes[0] = 'C';
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME: 'Crash_detail_value')");
+}
+
+TEST_F(CrasherTest, crash_detail_multiple) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME", g_crash_detail_value);
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME2", g_crash_detail_value2);
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME: 'crash_detail_value')");
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME2: 'crash_detail_value2')");
+}
+
+TEST_F(CrasherTest, crash_detail_remove) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    auto* detail1 = ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME", g_crash_detail_value);
+    ACrashDetail_unregister(detail1);
+    ACrashDetail_registerFromCStrs("CRASH_DETAIL_NAME2", g_crash_detail_value2);
+    abort();
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_NOT_MATCH(result, R"(CRASH_DETAIL_NAME: 'crash_detail_value')");
+  ASSERT_MATCH(result, R"(CRASH_DETAIL_NAME2: 'crash_detail_value2')");
+}
+
 TEST_F(CrasherTest, abort_message_newline_trimmed) {
   int intercept_result;
   unique_fd output_fd;
