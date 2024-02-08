@@ -468,6 +468,11 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
     CBL("Abort message: '%s'", tombstone.abort_message().c_str());
   }
 
+  for (const auto& crash_detail : tombstone.crash_detail()) {
+    CBL("Extra crash detail: %s: '%s'", crash_detail.name().c_str(),
+        crash_detail.string_data().c_str());
+  }
+
   print_thread_registers(callback, tombstone, thread, true);
   if (is_async_mte_crash) {
     CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
