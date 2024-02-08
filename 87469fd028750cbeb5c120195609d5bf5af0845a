@@ -200,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5043e8ae_b4a5592d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:13:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76687c14_e5429c0b",
+      "range": {
+        "startLine": 473,
+        "startChar": 21,
+        "endLine": 473,
+        "endChar": 32
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cc026b0e_543db030",
@@ -261,6 +285,30 @@
       "side": 1,
       "message": "(sorry, didn\u0027t upload that yet. jumped the gun on submitting that)",
       "parentUuid": "af8f2320_9b103ea3",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d63a0a65_97bbb343",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:13:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2eca35c5_e62db4fd",
       "range": {
         "startLine": 21,
         "startChar": 4,
