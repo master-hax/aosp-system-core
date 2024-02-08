@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f89672f_bd240e27",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "It\u0027s in a comment in another file, for dynamic linking the versions always match so we don\u0027t need to bump. I can add the comment here too in a separate CL to keep this contained.",
+      "parentUuid": "21f81509_f794eb3d",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a047de99_3cea0d3d",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-02-08T20:31:27Z",
       "side": 1,
       "message": "(\"%m\" is more convenient and will probably save you having to wrap)",
+      "range": {
+        "startLine": 262,
+        "startChar": 91,
+        "endLine": 263,
+        "endChar": 43
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00432f5b_e1187351",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a047de99_3cea0d3d",
       "range": {
         "startLine": 262,
         "startChar": 91,
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6582c785_16ad46b6",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "This was actually a leftover, sorry about that. This is not an error condition, because this will happen if the crash detail is removed.",
+      "parentUuid": "4e112baf_8c18bc5b",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b8c6af2b_bf22f6ad",
@@ -71,6 +131,24 @@
       "writtenOn": "2024-02-08T20:31:27Z",
       "side": 1,
       "message": "include the name?",
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f9d4b02_2e41a63a",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8c6af2b_bf22f6ad",
       "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -100,6 +178,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "76687c14_e5429c0b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "I thought about this too, right now, nothing good. I was planning to add support for that in a follow up, but i\u0027ll just do it here.",
+      "parentUuid": "e4c1c482_0b8a2c02",
+      "range": {
+        "startLine": 473,
+        "startChar": 21,
+        "endLine": 473,
+        "endChar": 32
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cc026b0e_543db030",
         "filename": "debuggerd/proto/tombstone.proto",
         "patchSetId": 2
@@ -111,6 +213,30 @@
       "writtenOn": "2024-02-08T20:31:27Z",
       "side": 1,
       "message": "not `bytes`?",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "87469fd028750cbeb5c120195609d5bf5af0845a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af8f2320_9b103ea3",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-08T22:08:51Z",
+      "side": 1,
+      "message": "Allowed the user to choose.",
+      "parentUuid": "cc026b0e_543db030",
       "range": {
         "startLine": 21,
         "startChar": 4,
