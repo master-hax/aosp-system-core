@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b9d8050e_ece11ef8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2024-02-09T16:46:31Z",
+      "side": 1,
+      "message": "Is this what you\u0027re talking about? Seems to work for me (w/ stack MTE) on a synced build from yesterday.\n\nEither way, is that relevant to this patch and blocking, or is that unrelated?\n\n```\n$ adb shell debuggerd `adb shell pidof media.swcodec` | head -n30 | clip\n*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\nBuild fingerprint: \u0027google/husky_fullmte/husky:VanillaIceCream/MAIN/eng.mitchp.20240208.170118:eng/dev-keys\u0027\nRevision: \u0027PROTO1.1\u0027\nABI: \u0027arm64\u0027\nTimestamp: 2024-02-09 17:51:27.086598318+0100\nProcess uptime: 3729s\nCmdline: media.swcodec oid.media.swcodec/bin/mediaswcodec\npid: 1577, tid: 1577, name: binder:1577_2  \u003e\u003e\u003e media.swcodec \u003c\u003c\u003c\nuid: 1046\ntagged_addr_ctrl: 000000000007fff3 (PR_TAGGED_ADDR_ENABLE, PR_MTE_TCF_SYNC, mask 0xfffe)\npac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY)\nsignal 0 (\u003cdebuggerd signal\u003e), code -1 (SI_QUEUE from pid 11336, uid 0), fault addr --------\n    x0  fffffffffffffffc  x1  00000000c0306201  x2  0d00007fed97b530  x3  0400007fed97b400\n    x4  0400007fed97b470  x5  0000000000000004  x6  2e00000000000000  x7  000000000000002e\n    x8  000000000000001d  x9  0000007fed97b4e8  x10 0000007fed97b4b0  x11 0000007fed97b4e8\n    x12 0000007fed97b510  x13 0000000000000030  x14 05000072a1b26f50  x15 0000000078ae5f39\n    x16 00000074a65792d0  x17 00000074adce6ad0  x18 00000074b096c000  x19 00000074afe21f80\n    x20 0c000073a1b2fa28  x21 0c00007fed97b560  x22 0b00007fed97b510  x23 0d00007fed97b530\n    x24 0c000073a1b2faa0  x25 00000000fffffffc  x26 00000000fffffff7  x27 00000074afe21f80\n    x28 0000000000000000  x29 0000007fed97b4f0\n    lr  00000074adce6b70  sp  0000007fed97b410  pc  00000074add38018  pst 0000000080001000\n\n8 total frames\nbacktrace:\n      #00 pc 00000000000c2018  /apex/com.android.runtime/lib64/bionic/libc.so (__ioctl+8) (BuildId: 8fff6fac238bdf311b14e03a5f38d3f3)\n      #01 pc 0000000000070b6c  /apex/com.android.runtime/lib64/bionic/libc.so (ioctl+156) (BuildId: 8fff6fac238bdf311b14e03a5f38d3f3)\n      #02 pc 00000000000574f8  /system/lib64/libbinder.so (android::IPCThreadState::talkWithDriver(bool)+312) (BuildId: f372032bf005d6b01b7805c3a8353263)\n      #03 pc 0000000000057858  /system/lib64/libbinder.so (android::IPCThreadState::getAndExecuteCommand()+24) (BuildId: f372032bf005d6b01b7805c3a8353263)\n      #04 pc 00000000000582d0  /system/lib64/libbinder.so (android::IPCThreadState::joinThreadPool(bool)+112) (BuildId: f372032bf005d6b01b7805c3a8353263)\n      #05 pc 0000000000007b18  /apex/com.android.media.swcodec/lib64/libmedia_codecserviceregistrant.so (RegisterCodecServices.cfi+4808) (BuildId: d6991a4278a659f355c1f33e6475cef5)\n```",
+      "parentUuid": "b4c279ff_f493d0e5",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1bf2c731_8acd099f",
         "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
         "patchSetId": 1
