@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b75c00b_09223bbe",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-02-09T07:00:28Z",
+      "side": 1,
+      "message": "Aside: We need to replace the `{ ... }` syntax with `std::span( ... )` temporarily to work around a bug in the pre-standardized std::span in external/libcxx, which uses a ptrdiff_t size (signed) instead of the finalized size_t size (unsigned). This code needs to compile with both the old libc++ and the new one, until b/175635923 is finished.\n\nThe `{ ... }` syntax rejects the size_t -\u003e ptrdiff_t coercion because it could truncate values, but the `std::span( ... )` allows the coercion.",
+      "revId": "361d57e77b3904654d90ee4ee753204e684742b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
