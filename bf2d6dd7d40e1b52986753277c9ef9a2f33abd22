@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "291cc82e_7ae5efab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-09T20:04:47Z",
+      "side": 1,
+      "message": "Sorry, I should have indicate how to fix this. You have to modify:\n\n  frameworks/av/services/mediacodec/seccomp_policy/mediaswcodec-arm64.policy\n\nTo add the policy changes because it does not include the debuggerd policy directly.\n\nI\u0027m not why it worked in one case and not the other though.",
+      "parentUuid": "b9d8050e_ece11ef8",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1bf2c731_8acd099f",
         "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
         "patchSetId": 1
