@@ -16,6 +16,23 @@
       "message": "this isn\u0027t the right way to do it... take a look at previous changes that added new data to the tombstone (probably easiest to start with the history of system/core/debuggerd/proto/tombstone.proto).",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6ed5aff_366ec689",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-02-09T23:45:01Z",
+      "side": 1,
+      "message": "oooh - I didn\u0027t realize it got switched to proto (though I should have because I reviewed some of those changes...)\n\nSiim - maybe you can suggest something here as well as help answer how we measure perf overhead here? 😄",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
