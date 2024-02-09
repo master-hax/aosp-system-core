@@ -108,6 +108,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "18eafa70_8bc8bf9e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-09T21:21:11Z",
+      "side": 1,
+      "message": "I do have a cl up for it, but it was hard to fight the number of comments I got.\n\nThe main problem is that sepolicy parsing isn\u0027t the best, so you have to remove things that should be present because it can only exist in one place (mostly the mmap rules). But that leads to issues because it looks like the media policy is wrong.\n\nSee cl:\n\nhttps://android-review.git.corp.google.com/c/platform/frameworks/av/+/2588005\n\nI\u0027ll revive it and push to get it submitted.",
+      "parentUuid": "01a79452_1417faf4",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bf2c731_8acd099f",
