@@ -30,13 +30,14 @@ cc_test {
         "liblog",
         "libtrusty",
         "libbinder",
+        "libbinder_ndk_vendor",
         "libbinder_trusty",
         "libutils",
 
         // AIDL interface deps versions, please refer to below link
         // https://source.android.com/docs/core/architecture/aidl/stable-aidl#module-naming-rules
-        "android.frameworks.stats-V1-cpp",
-        "android.trusty.stats.nw.setter-cpp",
+        "android.frameworks.stats-V1-ndk_vendor",
+        "android.trusty.stats.nw.setter-ndk_vendor",
     ],
     cflags: [
         "-Wall",
