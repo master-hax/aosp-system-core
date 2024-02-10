@@ -25,15 +25,15 @@ aidl_interface {
     ],
     imports: ["android.frameworks.stats-V1"],
     backend: {
-        cpp: {
-            enabled: true,
-        },
         java: {
             enabled: false,
             platform_apis: false,
         },
         ndk: {
             enabled: false,
+        },
+        ndk_vendor: {
+            enabled: true,
         },
     },
 }

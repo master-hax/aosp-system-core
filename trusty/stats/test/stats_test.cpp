@@ -28,12 +28,13 @@
 #include <cstddef>
 #include <mutex>
 #include <queue>
+#include <string_view>
 
+#include <aidl/android/frameworks/stats/BnStats.h>
+#include <aidl/android/frameworks/stats/IStats.h>
+#include <aidl/android/trusty/stats/nw/setter/IStatsSetter.h>
 #include <android-base/expected.h>
 #include <android-base/logging.h>
-#include <android/frameworks/stats/BnStats.h>
-#include <android/frameworks/stats/IStats.h>
-#include <android/trusty/stats/nw/setter/IStatsSetter.h>
 #include <binder/RpcServer.h>
 #include <binder/RpcSession.h>
 #include <binder/RpcTransportRaw.h>
@@ -50,13 +51,14 @@
  * adb -s emulator-5554 shell \
  *       /data/nativetest64/vendor/trusty_stats_test/trusty_stats_test
  */
+using ::aidl::android::frameworks::stats::BnStats;
+using ::aidl::android::frameworks::stats::IStats;
+using ::aidl::android::frameworks::stats::VendorAtom;
+using ::aidl::android::frameworks::stats::VendorAtomValue;
+using ::aidl::android::trusty::stats::nw::setter::IStatsSetter;
 using ::android::base::unique_fd;
-using ::android::binder::Status;
-using ::android::frameworks::stats::BnStats;
-using ::android::frameworks::stats::IStats;
-using ::android::frameworks::stats::VendorAtom;
-using ::android::frameworks::stats::VendorAtomValue;
-using ::android::trusty::stats::nw::setter::IStatsSetter;
+
+using std::string_view_literals::operator""sv;
 
 constexpr const char kTrustyDefaultDeviceName[] = "/dev/trusty-ipc-dev0";
 constexpr const char kTrustyStatsSetterTest[] =
@@ -87,13 +89,13 @@ class Stats : public BnStats {
   public:
     Stats() : BnStats() {}
 
-    Status reportVendorAtom(const VendorAtom& vendorAtom) override {
+    ::ndk::ScopedAStatus reportVendorAtom(const VendorAtom& vendorAtom) override {
         const char* atomIdStr = vendorAtomStr(vendorAtom.atomId);
         ALOGD("Vendor atom reported of type: %s\n", atomIdStr);
         std::lock_guard lock(mLock);
         mQueueVendorAtom.push(vendorAtom);
         mCondVar.notify_one();
-        return Status::ok();
+        return ::ndk::ScopedAStatus::ok();
     }
 
     status_t getVendorAtom(VendorAtom* pVendorAtom, int64_t waitForMs) {
@@ -140,7 +142,7 @@ class TrustyStatsTestBase : public ::testing::Test {
         // extra thread. android::sp<::android::RpcServer> server =
         // ::android::RpcServer::make(::android::RpcTransportCtxFactoryRaw::make());
 
-        mStats = android::sp<Stats>::make();
+        mStats = ndk::SharedRefBase::make<Stats>();
         // Increasing number of incoming threads on mSession to be able to receive
         // callbacks
         auto session_initializer = [](sp<RpcSession>& session) {
@@ -152,9 +154,9 @@ class TrustyStatsTestBase : public ::testing::Test {
                 kTrustyDefaultDeviceName, mPortNameStatsSetter.c_str(), session_initializer);
         ASSERT_TRUE(mSession);
 
-        auto root = mSession->getRootObject();
-        ASSERT_TRUE(root);
-        auto statsSetter = IStatsSetter::asInterface(root);
+        auto root = RpcTrustyGetRootObject(mSession);
+        ASSERT_TRUE(root.get());
+        auto statsSetter = IStatsSetter::fromBinder(root);
         ASSERT_TRUE(statsSetter);
         statsSetter->setInterface(mStats);
     }
@@ -173,7 +175,7 @@ class TrustyStatsTestBase : public ::testing::Test {
             ASSERT_TRUE(mSession->shutdownAndWait(true));
         }
         mSession.clear();
-        mStats.clear();
+        mStats.reset();
     }
     void StartPortTest() {
         // connect to unitest app
@@ -212,7 +214,7 @@ class TrustyStatsTestBase : public ::testing::Test {
         ASSERT_EQ(pRxBuf[0], TEST_PASSED);
     }
 
-    android::sp<Stats> mStats;
+    std::shared_ptr<Stats> mStats;
 
   private:
     android::sp<RpcSession> mSession;
@@ -252,20 +254,20 @@ TEST_F(TrustyStatsTest, CheckAtoms) {
                     ::testing::AnyOf(::testing::Eq(TrustyAtoms::TrustyAppCrashed),
                                      ::testing::Eq(TrustyAtoms::TrustyError),
                                      ::testing::Eq(TrustyAtoms::TrustyStorageError)));
-        ASSERT_EQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
+        ASSERT_EQ(vendorAtom.reverseDomainName, "google.android.trusty");
         switch (vendorAtom.atomId) {
             case TrustyAtoms::TrustyAppCrashed:
                 ++atomAppCrashedCnt;
-                ASSERT_EQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
-                          "5247d19b-cf09-4272-a450-3ef20dbefc14");
+                ASSERT_EQ(vendorAtom.values[0].get<VendorAtomValue::stringValue>(),
+                          "5247d19b-cf09-4272-a450-3ef20dbefc14\0"sv);
                 break;
             case TrustyAtoms::TrustyStorageError:
                 ++atomStorageErrorCnt;
                 ASSERT_EQ(vendorAtom.values[0].get<VendorAtomValue::intValue>(), 5);
-                ASSERT_EQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()),
-                          "5247d19b-cf09-4272-a450-3ef20dbefc14");
-                ASSERT_EQ(String8(vendorAtom.values[2].get<VendorAtomValue::stringValue>()),
-                          "5247d19b-cf09-4272-a450-3ef20dbefc14");
+                ASSERT_EQ(vendorAtom.values[1].get<VendorAtomValue::stringValue>(),
+                          "5247d19b-cf09-4272-a450-3ef20dbefc14\0"sv);
+                ASSERT_EQ(vendorAtom.values[2].get<VendorAtomValue::stringValue>(),
+                          "5247d19b-cf09-4272-a450-3ef20dbefc14\0"sv);
                 ASSERT_EQ(vendorAtom.values[3].get<VendorAtomValue::intValue>(), 1);
                 ASSERT_EQ(vendorAtom.values[4].get<VendorAtomValue::intValue>(), 3);
                 ASSERT_EQ(vendorAtom.values[5].get<VendorAtomValue::longValue>(),
@@ -330,12 +332,12 @@ TEST_F(TrustyMetricsCrashTest, CheckTrustyCrashAtoms) {
                     ::testing::AnyOf(::testing::Eq(TrustyAtoms::TrustyAppCrashed),
                                      ::testing::Eq(TrustyAtoms::TrustyError),
                                      ::testing::Eq(TrustyAtoms::TrustyStorageError)));
-        ASSERT_EQ(String8(vendorAtom.reverseDomainName), "google.android.trusty");
+        ASSERT_EQ(vendorAtom.reverseDomainName, "google.android.trusty");
 
         switch (vendorAtom.atomId) {
             case TrustyAtoms::TrustyAppCrashed:
                 ++atomAppCrashedCnt;
-                ASSERT_EQ(String8(vendorAtom.values[0].get<VendorAtomValue::stringValue>()),
+                ASSERT_EQ(vendorAtom.values[0].get<VendorAtomValue::stringValue>(),
                           kTrustyCrasherUuid);
                 atomCrashReasons.push_back(vendorAtom.values[1].get<VendorAtomValue::intValue>());
                 break;
@@ -344,7 +346,7 @@ TEST_F(TrustyMetricsCrashTest, CheckTrustyCrashAtoms) {
                 break;
             case TrustyAtoms::TrustyError:
                 ++atomTrustyErrorCnt;
-                ASSERT_EQ(String8(vendorAtom.values[1].get<VendorAtomValue::stringValue>()), "");
+                ASSERT_EQ(vendorAtom.values[1].get<VendorAtomValue::stringValue>(), "");
                 break;
             default:
                 FAIL() << "Unknown vendor atom ID: " << vendorAtom.atomId;
