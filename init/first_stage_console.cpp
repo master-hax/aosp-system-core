@@ -16,6 +16,7 @@
 
 #include "first_stage_console.h"
 
+#include <spawn.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
@@ -65,25 +66,26 @@ static bool SetupConsole() {
     return true;
 }
 
-static void RunScript() {
-    LOG(INFO) << "Attempting to run /first_stage.sh...";
-    pid_t pid = fork();
-    if (pid != 0) {
-        wait(NULL);
-        LOG(INFO) << "/first_stage.sh exited";
-        return;
-    }
-    const char* path = "/system/bin/sh";
-    const char* args[] = {path, "/first_stage.sh", nullptr};
-    int rv = execv(path, const_cast<char**>(args));
-    LOG(ERROR) << "unable to execv /first_stage.sh, returned " << rv << " errno " << errno;
-    _exit(127);
+static int SpawnImage(const char* file, pid_t* pid) {
+    int err;
+    const char* argv[] = {file, NULL};
+    const char* envp[] = {NULL};
+
+    char* const* argvp = const_cast<char* const*>(argv);
+    char* const* envpp = const_cast<char* const*>(envp);
+
+    err = posix_spawn(pid, argv[0], NULL, NULL, argvp, envpp);
+
+    if (err) LOG(ERROR) << "Failed to spawn '" << file << "': " << err;
+
+    return err;
 }
 
 namespace android {
 namespace init {
 
 void StartConsole(const std::string& cmdline) {
+    int err;
     bool console = KernelConsolePresent(cmdline);
     // Use a simple sigchld handler -- first_stage_console doesn't need to track or log zombies
     const struct sigaction chld_act {
@@ -99,12 +101,17 @@ void StartConsole(const std::string& cmdline) {
     }
 
     if (console) console = SetupConsole();
-    RunScript();
+
+    LOG(INFO) << "Attempting to run /first_stage.sh...";
+    err = SpawnImage("/first_stage.sh", &pid);
+    if (!err) {
+        wait(NULL);
+        LOG(INFO) << "/first_stage.sh exited";
+    }
+
     if (console) {
-        const char* path = "/system/bin/sh";
-        const char* args[] = {path, nullptr};
-        int rv = execv(path, const_cast<char**>(args));
-        LOG(ERROR) << "unable to execv, returned " << rv << " errno " << errno;
+        err = SpawnImage("/system/bin/sh", &pid);
+        if (!err) wait(NULL);
     }
     _exit(127);
 }
