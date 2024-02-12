@@ -51,6 +51,24 @@
       "parentUuid": "8a4056d7_5cbfa44b",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6a3c357_5b55cdcb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-02-12T21:02:57Z",
+      "side": 1,
+      "message": "It looks like we could also add text output to `dump_process_header` in `libdebuggerd/backtrace.cpp` for the ANR because `backtrace \u003d\u003d true` [here.](https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/core/debuggerd/crash_dump.cpp;drc\u003de8fcfee409a3d23027fefef540155e41f84c98a6;l\u003d652)\n\nBut neither of these cases are hit when `DumpType` is `kDebuggerdJavaBacktrace`. Right now we mostly care about servicemanager, so maybe that\u0027s ok but I\u0027m not sure.",
+      "parentUuid": "02fa893b_da91e40b",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
