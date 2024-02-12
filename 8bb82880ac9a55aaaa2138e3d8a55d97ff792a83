@@ -33,6 +33,24 @@
       "message": "oooh - I didn\u0027t realize it got switched to proto (though I should have because I reviewed some of those changes...)\n\nSiim - maybe you can suggest something here as well as help answer how we measure perf overhead here? 😄",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02fa893b_da91e40b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-02-12T20:22:49Z",
+      "side": 1,
+      "message": "From aosp/1948841, aosp/2025823, and aosp/1612831 it looks like we add a field to `tombstone.proto` which gets filled out in `tombstone_proto.cpp` in `engrave_tombstone_proto`.\n\nBut `engrave_tombstone_proto` never gets called during `adb shell am hang`. Should I be testing the ANR in a different way? Is there some other place I need add this info to in addition to the `engrave_tombstone_proto`?",
+      "parentUuid": "8a4056d7_5cbfa44b",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
