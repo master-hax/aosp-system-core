@@ -29,6 +29,8 @@
 
 using android::base::unique_fd;
 
+const size_t kPageSize = getpagesize();
+
 void TestCreateRegion(size_t size, unique_fd &fd, int prot) {
     fd = unique_fd(ashmem_create_region(nullptr, size));
     ASSERT_TRUE(fd >= 0);
@@ -68,7 +70,7 @@ void FillData(uint8_t* data, size_t dataLen) {
 }
 
 TEST(AshmemTest, BasicTest) {
-    constexpr size_t size = PAGE_SIZE;
+    constexpr size_t size = kPageSize;
     uint8_t data[size];
     FillData(data, size);
 
@@ -90,7 +92,7 @@ TEST(AshmemTest, BasicTest) {
 }
 
 TEST(AshmemTest, ForkTest) {
-    constexpr size_t size = PAGE_SIZE;
+    constexpr size_t size = ;
     uint8_t data[size];
     FillData(data, size);
 
@@ -134,9 +136,9 @@ TEST(AshmemTest, FileOperationsTest) {
     void* region = nullptr;
 
     // Allocate a 4-page buffer, but leave page-sized holes on either side
-    constexpr size_t size = PAGE_SIZE * 4;
-    constexpr size_t dataSize = PAGE_SIZE * 2;
-    constexpr size_t holeSize = PAGE_SIZE;
+    constexpr size_t size = kPageSize * 4;
+    constexpr size_t dataSize = kPageSize * 2;
+    constexpr size_t holeSize = kPageSize;
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ | PROT_WRITE));
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, dataSize, PROT_READ | PROT_WRITE, &region, holeSize));
 
@@ -189,7 +191,7 @@ TEST(AshmemTest, FileOperationsTest) {
 
 TEST(AshmemTest, ProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    constexpr size_t size = kPageSize;
     void *region;
 
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ));
@@ -217,7 +219,7 @@ TEST(AshmemTest, ProtTest) {
 
 TEST(AshmemTest, ForkProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    constexpr size_t size = kPageSize;
 
     int protFlags[] = { PROT_READ, PROT_WRITE };
     for (size_t i = 0; i < arraysize(protFlags); i++) {
@@ -238,7 +240,7 @@ TEST(AshmemTest, ForkProtTest) {
 }
 
 TEST(AshmemTest, ForkMultiRegionTest) {
-    constexpr size_t size = PAGE_SIZE;
+    constexpr size_t size = kPageSize;
     uint8_t data[size];
     FillData(data, size);
 
