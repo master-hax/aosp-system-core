@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9bf191fd_a0b9ca01",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 444,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-12T19:23:43Z",
+      "side": 1,
+      "message": "asserts are no-ops. CHECK() or delete.\n\n(and i think you just want the operator bool(), no?)",
+      "revId": "60f1ba1c5d7051520326af180e0cac19ecd881aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
