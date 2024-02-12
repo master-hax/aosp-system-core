@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bbde0b48_10b33fda",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-12T18:08:12Z",
+      "side": 1,
+      "message": "memset isn\u0027t needed on make_unique btw",
+      "revId": "e5bc36900eb9f7704a022c8f476377ff5295d3c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
