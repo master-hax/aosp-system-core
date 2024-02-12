@@ -126,6 +126,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8db4880_c1dcf315",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2024-02-12T15:23:29Z",
+      "side": 1,
+      "message": "mprotect/mmap in that sepolicy is different: `mprotect: arg2 in ~PROT_EXEC || arg2 in ~PROT_WRITE`.\n\nThat doesn\u0027t need touching by us, `PROT_MTE | PROT_WRITE | PROT_READ` fulfills that condition (`arg2 in ~PROT_EXEC`). We should never map the stack as executable :).",
+      "parentUuid": "291cc82e_7ae5efab",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bf2c731_8acd099f",
@@ -139,6 +157,24 @@
       "writtenOn": "2024-02-06T23:43:58Z",
       "side": 1,
       "message": "This comment is kind of obvious (\"we untag these pointers because they might be tagged :)\"), but I\u0027ll leave it up to the maintainers",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e794367_5a8ba658",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2024-02-12T15:23:29Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1bf2c731_8acd099f",
       "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
