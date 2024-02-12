@@ -25,6 +25,7 @@
 
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
@@ -65,19 +66,27 @@ static bool SetupConsole() {
     return true;
 }
 
-static void RunScript() {
-    LOG(INFO) << "Attempting to run /first_stage.sh...";
-    pid_t pid = fork();
-    if (pid != 0) {
-        wait(NULL);
-        LOG(INFO) << "/first_stage.sh exited";
-        return;
-    }
-    const char* path = "/system/bin/sh";
-    const char* args[] = {path, "/first_stage.sh", nullptr};
-    int rv = execv(path, const_cast<char**>(args));
-    LOG(ERROR) << "unable to execv /first_stage.sh, returned " << rv << " errno " << errno;
-    _exit(127);
+[[noreturn]] static void ExecShell(const std::vector<std::string>& args) {
+    constexpr char shell[] = "/system/bin/sh";
+
+    std::vector<const char*> cmd = {shell};
+    for (auto const& arg : args) cmd.push_back(arg.c_str());
+    cmd.push_back(nullptr);
+
+    // POSIX guarantees that execv() won't modify the strings so this is safe.
+    auto execv_arg = const_cast<char**>(cmd.data());
+
+    execv(shell, execv_arg);
+
+    // execv() only returns if an error has occurred.
+
+    std::string args_str = "";
+    for (auto const& arg : args) args_str += ", \"" + arg + "\"";
+
+    PLOG(FATAL) << "execv(\"" << shell << '"' << args_str << ") failed";
+
+    // This is UB but required until FATAL gets properly marked [[noreturn]].
+    __builtin_unreachable();
 }
 
 namespace android {
@@ -91,6 +100,7 @@ void StartConsole(const std::string& cmdline) {
     };
 
     sigaction(SIGCHLD, &chld_act, nullptr);
+
     pid_t pid = fork();
     if (pid != 0) {
         wait(NULL);
@@ -99,13 +109,17 @@ void StartConsole(const std::string& cmdline) {
     }
 
     if (console) console = SetupConsole();
-    RunScript();
-    if (console) {
-        const char* path = "/system/bin/sh";
-        const char* args[] = {path, nullptr};
-        int rv = execv(path, const_cast<char**>(args));
-        LOG(ERROR) << "unable to execv, returned " << rv << " errno " << errno;
-    }
+
+    LOG(INFO) << "Attempting to run /first_stage.sh...";
+
+    pid = fork();
+    if (pid == 0) ExecShell({"/first_stage.sh"});
+    wait(NULL);
+
+    LOG(INFO) << "/first_stage.sh exited";
+
+    if (console) ExecShell({});
+
     _exit(127);
 }
 
