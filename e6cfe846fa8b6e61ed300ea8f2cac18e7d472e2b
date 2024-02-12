@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "74202bc4_c9da5df0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a62a9e16_5c601b5c",
+      "range": {
+        "startLine": 75,
+        "startChar": 11,
+        "endLine": 75,
+        "endChar": 22
+      },
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "564f3bdd_fb3981cc",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-02-08T19:31:52Z",
       "side": 1,
       "message": "\"PrepareMergeBlock\" since it only operates on one at a time.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75bab9a0_9c725267",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "564f3bdd_fb3981cc",
       "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -58,6 +100,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b601fe0f_528c4a88",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6708803_1b66e155",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e33e010_b08cdecf",
@@ -71,6 +131,24 @@
       "writtenOn": "2024-02-08T19:31:52Z",
       "side": 1,
       "message": "This function is pretty difficult to read and could do with some better factoring. Here, for example, we\u0027re modifying some shared state but also building a temporary structure. The shared state doesn\u0027t seem to be used outside of this function. It looks like it could be pulled out as a helper and some of the member variables made into locals.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6cd9d029_f6a5bba0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Refactored the code.",
+      "parentUuid": "8e33e010_b08cdecf",
       "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -92,6 +170,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da6b9a91_0bbee1c1",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bed5f2ba_19f7c631",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "87b8c558_12f63f28",
@@ -109,6 +205,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f41718e_403a5a4c",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87b8c558_12f63f28",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b3b04e42_92d35cb9",
@@ -122,6 +236,24 @@
       "writtenOn": "2024-02-08T19:31:52Z",
       "side": 1,
       "message": "Move this into the constructor of read_fd.",
+      "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "633bbd3a_c8066d4b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/create_cow.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-12T07:25:51Z",
+      "side": 1,
+      "message": "I have moved all of this to a isolated function.",
+      "parentUuid": "b3b04e42_92d35cb9",
       "revId": "e6cfe846fa8b6e61ed300ea8f2cac18e7d472e2b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
