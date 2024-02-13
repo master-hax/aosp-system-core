@@ -16,6 +16,24 @@
       "message": "nit: extra newline.  Maybe this is from a merge.",
       "revId": "ee598552c809bff167f36adc0099305751f863b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abd2f881_b702e0cc",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2024-02-13T18:10:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27418644_570067ea",
+      "revId": "ee598552c809bff167f36adc0099305751f863b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
