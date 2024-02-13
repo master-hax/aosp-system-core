@@ -29,6 +29,9 @@
 
 using android::base::unique_fd;
 
+const size_t kPageSize = getpagesize();
+constexpr size_t kMaxPageSize = 65536;
+
 void TestCreateRegion(size_t size, unique_fd &fd, int prot) {
     fd = unique_fd(ashmem_create_region(nullptr, size));
     ASSERT_TRUE(fd >= 0);
@@ -68,8 +71,8 @@ void FillData(uint8_t* data, size_t dataLen) {
 }
 
 TEST(AshmemTest, BasicTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = kPageSize;
+    uint8_t data[kMaxPageSize];
     FillData(data, size);
 
     unique_fd fd;
@@ -90,8 +93,8 @@ TEST(AshmemTest, BasicTest) {
 }
 
 TEST(AshmemTest, ForkTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = kPageSize;
+    uint8_t data[kMaxPageSize];
     FillData(data, size);
 
     unique_fd fd;
@@ -134,18 +137,18 @@ TEST(AshmemTest, FileOperationsTest) {
     void* region = nullptr;
 
     // Allocate a 4-page buffer, but leave page-sized holes on either side
-    constexpr size_t size = PAGE_SIZE * 4;
-    constexpr size_t dataSize = PAGE_SIZE * 2;
-    constexpr size_t holeSize = PAGE_SIZE;
+    const size_t size = kPageSize * 4;
+    const size_t dataSize = kPageSize * 2;
+    const size_t holeSize = kPageSize;
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ | PROT_WRITE));
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, dataSize, PROT_READ | PROT_WRITE, &region, holeSize));
 
-    uint8_t data[dataSize];
+    uint8_t data[2 * kMaxPageSize];
     FillData(data, dataSize);
     memcpy(region, data, dataSize);
 
-    constexpr off_t dataStart = holeSize;
-    constexpr off_t dataEnd = dataStart + dataSize;
+    const off_t dataStart = holeSize;
+    const off_t dataEnd = dataStart + dataSize;
 
     // The sequence of seeks below looks something like this:
     //
@@ -163,9 +166,12 @@ TEST(AshmemTest, FileOperationsTest) {
         // Expected lseek() return value
         off_t ret;
     } seeks[] = {
-        {99, SEEK_SET, 99},         {dataStart, SEEK_CUR, dataStart + 99},
-        {0, SEEK_DATA, dataStart},  {dataStart, SEEK_HOLE, dataEnd},
-        {-99, SEEK_END, size - 99}, {-dataStart, SEEK_CUR, dataEnd - 99},
+            {99, SEEK_SET, 99},
+            {dataStart, SEEK_CUR, dataStart + 99},
+            {0, SEEK_DATA, dataStart},
+            {dataStart, SEEK_HOLE, dataEnd},
+            {-99, SEEK_END, (off_t)size - 99},
+            {-dataStart, SEEK_CUR, dataEnd - 99},
     };
     for (const auto& cfg : seeks) {
         errno = 0;
@@ -189,7 +195,7 @@ TEST(AshmemTest, FileOperationsTest) {
 
 TEST(AshmemTest, ProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    const size_t size = kPageSize;
     void *region;
 
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ));
@@ -217,7 +223,7 @@ TEST(AshmemTest, ProtTest) {
 
 TEST(AshmemTest, ForkProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    const size_t size = kPageSize;
 
     int protFlags[] = { PROT_READ, PROT_WRITE };
     for (size_t i = 0; i < arraysize(protFlags); i++) {
@@ -238,8 +244,8 @@ TEST(AshmemTest, ForkProtTest) {
 }
 
 TEST(AshmemTest, ForkMultiRegionTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = kPageSize;
+    uint8_t data[kMaxPageSize];
     FillData(data, size);
 
     constexpr int nRegions = 16;
