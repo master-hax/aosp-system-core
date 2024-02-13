@@ -249,6 +249,24 @@
       "parentUuid": "2dcdd0aa_46f103a7",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ab2830d_74c3db5c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T19:17:40Z",
+      "side": 1,
+      "message": "it\u0027s the \"this is for ANRs, not crashes\" that makes me think you\u0027re in the wrong place... most of the ANR stuff (or bugreport stuff) is not from debuggerd. (a useful \"TL;DR\" is probably \"debuggerd stuff is the stuff that goes to 3p app developers via the Play console\".)\n\ni don\u0027t think there are any dumpstate docs (?), but you can look at the ANR code and frameworks/native/cmds/dumpstate/ --- it basically just runs arbitrary code (or shell commands; that\u0027s often the best way to factor things if your diagnostic is independently useful/interesting).",
+      "parentUuid": "38e67af9_1df9d6da",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
