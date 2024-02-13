@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ddd877d7_38e36c6d",
+        "filename": "libcutils/ashmem_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T16:48:18Z",
+      "side": 1,
+      "message": "no need for a new global, especially in a test.",
+      "revId": "44129a645c05caf62aca450d42e6e7bb6c9d9179",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d0e554e_cdc610f6",
+        "filename": "libcutils/ashmem_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T16:48:18Z",
+      "side": 1,
+      "message": "don\u0027t introduce a new concept we don\u0027t actually need. VLAs or std::vectors are fine.",
+      "revId": "44129a645c05caf62aca450d42e6e7bb6c9d9179",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
