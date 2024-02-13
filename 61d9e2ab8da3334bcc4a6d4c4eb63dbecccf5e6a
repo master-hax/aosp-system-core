@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "318fabf0_8a275e8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-13T22:54:21Z",
+      "side": 1,
+      "message": "Please make sure to add sepolicy for these directories (unless it\u0027s already there).",
+      "revId": "61d9e2ab8da3334bcc4a6d4c4eb63dbecccf5e6a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
