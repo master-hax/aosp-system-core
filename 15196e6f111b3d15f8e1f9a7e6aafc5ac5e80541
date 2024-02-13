@@ -115,6 +115,30 @@
       },
       "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c94f84af_943cf1a4",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 18
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-13T23:50:34Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "22ca31d4_98bd1486",
+      "range": {
+        "startLine": 18,
+        "startChar": 8,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
