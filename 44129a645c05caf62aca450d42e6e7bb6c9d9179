@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec300b66_e489b480",
+        "filename": "libcutils/ashmem_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1988540
+      },
+      "writtenOn": "2024-02-13T19:06:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ddd877d7_38e36c6d",
+      "revId": "44129a645c05caf62aca450d42e6e7bb6c9d9179",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4d0e554e_cdc610f6",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-02-13T16:48:18Z",
       "side": 1,
       "message": "don\u0027t introduce a new concept we don\u0027t actually need. VLAs or std::vectors are fine.",
+      "revId": "44129a645c05caf62aca450d42e6e7bb6c9d9179",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2887003_9d2eba43",
+        "filename": "libcutils/ashmem_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1988540
+      },
+      "writtenOn": "2024-02-13T19:06:44Z",
+      "side": 1,
+      "message": "Done.\n\nI was hesitant to use a vector initially because of all the memcpy, memset operations going on here, but realized that the array is not getting resized anywhere, so doesnt matter.",
+      "parentUuid": "4d0e554e_cdc610f6",
       "revId": "44129a645c05caf62aca450d42e6e7bb6c9d9179",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
