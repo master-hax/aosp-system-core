@@ -261,11 +261,11 @@ static void dump_crash_details(Tombstone* tombstone,
     struct crash_detail_page_t page;
     if (!process_memory->ReadFully(address, &page, sizeof(page))) {
       async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "failed to read crash detail page: %m");
+      break;
     }
     if (page.used > kNumCrashDetails) {
       async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "crash detail: page corrupted");
-      // corrupted page.
-      continue;
+      break;
     }
     for (size_t i = 0; i < page.used; ++i) {
       const crash_detail_t& crash_detail = page.crash_details[i];
