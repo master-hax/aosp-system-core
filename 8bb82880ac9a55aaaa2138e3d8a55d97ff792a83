@@ -303,6 +303,24 @@
       "parentUuid": "3ab2830d_74c3db5c",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b419b90_7213b2a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-13T20:35:42Z",
+      "side": 1,
+      "message": "I took a quick look at the bug, and the anr processing comes from art/runtime/runtime.cc, in the function Runtime::DumpForSigQuit.",
+      "parentUuid": "b5d1eb50_6acf7096",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
