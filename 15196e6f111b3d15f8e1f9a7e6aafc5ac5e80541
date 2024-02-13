@@ -22,6 +22,63 @@
       },
       "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62cd7108_41dfe6a5",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T23:32:51Z",
+      "side": 1,
+      "message": "missing `break` here?",
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7da6776_3e1144db",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T23:32:51Z",
+      "side": 1,
+      "message": "you just said that on the previous line?",
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22ca31d4_98bd1486",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 18
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-13T23:32:51Z",
+      "side": 1,
+      "message": "this should have a comment linking it to the public api. (but i\u0027m fine adding that after the api is in, in case the names/header change.)",
+      "range": {
+        "startLine": 18,
+        "startChar": 8,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
