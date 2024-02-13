@@ -123,6 +123,24 @@
       "parentUuid": "97cfd76d_e62e1431",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36d5f346_e3830b9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-02-13T17:01:29Z",
+      "side": 1,
+      "message": "Thanks Olivier! I\u0027ve got some before/after numbers with a snippet of the data in https://b.corp.google.com/issues/316970771#comment4\n\ntl;dr it increases the size of the ANR file generated with `adb shell am hang` by ~20%. If this is too much, we can reduce it to only what we know we want right now.\n\u003e Is it going to add any latency to the process dump?\n\nYes, it parses the `/dev/binderfs/binder_logs/state` file for each process that we are dumping.\n\nIs there a good way to measure this part to see if it\u0027s acceptable? I can get timestamps and check that way. `debuggerd_benchmark.cpp` seems to be only for debuggerd, not this kind of client call.",
+      "parentUuid": "c8a9eebe_1b8df5b6",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
