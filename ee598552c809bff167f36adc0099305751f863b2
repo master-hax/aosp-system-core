@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27418644_570067ea",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-02-13T18:08:51Z",
+      "side": 1,
+      "message": "nit: extra newline.  Maybe this is from a merge.",
+      "revId": "ee598552c809bff167f36adc0099305751f863b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
