@@ -41,6 +41,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "82f8e7b2_766f4e08",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-13T23:37:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62cd7108_41dfe6a5",
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f7da6776_3e1144db",
@@ -54,6 +72,24 @@
       "writtenOn": "2024-02-13T23:32:51Z",
       "side": 1,
       "message": "you just said that on the previous line?",
+      "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "169ece93_cb19d9ba",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-13T23:37:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7da6776_3e1144db",
       "revId": "15196e6f111b3d15f8e1f9a7e6aafc5ac5e80541",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
