@@ -231,6 +231,24 @@
       "parentUuid": "38e67af9_1df9d6da",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f40b9c87_a14fd58a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-02-13T18:55:31Z",
+      "side": 1,
+      "message": "We are interested in the files generated in `/data/anr/` and show up in APC like b/315272811. Those files don\u0027t currently have enough information to debug the problems with some blocked binder threads and we would like this new binder info for the processes that we are interested in during the ANR.",
+      "parentUuid": "2dcdd0aa_46f103a7",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
