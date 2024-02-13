@@ -68,8 +68,8 @@ void FillData(uint8_t* data, size_t dataLen) {
 }
 
 TEST(AshmemTest, BasicTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = getpagesize();
+    uint8_t* data = new uint8_t[size];
     FillData(data, size);
 
     unique_fd fd;
@@ -78,20 +78,20 @@ TEST(AshmemTest, BasicTest) {
     void* region1 = nullptr;
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ | PROT_WRITE, &region1));
 
-    memcpy(region1, &data, size);
-    ASSERT_EQ(0, memcmp(region1, &data, size));
+    memcpy(region1, data, size);
+    ASSERT_EQ(0, memcmp(region1, data, size));
 
     EXPECT_EQ(0, munmap(region1, size));
 
     void *region2;
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ, &region2));
-    ASSERT_EQ(0, memcmp(region2, &data, size));
+    ASSERT_EQ(0, memcmp(region2, data, size));
     EXPECT_EQ(0, munmap(region2, size));
 }
 
 TEST(AshmemTest, ForkTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = getpagesize();
+    uint8_t* data = new uint8_t[size];
     FillData(data, size);
 
     unique_fd fd;
@@ -100,8 +100,8 @@ TEST(AshmemTest, ForkTest) {
     void* region1 = nullptr;
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ | PROT_WRITE, &region1));
 
-    memcpy(region1, &data, size);
-    ASSERT_EQ(0, memcmp(region1, &data, size));
+    memcpy(region1, data, size);
+    ASSERT_EQ(0, memcmp(region1, data, size));
     EXPECT_EQ(0, munmap(region1, size));
 
     ASSERT_EXIT(
@@ -113,7 +113,7 @@ TEST(AshmemTest, ForkTest) {
             if (region2 == MAP_FAILED) {
                 _exit(1);
             }
-            if (memcmp(region2, &data, size) != 0) {
+            if (memcmp(region2, data, size) != 0) {
                 _exit(2);
             }
             memset(region2, 0, size);
@@ -122,10 +122,10 @@ TEST(AshmemTest, ForkTest) {
         },
         ::testing::ExitedWithCode(0), "");
 
-    memset(&data, 0, size);
+    memset(data, 0, size);
     void *region2;
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, size, PROT_READ | PROT_WRITE, &region2));
-    ASSERT_EQ(0, memcmp(region2, &data, size));
+    ASSERT_EQ(0, memcmp(region2, data, size));
     EXPECT_EQ(0, munmap(region2, size));
 }
 
@@ -134,18 +134,19 @@ TEST(AshmemTest, FileOperationsTest) {
     void* region = nullptr;
 
     // Allocate a 4-page buffer, but leave page-sized holes on either side
-    constexpr size_t size = PAGE_SIZE * 4;
-    constexpr size_t dataSize = PAGE_SIZE * 2;
-    constexpr size_t holeSize = PAGE_SIZE;
+    const size_t pageSize = getpagesize();
+    const size_t size = pageSize * 4;
+    const size_t dataSize = pageSize * 2;
+    const size_t holeSize = pageSize;
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ | PROT_WRITE));
     ASSERT_NO_FATAL_FAILURE(TestMmap(fd, dataSize, PROT_READ | PROT_WRITE, &region, holeSize));
 
-    uint8_t data[dataSize];
+    uint8_t* data = new uint8_t[dataSize];
     FillData(data, dataSize);
     memcpy(region, data, dataSize);
 
-    constexpr off_t dataStart = holeSize;
-    constexpr off_t dataEnd = dataStart + dataSize;
+    const off_t dataStart = holeSize;
+    const off_t dataEnd = dataStart + dataSize;
 
     // The sequence of seeks below looks something like this:
     //
@@ -163,9 +164,12 @@ TEST(AshmemTest, FileOperationsTest) {
         // Expected lseek() return value
         off_t ret;
     } seeks[] = {
-        {99, SEEK_SET, 99},         {dataStart, SEEK_CUR, dataStart + 99},
-        {0, SEEK_DATA, dataStart},  {dataStart, SEEK_HOLE, dataEnd},
-        {-99, SEEK_END, size - 99}, {-dataStart, SEEK_CUR, dataEnd - 99},
+            {99, SEEK_SET, 99},
+            {dataStart, SEEK_CUR, dataStart + 99},
+            {0, SEEK_DATA, dataStart},
+            {dataStart, SEEK_HOLE, dataEnd},
+            {-99, SEEK_END, static_cast<off_t>(size) - 99},
+            {-dataStart, SEEK_CUR, dataEnd - 99},
     };
     for (const auto& cfg : seeks) {
         errno = 0;
@@ -189,7 +193,7 @@ TEST(AshmemTest, FileOperationsTest) {
 
 TEST(AshmemTest, ProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    const size_t size = getpagesize();
     void *region;
 
     ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd, PROT_READ));
@@ -217,7 +221,7 @@ TEST(AshmemTest, ProtTest) {
 
 TEST(AshmemTest, ForkProtTest) {
     unique_fd fd;
-    constexpr size_t size = PAGE_SIZE;
+    const size_t size = getpagesize();
 
     int protFlags[] = { PROT_READ, PROT_WRITE };
     for (size_t i = 0; i < arraysize(protFlags); i++) {
@@ -238,8 +242,8 @@ TEST(AshmemTest, ForkProtTest) {
 }
 
 TEST(AshmemTest, ForkMultiRegionTest) {
-    constexpr size_t size = PAGE_SIZE;
-    uint8_t data[size];
+    const size_t size = getpagesize();
+    uint8_t* data = new uint8_t[size];
     FillData(data, size);
 
     constexpr int nRegions = 16;
@@ -248,8 +252,8 @@ TEST(AshmemTest, ForkMultiRegionTest) {
         ASSERT_NO_FATAL_FAILURE(TestCreateRegion(size, fd[i], PROT_READ | PROT_WRITE));
         void* region = nullptr;
         ASSERT_NO_FATAL_FAILURE(TestMmap(fd[i], size, PROT_READ | PROT_WRITE, &region));
-        memcpy(region, &data, size);
-        ASSERT_EQ(0, memcmp(region, &data, size));
+        memcpy(region, data, size);
+        ASSERT_EQ(0, memcmp(region, data, size));
         EXPECT_EQ(0, munmap(region, size));
     }
 
@@ -262,7 +266,7 @@ TEST(AshmemTest, ForkMultiRegionTest) {
             if (region == MAP_FAILED) {
                 _exit(1);
             }
-            if (memcmp(region, &data, size) != 0) {
+            if (memcmp(region, data, size) != 0) {
                 munmap(region, size);
                 _exit(2);
             }
@@ -272,11 +276,11 @@ TEST(AshmemTest, ForkMultiRegionTest) {
         _exit(0);
     }, ::testing::ExitedWithCode(0), "");
 
-    memset(&data, 0, size);
+    memset(data, 0, size);
     for (int i = 0; i < nRegions; i++) {
         void *region;
         ASSERT_NO_FATAL_FAILURE(TestMmap(fd[i], size, PROT_READ | PROT_WRITE, &region));
-        ASSERT_EQ(0, memcmp(region, &data, size));
+        ASSERT_EQ(0, memcmp(region, data, size));
         EXPECT_EQ(0, munmap(region, size));
     }
 }
