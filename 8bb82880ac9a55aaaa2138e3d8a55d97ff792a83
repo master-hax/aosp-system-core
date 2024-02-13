@@ -195,6 +195,24 @@
       "parentUuid": "3e4e4032_f40603b5",
       "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38e67af9_1df9d6da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-02-13T17:33:36Z",
+      "side": 1,
+      "message": "We want the data when we are getting the backtrace during an ANR.\n\nCan you point me to the more natural location you have in mind to get the data during the ANR? I don\u0027t know how dumpstate is involved in the ANR process.",
+      "parentUuid": "9aceb21a_1d5c306d",
+      "revId": "8bb82880ac9a55aaaa2138e3d8a55d97ff792a83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
