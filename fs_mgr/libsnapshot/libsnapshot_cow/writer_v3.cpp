@@ -598,30 +598,26 @@ std::vector<CowWriterV3::CompressedBuffer> CowWriterV3::ProcessBlocksWithCompres
 std::vector<CowWriterV3::CompressedBuffer> CowWriterV3::ProcessBlocksWithThreadedCompression(
         const size_t num_blocks, const void* data, CowOperationType type) {
     const size_t num_threads = num_compress_threads_;
-    const size_t blocks_per_thread = DivRoundUp(num_blocks, num_threads);
     const uint8_t* iter = reinterpret_cast<const uint8_t*>(data);
 
+    // split work between the threads.
     std::vector<CompressedBuffer> compressed_vec;
-    // Submit the blocks per thread. The retrieval of
-    // compressed buffers has to be done in the same order.
-    // We should not poll for completed buffers in a different order as the
-    // buffers are tightly coupled with block ordering.
-    for (size_t i = 0; i < num_threads; i++) {
-        CompressWorker* worker = compress_threads_[i].get();
-        auto blocks_in_batch = std::min(num_blocks - i * blocks_per_thread, blocks_per_thread);
-        // Enqueue the blocks to be compressed for each thread.
-        while (blocks_in_batch) {
-            CompressedBuffer buffer;
+    int iteration = 0;
+    int blocks_to_compress = static_cast<int>(num_blocks);
+    while (blocks_to_compress) {
+        CompressedBuffer buffer;
+        CompressWorker* worker = compress_threads_[iteration % compress_threads_.size()].get();
 
-            const size_t compression_factor = GetCompressionFactor(blocks_in_batch, type);
-            size_t num_blocks = compression_factor / header_.block_size;
+        const size_t compression_factor = GetCompressionFactor(blocks_to_compress, type);
+        size_t num_blocks = compression_factor / header_.block_size;
 
-            buffer.compression_factor = compression_factor;
-            worker->EnqueueCompressBlocks(iter, compression_factor, 1);
-            compressed_vec.push_back(std::move(buffer));
-            blocks_in_batch -= num_blocks;
-            iter += compression_factor;
-        }
+        worker->EnqueueCompressBlocks(iter, compression_factor, 1);
+        buffer.compression_factor = compression_factor;
+        compressed_vec.push_back(std::move(buffer));
+
+        iteration++;
+        iter += compression_factor;
+        blocks_to_compress -= num_blocks;
     }
 
     // Fetch compressed buffers from the threads
