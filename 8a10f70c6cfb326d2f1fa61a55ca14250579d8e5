@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8ac43c3_f63dc2e9",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-14T15:57:35Z",
+      "side": 1,
+      "message": "i think s/ALWAYS_INLINE/LIBUTILS_ALWAYS_INLINE/ is better/clearer.\n\nor, CALLSTACK_ALWAYS_INLINE, since i just noticed the CALLSTACK_WEAK above!",
+      "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
