@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c1a4f40a_2e3b1921",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-14T20:54:23Z",
+      "side": 1,
+      "message": "sysprop or getvar seems like a good idea if this becomes a problem again.",
+      "parentUuid": "8d417c93_beb43458",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "19e0b9d2_de1e6d5c",
         "filename": "fastboot/usb_linux.cpp",
         "patchSetId": 1
