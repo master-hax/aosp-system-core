@@ -16,6 +16,23 @@
       "message": "(fyi)",
       "revId": "e712515b240920438a855bc4ebab68a4d04bfe35",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b47421d0_fcdc4225",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T16:07:07Z",
+      "side": 1,
+      "message": "This was done intentionally at https://android-review.git.corp.google.com/c/platform/system/core/+/1807489\n\nDavid, can you share the context of the prior change?",
+      "revId": "e712515b240920438a855bc4ebab68a4d04bfe35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
