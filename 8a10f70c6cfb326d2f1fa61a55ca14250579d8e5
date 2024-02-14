@@ -34,6 +34,24 @@
       "parentUuid": "b8ac43c3_f63dc2e9",
       "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57b025c2_f01d06cd",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-14T17:46:12Z",
+      "side": 1,
+      "message": "well, the goal is to prevent further collisions by switching to a unique name. presubmit will tell us whether this is a problem in practice.\n\n(really, we should #undef at the end of the header too!)",
+      "parentUuid": "711dba0c_2fcdbe34",
+      "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
