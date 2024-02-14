@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a74fb98_bbb5d6f2",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-14T19:41:28Z",
+      "side": 1,
+      "message": "(thanks!)",
+      "revId": "593b19b5ce1831ef1dbec6a556e62e903394a1db",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
