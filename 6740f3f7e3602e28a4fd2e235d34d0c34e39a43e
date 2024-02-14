@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b75b27bb_d58a65a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T15:47:31Z",
+      "side": 1,
+      "message": "why? aren\u0027t we still interested in knowing the exit status? We haven\u0027t logged errno.",
+      "range": {
+        "startLine": 24,
+        "startChar": 60,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
