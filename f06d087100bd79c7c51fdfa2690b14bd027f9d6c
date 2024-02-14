@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd335d23_39f8b1bc",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T15:56:03Z",
+      "side": 1,
+      "message": "Perhaps we may want to change this and the return type of StartConsole to `Result\u003cvoid\u003e` and do the error handling at the call sites.",
+      "range": {
+        "startLine": 68,
+        "startChar": 7,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a150b82_07ea8ac2",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T15:56:03Z",
+      "side": 1,
+      "message": "For example, OR_RETURN(RunScript());",
+      "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
