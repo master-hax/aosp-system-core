@@ -46,6 +46,30 @@
       },
       "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9c6751c_fde9929e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T16:16:09Z",
+      "side": 1,
+      "message": "Ah, since we don\u0027t wait for the child, we can\u0027t get exit status from it. Got it.",
+      "parentUuid": "7568fe0c_d6d57cca",
+      "range": {
+        "startLine": 24,
+        "startChar": 60,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
