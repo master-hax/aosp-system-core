@@ -16,6 +16,23 @@
       "message": "(fyi)",
       "revId": "3a61479463941058c6a524ca3c5770a6e7964644",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c27bdcb6_a72661e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-14T16:11:32Z",
+      "side": 1,
+      "message": "This series seems to be in conflict with what Pierre\u0027s https://android-review.git.corp.google.com/c/platform/system/core/+/2959289/1\n\nCan either of you rebase on top of the other?",
+      "revId": "3a61479463941058c6a524ca3c5770a6e7964644",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
