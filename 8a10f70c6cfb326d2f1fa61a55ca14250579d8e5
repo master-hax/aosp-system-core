@@ -52,6 +52,24 @@
       "parentUuid": "711dba0c_2fcdbe34",
       "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4166e937_b1ce4583",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1967833
+      },
+      "writtenOn": "2024-02-14T17:47:56Z",
+      "side": 1,
+      "message": "Ok, will upload a patchset with those changes and run presubmit, thanks!",
+      "parentUuid": "57b025c2_f01d06cd",
+      "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
