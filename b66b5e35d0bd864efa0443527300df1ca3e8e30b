@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad248035_e7ce9c42",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-14T00:59:35Z",
+      "side": 1,
+      "message": "I had discussed this earlier as well when Kelvin implemented io_uring support for fastboot. I think this was set to lower value because of \n\nhttps://b.corp.google.com/issues/126582877\n\nThe same change could be done for adbd daemon as well wherein adb push/pull may help.\n\nI see you have handled it by falling back; Maybe adding a comment there would help why 16kb..",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
