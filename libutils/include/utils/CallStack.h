@@ -37,7 +37,9 @@
 # endif // !WEAKS_AVAILABLE
 #endif // CALLSTACK_WEAK predefined
 
+#ifndef ALWAYS_INLINE
 #define ALWAYS_INLINE __attribute__((always_inline))
+#endif  // ALWAYS_INLINE predefined
 
 namespace android {
 
