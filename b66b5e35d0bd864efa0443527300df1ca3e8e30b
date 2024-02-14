@@ -34,6 +34,23 @@
       "parentUuid": "ad248035_e7ce9c42",
       "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19e0b9d2_de1e6d5c",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-02-14T20:52:52Z",
+      "side": 1,
+      "message": "Add a MIN_USBFS_BULK_WRITE_SIZE constant?",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
