@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "33955228_e0c3b6cd",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 988,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-14T19:03:10Z",
+      "side": 1,
+      "message": "Not really. This is making sure it doesn\u0027t have _both_ after. That would be a quite bizzare implementation mistake, but not sure it hurts to check.",
+      "parentUuid": "b69b973a_83ae0832",
+      "revId": "1ddc99d4f40465a5a53c76a7af104b72993dedf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "edcacd4d_2f4056d0",
         "filename": "debuggerd/debuggerd_test.cpp",
         "patchSetId": 2
@@ -31,6 +49,30 @@
       "writtenOn": "2024-02-14T18:58:04Z",
       "side": 1,
       "message": "should all of these call a helper that takes a lambda?",
+      "range": {
+        "startLine": 992,
+        "startChar": 2,
+        "endLine": 1004,
+        "endChar": 66
+      },
+      "revId": "1ddc99d4f40465a5a53c76a7af104b72993dedf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "327e4e9c_8872e2f8",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1004,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-14T19:03:10Z",
+      "side": 1,
+      "message": "I guess. Let\u0027s clean up the whole file after this.",
+      "parentUuid": "edcacd4d_2f4056d0",
       "range": {
         "startLine": 992,
         "startChar": 2,
@@ -54,6 +96,24 @@
       "writtenOn": "2024-02-14T18:58:04Z",
       "side": 1,
       "message": "(same)",
+      "revId": "1ddc99d4f40465a5a53c76a7af104b72993dedf8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33136993_9eadb024",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1009,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-14T19:03:10Z",
+      "side": 1,
+      "message": "(Same)",
+      "parentUuid": "4be8d083_aab71c5a",
       "revId": "1ddc99d4f40465a5a53c76a7af104b72993dedf8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
