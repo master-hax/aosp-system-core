@@ -70,6 +70,23 @@
       },
       "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3e29d18_0dcdaee9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-14T16:17:46Z",
+      "side": 1,
+      "message": "Note: this CL assumes that `SA_NOCLDWAIT` (aosp/1807489) is the desired behavior and will therefore become obsolete if aosp/2811006 gets merged, as it removes that handler.\n\n(so removing autosubmit)",
+      "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
