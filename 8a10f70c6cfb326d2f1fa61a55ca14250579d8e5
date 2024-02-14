@@ -70,6 +70,24 @@
       "parentUuid": "57b025c2_f01d06cd",
       "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ccae9d06_4c8912b3",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1967833
+      },
+      "writtenOn": "2024-02-14T19:17:39Z",
+      "side": 1,
+      "message": "Done, ptal.",
+      "parentUuid": "4166e937_b1ce4583",
+      "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
