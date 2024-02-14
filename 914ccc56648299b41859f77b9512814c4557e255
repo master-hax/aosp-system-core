@@ -46,6 +46,30 @@
       },
       "revId": "914ccc56648299b41859f77b9512814c4557e255",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14394c76_e02d43b0",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-14T15:58:17Z",
+      "side": 0,
+      "message": "But you\u0027re right that the original code might\u0027ve preferred to use the macro rather than the raw value.",
+      "parentUuid": "f4d6fd91_603ac869",
+      "range": {
+        "startLine": 74,
+        "startChar": 62,
+        "endLine": 74,
+        "endChar": 68
+      },
+      "revId": "914ccc56648299b41859f77b9512814c4557e255",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
