@@ -16,6 +16,24 @@
       "message": "I had discussed this earlier as well when Kelvin implemented io_uring support for fastboot. I think this was set to lower value because of \n\nhttps://b.corp.google.com/issues/126582877\n\nThe same change could be done for adbd daemon as well wherein adb push/pull may help.\n\nI see you have handled it by falling back; Maybe adding a comment there would help why 16kb..",
       "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d417c93_beb43458",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-14T15:41:06Z",
+      "side": 1,
+      "message": "yeah, we still have that in adb today:\n```\n// Not all USB controllers support operations larger than 16k, so don\u0027t go above that.\n// Also, each submitted operation does an allocation in the kernel of that size, so we want to\n// minimize our queue depth while still maintaining a deep enough queue to keep the USB stack fed.\nstatic constexpr size_t kUsbReadQueueDepth \u003d 8;\nstatic constexpr size_t kUsbReadSize \u003d 16384;\n\nstatic constexpr size_t kUsbWriteQueueDepth \u003d 8;\nstatic constexpr size_t kUsbWriteSize \u003d 16384;\n```\n\nsadly we don\u0027t have much detail on https://issuetracker.google.com/130622010 to know what exact failures the partner was seeing, so we don\u0027t _know_ they weren\u0027t getting kernel panics...\n\nfor that latter problem, /me wonders why we didn\u0027t go with a sysprop so devices with crap usb controllers could opt out? maybe the difference between 16 and 32 wasn\u0027t big enough to be worth it, and the former problem meant we couldn\u0027t usefully go above 32 anyway?",
+      "parentUuid": "ad248035_e7ce9c42",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
