@@ -16,6 +16,24 @@
       "message": "i think s/ALWAYS_INLINE/LIBUTILS_ALWAYS_INLINE/ is better/clearer.\n\nor, CALLSTACK_ALWAYS_INLINE, since i just noticed the CALLSTACK_WEAK above!",
       "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "711dba0c_2fcdbe34",
+        "filename": "libutils/include/utils/CallStack.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1967833
+      },
+      "writtenOn": "2024-02-14T17:26:54Z",
+      "side": 1,
+      "message": "That may break some other parts within the codebase or other branches/projects, where ALWAYS_INLINE is used via this header (wouldn\u0027t be a good way to use it, but it\u0027s possible). I can change it to CALLSTACK_ALWAYS_INLINE if you think it\u0027d still be better, but I think this is inline with other definitions of the same macro.",
+      "parentUuid": "b8ac43c3_f63dc2e9",
+      "revId": "8a10f70c6cfb326d2f1fa61a55ca14250579d8e5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
