@@ -22,6 +22,30 @@
       },
       "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7568fe0c_d6d57cca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-14T15:57:41Z",
+      "side": 1,
+      "message": "Because `status` is never the child\u0027s exit code: it can only be 0 because with `SA_NOCLDWAIT`, we\u0027re telling the kernel to discard it!\n\nTherefore, logging it is particularly confusing when debugging something going wrong through the logs, as they will report \"`status was 0`\" even when the child actually tried to return a non-zero exit code, which is how I came across this issue. Similarly, `errno` will always be `ECHILD`, as documented in `wait(2)` (see commit message) so logging it wouldn\u0027t add much information(?)\n\nMy rationale is: if something is going to cause more confusion than help with debugging, let\u0027s not log it; does it make sense?",
+      "parentUuid": "b75b27bb_d58a65a3",
+      "range": {
+        "startLine": 24,
+        "startChar": 60,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "6740f3f7e3602e28a4fd2e235d34d0c34e39a43e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
