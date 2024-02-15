@@ -16,7 +16,7 @@
 
 #include <log/log.h>
 
-int vendor_api_level_of(int sdk_api_level) {
+int android_get_vendor_api_level_of(int sdk_api_level) {
     if (sdk_api_level < __ANDROID_API_V__) {
         return sdk_api_level;
     }
@@ -29,7 +29,7 @@ int vendor_api_level_of(int sdk_api_level) {
     return __INVALID_API_LEVEL;
 }
 
-int sdk_api_level_of(int vendor_api_level) {
+int android_get_sdk_api_level_of(int vendor_api_level) {
     if (vendor_api_level < __ANDROID_API_V__) {
         return vendor_api_level;
     }

@@ -35,7 +35,7 @@ extern "C" {
  * @return The corresponding vendor API level of the SDK version. -1 if the SDK
  * version is invalid or 10000.
  */
-int vendor_api_level_of(int sdk_api_level);
+int android_get_vendor_api_level_of(int sdk_api_level);
 
 /**
  * @brief Find corresponding SDK API version from a vendor API level.
@@ -44,7 +44,7 @@ int vendor_api_level_of(int sdk_api_level);
  * @return The corresponding SDK API version of the vendor API level. -1 if the
  * vendor API level is invalid.
  */
-int sdk_api_level_of(int vendor_api_level);
+int android_get_sdk_api_level_of(int vendor_api_level);
 
 #ifdef __cplusplus
 }
