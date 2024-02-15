@@ -22,6 +22,30 @@
       },
       "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bedd711e_b61ad767",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-02-15T22:59:16Z",
+      "side": 0,
+      "message": "Yeah also the `MCL_CURRENT` flag is incorrect because it wouldn\u0027t actually populate the pages. @dvander@google.com confirmed this is not what we want to do since there is large mlock anon memory locked form santizer build. CMIW",
+      "parentUuid": "1b3bb86a_c91052ee",
+      "range": {
+        "startLine": 211,
+        "startChar": 8,
+        "endLine": 213,
+        "endChar": 9
+      },
+      "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
