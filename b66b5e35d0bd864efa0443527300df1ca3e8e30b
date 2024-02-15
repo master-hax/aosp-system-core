@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "81863803_3615cd82",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-02-15T00:10:51Z",
+      "side": 1,
+      "message": "\u003e Maybe adding a comment there would help why 16kb..\n\nDone (in the definition of MIN_USBFS_BULK_WRITE_SIZE).",
+      "parentUuid": "c1a4f40a_2e3b1921",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "19e0b9d2_de1e6d5c",
@@ -67,6 +85,24 @@
       "writtenOn": "2024-02-14T20:52:52Z",
       "side": 1,
       "message": "Add a MIN_USBFS_BULK_WRITE_SIZE constant?",
+      "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54690dfc_fed2416a",
+        "filename": "fastboot/usb_linux.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 433,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-02-15T00:10:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19e0b9d2_de1e6d5c",
       "revId": "b66b5e35d0bd864efa0443527300df1ca3e8e30b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
