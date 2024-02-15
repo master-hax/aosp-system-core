@@ -1500,7 +1500,7 @@ void do_flash(const char* pname, const char* fname, const bool apply_vbmeta,
         die("do flash was called without a valid flashing plan");
     }
     verbose("Do flash %s %s", pname, fname);
-    struct fastboot_buffer buf;
+    struct fastboot_buffer buf{};
 
     if (fp->source) {
         unique_fd fd = fp->source->OpenFile(fname);
