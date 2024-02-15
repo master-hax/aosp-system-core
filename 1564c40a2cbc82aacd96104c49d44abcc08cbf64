@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "233c6468_46a055c5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-15T15:27:31Z",
+      "side": 1,
+      "message": "note that Android builds all code with `-ftrivial-auto-var-init\u003dzero`, so the better fix for you is to fix your build script to supply the same flags as an Android build... there are probably _lots_ of these.",
+      "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
