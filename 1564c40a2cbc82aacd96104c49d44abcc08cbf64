@@ -16,6 +16,29 @@
       "message": "note that Android builds all code with `-ftrivial-auto-var-init\u003dzero`, so the better fix for you is to fix your build script to supply the same flags as an Android build... there are probably _lots_ of these.",
       "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53e97f11_c760ee14",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1503,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-02-15T17:50:22Z",
+      "side": 1,
+      "message": "struct fastboot_buffer buf{}; is sufficient.",
+      "range": {
+        "startLine": 1503,
+        "startChar": 4,
+        "endLine": 1503,
+        "endChar": 36
+      },
+      "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
