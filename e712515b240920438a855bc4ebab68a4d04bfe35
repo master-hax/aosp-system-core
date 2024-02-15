@@ -51,6 +51,24 @@
       "parentUuid": "b47421d0_fcdc4225",
       "revId": "e712515b240920438a855bc4ebab68a4d04bfe35",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b84ff34b_4e1df56d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-15T00:58:31Z",
+      "side": 1,
+      "message": "Ok. I\u0027ve read the bug. Using first_stage.sh to run kernel sanity tests sounds odd to me. Anyway, if they care about accidental zombie processes during the test, wouldn\u0027t they make the shell process a child subreaper (PR_SET_CHILD_SUBREAPER) so that any child zombie process is reaped by the shell process, not by init?\n\nThe prior change seems to be too specialized for their use case, IMO.",
+      "parentUuid": "0d44217f_e5a2aaf0",
+      "revId": "e712515b240920438a855bc4ebab68a4d04bfe35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
