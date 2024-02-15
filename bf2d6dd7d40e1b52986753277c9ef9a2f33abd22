@@ -162,6 +162,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "079e3fcd_b4b8e14b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-15T19:12:27Z",
+      "side": 1,
+      "message": "Sorry, I didn\u0027t see an explanation for the crash Evgenii saw, but I agree that the rules as states in that policy file should not prevent PROT_MTE.\n\nI\u0027ll mark this as resolved and +2 this.",
+      "parentUuid": "1f6af44f_dedd2a8a",
+      "revId": "bf2d6dd7d40e1b52986753277c9ef9a2f33abd22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1bf2c731_8acd099f",
