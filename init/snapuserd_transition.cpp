@@ -18,6 +18,7 @@
 
 #include <sys/mman.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/xattr.h>
 #include <unistd.h>
@@ -187,6 +188,21 @@ SnapuserdSelinuxHelper::SnapuserdSelinuxHelper(std::unique_ptr<SnapshotManager>&
     });
 }
 
+static inline uint64_t SafeMapLen(const android::procinfo::MapInfo& map) {
+    struct stat file_stat;
+    if (TEMP_FAILURE_RETRY(stat(map.name.c_str(), &file_stat)) != 0) {
+        LOG(FATAL) << "Could not get safe length of \"" << map.name << "\"";
+    }
+
+    uint64_t file_size = file_stat.st_size;
+    uint64_t offset = map.pgoff;
+    uint64_t len = map.end - map.start;
+
+    bool unsafe = offset + len > file_size;
+
+    return (unsafe) ? file_size - offset : len;
+}
+
 static void LockAllSystemPages() {
     bool ok = true;
     auto callback = [&](const android::procinfo::MapInfo& map) -> void {
@@ -195,7 +211,7 @@ static void LockAllSystemPages() {
             return;
         }
         auto start = reinterpret_cast<const void*>(map.start);
-        auto len = map.end - map.start;
+        auto len = SafeMapLen(map);
         if (!len) {
             return;
         }
