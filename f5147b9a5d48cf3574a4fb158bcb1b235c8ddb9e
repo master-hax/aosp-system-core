@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3540dcf6_0ecfc5a7",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2024-02-15T17:41:52Z",
+      "side": 1,
+      "message": "This isn\u0027t the platform naming convention, see: https://g3doc.corp.google.com/company/teams/android-api-council/guidelines/ndk.md?cl\u003dhead#naming",
+      "revId": "f5147b9a5d48cf3574a4fb158bcb1b235c8ddb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
