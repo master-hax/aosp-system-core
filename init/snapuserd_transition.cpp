@@ -195,12 +195,16 @@ static void LockAllSystemPages() {
             return;
         }
         auto start = reinterpret_cast<const void*>(map.start);
-        auto len = map.end - map.start;
+        uint64_t len = 0;
+        if (!android::procinfo::MappedFileSize(map, len)) {
+            PLOG(FATAL) << "\"" << map.name << "\": Failed to get mapped file size";
+        }
+
         if (!len) {
             return;
         }
         if (mlock(start, len) < 0) {
-            LOG(ERROR) << "mlock failed, " << start << " for " << len << " bytes.";
+            PLOG(ERROR) << "mlock failed, " << start << " for " << len << " bytes.";
             ok = false;
         }
     };
@@ -208,9 +212,6 @@ static void LockAllSystemPages() {
     if (!android::procinfo::ReadProcessMaps(getpid(), callback) || !ok) {
         LOG(FATAL) << "Could not process /proc/" << getpid() << "/maps file for init, "
                    << "falling back to mlockall().";
-        if (mlockall(MCL_CURRENT) < 0) {
-            LOG(FATAL) << "mlockall failed";
-        }
     }
 }
 
