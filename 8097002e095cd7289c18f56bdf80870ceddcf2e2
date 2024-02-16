@@ -70,6 +70,30 @@
       },
       "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8135f4cd_42fe04bd",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-16T17:03:03Z",
+      "side": 0,
+      "message": "I think the purpose of this check was the if `mlock` failed, we fallback and give one last try with mlockall(). Of course, there was a bug wherein LOG(FATAL) wouldn\u0027t have allowed it; I would advise to turn that to LOG(ERROR) and retaining mlockall() would be good (with the right flag. MCL_CURRENT doesn\u0027t fault and pin pages).",
+      "parentUuid": "f6f70cef_bf612e5b",
+      "range": {
+        "startLine": 211,
+        "startChar": 8,
+        "endLine": 213,
+        "endChar": 9
+      },
+      "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
