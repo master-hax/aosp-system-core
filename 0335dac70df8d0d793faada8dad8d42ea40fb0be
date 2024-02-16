@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03a3a175_93dafdbc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-16T15:25:03Z",
+      "side": 1,
+      "message": "Independently of what we decide for `SA_NOCLDWAIT`, this fix should go in, IMO.",
+      "revId": "0335dac70df8d0d793faada8dad8d42ea40fb0be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

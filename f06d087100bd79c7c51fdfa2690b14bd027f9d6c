@@ -63,6 +63,24 @@
       "message": "For example, OR_RETURN(RunScript());",
       "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cbac93a_00af0436",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-16T15:25:03Z",
+      "side": 1,
+      "message": "Acknowledged; see other comment.",
+      "parentUuid": "4a150b82_07ea8ac2",
+      "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
