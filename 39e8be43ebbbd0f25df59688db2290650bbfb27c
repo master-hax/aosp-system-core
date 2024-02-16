@@ -22,6 +22,30 @@
       },
       "revId": "39e8be43ebbbd0f25df59688db2290650bbfb27c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61772ff9_a03cb4aa",
+        "filename": "init/check_builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-16T08:50:42Z",
+      "side": 1,
+      "message": "The pointer of this is reinterpreted as PropertyInfoArea at L56.",
+      "parentUuid": "6647c5a6_b5a07422",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 10
+      },
+      "revId": "39e8be43ebbbd0f25df59688db2290650bbfb27c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
