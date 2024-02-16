@@ -16,6 +16,24 @@
       "message": "This isn\u0027t the platform naming convention, see: https://g3doc.corp.google.com/company/teams/android-api-council/guidelines/ndk.md?cl\u003dhead#naming",
       "revId": "f5147b9a5d48cf3574a4fb158bcb1b235c8ddb9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "267fd4d9_2040b8a7",
+        "filename": "libvendorsupport/include/vendorsupport/api_level.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-16T14:54:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3540dcf6_0ecfc5a7",
+      "revId": "f5147b9a5d48cf3574a4fb158bcb1b235c8ddb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
