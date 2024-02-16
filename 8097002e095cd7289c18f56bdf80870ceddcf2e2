@@ -94,6 +94,30 @@
       },
       "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffb18ef4_adb64a8e",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-02-16T17:47:35Z",
+      "side": 0,
+      "message": "alright I understand to keep it as a last resort. \n\nmlockall() would always pass this case because it uses the correct ranges. (IOW it doesn\u0027t error out for ranges where there is nothing to fault).\n\n\n+ https://github.com/torvalds/linux/blob/830b3c68c1fb1e9176028d02ef86f3cf76aa2476/mm/mlock.c#L721\n+ https://github.com/torvalds/linux/blob/830b3c68c1fb1e9176028d02ef86f3cf76aa2476/include/linux/mm.h#L2764-L2765\n+ https://github.com/torvalds/linux/blob/830b3c68c1fb1e9176028d02ef86f3cf76aa2476/mm/gup.c#L1696-L1708\n\n\nMy mistake about the flag. It is correct:\n\n```\n# define MCL_CURRENT\t1\t\t/* Lock all currently mapped pages.  */\n```\n\nI\u0027ll re-add it and remove the fatal log.",
+      "parentUuid": "8135f4cd_42fe04bd",
+      "range": {
+        "startLine": 211,
+        "startChar": 8,
+        "endLine": 213,
+        "endChar": 9
+      },
+      "revId": "8097002e095cd7289c18f56bdf80870ceddcf2e2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
