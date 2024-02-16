@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e5998ec_4747ef09",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-16T15:02:53Z",
+      "side": 1,
+      "message": "The child should never return from the function, IMO.\n\nOTOH, the parent won\u0027t have an error to return as long as we use `SA_NOCLDWAIT`. If it is decided that `SA_NOCLDWAIT` wasn\u0027t the actually desired behaviour, aosp/2811007 implements what you suggest.",
+      "parentUuid": "cd335d23_39f8b1bc",
+      "range": {
+        "startLine": 68,
+        "startChar": 7,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4a150b82_07ea8ac2",
