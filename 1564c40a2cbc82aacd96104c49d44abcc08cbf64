@@ -18,6 +18,41 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b8471fa_bdfe3062",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1877755
+      },
+      "writtenOn": "2024-02-16T08:11:26Z",
+      "side": 1,
+      "message": "st",
+      "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e8f6c15_0f9f3fba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1877755
+      },
+      "writtenOn": "2024-02-16T08:11:26Z",
+      "side": 1,
+      "message": "Thanks for the info! I\u0027ve also let the vendor of the CMake build system know about this: https://github.com/nmeum/android-tools/issues/133",
+      "parentUuid": "233c6468_46a055c5",
+      "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "53e97f11_c760ee14",
@@ -31,6 +66,30 @@
       "writtenOn": "2024-02-15T17:50:22Z",
       "side": 1,
       "message": "struct fastboot_buffer buf{}; is sufficient.",
+      "range": {
+        "startLine": 1503,
+        "startChar": 4,
+        "endLine": 1503,
+        "endChar": 36
+      },
+      "revId": "1564c40a2cbc82aacd96104c49d44abcc08cbf64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e3e2801_367c0b33",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1503,
+      "author": {
+        "id": 1877755
+      },
+      "writtenOn": "2024-02-16T08:11:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53e97f11_c760ee14",
       "range": {
         "startLine": 1503,
         "startChar": 4,
