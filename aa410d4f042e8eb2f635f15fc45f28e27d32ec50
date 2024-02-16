@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "25ea5045_74bce32c",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-16T15:43:33Z",
+      "side": 1,
+      "message": "system() will use the appropriate shell, yes.\n\ni think the real question here is \"do you really support multiple arguments?\". if you do, doing the exec() manually like this is probably better than constructing a string and having to think about quoting. (alternatively, posix_spawn() would be the modern alternative to system() that avoids that.)\n\n(what we _really_ need is the C++ equivalent of java\u0027s ProcessBuilder/Process in libbase, but every time someone tries, it gets bikeshedded to death :-( )",
+      "parentUuid": "3d8ba4d2_0e8deaab",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 74
+      },
+      "revId": "aa410d4f042e8eb2f635f15fc45f28e27d32ec50",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3963601f_47f268af",
         "filename": "init/first_stage_console.cpp",
         "patchSetId": 1

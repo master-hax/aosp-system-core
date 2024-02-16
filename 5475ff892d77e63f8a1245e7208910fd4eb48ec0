@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97fa5e83_84386871",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-16T15:43:33Z",
+      "side": 1,
+      "message": "fwiw, i\u0027ve always found old c++ clearer here:\n```\n    std::vector\u003cconst char*\u003e cmd \u003d {\"/system/bin/sh\"};\n    ...\n    execv(cmd[0], execv_arg);\n```\none less name, and a clear match between the exec() call site and the man page :-)",
+      "revId": "5475ff892d77e63f8a1245e7208910fd4eb48ec0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
