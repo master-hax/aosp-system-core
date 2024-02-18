@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a3610757_09ef8949",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-18T16:03:25Z",
+      "side": 1,
+      "message": "Yeah, I didn\u0027t mean to say that this change is incorrect. I just felt this file is a bit rusty and doesn\u0027t look like the other parts in init.",
+      "parentUuid": "6e5998ec_4747ef09",
+      "range": {
+        "startLine": 68,
+        "startChar": 7,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "f06d087100bd79c7c51fdfa2690b14bd027f9d6c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4a150b82_07ea8ac2",
         "filename": "init/first_stage_console.cpp",
         "patchSetId": 1
