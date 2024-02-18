@@ -32,6 +32,8 @@
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
+#include <fstream>
+#include <sstream>
 #include <string>
 
 #include "fs_mgr_priv.h"
@@ -40,6 +42,61 @@ using android::base::unique_fd;
 
 // Realistically, this file should be part of the android::fs_mgr namespace;
 using namespace android::fs_mgr;
+
+/**
+ * Parse KernelPageSize from /proc/self/smaps
+ *
+ *    The entry is expected to be of the format:
+ *
+ * "KernelPageSize:        4 kB"
+ */
+static size_t KernelPageSize() {
+    size_t emulated_page_shift = android::base::GetIntProperty("ro.boot.page_shift", 0);
+
+    // The kernel page size is the same as that of userspace
+    if (!emulated_page_shift) {
+        return getpagesize();
+    }
+
+    // Currently emulation is only on kernels with a 4KB base page,
+    // Fallback to this if the below parsing of smaps fails.
+    size_t page_size = 4096;
+
+    const std::string smaps_path = "/proc/self/smaps";
+    std::ifstream smaps_file(smaps_path);
+
+    if (!smaps_file.is_open()) {
+        LWARNING << "Failed to open \"" << smaps_path << "\"";
+        return page_size;
+    }
+
+    std::string line;
+    while (std::getline(smaps_file, line)) {
+        if (line.find("KernelPageSize:") == std::string::npos) {
+            continue;
+        }
+
+        std::istringstream iss(line);
+        std::string token;
+        // The value of KernelPageSize is expected to be the second token on the line
+        iss >> token; // discard the label
+        iss >> token; // read the size
+        size_t size;
+        std::istringstream(token) >> size;
+        iss >> token; // read the unit
+        if (token != "kB") { // The unit is expected to be kB
+            LWARNING << "Unexpected unit (" << token << ") for \"KernelPageSize\"";
+            return page_size;
+        }
+        page_size = size * 1024; // Convert to bytes
+        LINFO << "KernelPageSize = " << page_size;
+        smaps_file.close();
+        return page_size;
+    }
+
+    smaps_file.close();
+    return page_size;
+}
 
 static int get_dev_sz(const std::string& fs_blkdev, uint64_t* dev_sz) {
     unique_fd fd(TEMP_FAILURE_RETRY(open(fs_blkdev.c_str(), O_RDONLY | O_CLOEXEC)));
@@ -75,7 +132,7 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
     // However, EXT4 does not support 16K block size on 4K systems.
     // If we want the same userspace code to work on both 4k/16k kernels,
     // using a hardcoded 4096 block size is a simple solution. Using
-    // getpagesize() here would work as well, but 4096 is simpler.
+    // KernelPageSize() here would work as well, but 4096 is simpler.
     std::string size_str = std::to_string(dev_sz / 4096);
 
     std::vector<const char*> mke2fs_args = {"/system/bin/mke2fs", "-t", "ext4", "-b", "4096"};
@@ -135,8 +192,8 @@ static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs
 
     /* Format the partition using the calculated length */
 
-    const auto size_str = std::to_string(dev_sz / getpagesize());
-    std::string block_size = std::to_string(getpagesize());
+    const auto size_str = std::to_string(dev_sz / KernelPageSize());
+    std::string block_size = std::to_string(KernelPageSize());
 
     std::vector<const char*> args = {"/system/bin/make_f2fs", "-g", "android"};
     if (needs_projid) {
