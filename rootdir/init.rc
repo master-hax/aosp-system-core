@@ -1080,6 +1080,7 @@ on zygote-start
     start statsd
     start netd
     start zygote
+on zygote-start && property:ro.boot.page_shift=""
     start zygote_secondary
 
 on boot && property:ro.config.low_ram=true

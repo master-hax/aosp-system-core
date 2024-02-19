@@ -1352,7 +1352,12 @@ constexpr auto ANDROIDBOOT_PREFIX = "androidboot."sv;
 static void ProcessKernelCmdline() {
     android::fs_mgr::ImportKernelCmdline([&](const std::string& key, const std::string& value) {
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
-            InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
+            std::string prop = "ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size());
+            InitPropertySet(prop, value);
+
+            if (prop == "ro.boot.page_shift") {
+                InitPropertySet("ro.product.cpu.abilist32", "");
+            }
         }
     });
 }
