@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68f44a25_51f53d7f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-20T16:25:34Z",
+      "side": 1,
+      "message": "See the [Bionic implementation](https://cs.android.com/android/platform/superproject/main/+/main:bionic/libc/bionic/spawn.cpp;l\u003d205;drc\u003d215baed16f00d7954a7500f338f96cca4f63824f).\n\nThis seems to contradict ([POSIX](https://pubs.opengroup.org/onlinepubs/007904975/functions/posix_spawn.html))\n\n\u003e If `posix_spawn()` [...] fails for any of the reasons that would cause [...] one of the `exec` family of functions to fail, an error value shall be returned\n\nalthough I suppose it isn\u0027t non-compliant given a lax definition of when the calling process returns w.r.t. `exec` failing:\n\n\u003e or, if the error occurs after the calling process successfully returns, the child process shall exit with exit status 127\n\n@enh@google.com, do you think that Bionic could report the error (e.g. `ENOENT`) to the caller? AFAICT, it is trickier to implement that behavior when using `fork` (or even `vfork`), compared to `clone`. FYI, the ABI in glibc does [propagate the `exec` error](https://elixir.bootlin.com/glibc/glibc-2.39/source/sysdeps/unix/sysv/linux/spawni.c#L306) from the child [back to the caller](https://elixir.bootlin.com/glibc/glibc-2.39/source/sysdeps/unix/sysv/linux/spawni.c#L450) (using `clone`).",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c853830_b03fbc54",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-20T16:25:34Z",
+      "side": 1,
+      "message": "@enh@google.com, this is a side-effect of using `posix_spawn()`, is it fine?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 56
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

@@ -16,6 +16,24 @@
       "message": "fwiw, i\u0027ve always found old c++ clearer here:\n```\n    std::vector\u003cconst char*\u003e cmd \u003d {\"/system/bin/sh\"};\n    ...\n    execv(cmd[0], execv_arg);\n```\none less name, and a clear match between the exec() call site and the man page :-)",
       "revId": "5475ff892d77e63f8a1245e7208910fd4eb48ec0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e25e7c29_a6684e61",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-20T16:25:34Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "97fa5e83_84386871",
+      "revId": "5475ff892d77e63f8a1245e7208910fd4eb48ec0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
