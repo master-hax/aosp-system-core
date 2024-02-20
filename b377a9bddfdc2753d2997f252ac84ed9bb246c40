@@ -16,6 +16,24 @@
       "message": "As discussed in chat, we should not do this - the LOG(FATAL) is intentional, and it\u0027s the mlockall() that\u0027s a bug. mlockall() doesn\u0027t work in hwasan builds (b/181032115).\n\nI\u0027d be open to this if we can surface mlock() failures some other way, so they can be addressed. But with this change we might as well just always call mlockall().",
       "revId": "b377a9bddfdc2753d2997f252ac84ed9bb246c40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c55dc8e2_413ae81a",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-02-20T17:45:05Z",
+      "side": 1,
+      "message": "Hi David I discussed this offline with Akilesh.\n\nWe now removed the mlockall.",
+      "parentUuid": "50577321_e5552821",
+      "revId": "b377a9bddfdc2753d2997f252ac84ed9bb246c40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
