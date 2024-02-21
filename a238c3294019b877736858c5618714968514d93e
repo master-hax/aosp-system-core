@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f22a1ac0_1c991cee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "yeah, no-one\u0027s needed it yet ... tbh, i\u0027m not sure it\u0027s particularly helpful here either --- even ENOENT isn\u0027t necessarily the ENOENT _you\u0027re_ assuming, because there are other possible syscalls that can fail with ENOENT (chdir(), say).",
+      "parentUuid": "68f44a25_51f53d7f",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3c853830_b03fbc54",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -49,6 +73,70 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "116c6277_acd4c700",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "(seems fine to me, but that\u0027s more a question for jiyong, because he\u0027ll have a better idea of whether any users actually care :-) )",
+      "parentUuid": "3c853830_b03fbc54",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 56
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9e86cac_6b02cb2f",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "bool?",
+      "range": {
+        "startLine": 69,
+        "startChar": 7,
+        "endLine": 69,
+        "endChar": 10
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b071f244_fc89895c",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "don\u0027t declare until you can assign.",
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e3f98223_2596ea55",
         "filename": "init/first_stage_console.cpp",
         "patchSetId": 3
@@ -65,6 +153,70 @@
         "startChar": 67,
         "endLine": 79,
         "endChar": 70
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91015782_2da038a7",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "or `errno \u003d posix_spawn()` on the line above, and then PLOG() here...",
+      "parentUuid": "e3f98223_2596ea55",
+      "range": {
+        "startLine": 79,
+        "startChar": 67,
+        "endLine": 79,
+        "endChar": 70
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dacf0f21_103f40c3",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "don\u0027t declare until you can assign.",
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f57379c_777cc0fa",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T01:00:13Z",
+      "side": 1,
+      "message": "...though you\u0027re not even using the value, so `if (!SpawnImage(...))`?",
+      "range": {
+        "startLine": 106,
+        "startChar": 4,
+        "endLine": 106,
+        "endChar": 7
       },
       "revId": "a238c3294019b877736858c5618714968514d93e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
