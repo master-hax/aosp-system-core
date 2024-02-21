@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c8df44f7_4fdb3ca0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-21T16:34:04Z",
+      "side": 1,
+      "message": "\u003e You\u0027re right but still, isn\u0027t it better to receive an error?\n\n\"maybe\"? this isn\u0027t something where i\u0027m deeply convinced i\u0027m right, but i haven\u0027t yet seen a convincing use case for \"better\" error reporting, so i\u0027m still leaning on the side of \"return to the parent quicker, from a \u0027trivially correct\u0027 implementation\".",
+      "parentUuid": "1b0f2616_9f4403a8",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c853830_b03fbc54",
