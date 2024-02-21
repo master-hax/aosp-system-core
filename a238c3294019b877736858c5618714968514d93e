@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b0f2616_9f4403a8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "You\u0027re right but still, isn\u0027t it better to receive _an_ error?\n\nAnyway, resolving this thread as it\u0027s out-of-scope for this CL.",
+      "parentUuid": "f22a1ac0_1c991cee",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 72
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c853830_b03fbc54",
@@ -118,6 +142,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "233c3406_6dadf8b9",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "I\u0027ve modified the function to return the child\u0027s `pid_t`.\n\nFor now, it will act as a glorified `bool` but clearer in what its values mean.\n\nI\u0027m expecting that result to be used if aosp/2811006 gets merged.",
+      "parentUuid": "a9e86cac_6b02cb2f",
+      "range": {
+        "startLine": 69,
+        "startChar": 7,
+        "endLine": 69,
+        "endChar": 10
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b071f244_fc89895c",
@@ -131,6 +179,24 @@
       "writtenOn": "2024-02-21T01:00:13Z",
       "side": 1,
       "message": "don\u0027t declare until you can assign.",
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31b708e8_bba4d2a2",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "Argh, the kernel coding style is getting to me!",
+      "parentUuid": "b071f244_fc89895c",
       "revId": "a238c3294019b877736858c5618714968514d93e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -182,6 +248,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a824d34d_e7e02d84",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "Done using `errno`+`PLOG`.",
+      "parentUuid": "91015782_2da038a7",
+      "range": {
+        "startLine": 79,
+        "startChar": 67,
+        "endLine": 79,
+        "endChar": 70
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dacf0f21_103f40c3",
@@ -199,6 +289,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a828c47_bd5c26a4",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dacf0f21_103f40c3",
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3f57379c_777cc0fa",
@@ -212,6 +320,30 @@
       "writtenOn": "2024-02-21T01:00:13Z",
       "side": 1,
       "message": "...though you\u0027re not even using the value, so `if (!SpawnImage(...))`?",
+      "range": {
+        "startLine": 106,
+        "startChar": 4,
+        "endLine": 106,
+        "endChar": 7
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d9eeee3_fe0d09bb",
+        "filename": "init/first_stage_console.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1882526
+      },
+      "writtenOn": "2024-02-21T12:48:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f57379c_777cc0fa",
       "range": {
         "startLine": 106,
         "startChar": 4,
