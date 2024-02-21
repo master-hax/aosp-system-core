@@ -173,7 +173,9 @@ std::unique_ptr<ICowWriter> CreateCowWriter(uint32_t version, const CowOptions& 
 }
 
 std::unique_ptr<ICowWriter> CreateCowEstimator(uint32_t version, const CowOptions& options) {
-    return CreateCowWriter(version, options, unique_fd{-1}, std::nullopt);
+    android::base::unique_fd fd(open("cow_estimate", O_RDONLY));
+    fd.reset(open("cow_estimate", O_RDWR | O_CREAT | O_TRUNC, 0664));
+    return CreateCowWriter(version, options, std::move(fd), std::nullopt);
 }
 
 size_t CowOpCompressionSize(const CowOperation* op, size_t block_size) {
