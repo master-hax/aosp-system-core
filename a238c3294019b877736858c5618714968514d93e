@@ -143,6 +143,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a09d0e9_55476ce9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-22T01:25:34Z",
+      "side": 1,
+      "message": "AFAIK, the first stage console is mainly for debugging. So demanding a right shebang is not a big deal.",
+      "parentUuid": "116c6277_acd4c700",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 56
+      },
+      "revId": "a238c3294019b877736858c5618714968514d93e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a9e86cac_6b02cb2f",
