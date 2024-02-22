@@ -1549,18 +1549,24 @@ void reboot_to_userspace_fastboot() {
     fb->RebootTo("fastboot");
     fb->set_transport(nullptr);
 
-    // Give the current connection time to close.
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    for (int i = 0; i < 30; i++) {
+        // Give the current connection time to close and reopen.
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    fb->set_transport(open_device());
+        fb->set_transport(open_device());
 
-    if (!is_userspace_fastboot()) {
-        die("Failed to boot into userspace fastboot; one or more components might be unbootable.");
+        if (is_userspace_fastboot()) {
+            // Reset target_sparse_limit after reboot to userspace fastboot. Max
+            // download sizes may differ in bootloader and fastbootd.
+            target_sparse_limit = -1;
+
+            // success! don't keep looping.
+            return;
+        }
     }
 
-    // Reset target_sparse_limit after reboot to userspace fastboot. Max
-    // download sizes may differ in bootloader and fastbootd.
-    target_sparse_limit = -1;
+    // finished the loop and still not in userspace fastboot. something went wrong.
+    die("Failed to boot into userspace fastboot; one or more components might be unbootable.");
 }
 
 static void CancelSnapshotIfNeeded() {
