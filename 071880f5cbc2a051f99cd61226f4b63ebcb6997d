@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c2b1a63_b1c74101",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-02-22T15:51:00Z",
+      "side": 1,
+      "message": "constexpr ctor also aligns with std::shared_ptr, std::weak_ptr, std::mutex, etc.",
+      "revId": "071880f5cbc2a051f99cd61226f4b63ebcb6997d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
