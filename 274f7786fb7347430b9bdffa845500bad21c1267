@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3d43f78_888e4a14",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1954115
+      },
+      "writtenOn": "2024-02-22T20:33:51Z",
+      "side": 1,
+      "message": "Is that a typo \"stripted\"?",
+      "revId": "274f7786fb7347430b9bdffa845500bad21c1267",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "1fd7c0b3_ae0c6f36",
