@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5518de94_70793085",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-23T00:26:25Z",
+      "side": 1,
+      "message": "I\u0027m not sure if we need the PROT_XXX definitions any more, but I don\u0027t think I want to fix that in this change.",
+      "revId": "3e662d3c7f2bb6ead2862315a00f2a1c5b239dfa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
