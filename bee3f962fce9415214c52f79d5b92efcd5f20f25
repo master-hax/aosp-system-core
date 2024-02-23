@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a75dacc5_0e90f8d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-23T07:32:12Z",
+      "side": 1,
+      "message": "Please add bug number henceforth.",
+      "revId": "bee3f962fce9415214c52f79d5b92efcd5f20f25",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
