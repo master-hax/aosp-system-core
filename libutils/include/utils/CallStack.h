@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_CALLSTACK_H
-#define ANDROID_CALLSTACK_H
+#pragma once
 
 #include <memory>
 
@@ -170,5 +169,3 @@ public:
 }  // namespace android
 
 #undef CALLSTACK_ALWAYS_INLINE
-
-#endif // ANDROID_CALLSTACK_H
