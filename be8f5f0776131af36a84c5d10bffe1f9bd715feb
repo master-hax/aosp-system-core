@@ -34,6 +34,24 @@
       "parentUuid": "05292985_b6ef792d",
       "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e3ea825_f5715800",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-23T23:20:27Z",
+      "side": 1,
+      "message": "oh, interestingly weird but probably unavoidable...\n\nmaybe comment to that effect, and that those are rwx------, right? so this is strictly _loosening_, which is why it\u0027s okay?",
+      "parentUuid": "ca2e22ed_4772be62",
+      "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
