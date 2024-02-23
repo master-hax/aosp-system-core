@@ -552,6 +552,42 @@ prebuilt_etc {
     },
 }
 
+prebuilt_etc {
+    name: "crash_dump.no_mmap_mprotect.policy",
+    sub_dir: "seccomp_policy",
+    filename_from_src: true,
+    arch: {
+        arm: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.arm.policy",
+            required: [
+                "crash_dump.policy_no_mmap_mprotect_other",
+            ],
+        },
+        arm64: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.arm64.policy",
+            required: [
+                "crash_dump.policy_no_mmap_mprotect_other",
+            ],
+        },
+        riscv64: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.riscv64.policy",
+        },
+        x86: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.x86.policy",
+            required: [
+                "crash_dump.policy_no_mmap_mprotect_other",
+            ],
+        },
+        x86_64: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.x86_64.policy",
+            required: [
+                "crash_dump.policy_no_mmap_mprotect_other",
+            ],
+        },
+    },
+}
+
+
 
 // This installs the "other" architecture (so 32-bit on 64-bit device).
 prebuilt_etc {
@@ -573,6 +609,29 @@ prebuilt_etc {
         },
         x86_64: {
             src: "seccomp_policy/crash_dump.x86.policy",
+        },
+    },
+}
+
+prebuilt_etc {
+    name: "crash_dump.policy_no_mmap_mprotect_other",
+    sub_dir: "seccomp_policy",
+    filename_from_src: true,
+    arch: {
+        arm: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.arm64.policy",
+        },
+        arm64: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.arm.policy",
+        },
+        riscv64: {
+            enabled: false,
+        },
+        x86: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.x86_64.policy",
+        },
+        x86_64: {
+            src: "seccomp_policy/crash_dump.no_mmap_mprotect.x86.policy",
         },
     },
 }
