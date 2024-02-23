@@ -143,18 +143,23 @@ class CrashQueue {
     CrashArtifact result;
 
     std::optional<std::string> path;
-    result.fd.reset(openat(dir_fd_, ".", O_WRONLY | O_APPEND | O_TMPFILE | O_CLOEXEC, 0660));
+    constexpr int kSharedFlags = O_WRONLY | O_APPEND | O_CLOEXEC;
+    result.fd.reset(openat(dir_fd_, ".", kSharedFlags | O_TMPFILE, 0660));
     if (result.fd == -1) {
       // We might not have O_TMPFILE. Try creating with an arbitrary filename instead.
       static size_t counter = 0;
       std::string tmp_filename = StringPrintf(".temporary%zu", counter++);
       result.fd.reset(openat(dir_fd_, tmp_filename.c_str(),
-                             O_WRONLY | O_APPEND | O_CREAT | O_TRUNC | O_CLOEXEC, 0660));
+                             kSharedFlags | O_CREAT | O_TRUNC, 0660));
       if (result.fd == -1) {
         PLOG(FATAL) << "failed to create temporary tombstone in " << dir_path_;
       }
 
       result.temporary_path = std::move(tmp_filename);
+    }
+    std::string fd_path = StringPrintf("/proc/self/fd/%d", result.fd.get());
+    if (fchmodat(dir_fd_, fd_path.c_str(), 0664, 0) != 0) {
+      PLOG(ERROR) << "Failed to make tombstone world-readable";
     }
 
     return std::move(result);
