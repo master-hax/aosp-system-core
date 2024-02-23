@@ -523,10 +523,16 @@ bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
         }
 
         const auto& header = reader.GetHeader();
-        if (header.prefix.major_version > 2) {
-            LOG(ERROR) << "COW format not supported";
-            return false;
+        if (header.prefix.major_version == 2) {
+            size_t num_ops = reader.get_num_total_data_ops();
+            dev_sz = (num_ops * header.block_size);
+        } else {
+            // create_snapshot will skip in-place copy ops. Hence, fetch this
+            // information directly from v3 header.
+            const auto& v3_header = reader.header_v3();
+            dev_sz = v3_header.op_count_max * v3_header.block_size;
         }
+
         num_ops = reader.get_num_total_data_ops();
         dev_sz = (num_ops * header.block_size);
         base_sectors = dev_sz >> 9;
