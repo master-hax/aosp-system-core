@@ -423,6 +423,11 @@ static bool rename_tombstone_fd(borrowed_fd fd, borrowed_fd dirfd, const std::st
     PLOG(ERROR) << "failed to link tombstone at " << path;
     return false;
   }
+  rc = fchmodat(dirfd.get(), path.c_str(), 0774, 0);
+  if (rc != 0) {
+    PLOG(ERROR) << "failed to chmod tombstone at " << path;
+    return false;
+  }
   return true;
 }
 
