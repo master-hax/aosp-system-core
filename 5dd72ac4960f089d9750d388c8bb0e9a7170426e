@@ -33,6 +33,24 @@
       "message": "Ross, I need your Dr.No review vote.",
       "revId": "5dd72ac4960f089d9750d388c8bb0e9a7170426e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "faaefd42_4c479c24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1244622
+      },
+      "writtenOn": "2024-02-23T00:34:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9be6e83d_97781657",
+      "revId": "5dd72ac4960f089d9750d388c8bb0e9a7170426e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
