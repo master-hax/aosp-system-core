@@ -52,6 +52,24 @@
       "parentUuid": "ca2e22ed_4772be62",
       "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "559068e3_756ccb34",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-23T23:24:03Z",
+      "side": 1,
+      "message": "actually, lets fchmodat the original file. i realised the `openat` failed to set `664` because of the umask.\n\nalso 664 is enough, 775 is only needed for the dir :)",
+      "parentUuid": "3e3ea825_f5715800",
+      "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
