@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05292985_b6ef792d",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-23T21:47:56Z",
+      "side": 1,
+      "message": "shouldn\u0027t we chmod the file before we link it? (why isn\u0027t it created with the right permissions?)",
+      "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
