@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bf00ac5_b8826904",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-23T23:27:04Z",
+      "side": 1,
+      "message": "(is this dead code now? O_TMPFILE is 3.11 kernels...)",
+      "revId": "d92fc617b4917675a4aa9680f627c1a58ecca58b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
