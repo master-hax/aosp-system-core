@@ -22,6 +22,7 @@ cc_library {
     recovery_available: true,
     llndk: {
         symbol_file: "libvendorsupport.map.txt",
+        export_llndk_headers: ["libvendorsupport_llndk_headers"],
     },
     srcs: ["version_props.c"],
     cflags: [
@@ -33,4 +34,14 @@ cc_library {
     shared_libs: [
         "liblog",
     ],
+}
+
+cc_library_headers {
+    name: "libvendorsupport_llndk_headers",
+    vendor_available: true,
+    recovery_available: true,
+    export_include_dirs: ["include"],
+    llndk: {
+        llndk_headers: true,
+    },
 }
