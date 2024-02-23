@@ -16,6 +16,24 @@
       "message": "shouldn\u0027t we chmod the file before we link it? (why isn\u0027t it created with the right permissions?)",
       "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca2e22ed_4772be62",
+        "filename": "debuggerd/tombstoned/tombstoned.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-23T21:48:32Z",
+      "side": 1,
+      "message": "It just gets the permissions from the /proc/self/fd file",
+      "parentUuid": "05292985_b6ef792d",
+      "revId": "be8f5f0776131af36a84c5d10bffe1f9bd715feb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
