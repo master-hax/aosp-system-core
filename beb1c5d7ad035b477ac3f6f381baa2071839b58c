@@ -16,6 +16,24 @@
       "message": "Thanks to Jooyung\u0027s suggestion, I added __INTRODUCED_IN_LLNDK macros in libvendorsupport llndk.\nHowever, exporting the llndk head files is not that simple. (ag/26343048)",
       "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd9938be_2fbeca1b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-26T01:34:18Z",
+      "side": 1,
+      "message": "It looks like *every* LLNDK library should export this new headerlib regardless of it\u0027s being built as vendor module or not. Even for remote clients (I mean transitively depending on any LLNDK libraries). Since libc is LLNDK, we need to fix *all* cc_library modules. Is my understanding correct? Or can we make it a default behavior of the build system?",
+      "parentUuid": "41bd7633_8daf04ba",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
