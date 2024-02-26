@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba328178_0eb5fc54",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-26T10:01:06Z",
+      "side": 1,
+      "message": "I updated patchsets to split the header lib to include only the llndk-versioning.h",
+      "revId": "a5f13e55a79926861ab075d69e264a1fb44a8f72",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
