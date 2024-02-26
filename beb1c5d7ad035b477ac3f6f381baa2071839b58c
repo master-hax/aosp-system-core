@@ -52,6 +52,29 @@
       "parentUuid": "cd9938be_2fbeca1b",
       "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc409878_9090649a",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-26T01:49:00Z",
+      "side": 1,
+      "message": "nit: it would be more helpful to provide how to handle this error.\n- check ro.board.api_level?\n- guard the call with \u003csome snippet\u003e\n- etc.",
+      "range": {
+        "startLine": 35,
+        "startChar": 37,
+        "endLine": 35,
+        "endChar": 87
+      },
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
