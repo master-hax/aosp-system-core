@@ -56,6 +56,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4b6614de_56d220d6",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-02-26T09:47:06Z",
+      "side": 1,
+      "message": "I thought we can still have vendor available NDK symbols (which makes it LLNDK) that are guarded by __INTRODUCED_IN() ?\n\nClass 1: NDK (which is also LLNDK) symbols introduced with SDK version bump, use __INTRODUCED_IN(SDK_LEVEL)\n\nClass 2: LLNDK symbols introduced in Q2 (April), use __INTRODUCED_IN_LLNDK(YYYY04)",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc409878_9090649a",
         "filename": "libvendorsupport/include/vendorsupport/llndk.h",
         "patchSetId": 3
@@ -72,6 +89,29 @@
         "startChar": 37,
         "endLine": 35,
         "endChar": 87
+      },
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cbccaf1_cd9a58d3",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-02-26T09:47:06Z",
+      "side": 1,
+      "message": "nit2: API (all caps for consistent style)\n```suggestion\n                                     \" that is newer than the current vendor API level\"))) \\\n```",
+      "range": {
+        "startLine": 35,
+        "startChar": 77,
+        "endLine": 35,
+        "endChar": 80
       },
       "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
