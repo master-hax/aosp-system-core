@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "561e7e35_be20b09d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-26T21:45:11Z",
+      "side": 1,
+      "message": "I don\u0027t think this will obliterate too much blame history and removes all of the warnings.",
+      "revId": "2bf7db3de0b4d3c1583cdef7387d5fbbd0d5aff9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
