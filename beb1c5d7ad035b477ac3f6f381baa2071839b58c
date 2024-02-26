@@ -91,6 +91,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a0bb3b38_8090977f",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-02-26T10:30:51Z",
+      "side": 1,
+      "message": "So, LLNDK APIs added in 24Q3 will be tagged as `__INTRODUCED_IN_LLNDK(202504)`, right?\n\nIt\u0027s unfortunate that these APIs will be added but not available for three more quarters. I wish we could use `__INTRODUCED_IN_LLNDK(202407)` for Q3.",
+      "parentUuid": "68d5c109_8899e650",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc409878_9090649a",
         "filename": "libvendorsupport/include/vendorsupport/llndk.h",
         "patchSetId": 3
