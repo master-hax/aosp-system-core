@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41bd7633_8daf04ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-26T00:47:52Z",
+      "side": 1,
+      "message": "Thanks to Jooyung\u0027s suggestion, I added __INTRODUCED_IN_LLNDK macros in libvendorsupport llndk.\nHowever, exporting the llndk head files is not that simple. (ag/26343048)",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
