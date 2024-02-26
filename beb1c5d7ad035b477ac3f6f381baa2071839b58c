@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "68d5c109_8899e650",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-26T09:59:52Z",
+      "side": 1,
+      "message": "That is not allowed. For example, vendor modules in 24Q4 must not use the new NDK API introduced in Android V during the 24Q3. Otherwise we end up defining a new vendor API level for 24Q3. Vendor modules must not rely on the SDK version.",
+      "parentUuid": "4b6614de_56d220d6",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fc409878_9090649a",
         "filename": "libvendorsupport/include/vendorsupport/llndk.h",
         "patchSetId": 3
@@ -112,6 +130,54 @@
         "startChar": 77,
         "endLine": 35,
         "endChar": 80
+      },
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e32d5ca_08545b83",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-26T09:59:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5cbccaf1_cd9a58d3",
+      "range": {
+        "startLine": 35,
+        "startChar": 77,
+        "endLine": 35,
+        "endChar": 80
+      },
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bc7c410_2aba2bd0",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-26T09:59:52Z",
+      "side": 1,
+      "message": "Added a guide to guarding the api call.",
+      "parentUuid": "fc409878_9090649a",
+      "range": {
+        "startLine": 35,
+        "startChar": 37,
+        "endLine": 35,
+        "endChar": 87
       },
       "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
