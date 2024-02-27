@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1713f27_d013f4bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-27T20:34:47Z",
+      "side": 1,
+      "message": "I also changed the format slightly to make the original file more readable. The current was really hard to reason about.",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16d0c8ae_3c224239",
@@ -31,6 +48,24 @@
       "writtenOn": "2024-02-27T16:23:16Z",
       "side": 1,
       "message": "is it worth code comments on all the lines with magic numbers explaining the backwards compatibility issues that mean we can\u0027t just use the names? (and maybe including the names anyway, for grep/cs purposes?)",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdf60086_421f51e7",
+        "filename": "debuggerd/seccomp_policy/crash_dump.no_mmap_mprotect.arm64.policy",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-27T20:34:47Z",
+      "side": 1,
+      "message": "Unfortunately, I can\u0027t quite figure out how to allow the # comments to be left in after processing. Is there a simple option to cpp that would not remove #s that are not directives?",
+      "parentUuid": "16d0c8ae_3c224239",
       "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
