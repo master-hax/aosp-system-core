@@ -125,6 +125,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27f837c5_b888add0",
+        "filename": "libvendorsupport/include/vendorsupport/llndk.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-02-27T08:16:21Z",
+      "side": 1,
+      "message": "Resolving the comment.",
+      "parentUuid": "9a557b19_c292caab",
+      "revId": "beb1c5d7ad035b477ac3f6f381baa2071839b58c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fc409878_9090649a",
