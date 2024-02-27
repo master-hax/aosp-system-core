@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aec3dd8_d36b69c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-27T16:23:16Z",
+      "side": 1,
+      "message": "(since my comments aren\u0027t regressions, even if you do want to do them, i think it makes more sense to do them separately...)",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16d0c8ae_3c224239",
+        "filename": "debuggerd/seccomp_policy/crash_dump.no_mmap_mprotect.arm64.policy",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-27T16:23:16Z",
+      "side": 1,
+      "message": "is it worth code comments on all the lines with magic numbers explaining the backwards compatibility issues that mean we can\u0027t just use the names? (and maybe including the names anyway, for grep/cs purposes?)",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d1fb1d4_573684ad",
+        "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-27T16:23:16Z",
+      "side": 1,
+      "message": "these defines don\u0027t work in the other files?",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
