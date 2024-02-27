@@ -16,6 +16,24 @@
       "message": "This is Pixel specific. We should look up the existing group of each partition and use that.",
       "revId": "2ce36bee44a04403b1c60d5ddedf227b26ab83f8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ca83693_859dbb66",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-27T22:24:02Z",
+      "side": 1,
+      "message": "Thanks. updated group name based on partition.",
+      "parentUuid": "094e703a_b559da95",
+      "revId": "2ce36bee44a04403b1c60d5ddedf227b26ab83f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
