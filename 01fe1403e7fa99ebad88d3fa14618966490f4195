@@ -85,6 +85,24 @@
       "message": "these defines don\u0027t work in the other files?",
       "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29518b06_f6595e6d",
+        "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-02-27T20:35:34Z",
+      "side": 1,
+      "message": "Nope, because of the way generate.sh is using cpp directly without using any other include files.",
+      "parentUuid": "5d1fb1d4_573684ad",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
