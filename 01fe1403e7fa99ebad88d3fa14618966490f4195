@@ -72,6 +72,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e29a7d2f_5b97286f",
+        "filename": "debuggerd/seccomp_policy/crash_dump.no_mmap_mprotect.arm64.policy",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-27T22:09:17Z",
+      "side": 1,
+      "message": "should we just not check these in instead? use a genrule?",
+      "parentUuid": "bdf60086_421f51e7",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5d1fb1d4_573684ad",
         "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
         "patchSetId": 2
@@ -101,6 +119,24 @@
       "side": 1,
       "message": "Nope, because of the way generate.sh is using cpp directly without using any other include files.",
       "parentUuid": "5d1fb1d4_573684ad",
+      "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90d896c1_99d195c1",
+        "filename": "debuggerd/seccomp_policy/crash_dump.policy.def",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-27T22:09:17Z",
+      "side": 1,
+      "message": "should we move the ifdefery to a file that we can include in both contexts? it\u0027s weird to have names for the constants here, but not use them consistently.",
+      "parentUuid": "29518b06_f6595e6d",
       "revId": "01fe1403e7fa99ebad88d3fa14618966490f4195",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
