@@ -30,17 +30,9 @@
 
 __BEGIN_DECLS
 
-/*
- * Used in:
- *  build/tools/fs_config/fs_config.c
- *  build/tools/fs_get_stats/fs_get_stats.c
- *  system/extras/ext4_utils/make_ext4fs_main.c
- *  external/squashfs-tools/squashfs-tools/android.c
- *  system/core/cpio/mkbootfs.c
- *  system/core/adb/file_sync_service.cpp
- *  system/extras/ext4_utils/canned_fs_config.c
- */
 void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
                unsigned* mode, uint64_t* capabilities);
+void fs_config_nodefault(const char* path, int dir, const char* target_out_path, unsigned* uid,
+                         unsigned* gid, unsigned* mode, uint64_t* capabilities);
 
 __END_DECLS

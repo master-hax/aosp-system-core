@@ -282,6 +282,9 @@
    "name" : "fs_config"
   },
   {
+   "name" : "fs_config_nodefault"
+  },
+  {
    "name" : "fs_mkdirs"
   },
   {
@@ -1148,6 +1151,36 @@
   {
    "function_name" : "fs_config",
    "linker_set_key" : "fs_config",
+   "parameters" :
+   [
+    {
+     "referenced_type" : "_ZTIPKc"
+    },
+    {
+     "referenced_type" : "_ZTIi"
+    },
+    {
+     "referenced_type" : "_ZTIPKc"
+    },
+    {
+     "referenced_type" : "_ZTIPj"
+    },
+    {
+     "referenced_type" : "_ZTIPj"
+    },
+    {
+     "referenced_type" : "_ZTIPj"
+    },
+    {
+     "referenced_type" : "_ZTIPy"
+    }
+   ],
+   "return_type" : "_ZTIv",
+   "source_file" : "system/core/libcutils/include/private/fs_config.h"
+  },
+  {
+   "function_name" : "fs_config_nodefault",
+   "linker_set_key" : "fs_config_nodefault",
    "parameters" :
    [
     {

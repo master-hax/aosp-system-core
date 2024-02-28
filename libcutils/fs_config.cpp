@@ -91,7 +91,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00751, AID_ROOT,         AID_SHELL,        0, "vendor/bin" },
     { 00751, AID_ROOT,         AID_SHELL,        0, "vendor/apex/*/bin" },
     { 00755, AID_ROOT,         AID_SHELL,        0, "vendor" },
-    { 00755, AID_ROOT,         AID_ROOT,         0, 0 },
+    {},
         // clang-format on
 };
 #ifndef __ANDROID_VNDK__
@@ -228,7 +228,7 @@ static const struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/apex/*bin/*" },
     { 00755, AID_ROOT,      AID_SHELL,     0, "vendor/xbin/*" },
-    { 00644, AID_ROOT,      AID_ROOT,      0, 0 },
+    {},
         // clang-format on
 };
 #ifndef __ANDROID_VNDK__
@@ -318,8 +318,8 @@ static bool fs_config_cmp(bool dir, const char* prefix, size_t len, const char* 
 auto __for_testing_only__fs_config_cmp = fs_config_cmp;
 #endif
 
-void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
-               unsigned* mode, uint64_t* capabilities) {
+void fs_config_nodefault(const char* path, int dir, const char* target_out_path, unsigned* uid,
+                         unsigned* gid, unsigned* mode, uint64_t* capabilities) {
     const struct fs_path_config* pc;
     size_t which, plen;
 
@@ -375,11 +375,20 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
 
     for (pc = dir ? android_dirs : android_files; pc->prefix; pc++) {
         if (fs_config_cmp(dir, pc->prefix, strlen(pc->prefix), path, plen)) {
-            break;
+            *uid = pc->uid;
+            *gid = pc->gid;
+            *mode = (*mode & (~07777)) | pc->mode;
+            *capabilities = pc->capabilities;
+            return;
         }
     }
-    *uid = pc->uid;
-    *gid = pc->gid;
-    *mode = (*mode & (~07777)) | pc->mode;
-    *capabilities = pc->capabilities;
+}
+
+void fs_config(const char* path, int dir, const char* target_out_path, unsigned* uid, unsigned* gid,
+               unsigned* mode, uint64_t* capabilities) {
+    *uid = AID_ROOT;
+    *gid = AID_ROOT;
+    *mode = (*mode & (~07777)) | (dir ? 0755 : 0644);
+    *capabilities = 0;
+    fs_config_nodefault(path, dir, target_out_path, uid, gid, mode, capabilities);
 }
