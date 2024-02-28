@@ -16,6 +16,24 @@
       "message": "Do we need to ensure that these commands aren\u0027t available on user builds?",
       "revId": "cac1cf3ae98f9e0a008be52fcefa5321f7e4d2f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4615bd5_778a653e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-28T22:26:28Z",
+      "side": 1,
+      "message": "I don\u0027t see any concern here.. \n\nJulien - Would this break anything in infrastructure if we wrap the command under USERDEBUG_ENG builds only ?",
+      "parentUuid": "34e91236_7db564ae",
+      "revId": "cac1cf3ae98f9e0a008be52fcefa5321f7e4d2f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
