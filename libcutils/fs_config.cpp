@@ -375,11 +375,14 @@ void fs_config(const char* path, int dir, const char* target_out_path, unsigned*
 
     for (pc = dir ? android_dirs : android_files; pc->prefix; pc++) {
         if (fs_config_cmp(dir, pc->prefix, strlen(pc->prefix), path, plen)) {
-            break;
+            *uid = pc->uid;
+            *gid = pc->gid;
+            *mode = (*mode & (~07777)) | pc->mode;
+            *capabilities = pc->capabilities;
+            return;
         }
     }
-    *uid = pc->uid;
-    *gid = pc->gid;
-    *mode = (*mode & (~07777)) | pc->mode;
-    *capabilities = pc->capabilities;
+    if (!*mode) {
+        *mode = pc->mode;
+    }
 }
