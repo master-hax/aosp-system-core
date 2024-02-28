@@ -77,7 +77,7 @@ int load_canned_fs_config(const char* fn) {
                 .capabilities = 0,
         };
 
-        for (size_t i = 4; i < tokens.size(); i++) {
+        for (size_t i = 5; i < tokens.size(); i++) {
             std::string_view sv = tokens[i];
             if (ConsumePrefix(&sv, "capabilities=")) {
                 e.capabilities = strtoll(std::string(sv).c_str(), nullptr, 0);
