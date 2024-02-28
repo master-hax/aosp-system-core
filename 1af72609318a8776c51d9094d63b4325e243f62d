@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfdc50cd_b3fdaf09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-28T14:54:41Z",
+      "side": 1,
+      "message": "Bypass presubmit - \n\nBuild break on -user - b/327325747",
+      "revId": "1af72609318a8776c51d9094d63b4325e243f62d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
