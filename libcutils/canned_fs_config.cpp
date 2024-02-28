@@ -82,11 +82,14 @@ int load_canned_fs_config(const char* fn) {
             if (ConsumePrefix(&sv, "capabilities=")) {
                 e.capabilities = strtoll(std::string(sv).c_str(), nullptr, 0);
                 break;
+            } else if (ConsumePrefix(&sv, "selabel=")) {
+                continue;
+            } else {
+                // Historical: there can be tokens like "selabel=..." here. They have been ignored.
+                // It's not an error because selabels are applied separately in e2fsdroid using the
+                // file_contexts files set via -S option.
+                std::cerr << "info: ignored token \"" << sv << "\" in " << fn << std::endl;
             }
-            // Historical: there can be tokens like "selabel=..." here. They have been ignored.
-            // It's not an error because selabels are applied separately in e2fsdroid using the
-            // file_contexts files set via -S option.
-            std::cerr << "info: ignored token \"" << sv << "\" in " << fn << std::endl;
         }
 
         canned_data.emplace_back(std::move(e));
