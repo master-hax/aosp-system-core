@@ -16,6 +16,23 @@
       "message": "Thanks for your reply, yes,it shouldn\u0027t be harmful,\nbut it will generate a large number of invalid logs(\"info: ignore token\") , In our company\u0027s build logs, there are 15761 lines，I have modified the patch to avoid, could you please help me check if it is feasible?",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d66f0f5_eb52d984",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-28T16:16:04Z",
+      "side": 1,
+      "message": "why are we silencing the error rather than deleting the historical cruft?\n\nis the actual bug that build/make/tools/fs_config/fs_config.c still seems to be _outputting_ `selabel\u003d`?",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
