@@ -1090,7 +1090,14 @@ static void property_initialize_ro_vendor_api_level() {
     // required to support.
     constexpr auto VENDOR_API_LEVEL_PROP = "ro.vendor.api_level";
 
-    auto vendor_api_level = GetIntProperty("ro.board.first_api_level", __ANDROID_VENDOR_API_MAX__);
+    auto vendor_api_level = GetIntProperty(VENDOR_API_LEVEL_PROP, __ANDROID_VENDOR_API_MAX__);
+    if (vendor_api_level != __ANDROID_VENDOR_API_MAX__) {
+        // The device already have ro.vendor.api_level in its vendor/build.prop.
+        // Skip initializing the ro.vendor.api_level property.
+        return;
+    }
+
+    vendor_api_level = GetIntProperty("ro.board.first_api_level", __ANDROID_VENDOR_API_MAX__);
     if (vendor_api_level != __ANDROID_VENDOR_API_MAX__) {
         // Update the vendor_api_level with "ro.board.api_level" only if both "ro.board.api_level"
         // and "ro.board.first_api_level" are defined.
