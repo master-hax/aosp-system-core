@@ -21,6 +21,7 @@
 #include <linux/prctl.h>
 #include <malloc.h>
 #include <pthread.h>
+#include <setjmp.h>
 #include <stdlib.h>
 #include <sys/capability.h>
 #include <sys/mman.h>
@@ -596,6 +597,49 @@ TEST_P(SizeParamCrasherTest, mte_underflow) {
   ASSERT_MATCH(result, R"((^|\s)allocated by thread .*
       #00 pc)");
   ASSERT_MATCH(result, "Memory tags around the fault address");
+#else
+  GTEST_SKIP() << "Requires aarch64";
+#endif
+}
+
+static jmp_buf jump_buf;
+__attribute__((noinline)) void mte_illegal_setjmp_helper() {
+  volatile char buf[1024];
+  buf[0] = '1';
+  setjmp(jump_buf);
+}
+
+TEST_F(CrasherTest, mte_illegal_setjmp) {
+  // This setjmp is illegal because it jumps back into a function that already returned.
+  // Quoting man 3 setjmp:
+  //     If the function which called setjmp() returns before longjmp() is
+  //     called, the behavior is undefined.  Some kind of subtle or
+  //     unsubtle chaos is sure to result.
+  // https://man7.org/linux/man-pages/man3/longjmp.3.html
+#if defined(__aarch64__)
+  if (!mte_supported()) {
+    GTEST_SKIP() << "Requires MTE";
+  }
+
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([&]() {
+    SetTagCheckingLevelSync();
+    mte_illegal_setjmp_helper();
+    longjmp(jump_buf, 1);
+  });
+
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+
+  ASSERT_MATCH(result, R"(memtag_handle_longjmp: stack adjustment too large)");
 #else
   GTEST_SKIP() << "Requires aarch64";
 #endif
