@@ -16,6 +16,24 @@
       "message": "Thanks for submitting a patch.\n\nBy the way, the capability can be at index 4, without selabel. See https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Virtualization/apex/canned_fs_config as an example.\n\nI admit that \"info: ignored token\" can be annoying, but it shouldn\u0027t be harmful, right?",
       "revId": "b1156dc4993da5409900d16dc9751bf0464b00b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4132152a_1159c1c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2024-02-28T11:57:42Z",
+      "side": 1,
+      "message": "Thanks for your reply, yes,it shouldn\u0027t be harmful, \nbut it will generate a large number of invalid logs(\"info: ignore token\") , In our company\u0027s build logs, there are 15761 lines，I have modified the patch to avoid, could you please help me check if it is feasible?",
+      "parentUuid": "49ec4e51_e1667c46",
+      "revId": "b1156dc4993da5409900d16dc9751bf0464b00b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

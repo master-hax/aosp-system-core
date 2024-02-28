@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2b8f837_e5290f8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2024-02-28T11:57:42Z",
+      "side": 1,
+      "message": "Thanks for your reply, yes,it shouldn\u0027t be harmful,\nbut it will generate a large number of invalid logs(\"info: ignore token\") , In our company\u0027s build logs, there are 15761 lines，I have modified the patch to avoid, could you please help me check if it is feasible?",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
