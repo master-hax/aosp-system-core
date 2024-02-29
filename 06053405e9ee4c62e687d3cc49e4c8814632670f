@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5260da5_35fb8270",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T23:06:54Z",
+      "side": 1,
+      "message": "(ignore the spam in the ps1 commit message --- i\u0027m beta testing the web editor stuff, and that\u0027s it\u0027s most annoying bug :-) )",
+      "revId": "06053405e9ee4c62e687d3cc49e4c8814632670f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "703aacd0_610d0506",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T23:06:54Z",
+      "side": 1,
+      "message": "my first thought was \"hey, we can use close_range() now\".\n\nmy second thought was \"wait, doesn\u0027t that mean i need to fix close_range() for fdsan?\".\n\nmy third thought was \"i actually don\u0027t know what to do here, because [as far as i\u0027m concerned] the whole point of close_range() is exactly this about-to-exec use case\".",
+      "revId": "06053405e9ee4c62e687d3cc49e4c8814632670f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
