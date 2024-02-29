@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "46e3ae22_6736c71c",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-29T23:47:15Z",
+      "side": 1,
+      "message": "yeah, fair enough. i changed to an easier way to force the compiler to make sure the sp gets bumped for the buf before the call to setjmp",
+      "parentUuid": "c5a71aab_81f68510",
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "da67639b_9eb60ade",
@@ -41,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64d000d6_314c98ff",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-29T23:47:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da67639b_9eb60ade",
+      "range": {
+        "startLine": 610,
+        "startChar": 40,
+        "endLine": 610,
+        "endChar": 47
+      },
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "35520c54_517748a8",
@@ -54,6 +96,24 @@
       "writtenOn": "2024-02-29T16:03:28Z",
       "side": 1,
       "message": "GTEST_SKIP returns, so you can just put all this at the top...",
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb923fdf_ed657193",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-02-29T23:47:15Z",
+      "side": 1,
+      "message": "This is the same for the whole file. We can fix that for all of them in a follow up CL.",
+      "parentUuid": "35520c54_517748a8",
       "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
