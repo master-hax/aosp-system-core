@@ -22,6 +22,30 @@
       },
       "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2904afd1_eb413d18",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-29T13:41:46Z",
+      "side": 1,
+      "message": "You may use `__system_property_find(\"name\")` which returns null if the prop doesn\u0027t exist.",
+      "parentUuid": "d87849f4_fd67788f",
+      "range": {
+        "startLine": 1093,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 62
+      },
+      "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
