@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d87849f4_fd67788f",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-02-29T01:57:48Z",
+      "side": 1,
+      "message": "we should really have android-base \u0027std::optional\u003cint\u003e GetIntProperty\u0027 etc.. variants",
+      "range": {
+        "startLine": 1093,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 62
+      },
+      "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
