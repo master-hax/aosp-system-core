@@ -33,6 +33,24 @@
       "message": "my first thought was \"hey, we can use close_range() now\".\n\nmy second thought was \"wait, doesn\u0027t that mean i need to fix close_range() for fdsan?\".\n\nmy third thought was \"i actually don\u0027t know what to do here, because [as far as i\u0027m concerned] the whole point of close_range() is exactly this about-to-exec use case\".",
       "revId": "06053405e9ee4c62e687d3cc49e4c8814632670f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb88130e_029ed416",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1894651
+      },
+      "writtenOn": "2024-02-29T23:22:45Z",
+      "side": 1,
+      "message": "Yeah, it seems unlikely to me that anyone\u0027s going to call close_range except to exec. Maybe we should poison all of the file descriptors in that range (or all file descriptors period?) with a \"closed by close_range\" value?",
+      "parentUuid": "703aacd0_610d0506",
+      "revId": "06053405e9ee4c62e687d3cc49e4c8814632670f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
