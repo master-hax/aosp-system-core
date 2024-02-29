@@ -46,6 +46,30 @@
       },
       "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2e7c281_4550675f",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T16:52:20Z",
+      "side": 1,
+      "message": "or just use 0 or -1 as the default if that\u0027s more obvious. most callers do actually want a default (which is why libbase takes a default), and those that don\u0027t can\u0027t just provide an invalid value as their default, like here.\n\n(forcing callers to think about the default also fixed a bunch of bugs for callers that moved over. std::optional equivalents tend to push those bugs back to runtime, like thrown exceptions.)",
+      "parentUuid": "2904afd1_eb413d18",
+      "range": {
+        "startLine": 1093,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 62
+      },
+      "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
