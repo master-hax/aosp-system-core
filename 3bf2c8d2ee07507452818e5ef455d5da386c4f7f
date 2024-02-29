@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5a71aab_81f68510",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T16:03:28Z",
+      "side": 1,
+      "message": "why do you need this function too?",
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da67639b_9eb60ade",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 610,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T16:03:28Z",
+      "side": 1,
+      "message": "it seems like what\u0027s \"invalid\" or \"illegal\" here is something to do with the size of the stack frame? be more explicit? (especially since that\u0027s not generally a concern for setjmp().)",
+      "range": {
+        "startLine": 610,
+        "startChar": 40,
+        "endLine": 610,
+        "endChar": 47
+      },
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35520c54_517748a8",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-02-29T16:03:28Z",
+      "side": 1,
+      "message": "GTEST_SKIP returns, so you can just put all this at the top...",
+      "revId": "3bf2c8d2ee07507452818e5ef455d5da386c4f7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
