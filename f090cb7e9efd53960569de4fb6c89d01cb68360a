@@ -33,6 +33,24 @@
       "message": "why are we silencing the error rather than deleting the historical cruft?\n\nis the actual bug that build/make/tools/fs_config/fs_config.c still seems to be _outputting_ `selabel\u003d`?",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4be7b125_b5b57f16",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-02-29T01:03:56Z",
+      "side": 1,
+      "message": "Yeah, I agree with that.",
+      "parentUuid": "7d66f0f5_eb52d984",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
