@@ -52,6 +52,24 @@
       "parentUuid": "a4615bd5_778a653e",
       "revId": "cac1cf3ae98f9e0a008be52fcefa5321f7e4d2f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a4bb331_d3c850d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-02-29T06:27:04Z",
+      "side": 1,
+      "message": "I will follow up with a CL to guard this under userdebug/eng builds. Since this is a well tested CL and I will check-in.",
+      "parentUuid": "394b221a_ea4b7fe4",
+      "revId": "cac1cf3ae98f9e0a008be52fcefa5321f7e4d2f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
