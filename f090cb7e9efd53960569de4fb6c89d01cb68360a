@@ -69,6 +69,24 @@
       "parentUuid": "4be7b125_b5b57f16",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eddf7b8b_67ed8df1",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-02T04:22:01Z",
+      "side": 1,
+      "message": "Well, \"bug\" may be a bit too strong word for this. It\u0027s something that should better be cleaned up.\n\nThe point is that selabels for files should be from file_contexts file, not this canned_fs_config file.",
+      "parentUuid": "305a2fda_796dc815",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
