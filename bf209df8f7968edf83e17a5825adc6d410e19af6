@@ -22,6 +22,30 @@
       },
       "revId": "bf209df8f7968edf83e17a5825adc6d410e19af6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce30345e_f2bd405c",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-04T14:46:10Z",
+      "side": 1,
+      "message": "Hi Steven,\n\n\u003e the host test should be exactly the same as the device test\n\nThis was my first attempt but this test is highly Linux specific. As an example, it calls:\n\n  ASSERT_EQ(FD_CLOEXEC, (fcntl(fd, F_GETFD) \u0026 FD_CLOEXEC));\n  \nIt also calls mmap / fork and other Linux syscalls.\n\nAs such, I did not want to have #ifdef _WIN32 all over the test file. This is primarily a test for ashmem_host.cpp, which by design has significantly reduced functionality:\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/libcutils/ashmem-host.cpp\n\nWould it be better if this was a cc_test that could also run on a device to verify the functionality?",
+      "parentUuid": "a104f469_6e6234c2",
+      "range": {
+        "startLine": 270,
+        "startChar": 17,
+        "endLine": 270,
+        "endChar": 28
+      },
+      "revId": "bf209df8f7968edf83e17a5825adc6d410e19af6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
