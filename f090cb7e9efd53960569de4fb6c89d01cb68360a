@@ -123,6 +123,24 @@
       "parentUuid": "62fc5248_28beed4b",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43a6862f_c4ff42b5",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-04T21:22:43Z",
+      "side": 1,
+      "message": "external link: https://android-review.googlesource.com/c/platform/build/+/2987371",
+      "parentUuid": "58bcc848_a512be45",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
