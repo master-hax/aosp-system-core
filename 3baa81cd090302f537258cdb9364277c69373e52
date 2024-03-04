@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6503ee8_2f1a2915",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-04T19:59:32Z",
+      "side": 1,
+      "message": "(does this need to be global?)",
+      "revId": "3baa81cd090302f537258cdb9364277c69373e52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6597ee4_9318fcf7",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-04T19:59:32Z",
+      "side": 1,
+      "message": "and the reason for this...",
+      "revId": "3baa81cd090302f537258cdb9364277c69373e52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c7e4b7d_25f94677",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-04T19:59:32Z",
+      "side": 1,
+      "message": "...is because mte doesn\u0027t actually catch the \"longjmp() into returned function\" bug, but it does notice very large stack changes?",
+      "revId": "3baa81cd090302f537258cdb9364277c69373e52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
