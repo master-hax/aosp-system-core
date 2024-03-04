@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a104f469_6e6234c2",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-03-04T13:14:37Z",
+      "side": 1,
+      "message": "the host test should be exactly the same as the device test? so that we are sure they are implementing the same interface properly? as client test should rely on both, the test should rely on both?\n\nIf all the tests can\u0027t be commen, can you make at least a common core common?\n\nNote - any differences will end up being roboelectric\u003c-\u003edevice differences as well and cause worse test coverage",
+      "range": {
+        "startLine": 270,
+        "startChar": 17,
+        "endLine": 270,
+        "endChar": 28
+      },
+      "revId": "bf209df8f7968edf83e17a5825adc6d410e19af6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
