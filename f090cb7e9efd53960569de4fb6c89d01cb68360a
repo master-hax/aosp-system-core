@@ -87,6 +87,24 @@
       "parentUuid": "305a2fda_796dc815",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62fc5248_28beed4b",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2024-03-04T04:09:50Z",
+      "side": 1,
+      "message": "Thanks for your reply，In the latest AOSP, execute make target-files-package，when creating some images, both filesysteminconfig.txt and filecontexts.bin exist。It will generate over 6000 lines of \"info: ignored token\" logs. \n\nFor example, when creating system.img, \"mkfs.erofs -z lz4hc,9 --mount-point / --fs-config-file merged_fs_configtmh__s_m.txt --file-contexts  framework_file_contexts.bin -T 1230768000 -U 8989a30e-76ed-5adc-bd55-e1723f4cacb1 --block-list-file system.map system.img tmpytmqj0ya\"，\n\nBoth filesysteminconfig.txt and filecontexts.bin exist, We will silence the log in our internal code, waiting for AOSP to fix this situation in the future。",
+      "parentUuid": "eddf7b8b_67ed8df1",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
