@@ -40,8 +40,12 @@ __BEGIN_DECLS
 #else  // __ANDROID_VENDOR__
 
 // For non-vendor libraries, __INTRODUCED_IN_LLNDK must be ignored because it must not change
-// symbols of NDK or the system side of the treble boundary.
-#define __INTRODUCED_IN_LLNDK(vendor_api_level)
+// symbols of NDK or the system side of the treble boundary. It leaves a no-op annotation for ABI
+// analysis.
+#define __INTRODUCED_IN_LLNDK(vendor_api_level)                                           \
+    _Pragma("clang diagnostic push") _Pragma("clang diagnostic ignored \"-Wgcc-compat\"") \
+            __attribute__((annotate("introduced_in_llndk=" #vendor_api_level)))           \
+            _Pragma("clang diagnostic pop")
 
 #endif  // __ANDROID_VENDOR__
 
