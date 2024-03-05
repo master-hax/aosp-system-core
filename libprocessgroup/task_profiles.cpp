@@ -33,6 +33,8 @@
 #include <json/reader.h>
 #include <json/value.h>
 
+#include <build_flags.h>
+
 // To avoid issues in sdk_mac build
 #if defined(__ANDROID__)
 #include <sys/prctl.h>
