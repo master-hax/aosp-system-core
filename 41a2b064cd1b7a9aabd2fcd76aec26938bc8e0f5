@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4e1af42_ccfea412",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-03-05T17:25:47Z",
+      "side": 1,
+      "message": "I think this equates to `sizeof(union metrics_msg.args)`, which is a much simpler expression.",
+      "range": {
+        "startLine": 162,
+        "startChar": 8,
+        "endLine": 162,
+        "endChar": 28
+      },
+      "revId": "41a2b064cd1b7a9aabd2fcd76aec26938bc8e0f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a42718d_907915ff",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-03-05T17:25:47Z",
+      "side": 1,
+      "message": "I think this buffer can be removed?",
+      "range": {
+        "startLine": 177,
+        "startChar": 4,
+        "endLine": 177,
+        "endChar": 38
+      },
+      "revId": "41a2b064cd1b7a9aabd2fcd76aec26938bc8e0f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
