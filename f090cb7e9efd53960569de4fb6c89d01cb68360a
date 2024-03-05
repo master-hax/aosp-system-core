@@ -141,6 +141,24 @@
       "parentUuid": "58bcc848_a512be45",
       "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54f45730_c9bca0dc",
+        "filename": "libcutils/canned_fs_config.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1893050
+      },
+      "writtenOn": "2024-03-05T07:02:41Z",
+      "side": 1,
+      "message": "Thanks very much,the patch is valid.",
+      "parentUuid": "43a6862f_c4ff42b5",
+      "revId": "f090cb7e9efd53960569de4fb6c89d01cb68360a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
