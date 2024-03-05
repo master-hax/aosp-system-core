@@ -523,6 +523,21 @@ int FirstStageMain(int argc, char** argv) {
             LOG(FATAL) << "Failed to create devices required for first stage mount";
         }
 
+        if (access("/dev/block/by-name/microdroid-vendor", F_OK) == 0) {
+            // TODO: set execute permission here?
+            // clang-format off
+            constexpr std::array<const char*, 7> args = {
+                "derive_microdroid_vendor_dice_node",
+                "--dice_driver", "/dev/open-dice0",
+                "--microdroid_vendor_disk_image", "/dev/block/by-name/microdroid-vendor",
+                "--output", "/second_stage_resources/dice_chain.raw",
+            };
+            // clang-format on
+            if (!ForkExecveAndWaitForCompletion(args[0], (char**)args.data())) {
+                LOG(FATAL) << "Failed to derive microdroid vendor dice node";
+            }
+        }
+
         if (!fsm->DoFirstStageMount()) {
             LOG(FATAL) << "Failed to mount required partitions early ...";
         }
