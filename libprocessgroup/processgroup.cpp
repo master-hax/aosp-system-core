@@ -27,10 +27,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <chrono>
+#include <cstdint>
 #include <cstring>
 #include <map>
 #include <memory>
@@ -44,6 +46,7 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android_libprocessgroup_flags.h>
 #include <cutils/android_filesystem_config.h>
 #include <processgroup/processgroup.h>
 #include <task_profiles.h>
@@ -641,8 +644,46 @@ int killProcessGroupOnce(uid_t uid, pid_t initialPid, int signal) {
     return KillProcessGroup(uid, initialPid, signal, true);
 }
 
+// Don't pay to read /proc/cgroups every time, but occasionally check for
+// an excessive number of them which may indicate a leak, bug, or zombies.
+static void OccasionallyCheckNumMemcgs() {
+    static const bool force_memcg_v2 = android::libprocessgroup_flags::force_memcg_v2();
+    static std::uint8_t counter = 0;
+
+    if (force_memcg_v2 && (++counter % 128) == 0) { // 1/128 = 0.8%
+        static const std::string file_name = "/proc/cgroups";
+        std::string content;
+        if (!android::base::ReadFileToString(file_name, &content)) {
+            PLOG(ERROR) << "Failed to read cgroups info from " << file_name;
+            return;
+        }
+
+        std::vector<std::string> tokens = android::base::Split(content, " \t\n");
+        for (int i=0; i<tokens.size(); ++i) {
+            if (tokens[i] == "memory" && i + 2 < tokens.size()) {
+                struct sysinfo s_info;
+                if (sysinfo(&s_info)) {
+                    s_info.uptime = 0;
+                    PLOG(WARNING) << "Could not get sysinfo";
+                }
+
+                if (int numMemcgs = std::stoi(tokens[i+2]); numMemcgs > 1500) {
+                    LOG(WARNING) << "Excessive number of memcgs?=" << tokens[i+2]
+                                 << " uptime=" << s_info.uptime;
+                } else {
+                    LOG(INFO) << "Number of memcgs=" << tokens[i+2]
+                              << " uptime=" << s_info.uptime;
+                }
+                break;
+            }
+        }
+    }
+}
+
 static int createProcessGroupInternal(uid_t uid, pid_t initialPid, std::string cgroup,
                                       bool activate_controllers) {
+    OccasionallyCheckNumMemcgs();
+
     auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
 
     struct stat cgroup_stat;

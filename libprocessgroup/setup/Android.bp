@@ -31,6 +31,7 @@ cc_library_shared {
         "libbase",
         "libcgrouprc",
         "libjsoncpp",
+        "libprocessgroup_aconfig_flags_lib",
     ],
     static_libs: [
         "libcgrouprc_format",
