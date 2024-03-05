@@ -15,6 +15,7 @@
 #pragma once
 
 #include <sys/cdefs.h>
+#include <android/llndk-versioning.h>
 
 __BEGIN_DECLS
 
@@ -33,7 +34,7 @@ __BEGIN_DECLS
  * @return The corresponding vendor API level of the SDK version. -1 if the SDK
  * version is invalid or 10000.
  */
-int AVendorSupport_getVendorApiLevelOf(int sdkApiLevel);
+int AVendorSupport_getVendorApiLevelOf(int sdkApiLevel) __INTRODUCED_IN_LLNDK(202504);
 
 /**
  * @brief Find corresponding SDK API version from a vendor API level.
@@ -42,6 +43,6 @@ int AVendorSupport_getVendorApiLevelOf(int sdkApiLevel);
  * @return The corresponding SDK API version of the vendor API level. -1 if the
  * vendor API level is invalid.
  */
-int AVendorSupport_getSdkApiLevelOf(int vendorApiLevel);
+int AVendorSupport_getSdkApiLevelOf(int vendorApiLevel) __INTRODUCED_IN_LLNDK(202504);
 
 __END_DECLS
