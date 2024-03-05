@@ -2,13 +2,35 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
+aconfig_declarations {
+    name: "libprocessgroup_aconfig_flags",
+    package: "android.libprocessgroup_flags",
+    container: "system",
+    srcs: ["libprocessgroup.aconfig"],
+}
+
+cc_aconfig_library {
+    name: "libprocessgroup_aconfig_flags_lib",
+    host_supported: true,
+    native_bridge_supported: true,
+    ramdisk_available: true,
+    vendor_ramdisk_available: true,
+    recovery_available: true,
+    vendor_available: true,
+    product_available: true,
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    aconfig_declarations: "libprocessgroup_aconfig_flags",
+}
+
 cc_defaults {
     name: "libprocessgroup_defaults",
     cpp_std: "gnu++20",
     cflags: [
         "-Wall",
         "-Werror",
-        "-Wexit-time-destructors",
         "-Wno-unused-parameter",
     ],
 }
@@ -60,6 +82,7 @@ cc_library {
     shared_libs: [
         "libbase",
         "libcgrouprc",
+        "libprocessgroup_aconfig_flags_lib",
     ],
     static_libs: [
         "libjsoncpp",

@@ -26,10 +26,12 @@
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <time.h>
 #include <unistd.h>
 
-#include <regex>
+#include <optional>
+#include <tuple>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -37,6 +39,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <android/cgrouprc.h>
+#include <android_libprocessgroup_flags.h>
 #include <json/reader.h>
 #include <json/value.h>
 #include <processgroup/format/cgroup_file.h>
@@ -56,6 +59,8 @@ static constexpr const char* CGROUPS_DESC_FILE = "/etc/cgroups.json";
 static constexpr const char* CGROUPS_DESC_VENDOR_FILE = "/vendor/etc/cgroups.json";
 
 static constexpr const char* TEMPLATE_CGROUPS_DESC_API_FILE = "/etc/task_profiles/cgroups_%u.json";
+
+static const std::string CGROUP_V2_ROOT_DEFAULT = "/sys/fs/cgroup";
 
 static bool ChangeDirModeAndOwner(const std::string& path, mode_t mode, const std::string& uid,
                                   const std::string& gid, bool permissive_mode = false) {
@@ -182,6 +187,53 @@ static void MergeCgroupToDescriptors(std::map<std::string, CgroupDescriptor>* de
     }
 }
 
+static std::optional<bool> MGLRUDisabled() {
+    static const std::string file_name = "/sys/kernel/mm/lru_gen/enabled";
+    std::string content;
+    if (!android::base::ReadFileToString(file_name, &content)) {
+        PLOG(ERROR) << "Failed to read MGLRU state from " << file_name;
+        return {};
+    }
+
+    return content == "0x0000";
+}
+
+static std::optional<bool> MEMCGDisabled() {
+    static const std::string file_name = "/proc/cmdline";
+    std::string content;
+    if (!android::base::ReadFileToString(file_name, &content)) {
+        PLOG(ERROR) << "Failed to read kernel command line from " << file_name;
+        return {};
+    }
+
+    return content.find("cgroup_disable=memory") != std::string::npos;
+}
+
+static bool FreezerOnV2(std::map<std::string, CgroupDescriptor>* descriptors) {
+    const auto iter = descriptors->find("freezer");
+    if (iter == descriptors->end()) return false;
+
+    return iter->second.controller()->version() == 2;
+}
+
+static std::tuple<unsigned int, unsigned int> kernelVersion() {
+    struct utsname buffer;
+    if (uname(&buffer)) {
+        PLOG(ERROR) << "Failed to get kernel version";
+        return {};
+    }
+
+    int ver[2];
+    if (sscanf(buffer.release, "%d.%d.", &ver[0], &ver[1]) != 2) {
+        LOG(ERROR) << "Failed to parse kernel version from: " << buffer.release;
+        return {};
+    }
+
+    return std::make_tuple(ver[0], ver[1]);
+}
+
+static const bool force_memcg_v2 = android::libprocessgroup_flags::force_memcg_v2();
+
 static bool ReadDescriptorsFromFile(const std::string& file_name,
                                     std::map<std::string, CgroupDescriptor>* descriptors) {
     std::vector<CgroupDescriptor> result;
@@ -205,20 +257,39 @@ static bool ReadDescriptorsFromFile(const std::string& file_name,
         const Json::Value& cgroups = root["Cgroups"];
         for (Json::Value::ArrayIndex i = 0; i < cgroups.size(); ++i) {
             std::string name = cgroups[i]["Controller"].asString();
+
+            if (force_memcg_v2 && name == "memory") continue;
+
             MergeCgroupToDescriptors(descriptors, cgroups[i], name, "", 1);
         }
     }
 
+    bool memcgv2_present = false;
+    std::string root_path;
     if (root.isMember("Cgroups2")) {
         const Json::Value& cgroups2 = root["Cgroups2"];
-        std::string root_path = cgroups2["Path"].asString();
+        root_path = cgroups2["Path"].asString();
         MergeCgroupToDescriptors(descriptors, cgroups2, CGROUPV2_HIERARCHY_NAME, "", 2);
 
         const Json::Value& childGroups = cgroups2["Controllers"];
         for (Json::Value::ArrayIndex i = 0; i < childGroups.size(); ++i) {
             std::string name = childGroups[i]["Controller"].asString();
+
+            if (force_memcg_v2 && name == "memory") memcgv2_present = true;
+
             MergeCgroupToDescriptors(descriptors, childGroups[i], name, root_path, 2);
         }
+    }
+
+    if (force_memcg_v2 && !memcgv2_present) {
+        LOG(INFO) << "Forcing memcg to v2 hierarchy";
+        Json::Value memcgv2;
+        memcgv2["Controller"] = "memory";
+        memcgv2["NeedsActivation"] = true;
+        memcgv2["Path"] = ".";
+        memcgv2["Optional"] = true;  // In case of cgroup_disabled=memory, so we can still boot
+        MergeCgroupToDescriptors(descriptors, memcgv2, "memory",
+                                 root_path.empty() ? CGROUP_V2_ROOT_DEFAULT : root_path, 2);
     }
 
     return true;
@@ -246,6 +317,23 @@ static bool ReadDescriptors(std::map<std::string, CgroupDescriptor>* descriptors
     if (!access(CGROUPS_DESC_VENDOR_FILE, F_OK) &&
         !ReadDescriptorsFromFile(CGROUPS_DESC_VENDOR_FILE, descriptors)) {
         return false;
+    }
+
+    if (force_memcg_v2 && MGLRUDisabled().value_or(false)) {
+        LOG(WARNING) << "Memcg forced to v2 hierarchy with MGLRU disabled!";
+    }
+    if (force_memcg_v2 && MEMCGDisabled().value_or(false)) {
+        LOG(WARNING) << "Memcg forced to v2 hierarchy while memcg is disabled by kernel command "
+                     << "line!";
+    }
+    if (force_memcg_v2 && !FreezerOnV2(descriptors)) {
+        LOG(WARNING) << "Memcg forced to v2 hierarchy while freezer is not enabled on the v2 "
+                     << "hierarchy! Vendor has modified Android, and kernel memory use will be "
+                     << "higher than intended.";
+    }
+    if (force_memcg_v2 && kernelVersion() < std::make_tuple(6, 1)) {
+        LOG(WARNING) << "Memcg forced to v2 hierarchy on a kernel < 6.1. This will work, but "
+                        "performance will suffer due to lack of backported patches.";
     }
 
     return true;
@@ -308,7 +396,8 @@ static bool ActivateV2CgroupController(const CgroupDescriptor& descriptor) {
 
         if (!base::WriteStringToFile(str, path)) {
             if (IsOptionalController(controller)) {
-                PLOG(INFO) << "Failed to activate optional controller " << controller->name();
+                PLOG(INFO) << "Failed to activate optional controller " << controller->name()
+                           << " at " << path;
                 return true;
             }
             PLOG(ERROR) << "Failed to activate controller " << controller->name();

@@ -1,0 +1,11 @@
+package: "android.libprocessgroup_flags"
+container: "system"
+
+flag {
+  name: "force_memcg_v2"
+  namespace: "memcg"
+  description: "Experiment flag for forcing the memory cgroup controller to the v2 hierarchy regardless of cgroups.json content. This should only be enabled along with MGLRU."
+  bug: "327480673"
+  # While we would like this to be a server flag, non-read only flags are not available early enough in boot to work for this library
+  is_fixed_read_only: true
+}

@@ -27,6 +27,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/threads.h>
+#include <android_libprocessgroup_flags.h>
 
 #include <cutils/android_filesystem_config.h>
 
@@ -126,11 +127,19 @@ void ProfileAttribute::Reset(const CgroupController& controller, const std::stri
     file_v2_name_ = file_v2_name;
 }
 
+std::string ConvertUidToPath(const char* root_cgroup_path, uid_t uid) {
+    return StringPrintf("%s/uid_%u", root_cgroup_path, uid);
+}
+
+std::string ConvertUidPidToPath(const char* root_cgroup_path, uid_t uid, pid_t pid) {
+    const std::string uid_path = ConvertUidToPath(root_cgroup_path, uid);
+    return StringPrintf("%s/pid_%d", uid_path.c_str(), pid);
+}
+
 bool ProfileAttribute::GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const {
     if (controller()->version() == 2) {
-        // all cgroup v2 attributes use the same process group hierarchy
-        *path = StringPrintf("%s/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
-                             file_name().c_str());
+        const std::string cgroup_path = ConvertUidPidToPath(controller()->path(), uid, pid);
+        *path = StringPrintf("%s/%s", cgroup_path.c_str(), file_name().c_str());
         return true;
     }
     return GetPathForTask(pid, path);
@@ -155,12 +164,14 @@ bool ProfileAttribute::GetPathForTask(pid_t tid, std::string* path) const {
     return true;
 }
 
+// NOTE: This function is for cgroup v2 only
 bool ProfileAttribute::GetPathForUID(uid_t uid, std::string* path) const {
     if (path == nullptr) {
         return true;
     }
 
-    *path = StringPrintf("%s/uid_%u/%s", controller()->path(), uid, file_name().c_str());
+    const std::string cgroup_path = ConvertUidToPath(controller()->path(), uid);
+    *path = StringPrintf("%s/%s", cgroup_path.c_str(), file_name().c_str());
     return true;
 }
 
