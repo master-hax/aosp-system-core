@@ -33,6 +33,7 @@
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <android/avf_cc_flags.h>
 #include <fs_avb/fs_avb.h>
 #include <fs_mgr.h>
 #include <fs_mgr_dm_linear.h>
@@ -272,6 +273,11 @@ bool FirstStageMountVBootV2::DoFirstStageMount() {
     return true;
 }
 
+// TODO: should this be in a library in packages/modules/Virtualization first_stage_init links?
+static bool IsMicrodroidStrictBoot() {
+    return access("/proc/device-tree/chosen/avf,strict-boot", F_OK) == 0;
+}
+
 bool FirstStageMountVBootV2::InitDevices() {
     std::set<std::string> devices;
     GetSuperDeviceName(&devices);
@@ -281,6 +287,14 @@ bool FirstStageMountVBootV2::InitDevices() {
     }
     if (!InitRequiredDevices(std::move(devices))) {
         return false;
+    }
+
+    if (IsMicrodroid() && IsAvfOpenDiceChangesEnabled()) {
+        if (IsMicrodroidStrictBoot()) {
+            if (!block_dev_init_.InitCharDevice("open-dice0")) {
+                return false;
+            }
+        }
     }
 
     if (IsDmLinearEnabled()) {
