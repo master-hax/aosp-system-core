@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67770fd8_a1322a3c",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-05T09:10:46Z",
+      "side": 1,
+      "message": "We don\u0027t need the `_Pragma` macros that were added to use `enable_if` attribute.\n\n```suggestion\n#define __INTRODUCED_IN_LLNDK(vendor_api_level) \\\n    __attribute__((annotate(\"introduced_in_llndk\u003d\" #vendor_api_level)))\n```",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 43
+      },
+      "revId": "811ab804d9759cd923b2353fd425541729780a8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
