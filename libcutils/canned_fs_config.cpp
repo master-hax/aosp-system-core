@@ -47,6 +47,60 @@ struct Entry {
 
 static std::vector<Entry> canned_data;
 
+/*
+ * Extracts and removes the file name from the input line.
+ *
+ * Since a file name can have space in between, this function
+ * looks for such file names between a single OR double quote ('/").
+ * For example:
+ *   "file name (1).txt"
+ *   'file name (2).txt'
+ * Using SPACE ( ) as a delimiter for tokenizing fails to identify
+ * such file names.
+ * So, this function is implemented specifically to retrieve the
+ * file names.
+ *
+ * Upon success, the extracted file name is returned.
+ * Returns empty file name upon error.
+ */
+static std::string extractAndRemoveFileName(std::string& line) {
+    // Look for file names within '' or "".
+    bool fileNameWithSpaces = false;
+    size_t base = line.find_first_of("'\"", 0);
+    size_t end = 0;
+
+    if (base != line.npos) {
+        end = line.find_first_of("'\"", base + 1);
+        if (end == line.npos) {
+            // Error: return empty filename!
+            return "";
+        }
+        // include the " or ' too.
+        end = end + 1;
+        fileNameWithSpaces = true;
+    } else {
+        base = line.find_first_not_of(" ", end);
+        if (base == line.npos) {
+            // Error: return empty filename!
+            return "";
+        }
+        end = line.find_first_of(" ", base);
+        if (end == line.npos) {
+            end = line.size();
+        }
+    }
+
+    // Extract the file-name and remove the same from the input.
+    std::string fileName = line.substr(base, end - base);
+    size_t len = end - base;
+    if (!fileNameWithSpaces) {
+        len += 1;
+    }
+    line.erase(base, len);
+
+    return fileName;
+}
+
 int load_canned_fs_config(const char* fn) {
     std::ifstream input(fn);
     for (std::string line; std::getline(input, line);) {
@@ -59,25 +113,32 @@ int load_canned_fs_config(const char* fn) {
             line.insert(line.begin(), '/');
         }
 
+        // extract and remove the file name (path) from the line.
+        std::string fileName = extractAndRemoveFileName(line);
+        if (fileName.empty()) {
+            std::cerr << "Ill-formed line: " << line << " in " << fn << std::endl;
+            return -1;
+        }
+        // Historical: remove the leading '/' if exists.
+        std::string path(fileName.front() == '/' ? std::string(fileName, 1) : fileName);
+
+        // Tokenize the rest of the line.
         std::vector<std::string> tokens = Tokenize(line, " ");
-        if (tokens.size() < 4) {
+        if (tokens.size() < 3) {
             std::cerr << "Ill-formed line: " << line << " in " << fn << std::endl;
             return -1;
         }
 
-        // Historical: remove the leading '/' if exists.
-        std::string path(tokens[0].front() == '/' ? std::string(tokens[0], 1) : tokens[0]);
-
         Entry e{
                 .path = std::move(path),
-                .uid = static_cast<unsigned int>(atoi(tokens[1].c_str())),
-                .gid = static_cast<unsigned int>(atoi(tokens[2].c_str())),
+                .uid = static_cast<unsigned int>(atoi(tokens[0].c_str())),
+                .gid = static_cast<unsigned int>(atoi(tokens[1].c_str())),
                 // mode is in octal
-                .mode = static_cast<unsigned int>(strtol(tokens[3].c_str(), nullptr, 8)),
+                .mode = static_cast<unsigned int>(strtol(tokens[2].c_str(), nullptr, 8)),
                 .capabilities = 0,
         };
 
-        for (size_t i = 4; i < tokens.size(); i++) {
+        for (size_t i = 3; i < tokens.size(); i++) {
             std::string_view sv = tokens[i];
             if (ConsumePrefix(&sv, "capabilities=")) {
                 e.capabilities = strtoll(std::string(sv).c_str(), nullptr, 0);
