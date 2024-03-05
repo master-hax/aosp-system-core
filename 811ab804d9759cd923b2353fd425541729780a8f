@@ -22,6 +22,30 @@
       },
       "revId": "811ab804d9759cd923b2353fd425541729780a8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e33bf1f_df51b3f1",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2024-03-05T09:21:32Z",
+      "side": 1,
+      "message": "Fix applied.\ngcc shows a warning about \"annotate\", but clang -Wgcc-compat doesn\u0027t.",
+      "parentUuid": "67770fd8_a1322a3c",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 43
+      },
+      "revId": "811ab804d9759cd923b2353fd425541729780a8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
