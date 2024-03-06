@@ -120,6 +120,7 @@ cc_test {
     name: "libcutils_sockets_test",
     test_suites: ["device-tests"],
     static_libs: ["libbase", "libcutils_sockets"],
+    host_supported: true,
     cflags: [
         "-Wall",
         "-Wextra",
@@ -133,6 +134,10 @@ cc_test {
                 "android_get_control_file_test.cpp",
                 "android_get_control_socket_test.cpp",
             ],
+        },
+        windows: {
+            host_ldlibs: ["-lws2_32"],
+            enabled: true,
         },
     },
 }
@@ -320,21 +325,13 @@ cc_test {
 cc_defaults {
     name: "libcutils_test_static_defaults",
     defaults: ["libcutils_test_default"],
-    static_libs: [
-        "libc",
-        "libcgrouprc_format",
-    ] + test_libraries + always_static_test_libraries,
+    static_libs: test_libraries + always_static_test_libraries,
     stl: "libc++_static",
     require_root: true,
 
     target: {
         android: {
             static_executable: true,
-        },
-        windows: {
-            host_ldlibs: ["-lws2_32"],
-
-            enabled: true,
         },
     },
 }

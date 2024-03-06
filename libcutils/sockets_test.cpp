@@ -19,8 +19,10 @@
 // should be the case for loopback communication, but is not guaranteed.
 
 #include <string.h>
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <sys/types.h>
+#endif
 #include <time.h>
 
 #include <cutils/sockets.h>
