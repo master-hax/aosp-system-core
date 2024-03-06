@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "82bb57b7_ef3bb115",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-06T21:15:30Z",
+      "side": 1,
+      "message": "Done, renamed to ashmem_base_test.cpp.",
+      "parentUuid": "03c03cf0_517bfe7c",
+      "range": {
+        "startLine": 270,
+        "startChar": 17,
+        "endLine": 270,
+        "endChar": 28
+      },
+      "revId": "bf209df8f7968edf83e17a5825adc6d410e19af6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f934c923_b4a91a1c",
@@ -85,6 +109,30 @@
       "writtenOn": "2024-03-04T14:51:24Z",
       "side": 1,
       "message": "why is this added here if it\u0027s already in libcutils_test_default? Is it because this is the only file that works in Windows?\n\nyou could add windows to libcutils_test and then add exclude sources for windows if there are some that don\u0027t work. That way there is only one module for this test, and the difference between variants is explicit.",
+      "range": {
+        "startLine": 365,
+        "startChar": 0,
+        "endLine": 365,
+        "endChar": 35
+      },
+      "revId": "bf209df8f7968edf83e17a5825adc6d410e19af6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6833fc8d_4ca0fdaf",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-06T21:15:30Z",
+      "side": 1,
+      "message": "Done, it is now just part of libcutils_test_default.",
+      "parentUuid": "f934c923_b4a91a1c",
       "range": {
         "startLine": 365,
         "startChar": 0,
