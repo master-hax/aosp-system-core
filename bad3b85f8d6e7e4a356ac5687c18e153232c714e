@@ -70,6 +70,30 @@
       },
       "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45477061_252217b0",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1095,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-06T09:36:21Z",
+      "side": 1,
+      "message": "In this case, it checks if the property is defined or not and define the property here if not defined. So default value is not required.\nUpdated with `__system_property_find(\"name\")`.",
+      "parentUuid": "e2e7c281_4550675f",
+      "range": {
+        "startLine": 1093,
+        "startChar": 66,
+        "endLine": 1095,
+        "endChar": 62
+      },
+      "revId": "bad3b85f8d6e7e4a356ac5687c18e153232c714e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
