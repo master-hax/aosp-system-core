@@ -39,7 +39,7 @@
 #define ALTERNATE_DATA_DIR "alternate/"
 
 /* Maximum file size for filesystem backed storage (i.e. not block dev backed storage) */
-#define MAX_FILE_SIZE (0x10000000000)
+static size_t MAX_FILE_SIZE = 0x10000000000;
 
 enum sync_state {
     SS_UNUSED = -1,
@@ -48,6 +48,11 @@ enum sync_state {
 };
 
 static const char *ssdir_name;
+
+static const struct file_backing_storage* file_mappings;
+static size_t num_file_mappings;
+/* Error code to differentiate between general failure(-1) and a mapping not existing */
+#define NO_FILE_MAPPING (-2)
 
 /*
  * Property set to 1 after we have opened a file under ssdir_name. The backing
@@ -247,6 +252,47 @@ static void sync_parent(const char* path, struct watcher* watcher) {
     watch_progress(watcher, "done syncing parent");
 }
 
+static const char* get_backed_storage(const char* source) {
+    for (size_t x = 0; x < num_file_mappings; x++) {
+        const struct file_backing_storage* entry = &file_mappings[x];
+        if (!strcmp(source, entry->file_name)) {
+            ALOGI("Found backing file %s for %s\n", entry->backing_storage, source);
+            return entry->backing_storage;
+        }
+    }
+    return NULL;
+}
+
+static int possibly_symlink_and_open(const char* short_path, const char* full_path,
+                                     int open_flags) {
+    /* See if mapping exists, report upstream if there is no mapping. */
+    const char* mapping = get_backed_storage(short_path);
+    if (mapping == NULL) return NO_FILE_MAPPING;
+
+    /* Check for existence of file, and compare against exclusive flag */
+    struct stat buf = {0};
+    bool file_exists = stat(full_path, &buf) == 0;
+    if (file_exists && (open_flags & O_EXCL)) {
+        ALOGE("Requested exclusive, but %s already exists\n", full_path);
+        return -1;
+    }
+
+    /* Try and setup the symlinking */
+    if (!file_exists) {
+        ALOGI("Creating symlink %s->%s\n", full_path, mapping);
+        int rc = symlink(mapping, full_path);
+        if (rc < 0) {
+            ALOGE("%s: error symlinking %s->%s (%s)\n", __func__, full_path, mapping,
+                  strerror(errno));
+            return -1;
+        }
+    }
+
+    /* Remove create flags, the link should exist, we shouldn't create arbitrary files */
+    open_flags &= ~(O_CREAT | O_EXCL);
+    return TEMP_FAILURE_RETRY(open(full_path, open_flags, S_IRUSR | S_IWUSR));
+}
+
 int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len,
                       struct watcher* watcher) {
     char* path = NULL;
@@ -321,14 +367,24 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len,
         if (req->flags & STORAGE_FILE_OPEN_CREATE_EXCLUSIVE) {
             /* create exclusive */
             open_flags |= O_CREAT | O_EXCL;
-            rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+
+            /* Look for and attempt opening a mapping, else just do normal open. */
+            rc = possibly_symlink_and_open(req->name, path, open_flags);
+            if (rc == NO_FILE_MAPPING) {
+                rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+            }
         } else {
             /* try open first */
             rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
             if (rc == -1 && errno == ENOENT) {
                 /* then try open with O_CREATE */
                 open_flags |= O_CREAT;
-                rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+
+                /* Look for and attempt opening a mapping, else just do normal open. */
+                rc = possibly_symlink_and_open(req->name, path, open_flags);
+                if (rc == NO_FILE_MAPPING) {
+                    rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+                }
             }
 
         }
@@ -603,8 +659,70 @@ err_response:
     return ipc_respond(msg, NULL, 0);
 }
 
-int storage_init(const char *dirname)
-{
+int determine_max_file_size(const char * max_file_size_from) {
+    /* Use default if none passed in */
+    if (max_file_size_from == NULL) return 0;
+
+    /* Get full source path for ss source */
+    char* full_path = NULL;
+    int rc = asprintf(&full_path, "%s/%s", ssdir_name, max_file_size_from);
+    if (rc < 0) {
+        ALOGE("%s: asprintf failed\n", __func__);
+        return -1;
+    }
+
+    /* Use the mapped file if one was given, otherwise the original path will be used */
+    const char* possibly_mapped_file = get_backed_storage(max_file_size_from);
+    const char* filename = (possibly_mapped_file) ? possibly_mapped_file : full_path;
+
+    ALOGI("Using %s to determine max file size.\n", filename);
+
+    /* If our source doesn't exist yet, it's a file, so we'll use default MAX_FILE_SIZE */
+    struct stat buf = {0};
+    rc = stat(filename, &buf);
+    if (rc < 0) {
+        if (errno == ENOENT) {
+            ALOGI("File doesn't exist, file backed, continue using 0x%lx\n", MAX_FILE_SIZE);
+            rc = 0;
+            goto free_full_path;
+        }
+        ALOGE("%s: error stat'ing file (filename=%s): %s\n", __func__, filename, strerror(errno));
+        rc = -1;
+        goto free_full_path;
+    }
+
+    /* If source is a block device, try and get the byte size, and use that */
+    if ((buf.st_mode & S_IFMT) == S_IFBLK) {
+        ALOGI("%s is a block device, determining block device size\n", filename);
+        uint64_t max_size = 0;
+        int fd = TEMP_FAILURE_RETRY(open(filename, O_RDONLY | O_NONBLOCK));
+        if (fd < 0) {
+            ALOGE("%s: failed to open backing file %s for ioctl: %s\n", __func__, filename,
+                  strerror(errno));
+            rc = -1;
+            goto free_full_path;
+        }
+        rc = ioctl(fd, BLKGETSIZE64, &max_size);
+        if (rc < 0) {
+            ALOGE("%s: error calling ioctl on file (fd=%d): %s\n", __func__, fd, strerror(errno));
+            close(fd);
+            rc = -1;
+            goto free_full_path;
+        }
+        close(fd);
+        MAX_FILE_SIZE = max_size;
+    }
+
+    ALOGI("Using 0x%lx as max file size\n", MAX_FILE_SIZE);
+    rc = 0;
+
+free_full_path:
+    free(full_path);
+    return rc;
+}
+
+int storage_init(const char* dirname, const struct file_backing_storage* mappings,
+                 size_t num_mappings, const char * max_file_size_from) {
     /* If there is an active DSU image, use the alternate fs mode. */
     alternate_mode = is_gsi_running();
 
@@ -614,6 +732,16 @@ int storage_init(const char *dirname)
     }
 
     ssdir_name = dirname;
+
+    file_mappings = mappings;
+    num_file_mappings = num_mappings;
+
+    /* Set the max file size based on incoming configuration */
+    int rc = determine_max_file_size(max_file_size_from);
+    if (rc < 0) {
+        return rc;
+    }
+
     return 0;
 }
 
