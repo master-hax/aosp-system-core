@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8615fa80_dd7e678b",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-06T22:10:10Z",
+      "side": 1,
+      "message": "but that\u0027s _only_ the host one, right? in which case you just want cc_host_test (and according to your doc, then _don\u0027t_ need to say anything, which i did not know!).\n\nbut (as you\u0027ve said in chat) i no longer have any idea why this is separate from the regular libcutils cc_test, and think that if we can\u0027t say, we should just remove this :-)",
+      "parentUuid": "55b7a2c1_76ea3acd",
+      "revId": "2f8f8ad79c67e87394d4da913c2d2215561279d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8b4da739_e209f700",
         "filename": "libcutils/sockets_test.cpp",
         "patchSetId": 1
