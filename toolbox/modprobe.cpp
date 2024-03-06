@@ -115,6 +115,7 @@ extern "C" int modprobe_main(int argc, char** argv) {
     std::string module_parameters;
     std::string mods;
     std::vector<std::string> mod_dirs;
+
     modprobe_mode mode = AddModulesMode;
     bool blocklist = false;
     int rv = EXIT_SUCCESS;
@@ -251,7 +252,48 @@ extern "C" int modprobe_main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    Modprobe m(mod_dirs, "modules.load", blocklist);
+    if (blocklist) {
+        std::vector<std::string> block_modules;
+        std::string contents;
+
+        for (const auto& mdir : mod_dirs) {
+            if (!android::base::ReadFileToString(mdir + "/modules.blocklist", &contents)) {
+                LOG(ERROR) << "Failed to open " + mdir + "/modules.blocklist";
+                return EXIT_FAILURE;
+            }
+
+            for (auto lines : android::base::Split(stripComments(contents), "\n")) {
+                std::vector<std::string> args = android::base::Split(lines, " ");
+
+                if (lines == "" || args.empty()) continue;
+
+                auto it = args.begin();
+                std::string& type = *it++;
+                std::string& bmod = *it++;
+
+                if (type != "blocklist" || args.size() != 2) {
+                    LOG(ERROR) << "The content format of blocklist was invalid. "
+                                << "This " + mdir + "/modules.blocklist will be skipped.";
+                    break;
+                }
+
+                if (std::find(block_modules.begin(), block_modules.end(), bmod) != block_modules.end())
+                    continue;
+
+                block_modules.emplace_back(bmod);
+            }
+        }
+
+        for (const auto& bmod : block_modules) {
+            auto m = std::find(modules.begin(), modules.end(), bmod);
+            if (m != modules.end()) {
+                modules.erase(m);
+                LOG(INFO) << "Blocklist: Module " << bmod << " will be skipped...";
+            }
+        }
+    }
+
+    Modprobe m(mod_dirs, "modules.load", false);
 
     for (const auto& module : modules) {
         switch (mode) {
