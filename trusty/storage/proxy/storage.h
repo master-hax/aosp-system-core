@@ -21,6 +21,12 @@
 /* Defined in watchdog.h */
 struct watcher;
 
+/* Is used for managing alternate backing storage, generally will be a block device. */
+typedef struct file_backing_storage {
+    const char* file_name;
+    const char* backing_storage;
+} file_block_device_mapping;
+
 int storage_file_delete(struct storage_msg* msg, const void* req, size_t req_len,
                         struct watcher* watcher);
 
@@ -45,6 +51,7 @@ int storage_file_set_size(struct storage_msg* msg, const void* req, size_t req_l
 int storage_file_get_max_size(struct storage_msg* msg, const void* req, size_t req_len,
                               struct watcher* watcher);
 
-int storage_init(const char* dirname);
+int storage_init(const char* dirname, const struct file_backing_storage* mappings,
+                 size_t num_mappings, const char * max_file_size_from);
 
 int storage_sync_checkpoint(struct watcher* watcher);
