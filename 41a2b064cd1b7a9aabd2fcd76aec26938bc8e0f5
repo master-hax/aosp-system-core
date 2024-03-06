@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d75da20_f55e5b2e",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2024-03-06T14:49:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e4e1af42_ccfea412",
+      "range": {
+        "startLine": 162,
+        "startChar": 8,
+        "endLine": 162,
+        "endChar": 28
+      },
+      "revId": "41a2b064cd1b7a9aabd2fcd76aec26938bc8e0f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2a42718d_907915ff",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-05T17:25:47Z",
       "side": 1,
       "message": "I think this buffer can be removed?",
+      "range": {
+        "startLine": 177,
+        "startChar": 4,
+        "endLine": 177,
+        "endChar": 38
+      },
+      "revId": "41a2b064cd1b7a9aabd2fcd76aec26938bc8e0f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7de49cd_e9be906a",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1965417
+      },
+      "writtenOn": "2024-03-06T14:49:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a42718d_907915ff",
       "range": {
         "startLine": 177,
         "startChar": 4,
