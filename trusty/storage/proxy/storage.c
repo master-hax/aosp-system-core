@@ -39,7 +39,7 @@
 #define ALTERNATE_DATA_DIR "alternate/"
 
 /* Maximum file size for filesystem backed storage (i.e. not block dev backed storage) */
-#define MAX_FILE_SIZE (0x10000000000)
+static size_t MAX_FILE_SIZE = 0x10000000000;
 
 enum sync_state {
     SS_UNUSED = -1,
@@ -48,6 +48,11 @@ enum sync_state {
 };
 
 static const char *ssdir_name;
+
+/* List head for storage mapping, elements added at init, and never removed */
+static const struct storage_mapping_node* storage_mapping_head;
+/* Error code to differentiate between general failure(-1) and a mapping not existing */
+#define NO_FILE_MAPPING (-2)
 
 /*
  * Property set to 1 after we have opened a file under ssdir_name. The backing
@@ -66,7 +71,12 @@ static const char *ssdir_name;
 static bool fs_ready_initialized = false;
 
 static enum sync_state fs_state;
-static enum sync_state fd_state[FD_TBL_SIZE];
+
+struct fd_state {
+    enum sync_state sync_state;
+    const struct storage_mapping_node* mapping;
+};
+static struct fd_state fd_state[FD_TBL_SIZE];
 
 static bool alternate_mode;
 
@@ -80,9 +90,9 @@ static uint32_t insert_fd(int open_flags, int fd)
     uint32_t handle = fd;
 
     if (handle < FD_TBL_SIZE) {
-            fd_state[fd] = SS_CLEAN; /* fd clean */
-            if (open_flags & O_TRUNC) {
-                fd_state[fd] = SS_DIRTY;  /* set fd dirty */
+        fd_state[fd].sync_state = SS_CLEAN; /* fd clean */
+        if (open_flags & O_TRUNC) {
+            fd_state[fd].sync_state = SS_DIRTY; /* set fd dirty */
             }
     } else {
             ALOGW("%s: untracked fd %u\n", __func__, fd);
@@ -93,11 +103,73 @@ static uint32_t insert_fd(int open_flags, int fd)
     return handle;
 }
 
+static int insert_fd_mapping(int fd, const struct storage_mapping_node* mapping) {
+    uint32_t handle = fd;
+
+    if (handle >= FD_TBL_SIZE) {
+        ALOGE("%s: untracked fd=%u\n", __func__, handle);
+        return -1;
+    }
+
+    fd_state[fd].mapping = mapping;
+    return 0;
+}
+
+static int clear_fd_mapping(uint32_t handle) {
+    if (handle >= FD_TBL_SIZE) {
+        ALOGE("%s: untracked fd=%u\n", __func__, handle);
+        return -1;
+    }
+
+    fd_state[handle].mapping = NULL;
+    return 0;
+}
+
+static int possibly_symlink_and_clear_mapping(uint32_t handle) {
+    if (handle >= FD_TBL_SIZE) {
+        ALOGE("%s: untracked handle=%u\n", __func__, handle);
+        return -1;
+    }
+    const struct storage_mapping_node* entry = fd_state[handle].mapping;
+    if (entry == NULL) {
+        /* No mappings pending */
+        return 0;
+    }
+
+    /* Create full path */
+    char* path = NULL;
+    int rc = asprintf(&path, "%s/%s", ssdir_name, entry->file_name);
+    if (rc < 0) {
+        ALOGE("%s: asprintf failed\n", __func__);
+        return -1;
+    }
+
+    /* Try and setup the symlinking */
+    ALOGI("Creating symlink %s->%s\n", path, entry->backing_storage);
+    rc = symlink(entry->backing_storage, path);
+    if (rc < 0) {
+        ALOGE("%s: error symlinking %s->%s (%s)\n", __func__, path, entry->backing_storage,
+              strerror(errno));
+    }
+    free(path);
+    clear_fd_mapping(handle);
+
+    return rc;
+}
+
+bool is_pending_symlink(uint32_t handle) {
+    if (handle >= FD_TBL_SIZE) {
+        ALOGW("%s: untracked fd=%u\n", __func__, handle);
+        return false;
+    }
+    return fd_state[handle].mapping != NULL;
+}
+
 static int lookup_fd(uint32_t handle, bool dirty)
 {
     if (dirty) {
         if (handle < FD_TBL_SIZE) {
-            fd_state[handle] = SS_DIRTY;
+            fd_state[handle].sync_state = SS_DIRTY;
         } else {
             fs_state = SS_DIRTY;
         }
@@ -108,7 +180,7 @@ static int lookup_fd(uint32_t handle, bool dirty)
 static int remove_fd(uint32_t handle)
 {
     if (handle < FD_TBL_SIZE) {
-        fd_state[handle] = SS_UNUSED; /* set to uninstalled */
+        fd_state[handle].sync_state = SS_UNUSED; /* set to uninstalled */
     }
     return handle;
 }
@@ -247,6 +319,71 @@ static void sync_parent(const char* path, struct watcher* watcher) {
     watch_progress(watcher, "done syncing parent");
 }
 
+static const struct storage_mapping_node* get_storage_mapping_entry(const char* source) {
+    const struct storage_mapping_node* curr = storage_mapping_head;
+    for (; curr != NULL; curr = curr->next) {
+        if (!strcmp(source, curr->file_name)) {
+            ALOGI("Found backing file %s for %s\n", curr->backing_storage, source);
+            return curr;
+        }
+    }
+    return NULL;
+}
+
+bool is_backing_storage_mapped(const char* source) {
+    const struct storage_mapping_node* curr = storage_mapping_head;
+    for (; curr != NULL; curr = curr->next) {
+        if (!strcmp(source, curr->backing_storage)) {
+            ALOGI("Backed storage mapping exists for %s\n", curr->backing_storage);
+            return true;
+        }
+    }
+    return false;
+}
+
+/* Attempts to open a backed file, if mapped, without creating the symlink. Symlink will be created
+ * later on the first write.  This allows us to continue reporting zero read sizes until the first
+ * write. */
+static int possibly_open_mapped_file(const char* short_path, const char* full_path,
+                                     int open_flags) {
+    /* See if mapping exists, report upstream if there is no mapping. */
+    const struct storage_mapping_node* mapping_entry = get_storage_mapping_entry(short_path);
+    if (mapping_entry == NULL) return NO_FILE_MAPPING;
+
+    /* Check for existence of root path, we don't allow mappings during early boot */
+    struct stat buf = {0};
+    if (stat(ssdir_name, &buf) != 0) {
+        ALOGW("Root path not accessible yet, disabling mappings.\n");
+        return NO_FILE_MAPPING;
+    }
+
+    /* Check for existence of file, and compare against exclusive flag */
+    bool file_exists = stat(full_path, &buf) == 0;
+    if (file_exists && (open_flags & O_EXCL)) {
+        ALOGE("Requested exclusive, but %s already exists\n", full_path);
+        return -1;
+    }
+
+    /* Try and open mapping file */
+    open_flags &= ~(O_CREAT | O_EXCL);
+    ALOGI("%s Attempting to open mapped file: %s\n", __func__, mapping_entry->backing_storage);
+    int fd =
+            TEMP_FAILURE_RETRY(open(mapping_entry->backing_storage, open_flags, S_IRUSR | S_IWUSR));
+    if (fd < 0) {
+        ALOGE("%s Failed to open mapping file: %s\n", __func__, mapping_entry->backing_storage);
+        return -1;
+    }
+
+    /* Track that a delayed mapping is going to be happening */
+    int rc = insert_fd_mapping(fd, mapping_entry);
+    if (rc < 0) {
+        ALOGE("%s: Failed to insert_fd_mapping\n", __func__);
+        close(fd);
+        return -1;
+    }
+    return fd;
+}
+
 int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len,
                       struct watcher* watcher) {
     char* path = NULL;
@@ -321,14 +458,24 @@ int storage_file_open(struct storage_msg* msg, const void* r, size_t req_len,
         if (req->flags & STORAGE_FILE_OPEN_CREATE_EXCLUSIVE) {
             /* create exclusive */
             open_flags |= O_CREAT | O_EXCL;
-            rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+
+            /* Look for and attempt opening a mapping, else just do normal open. */
+            rc = possibly_open_mapped_file(req->name, path, open_flags);
+            if (rc == NO_FILE_MAPPING) {
+                rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+            }
         } else {
             /* try open first */
             rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
             if (rc == -1 && errno == ENOENT) {
                 /* then try open with O_CREATE */
                 open_flags |= O_CREAT;
-                rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+
+                /* Look for and attempt opening a mapping, else just do normal open. */
+                rc = possibly_open_mapped_file(req->name, path, open_flags);
+                if (rc == NO_FILE_MAPPING) {
+                    rc = TEMP_FAILURE_RETRY(open(path, open_flags, S_IRUSR | S_IWUSR));
+                }
             }
 
         }
@@ -433,6 +580,14 @@ int storage_file_write(struct storage_msg* msg, const void* r, size_t req_len,
         goto err_response;
     }
 
+    /* Handle any delayed symlinking for this handle if any */
+    rc = possibly_symlink_and_clear_mapping(req->handle);
+    if (rc < 0) {
+        ALOGE("Failed to symlink storage\n");
+        msg->result = STORAGE_ERR_GENERIC;
+        goto err_response;
+    }
+
     int fd = lookup_fd(req->handle, true);
     watch_progress(watcher, "writing");
     if (write_with_retry(fd, &req->data[0], req_len - sizeof(*req),
@@ -477,6 +632,14 @@ int storage_file_read(struct storage_msg* msg, const void* r, size_t req_len,
               __func__, req->size, MAX_READ_SIZE);
         msg->result = STORAGE_ERR_NOT_VALID;
         goto err_response;
+    }
+
+    /* If this handle has a delayed symlink we should report 0 size reads until first write occurs
+     */
+    if (is_pending_symlink(req->handle)) {
+        ALOGI("Pending symlink: Forcing read result 0.\n");
+        msg->result = STORAGE_NO_ERROR;
+        return ipc_respond(msg, &read_rsp, sizeof(read_rsp.hdr));
     }
 
     int fd = lookup_fd(req->handle, false);
@@ -603,17 +766,78 @@ err_response:
     return ipc_respond(msg, NULL, 0);
 }
 
-int storage_init(const char *dirname)
-{
+int determine_max_file_size(const char* max_file_size_from) {
+    /* Use default if none passed in */
+    if (max_file_size_from == NULL) {
+        ALOGI("No max file source given, continuing to use default: 0x%lx\n", MAX_FILE_SIZE);
+        return 0;
+    }
+
+    /* Check that max_file_size_from is part of our mapping list. */
+    if (!is_backing_storage_mapped(max_file_size_from)) {
+        ALOGE("%s: file doesn't match mapped storages (filename=%s)\n", __func__,
+              max_file_size_from);
+        return -1;
+    }
+
+    ALOGI("Using %s to determine max file size.\n", max_file_size_from);
+
+    /* If our source doesn't exist yet, it's a file, so we'll use default MAX_FILE_SIZE */
+    struct stat buf = {0};
+    int rc = stat(max_file_size_from, &buf);
+    if (rc < 0) {
+        ALOGE("%s: error stat'ing file (filename=%s): %s\n", __func__, max_file_size_from,
+              strerror(errno));
+        return -1;
+    }
+
+    /* Currently only support block device as max file size source */
+    if ((buf.st_mode & S_IFMT) != S_IFBLK) {
+        ALOGE("Unsupported max file size source type: %d\n", buf.st_mode);
+        return -1;
+    }
+
+    ALOGI("%s is a block device, determining block device size\n", max_file_size_from);
+    uint64_t max_size = 0;
+    int fd = TEMP_FAILURE_RETRY(open(max_file_size_from, O_RDONLY | O_NONBLOCK));
+    if (fd < 0) {
+        ALOGE("%s: failed to open backing file %s for ioctl: %s\n", __func__, max_file_size_from,
+              strerror(errno));
+        return -1;
+    }
+    rc = ioctl(fd, BLKGETSIZE64, &max_size);
+    if (rc < 0) {
+        ALOGE("%s: error calling ioctl on file (fd=%d): %s\n", __func__, fd, strerror(errno));
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    MAX_FILE_SIZE = max_size;
+
+    ALOGI("Using 0x%lx as max file size\n", MAX_FILE_SIZE);
+    return 0;
+}
+
+int storage_init(const char* dirname, const struct storage_mapping_node* mappings,
+                 const char* max_file_size_from) {
     /* If there is an active DSU image, use the alternate fs mode. */
     alternate_mode = is_gsi_running();
 
     fs_state = SS_CLEAN;
     for (uint i = 0; i < FD_TBL_SIZE; i++) {
-        fd_state[i] = SS_UNUSED;  /* uninstalled */
+        fd_state[i].sync_state = SS_UNUSED; /* uninstalled */
     }
 
     ssdir_name = dirname;
+
+    storage_mapping_head = mappings;
+
+    /* Set the max file size based on incoming configuration */
+    int rc = determine_max_file_size(max_file_size_from);
+    if (rc < 0) {
+        return rc;
+    }
+
     return 0;
 }
 
@@ -623,17 +847,17 @@ int storage_sync_checkpoint(struct watcher* watcher) {
     watch_progress(watcher, "sync fd table");
     /* sync fd table and reset it to clean state first */
     for (uint fd = 0; fd < FD_TBL_SIZE; fd++) {
-         if (fd_state[fd] == SS_DIRTY) {
-             if (fs_state == SS_CLEAN) {
-                 /* need to sync individual fd */
-                 rc = fsync(fd);
-                 if (rc < 0) {
-                     ALOGE("fsync for fd=%d failed: %s\n", fd, strerror(errno));
-                     return rc;
-                 }
-             }
-             fd_state[fd] = SS_CLEAN; /* set to clean */
-         }
+        if (fd_state[fd].sync_state == SS_DIRTY) {
+            if (fs_state == SS_CLEAN) {
+                /* need to sync individual fd */
+                rc = fsync(fd);
+                if (rc < 0) {
+                    ALOGE("fsync for fd=%d failed: %s\n", fd, strerror(errno));
+                    return rc;
+                }
+            }
+            fd_state[fd].sync_state = SS_CLEAN; /* set to clean */
+        }
     }
 
     /* check if we need to sync all filesystems */
