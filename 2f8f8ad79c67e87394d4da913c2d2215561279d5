@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "55b7a2c1_76ea3acd",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-06T19:06:16Z",
+      "side": 1,
+      "message": "Added `test_options: { unit_test: true }` to `libcutils_sockets_test`. According to go/a-unit-tests#current-default-unit-tests, using this option will cause the test to get run implicitly and does not need to be added to TEST_MAPPING.",
+      "parentUuid": "376ddf2f_c0cc3525",
+      "revId": "2f8f8ad79c67e87394d4da913c2d2215561279d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8b4da739_e209f700",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-06T17:41:59Z",
       "side": 1,
       "message": "is any of this needed, or does \u003ccutils/sockets.h\u003e already deal with this?",
+      "revId": "2f8f8ad79c67e87394d4da913c2d2215561279d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdbdc5fc_caabff50",
+        "filename": "libcutils/sockets_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-06T19:06:16Z",
+      "side": 1,
+      "message": "Done, it does not need these includes.",
+      "parentUuid": "8b4da739_e209f700",
       "revId": "2f8f8ad79c67e87394d4da913c2d2215561279d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
