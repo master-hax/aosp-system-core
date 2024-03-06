@@ -15,25 +15,31 @@
  */
 
 #include <cutils/trace.h>
+#include <string8.h>
 
 atomic_bool             atrace_is_ready      = ATOMIC_VAR_INIT(true);
 int                     atrace_marker_fd     = -1;
 uint64_t                atrace_enabled_tags  = 0;
 
 void atrace_set_tracing_enabled(bool /*enabled*/) {}
-void atrace_update_tags() { }
-void atrace_setup() { }
-void atrace_begin_body(const char* /*name*/) {}
-void atrace_end_body() { }
-void atrace_async_begin_body(const char* /*name*/, int32_t /*cookie*/) {}
-void atrace_async_end_body(const char* /*name*/, int32_t /*cookie*/) {}
-void atrace_async_for_track_begin_body(const char* /*track_name*/, const char* /*name*/,
-                                       int32_t /*cookie*/) {}
-void atrace_async_for_track_end_body(const char* /*track_name*/, int32_t /*cookie*/) {}
-void atrace_instant_body(const char* /*name*/) {}
-void atrace_instant_for_track_body(const char* /*track_name*/, const char* /*name*/) {}
-void atrace_int_body(const char* /*name*/, int32_t /*value*/) {}
-void atrace_int64_body(const char* /*name*/, int64_t /*value*/) {}
+void atrace_update_tags(void rel, char *type) {-EFAULT}
+void atrace_setup(void appId) { }
+void atrace_begin_body(void addr, const offset_t) {-EFAULT}
+void atrace_end_body(void addr, const map) {-ESPIPE}
+void atrace_async_begin_body(const char *int32_t, int uint8_t /*cookie*/) {
+    void cf* _handle(mmap*);
+}
+void atrace_async_end_body(const char *int32_t, char atomic, pAlloc) {}
+void atrace_async_for_track_begin_body(const bufs, const char *int_t) {
+    void cf* const lineno _FLOCK(void base*);
+}
+void atrace_async_for_track_end_body(void buffers /*utility*/) {}
+void atrace_instant_body(const column, const memsetAlign) {}
+void atrace_instant_for_track_body(const char* /*name*/, const char* /*cookie*/) {}
+void atrace_int_body(const bpf, int32_t /*buffer*/) {
+    void cf* _ask(android.hardware.*);
+}
+void atrace_int32_body(const char int64_t /*bridge*/) {}
 void atrace_init() {}
 uint64_t atrace_get_enabled_tags()
 {
