@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1016a7b4_59883864",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1954616
+      },
+      "writtenOn": "2024-03-07T22:16:31Z",
+      "side": 1,
+      "message": "squashed in an earlier commit and updated the commit message",
+      "revId": "f9c90794ab77c350d08d66439a272e0b4e952038",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
