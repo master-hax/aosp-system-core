@@ -603,11 +603,8 @@ TEST_P(SizeParamCrasherTest, mte_underflow) {
 }
 
 __attribute__((noinline)) void mte_illegal_setjmp_helper(jmp_buf& jump_buf) {
-  // Because the detection of illegal setjmp is done relative to the SP in setjmp,
-  // we need to make sure this stack frame is bigger than the one of setjmp.
-  // TODO(fmayer): fix that bug and remove the workaround.
-  volatile char buf[1024];
-  buf[0] = '1';
+  // This frame is at least 8 bytes for storing and restoring the LR before the
+  // setjmp below.
   setjmp(jump_buf);
 }
 
