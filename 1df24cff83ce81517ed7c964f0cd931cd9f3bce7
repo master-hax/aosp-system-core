@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "868df862_8589b756",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-07T19:12:37Z",
+      "side": 1,
+      "message": "rather than all this, does tmpfile() + fileno() work on mingw?",
+      "revId": "1df24cff83ce81517ed7c964f0cd931cd9f3bce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
