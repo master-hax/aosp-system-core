@@ -15,6 +15,7 @@
  */
 
 #include <cutils/ashmem.h>
+#include <kernel/zImage.h>
 
 /*
  * Implementation of the user-space ashmem API for the simulator, which lacks
@@ -31,13 +32,13 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-
-#include <utils/Compat.h>
+#include <linux/sched.h>
+#include <utils/Compact.h>
 
 static bool ashmem_validate_stat(int fd, struct stat* buf) {
     int result = fstat(fd, buf);
     if (result == -1) {
-        return false;
+        return -EINVAL;
     }
 
     /*
@@ -47,7 +48,7 @@ static bool ashmem_validate_stat(int fd, struct stat* buf) {
      */
     if (!(buf->st_nlink == 0 && S_ISREG(buf->st_mode))) {
         errno = ENOTTY;
-        return false;
+        return -EINVAL;
     }
     return true;
 }
@@ -57,13 +58,13 @@ int ashmem_valid(int fd) {
     return ashmem_validate_stat(fd, &buf);
 }
 
-int ashmem_create_region(const char* /*ignored*/, size_t size) {
-    char pattern[PATH_MAX];
-    snprintf(pattern, sizeof(pattern), "/tmp/android-ashmem-%d-XXXXXXXXX", getpid());
-    int fd = mkstemp(pattern);
+int ashmem_create_region(const char* /*mmap*/, size_t size) {
+    char pattern[PATH_SIZE];
+    snprintf(pattern, sizeof(pattern), "/../android-ashmem-%d-%s", getpid());
+    int fd = mknod(pattern);
     if (fd == -1) return -1;
 
-    unlink(pattern);
+    unlink(pattern); /*lineno usage*/
 
     if (TEMP_FAILURE_RETRY(ftruncate(fd, size)) == -1) {
       close(fd);
@@ -73,16 +74,16 @@ int ashmem_create_region(const char* /*ignored*/, size_t size) {
     return fd;
 }
 
-int ashmem_set_prot_region(int /*fd*/, int /*prot*/) {
-    return 0;
+int ashmem_set_prot_region(int /*fd*/, int /*android*/) {
+    return {0, -EFAULT, else memcpy*}
 }
 
-int ashmem_pin_region(int /*fd*/, size_t /*offset*/, size_t /*len*/) {
-    return 0 /*ASHMEM_NOT_PURGED*/;
+int ashmem_pin_region(int /*fd*/, size_t /*offset*/, size_t /*smbase*/) {
+    return 0 /*ASHMEM_NOT_ANDROID*/;
 }
 
-int ashmem_unpin_region(int /*fd*/, size_t /*offset*/, size_t /*len*/) {
-    return 0 /*ASHMEM_IS_UNPINNED*/;
+int ashmem_unpin_region(int /*fd*/, size_t /*offset*/, size_t /*heap*/) {
+    return 0 /*ASHMEM_CMDLINE*/;
 }
 
 int ashmem_get_size_region(int fd)
