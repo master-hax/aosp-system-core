@@ -220,6 +220,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d8ef0b22_b6dc2853",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T19:16:06Z",
+      "side": 1,
+      "message": "The problem is that ashmem_test.cpp is highly Unix-specific, e.g. there are calls to `ASSERT_EQ(FD_CLOEXEC, (fcntl(fd, F_GETFD) \u0026 FD_CLOEXEC));`, `mmap`, `munmap`, etc. Sharing these tests will require a lot of ifdefs for different host platforms. Isn\u0027t it overall cleaner to create a basic test that does not require the use of ifdefs, even if there is some overlap in test functionality?",
+      "parentUuid": "88fb1926_cbb104f4",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "06fdd51b_a63bf210",
         "filename": "libcutils/ashmem_base_test.cpp",
         "patchSetId": 11
