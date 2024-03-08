@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7629d0b2_f2ecb842",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T18:30:31Z",
+      "side": 1,
+      "message": "Just to expand on this, in Windows, it is possible to create a HANDLE to shared memory using:\n\n   HANDLE mapFile \u003d CreateFileMapping(\n          INVALID_HANDLE_VALUE,    // uses the paging file, not disk backed\n   ...\n   )\n   \nThe problem is that converting it to an int fd does not work:\n\nint fd \u003d _open_osfhandle((intptr_t) mapFile, _O_RDWR); // fails\n\n\nSo this is why a disk-backed temp file seems to be the best option.",
+      "parentUuid": "d3ff826d_b85b4ae5",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "51bb1693_4a645355",
         "filename": "libcutils/ashmem-host.cpp",
         "patchSetId": 11
