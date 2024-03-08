@@ -61,12 +61,16 @@ class TombstoneProtoToTextTest : public ::testing::Test {
 
   void ProtoToString() {
     text_ = "";
-    EXPECT_TRUE(
-        tombstone_proto_to_text(*tombstone_, [this](const std::string& line, bool should_log) {
+    EXPECT_TRUE(tombstone_proto_to_text(
+        *tombstone_,
+        [this](const std::string& line, bool should_log) {
           if (should_log) {
             text_ += "LOG ";
           }
           text_ += line + '\n';
+        },
+        [&](const BacktraceFrame& frame) {
+          text_ += "SYMBOLIZE " + frame.build_id() + " " + std::to_string(frame.pc()) + "\n";
         }));
   }
 
@@ -134,4 +138,12 @@ TEST_F(TombstoneProtoToTextTest, crash_detail_bytes) {
   crash_detail->set_data("helloworld\1\255\3");
   ProtoToString();
   EXPECT_MATCH(text_, R"(CRASH_DETAIL_NAME: 'helloworld\\1\\255\\3')");
+}
+
+TEST_F(TombstoneProtoToTextTest, symbolize) {
+  BacktraceFrame* frame = main_thread_->add_current_backtrace();
+  frame->set_pc(12345);
+  frame->set_build_id("0123456789abcdef");
+  ProtoToString();
+  EXPECT_MATCH(text_, "\\(BuildId: 0123456789abcdef\\)\\nSYMBOLIZE 0123456789abcdef 12345\\n");
 }
