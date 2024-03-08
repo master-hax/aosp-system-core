@@ -63,10 +63,6 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
                              const std::map<pid_t, ThreadInfo>& threads, pid_t target_thread,
                              const ProcessInfo& process_info, const OpenFilesList* open_files);
 
-bool tombstone_proto_to_text(
-    const Tombstone& tombstone,
-    std::function<void(const std::string& line, bool should_log)> callback);
-
 void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& frame);
 void set_human_readable_cause(Cause* cause, uint64_t fault_addr);
 
