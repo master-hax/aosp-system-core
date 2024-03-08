@@ -204,6 +204,7 @@ cc_library {
 
     srcs: [
         "libdebuggerd/tombstone_proto_to_text.cpp",
+        "libdebuggerd/tombstone_symbolize.cpp",
         "libdebuggerd/utility_host.cpp",
     ],
 

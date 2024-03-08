@@ -207,6 +207,11 @@ static void print_backtrace(CallbackType callback, const Tombstone& tombstone,
     }
     line += function + build_id;
     CB(should_log, "%s", line.c_str());
+
+    for (const auto& sym_frame : frame.symbolized_frames()) {
+      CB(should_log, "          %s:%" PRId64 ":%" PRId64 " (%s)", sym_frame.file().c_str(),
+         sym_frame.line(), sym_frame.column(), sym_frame.function_name().c_str());
+    }
   }
 }
 
