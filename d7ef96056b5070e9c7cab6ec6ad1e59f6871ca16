@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d3ff826d_b85b4ae5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T18:26:50Z",
+      "side": 1,
+      "message": "I have spent a lot of time looking for the best possible Windows implementation, and temp file seems to be the best option, due to the constraint that the return value has to be an `int fd`. Let me know if you know of a better option.\n\n\u003e shouldn\u0027t this have been moved to memfd already\n\nMaybe, I\u0027d be happy to open a new CL for this, but that is outside the scope of this CL, which adds an implementation for Windows.",
+      "parentUuid": "dbebed7f_d3d053a6",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "51bb1693_4a645355",
         "filename": "libcutils/ashmem-host.cpp",
         "patchSetId": 11
@@ -106,6 +124,24 @@
       "writtenOn": "2024-03-08T17:33:02Z",
       "side": 1,
       "message": "i still don\u0027t really get the point of what this is supposed to be testing...",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b996a15_9630f827",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T18:26:50Z",
+      "side": 1,
+      "message": "It is testing ashmem_create_region returns a valid pointer and data can be written to that pointer. It is similar to https://cs.android.com/android/platform/superproject/+/master:system/core/libcutils/ashmem_test.cpp;l\u003d70-90?q\u003dashmem_test.cpp.",
+      "parentUuid": "c92b3d50_30006ec0",
       "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
