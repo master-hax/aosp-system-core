@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7bda037_a06b4e77",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T01:05:57Z",
+      "side": 1,
+      "message": "aye, but \"why are you telling me this?\" :-)",
+      "revId": "705a33d0306e3905f9cac0a96c6140d635b5e1f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
