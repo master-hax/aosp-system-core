@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bf34311c_54796789",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T18:57:59Z",
+      "side": 1,
+      "message": "\u003e So this is why a disk-backed temp file seems to be the best option.\n\nyeah, i feared you might say that. especially since _you_ (\"the windows guy\") didn\u0027t know that and had to check, that\u0027s probably worth a code comment :-)",
+      "parentUuid": "7629d0b2_f2ecb842",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "51bb1693_4a645355",
         "filename": "libcutils/ashmem-host.cpp",
         "patchSetId": 11
@@ -131,6 +149,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "defbaffd_5d949fa6",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T18:57:59Z",
+      "side": 1,
+      "message": "you read the docs for tmpfile() and delete the unlink() :-)\n\nafter the good news about linux:\n\u003e On some implementations (e.g. older Linux), this function actually creates, opens, and immediately deletes the file from the file system: as long as an open file descriptor to a deleted file is held by a program, the file exists, but since it was deleted, its name does not appear in any directory, so that no other process can open it. Once the file descriptor is closed, or once the program terminates (normally or abnormally), the space occupied by the file is reclaimed by the filesystem. Newer Linux (since 3.11 or later, depending on filesystem) creates such invisible temporary files in one step, via special flag in the open() syscall.\n\nhttps://en.cppreference.com/w/c/io/tmpfile also has:\n\u003e On some implementations (e.g. Windows), elevated privileges are required as the function may create the temporary file in a system directory.\n\nthat \"may\" is doing some heavy lifting though, and -- pun intended -- may not be relevant to us.",
+      "parentUuid": "e9f3a24b_9b2c7a41",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c92b3d50_30006ec0",
         "filename": "libcutils/ashmem_base_test.cpp",
         "patchSetId": 11
@@ -160,6 +196,24 @@
       "side": 1,
       "message": "It is testing ashmem_create_region returns a valid pointer and data can be written to that pointer. It is similar to https://cs.android.com/android/platform/superproject/+/master:system/core/libcutils/ashmem_test.cpp;l\u003d70-90?q\u003dashmem_test.cpp.",
       "parentUuid": "c92b3d50_30006ec0",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88fb1926_cbb104f4",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T18:57:59Z",
+      "side": 1,
+      "message": "yeah, i don\u0027t think smoreland meant _duplicate_ a test --- i think he literally meant _share_ whatever tests work on both...",
+      "parentUuid": "0b996a15_9630f827",
       "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
