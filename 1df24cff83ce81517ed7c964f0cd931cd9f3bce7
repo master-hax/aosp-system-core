@@ -16,6 +16,24 @@
       "message": "rather than all this, does tmpfile() + fileno() work on mingw?",
       "revId": "1df24cff83ce81517ed7c964f0cd931cd9f3bce7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b891ae88_4d1cb60c",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T01:25:49Z",
+      "side": 1,
+      "message": "I migrated this to libbase\u0027s TemporaryFile, it seems to have the same functionality, and it has logic to detect the Windows system temp directory.",
+      "parentUuid": "868df862_8589b756",
+      "revId": "1df24cff83ce81517ed7c964f0cd931cd9f3bce7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
