@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b593538_df231941",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T23:37:41Z",
+      "side": 1,
+      "message": "std::unique_ptr on L69 instead of duplicating all these.",
+      "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deaed4e4_3ee11aaa",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T23:37:41Z",
+      "side": 1,
+      "message": "unique_fd (from libbase) on L78 rather than this.",
+      "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46b3bcf4_20698b3e",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T23:37:41Z",
+      "side": 1,
+      "message": "that\u0027s not what FillData was doing.\n\nwhat does the change to ashmem_test.cpp actually look like? you can\u0027t have something like\n```\n#if defined(_WIN32)\nstatic inline size_t getpagesize() { return 4096; }\nstatic inline int munmap(void*, size_t) { return 0; }\n#endif\n```\nin there instead?",
+      "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
