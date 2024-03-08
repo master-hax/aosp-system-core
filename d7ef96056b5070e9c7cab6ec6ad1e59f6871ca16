@@ -77,6 +77,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e9f3a24b_9b2c7a41",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-08T18:18:59Z",
+      "side": 1,
+      "message": "If you use `tmpfile` and `fileno`, how do you call `unlink(char *path)` in a cross-platform way? With mkstemp you get the file path, which can subsequently be unlinked.",
+      "parentUuid": "33d49f5f_86ac68f1",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c92b3d50_30006ec0",
         "filename": "libcutils/ashmem_base_test.cpp",
         "patchSetId": 11
