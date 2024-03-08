@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "590d5f83_0b3bcb18",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T19:55:54Z",
+      "side": 1,
+      "message": "(you\u0027ll want to either dup this or explicitly say \"we leak the FILE* on purpose\".)",
+      "revId": "af67c2e672f3ca39aaa62563ffb7c6e5bb9724c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
