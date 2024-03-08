@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbebed7f_d3d053a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "at a higher level, are we too deep in the weeds here? is there actually a _good_ way to do something ashmem-like on Windows, and we should just have a different Windows implementation and rename \"host\" to \"unix\"?\n\n(actually, why is the unix one still messing around with temporary files? shouldn\u0027t this have been moved to memfd already?!)",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51bb1693_4a645355",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "!defined()",
+      "range": {
+        "startLine": 54,
+        "startChar": 1,
+        "endLine": 54,
+        "endChar": 7
+      },
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc3300a_898cb343",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "this is probably less unclear _before_ the #if\n\nbut probably best to redo all the comments as\n```\n// Check if this is an ashmem region.\n// Since there\u0027s no such thing on the host, we can\u0027t actually implement that.\n// Check that it\u0027s at least a regular file...\n```\nand\n```\n// And on Linux, check that the file doesn\u0027t have a name.\n```",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33d49f5f_86ac68f1",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "this seems a bit worse than my tmpfile()+fileno() suggestion? if only in that we could actually _improve_ the ashmem_validate_stat() heuristic for linux with that (by checking the flags in /proc/pid/fdinfo/fd for O_TMPFILE). plus this is subtle enough to have needed a comment. (ashmem_valid() or ashmem_validate_stat() would actually fail in this function because the destructor hasn\u0027t been called yet, so the unlink() hasn\u0027t happened...)\n\ndoes mingw tmpfile() not do the right thing? or is mingw\u0027s fileno() broken?",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c92b3d50_30006ec0",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "i still don\u0027t really get the point of what this is supposed to be testing...",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06fdd51b_a63bf210",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-08T17:33:02Z",
+      "side": 1,
+      "message": "why don\u0027t you just use the default? (since this _is_ the default!)",
+      "revId": "d7ef96056b5070e9c7cab6ec6ad1e59f6871ca16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
