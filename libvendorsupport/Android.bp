@@ -63,3 +63,13 @@ cc_library_headers {
     // Setting sdk_version to the lowest version allows the dependencies.
     sdk_version: "1",
 }
+
+ndk_headers {
+    name: "libvendorsupport_ndk_headers",
+    from: "include_llndk/android",
+    to: "android",
+    srcs: [
+        "include_llndk/android/*.h",
+    ],
+    license: "NOTICE",
+}
