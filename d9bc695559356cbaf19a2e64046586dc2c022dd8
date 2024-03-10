@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b2af537f_2a2ec378",
+        "filename": "libvendorsupport/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-10T22:53:42Z",
+      "side": 1,
+      "message": "But we still need this as we are adding `__INTRODUCED_IN_LLNDK` to NDK header files. The NDK header files ignore this annotation by importing this `llndk-versioning.h`.",
+      "parentUuid": "c105cf13_66cae967",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "d9bc695559356cbaf19a2e64046586dc2c022dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "656d0a5d_7ef065c7",
         "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
         "patchSetId": 2
