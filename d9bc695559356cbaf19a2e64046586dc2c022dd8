@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cf9cd40d_57cb8c8b",
+        "filename": "libvendorsupport/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-11T00:09:34Z",
+      "side": 1,
+      "message": "You can include llndk-versioning.h conditionally perhaps in versioning.h.\n\n```\n#ifdef __ANDROID_VENDOR__\n#include \u003candroid/llndk-versioning.h\u003e\n#else\n#define __INTRODUCED_IN_LLNDK\n#endif\n```\n\nThe reason why I don\u0027t think this CL is right is simply because libvendorsupport is NOT an NDK stuff. We shouldn\u0027t have that under ndk_headers.",
+      "parentUuid": "1f28e624_9df0cb9d",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "d9bc695559356cbaf19a2e64046586dc2c022dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "656d0a5d_7ef065c7",
         "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
         "patchSetId": 2
