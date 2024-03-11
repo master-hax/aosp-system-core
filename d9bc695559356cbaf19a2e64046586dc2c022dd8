@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1f28e624_9df0cb9d",
+        "filename": "libvendorsupport/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T00:02:58Z",
+      "side": 1,
+      "message": "I still don\u0027t get it.\n\nThe header files with `__INTRODUCED_IN_LLNDK` must have `#include \u003candroid/llndk-versioning.h\u003e`. In this case the head file is shared to both NDK and LLNDK.\n\nNot to use the `libvendorsupport_ndk_headers`, users must use `#include \u003candroid/llndk-versioning.h\u003e` with a guard of `#if __has_include(\u003candroid/llndk-versioning.h\u003e)`. Also, they must include `android/llndk-versioning.h` before `sys/cdefs.h` to avoid duplicated definition of the `__INTRODUCED_IN_LLNDK`.\nOr users may include the empty definition in each header file.\n\nThis way, we may remove `libvendorsupport_ndk_headers` from ndk_headers.\n\nI don\u0027t think this is a better way. Isn\u0027t it natural to include `libvendorsupport_ndk_headers` as headers are shared between NDK and LLNDK?",
+      "parentUuid": "1a423e53_07594d0d",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "d9bc695559356cbaf19a2e64046586dc2c022dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "656d0a5d_7ef065c7",
         "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
         "patchSetId": 2
