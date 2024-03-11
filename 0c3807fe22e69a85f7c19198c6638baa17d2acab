@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4dd8be8e_a8018810",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T08:47:49Z",
+      "side": 1,
+      "message": "AT_LEAST is too generic and easy to be duplicated. API_AT_LEAST or API_LEVEL_AT_LEAST will be better.",
+      "parentUuid": "b651ebc3_02215609",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 26
+      },
+      "revId": "0c3807fe22e69a85f7c19198c6638baa17d2acab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42e70070_2ebfe62b",
         "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-11T08:40:32Z",
       "side": 1,
       "message": "Why is this condition needed?",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 35
+      },
+      "revId": "0c3807fe22e69a85f7c19198c6638baa17d2acab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d751da6_682e7c15",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T08:47:49Z",
+      "side": 1,
+      "message": "This is also defined in bionic / versioning.h. To avoid conflict, it is guarded here, too.",
+      "parentUuid": "42e70070_2ebfe62b",
       "range": {
         "startLine": 45,
         "startChar": 0,
