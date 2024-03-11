@@ -127,7 +127,17 @@ void ProfileAttribute::Reset(const CgroupController& controller, const std::stri
     file_v2_name_ = file_v2_name;
 }
 
+static bool isSystemApp(uid_t uid) {
+    return uid < AID_APP_START;
+}
+
 std::string ConvertUidToPath(const char* root_cgroup_path, uid_t uid) {
+    if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+        if (isSystemApp(uid))
+            return StringPrintf("%s/system/uid_%u", root_cgroup_path, uid);
+        else
+            return StringPrintf("%s/apps/uid_%u", root_cgroup_path, uid);
+    }
     return StringPrintf("%s/uid_%u", root_cgroup_path, uid);
 }
 
