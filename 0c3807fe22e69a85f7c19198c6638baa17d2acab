@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "54eb7d33_718988bf",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-11T09:07:09Z",
+      "side": 1,
+      "message": "The alternatives sound good to me.",
+      "parentUuid": "4dd8be8e_a8018810",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 26
+      },
+      "revId": "0c3807fe22e69a85f7c19198c6638baa17d2acab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42e70070_2ebfe62b",
         "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
         "patchSetId": 3
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "This is also defined in bionic / versioning.h. To avoid conflict, it is guarded here, too.",
       "parentUuid": "42e70070_2ebfe62b",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 35
+      },
+      "revId": "0c3807fe22e69a85f7c19198c6638baa17d2acab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0cc8acb1_b845c5e8",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-11T09:07:09Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "5d751da6_682e7c15",
       "range": {
         "startLine": 45,
         "startChar": 0,
