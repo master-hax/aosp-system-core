@@ -483,6 +483,16 @@ static std::optional<bool> MEMCGDisabled(
     return content.find("memory") == std::string::npos;
 }
 
+<<<<<<< HEAD
+=======
+static bool FreezerOnV2(
+        const std::map<std::string, android::cgrouprc::CgroupDescriptor>& descriptors) {
+    const auto iter = descriptors.find("freezer");
+    if (iter == descriptors.end()) return false;
+
+    return iter->second.controller()->version() == 2;
+}
+
 static bool CreateV2SubHierarchy(
         const std::string& path,
         const std::map<std::string, android::cgrouprc::CgroupDescriptor>& descriptors) {
@@ -519,6 +529,7 @@ static bool CreateV2SubHierarchy(
     return true;
 }
 
+>>>>>>> 27e803dc75a0 (Add build flag to split the cgroup v2 hierarchy into apps/system)
 bool CgroupSetup() {
     using namespace android::cgrouprc;
 
