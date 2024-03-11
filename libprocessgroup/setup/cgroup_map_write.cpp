@@ -508,6 +508,39 @@ void CgroupDescriptor::set_mounted(bool mounted) {
 }  // namespace cgrouprc
 }  // namespace android
 
+static bool createV2SubHierarchy(
+    const std::string &path,
+    const std::map<std::string, android::cgrouprc::CgroupDescriptor> &descriptors)
+{
+    using namespace android::cgrouprc;
+
+    if (!Mkdir(path, 0775, "system", "system")) {
+        PLOG(ERROR) << "Failed to create directory for " << path;
+        return false;
+    }
+
+    // Activate all v2 controllers in path so they can be activated in
+    // children as they are created.
+    for (const auto& [name, descriptor] : descriptors) {
+        const format::CgroupController* controller = descriptor.controller();
+        std::uint32_t flags = controller->flags();
+        if (controller->version() == 2 && name != CGROUPV2_HIERARCHY_NAME &&
+            flags & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION) {
+            std::string str("+");
+            str += controller->name();
+            if (!android::base::WriteStringToFile(str, path + "/cgroup.subtree_control")) {
+                if (flags & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) {
+                    PLOG(WARNING) << "Activation of cgroup controller " << str
+                                  << " failed in path " << path;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 bool CgroupSetup() {
     using namespace android::cgrouprc;
 
@@ -538,6 +571,22 @@ bool CgroupSetup() {
         } else {
             // issue a warning and proceed with the next cgroup
             LOG(WARNING) << "Failed to setup " << name << " cgroup";
+        }
+    }
+
+    // Experimental system / app isolation.
+    // This really belongs in early-init in init.rc, but we cannot use the flag there.
+    if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+        const auto it = descriptors.find(CGROUPV2_HIERARCHY_NAME);
+        std::string CGROUP_V2_ROOT = "/sys/fs/cgroup";
+        if (it != descriptors.end() && it->second.controller()->path() != CGROUP_V2_ROOT) {
+            CGROUP_V2_ROOT = it->second.controller()->path();
+        }
+
+        LOG(INFO) << "Using system/app isolation under: " << CGROUP_V2_ROOT;
+        if (!createV2SubHierarchy(CGROUP_V2_ROOT + "/apps", descriptors) || 
+            !createV2SubHierarchy(CGROUP_V2_ROOT + "/system", descriptors)) {
+            return false;
         }
     }
 

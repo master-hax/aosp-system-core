@@ -9,3 +9,12 @@ flag {
   # While we would like this to be a server flag, non-read only flags are not available early enough in boot to work for this library
   is_fixed_read_only: true
 }
+
+flag {
+  name: "cgroup_v2_sys_app_isolation"
+  namespace: "memcg"
+  description: "Experiment flag for isolating applications and system cgroups into their own subtrees in the v2 hierarchy. This allows different cgroup controller limits to be set for system and application cgroups."
+  bug: "327480673"
+  # While we would like this to be a server flag, non-read only flags are not available early enough in boot to work for this library
+  is_fixed_read_only: true
+}

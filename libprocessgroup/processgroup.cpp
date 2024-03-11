@@ -81,12 +81,23 @@ bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path) 
     return true;
 }
 
+static bool isSystemApp(uid_t uid) {
+    return uid < AID_APP_START;
+}
+
 static std::string ConvertUidToPath(const char* cgroup, uid_t uid) {
+    if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+        if (isSystemApp(uid))
+            return StringPrintf("%s/system/uid_%u", cgroup, uid);
+        else
+            return StringPrintf("%s/apps/uid_%u", cgroup, uid);
+    }
     return StringPrintf("%s/uid_%u", cgroup, uid);
 }
 
 static std::string ConvertUidPidToPath(const char* cgroup, uid_t uid, pid_t pid) {
-    return StringPrintf("%s/uid_%u/pid_%d", cgroup, uid, pid);
+    const std::string uid_path = ConvertUidToPath(cgroup, uid);
+    return StringPrintf("%s/pid_%d", uid_path.c_str(), pid);
 }
 
 static bool CgroupKillAvailable() {
