@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa373480_e5168eee",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T11:27:29Z",
+      "side": 1,
+      "message": "Replaced with `API_LEVEL_AT_LEAST`.",
+      "parentUuid": "54eb7d33_718988bf",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 26
+      },
+      "revId": "0c3807fe22e69a85f7c19198c6638baa17d2acab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "42e70070_2ebfe62b",
