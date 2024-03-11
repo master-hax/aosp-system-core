@@ -144,6 +144,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d321dd3b_0367e554",
+        "filename": "libvendorsupport/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T08:37:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c1804f0_4489fbc8",
+      "range": {
+        "startLine": 67,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "d9bc695559356cbaf19a2e64046586dc2c022dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "656d0a5d_7ef065c7",
@@ -181,6 +205,30 @@
       "side": 1,
       "message": "Ah, I see. During the implementation, I thought a wrong case.\nI defined this as `__INTRODUCED_IN(34)` or older were available to vendor modules. I thought that `__INTRODUCED_IN` might not be ignored. But as the current source tree has 202404 as the minimum vendor API level, we may safely ignore that v34 annotation.\nLet me update with it.",
       "parentUuid": "656d0a5d_7ef065c7",
+      "range": {
+        "startLine": 58,
+        "startChar": 24,
+        "endLine": 58,
+        "endChar": 33
+      },
+      "revId": "d9bc695559356cbaf19a2e64046586dc2c022dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c1ca113_e9973664",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-11T08:37:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79afa7e0_6b9ca81a",
       "range": {
         "startLine": 58,
         "startChar": 24,
