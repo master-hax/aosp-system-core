@@ -488,6 +488,38 @@ static bool FreezerOnV2(
     return iter->second.controller()->version() == 2;
 }
 
+static bool CreateV2SubHierarchy(
+        const std::string& path,
+        const std::map<std::string, android::cgrouprc::CgroupDescriptor>& descriptors) {
+    using namespace android::cgrouprc;
+
+    if (!Mkdir(path, 0775, "system", "system")) {
+        PLOG(ERROR) << "Failed to create directory for " << path;
+        return false;
+    }
+
+    // Activate all v2 controllers in path so they can be activated in
+    // children as they are created.
+    for (const auto& [name, descriptor] : descriptors) {
+        const format::CgroupController* controller = descriptor.controller();
+        std::uint32_t flags = controller->flags();
+        if (controller->version() == 2 && name != CGROUPV2_HIERARCHY_NAME &&
+            flags & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION) {
+            std::string str("+");
+            str += controller->name();
+            if (!android::base::WriteStringToFile(str, path + "/cgroup.subtree_control")) {
+                if (flags & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) {
+                    PLOG(WARNING) << "Activation of cgroup controller " << str << " failed in path "
+                                  << path;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 bool CgroupSetup() {
     using namespace android::cgrouprc;
 
@@ -533,6 +565,22 @@ bool CgroupSetup() {
         LOG(WARNING) << "Memcg forced to v2 hierarchy while freezer is not enabled on the v2 "
                      << "hierarchy! Vendor has modified Android, and kernel memory use will be "
                      << "higher than intended.";
+    }
+
+    // System / app isolation.
+    // This really belongs in early-init in init.rc, but we cannot use the flag there.
+    if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+        std::string cgroup_v2_root = CGROUP_V2_ROOT_DEFAULT;
+        const auto it = descriptors.find(CGROUPV2_HIERARCHY_NAME);
+        if (it != descriptors.end() && it->second.controller()->path() != cgroup_v2_root) {
+            cgroup_v2_root = it->second.controller()->path();
+        }
+
+        LOG(INFO) << "Using system/app isolation under: " << cgroup_v2_root;
+        if (!CreateV2SubHierarchy(cgroup_v2_root + "/apps", descriptors) ||
+            !CreateV2SubHierarchy(cgroup_v2_root + "/system", descriptors)) {
+            return false;
+        }
     }
 
     // mkdir <CGROUPS_RC_DIR> 0711 system system
