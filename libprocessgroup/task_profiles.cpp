@@ -27,6 +27,7 @@
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
 #include <android-base/threads.h>
+#include <android_libprocessgroup_flags.h>
 
 #include <cutils/android_filesystem_config.h>
 
@@ -126,11 +127,24 @@ void ProfileAttribute::Reset(const CgroupController& controller, const std::stri
     file_v2_name_ = file_v2_name;
 }
 
+static bool isSystemApp(uid_t uid) {
+    return uid < AID_APP_START;
+}
+
 bool ProfileAttribute::GetPathForProcess(uid_t uid, pid_t pid, std::string* path) const {
     if (controller()->version() == 2) {
-        // all cgroup v2 attributes use the same process group hierarchy
-        *path = StringPrintf("%s/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
-                             file_name().c_str());
+        if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+            if (isSystemApp(uid))
+                *path = StringPrintf("%s/system/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
+                                     file_name().c_str());
+            else
+                *path = StringPrintf("%s/apps/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
+                                     file_name().c_str());
+        } else {
+            // all cgroup v2 attributes use the same process group hierarchy
+            *path = StringPrintf("%s/uid_%u/pid_%d/%s", controller()->path(), uid, pid,
+                                 file_name().c_str());
+        }
         return true;
     }
     return GetPathForTask(pid, path);
@@ -159,8 +173,16 @@ bool ProfileAttribute::GetPathForUID(uid_t uid, std::string* path) const {
     if (path == nullptr) {
         return true;
     }
-
-    *path = StringPrintf("%s/uid_%u/%s", controller()->path(), uid, file_name().c_str());
+    if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
+        if (isSystemApp(uid))
+            *path = StringPrintf("%s/system/uid_%u/%s", controller()->path(), uid,
+                                 file_name().c_str());
+        else
+            *path = StringPrintf("%s/apps/uid_%u/%s", controller()->path(), uid,
+                                 file_name().c_str());
+    } else {
+        *path = StringPrintf("%s/uid_%u/%s", controller()->path(), uid, file_name().c_str());
+    }
     return true;
 }
 
