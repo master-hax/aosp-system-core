@@ -483,6 +483,16 @@ static std::optional<bool> MEMCGDisabled(
     return content.find("memory") == std::string::npos;
 }
 
+<<<<<<< HEAD
+=======
+static bool FreezerOnV2(
+        const std::map<std::string, android::cgrouprc::CgroupDescriptor>& descriptors) {
+    const auto iter = descriptors.find("freezer");
+    if (iter == descriptors.end()) return false;
+
+    return iter->second.controller()->version() == 2;
+}
+
 static bool CreateV2SubHierarchy(
         const std::string& path,
         const std::map<std::string, android::cgrouprc::CgroupDescriptor>& descriptors) {
@@ -519,6 +529,7 @@ static bool CreateV2SubHierarchy(
     return true;
 }
 
+>>>>>>> 27e803dc75a0 (Add build flag to split the cgroup v2 hierarchy into apps/system)
 bool CgroupSetup() {
     using namespace android::cgrouprc;
 
@@ -555,11 +566,11 @@ bool CgroupSetup() {
     if (force_memcg_v2) {
         if (MGLRUDisabled().value_or(false)) {
             LOG(WARNING) << "Memcg forced to v2 hierarchy with MGLRU disabled! "
-                         << "Global reclaim performance will suffer.";
+                     << "Global reclaim performance will suffer.";
         }
         if (MEMCGDisabled(descriptors).value_or(false)) {
-            LOG(WARNING) << "Memcg forced to v2 hierarchy while memcg is disabled by kernel "
-                         << "command line!";
+            LOG(WARNING) << "Memcg forced to v2 hierarchy while memcg is disabled by kernel command "
+                         << "line!";
         }
     }
 
@@ -567,9 +578,8 @@ bool CgroupSetup() {
     // This really belongs in early-init in init.rc, but we cannot use the flag there.
     if (android::libprocessgroup_flags::cgroup_v2_sys_app_isolation()) {
         const auto it = descriptors.find(CGROUPV2_HIERARCHY_NAME);
-        const std::string cgroup_v2_root = (it == descriptors.end())
-                                                   ? CGROUP_V2_ROOT_DEFAULT
-                                                   : it->second.controller()->path();
+        const std::string cgroup_v2_root = (it == descriptors.end()) ? CGROUP_V2_ROOT_DEFAULT :
+            it->second.controller()->path();
 
         LOG(INFO) << "Using system/app isolation under: " << cgroup_v2_root;
         if (!CreateV2SubHierarchy(cgroup_v2_root + "/apps", descriptors) ||
