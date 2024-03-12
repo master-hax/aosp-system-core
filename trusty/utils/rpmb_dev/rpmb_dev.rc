@@ -5,6 +5,7 @@ on post-fs-data
     chmod 0770 /data/vendor/ss
     rm /data/vendor/ss/rpmb_sock
     start rpmb_mock_init
+    wait /data/vendor/ss/RPMB_DATA
     start rpmb_mock
 
     # Storage proxy
