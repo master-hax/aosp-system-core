@@ -70,6 +70,30 @@
       },
       "revId": "cde98b27727b12bd3a6271c11970714cfeef12cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73052bbb_a7e33af6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-12T21:55:44Z",
+      "side": 1,
+      "message": "CowEstimator returns a value to delta_generator? So we can just modify the value we return right",
+      "parentUuid": "fdfaf053_f59145fb",
+      "range": {
+        "startLine": 733,
+        "startChar": 0,
+        "endLine": 734,
+        "endChar": 27
+      },
+      "revId": "cde98b27727b12bd3a6271c11970714cfeef12cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
