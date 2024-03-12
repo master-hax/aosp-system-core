@@ -16,6 +16,24 @@
       "message": "does the \"real\" modprobe log anything in this case?",
       "revId": "b9dead1a751abe93348059ee2465006a0240d05a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9da39bb_a6a7f83a",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-12T23:58:36Z",
+      "side": 1,
+      "message": "No, it doesn\u0027t. It has a special check for positive return values from `kmod_module_probe_insert_module()` where it will clear the error and carry on. Blocklisted modules are included in that check.\n\nReferences:\nhttps://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/tools/modprobe.c#n589\nhttps://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/libkmod/libkmod-module.c#n1372",
+      "parentUuid": "3c5f74ce_b880f76f",
+      "revId": "b9dead1a751abe93348059ee2465006a0240d05a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
