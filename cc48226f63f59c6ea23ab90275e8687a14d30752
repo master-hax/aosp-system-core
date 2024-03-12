@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cb3f9d4_8beb3a87",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-12T10:35:30Z",
+      "side": 1,
+      "message": "sgtm, that looks cleaner",
+      "parentUuid": "dac2f16a_be8e5974",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 71
+      },
+      "revId": "cc48226f63f59c6ea23ab90275e8687a14d30752",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c07f9316_49050c1f",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-12T10:28:53Z",
       "side": 1,
       "message": "nit: Braces are redundant here.",
+      "range": {
+        "startLine": 42,
+        "startChar": 30,
+        "endLine": 42,
+        "endChar": 46
+      },
+      "revId": "cc48226f63f59c6ea23ab90275e8687a14d30752",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "624a5cc4_68eb8f21",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-12T10:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c07f9316_49050c1f",
       "range": {
         "startLine": 42,
         "startChar": 30,
