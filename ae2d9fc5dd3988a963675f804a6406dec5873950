@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4dc849bc_0820911e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-12T08:23:10Z",
+      "side": 1,
+      "message": "That sounds good to me, and if no path is given, I can default it to what we have now?",
+      "parentUuid": "5f1c6122_cef23c55",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6f4ea8e2_1e02078f",
         "filename": "trusty/storage/proxy/proxy.c",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-11T21:30:51Z",
       "side": 1,
       "message": "Why not use a simple list? These are only added at startup time, so I think a simple list would not be more complicated than your fixed size array.",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bcbcd77_7d32b681",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-12T08:23:10Z",
+      "side": 1,
+      "message": "I just opted for simplicity.  If there was an unknown upper bound, I probably would have used a list.  But the static allocation here is only 64 bytes.  Which can fit easily into a cache line.  Using a list probably would save a few words but at the cost of indirection.",
+      "parentUuid": "6f4ea8e2_1e02078f",
       "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -71,6 +107,24 @@
       "writtenOn": "2024-03-11T21:30:51Z",
       "side": 1,
       "message": "For the non O_EXCL case the caller has already got ENOENT when it tried to open the file, so this should always be false unless someone else created it at the same time. I don\u0027t think we should create the symlink until we get a write request though. The storage server in trusty uses the empty size of the file as an indicator that a factory reset has occurred. It will update the superblock with that information before writing any other data to the file, so we want to make sure we return an empty size until then. If you create the symlink on open, then this factory reset signal will be gone if the device reboots before it gets that far.",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc06a4ba_fd130479",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-12T08:23:10Z",
+      "side": 1,
+      "message": "That\u0027s a good point.  The only concern is that the result of `storage_file_open` expects a file descriptor to return to TZ.  We could have some concept of \"file descriptors\" that will be opened later.  We only support FDs up to `FD_TBL_SIZE`(64).  We could maintain a separate smaller block of FDs starting at `FD_TBL_SIZE` that will represent FDs be created/opened later?  This would get that behavior; however, the FD given back to TZ won\u0027t be the real FD and we\u0027ll need to do some minor indirections.  How does that sound?",
+      "parentUuid": "ec3451ed_5e6d8867",
       "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
