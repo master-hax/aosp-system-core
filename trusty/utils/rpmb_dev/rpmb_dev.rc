@@ -1,13 +1,16 @@
 # RPMB Mock
 on post-fs-data
-    mkdir /data/vendor/ss
-    chown root system /data/vendor/ss
-    chmod 0770 /data/vendor/ss
-    rm /data/vendor/ss/rpmb_sock
+    mkdir /data/vendor/ss 0770 root system
+    # create fake persist storage
+    mkdir /data/vendor/ss/persist 0770 root system
+
+    rm -f /data/vendor/ss/rpmb_sock
     start rpmb_mock_init
+    wait /data/vendor/ss/RPMB_DATA 1
     start rpmb_mock
 
     # Storage proxy
+    wait /data/vendor/ss/rpmb_sock 1
     start storageproxyd
 
 service storageproxyd /vendor/bin/storageproxyd -d /dev/trusty-ipc-dev0 \
