@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3ec996f_3427376c",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-12T17:04:49Z",
+      "side": 1,
+      "message": "this seems weird too... \"any_partition\" is a very odd thing to say about _init_...",
+      "revId": "fc11068c4a9f94c836c74a367cf84804bc748bec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
