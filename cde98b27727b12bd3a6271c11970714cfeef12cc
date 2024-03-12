@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8892aefe_03fc148a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-12T21:46:54Z",
+      "side": 1,
+      "message": "this is a property of the estimator algorithm. Let\u0027s put it inside EstimateCowSize function",
+      "range": {
+        "startLine": 733,
+        "startChar": 0,
+        "endLine": 734,
+        "endChar": 27
+      },
+      "revId": "cde98b27727b12bd3a6271c11970714cfeef12cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
