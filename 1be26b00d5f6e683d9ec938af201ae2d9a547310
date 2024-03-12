@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9084ef8_e8c6d8d7",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-12T23:53:16Z",
+      "side": 1,
+      "message": "is this the terminology the \"real\" modprobe uses? (seems a bit awkward if we invented it, but if it\u0027s the usual term, probably better to use something awkward than make up a _new_ name...)",
+      "range": {
+        "startLine": 115,
+        "startChar": 16,
+        "endLine": 115,
+        "endChar": 33
+      },
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6af72164_48eb2603",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-12T23:53:16Z",
+      "side": 1,
+      "message": "is there a good reason for that? should it become an option to the libmodprobe function instead?",
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98ad6d5d_ab689eb3",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-12T23:53:16Z",
+      "side": 1,
+      "message": "\"Fall through\" is probably more idiomatic than \"continue\" given `continue` :-)",
+      "range": {
+        "startLine": 265,
+        "startChar": 11,
+        "endLine": 265,
+        "endChar": 19
+      },
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
