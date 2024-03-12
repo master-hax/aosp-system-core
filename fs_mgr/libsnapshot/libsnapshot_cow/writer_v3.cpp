@@ -729,6 +729,12 @@ bool CowWriterV3::Finalize() {
     if (!android::base::WriteFullyAtOffset(fd_, &header_, header_.prefix.header_size, 0)) {
         return false;
     }
+    if (IsEstimating()) {
+        // Add a small 1% overhead for estimation to account for chunking differences in writing the
+        // verity hash tree
+        next_data_pos_ += (next_data_pos_ - GetDataOffset(header_)) * 1.01;
+        header_.op_count = std::max(int(header_.op_count * 1.01), 25);
+    }
     return Sync();
 }
 
