@@ -46,6 +46,7 @@ cc_defaults {
         "libfstab",
         "libsnapuserd_client",
         "libz",
+        "libselinux",
     ],
     header_libs: [
         "libfiemap_headers",
@@ -63,6 +64,13 @@ cc_defaults {
         type: "lite",
         export_proto_headers: true,
         canonical_path_from_root: false,
+    },
+    product_variables: {
+        debuggable: {
+            cppflags: [
+                "-DSCRATCH_METADATA",
+            ],
+        },
     },
 }
 
@@ -91,6 +99,7 @@ filegroup {
         "partition_cow_creator.cpp",
         "return.cpp",
         "utility.cpp",
+        "scratch_super.cpp",
     ],
 }
 
@@ -351,6 +360,7 @@ cc_binary {
     ],
     srcs: [
         "snapshotctl.cpp",
+        "scratch_super.cpp",
     ],
     static_libs: [
         "libbrotli",

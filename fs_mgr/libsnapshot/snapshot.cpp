@@ -48,6 +48,7 @@
 #include <libsnapshot/snapshot_stats.h>
 #include "device_info.h"
 #include "partition_cow_creator.h"
+#include "scratch_super.h"
 #include "snapshot_metadata_updater.h"
 #include "utility.h"
 
@@ -117,7 +118,24 @@ std::unique_ptr<SnapshotManager> SnapshotManager::New(IDeviceInfo* info) {
         info = new DeviceInfo();
     }
 
+#ifdef SCRATCH_METADATA
+    std::string scratch_device = android::snapshot::GetScratchDevice();
+    std::string scratch_metadata;
+    if (!scratch_device.empty()) {
+        scratch_metadata = android::snapshot::MapScratchDevice(scratch_device);
+        if (!scratch_metadata.empty()) {
+            info->SetMetadataDir(scratch_metadata);
+        }
+    }
+
+    auto sm = std::unique_ptr<SnapshotManager>(new SnapshotManager(info));
+    if (!scratch_metadata.empty()) {
+        sm->SetScratchMetadata();
+    }
+    return std::move(sm);
+#else
     return std::unique_ptr<SnapshotManager>(new SnapshotManager(info));
+#endif
 }
 
 std::unique_ptr<SnapshotManager> SnapshotManager::NewForFirstStageMount(IDeviceInfo* info) {
@@ -141,6 +159,10 @@ SnapshotManager::SnapshotManager(IDeviceInfo* device)
 
 static std::string GetCowName(const std::string& snapshot_name) {
     return snapshot_name + "-cow";
+}
+
+bool SnapshotManager::InitializeScratchOnSuper(IDeviceInfo* device) {
+    return CreateScratchOnSuper(device);
 }
 
 SnapshotManager::SnapshotDriver SnapshotManager::GetSnapshotDriver(LockedFile* lock) {
@@ -1110,6 +1132,13 @@ UpdateState SnapshotManager::ProcessUpdateState(const std::function<bool()>& cal
         if (result.state == UpdateState::MergeFailed) {
             AcknowledgeMergeFailure(result.failure_code);
         }
+
+        if (result.state == UpdateState::MergeCompleted) {
+            if (is_scratch_metadata_) {
+                android::snapshot::CleanupScratch();
+            }
+        }
+
         if (result.state != UpdateState::Merging) {
             // Either there is no merge, or the merge was finished, so no need
             // to keep waiting.
@@ -2310,7 +2339,29 @@ bool SnapshotManager::ListSnapshots(LockedFile* lock, std::vector<std::string>* 
 }
 
 bool SnapshotManager::IsSnapshotManagerNeeded() {
-    return access(kBootIndicatorPath, F_OK) == 0;
+    if (access(kBootIndicatorPath, F_OK) == 0) {
+        return true;
+    }
+
+    if (IsScratchPresent()) {
+        return true;
+    }
+
+    return false;
+}
+
+bool SnapshotManager::MapScratchPartitionIfNeeded(
+        const std::function<bool(const std::string&)>& init) {
+#ifdef SCRATCH_METADATA
+    auto device = android::snapshot::GetScratchDevice();
+    if (!device.empty()) {
+        init(device);
+        if (android::snapshot::MapScratchDevice(device).empty()) {
+            return false;
+        }
+    }
+#endif
+    return true;
 }
 
 std::string SnapshotManager::GetGlobalRollbackIndicatorPath() {
@@ -2394,6 +2445,12 @@ bool SnapshotManager::MapAllPartitions(LockedFile* lock, const std::string& supe
         if (GetPartitionGroupName(metadata->groups[partition.group_index]) == kCowGroupName) {
             LOG(INFO) << "Skip mapping partition " << GetPartitionName(partition) << " in group "
                       << kCowGroupName;
+            continue;
+        }
+
+        if (GetPartitionName(partition) ==
+            android::base::Basename(android::snapshot::kScratchMount)) {
+            LOG(INFO) << "Partition: " << GetPartitionName(partition) << " skipping";
             continue;
         }
 
@@ -3282,7 +3339,7 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     // TODO(b/134949511): remove this check. Right now, with overlayfs mounted, the scratch
     // partition takes up a big chunk of space in super, causing COW images to be created on
     // retrofit Virtual A/B devices.
-    if (device_->IsOverlayfsSetup()) {
+    if (!is_scratch_metadata_ && device_->IsOverlayfsSetup()) {
         LOG(ERROR) << "Cannot create update snapshots with overlayfs setup. Run `adb enable-verity`"
                    << ", reboot, then try again.";
         return Return::Error();
