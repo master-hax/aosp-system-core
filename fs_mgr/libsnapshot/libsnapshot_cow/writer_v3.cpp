@@ -301,6 +301,19 @@ bool CowWriterV3::CheckOpCount(size_t op_count) {
     return true;
 }
 
+size_t CowWriterV3::CachedDataSize() const {
+    size_t size = 0;
+    for (auto& i : cached_data_) {
+        size += i.size();
+    }
+    return size;
+}
+
+size_t CowWriterV3::NumDataOpsToWrite(size_t num_blocks) const {
+    double leftover_space = batch_size_ * header_.block_size - CachedDataSize();
+    return std::min(size_t(ceil(leftover_space / header_.block_size)), num_blocks);
+}
+
 bool CowWriterV3::EmitCopy(uint64_t new_block, uint64_t old_block, uint64_t num_blocks) {
     if (!CheckOpCount(num_blocks)) {
         return false;
@@ -333,7 +346,8 @@ bool CowWriterV3::NeedsFlush() const {
     // Allow bigger batch sizes for ops without data. A single CowOperationV3
     // struct uses 14 bytes of memory, even if we cache 200 * 16 ops in memory,
     // it's only ~44K.
-    return cached_data_.size() >= batch_size_ || cached_ops_.size() >= batch_size_ * 16;
+    return batch_size_ * header_.block_size <= CachedDataSize() ||
+           cached_ops_.size() >= batch_size_ * 16;
 }
 
 bool CowWriterV3::ConstructCowOpCompressedBuffers(uint64_t new_block_start, const void* data,
@@ -389,8 +403,7 @@ bool CowWriterV3::EmitBlocks(uint64_t new_block_start, const void* data, size_t 
     const auto bytes = reinterpret_cast<const uint8_t*>(data);
     const size_t num_blocks = (size / header_.block_size);
     for (size_t i = 0; i < num_blocks;) {
-        const size_t blocks_to_write =
-                std::min<size_t>(batch_size_ - cached_data_.size(), num_blocks - i);
+        const size_t blocks_to_write = NumDataOpsToWrite(num_blocks - i);
 
         if (!ConstructCowOpCompressedBuffers(new_block_start + i, bytes + header_.block_size * i,
                                              old_block + i, offset, type, blocks_to_write)) {
