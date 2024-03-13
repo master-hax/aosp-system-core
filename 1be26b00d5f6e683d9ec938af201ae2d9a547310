@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d65b10b6_848d06b2",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-13T19:30:58Z",
+      "side": 1,
+      "message": "The \"real\" modprobe doesn\u0027t support `--all\u003dFILE`. For the --all option it just supports listing the individual modules you want to load. I chose the name `modules_load_file` since the filename we use in Android is `modules.load`.",
+      "parentUuid": "b9084ef8_e8c6d8d7",
+      "range": {
+        "startLine": 115,
+        "startChar": 16,
+        "endLine": 115,
+        "endChar": 33
+      },
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6af72164_48eb2603",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 1
@@ -37,6 +61,24 @@
       "writtenOn": "2024-03-12T23:53:16Z",
       "side": 1,
       "message": "is there a good reason for that? should it become an option to the libmodprobe function instead?",
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd4c2222_6fbbc40f",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-13T19:30:58Z",
+      "side": 1,
+      "message": "I was surprised by this and didn\u0027t find a good reason. The \"real\" modprobe doesn\u0027t have this concept of a `modules.load` file since in the popular Linux distribution kernel modules are auto-loaded using udev and systemd.\n\nI\u0027m fine with adding a flag to libmodprobe to enable failing when `modules.load` is missing.",
+      "parentUuid": "6af72164_48eb2603",
       "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -54,6 +96,30 @@
       "writtenOn": "2024-03-12T23:53:16Z",
       "side": 1,
       "message": "\"Fall through\" is probably more idiomatic than \"continue\" given `continue` :-)",
+      "range": {
+        "startLine": 265,
+        "startChar": 11,
+        "endLine": 265,
+        "endChar": 19
+      },
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6101225_ce738462",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-13T19:30:58Z",
+      "side": 1,
+      "message": "Sure, I can update that.",
+      "parentUuid": "98ad6d5d_ab689eb3",
       "range": {
         "startLine": 265,
         "startChar": 11,
