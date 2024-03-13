@@ -79,10 +79,11 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
         : TestDeviceInfo(fake_super) {
         set_slot_suffix(slot_suffix);
     }
-    std::string GetMetadataDir() const override { return "/metadata/ota/test"s; }
+    std::string GetMetadataDir() const override { return metadata_dir_; }
     std::string GetSlotSuffix() const override { return slot_suffix_; }
     std::string GetOtherSlotSuffix() const override { return slot_suffix_ == "_a" ? "_b" : "_a"; }
     std::string GetSuperDevice([[maybe_unused]] uint32_t slot) const override { return "super"; }
+    void SetMetadataDir(const std::string& value) { metadata_dir_ = value; }
     const android::fs_mgr::IPartitionOpener& GetPartitionOpener() const override {
         return *opener_.get();
     }
@@ -120,6 +121,8 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
     void set_dm(android::dm::IDeviceMapper* dm) { dm_ = dm; }
 
     MergeStatus merge_status() const { return merge_status_; }
+    bool IsTempMetadata() const override { return temp_metadata_; }
+    void SetTempMetadata() { temp_metadata_ = true; }
 
   private:
     std::string slot_suffix_ = "_a";
@@ -129,6 +132,8 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
     bool first_stage_init_ = false;
     std::unordered_set<uint32_t> unbootable_slots_;
     android::dm::IDeviceMapper* dm_ = nullptr;
+    std::string metadata_dir_ = "/metadata/ota/test";
+    bool temp_metadata_ = false;
 };
 
 class DeviceMapperWrapper : public android::dm::IDeviceMapper {
