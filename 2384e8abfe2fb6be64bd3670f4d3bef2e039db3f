@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97fa4d35_91d02365",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-03-13T17:48:20Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Bpfmt: This file is not formatted.\n\nAnalyzer Description: Formats Android.bp files.\nOwner: soong-team@google.com\n\nThis file is not formatted.\n\nRun `prebuilts/build-tools/linux-x86/bin/bpfmt -w {filename}` to format the file, or apply the suggested fix.",
+      "range": {
+        "startLine": 0,
+        "startChar": 0,
+        "endLine": 0,
+        "endChar": 0
+      },
+      "revId": "2384e8abfe2fb6be64bd3670f4d3bef2e039db3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
