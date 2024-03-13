@@ -269,9 +269,11 @@ bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
     // snapuserd binary from Android S won't be able to communicate
     // and hence, we will fallback and issue I/O to verify
     // the presence of daemon.
-    auto client = std::make_unique<SnapuserdClient>();
-    if (!client->IsTransitionedDaemonReady()) {
-        LOG(ERROR) << "IsTransitionedDaemonReady failed";
+    if (access("/metadata/ota", F_OK) == 0) {
+        auto client = std::make_unique<SnapuserdClient>();
+        if (!client->IsTransitionedDaemonReady()) {
+            LOG(ERROR) << "IsTransitionedDaemonReady failed";
+        }
     }
 
     std::string dev = "/dev/block/mapper/system"s + fs_mgr_get_slot_suffix();
