@@ -46,6 +46,7 @@ cc_defaults {
         "libfstab",
         "libsnapuserd_client",
         "libz",
+        "libselinux",
     ],
     header_libs: [
         "libfiemap_headers",
@@ -63,6 +64,13 @@ cc_defaults {
         type: "lite",
         export_proto_headers: true,
         canonical_path_from_root: false,
+    },
+    product_variables: {
+        debuggable: {
+            cppflags: [
+                "-DSCRATCH_METADATA=1",
+            ],
+        },
     },
 }
 
@@ -91,6 +99,7 @@ filegroup {
         "partition_cow_creator.cpp",
         "return.cpp",
         "utility.cpp",
+        "scratch_super.cpp",
     ],
 }
 
@@ -299,6 +308,13 @@ cc_test {
     test_options: {
         min_shipping_api_level: 30,
     },
+    product_variables: {
+        debuggable: {
+            cppflags: [
+                "-DSCRATCH_METADATA=1",
+            ],
+        },
+    },
 }
 
 cc_test {
@@ -351,6 +367,7 @@ cc_binary {
     ],
     srcs: [
         "snapshotctl.cpp",
+        "scratch_super.cpp",
     ],
     static_libs: [
         "libbrotli",
@@ -378,6 +395,7 @@ cc_binary {
         debuggable: {
             cppflags: [
                 "-DSNAPSHOTCTL_USERDEBUG_OR_ENG",
+                "-DSCRATCH_METADATA",
             ],
             shared_libs: [
                 "android.hardware.boot@1.0",
