@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ada3e35_c2d0a113",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T06:30:23Z",
+      "side": 1,
+      "message": "InitPlatformDevices? Not all platform devices are char devices.",
+      "range": {
+        "startLine": 138,
+        "startChar": 30,
+        "endLine": 138,
+        "endChar": 34
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7245e501_78c39f77",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T06:30:23Z",
+      "side": 1,
+      "message": "This condition check alone? I don\u0027t think this alone deserves a separate library.",
+      "range": {
+        "startLine": 277,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 95
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c290e0fb_b7be6593",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T06:30:23Z",
+      "side": 1,
+      "message": "Can these two conditions be moved to inside of IsMicrodroidStrictBoot?",
+      "range": {
+        "startLine": 293,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 58
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8594aafb_5c2efbd2",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T06:30:23Z",
+      "side": 1,
+      "message": "For correctness, this should be from fstab.",
+      "range": {
+        "startLine": 561,
+        "startChar": 51,
+        "endLine": 561,
+        "endChar": 87
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83520c40_a5cecc30",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 581,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T06:30:23Z",
+      "side": 1,
+      "message": "Do you need additional check for the strict boot here?",
+      "range": {
+        "startLine": 581,
+        "startChar": 0,
+        "endLine": 581,
+        "endChar": 58
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
