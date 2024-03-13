@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c02ace1_fed4ffe8",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "const auto\u0026",
+      "range": {
+        "startLine": 306,
+        "startChar": 9,
+        "endLine": 306,
+        "endChar": 13
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bf4f235_22c50cf9",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "size_t",
+      "range": {
+        "startLine": 313,
+        "startChar": 4,
+        "endLine": 313,
+        "endChar": 10
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "369fd0bb_a7cda1a5",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "sie",
+      "range": {
+        "startLine": 313,
+        "startChar": 4,
+        "endLine": 313,
+        "endChar": 10
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84872e47_0e6af04a",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "use static_cast",
+      "range": {
+        "startLine": 314,
+        "startChar": 20,
+        "endLine": 314,
+        "endChar": 26
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b3774d6_690bc503",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "DO something like \n```\ntemplate \u003ctypename T\u003e\nstatic constexpr T DivRoundup(T x, T y) {\n    return (x + y - 1) / y;\n}\n```\n\nto do integer division round up",
+      "range": {
+        "startLine": 314,
+        "startChar": 26,
+        "endLine": 314,
+        "endChar": 68
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95a196f7_c57a5386",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-13T23:03:06Z",
+      "side": 1,
+      "message": "`CachedDataSize() \u003e\u003d batch_size_ * header_.block_size` as it\u0027s more intuitive \"if cache size overflows some limit, needs flushing\"",
+      "range": {
+        "startLine": 349,
+        "startChar": 11,
+        "endLine": 349,
+        "endChar": 63
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
