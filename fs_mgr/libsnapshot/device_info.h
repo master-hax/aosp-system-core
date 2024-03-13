@@ -42,7 +42,7 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
     std::unique_ptr<IImageManager> OpenImageManager() const override;
     bool IsFirstStageInit() const override;
     android::dm::IDeviceMapper& GetDeviceMapper() override;
-
+    void SetMetadataDir(std::string value) override;
     void set_first_stage_init(bool value) { first_stage_init_ = value; }
 
   private:
@@ -50,6 +50,8 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
 
     android::fs_mgr::PartitionOpener opener_;
     bool first_stage_init_ = false;
+    // Default value
+    std::string metadata_dir_ = "/metadata/ota";
 #ifdef LIBSNAPSHOT_USE_HAL
     std::unique_ptr<::android::hal::BootControlClient> boot_control_;
 #endif
