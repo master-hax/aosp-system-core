@@ -16,7 +16,6 @@
 
 #include <sysexits.h>
 #include <unistd.h>
-
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -46,6 +45,7 @@
 #include <storage_literals/storage_literals.h>
 
 #include "partition_cow_creator.h"
+#include "scratch_super.h"
 
 #ifdef SNAPSHOTCTL_USERDEBUG_OR_ENG
 #include <BootControlClient.h>
@@ -57,6 +57,8 @@ using namespace android::storage_literals;
 using android::base::LogdLogger;
 using android::base::StderrLogger;
 using android::base::TeeLogger;
+using namespace android::dm;
+using namespace android::fs_mgr;
 using android::fs_mgr::CreateLogicalPartitionParams;
 using android::fs_mgr::FindPartition;
 using android::fs_mgr::GetPartitionSize;
@@ -120,16 +122,12 @@ class MapSnapshots {
     std::string snapshot_dir_path_;
     std::unordered_map<std::string, chromeos_update_engine::DynamicPartitionGroup*> group_map_;
 
+    const size_t kScratchSize = uint64_t(1 * 1024 * 1024);
     std::vector<std::string> patchfiles_;
     chromeos_update_engine::DeltaArchiveManifest manifest_;
 };
 
 MapSnapshots::MapSnapshots(std::string path) {
-    sm_ = SnapshotManager::New();
-    if (!sm_) {
-        std::cout << "Failed to create snapshotmanager";
-        exit(1);
-    }
     snapshot_dir_path_ = path + "/";
 }
 
@@ -150,6 +148,30 @@ std::string MapSnapshots::GetGroupName(const android::fs_mgr::LpMetadata& pt,
 }
 
 bool MapSnapshots::PrepareUpdate() {
+    std::string scratch_device;
+    auto target_slot = fs_mgr_get_slot_suffix();
+    auto target_slot_number = SlotNumberForSlotSuffix(target_slot);
+
+    if (!android::snapshot::CreateDynamicScratch(&scratch_device, kScratchSize,
+                                                 target_slot_number)) {
+        LOG(ERROR) << "CreateDynamicScratch failed";
+        return false;
+    }
+    if (!android::snapshot::MakeScratchFilesystem(scratch_device)) {
+        LOG(ERROR) << "MakeScratchFilesystem failed";
+        return false;
+    }
+    if (!android::snapshot::MountScratch(scratch_device)) {
+        LOG(ERROR) << "MountScratch failed";
+        return false;
+    }
+    if (!android::snapshot::SetupOTADirs()) {
+        LOG(ERROR) << "SetupOTADirs failed";
+        return false;
+    }
+
+    sm_ = SnapshotManager::New();
+
     auto source_slot = fs_mgr_get_slot_suffix();
     auto source_slot_number = SlotNumberForSlotSuffix(source_slot);
     auto super_source = fs_mgr_get_super_partition_name(source_slot_number);
@@ -321,6 +343,30 @@ bool MapSnapshots::ApplyUpdate() {
 }
 
 bool MapSnapshots::BeginUpdate() {
+    std::string scratch_device;
+    auto target_slot = fs_mgr_get_slot_suffix();
+    auto target_slot_number = SlotNumberForSlotSuffix(target_slot);
+
+    if (!android::snapshot::CreateDynamicScratch(&scratch_device, kScratchSize,
+                                                 target_slot_number)) {
+        LOG(ERROR) << "CreateDynamicScratch failed";
+        return false;
+    }
+    if (!android::snapshot::MakeScratchFilesystem(scratch_device)) {
+        LOG(ERROR) << "MakeScratchFilesystem failed";
+        return false;
+    }
+    if (!android::snapshot::MountScratch(scratch_device)) {
+        LOG(ERROR) << "MountScratch failed";
+        return false;
+    }
+    if (!android::snapshot::SetupOTADirs()) {
+        LOG(ERROR) << "SetupOTADirs failed";
+        return false;
+    }
+
+    sm_ = SnapshotManager::New();
+
     lock_ = sm_->LockExclusive();
     std::vector<std::string> snapshots;
     sm_->ListSnapshots(lock_.get(), &snapshots);
@@ -470,10 +516,12 @@ bool MapSnapshots::FinishSnapshotWrites() {
 }
 
 bool MapSnapshots::UnmapCowImagePath(std::string& name) {
+    sm_ = SnapshotManager::New();
     return sm_->UnmapCowImage(name);
 }
 
 bool MapSnapshots::DeleteSnapshots() {
+    sm_ = SnapshotManager::New();
     lock_ = sm_->LockExclusive();
     if (!sm_->RemoveAllUpdateState(lock_.get())) {
         LOG(ERROR) << "Remove All Update State failed";

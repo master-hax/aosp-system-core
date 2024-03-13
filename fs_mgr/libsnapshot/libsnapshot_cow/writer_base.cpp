@@ -195,6 +195,7 @@ bool CowWriterBase::Sync() {
     if (is_dev_null_) {
         return true;
     }
+
     if (fsync(fd_.get()) < 0) {
         PLOG(ERROR) << "fsync failed";
         return false;
