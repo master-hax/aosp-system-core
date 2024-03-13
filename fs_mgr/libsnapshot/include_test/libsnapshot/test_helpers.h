@@ -81,6 +81,7 @@ class TestDeviceInfo : public SnapshotManager::IDeviceInfo {
     std::string GetSlotSuffix() const override { return slot_suffix_; }
     std::string GetOtherSlotSuffix() const override { return slot_suffix_ == "_a" ? "_b" : "_a"; }
     std::string GetSuperDevice([[maybe_unused]] uint32_t slot) const override { return "super"; }
+    void SetMetadataDir([[maybe_unused]] std::string value) {}
     const android::fs_mgr::IPartitionOpener& GetPartitionOpener() const override {
         return *opener_.get();
     }

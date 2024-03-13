@@ -265,6 +265,7 @@ static bool Inspect(const std::string& path) {
 }  // namespace android
 
 int main(int argc, char** argv) {
+    std::cout << "inspect_cow" << std::endl;
     gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     if (argc < 2) {

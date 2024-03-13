@@ -752,6 +752,7 @@ bool CowWriterV3::Finalize() {
         return false;
     }
     if (!android::base::WriteFullyAtOffset(fd_, &header_, header_.prefix.header_size, 0)) {
+        PLOG(ERROR) << "WriteFullyAtOffset failed";
         return false;
     }
     return Sync();
