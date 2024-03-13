@@ -38,7 +38,11 @@ constexpr bool kIsRecovery = false;
 #endif
 
 std::string DeviceInfo::GetMetadataDir() const {
-    return "/metadata/ota"s;
+    return metadata_dir_;
+}
+
+void DeviceInfo::SetMetadataDir(const std::string& value) {
+    metadata_dir_ = value;
 }
 
 std::string DeviceInfo::GetSlotSuffix() const {
