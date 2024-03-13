@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e063532a_beb7307f",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-13T15:25:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ada3e35_c2d0a113",
+      "range": {
+        "startLine": 138,
+        "startChar": 30,
+        "endLine": 138,
+        "endChar": 34
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7245e501_78c39f77",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-13T06:30:23Z",
       "side": 1,
       "message": "This condition check alone? I don\u0027t think this alone deserves a separate library.",
+      "range": {
+        "startLine": 277,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 95
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f24e26d6_90b3803d",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-13T15:25:40Z",
+      "side": 1,
+      "message": "This is more about microdroid implementation leaking into first_stage_init. However, we can probably keep it here, as it is quite simple",
+      "parentUuid": "7245e501_78c39f77",
       "range": {
         "startLine": 277,
         "startChar": 0,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ad64d8e1_9475202c",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-13T15:25:40Z",
+      "side": 1,
+      "message": "These conditions are checking 2 different things. The IsMicrodroidStrictBoot is used to ensure that for protected VMs we will fail the boot if driver is not found. While IsMicrodroid() \u0026\u0026 IsOpenDiceChangesFlagEnabled() condition is used to ensure that we only init the open-dice0 device for Microdroid boot on builds that have RELEASE_AVF_ENABLE_DICE_CHANGES flag enabled.",
+      "parentUuid": "c290e0fb_b7be6593",
+      "range": {
+        "startLine": 293,
+        "startChar": 0,
+        "endLine": 293,
+        "endChar": 58
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8594aafb_5c2efbd2",
@@ -93,6 +165,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e0a15eb_c4789923",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-13T15:25:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8594aafb_5c2efbd2",
+      "range": {
+        "startLine": 561,
+        "startChar": 51,
+        "endLine": 561,
+        "endChar": 87
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83520c40_a5cecc30",
@@ -106,6 +202,30 @@
       "writtenOn": "2024-03-13T06:30:23Z",
       "side": 1,
       "message": "Do you need additional check for the strict boot here?",
+      "range": {
+        "startLine": 581,
+        "startChar": 0,
+        "endLine": 581,
+        "endChar": 58
+      },
+      "revId": "2d9841be4c023063b2aa8b96f30c96ae68a817a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82110af0_32d945da",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 581,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-13T15:25:40Z",
+      "side": 1,
+      "message": "See comment above, this is different from strict boot check. Also, we do dice derivation for non-protected VMs as well.",
+      "parentUuid": "83520c40_a5cecc30",
       "range": {
         "startLine": 581,
         "startChar": 0,
