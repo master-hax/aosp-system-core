@@ -109,8 +109,11 @@ class ISnapshotManager {
         virtual bool IsRecovery() const = 0;
         virtual bool IsTestDevice() const { return false; }
         virtual bool IsFirstStageInit() const = 0;
+        virtual void SetMetadataDir(const std::string& value) = 0;
         virtual std::unique_ptr<IImageManager> OpenImageManager() const = 0;
         virtual android::dm::IDeviceMapper& GetDeviceMapper() = 0;
+        virtual bool IsTempMetadata() const = 0;
+        virtual void SetTempMetadata() = 0;
 
         // Helper method for implementing OpenImageManager.
         std::unique_ptr<IImageManager> OpenImageManager(const std::string& gsid_dir) const;
@@ -329,6 +332,9 @@ class SnapshotManager final : public ISnapshotManager {
     // might be needed to perform first-stage mounts.
     static bool IsSnapshotManagerNeeded();
 
+    // Map the scratch partition which contains metadata of snapshots
+    static bool MapScratchPartitionIfNeeded(const std::function<bool(const std::string&)>& init);
+
     // Helper function for second stage init to restorecon on the rollback indicator.
     static std::string GetGlobalRollbackIndicatorPath();
 
@@ -393,6 +399,8 @@ class SnapshotManager final : public ISnapshotManager {
     void SetUeventRegenCallback(std::function<bool(const std::string&)> callback) {
         uevent_regen_callback_ = callback;
     }
+
+    void SetTempMetadata() { is_temp_metadata_ = true; }
 
     // If true, compression is enabled for this update. This is used by
     // first-stage to decide whether to launch snapuserd.
@@ -848,6 +856,7 @@ class SnapshotManager final : public ISnapshotManager {
     std::string metadata_dir_;
     std::unique_ptr<IImageManager> images_;
     bool use_first_stage_snapuserd_ = false;
+    bool is_temp_metadata_ = false;
     std::function<bool(const std::string&)> uevent_regen_callback_;
     std::unique_ptr<SnapuserdClient> snapuserd_client_;
     std::unique_ptr<LpMetadata> old_partition_metadata_;
