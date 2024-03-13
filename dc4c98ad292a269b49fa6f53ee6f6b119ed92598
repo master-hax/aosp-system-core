@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70cb4f5e_461f4ffa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-13T22:47:37Z",
+      "side": 1,
+      "message": "This is currently blocked by b/329487003, but I wanted to put this up for you to look at now.",
+      "revId": "dc4c98ad292a269b49fa6f53ee6f6b119ed92598",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
