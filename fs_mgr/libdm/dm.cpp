@@ -540,6 +540,15 @@ bool DeviceMapper::GetTableStatus(const std::string& name, std::vector<TargetInf
     return GetTable(name, 0, table);
 }
 
+bool DeviceMapper::GetTableStatusIma(const std::string& name, std::vector<TargetInfo>* table) {
+#ifdef DM_IMA_MEASUREMENT_FLAG
+    return GetTable(name, DM_IMA_MEASUREMENT_FLAG, table);
+#else
+    LOG(ERROR) << "DM_IMA_MEASUREMENT_FLAG is not supported";
+    return false;
+#endif
+}
+
 bool DeviceMapper::GetTableInfo(const std::string& name, std::vector<TargetInfo>* table) {
     return GetTable(name, DM_STATUS_TABLE_FLAG, table);
 }
