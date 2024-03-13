@@ -16,6 +16,24 @@
       "message": "this seems weird too... \"any_partition\" is a very odd thing to say about _init_...",
       "revId": "fc11068c4a9f94c836c74a367cf84804bc748bec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a83b559_3d4c9b39",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-13T08:14:29Z",
+      "side": 1,
+      "message": "I kind of agree. For `init` we may want to be explicit about where it can be referenced, because we don\u0027t want `init` to be in random partitions.",
+      "parentUuid": "a3ec996f_3427376c",
+      "revId": "fc11068c4a9f94c836c74a367cf84804bc748bec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
