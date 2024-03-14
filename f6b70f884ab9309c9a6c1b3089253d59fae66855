@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ea0a75c_2d13d478",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "This seems to be a separate feature. Suggest to split it into a separate patch.",
+      "range": {
+        "startLine": 649,
+        "startChar": 12,
+        "endLine": 649,
+        "endChar": 38
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac8762db_abda0761",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "Should this be done only for `force_memcg_v2` or whenever cgroup v2 is enabled (say via cgroups.json)?",
+      "range": {
+        "startLine": 653,
+        "startChar": 8,
+        "endLine": 653,
+        "endChar": 22
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "326fbd81_d59634a7",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "spaces. Please use clang-format",
+      "range": {
+        "startLine": 662,
+        "startChar": 21,
+        "endLine": 662,
+        "endChar": 24
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8a4571b_cc2dce80",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "why 1500?",
+      "range": {
+        "startLine": 670,
+        "startChar": 72,
+        "endLine": 670,
+        "endChar": 76
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1f2b14f_89447840",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "We don\u0027t need to output this if things are normal. And s_info can be obtained only when numMemcgs is too high and should be reported as an error.",
+      "range": {
+        "startLine": 674,
+        "startChar": 20,
+        "endLine": 675,
+        "endChar": 61
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "402d73a2_9e82ba58",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "adding `constexpr` would allow compiler to apply more optimizations.",
+      "range": {
+        "startLine": 189,
+        "startChar": 4,
+        "endLine": 189,
+        "endChar": 28
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dab5520_53ba0116",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "Is that a problem? Is so, please explain (in a comment or in the warning message).",
+      "range": {
+        "startLine": 321,
+        "startChar": 8,
+        "endLine": 321,
+        "endChar": 75
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "47c26782_09dcc39e",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "What\u0027s the connection between freezer and memcg v2?",
+      "range": {
+        "startLine": 327,
+        "startChar": 25,
+        "endLine": 327,
+        "endChar": 103
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17509540_69d79868",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "Tying a feature to a specific kernel version is not a good (features tend to back/forward ported). Is there some other indication that the feature is present in the kernel?",
+      "range": {
+        "startLine": 330,
+        "startChar": 22,
+        "endLine": 330,
+        "endChar": 65
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31cf560a_66ee9798",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 1,
+      "message": "This statement is fragile. Patches are added/removed all the time.",
+      "range": {
+        "startLine": 332,
+        "startChar": 25,
+        "endLine": 332,
+        "endChar": 103
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

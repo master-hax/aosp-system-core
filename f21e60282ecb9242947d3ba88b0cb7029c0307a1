@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "204cfbbe_78339132",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:22:31Z",
+      "side": 0,
+      "message": "why the removal?",
+      "range": {
+        "startLine": 205,
+        "startChar": 8,
+        "endLine": 205,
+        "endChar": 13
+      },
+      "revId": "f21e60282ecb9242947d3ba88b0cb7029c0307a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
