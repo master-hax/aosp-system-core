@@ -22,6 +22,30 @@
       },
       "revId": "2384e8abfe2fb6be64bd3670f4d3bef2e039db3f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ade377fe_0d6e4c5e",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-03-14T00:37:27Z",
+      "side": 1,
+      "message": "It is fixed in https://android-review.git.corp.google.com/c/platform/system/core/+/2986255 :)",
+      "parentUuid": "97fa4d35_91d02365",
+      "range": {
+        "startLine": 0,
+        "startChar": 0,
+        "endLine": 0,
+        "endChar": 0
+      },
+      "revId": "2384e8abfe2fb6be64bd3670f4d3bef2e039db3f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
