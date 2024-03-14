@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a91c724e_6fed7efd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-14T18:08:46Z",
+      "side": 1,
+      "message": "Can you look  at aosp/2845115 and see if that covers your use-case as well. These changes will conflict with those changes.",
+      "revId": "2fb0c44fdba72c32714137d7b1803aff4c5e60d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8a3ce9b_681ae13e",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-14T18:08:46Z",
+      "side": 1,
+      "message": "This will not be persistent.",
+      "revId": "2fb0c44fdba72c32714137d7b1803aff4c5e60d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
