@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0f4377d_fed2a78f",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-14T21:13:59Z",
+      "side": 1,
+      "message": "This `16` constant appear twice. Consider adding a constexpr constant for it?",
+      "range": {
+        "startLine": 345,
+        "startChar": 85,
+        "endLine": 345,
+        "endChar": 87
+      },
+      "revId": "99b4473c5018d91539d2ec8bb6a7e8a9a0375855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
