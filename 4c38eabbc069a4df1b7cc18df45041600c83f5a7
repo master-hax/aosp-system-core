@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34adc36a_37bf4a25",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1001100
+      },
+      "writtenOn": "2024-03-14T23:01:16Z",
+      "side": 1,
+      "message": "Are you sure that\u0027s true on MinGW? Got doc?",
+      "range": {
+        "startLine": 71,
+        "startChar": 25,
+        "endLine": 71,
+        "endChar": 58
+      },
+      "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6351296_42cbd200",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1001100
+      },
+      "writtenOn": "2024-03-14T23:01:16Z",
+      "side": 1,
+      "message": "Are we using MinGW, or MinGW-W64? They are not the same thing.\nMinGW-W64 bug for tmpfile: https://sourceforge.net/p/mingw-w64/bugs/921/ (which interesting indicates that mkstemp() is the proper way to work around issues).\n\nGNUlib warns about tmpfile limitations here (vague): https://www.gnu.org/software/gnulib/manual/html_node/tmpfile.html",
+      "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
