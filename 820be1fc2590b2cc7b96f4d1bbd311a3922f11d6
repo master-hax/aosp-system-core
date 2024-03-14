@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ab37cd8_c7d30c66",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "IsSystemApp to be consistent and let\u0027s add it int the header so that you don\u0027t have to copy it into task_profiles.cpp",
+      "range": {
+        "startLine": 84,
+        "startChar": 12,
+        "endLine": 84,
+        "endChar": 23
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7db1eac4_e722e4ec",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 511,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "Can we reuse MountV2CgroupController()/ActivateV2CgroupController() instead? Seems to me that if we add the descriptor before calling SetupCgroup() all extra code could have been avoided.",
+      "range": {
+        "startLine": 511,
+        "startChar": 12,
+        "endLine": 511,
+        "endChar": 32
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce34ba12_8f036c13",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "`path` looks uninitialized at this point.",
+      "range": {
+        "startLine": 517,
+        "startChar": 15,
+        "endLine": 517,
+        "endChar": 19
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc04ba55_74e868dd",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "This is hardcoded in couple places by now. Let\u0027s consolidate and call it `CGROUP_V2_ROOT_DEFAULT`",
+      "range": {
+        "startLine": 580,
+        "startChar": 38,
+        "endLine": 580,
+        "endChar": 52
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8fae078f_de3e1038",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be reported as an error? Forcing cgroup_v2_sys_app_isolation without a valid memcg v2 seems like an invalid configuration. Any specific reason you want to handle this gracefully?",
+      "range": {
+        "startLine": 582,
+        "startChar": 7,
+        "endLine": 582,
+        "endChar": 35
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af91e2cd_007a6885",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "reuse `ConvertUidPidToPath` ?",
+      "range": {
+        "startLine": 136,
+        "startChar": 8,
+        "endLine": 147,
+        "endChar": 9
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20f25f73_e9d1b255",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-14T18:38:24Z",
+      "side": 1,
+      "message": "reuse `ConvertUidPidToPath`?",
+      "range": {
+        "startLine": 176,
+        "startChar": 2,
+        "endLine": 185,
+        "endChar": 5
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
