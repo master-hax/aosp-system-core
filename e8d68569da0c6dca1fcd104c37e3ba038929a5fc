@@ -34,6 +34,24 @@
       "parentUuid": "ae0cd7bc_abadf3e2",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8d7a8c4_4204477e",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-14T15:41:30Z",
+      "side": 1,
+      "message": "\u003e so we should be initializing to 0 to preserve behavior\n\nyeah, that\u0027s what i meant, especially because there are potentially other callers in vendor code we can\u0027t see --- i think if we touch this, we need to preserve the \"copy the sentinel values\" semantics, no matter how questionable the sentinel values might be.\n\n\u003e I couldn\u0027t find any users of fs_get_stats so maybe we can delete it?\n\noh, well spotted --- that\u0027s been dead since i removed the also-dead tarball cruft that was the sole caller, back in 2019:\n```\ncommit 440c99f1f252e3fa7a37472ef24ce8a75cd54390\nAuthor: Elliott Hughes \u003cenh@google.com\u003e\nDate:   Thu Jul 11 18:35:20 2019 -0700\n\n    Stop building unnecessary tarballs.\n    \n    Test: treehugger\n    Change-Id: Iaba2aa6d09ad891f37171cc76778d08c78c78f93\n```\n\nhttps://android-review.git.corp.google.com/c/platform/build/+/3004133 removes this too.",
+      "parentUuid": "e9601e7f_b9c3efc4",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
