@@ -717,13 +717,26 @@ bool CowWriterV3::WriteOperation(std::span<const CowOperationV3> ops,
         return false;
     }
     if (!data.empty()) {
-        const auto ret = pwritev(fd_, data.data(), data.size(), next_data_pos_);
-        if (ret != total_data_size) {
+        int total_written = 0;
+        while (total_written < data.size()) {
+            int chunk = std::min(static_cast<int>(data.size() - total_written), IOV_MAX);
+
+            const auto ret = pwritev(fd_, data.data() + total_written, chunk,
+                                     next_data_pos_ + total_written);
+            if (ret < 0) {
+                PLOG(ERROR) << "write failed chunk size of: " << chunk
+                            << " at offset: " << next_data_pos_ + total_written << " " << errno;
+                return false;
+            }
+            total_written += ret;
+        }
+        if (total_written != total_data_size) {
             PLOG(ERROR) << "write failed for data of size: " << data.size()
-                        << " at offset: " << next_data_pos_ << " " << ret;
+                        << " at offset: " << next_data_pos_ << " " << errno;
             return false;
         }
     }
+
     header_.op_count += ops.size();
     next_data_pos_ += total_data_size;
 
