@@ -70,6 +70,24 @@
       "parentUuid": "c8d7a8c4_4204477e",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e0f174f_018ad23f",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-14T19:59:19Z",
+      "side": 1,
+      "message": "isn\u0027t it easier to just change the return type instead, and signal whether we\u0027re returning the default or not?\n\n(otherwise there are a lot of other \"this api is terrible, shouldn\u0027t we fix some of the defects?\" questions!)",
+      "parentUuid": "a3d9302d_e05ae7a5",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
