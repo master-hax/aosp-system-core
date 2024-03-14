@@ -88,6 +88,24 @@
       "parentUuid": "a3d9302d_e05ae7a5",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "476c0340_bf074083",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-14T20:41:21Z",
+      "side": 1,
+      "message": "If I try changing the return type I get build failures from external projects, e.g.:\n```\nexternal/f2fs-tools/fsck/sload.c:339:18: error: incompatible function pointer types assigning to \u0027fs_config_f\u0027 (aka \u0027void (*)(const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, unsigned long *)\u0027) from \u0027bool (const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, uint64_t *)\u0027 (aka \u0027bool (const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, unsigned long *)\u0027) [-Wincompatible-function-pointer-types]\n  339 |                 fs_config_func \u003d fs_config;\n      |                                ^ ~~~~~~~~~\n1 error generated.\nexternal/e2fsprogs/contrib/android/perms.c:371:18: error: incompatible function pointer types assigning to \u0027fs_config_f\u0027 (aka \u0027void (*)(const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, unsigned long *)\u0027) from \u0027bool (const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, uint64_t *)\u0027 (aka \u0027bool (const char *, int, const char *, unsigned int *, unsigned int *, unsigned int *, unsigned long *)\u0027) [-Wincompatible-function-pointer-types]\n  371 |                 fs_config_func \u003d fs_config;\n      |                                ^ ~~~~~~~~~\n```\nSo it seems like changing the return type will result in more churn overall.",
+      "parentUuid": "8e0f174f_018ad23f",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
