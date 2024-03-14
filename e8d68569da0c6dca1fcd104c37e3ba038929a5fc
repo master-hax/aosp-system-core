@@ -52,6 +52,24 @@
       "parentUuid": "e9601e7f_b9c3efc4",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3d9302d_e05ae7a5",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-14T19:55:07Z",
+      "side": 1,
+      "message": "Okay, I introduced a new function fs_config_nodefault with the semantics adbd wants and used it from there.",
+      "parentUuid": "c8d7a8c4_4204477e",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
