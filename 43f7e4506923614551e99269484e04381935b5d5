@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "741e5637_e3e01d96",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-03-14T15:50:23Z",
+      "side": 1,
+      "message": "Out of curiosity why does this resolve ENOSPC? /data/local/tmp and /data/nativetest64 should have the same space free.",
+      "revId": "43f7e4506923614551e99269484e04381935b5d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
