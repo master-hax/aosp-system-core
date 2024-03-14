@@ -173,7 +173,7 @@ bool CowWriterV3::ParseOptions() {
         batch_size_ = std::max<size_t>(options_.cluster_ops, 1);
         data_vec_.reserve(batch_size_);
         cached_data_.reserve(batch_size_);
-        cached_ops_.reserve(batch_size_);
+        cached_ops_.reserve(batch_size_ * 16);
     }
 
     if (batch_size_ > 1) {
