@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "87c4d95e_95c82586",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "OK. FYI this function actually needs to be a little bit smarter for demo purposes.",
+      "parentUuid": "5ab37cd8_c7d30c66",
+      "range": {
+        "startLine": 84,
+        "startChar": 12,
+        "endLine": 84,
+        "endChar": 23
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7db1eac4_e722e4ec",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 2
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6e1833ae_ec77a43b",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 511,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "Hmm, not quite. `ActivateV2CgroupController` is called once per descriptor, and there can be only one v2 memory descriptor. If we had only one subhierarchy, we could almost hack the subdir into `controller-\u003epath()` since that\u0027s unused for v2. But then the controller wouldn\u0027t first be activated in the root, and we have two subdirs so that wouldn\u0027t work.",
+      "parentUuid": "7db1eac4_e722e4ec",
+      "range": {
+        "startLine": 511,
+        "startChar": 12,
+        "endLine": 511,
+        "endChar": 32
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ce34ba12_8f036c13",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 2
@@ -60,6 +108,30 @@
       "writtenOn": "2024-03-14T18:38:24Z",
       "side": 1,
       "message": "`path` looks uninitialized at this point.",
+      "range": {
+        "startLine": 517,
+        "startChar": 15,
+        "endLine": 517,
+        "endChar": 19
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0248140_3836d7cd",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "`path` is a function param.",
+      "parentUuid": "ce34ba12_8f036c13",
       "range": {
         "startLine": 517,
         "startChar": 15,
@@ -95,6 +167,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4532a7a2_a94d3d5b",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "Yeah I will do something about this.",
+      "parentUuid": "bc04ba55_74e868dd",
+      "range": {
+        "startLine": 580,
+        "startChar": 38,
+        "endLine": 580,
+        "endChar": 52
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8fae078f_de3e1038",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 2
@@ -106,6 +202,30 @@
       "writtenOn": "2024-03-14T18:38:24Z",
       "side": 1,
       "message": "Shouldn\u0027t this be reported as an error? Forcing cgroup_v2_sys_app_isolation without a valid memcg v2 seems like an invalid configuration. Any specific reason you want to handle this gracefully?",
+      "range": {
+        "startLine": 582,
+        "startChar": 7,
+        "endLine": 582,
+        "endChar": 35
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4e5a6c9_a505e7f0",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "I don\u0027t think it should be an error. This check exists to get the path of the v2 cgroup hierarchy if it is in cgroups.json. That path is not tied to any particular v2 controller since all controllers are on the same hierarchy in v2. A vendor could override this path with something other than the `/sys/fs/cgroup` default (although IDK why they would ever do that). If they do override it, this check will use the overridden path instead of assuming the default.\n\nIt\u0027s also possible for a vendor to have no v2 controllers in cgroups.json. A certain vendor does not activate freezer on v2, in which case no v2 root would be found in descriptors (because cgroups.json wouldn\u0027t specify *any* v2 controllers).",
+      "parentUuid": "8fae078f_de3e1038",
       "range": {
         "startLine": 582,
         "startChar": 7,
@@ -141,6 +261,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ba088d9f_bc4c2f90",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "They\u0027re hidden in processgroup.cpp right now, but I can make them visible here.",
+      "parentUuid": "af91e2cd_007a6885",
+      "range": {
+        "startLine": 136,
+        "startChar": 8,
+        "endLine": 147,
+        "endChar": 9
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "20f25f73_e9d1b255",
         "filename": "libprocessgroup/task_profiles.cpp",
         "patchSetId": 2
@@ -152,6 +296,30 @@
       "writtenOn": "2024-03-14T18:38:24Z",
       "side": 1,
       "message": "reuse `ConvertUidPidToPath`?",
+      "range": {
+        "startLine": 176,
+        "startChar": 2,
+        "endLine": 185,
+        "endChar": 5
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12d83888_8cd42aa5",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-14T23:58:39Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "20f25f73_e9d1b255",
       "range": {
         "startLine": 176,
         "startChar": 2,
