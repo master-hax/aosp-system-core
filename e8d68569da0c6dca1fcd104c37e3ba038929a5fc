@@ -16,6 +16,24 @@
       "message": "not only don\u0027t i understand this change, i don\u0027t understand how this code _used_ to work :-)\n\nokay, so it _used_ to work because there\u0027s a sentinel at the end of the array, so we always match this:\n```\n    { 00644, AID_ROOT,      AID_ROOT,      0, 0 },\n```\nbut then why is it correct to only set mode in the fallthrough case? are the other callers of this function all fine with that? why?",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9601e7f_b9c3efc4",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-14T01:21:15Z",
+      "side": 1,
+      "message": "Yes, it is indeed confusing. You can find the callers in code search: https://cs.android.com/android/platform/superproject/main/+/main:system/core/libcutils/fs_config.cpp?q\u003dsymbol%3A%5Cbfs_config%5Cb%20case%3Ayes\n\nThis function appears to have two kinds of callers. The first is adbd and mkbootfs where the mode potentially comes from the actual file on the host and uid/gid/capabilities are initialized to reasonable defaults (adb has uid\u003dgid\u003d-1 so root now does fchown(fd, -1, -1) for files not in fs_config, which is equivalent to fchown(fd, 0, 0) for a file that root just created), and the second is fs_config (i.e. the command line tool of the same name) and erofs-utils which query fs_config for building the filesystem image without leaking information from the host, so they set these variables to 0. (Hmm, I just noticed that fs_config-the-command-line-tool leaves capabilities uninitialized, so we should be initializing to 0 to preserve behavior.) Ideally we wouldn\u0027t touch any of these variables if we didn\u0027t find an fs_config so the caller gets whatever default it wants, but we need to preserve the behavior for the second kind of caller (otherwise some files will end up being chmod 000 in the image and the system will fail to boot), hence the code here.\n\n(I\u0027m ignoring fs_get_stats which takes a mode as a command line argument, sets `*uid\u003d*gid\u003d-1` and leaves capabilities uninitialized but doesn\u0027t read from it, but I couldn\u0027t find any users of fs_get_stats so maybe we can delete it?) \n\nI guess another option would be to figure out which files in the image are relying on the sentinel so we can add a proper fs_config entry for them. Then we should be able to remove these three lines and use `{}` as the sentinel.",
+      "parentUuid": "ae0cd7bc_abadf3e2",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
