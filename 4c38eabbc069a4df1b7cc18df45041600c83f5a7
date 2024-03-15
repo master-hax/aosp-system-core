@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b239d3b_1db2dbfe",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-15T06:38:27Z",
+      "side": 1,
+      "message": "This was actually suggested by enh@ in aosp/2907832\n\nI believe it just delegates to tmpfile in win32:\nhttps://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/tmpfile?view\u003dmsvc-170\n\n\u003e This temporary file is automatically deleted when the file is closed, when the program terminates normally, or when _rmtmp is called, assuming that the current working directory doesn\u0027t change.",
+      "parentUuid": "34adc36a_37bf4a25",
+      "range": {
+        "startLine": 71,
+        "startChar": 25,
+        "endLine": 71,
+        "endChar": 58
+      },
+      "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d6351296_42cbd200",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-03-14T23:01:16Z",
       "side": 1,
       "message": "Are we using MinGW, or MinGW-W64? They are not the same thing.\nMinGW-W64 bug for tmpfile: https://sourceforge.net/p/mingw-w64/bugs/921/ (which interesting indicates that mkstemp() is the proper way to work around issues).\n\nGNUlib warns about tmpfile limitations here (vague): https://www.gnu.org/software/gnulib/manual/html_node/tmpfile.html",
+      "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03a27df1_fc83f71f",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-15T06:38:27Z",
+      "side": 1,
+      "message": "We are using:\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/\n\nI am not sure about that bug, but I have not encountered it from all my testing.\n\nmkstemp does not automatically delete the file, and we want to sure we don\u0027t generate a lot of temp files that are not deleted.",
+      "parentUuid": "d6351296_42cbd200",
       "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
