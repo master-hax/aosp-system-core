@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb19cb26_90d6872b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-15T23:53:45Z",
+      "side": 1,
+      "message": "Rebased and moved to https://r.android.com/3005127",
+      "revId": "d5c089270c3c54f501e5b4206518c9279ffc2be3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
