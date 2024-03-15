@@ -39,6 +39,30 @@
       },
       "revId": "3d61bb8dd52ab2eb67856d9c461255198e8d91fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26a72486_b4e5192e",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1386891
+      },
+      "writtenOn": "2024-03-15T04:50:35Z",
+      "side": 1,
+      "message": "I made soong modules be used instaed.",
+      "parentUuid": "cdc53cf6_f2b7b132",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 23
+      },
+      "revId": "3d61bb8dd52ab2eb67856d9c461255198e8d91fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
