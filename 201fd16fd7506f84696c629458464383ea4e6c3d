@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc4980d6_444d4b9e",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 544,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-03-15T18:56:44Z",
+      "side": 1,
+      "message": "We don\u0027t need this #ifdef.",
+      "revId": "201fd16fd7506f84696c629458464383ea4e6c3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
