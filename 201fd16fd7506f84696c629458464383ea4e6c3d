@@ -16,6 +16,24 @@
       "message": "We don\u0027t need this #ifdef.",
       "revId": "201fd16fd7506f84696c629458464383ea4e6c3d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b69e3316_4bb8d4de",
+        "filename": "fs_mgr/libdm/dm.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 544,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-03-15T20:06:47Z",
+      "side": 1,
+      "message": "Hmm, needing some library updates?\n\nFAILED: out/soong/.intermediates/system/core/fs_mgr/libdm/libdm/linux_glibc_x86_static/obj/system/core/fs_mgr/libdm/dm.o\n...glibc_x86_static/obj/system/core/fs_mgr/libdm/dm.o.d -o out/soong/.intermediates/system/core/fs_mgr/libdm/libdm/linux_glibc_x86_static/obj/system/core/fs_mgr/libdm/dm.o system/core/fs_mgr/libdm/dm.cpp\nsystem/core/fs_mgr/libdm/dm.cpp:543:57: error: unused parameter \u0027name\u0027 [-Werror,-Wunused-parameter]\n  543 | bool DeviceMapper::GetTableStatusIma(const std::string\u0026 name, std::vector\u003cTargetInfo\u003e* table) {\n      |                                                         ^\nsystem/core/fs_mgr/libdm/dm.cpp:543:88: error: unused parameter \u0027table\u0027 [-Werror,-Wunused-parameter]\n  543 | bool DeviceMapper::GetTableStatusIma(const std::string\u0026 name, std::vector\u003cTargetInfo\u003e* table) {\n      |                                                                                        ^\n2 errors generated.",
+      "parentUuid": "bc4980d6_444d4b9e",
+      "revId": "201fd16fd7506f84696c629458464383ea4e6c3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
