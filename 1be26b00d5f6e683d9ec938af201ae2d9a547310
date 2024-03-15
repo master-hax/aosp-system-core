@@ -107,6 +107,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05a424cb_1cb747ef",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-15T21:57:52Z",
+      "side": 1,
+      "message": "Since Google doesn\u0027t allow c++ exceptions and the file is parsed in the Modprobe constructor, we would have to add a new API to check if the file parsing failed. I think it\u0027s best to just keep this logic here since I don\u0027t think it would ever be used by init since it\u0027s unlikely an OEM is going to ship a device with this type of failure.",
+      "parentUuid": "dd4c2222_6fbbc40f",
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "98ad6d5d_ab689eb3",
@@ -144,6 +162,30 @@
       "side": 1,
       "message": "Sure, I can update that.",
       "parentUuid": "98ad6d5d_ab689eb3",
+      "range": {
+        "startLine": 265,
+        "startChar": 11,
+        "endLine": 265,
+        "endChar": 19
+      },
+      "revId": "1be26b00d5f6e683d9ec938af201ae2d9a547310",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f8639e2_bea73893",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-03-15T21:57:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6101225_ce738462",
       "range": {
         "startLine": 265,
         "startChar": 11,
