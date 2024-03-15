@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1ffef206_1d4696cb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "ok, but I want this whenever we have memcg v2 for testing.",
+      "parentUuid": "5ea0a75c_2d13d478",
+      "range": {
+        "startLine": 649,
+        "startChar": 12,
+        "endLine": 649,
+        "endChar": 38
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ac8762db_abda0761",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-14T18:22:31Z",
       "side": 1,
       "message": "Should this be done only for `force_memcg_v2` or whenever cgroup v2 is enabled (say via cgroups.json)?",
+      "range": {
+        "startLine": 653,
+        "startChar": 8,
+        "endLine": 653,
+        "endChar": 22
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb0bb61c_2b39f7fb",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 653,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "It\u0027s the same thing for now until we change cgroups.json, but I only want this for experimentation not for production.",
+      "parentUuid": "ac8762db_abda0761",
       "range": {
         "startLine": 653,
         "startChar": 8,
@@ -95,6 +143,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fb7bcc44_20941b93",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "This is an arbitrary line in the sand. Based on my local tests with ~30 app ACT, and experience with finding and culling zombies. More than this and then we really have to start looking hard for leaks, or at costs that scale with the number of memcgs.",
+      "parentUuid": "f8a4571b_cc2dce80",
+      "range": {
+        "startLine": 670,
+        "startChar": 72,
+        "endLine": 670,
+        "endChar": 76
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f1f2b14f_89447840",
         "filename": "libprocessgroup/processgroup.cpp",
         "patchSetId": 1
@@ -118,6 +190,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bc194803_d15b488f",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "I want this in the logs of experiment devices so we don\u0027t have to wonder. For a real release, we shouldn\u0027t do any of this.",
+      "parentUuid": "f1f2b14f_89447840",
+      "range": {
+        "startLine": 674,
+        "startChar": 20,
+        "endLine": 675,
+        "endChar": 61
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "402d73a2_9e82ba58",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 1
@@ -129,6 +225,30 @@
       "writtenOn": "2024-03-14T18:22:31Z",
       "side": 1,
       "message": "adding `constexpr` would allow compiler to apply more optimizations.",
+      "range": {
+        "startLine": 189,
+        "startChar": 4,
+        "endLine": 189,
+        "endChar": 28
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7f639a3_a3a09d17",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "It\u0027s in the standard, but not our implementation.",
+      "parentUuid": "402d73a2_9e82ba58",
       "range": {
         "startLine": 189,
         "startChar": 4,
@@ -187,6 +307,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ec8a9297_505340e2",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "If there\u0027s no v2 freezer, there is no v2 cgroup hierarchy. Something weird is going on in this case, and an A/B comparison will show a non-typical increase in kernel memory because of that.",
+      "parentUuid": "47c26782_09dcc39e",
+      "range": {
+        "startLine": 327,
+        "startChar": 25,
+        "endLine": 327,
+        "endChar": 103
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "17509540_69d79868",
         "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
         "patchSetId": 1
@@ -198,6 +342,30 @@
       "writtenOn": "2024-03-14T18:22:31Z",
       "side": 1,
       "message": "Tying a feature to a specific kernel version is not a good (features tend to back/forward ported). Is there some other indication that the feature is present in the kernel?",
+      "range": {
+        "startLine": 330,
+        "startChar": 22,
+        "endLine": 330,
+        "endChar": 65
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c2670ac_e9d94150",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-15T01:06:51Z",
+      "side": 1,
+      "message": "There is not. It\u0027s a MM implementation detail that has been backported to 6.1, but no further. This is a configuration that will work, but is not recommended, hence the warning.",
+      "parentUuid": "17509540_69d79868",
       "range": {
         "startLine": 330,
         "startChar": 22,
