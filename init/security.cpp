@@ -109,8 +109,10 @@ Result<void> SetMmapRndBitsAction(const BuiltinArguments&) {
 #elif defined(__aarch64__)
     // arm64 supports 14 - 33 rnd bits depending on page size and ARM64_VA_BITS.
     // The kernel (6.5) still defaults to 39 va bits for 4KiB pages, so shipping
-    // devices are only getting 24 bits of randomness in practice.
-    if (SetMmapRndBitsMin(33, 24, false) && (!Has32BitAbi() || SetMmapRndBitsMin(16, 16, true))) {
+    // devices are only getting 24 bits of randomness in practice; except in the
+    // case of 16kB page size emulation on arm64 where only 22 bits is supported.
+    int max_bits = 24 - (static_cast<int>(log2(getpagesize())) - 12);
+    if (SetMmapRndBitsMin(31, max_bits, false) && (!Has32BitAbi() || SetMmapRndBitsMin(16, 16, true))) {
         return {};
     }
 #elif defined(__riscv)
