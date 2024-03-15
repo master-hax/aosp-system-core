@@ -98,6 +98,24 @@
       "message": "i think this is a double-close()? you\u0027ll call fclose() on return, and that\u0027ll also try to close the same fd.",
       "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "866bbb5e_55409e02",
+        "filename": "libcutils/ashmem-host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-03-15T20:05:25Z",
+      "side": 1,
+      "message": "Thanks, done. Also removed this line from aosp/2907832 (the upstream version).",
+      "parentUuid": "73b12a99_9e1b8c49",
+      "revId": "4c38eabbc069a4df1b7cc18df45041600c83f5a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
