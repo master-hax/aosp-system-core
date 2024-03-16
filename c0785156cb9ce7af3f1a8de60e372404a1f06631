@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50f6c5aa_db26b506",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-16T02:10:40Z",
+      "side": 1,
+      "message": "random driveby comments",
+      "revId": "c0785156cb9ce7af3f1a8de60e372404a1f06631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b82f2f6c_ba5da9d9",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-16T02:10:40Z",
+      "side": 1,
+      "message": "nit",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "c0785156cb9ce7af3f1a8de60e372404a1f06631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1513fdd7_cbc39f7d",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-16T02:10:40Z",
+      "side": 1,
+      "message": "unique_fd?",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 30
+      },
+      "revId": "c0785156cb9ce7af3f1a8de60e372404a1f06631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98f77acc_79e95e6b",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-16T02:10:40Z",
+      "side": 1,
+      "message": "we should check the build id matches",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 204,
+        "endChar": 44
+      },
+      "revId": "c0785156cb9ce7af3f1a8de60e372404a1f06631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42c44728_300e50e1",
+        "filename": "debuggerd/pbtombstone.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-16T02:10:40Z",
+      "side": 1,
+      "message": "maybe\n\n```\nint c;\nwhile ((c \u003d getopt_long(argc, argv, \"h\", long_options, 0)) !\u003d -1)\n```\n\nwhich is the standard loop i\u0027ve seen",
+      "revId": "c0785156cb9ce7af3f1a8de60e372404a1f06631",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
