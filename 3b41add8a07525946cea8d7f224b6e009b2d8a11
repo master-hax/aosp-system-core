@@ -16,6 +16,23 @@
       "message": "As discussed in https://r.android.com/2016857 let\u0027s keep this scoped to platform developers to begin with.",
       "revId": "3b41add8a07525946cea8d7f224b6e009b2d8a11",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7bf2095_49239250",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-16T00:00:36Z",
+      "side": 1,
+      "message": "Soong CL: https://r.android.com/3005221",
+      "revId": "3b41add8a07525946cea8d7f224b6e009b2d8a11",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
