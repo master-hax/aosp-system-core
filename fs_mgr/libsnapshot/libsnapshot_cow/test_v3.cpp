@@ -209,6 +209,37 @@ TEST_F(CowTestV3, ReplaceOp) {
     ASSERT_EQ(sink, data);
 }
 
+TEST_F(CowTestV3, BigReplaceOp) {
+    CowOptions options;
+    options.op_count_max = 2000;
+    options.batch_write = true;
+    auto writer = CreateCowWriter(3, options, GetCowFd());
+    std::string data = "This is some data, believe it";
+    data.resize(options.block_size * 1500, '\0');
+
+    ASSERT_TRUE(writer->AddRawBlocks(0, data.data(), data.size()));
+    ASSERT_TRUE(writer->Finalize());
+
+    CowReader reader;
+    ASSERT_TRUE(reader.Parse(cow_->fd));
+
+    const auto& header = reader.header_v3();
+    ASSERT_EQ(header.op_count, 1500);
+
+    auto iter = reader.GetOpIter();
+    ASSERT_NE(iter, nullptr);
+    ASSERT_FALSE(iter->AtEnd());
+
+    auto op = iter->Get();
+    std::string sink(data.size(), '\0');
+
+    ASSERT_EQ(op->type(), kCowReplaceOp);
+    ASSERT_EQ(op->data_length, 4096);
+    ASSERT_EQ(op->new_block, 5);
+    ASSERT_TRUE(ReadData(reader, op, sink.data(), sink.size()));
+    ASSERT_EQ(sink, data);
+}
+
 TEST_F(CowTestV3, ConsecutiveReplaceOp) {
     CowOptions options;
     options.op_count_max = 20;
