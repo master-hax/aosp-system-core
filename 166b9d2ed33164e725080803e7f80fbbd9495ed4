@@ -34,6 +34,24 @@
       "parentUuid": "e436ae26_df9a922e",
       "revId": "166b9d2ed33164e725080803e7f80fbbd9495ed4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e86e09c1_3bc13fd0",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 725,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-18T17:32:16Z",
+      "side": 1,
+      "message": "The chunk is telling us how many entries of the IOV to write, not the expected data size to be written. I can check for ret \u003c 0 here though",
+      "parentUuid": "e5033f39_6a2104d8",
+      "revId": "166b9d2ed33164e725080803e7f80fbbd9495ed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
