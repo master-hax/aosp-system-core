@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42c324c6_02eefd3b",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-18T22:32:08Z",
+      "side": 1,
+      "message": "Is this used in more than one spot that you did not modify? If not, I would change this to lowercase to make it more clear that is no longer a constant.",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33200023_cc88b276",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-18T22:32:08Z",
+      "side": 1,
+      "message": "if you pass an optional mapping needed to create a symlink in here instead, I think you can use a new SS_CLEAN_NEED_SYMLINK state to signal that the symlink is needed instead of a separate pointer.",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ed9aed8_4e726c34",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-18T22:32:08Z",
+      "side": 1,
+      "message": "Does this work correctly? Should we always return an error if O_EXCL is set instead, since the backing partition already exists even if the symlink does not.",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3fd2248_08a4dc22",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-18T22:32:08Z",
+      "side": 1,
+      "message": "It might be useful to add an fd here. It would allow you both eliminate the mapping pointer in the fd table, and support the case where the fs table is full (and the symlink has not already been created).",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
