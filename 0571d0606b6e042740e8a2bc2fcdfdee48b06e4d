@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c35bc93f_f7796318",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2123,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-18T21:03:40Z",
+      "side": 1,
+      "message": "typo: Android",
+      "range": {
+        "startLine": 2123,
+        "startChar": 6,
+        "endLine": 2123,
+        "endChar": 13
+      },
+      "revId": "0571d0606b6e042740e8a2bc2fcdfdee48b06e4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "740e7a99_28305f84",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2188,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-18T21:03:40Z",
+      "side": 1,
+      "message": "is this comment still relevant?",
+      "revId": "0571d0606b6e042740e8a2bc2fcdfdee48b06e4d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
