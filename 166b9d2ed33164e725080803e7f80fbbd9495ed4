@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e436ae26_df9a922e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 725,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-18T04:30:36Z",
+      "side": 1,
+      "message": "if (ret !\u003d chunk) { error } ?\n\nI see you do this check at L730 after while loop ? Any reason why we shouldn\u0027t bail our early ?",
+      "revId": "166b9d2ed33164e725080803e7f80fbbd9495ed4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
