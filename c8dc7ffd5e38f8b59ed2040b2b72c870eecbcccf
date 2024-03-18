@@ -16,6 +16,24 @@
       "message": "why has no-one noticed before?",
       "revId": "c8dc7ffd5e38f8b59ed2040b2b72c870eecbcccf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9aac0b0c_6115f34f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1951687
+      },
+      "writtenOn": "2024-03-18T15:56:46Z",
+      "side": 1,
+      "message": "This seems to be only a problem for non-AB devices.",
+      "parentUuid": "0f5e6137_eb261aef",
+      "revId": "c8dc7ffd5e38f8b59ed2040b2b72c870eecbcccf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
