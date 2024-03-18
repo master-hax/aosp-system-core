@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cefb1ca_0975fdc7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-18T10:39:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4dc849bc_0820911e",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6f4ea8e2_1e02078f",
@@ -85,6 +103,24 @@
       "side": 1,
       "message": "I\u0027m not very concerned about the size here, but if you use a fixed size array, you have another edge case to handle if the array is already full.",
       "parentUuid": "5bcbcd77_7d32b681",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92471f6f_78f43db8",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-18T10:39:50Z",
+      "side": 1,
+      "message": "Alright, I converted it to a list",
+      "parentUuid": "af42dc08_bb721058",
       "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -185,6 +221,24 @@
       "side": 1,
       "message": "You can open the target of the symlink directly before creating the symlink. The symlink is just there to signal that the block device has been written to. You need a flag to block reads until the first write has happened. You might be able to add another state to `enum sync_state` for this (although not for untracked fds).",
       "parentUuid": "dc06a4ba_fd130479",
+      "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "284dd26c_d177d5ea",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-18T10:39:50Z",
+      "side": 1,
+      "message": "sgtm, I decided not to add additional state to the sync_state, I would still need some linking to the file mappings in any case. \n\nI opted for associating a file_storage_mapping entry to an FD. That signals that linking still needs to be done and gives all the info needed to create it. (At the cost of additional space)",
+      "parentUuid": "aa2fbff8_796985c4",
       "revId": "ae2d9fc5dd3988a963675f804a6406dec5873950",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }

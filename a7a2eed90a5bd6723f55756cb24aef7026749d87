@@ -16,6 +16,24 @@
       "message": "I think you could simplify this by reporting anything other than a block device that you have also specified a mapping for as an error. I don\u0027t think it is useful to allow pointing this option at a file where it will have no effect. This function would be even simpler if you passed the target block device path instead of the source path, but I think there is some value in checking that the path matches one of the mappings.",
       "revId": "a7a2eed90a5bd6723f55756cb24aef7026749d87",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed81e030_47309573",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 4
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-18T10:39:50Z",
+      "side": 1,
+      "message": "That\u0027s a good point, I\u0027ll change the expected input, and keep validation that it matches one of the file mappings.  That\u0027ll at least provide benefit of catching a possible typo early",
+      "parentUuid": "3d594d97_0e050611",
+      "revId": "a7a2eed90a5bd6723f55756cb24aef7026749d87",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
