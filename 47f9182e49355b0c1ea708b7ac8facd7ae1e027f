@@ -16,6 +16,24 @@
       "message": "are you sure you don\u0027t want to manually add the `#if ... extern \"C\"` stuff yourself, in case someone does add functions later? if they do, and you don\u0027t notice, you\u0027ll be stuck with C++ ABI rather than C.",
       "revId": "47f9182e49355b0c1ea708b7ac8facd7ae1e027f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0313798_89d803b4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-03-18T00:11:04Z",
+      "side": 1,
+      "message": "To avoid that, I added a comment not to include any headers or declarations in this file.\nThis header will not provide body. I don\u0027t expect someone to add functions here.",
+      "parentUuid": "1957da88_5a8f5d35",
+      "revId": "47f9182e49355b0c1ea708b7ac8facd7ae1e027f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
