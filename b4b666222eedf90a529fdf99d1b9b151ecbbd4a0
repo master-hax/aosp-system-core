@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e2da96f_ff7af7d6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 721,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-18T17:36:20Z",
+      "side": 1,
+      "message": "while (total_written \u003c data.size()), and remove `to_write`",
+      "range": {
+        "startLine": 721,
+        "startChar": 15,
+        "endLine": 721,
+        "endChar": 23
+      },
+      "revId": "b4b666222eedf90a529fdf99d1b9b151ecbbd4a0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
