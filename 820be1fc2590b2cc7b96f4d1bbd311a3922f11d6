@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c43152_e06f37cc",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-19T17:51:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87c4d95e_95c82586",
+      "range": {
+        "startLine": 84,
+        "startChar": 12,
+        "endLine": 84,
+        "endChar": 23
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7db1eac4_e722e4ec",
@@ -189,6 +213,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "53728f6c_94ec64f7",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-19T17:51:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4532a7a2_a94d3d5b",
+      "range": {
+        "startLine": 580,
+        "startChar": 38,
+        "endLine": 580,
+        "endChar": 52
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8fae078f_de3e1038",
@@ -273,6 +321,30 @@
       "side": 1,
       "message": "They\u0027re hidden in processgroup.cpp right now, but I can make them visible here.",
       "parentUuid": "af91e2cd_007a6885",
+      "range": {
+        "startLine": 136,
+        "startChar": 8,
+        "endLine": 147,
+        "endChar": 9
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acda4e1b_101e5fb2",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-19T17:51:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba088d9f_bc4c2f90",
       "range": {
         "startLine": 136,
         "startChar": 8,
