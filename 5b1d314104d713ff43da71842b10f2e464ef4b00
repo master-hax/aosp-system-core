@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb79af5c_83e3cf1b",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-19T23:10:30Z",
+      "side": 1,
+      "message": "I\u0027m not sure what the point of this check is, we are checking if currently pending data size \u003e\u003d data size in cache, why?",
+      "revId": "5b1d314104d713ff43da71842b10f2e464ef4b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "348652b5_bd0b5065",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-19T23:10:30Z",
+      "side": 1,
+      "message": "seems like this can be replaced by `size` ?",
+      "range": {
+        "startLine": 409,
+        "startChar": 8,
+        "endLine": 409,
+        "endChar": 40
+      },
+      "revId": "5b1d314104d713ff43da71842b10f2e464ef4b00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
