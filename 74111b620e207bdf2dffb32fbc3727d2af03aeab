@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1823df97_e4e786d8",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T20:49:53Z",
+      "side": 1,
+      "message": "I don\u0027t think any devices ever used brotli, but older devices will still be using gz. (brotli compression is also very slow to run)",
+      "parentUuid": "e88b6a4b_36a391a6",
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58ac5299_306e717a",
         "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
         "patchSetId": 2
