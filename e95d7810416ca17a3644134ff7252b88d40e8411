@@ -16,6 +16,24 @@
       "message": "+ngeoffray as fyi that we\u0027ve made tombstones more accessible to shell users, since (a) that might be somewhat useful to his team anyway but (b) they might care enough about anrs to do the sepolicy copy \u0026 paste to do anrs too...",
       "revId": "e95d7810416ca17a3644134ff7252b88d40e8411",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cc0dd86_c577c016",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-03-19T18:24:42Z",
+      "side": 1,
+      "message": "/data/anr also has files written by activity manager, so we would also have to do the chmod there.",
+      "parentUuid": "271ab6d1_33eea354",
+      "revId": "e95d7810416ca17a3644134ff7252b88d40e8411",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
