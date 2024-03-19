@@ -54,6 +54,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "da70a84f_c774bd6d",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 905,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:35:48Z",
+      "side": 1,
+      "message": "This passes the invalid `dma_buf[i]` to `close`, I guess that\u0027s fine?\n\nAlternatively, you could store the result of `DmabufHeapAlloc` into `ret` first, and then copy it to `dma_buf[i]` only on success.",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2f4099cd_41baa47b",
         "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
         "patchSetId": 1
