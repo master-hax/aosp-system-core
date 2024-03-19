@@ -34,6 +34,24 @@
       "parentUuid": "0f5e6137_eb261aef",
       "revId": "c8dc7ffd5e38f8b59ed2040b2b72c870eecbcccf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1753a93_7e3d5132",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-03-19T17:06:00Z",
+      "side": 1,
+      "message": "Non-AB is no longer supported, but since this could in theory affect other devices as well, let\u0027s take the fix.",
+      "parentUuid": "9aac0b0c_6115f34f",
+      "revId": "c8dc7ffd5e38f8b59ed2040b2b72c870eecbcccf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
