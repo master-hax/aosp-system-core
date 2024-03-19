@@ -123,6 +123,24 @@
       "parentUuid": "3ea75848_b4f7b0a7",
       "revId": "2fb0c44fdba72c32714137d7b1803aff4c5e60d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c2ef684_d3fcc2f7",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-19T20:15:25Z",
+      "side": 1,
+      "message": "You can look at aosp/2817998 (patchset 2 for the persistent version, that got accidentally overwritten in patchset 3) as an example of how I did this for cuttlefish. I\u0027m not sure you need a whole new rc file for this.",
+      "parentUuid": "93c4fa01_c4e4c929",
+      "revId": "2fb0c44fdba72c32714137d7b1803aff4c5e60d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb42de5c_b262699c",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev_no_persist.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-19T20:15:25Z",
+      "side": 1,
+      "message": "I would not duplicate all this in a separate init file. Some of these commands failed for me when I tested on cuttlefish and I had to fix it up. If you want to create a fake persist directory you can do that separately from the rest of the steps here. Also the Android.bp file installs the other script, not this one.",
+      "revId": "bf2122ac758eaca55f60a15bc347f4fe76d15136",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
