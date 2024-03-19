@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd91ad02_89352342",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-03-19T20:49:16Z",
+      "side": 1,
+      "message": "classes are not required, all you need is a function \n\nuse `static void process(FuzzedDataProvider\u0026\u0026 provider) {}` for instance\n\nThis is a common pattern, most class with one method and members should be a method with those members as arguments.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 2
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "210b9196_0c2084b8",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-03-19T20:49:16Z",
+      "side": 1,
+      "message": "consider using an array of functions, so you don\u0027t have to keep track of case indexes and kMaxAPIs:\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:frameworks/native/libs/binder/tests/parcel_fuzzer/main.cpp;l\u003d186;drc\u003d891f6b06b98208d4dd8c2f837b5138e7f1b2aa3b",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 22
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dae614d3_11ae80e6",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-03-19T20:49:16Z",
+      "side": 1,
+      "message": "If strongCount is 0, this will delete the ref, so any \u0027ref-\u003e\u0027 calls are no longer valid. That is what the extra complexity was from before.",
+      "range": {
+        "startLine": 83,
+        "startChar": 15,
+        "endLine": 86,
+        "endChar": 17
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
