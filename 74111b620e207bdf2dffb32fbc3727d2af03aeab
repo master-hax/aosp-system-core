@@ -16,6 +16,29 @@
       "message": "LGTM from a fuzzing perspective, but still need +2 from code owners who know libsnapshot.",
       "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58ac5299_306e717a",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T19:56:20Z",
+      "side": 1,
+      "message": "we are transitioning into the v3 snapshot format for android 15. V3 is already enabled on cuttlefish and some pixel device, please use the new version for fuzzing : )",
+      "range": {
+        "startLine": 100,
+        "startChar": 34,
+        "endLine": 100,
+        "endChar": 45
+      },
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
