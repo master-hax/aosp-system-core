@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e88b6a4b_36a391a6",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-19T20:19:08Z",
+      "side": 1,
+      "message": "Yes. brotli is not required.",
+      "parentUuid": "cbc1fcd8_f0ea8ef7",
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58ac5299_306e717a",
         "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
         "patchSetId": 2

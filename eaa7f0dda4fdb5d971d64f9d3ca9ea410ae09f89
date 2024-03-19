@@ -86,6 +86,24 @@
       "parentUuid": "fc662197_3b8a57e7",
       "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6012c9dc_b2502871",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-19T20:19:08Z",
+      "side": 1,
+      "message": "Following up here.. \n\nThe API\u0027s may work but the end-to-end testing will fail here.. The ordering of operations when writing to the block device is important. The API\u0027s in itself doesn\u0027t guarantee it. It\u0027s upto the caller to ensure that the correct ordering is written. During OTA, this is done by update-engine.\n\nIf the purpose of the test here is to just focus on the robustness of the API\u0027s then, we shouldn\u0027t be reading back the data from block device and verify.\n\nI see there are two ways to fix this:\n\n1: Just focus only on writer API\u0027s.\n\n2: If not, ensure that the ordering of data through writer API\u0027s is correct and then invoke Reader().",
+      "parentUuid": "c283d7eb_841572c7",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
