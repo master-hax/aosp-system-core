@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "30e9d950_3b83ef4d",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c02ace1_fed4ffe8",
+      "range": {
+        "startLine": 306,
+        "startChar": 9,
+        "endLine": 306,
+        "endChar": 13
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5bf4f235_22c50cf9",
@@ -60,6 +84,54 @@
       "writtenOn": "2024-03-13T23:03:06Z",
       "side": 1,
       "message": "sie",
+      "range": {
+        "startLine": 313,
+        "startChar": 4,
+        "endLine": 313,
+        "endChar": 10
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "990755ba_21f503fb",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "369fd0bb_a7cda1a5",
+      "range": {
+        "startLine": 313,
+        "startChar": 4,
+        "endLine": 313,
+        "endChar": 10
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe019fea_34f3fdb2",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bf4f235_22c50cf9",
       "range": {
         "startLine": 313,
         "startChar": 4,
@@ -116,6 +188,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab123aab_8cd7f46e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b3774d6_690bc503",
+      "range": {
+        "startLine": 314,
+        "startChar": 26,
+        "endLine": 314,
+        "endChar": 68
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c3c9b55_0f8b26c6",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84872e47_0e6af04a",
+      "range": {
+        "startLine": 314,
+        "startChar": 20,
+        "endLine": 314,
+        "endChar": 26
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95a196f7_c57a5386",
@@ -129,6 +249,30 @@
       "writtenOn": "2024-03-13T23:03:06Z",
       "side": 1,
       "message": "`CachedDataSize() \u003e\u003d batch_size_ * header_.block_size` as it\u0027s more intuitive \"if cache size overflows some limit, needs flushing\"",
+      "range": {
+        "startLine": 349,
+        "startChar": 11,
+        "endLine": 349,
+        "endChar": 63
+      },
+      "revId": "ae3332c0044f2258c44385d8dc9c5b4b225a0b86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b97d480_ca9a7117",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T22:36:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95a196f7_c57a5386",
       "range": {
         "startLine": 349,
         "startChar": 11,
