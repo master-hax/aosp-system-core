@@ -21,6 +21,9 @@
 
 #include <aidl/android/hardware/gatekeeper/BnGatekeeper.h>
 
+#include <android/hardware/gatekeeper/IGatekeeper.h>
+#include <binder/RpcTrusty.h>
+
 #include <gatekeeper/gatekeeper_messages.h>
 
 #include "gatekeeper_ipc.h"
@@ -100,7 +103,7 @@ class TrustyGateKeeperDevice : public BnGatekeeper {
         return Send(GK_DELETE_ALL_USERS, request, response);
     }
 
-    int error_;
+    ::android::sp<::android::hardware::gatekeeper::IGatekeeper> gk_;
 };
 
 }  // namespace aidl::android::hardware::gatekeeper
