@@ -33,6 +33,24 @@
       "message": "open_device() already waits for fastboot - indefinitely, in fact. The 1s delay here is to make sure the previous connection has been fully severed, so that open_device() won\u0027t pick it up by accident.\n\nI think this needs a little more investigation - is the usbip connection not getting closed quickly enough?",
       "revId": "2c216684a16211a1123bb549af115f6ac3e769ef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0d1bf4e_97f7e5df",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1552,
+      "author": {
+        "id": 1096528
+      },
+      "writtenOn": "2024-03-19T18:40:22Z",
+      "side": 1,
+      "message": "Interesting. I\u0027ll debug into this, thanks.",
+      "parentUuid": "e5309069_aa56de83",
+      "revId": "2c216684a16211a1123bb549af115f6ac3e769ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
