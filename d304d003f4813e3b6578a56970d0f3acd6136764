@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9430c349_43ce7d2d",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-19T16:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42c324c6_02eefd3b",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "33200023_cc88b276",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-18T22:32:08Z",
       "side": 1,
       "message": "if you pass an optional mapping needed to create a symlink in here instead, I think you can use a new SS_CLEAN_NEED_SYMLINK state to signal that the symlink is needed instead of a separate pointer.",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c62c886_cc71eb85",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-19T16:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33200023_cc88b276",
       "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e215cf1_e71e8b51",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-19T16:24:13Z",
+      "side": 1,
+      "message": "That might be a better solution.  I don\u0027t actually see any cases where `tipc_ns` tries to send the `STORAGE_FILE_OPEN_CREATE_EXCLUSIVE` flag.  This is how I would have expected the flag to behave; however, we should probably return an error for now.  If we start using it in the future, we can catch it and decide what the behavior should be.",
+      "parentUuid": "8ed9aed8_4e726c34",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e3fd2248_08a4dc22",
@@ -65,6 +119,24 @@
       "writtenOn": "2024-03-18T22:32:08Z",
       "side": 1,
       "message": "It might be useful to add an fd here. It would allow you both eliminate the mapping pointer in the fd table, and support the case where the fs table is full (and the symlink has not already been created).",
+      "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2f2010d_cc1d6729",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-19T16:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3fd2248_08a4dc22",
       "revId": "d304d003f4813e3b6578a56970d0f3acd6136764",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
