@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fee120ee_b150d927",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 877,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    int dma_buf[] \u003d {-1, -1, -1};\n```",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0bf2bfd_89ac855c",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    volatile char* buf[] \u003d {MAP_FAILED, MAP_FAILED, MAP_FAILED};\n```\n\nIt looks like this needs to be the same size as `dma_buf`, so you can either add a static assertion that they\u0027re the same size, or do something like `buf[countof(dma_buf)]` (see `countof` discussion below).",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ebb043f_2d55de7a",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    for (i \u003d 0; i \u003c sizeof(dma_buf) / sizeof(dma_buf[0]); i++) {\n```",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f4099cd_41baa47b",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 909,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    for (i \u003d 0; i \u003c sizeof(buf) / sizeof(buf[0]); i++) {\n```",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ec04b78_98cc00d5",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 943,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    for (i \u003d 0; i \u003c sizeof(shm) / sizeof(shm[0]); i++) {\n```\n\nOther Trusty files define a `countof` macro, you could copy that instead.",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80f6bd9b_b3fe0ff6",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 955,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    for (i \u003d 0; i \u003c sizeof(buf) / sizeof(buf[0]); i++) {\n```",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a54e2a6f_596b38a5",
+        "filename": "trusty/libtrusty/tipc-test/tipc_test.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 966,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-19T03:17:53Z",
+      "side": 1,
+      "message": "```suggestion\n    for (i \u003d 0; i \u003c sizeof(buf) / sizeof(buf[0]); i++) {\n```",
+      "revId": "5ab864fcb666ba6d4ae64ecf3b2bc30e2377bbce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
