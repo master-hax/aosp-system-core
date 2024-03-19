@@ -21,24 +21,12 @@
 
 #include <aidl/android/hardware/gatekeeper/BnGatekeeper.h>
 
+#include <android/hardware/gatekeeper/IGatekeeper.h>
+#include <binder/RpcTrusty.h>
+
 #include <gatekeeper/gatekeeper_messages.h>
 
-#include "gatekeeper_ipc.h"
-
 namespace aidl::android::hardware::gatekeeper {
-
-using aidl::android::hardware::gatekeeper::GatekeeperEnrollResponse;
-using aidl::android::hardware::gatekeeper::GatekeeperVerifyResponse;
-using ::gatekeeper::DeleteAllUsersRequest;
-using ::gatekeeper::DeleteAllUsersResponse;
-using ::gatekeeper::DeleteUserRequest;
-using ::gatekeeper::DeleteUserResponse;
-using ::gatekeeper::EnrollRequest;
-using ::gatekeeper::EnrollResponse;
-using ::gatekeeper::gatekeeper_error_t;
-using ::gatekeeper::GateKeeperMessage;
-using ::gatekeeper::VerifyRequest;
-using ::gatekeeper::VerifyResponse;
 
 class TrustyGateKeeperDevice : public BnGatekeeper {
   public:
@@ -50,7 +38,6 @@ class TrustyGateKeeperDevice : public BnGatekeeper {
      * factor data.
      *
      * Returns: 0 on success or an error code less than 0 on error.
-     * On error, enrolled_password_handle will not be allocated.
      */
     ::ndk::ScopedAStatus enroll(int32_t uid, const std::vector<uint8_t>& currentPasswordHandle,
                                 const std::vector<uint8_t>& currentPassword,
@@ -58,17 +45,15 @@ class TrustyGateKeeperDevice : public BnGatekeeper {
                                 GatekeeperEnrollResponse* _aidl_return) override;
 
     /**
-     * Verifies provided_password matches enrolled_password_handle.
+     * Verifies provided_password matches enrolledPasswordHandle.
      *
      * Implementations of this module may retain the result of this call
      * to attest to the recency of authentication.
      *
-     * On success, writes the address of a verification token to auth_token,
-     * usable to attest password verification to other trusted services. Clients
-     * may pass NULL for this value.
+     * On success, _aidl_return will contain an auth token, usable to attest password verification
+     * to other trusted services.
      *
      * Returns: 0 on success or an error code less than 0 on error
-     * On error, verification token will not be allocated
      */
     ::ndk::ScopedAStatus verify(int32_t uid, int64_t challenge,
                                 const std::vector<uint8_t>& enrolledPasswordHandle,
@@ -80,27 +65,7 @@ class TrustyGateKeeperDevice : public BnGatekeeper {
     ::ndk::ScopedAStatus deleteUser(int32_t uid) override;
 
   private:
-    gatekeeper_error_t Send(uint32_t command, const GateKeeperMessage& request,
-                           GateKeeperMessage* response);
-
-    gatekeeper_error_t Send(const EnrollRequest& request, EnrollResponse* response) {
-        return Send(GK_ENROLL, request, response);
-    }
-
-    gatekeeper_error_t Send(const VerifyRequest& request, VerifyResponse* response) {
-        return Send(GK_VERIFY, request, response);
-    }
-
-    gatekeeper_error_t Send(const DeleteUserRequest& request, DeleteUserResponse* response) {
-        return Send(GK_DELETE_USER, request, response);
-    }
-
-    gatekeeper_error_t Send(const DeleteAllUsersRequest& request,
-                            DeleteAllUsersResponse* response) {
-        return Send(GK_DELETE_ALL_USERS, request, response);
-    }
-
-    int error_;
+    ::android::sp<::android::hardware::gatekeeper::IGatekeeper> gk_;
 };
 
 }  // namespace aidl::android::hardware::gatekeeper

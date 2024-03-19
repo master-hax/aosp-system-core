@@ -31,7 +31,6 @@ cc_binary {
 
     srcs: [
         "service.cpp",
-        "trusty_gatekeeper_ipc.c",
         "trusty_gatekeeper.cpp",
     ],
 
@@ -49,12 +48,17 @@ cc_binary {
         "android.hardware.gatekeeper-V1-ndk",
         "libbase",
         "libbinder_ndk",
+        "libbinder",
+        "libbinder_trusty",
         "libgatekeeper",
         "libhardware",
         "libutils",
         "liblog",
         "libcutils",
         "libtrusty",
+        "android.hardware.gatekeeper-V1-cpp",
+        "android.hardware.security.secureclock-V1-cpp",
+        "android.hardware.security.keymint-V3-cpp",
     ],
 
     vintf_fragments: ["android.hardware.gatekeeper-service.trusty.xml"],
