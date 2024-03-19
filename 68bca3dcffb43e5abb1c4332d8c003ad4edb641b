@@ -58,6 +58,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "60666e11_71fc31e2",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 708,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2024-03-19T10:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "331ac397_bf8abb07",
+      "range": {
+        "startLine": 703,
+        "startChar": 0,
+        "endLine": 708,
+        "endChar": 3
+      },
+      "revId": "68bca3dcffb43e5abb1c4332d8c003ad4edb641b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d515b7b4_0dc3319b",
@@ -71,6 +95,30 @@
       "writtenOn": "2024-03-18T21:38:52Z",
       "side": 1,
       "message": "Is there a reason you made this into its own function? The function is three lines long, although the comment is pretty long.",
+      "range": {
+        "startLine": 835,
+        "startChar": 11,
+        "endLine": 835,
+        "endChar": 38
+      },
+      "revId": "68bca3dcffb43e5abb1c4332d8c003ad4edb641b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08a6a618_6d88b8bf",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 835,
+      "author": {
+        "id": 1453063
+      },
+      "writtenOn": "2024-03-19T10:26:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d515b7b4_0dc3319b",
       "range": {
         "startLine": 835,
         "startChar": 11,
