@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cbc1fcd8_f0ea8ef7",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-03-19T19:57:33Z",
+      "side": 1,
+      "message": "FYI: gz and brotli are deprecated compression methods, but doesn\u0027t hurt to keep here",
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58ac5299_306e717a",
         "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
         "patchSetId": 2
