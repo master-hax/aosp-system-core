@@ -106,6 +106,24 @@
       "parentUuid": "8e0f174f_018ad23f",
       "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae4c9981_2a168a29",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-03-20T18:22:32Z",
+      "side": 1,
+      "message": "Ping... I wouldn\u0027t expect it to make much difference whether we have one or two interfaces to this API if we ever get around to replacing it.",
+      "parentUuid": "476c0340_bf074083",
+      "revId": "e8d68569da0c6dca1fcd104c37e3ba038929a5fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
