@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "50f217e8_49dae89a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2147,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-20T18:08:54Z",
+      "side": 1,
+      "message": "Added the comment.",
+      "parentUuid": "2ebe6444_b3820834",
+      "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f454291a_fbf251c3",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-20T15:59:22Z",
       "side": 1,
       "message": "This can get called before is_legacy_snapuserd_ is set. I think it works because we\u0027ll fall through to UpdateUsersUserSnapshots, but I think it\u0027d be good to either clarify that or remove the call. Or, move it inside the \"if\" below.",
+      "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8b93c4f_5633aa4a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2173,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-20T18:08:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f454291a_fbf251c3",
       "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b137dd3_32a0ff4a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2190,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-20T18:08:54Z",
+      "side": 1,
+      "message": "Nice. Thanks.",
+      "parentUuid": "40afa0d4_bc18d7ec",
+      "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "21a55e5d_e6a9935e",
@@ -65,6 +119,24 @@
       "writtenOn": "2024-03-20T15:59:22Z",
       "side": 1,
       "message": "naming convention nit: \"is_legacy_snapuserd\"",
+      "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65970a1c_c5f48445",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3269,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-20T18:08:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21a55e5d_e6a9935e",
       "revId": "f0e2fe047c76b07cb215a6e72a354f45995ee7f4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
