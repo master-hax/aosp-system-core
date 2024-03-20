@@ -63,6 +63,30 @@
       },
       "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31d70ae5_515d78f8",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-03-20T16:31:18Z",
+      "side": 1,
+      "message": "(as for the +1, I think it actually *would* always be the correct thing to do, because while we don\u0027t know if W will be 36, the *next* sdk version is always 1 higher than the previous one)",
+      "parentUuid": "1f533ab4_e990b799",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 21
+      },
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
