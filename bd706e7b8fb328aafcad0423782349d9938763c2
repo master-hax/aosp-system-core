@@ -16,6 +16,29 @@
       "message": "Proposals for how to fix this once and for all?\n\nSo we don\u0027t have to play games with codenames?",
       "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06487932_239fcf30",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-20T00:01:53Z",
+      "side": 1,
+      "message": "This is no-op right?\n\nAlso, this code implies that SDK number is always increased by one. This may not be true in the future, and I don\u0027t want to hardcode that here.\n\nCould you let us know what the motivation of this change is?",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 21
+      },
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
