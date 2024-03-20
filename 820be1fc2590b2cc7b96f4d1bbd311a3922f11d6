@@ -119,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed44d870_bd831735",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 511,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-20T16:47:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e1833ae_ec77a43b",
+      "range": {
+        "startLine": 511,
+        "startChar": 12,
+        "endLine": 511,
+        "endChar": 32
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce34ba12_8f036c13",
@@ -274,6 +298,30 @@
       "side": 1,
       "message": "I don\u0027t think it should be an error. This check exists to get the path of the v2 cgroup hierarchy if it is in cgroups.json. That path is not tied to any particular v2 controller since all controllers are on the same hierarchy in v2. A vendor could override this path with something other than the `/sys/fs/cgroup` default (although IDK why they would ever do that). If they do override it, this check will use the overridden path instead of assuming the default.\n\nIt\u0027s also possible for a vendor to have no v2 controllers in cgroups.json. A certain vendor does not activate freezer on v2, in which case no v2 root would be found in descriptors (because cgroups.json wouldn\u0027t specify *any* v2 controllers).",
       "parentUuid": "8fae078f_de3e1038",
+      "range": {
+        "startLine": 582,
+        "startChar": 7,
+        "endLine": 582,
+        "endChar": 35
+      },
+      "revId": "820be1fc2590b2cc7b96f4d1bbd311a3922f11d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cb7330a_c2461675",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-20T16:47:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4e5a6c9_a505e7f0",
       "range": {
         "startLine": 582,
         "startChar": 7,
