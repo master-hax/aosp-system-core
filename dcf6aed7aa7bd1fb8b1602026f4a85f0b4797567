@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d39942ce_8327da70",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-03-21T01:49:56Z",
+      "side": 1,
+      "message": "```suggestion\n#define GATEKEEPER_PORT \"com.android.trusty.gatekeeper_v2\"\n```",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
