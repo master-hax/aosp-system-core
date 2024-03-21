@@ -515,6 +515,17 @@ std::vector<FstabPtrEntryType*> GetEntriesByPred(FstabPtr fstab, const Pred& pre
 // the system/etc directory is supported too and is the preferred location.
 std::string GetFstabPath() {
     if (InRecovery()) {
+        for (const char* prop : {"fstab_suffix", "hardware", "hardware.platform"}) {
+            std::string suffix;
+
+            if (!fs_mgr_get_boot_config(prop, &suffix)) continue;
+
+            std::string fstab_path = "/etc/recovery.fstab." + suffix;
+            if (access(fstab_path.c_str(), F_OK) == 0) {
+                return fstab_path;
+            }
+        }
+
         return "/etc/recovery.fstab";
     }
     for (const char* prop : {"fstab_suffix", "hardware", "hardware.platform"}) {
