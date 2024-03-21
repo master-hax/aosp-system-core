@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9938e4f8_8e58572e",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-21T19:53:53Z",
+      "side": 1,
+      "message": "why this explicit flush required before processing the new set of blocks ? cached_data_() should accommodate if there is enough space.\n\nIs this being done to ensure we don\u0027t overflow the cached_data_ ? If so, if the update_engine keeps sending a bigger chunks of data, this will always be true for every API call.",
+      "revId": "ed148749bd389c98c5e97e3bcff7e1dfa9b52453",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49bdb5e8_9816bc71",
+        "filename": "fs_mgr/libsnapshot/libsnapshot_cow/writer_v3.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-03-21T19:53:53Z",
+      "side": 1,
+      "message": "Why this check required ? In fact, this can be true based on L417.",
+      "revId": "ed148749bd389c98c5e97e3bcff7e1dfa9b52453",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
