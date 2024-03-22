@@ -50,21 +50,17 @@ static std::string CompressionToString(CowCompression& compression) {
     return output;
 }
 
+static std::vector<CowCompression> compression_list = {
+        {kCowCompressLz4, 0},  {kCowCompressZstd, 1},  {kCowCompressZstd, 3}, {kCowCompressZstd, 6},
+        {kCowCompressZstd, 9}, {kCowCompressZstd, 22}, {kCowCompressGz, 1},   {kCowCompressGz, 9}};
+
+static std::vector<long> compression_factors = {4096, 4096 * 16, 4096 * 64, 4096 * 256};
+
 void OneShotCompressionTest() {
     std::cout << "\n-------One Shot Compressor Perf Analysis-------\n";
 
-    std::vector<CowCompression> compression_list = {
-            {kCowCompressLz4, 0},     {kCowCompressBrotli, 1}, {kCowCompressBrotli, 3},
-            {kCowCompressBrotli, 11}, {kCowCompressZstd, 3},   {kCowCompressZstd, 6},
-            {kCowCompressZstd, 9},    {kCowCompressZstd, 22},  {kCowCompressGz, 1},
-            {kCowCompressGz, 3},      {kCowCompressGz, 6},     {kCowCompressGz, 9}};
-    std::vector<std::unique_ptr<ICompressor>> compressors;
-    for (auto i : compression_list) {
-        compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
-    }
-
-    // Allocate a buffer of size 8 blocks.
-    std::array<char, 32768> buffer;
+    // Allocate a buffer of size 1024 blocks.
+    std::array<char, 4096 * 1024> buffer;
 
     // Generate a random 4k buffer of characters
     std::default_random_engine gen(SEED_NUMBER);
@@ -76,24 +72,39 @@ void OneShotCompressionTest() {
     std::vector<std::pair<double, std::string>> latencies;
     std::vector<std::pair<double, std::string>> ratios;
 
-    for (size_t i = 0; i < compressors.size(); i++) {
-        const auto start = std::chrono::steady_clock::now();
-        std::vector<uint8_t> compressed_data =
-                compressors[i]->Compress(buffer.data(), buffer.size());
-        const auto end = std::chrono::steady_clock::now();
-        const auto latency =
-                std::chrono::duration_cast<std::chrono::nanoseconds>(end - start) / 1000.0;
-        const double compression_ratio =
-                static_cast<uint16_t>(compressed_data.size()) * 1.00 / buffer.size();
+    for (auto& compression : compression_list) {
+        for (auto factor : compression_factors) {
+            std::unique_ptr<ICompressor> compressor = ICompressor::Create(compression, factor);
+            const auto start = std::chrono::steady_clock::now();
+            size_t total_written = 0;
+            std::vector<std::vector<uint8_t>> compressed_data;
+            while (total_written < buffer.size()) {
+                compressed_data.emplace_back(
+                        compressor->Compress(buffer.data() + total_written, factor));
+                total_written += factor;
+            }
+            const auto end = std::chrono::steady_clock::now();
+            const auto latency =
+                    std::chrono::duration_cast<std::chrono::nanoseconds>(end - start) / 1000.0;
+            size_t size = 0;
+            for (auto i : compressed_data) {
+                size += i.size();
+            }
+            const double compression_ratio = size * 1.00 / buffer.size();
 
-        std::cout << "Metrics for " << CompressionToString(compression_list[i]) << ": latency -> "
-                  << latency.count() << "ms "
-                  << " compression ratio ->" << compression_ratio << " \n";
+            std::cout << "Metrics for " << CompressionToString(compression)
+                      << " compression_factor: " << std::to_string(factor / BLOCK_SZ) << "k"
+                      << ": latency -> " << latency.count() / 1000 << "s "
+                      << " compression ratio ->" << compression_ratio << " \n";
 
-        latencies.emplace_back(
-                std::make_pair(latency.count(), CompressionToString(compression_list[i])));
-        ratios.emplace_back(
-                std::make_pair(compression_ratio, CompressionToString(compression_list[i])));
+            latencies.emplace_back(std::make_pair(
+                    latency.count() / 1000,
+                    CompressionToString(compression) +
+                            " compression_factor: " + std::to_string(factor / BLOCK_SZ)));
+            ratios.emplace_back(std::make_pair(
+                    compression_ratio, CompressionToString(compression) + " compression_factor: " +
+                                               std::to_string(factor / BLOCK_SZ)));
+        }
     }
 
     int best_speed = 0;
@@ -108,7 +119,7 @@ void OneShotCompressionTest() {
         }
     }
 
-    std::cout << "BEST SPEED: " << latencies[best_speed].first << "ms "
+    std::cout << "BEST SPEED: " << latencies[best_speed].first << "s "
               << latencies[best_speed].second << "\n";
     std::cout << "BEST RATIO: " << ratios[best_ratio].first << " " << ratios[best_ratio].second
               << "\n";
@@ -117,18 +128,13 @@ void OneShotCompressionTest() {
 void IncrementalCompressionTest() {
     std::cout << "\n-------Incremental Compressor Perf Analysis-------\n";
 
-    std::vector<CowCompression> compression_list = {
-            {kCowCompressLz4, 0},     {kCowCompressBrotli, 1}, {kCowCompressBrotli, 3},
-            {kCowCompressBrotli, 11}, {kCowCompressZstd, 3},   {kCowCompressZstd, 6},
-            {kCowCompressZstd, 9},    {kCowCompressZstd, 22},  {kCowCompressGz, 1},
-            {kCowCompressGz, 3},      {kCowCompressGz, 6},     {kCowCompressGz, 9}};
     std::vector<std::unique_ptr<ICompressor>> compressors;
     for (auto i : compression_list) {
         compressors.emplace_back(ICompressor::Create(i, BLOCK_SZ));
     }
 
-    // Allocate a buffer of size 8 blocks.
-    std::array<char, 32768> buffer;
+    // Allocate a buffer of size 1024 blocks.
+    std::array<char, 4096 * 1024> buffer;
 
     // Generate a random 4k buffer of characters
     std::default_random_engine gen(SEED_NUMBER);
@@ -196,7 +202,7 @@ void IncrementalCompressionTest() {
 
 int main() {
     android::snapshot::OneShotCompressionTest();
-    android::snapshot::IncrementalCompressionTest();
+    // android::snapshot::IncrementalCompressionTest();
 
     return 0;
 }
