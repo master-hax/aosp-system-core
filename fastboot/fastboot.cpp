@@ -1549,9 +1549,6 @@ void reboot_to_userspace_fastboot() {
     fb->RebootTo("fastboot");
     fb->set_transport(nullptr);
 
-    // Give the current connection time to close.
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
     fb->set_transport(open_device());
 
     if (!is_userspace_fastboot()) {
