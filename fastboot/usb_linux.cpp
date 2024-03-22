@@ -413,6 +413,9 @@ static std::unique_ptr<usb_handle> find_usb_device(const char* base, ifc_match_f
 
 LinuxUsbTransport::~LinuxUsbTransport() {
     Close();
+    if (WaitForDisconnect() < 0) {
+        die("Timed out waiting for USB disconnect.");
+    }
 }
 
 ssize_t LinuxUsbTransport::Write(const void* _data, size_t len)
