@@ -51,6 +51,24 @@
       "parentUuid": "e5309069_aa56de83",
       "revId": "2c216684a16211a1123bb549af115f6ac3e769ef",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d39b384d_0309c800",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1552,
+      "author": {
+        "id": 1096528
+      },
+      "writtenOn": "2024-03-22T14:41:38Z",
+      "side": 1,
+      "message": "You\u0027re exactly right @dvander@google.com, the problem is that the connection is not closing quickly enough. I\u0027ve resubmitted, patch +3009736.",
+      "parentUuid": "d0d1bf4e_97f7e5df",
+      "revId": "2c216684a16211a1123bb549af115f6ac3e769ef",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
