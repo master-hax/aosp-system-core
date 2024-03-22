@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab38c238_a09961ff",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1552,
+      "author": {
+        "id": 1096528
+      },
+      "writtenOn": "2024-03-22T14:43:57Z",
+      "side": 0,
+      "message": "hmm. this wasn\u0027t meant to be deleted 0_0",
+      "revId": "7cf49320ba53f2954a00409c264ccdca2a7b728b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
