@@ -42,6 +42,7 @@
 #include <android-base/unique_fd.h>
 #include <bionic/macros.h>
 #include <bionic/reserved_signals.h>
+#include <bionic/tls_defines.h>
 #include <cutils/sockets.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
@@ -403,6 +404,27 @@ static void InstallSigPipeHandler() {
   sigaction(SIGPIPE, &action, nullptr);
 }
 
+static void* GetGuestStateTlsPointer([[maybe_unused]] pid_t tid) {
+#if defined(__x86_64__)
+  {
+    void** tp_reg = nullptr;
+    ErrnoRestorer errno_restorer;
+    errno = 0;
+    uintptr_t fs_base = ptrace(PTRACE_PEEKUSER, tid, offsetof(user_regs_struct, fs_base), nullptr);
+    if (errno == 0) {
+      tp_reg = reinterpret_cast<void**>(fs_base);
+    }
+    if (tp_reg == nullptr) {
+      PLOG(ERROR) << "failed to read thread register for thread " << tid;
+      return nullptr;
+    }
+    return tp_reg[TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE];
+  }
+#else
+  return nullptr;
+#endif
+}
+
 int main(int argc, char** argv) {
   DefuseSignalHandlers();
   InstallSigPipeHandler();
@@ -537,6 +559,7 @@ int main(int argc, char** argv) {
       }
 
       if (thread == g_target_thread) {
+        info.guest_state_tls_pointer = GetGuestStateTlsPointer(thread);
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info, &recoverable_crash);
         info.siginfo = &siginfo;
