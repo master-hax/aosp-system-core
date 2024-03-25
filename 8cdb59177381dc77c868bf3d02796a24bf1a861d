@@ -56,6 +56,30 @@
       },
       "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4edd78d3_ddb6b738",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 1096528
+      },
+      "writtenOn": "2024-03-25T18:31:27Z",
+      "side": 1,
+      "message": "no, platforms that don\u0027t support it (mac, windows) will return 0 (success) //immediately// from `WaitForDisconnect()`, so it\u0027s important to keep this sleep here for them. if it gets taken out, then they won\u0027t wait at all and the subsequent code would almost certainly fail immediately due to the device not having had time to disconnect yet.",
+      "parentUuid": "428bcc14_dfe774f0",
+      "range": {
+        "startLine": 1555,
+        "startChar": 52,
+        "endLine": 1555,
+        "endChar": 57
+      },
+      "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
