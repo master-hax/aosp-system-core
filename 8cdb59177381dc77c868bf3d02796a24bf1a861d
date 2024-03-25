@@ -80,6 +80,30 @@
       },
       "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d80f9ab_90d5ab46",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-25T19:23:02Z",
+      "side": 1,
+      "message": "My understanding:\n\n1. for platforms which support `WaitForDisconnect` , sleep is optional. As we already waited to device to disconnect.\n2. for platforms which do not support `WaitForDisconnect` , sleep is required, as we have to give the device time to disconnect.\n\nSo, we are keeping this code even for the optional path, so need to leave a comment saying \"Give the device time, even on platforms which do support WaitForDisconnect(), in which case this sleep is optional\".",
+      "parentUuid": "4edd78d3_ddb6b738",
+      "range": {
+        "startLine": 1555,
+        "startChar": 52,
+        "endLine": 1555,
+        "endChar": 57
+      },
+      "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
