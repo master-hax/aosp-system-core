@@ -42,6 +42,7 @@
 #include <android-base/unique_fd.h>
 #include <bionic/macros.h>
 #include <bionic/reserved_signals.h>
+#include <bionic/tls_defines.h>
 #include <cutils/sockets.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
@@ -53,6 +54,8 @@
 #include <unwindstack/AndroidUnwinder.h>
 #include <unwindstack/Error.h>
 #include <unwindstack/Regs.h>
+
+#include <native_bridge_support/guest_state_accessor/accessor.h>
 
 #include "libdebuggerd/backtrace.h"
 #include "libdebuggerd/tombstone.h"
@@ -401,6 +404,46 @@ static void InstallSigPipeHandler() {
   action.sa_handler = SIG_IGN;
   action.sa_flags = SA_RESTART;
   sigaction(SIGPIPE, &action, nullptr);
+}
+
+static void* GetGuestStateTlsPointer([[maybe_unused]] pid_t tid) {
+  void** tp_reg = nullptr;
+#if defined(__x86_64__)
+  {
+    ErrnoRestorer errno_restorer;
+    errno = 0;
+    uintptr_t fs_base = ptrace(PTRACE_PEEKUSER, tid, offsetof(user_regs_struct, fs_base), nullptr);
+    if (errno == 0) {
+      tp_reg = reinterpret_cast<void**>(fs_base);
+    }
+    if (tp_reg == nullptr) {
+      PLOG(ERROR) << "failed to read thread register for thread " << tid;
+      return nullptr;
+    }
+    auto ptr_to_guest_slot = fs_base + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uintptr_t);
+    uintptr_t header_ptr = ptrace(PTRACE_PEEKDATA, tid, ptr_to_guest_slot, 0);
+    return reinterpret_cast<void*>(header_ptr);
+  }
+#elif defined(__aarch64__)
+  uint64_t reg;
+  struct iovec pt_iov {
+    .iov_base = &reg, .iov_len = sizeof(reg),
+  };
+
+  if (ptrace(PTRACE_GETREGSET, tid, NT_ARM_TLS, &pt_iov) == 0) {
+    tp_reg = reinterpret_cast<void**>(reg);
+  }
+
+  if (tp_reg == nullptr) {
+    PLOG(ERROR) << "failed to read thread register for thread " << tid;
+    return nullptr;
+  }
+  auto ptr_to_guest_slot = reg + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uint64_t);
+  uintptr_t header_ptr = ptrace(PTRACE_PEEKDATA, tid, ptr_to_guest_slot, 0);
+  return reinterpret_cast<void*>(header_ptr);
+#else
+  return nullptr;
+#endif
 }
 
 int main(int argc, char** argv) {
