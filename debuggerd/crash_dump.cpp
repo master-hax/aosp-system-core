@@ -18,6 +18,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <sys/prctl.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
@@ -25,6 +26,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <climits>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <memory>
@@ -42,6 +45,7 @@
 #include <android-base/unique_fd.h>
 #include <bionic/macros.h>
 #include <bionic/reserved_signals.h>
+#include <bionic/tls_defines.h>
 #include <cutils/sockets.h>
 #include <log/log.h>
 #include <private/android_filesystem_config.h>
@@ -52,7 +56,20 @@
 
 #include <unwindstack/AndroidUnwinder.h>
 #include <unwindstack/Error.h>
+#include <unwindstack/MachineArm.h>
+#include <unwindstack/MachineArm64.h>
+#include <unwindstack/MachineRiscv64.h>
 #include <unwindstack/Regs.h>
+#include <unwindstack/RegsArm.h>
+#include <unwindstack/RegsArm64.h>
+#include <unwindstack/RegsRiscv64.h>
+#include <unwindstack/UserArm.h>
+#include <unwindstack/UserArm64.h>
+#include <unwindstack/UserRiscv64.h>
+
+#include <native_bridge_support/guest_state_accessor/accessor.h>
+
+#include <native_bridge_support/guest_state_accessor/accessor.h>
 
 #include "libdebuggerd/backtrace.h"
 #include "libdebuggerd/tombstone.h"
@@ -403,6 +420,136 @@ static void InstallSigPipeHandler() {
   sigaction(SIGPIPE, &action, nullptr);
 }
 
+template <typename Addr>
+static long PtraceHelper(int request, pid_t tid, Addr addr, void* data, std::string err_msg,
+                         bool* is_success) {
+  errno = 0;
+  auto res = ptrace(request, tid, addr, data);
+  if (errno != 0) {
+    PLOG(ERROR) << err_msg;
+    *is_success = false;
+  } else {
+    *is_success = true;
+  }
+  return res;
+}
+
+static bool GetGuestRegistersFromCrashedProcess([[maybe_unused]] pid_t tid,
+                                                NativeBridgeGuestRegs* guest_regs) {
+  uintptr_t header_ptr;
+  bool is_valid = true;
+  bool is_ptrace_success = false;
+#if defined(__x86_64__)
+  uintptr_t fs_base = static_cast<uintptr_t>(PtraceHelper(
+      PTRACE_PEEKUSER, tid, offsetof(user_regs_struct, fs_base), nullptr,
+      "failed to read thread register for thread " + std::to_string(tid), &is_ptrace_success));
+  if (!is_ptrace_success) {
+    return false;
+  }
+  auto ptr_to_guest_slot = fs_base + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uintptr_t);
+  header_ptr = static_cast<uintptr_t>(
+      PtraceHelper(PTRACE_PEEKDATA, tid, ptr_to_guest_slot, 0,
+                   "failed to get guest state TLS slot content for thread " + std::to_string(tid),
+                   &is_ptrace_success));
+  if (!is_ptrace_success) {
+    return false;
+  }
+#elif defined(__aarch64__)
+  uint64_t reg;
+  struct iovec pt_iov {
+    .iov_base = &reg, .iov_len = sizeof(reg),
+  };
+  PtraceHelper(PTRACE_GETREGSET, tid, NT_ARM_TLS, &pt_iov,
+               "failed to read thread register for thread " + std::to_string(tid),
+               &is_ptrace_success);
+  if (!is_ptrace_success) {
+    return false;
+  }
+  auto ptr_to_guest_slot = reg + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uint64_t);
+  header_ptr = static_cast<uintptr_t>(
+      PtraceHelper(PTRACE_PEEKDATA, tid, ptr_to_guest_slot, 0,
+                   "failed to get guest state TLS slot content for thread " + std::to_string(tid),
+                   &is_ptrace_success));
+  if (!is_ptrace_success) {
+    return false;
+  }
+#else
+  is_valid = false;
+#endif
+  if (!is_valid) {
+    return false;
+  }
+
+  NativeBridgeGuestStateHeader* ptr = reinterpret_cast<NativeBridgeGuestStateHeader*>(header_ptr);
+  if (PtraceHelper(PTRACE_PEEKDATA, tid, ptr, 0, "failed to get the guest state header",
+                   &is_ptrace_success) != NATIVE_BRIDGE_GUEST_STATE_SIGNATURE) {
+    // Return when ptr points to unmapped memory or no valid guest state.
+    return false;
+  }
+  size_t guest_state_data_size =
+      PtraceHelper(PTRACE_PEEKDATA, tid, &(ptr->guest_state_data_size), 0,
+                   "failed to get the guest state data size", &is_ptrace_success);
+  if (!is_ptrace_success) {
+    return false;
+  }
+  uintptr_t guest_state_data_ptr =
+      PtraceHelper(PTRACE_PEEKDATA, tid, &(ptr->guest_state_data), 0,
+                   "failed to get the guest state data pointer", &is_ptrace_success);
+  if (!is_ptrace_success) {
+    return false;
+  }
+  auto guest_state_data_copy = std::make_unique<unsigned char[]>(guest_state_data_size);
+  int fd = open(("/proc/" + std::to_string(tid) + "/mem").c_str(), O_RDONLY);
+  bool is_success = android::base::ReadFullyAtOffset(fd, guest_state_data_copy.get(),
+                                                     guest_state_data_size, guest_state_data_ptr);
+  if (!is_success) {
+    PLOG(ERROR) << "failed to read the guest state data for thread " << tid;
+    return false;
+  }
+  LoadGuestStateRegisters(guest_state_data_copy.get(), guest_state_data_size, guest_regs);
+  return true;
+}
+
+static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs, pid_t tid) {
+  NativeBridgeGuestRegs guest_regs;
+  if (!GetGuestRegistersFromCrashedProcess(tid, &guest_regs)) {
+    return;
+  }
+
+  switch (guest_regs.guest_arch) {
+    case NATIVE_BRIDGE_ARCH_ARM: {
+      unwindstack::arm_user_regs arm_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM_REG_LAST; i++) {
+        arm_user_regs.regs[i] = guest_regs.regs_arm.r[i];
+      }
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm::Read(&arm_user_regs));
+      break;
+    }
+#if defined(__LP64__)
+    case NATIVE_BRIDGE_ARCH_ARM64: {
+      unwindstack::arm64_user_regs arm64_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM64_REG_R31; i++) {
+        arm64_user_regs.regs[i] = guest_regs.regs_arm64.x[i];
+      }
+      arm64_user_regs.pc = guest_regs.regs_arm64.ip;
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm64::Read(&arm64_user_regs));
+      break;
+    }
+    case NATIVE_BRIDGE_ARCH_RISCV64: {
+      unwindstack::riscv64_user_regs riscv64_user_regs = {};
+      // RISCV64_REG_PC is at the first position.
+      riscv64_user_regs.regs[0] = guest_regs.regs_riscv64.ip;
+      for (size_t i = 1; i < unwindstack::RISCV64_REG_REAL_COUNT; i++) {
+        riscv64_user_regs.regs[i] = guest_regs.regs_riscv64.x[i];
+      }
+      *regs = std::unique_ptr<unwindstack::Regs>(
+          unwindstack::RegsRiscv64::Read(&riscv64_user_regs, tid));
+      break;
+    }
+#endif
+  }
+}
+
 int main(int argc, char** argv) {
   DefuseSignalHandlers();
   InstallSigPipeHandler();
@@ -537,6 +684,7 @@ int main(int argc, char** argv) {
       }
 
       if (thread == g_target_thread) {
+        ReadGuestRegisters(&info.guest_registers, thread);
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info, &recoverable_crash);
         info.siginfo = &siginfo;
