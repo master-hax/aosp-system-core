@@ -34,6 +34,24 @@
       "parentUuid": "a3ec996f_3427376c",
       "revId": "fc11068c4a9f94c836c74a367cf84804bc748bec",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a4cfe43_d53ed3de",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1386891
+      },
+      "writtenOn": "2024-03-25T02:05:59Z",
+      "side": 1,
+      "message": "we introduced any_system_partition tag to show the intention explicitly.",
+      "parentUuid": "5a83b559_3d4c9b39",
+      "revId": "fc11068c4a9f94c836c74a367cf84804bc748bec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
