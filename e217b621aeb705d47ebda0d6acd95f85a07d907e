@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba884182_012200de",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "You could get rid of this if instead of having a `possibly_open_mapped_file` helper you have a `open_possibly_mapped_file` helper.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ba80329_304ed302",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "`assert(node \u003d\u003d NULL)`? O_TRUNC is not compatible with block devices so we don\u0027t need to support this combination. If we had to support it we would need another state.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "920c8c33_d0c8713d",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "`assert(handle \u003e\u003d FD_TBL_SIZE)`? This line should not be reachable for an entry with SS_CLEAN_NEED_SYMLINK unless the state is inconsistent.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f192911_a54c43ad",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "I think you need to do the clear part of possibly_symlink_and_clear_mapping (but not create the symlink) here as well.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05338bc5_8fa1b2d2",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "nit: put the return statement on its own line and add {}",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27eabc59_7c3c01d6",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "What happens after this? The caller will try to create the file and presumably fail. If the root path becomes available before then, I think you will get the wrong end result though and a file-system in a file instead of on the block device.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4239089_700db26b",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-03-25T23:41:52Z",
+      "side": 1,
+      "message": "nit: I would put this at the top so you don\u0027t have the list link in the middle of your payload.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
