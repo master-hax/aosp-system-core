@@ -104,6 +104,30 @@
       },
       "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f36d971_964f0845",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 1096528
+      },
+      "writtenOn": "2024-03-25T19:50:33Z",
+      "side": 1,
+      "message": "ahhh, i see how you\u0027re reading it, and yes that\u0027s a correct explanation as well. i\u0027ll update this to be clearer.",
+      "parentUuid": "5d80f9ab_90d5ab46",
+      "range": {
+        "startLine": 1555,
+        "startChar": 52,
+        "endLine": 1555,
+        "endChar": 57
+      },
+      "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
