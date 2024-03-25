@@ -33,6 +33,29 @@
       "message": "@zhangkelvin@google.com @elsk@google.com @enh@google.com adding you guys too, didn\u0027t originally realize I needed two votes from Googlers to submit.",
       "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "428bcc14_dfe774f0",
+        "filename": "fastboot/fastboot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1555,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-03-25T18:28:32Z",
+      "side": 1,
+      "message": "do you mean `do` ?",
+      "range": {
+        "startLine": 1555,
+        "startChar": 52,
+        "endLine": 1555,
+        "endChar": 57
+      },
+      "revId": "8cdb59177381dc77c868bf3d02796a24bf1a861d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
