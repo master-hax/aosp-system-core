@@ -22,6 +22,7 @@ message CrashDetail {
 
 message Tombstone {
   Architecture arch = 1;
+  Architecture guest_arch = 22;
   string build_fingerprint = 2;
   string revision = 3;
   string timestamp = 4;
@@ -42,11 +43,12 @@ message Tombstone {
   repeated Cause causes = 15;
 
   map<uint32, Thread> threads = 16;
+  GuestThread guest_thread = 23;
   repeated MemoryMapping memory_mappings = 17;
   repeated LogBuffer log_buffers = 18;
   repeated FD open_fds = 19;
 
-  reserved 22 to 999;
+  reserved 24 to 999;
 }
 
 enum Architecture {
@@ -146,6 +148,16 @@ message Thread {
   int64 pac_enabled_keys = 8;
 
   reserved 10 to 999;
+}
+
+message GuestThread {
+  repeated Register registers = 1;
+  repeated BacktraceFrame current_backtrace = 2;
+  repeated MemoryDump memory_dump = 3;
+  repeated string backtrace_note = 4;
+  repeated string unreadable_elf_files = 5;
+
+  reserved 6 to 999;
 }
 
 message BacktraceFrame {
