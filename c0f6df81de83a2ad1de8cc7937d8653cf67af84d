@@ -16,6 +16,24 @@
       "message": "does it simplify/reduce any of the changes you\u0027ll need to make to callers if we just add an Architecture to Thread? or is this deliberate to ensure that guest-oblivious code continues to just ignore anything guest releated?",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86e86556_783583f7",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-03-26T17:01:14Z",
+      "side": 1,
+      "message": "Hi Elliott, as I understand, both way works similar for us. It seems clear to gather guest thread related information in one struct. However, if adding the information to `Thread` is preferred, I will change to that.",
+      "parentUuid": "9cc0a714_1a64acb8",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
