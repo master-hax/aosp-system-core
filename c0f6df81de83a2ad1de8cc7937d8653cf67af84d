@@ -70,6 +70,24 @@
       "parentUuid": "645180f8_d03631f9",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f0db1b8_d74ddfab",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-26T23:02:25Z",
+      "side": 1,
+      "message": "i\u0027ll let the other berberis folks weigh in, but to me that sounds like we may as well just reuse Thread in that case then? sounds like you won\u0027t have tooling looking at protobufs?",
+      "parentUuid": "24ea5f91_df048e11",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
