@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "562325cb_6d284ff3",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Ahhh, I see, and just have it open the file where NO_FILE_MAPPING was being returned.  It\u0027s already taking in the open flags, so I can just perform the open on it\u0027s behalf.  Sounds good to me, and makes it cleaner. Done",
+      "parentUuid": "ba884182_012200de",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2ba80329_304ed302",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-03-25T23:41:52Z",
       "side": 1,
       "message": "`assert(node \u003d\u003d NULL)`? O_TRUNC is not compatible with block devices so we don\u0027t need to support this combination. If we had to support it we would need another state.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a11f1e52_0001cf13",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Good point, that looks cleaner. Done",
+      "parentUuid": "2ba80329_304ed302",
       "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b221594_1e35898d",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "920c8c33_d0c8713d",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0f192911_a54c43ad",
@@ -65,6 +119,24 @@
       "writtenOn": "2024-03-25T23:41:52Z",
       "side": 1,
       "message": "I think you need to do the clear part of possibly_symlink_and_clear_mapping (but not create the symlink) here as well.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f68cb1e_bfff5018",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Good catch. I think at this point only the `fd` in the mapping list needs to be reset, since the fd_state is already being cleaned up here.  I can reuse `get_pending_symlink_mapping` and if it returns a valid entry, I can reset it there.",
+      "parentUuid": "0f192911_a54c43ad",
       "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b6c6c51_e448534e",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "05338bc5_8fa1b2d2",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "27eabc59_7c3c01d6",
@@ -103,6 +193,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "548fb7b2_77fea0d0",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 8
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "That\u0027s a good point, we should just report a general failure, and don\u0027t let control flow through. Done.",
+      "parentUuid": "27eabc59_7c3c01d6",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4239089_700db26b",
@@ -116,6 +224,24 @@
       "writtenOn": "2024-03-25T23:41:52Z",
       "side": 1,
       "message": "nit: I would put this at the top so you don\u0027t have the list link in the middle of your payload.",
+      "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c187f433_8c464867",
+        "filename": "trusty/storage/proxy/storage.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1854856
+      },
+      "writtenOn": "2024-03-26T08:55:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4239089_700db26b",
       "revId": "e217b621aeb705d47ebda0d6acd95f85a07d907e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
