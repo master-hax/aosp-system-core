@@ -475,6 +475,15 @@ cc_binary {
 
     // Required for tests.
     required: ["crash_dump.policy"],
+
+    target: {
+        android: {
+            header_libs: [
+                "libnative_bridge_support_accessor_headers", // For dlext_namespaces.h
+            ],
+            shared_libs: ["libdl_android"], // For android_get_exported_namespace implementation
+        },
+    },
 }
 
 cc_binary {

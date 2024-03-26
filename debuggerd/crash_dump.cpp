@@ -18,6 +18,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <sys/prctl.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
@@ -25,6 +26,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <climits>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <memory>
@@ -53,7 +56,18 @@
 
 #include <unwindstack/AndroidUnwinder.h>
 #include <unwindstack/Error.h>
+#include <unwindstack/MachineArm.h>
+#include <unwindstack/MachineArm64.h>
+#include <unwindstack/MachineRiscv64.h>
 #include <unwindstack/Regs.h>
+#include <unwindstack/RegsArm.h>
+#include <unwindstack/RegsArm64.h>
+#include <unwindstack/RegsRiscv64.h>
+#include <unwindstack/UserArm.h>
+#include <unwindstack/UserArm64.h>
+#include <unwindstack/UserRiscv64.h>
+
+#include <native_bridge_support/guest_state_accessor/accessor.h>
 
 #include <native_bridge_support/guest_state_accessor/accessor.h>
 
@@ -454,6 +468,63 @@ static void* GetGuestStateTlsPointer([[maybe_unused]] pid_t tid) {
 #endif
 }
 
+static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs, pid_t tid) {
+  // Retrieve header data from crash process to current process
+  NativeBridgeGuestStateHeader* ptr =
+      reinterpret_cast<NativeBridgeGuestStateHeader*>(GetGuestStateTlsPointer(tid));
+  if (ptr == nullptr ||
+      ptrace(PTRACE_PEEKDATA, tid, ptr, 0) != NATIVE_BRIDGE_GUEST_STATE_SIGNATURE) {
+    // Return when ptr is nullptr indicating no valid guest state, or when ptr points to unmapped
+    // memory.
+    return;
+  }
+  size_t guest_state_data_size = ptrace(PTRACE_PEEKDATA, tid, &(ptr->guest_state_data_size), 0);
+  uintptr_t guest_state_data_ptr = ptrace(PTRACE_PEEKDATA, tid, &(ptr->guest_state_data), 0);
+  void* guest_state_data_copy = malloc(guest_state_data_size);
+  int fd = open(("/proc/" + std::to_string(tid) + "/mem").c_str(), O_RDONLY);
+  bool is_success = android::base::ReadFullyAtOffset(fd, guest_state_data_copy,
+                                                     guest_state_data_size, guest_state_data_ptr);
+  if (!is_success) {
+    PLOG(ERROR) << "failed to read the guest state data for thread " << tid;
+    return;
+  }
+  NativeBridgeGuestRegs guest_regs;
+  LoadGuestStateRegisters(guest_state_data_copy, guest_state_data_size, &guest_regs);
+  free(guest_state_data_copy);
+  switch (guest_regs.guest_arch) {
+    case NATIVE_BRIDGE_ARCH_ARM: {
+      unwindstack::arm_user_regs arm_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM_REG_LAST; i++) {
+        arm_user_regs.regs[i] = guest_regs.regs_arm.r[i];
+      }
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm::Read(&arm_user_regs));
+      break;
+    }
+#if defined(__LP64__)
+    case NATIVE_BRIDGE_ARCH_ARM64: {
+      unwindstack::arm64_user_regs arm64_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM64_REG_R31; i++) {
+        arm64_user_regs.regs[i] = guest_regs.regs_arm64.x[i];
+      }
+      arm64_user_regs.pc = guest_regs.regs_arm64.ip;
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm64::Read(&arm64_user_regs));
+      break;
+    }
+    case NATIVE_BRIDGE_ARCH_RISCV64: {
+      unwindstack::riscv64_user_regs riscv64_user_regs = {};
+      // RISCV64_REG_PC is at the first position.
+      riscv64_user_regs.regs[0] = guest_regs.regs_riscv64.ip;
+      for (size_t i = 1; i < unwindstack::RISCV64_REG_REAL_COUNT; i++) {
+        riscv64_user_regs.regs[i] = guest_regs.regs_riscv64.x[i];
+      }
+      *regs = std::unique_ptr<unwindstack::Regs>(
+          unwindstack::RegsRiscv64::Read(&riscv64_user_regs, tid));
+      break;
+    }
+#endif
+  }
+}
+
 int main(int argc, char** argv) {
   DefuseSignalHandlers();
   InstallSigPipeHandler();
@@ -588,6 +659,7 @@ int main(int argc, char** argv) {
       }
 
       if (thread == g_target_thread) {
+        ReadGuestRegisters(&info.guest_registers, thread);
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info, &recoverable_crash);
         info.siginfo = &siginfo;
