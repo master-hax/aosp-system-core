@@ -41,6 +41,7 @@ struct ThreadInfo {
   siginfo_t* siginfo = nullptr;
 
   void* guest_state_tls_pointer = nullptr;
+  std::unique_ptr<unwindstack::Regs> guest_registers;
 };
 
 // This struct is written into a pipe from inside the crashing process.

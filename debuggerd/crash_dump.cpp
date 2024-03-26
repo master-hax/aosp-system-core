@@ -53,7 +53,18 @@
 
 #include <unwindstack/AndroidUnwinder.h>
 #include <unwindstack/Error.h>
+#include <unwindstack/MachineArm.h>
+#include <unwindstack/MachineArm64.h>
+#include <unwindstack/MachineRiscv64.h>
 #include <unwindstack/Regs.h>
+#include <unwindstack/RegsArm.h>
+#include <unwindstack/RegsArm64.h>
+#include <unwindstack/RegsRiscv64.h>
+#include <unwindstack/UserArm.h>
+#include <unwindstack/UserArm64.h>
+#include <unwindstack/UserRiscv64.h>
+
+#include <native_bridge_support/guest_state_accessor/accessor.h>
 
 #include "libdebuggerd/backtrace.h"
 #include "libdebuggerd/tombstone.h"
@@ -344,6 +355,51 @@ static void ReadCrashInfo(unique_fd& fd, siginfo_t* siginfo,
   }
 }
 
+static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs,
+                               void* guest_state_tls_pointer) {
+  NativeBridgeGuestStateHeader* guest_state_header =
+      static_cast<NativeBridgeGuestStateHeader*>(guest_state_tls_pointer);
+  NativeBridgeGuestRegs* guest_regs = nullptr;
+  LoadGuestStateRegisters(guest_state_header->guest_state_data,
+                          guest_state_header->guest_state_data_size, guest_regs);
+  if (guest_regs == nullptr) {
+    LOG(ERROR) << "Failed to load guest state registers, no guest state crash information will be "
+                  "reported.";
+    return;
+  }
+  switch (guest_regs->guest_arch) {
+    case NATIVE_BRIDGE_ARCH_ARM: {
+      unwindstack::arm_user_regs arm_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM_REG_LAST; i++) {
+        arm_user_regs.regs[i] = guest_regs->regs_arm.r[i];
+      }
+      // TODO q[32]
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm::Read(&arm_user_regs));
+      break;
+    }
+    case NATIVE_BRIDGE_ARCH_ARM64: {
+      unwindstack::arm64_user_regs arm64_user_regs = {};
+      for (size_t i = 0; i < unwindstack::ARM64_REG_R31; i++) {
+        arm64_user_regs.regs[i] = guest_regs->regs_arm64.x[i];
+      }
+      arm64_user_regs.pc = guest_regs->regs_arm64.ip;
+      // TODO v[32]
+      *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm64::Read(&arm64_user_regs));
+      break;
+    }
+    case NATIVE_BRIDGE_ARCH_RISCV64: {
+      unwindstack::riscv64_user_regs riscv64_user_regs = {};
+      for (size_t i = 0; i < unwindstack::RISCV64_REG_REAL_COUNT; i++) {
+        riscv64_user_regs.regs[i] = guest_regs->regs_riscv64.x[i];
+      }
+      // TODO f[32], v[32], and ip
+      *regs =
+          std::unique_ptr<unwindstack::Regs>(unwindstack::RegsRiscv64::Read(&riscv64_user_regs));
+      break;
+    }
+  }
+}
+
 // Wait for a process to clone and return the child's pid.
 // Note: this leaves the parent in PTRACE_EVENT_STOP.
 static pid_t wait_for_clone(pid_t pid, bool resume_child) {
@@ -560,6 +616,7 @@ int main(int argc, char** argv) {
 
       if (thread == g_target_thread) {
         info.guest_state_tls_pointer = GetGuestStateTlsPointer(thread);
+        ReadGuestRegisters(&info.guest_registers, info.guest_state_tls_pointer);
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info, &recoverable_crash);
         info.siginfo = &siginfo;
