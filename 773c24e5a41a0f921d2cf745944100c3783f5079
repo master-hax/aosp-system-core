@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab1b3af0_0dcc78b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-03-27T16:16:02Z",
+      "side": 1,
+      "message": "vab_legacy_test is the only thing testing the dm-snapshot code path which is still supported \u0026 used. If there are single failures within this, we can disable them and file a follow-up bug. Otherwise we should root cause this, because \"priority of fixing the test\" and \"priority of re-enabling the test\" are effectively the same.",
+      "revId": "773c24e5a41a0f921d2cf745944100c3783f5079",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
