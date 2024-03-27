@@ -88,6 +88,24 @@
       "parentUuid": "24ea5f91_df048e11",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5e2edd24_03afc6e0",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-03-27T14:35:01Z",
+      "side": 1,
+      "message": "The expectation is that the majority of users are going to be looking at the text. Proto fields is something that could be useful in the future (no preference on where to have guest_arch field).",
+      "parentUuid": "9f0db1b8_d74ddfab",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
