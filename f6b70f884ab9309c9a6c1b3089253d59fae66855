@@ -306,6 +306,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e63d3dda_06b596e0",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-27T20:21:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1dab5520_53ba0116",
+      "range": {
+        "startLine": 321,
+        "startChar": 8,
+        "endLine": 321,
+        "endChar": 75
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "47c26782_09dcc39e",
@@ -343,6 +367,30 @@
       "side": 1,
       "message": "If there\u0027s no v2 freezer, there is no v2 cgroup hierarchy. Something weird is going on in this case, and an A/B comparison will show a non-typical increase in kernel memory because of that.",
       "parentUuid": "47c26782_09dcc39e",
+      "range": {
+        "startLine": 327,
+        "startChar": 25,
+        "endLine": 327,
+        "endChar": 103
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eee4373c_24746878",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-27T20:21:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec8a9297_505340e2",
       "range": {
         "startLine": 327,
         "startChar": 25,
@@ -400,6 +448,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f08e962b_0d89e0ed",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-27T20:21:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c2670ac_e9d94150",
+      "range": {
+        "startLine": 330,
+        "startChar": 22,
+        "endLine": 330,
+        "endChar": 65
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31cf560a_66ee9798",
@@ -413,6 +485,30 @@
       "writtenOn": "2024-03-14T18:22:31Z",
       "side": 1,
       "message": "This statement is fragile. Patches are added/removed all the time.",
+      "range": {
+        "startLine": 332,
+        "startChar": 25,
+        "endLine": 332,
+        "endChar": 103
+      },
+      "revId": "f6b70f884ab9309c9a6c1b3089253d59fae66855",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4de7a05_776a68d7",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-27T20:21:02Z",
+      "side": 1,
+      "message": "I\u0027ll remove this one since it mostly overlaps with the MGLRU warning.",
+      "parentUuid": "31cf560a_66ee9798",
       "range": {
         "startLine": 332,
         "startChar": 25,
