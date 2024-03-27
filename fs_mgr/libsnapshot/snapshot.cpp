@@ -1704,6 +1704,7 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
     size_t num_cows = 0;
     size_t ok_cows = 0;
     for (const auto& snapshot : snapshots) {
+        LOG(INFO) << "PerformInitTransition: " << snapshot;
         std::string user_cow_name = GetDmUserCowName(snapshot, GetSnapshotDriver(lock.get()));
 
         if (dm_.GetState(user_cow_name) == DmDeviceState::INVALID) {
@@ -1716,9 +1717,15 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         }
 
         auto target_type = DeviceMapper::GetTargetType(target.spec);
-        if (target_type != "user") {
+        if (IsLegacySnapuserdPostReboot()) {
+            LOG(INFO) << "IsLegacySnapuserdPostReboot is true";
+            if (target_type != "snapshot") {
+                LOG(ERROR) << "Unexpected target type for " << user_cow_name << ": " << target_type;
+            }
+        } else if (target_type != "user") {
+            LOG(INFO) << "IsLegacySnapuserdPostReboot is false";
             LOG(ERROR) << "Unexpected target type for " << user_cow_name << ": " << target_type;
-            continue;
+            // continue;
         }
 
         num_cows++;
@@ -2195,12 +2202,16 @@ bool SnapshotManager::UpdateUsesUserSnapshots(LockedFile* lock) {
         SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
         is_snapshot_userspace_ = update_status.userspace_snapshots();
         is_legacy_snapuserd_ = update_status.legacy_snapuserd();
+        LOG(INFO) << "is_snapshot_userspace_: " << is_snapshot_userspace_.value()
+                  << "is_legacy_snapuserd_: " << is_legacy_snapuserd_.value();
     }
 
     if (IsLegacySnapuserdPostReboot()) {
+        LOG(INFO) << "IsLegacySnapuserdPostReboot is true";
         return false;
     }
 
+    LOG(INFO) << "UpdateUsesUserSnapshots: " << is_snapshot_userspace_.value();
     return is_snapshot_userspace_.value();
 }
 
