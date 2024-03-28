@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0fdb07e_375ca60e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T19:31:05Z",
+      "side": 1,
+      "message": "Please explain why we are doing that and what is special about UIDs \u003c 10000",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 54
+      },
+      "revId": "793fc5b4639000d1d342c7662b5c9445ce314c66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ec4b8df_d8269c6f",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T19:31:05Z",
+      "side": 1,
+      "message": "same nit as in previous patch",
+      "range": {
+        "startLine": 29,
+        "startChar": 17,
+        "endLine": 29,
+        "endChar": 51
+      },
+      "revId": "793fc5b4639000d1d342c7662b5c9445ce314c66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43ce2a76_ebc756a3",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T19:31:05Z",
+      "side": 1,
+      "message": "CreateV2SubHierarchy",
+      "range": {
+        "startLine": 495,
+        "startChar": 12,
+        "endLine": 495,
+        "endChar": 32
+      },
+      "revId": "793fc5b4639000d1d342c7662b5c9445ce314c66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a58b468_e67a7e5f",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T19:31:05Z",
+      "side": 1,
+      "message": "we don\u0027t capitalize variables",
+      "range": {
+        "startLine": 563,
+        "startChar": 20,
+        "endLine": 563,
+        "endChar": 34
+      },
+      "revId": "793fc5b4639000d1d342c7662b5c9445ce314c66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
