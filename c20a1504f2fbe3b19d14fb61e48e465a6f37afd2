@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f5ec599_36fd7d8d",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T18:37:17Z",
+      "side": 1,
+      "message": "nit: you can simply have `-DFORCE_MEMCG_V2`",
+      "range": {
+        "startLine": 23,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c9f4169_13492d5e",
+        "filename": "libprocessgroup/build_flags.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T18:37:17Z",
+      "side": 1,
+      "message": "and in here:\n```\n#ifdef FORCE_MEMCG_V2\n    return true;\n#else\n    return false;\n#endif\n```",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 34
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0bf4348_6dd2d595",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T18:37:17Z",
+      "side": 1,
+      "message": "This is fragile. This can be something like: `cgroup_disable\u003dcpu,pressure,memory`. Would checking `/sys/fs/cgroup/cgroup.controllers` work instead?",
+      "range": {
+        "startLine": 207,
+        "startChar": 25,
+        "endLine": 207,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
