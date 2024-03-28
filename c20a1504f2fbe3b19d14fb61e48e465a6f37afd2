@@ -116,6 +116,30 @@
       },
       "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7bd33e7_755a5179",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-28T21:31:54Z",
+      "side": 1,
+      "message": "Confirmed we can\u0027t just check `/sys/fs/cgroup/cgroup.controllers`. I guess I\u0027ll have to modify this to loop through the whole cmdline and check each cgroup_disable.",
+      "parentUuid": "664da83a_020283f9",
+      "range": {
+        "startLine": 207,
+        "startChar": 25,
+        "endLine": 207,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
