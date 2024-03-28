@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a47fe9e9_5016bf7e",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-28T20:03:36Z",
+      "side": 1,
+      "message": "I don\u0027t see how that is better. Then I need more code/conditions in build_flags.h.",
+      "parentUuid": "9f5ec599_36fd7d8d",
+      "range": {
+        "startLine": 23,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4c9f4169_13492d5e",
         "filename": "libprocessgroup/build_flags.h",
         "patchSetId": 9
@@ -60,6 +84,30 @@
       "writtenOn": "2024-03-28T18:37:17Z",
       "side": 1,
       "message": "This is fragile. This can be something like: `cgroup_disable\u003dcpu,pressure,memory`. Would checking `/sys/fs/cgroup/cgroup.controllers` work instead?",
+      "range": {
+        "startLine": 207,
+        "startChar": 25,
+        "endLine": 207,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "664da83a_020283f9",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-28T20:03:36Z",
+      "side": 1,
+      "message": "Good point. I don\u0027t think `/sys/fs/cgroup/cgroup.controllers` will work, because if memcg is mounted as v1 I don\u0027t think it would show up there. Let me check.",
+      "parentUuid": "a0bf4348_6dd2d595",
       "range": {
         "startLine": 207,
         "startChar": 25,
