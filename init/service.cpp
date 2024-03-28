@@ -359,7 +359,7 @@ void Service::Reap(const siginfo_t& siginfo) {
         !was_last_exit_ok_) {
         bool boot_completed = GetBoolProperty("sys.boot_completed", false);
         if (now < time_crashed_ + fatal_crash_window_ || !boot_completed) {
-            if (++crash_count_ > 4) {
+            if (++crash_count_ > 20) {
                 auto exit_reason = boot_completed ?
                     "in " + std::to_string(fatal_crash_window_.count()) + " minutes" :
                     "before boot completed";
