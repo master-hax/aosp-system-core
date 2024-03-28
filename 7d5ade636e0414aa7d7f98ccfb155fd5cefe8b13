@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b48494a_4e52f1e7",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-28T17:28:17Z",
+      "side": 1,
+      "message": "nit: IIRC `cgroup_path + \u0027/\u0027 + file_name` would be faster.",
+      "range": {
+        "startLine": 141,
+        "startChar": 16,
+        "endLine": 141,
+        "endChar": 80
+      },
+      "revId": "7d5ade636e0414aa7d7f98ccfb155fd5cefe8b13",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
