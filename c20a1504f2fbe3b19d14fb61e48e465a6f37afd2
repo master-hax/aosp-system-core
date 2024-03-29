@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "59d9ab73_537114d5",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 9
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-29T04:07:53Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a47fe9e9_5016bf7e",
+      "range": {
+        "startLine": 23,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c9f4169_13492d5e",
@@ -61,6 +85,30 @@
       "writtenOn": "2024-03-28T18:37:17Z",
       "side": 1,
       "message": "and in here:\n```\n#ifdef FORCE_MEMCG_V2\n    return true;\n#else\n    return false;\n#endif\n```",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 34
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "591da657_537fe801",
+        "filename": "libprocessgroup/build_flags.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-29T04:07:53Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "4c9f4169_13492d5e",
       "range": {
         "startLine": 26,
         "startChar": 0,
@@ -156,6 +204,30 @@
       "side": 1,
       "message": "Actually, memcg can\u0027t be on v1 when this function is called. It\u0027s only when being forced to v2 that this gets called. But it looks possible that `/sys/fs/cgroup` may not be mounted before here, since `MountV2CgroupController` gets called afterwards. So I guess I could move this check into `MountV2CgroupController` and look at `/sys/fs/cgroup/cgroup.controllers` instead of `/proc/cmdline`.",
       "parentUuid": "f7bd33e7_755a5179",
+      "range": {
+        "startLine": 207,
+        "startChar": 25,
+        "endLine": 207,
+        "endChar": 46
+      },
+      "revId": "c20a1504f2fbe3b19d14fb61e48e465a6f37afd2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba665b4c_42f72919",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-03-29T04:07:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c2c66d5_01aec129",
       "range": {
         "startLine": 207,
         "startChar": 25,
