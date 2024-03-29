@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34619039_b5e735f1",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T20:31:08Z",
+      "side": 1,
+      "message": "I think it\u0027s better to derive these from `descriptors[CGROUPV2_HIERARCHY_NAME].mode(), .uid(), .gid()`",
+      "range": {
+        "startLine": 496,
+        "startChar": 21,
+        "endLine": 496,
+        "endChar": 45
+      },
+      "revId": "151c97f7f4ef5772b0a430c8c354f7924551f90a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1c07456_e14ff738",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T20:31:08Z",
+      "side": 1,
+      "message": "Slightly simpler:\n\n```\nstd::string cgroup_v2_root;\n\nconst auto it \u003d descriptors.find(CGROUPV2_HIERARCHY_NAME);\ncgroup_v2_root \u003d (it \u003d\u003d descriptors.end()) ? CGROUP_V2_ROOT_DEFAULT :\n                 it-\u003esecond.controller()-\u003epath();\n```",
+      "range": {
+        "startLine": 573,
+        "startChar": 8,
+        "endLine": 578,
+        "endChar": 0
+      },
+      "revId": "151c97f7f4ef5772b0a430c8c354f7924551f90a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
