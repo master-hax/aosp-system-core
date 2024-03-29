@@ -104,6 +104,24 @@
       "parentUuid": "c283d7eb_841572c7",
       "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da8c2bd7_6d9353e5",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2024-03-29T10:28:10Z",
+      "side": 1,
+      "message": "Implemented Set to ensure no overlapping operations are observed",
+      "parentUuid": "6012c9dc_b2502871",
+      "revId": "eaa7f0dda4fdb5d971d64f9d3ca9ea410ae09f89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

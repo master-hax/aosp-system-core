@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "135f7961_8df86a11",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2024-03-29T10:28:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "beaaeece_a5c27fa6",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cbc1fcd8_f0ea8ef7",
@@ -96,6 +120,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5658c5d2_62164c58",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2024-03-29T10:28:10Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "1823df97_e4e786d8",
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "58ac5299_306e717a",
         "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
         "patchSetId": 2
@@ -107,6 +149,30 @@
       "writtenOn": "2024-03-19T19:56:20Z",
       "side": 1,
       "message": "we are transitioning into the v3 snapshot format for android 15. V3 is already enabled on cuttlefish and some pixel device, please use the new version for fuzzing : )",
+      "range": {
+        "startLine": 100,
+        "startChar": 34,
+        "endLine": 100,
+        "endChar": 45
+      },
+      "revId": "74111b620e207bdf2dffb32fbc3727d2af03aeab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a332bfe_a2686c23",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2024-03-29T10:28:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58ac5299_306e717a",
       "range": {
         "startLine": 100,
         "startChar": 34,
