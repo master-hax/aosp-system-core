@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73e0ac5d_2f6ffc7e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-29T19:49:52Z",
+      "side": 1,
+      "message": "good comment!",
+      "revId": "593fdbf3468fa0f63531be12582df29befb80847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83dc483c_c2df3ce7",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-29T19:49:52Z",
+      "side": 1,
+      "message": "S_IFMT in this file?",
+      "range": {
+        "startLine": 399,
+        "startChar": 26,
+        "endLine": 399,
+        "endChar": 32
+      },
+      "revId": "593fdbf3468fa0f63531be12582df29befb80847",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
