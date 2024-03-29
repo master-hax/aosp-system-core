@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45ad348a_4c05902f",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T22:46:05Z",
+      "side": 1,
+      "message": "Would that mean cgroup v2 hierarchy is not enabled altogether? If so, should this be treated as error/warning?",
+      "range": {
+        "startLine": 245,
+        "startChar": 33,
+        "endLine": 245,
+        "endChar": 50
+      },
+      "revId": "c513eee7e58b280c6b9ced9a701fed09c0b964f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d49a1b3_1b74fedf",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T22:46:05Z",
+      "side": 1,
+      "message": "This means no cgroup v2 hierarchy? Should this be an automatic `return true`?\n\nIf previous comments are correct then we don\u0027t need `CGROUP_V2_ROOT_DEFAULT`",
+      "range": {
+        "startLine": 467,
+        "startChar": 8,
+        "endLine": 467,
+        "endChar": 31
+      },
+      "revId": "c513eee7e58b280c6b9ced9a701fed09c0b964f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cd857bd_b58ace1c",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T22:46:05Z",
+      "side": 1,
+      "message": "You could have `if (force_memcg_v2)` as an outer condition for all these new checks.",
+      "range": {
+        "startLine": 524,
+        "startChar": 4,
+        "endLine": 524,
+        "endChar": 22
+      },
+      "revId": "c513eee7e58b280c6b9ced9a701fed09c0b964f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
