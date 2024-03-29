@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b9d0b43_f5e84990",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-29T20:15:10Z",
+      "side": 1,
+      "message": "do you need it static?",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 453,
+        "endChar": 10
+      },
+      "revId": "9409990e8022471a8a24ae36fdea016a80fe378e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
