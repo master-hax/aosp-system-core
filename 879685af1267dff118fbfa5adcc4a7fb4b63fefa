@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e2255a6_e1552048",
+        "filename": "libcutils/include/private/fs_config.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-29T16:19:20Z",
+      "side": 1,
+      "message": "bool? (and document)",
+      "range": {
+        "startLine": 51,
+        "startChar": 37,
+        "endLine": 51,
+        "endChar": 40
+      },
+      "revId": "879685af1267dff118fbfa5adcc4a7fb4b63fefa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b3094c2_72d5b3c7",
+        "filename": "libcutils/include/private/fs_config.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-03-29T16:19:20Z",
+      "side": 1,
+      "message": "describe this?",
+      "range": {
+        "startLine": 51,
+        "startChar": 58,
+        "endLine": 51,
+        "endChar": 73
+      },
+      "revId": "879685af1267dff118fbfa5adcc4a7fb4b63fefa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
