@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db935c08_c6c65d1c",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1616561
+      },
+      "writtenOn": "2024-03-29T07:59:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd91ad02_89352342",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 2
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "210b9196_0c2084b8",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7903c2e_a97b478f",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1616561
+      },
+      "writtenOn": "2024-03-29T07:59:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "210b9196_0c2084b8",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 22
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dae614d3_11ae80e6",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-03-19T20:49:16Z",
       "side": 1,
       "message": "If strongCount is 0, this will delete the ref, so any \u0027ref-\u003e\u0027 calls are no longer valid. That is what the extra complexity was from before.",
+      "range": {
+        "startLine": 83,
+        "startChar": 15,
+        "endLine": 86,
+        "endChar": 17
+      },
+      "revId": "4e91346626ad2cc5c11be822686bfc3fc8a3f33b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "adaba845_d7f9c9e9",
+        "filename": "libutils/binder/RefBase_fuzz.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1616561
+      },
+      "writtenOn": "2024-03-29T07:59:24Z",
+      "side": 1,
+      "message": "Modified code to handle this condition.",
+      "parentUuid": "dae614d3_11ae80e6",
       "range": {
         "startLine": 83,
         "startChar": 15,
