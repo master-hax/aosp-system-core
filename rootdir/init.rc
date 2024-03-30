@@ -861,6 +861,8 @@ on post-fs-data
     mkdir /data/misc/odsign/metrics 0770 root system
     # directory used for connectivity blob store.
     mkdir /data/misc/connectivityblobdb 0770 system system
+    # directory used for managed cacerts.
+    mkdir /data/misc/cacerts_managed 0700 system system
 
     # Directory for VirtualizationService temporary image files.
     # Delete any stale files owned by the old virtualizationservice uid (b/230056726).
