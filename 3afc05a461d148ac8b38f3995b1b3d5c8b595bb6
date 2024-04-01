@@ -16,6 +16,24 @@
       "message": "the tls-slot contains a pointer to the guest state header... which is what we want this method to return. Or am I missing something here?",
       "revId": "3afc05a461d148ac8b38f3995b1b3d5c8b595bb6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d22b194a_9257d43c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-01T22:00:52Z",
+      "side": 1,
+      "message": "`tp_reg[TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE]` produces segfault error, but getting the address of it works (\u0026tp_reg[TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE]). Figured that I can get the address of this field (NativeBridgeGuestStateHeader**) and use PTRACE_PEEKDATA to get the content (NativeBridgeGuestStateHeader*).",
+      "parentUuid": "623ad0e7_f215d182",
+      "revId": "3afc05a461d148ac8b38f3995b1b3d5c8b595bb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
