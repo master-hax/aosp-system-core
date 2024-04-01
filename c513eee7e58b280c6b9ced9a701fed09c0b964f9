@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ad01610_14782f02",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-01T20:37:16Z",
+      "side": 1,
+      "message": "It means it\u0027s not in `cgroups.json` which I\u0027m pretty sure is the case on at least one vendor\u0027s devices. This function is also called for system, API-level, and vendor files, and we shouldn\u0027t require all of those to have empty cgroup v2 entries if they\u0027re just overriding some non cgroup v2 controller.",
+      "parentUuid": "45ad348a_4c05902f",
+      "range": {
+        "startLine": 245,
+        "startChar": 33,
+        "endLine": 245,
+        "endChar": 50
+      },
+      "revId": "c513eee7e58b280c6b9ced9a701fed09c0b964f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8d49a1b3_1b74fedf",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-29T22:46:05Z",
       "side": 1,
       "message": "This means no cgroup v2 hierarchy? Should this be an automatic `return true`?\n\nIf previous comments are correct then we don\u0027t need `CGROUP_V2_ROOT_DEFAULT`",
+      "range": {
+        "startLine": 467,
+        "startChar": 8,
+        "endLine": 467,
+        "endChar": 31
+      },
+      "revId": "c513eee7e58b280c6b9ced9a701fed09c0b964f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56b6d3b8_37261deb",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-01T20:37:16Z",
+      "side": 1,
+      "message": "I guess I don\u0027t mind warning if that\u0027s the case, but I don\u0027t think we should refuse to boot because of it (which we would have to without a default path to mount cg v2 on).",
+      "parentUuid": "8d49a1b3_1b74fedf",
       "range": {
         "startLine": 467,
         "startChar": 8,
