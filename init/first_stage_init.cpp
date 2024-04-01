@@ -534,8 +534,12 @@ int FirstStageMain(int argc, char** argv) {
 
     SetInitAvbVersionInRecovery();
 
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
+
     setenv(kEnvFirstStageStartedAt, std::to_string(start_time.time_since_epoch().count()).c_str(),
            1);
+
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     const char* path = "/system/bin/init";
     const char* args[] = {path, "selinux_setup", nullptr};
@@ -543,6 +547,9 @@ int FirstStageMain(int argc, char** argv) {
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDERR_FILENO);
     close(fd);
+
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
+
     execv(path, const_cast<char**>(args));
 
     // execv() only returns if an error happened, in which case we

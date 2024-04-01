@@ -685,13 +685,21 @@ int SetupSelinux(char** argv) {
     SetStdioToDevNull(argv);
     InitKernelLogging(argv);
 
+    // can't really do this before init kernel logging
+    // I didn't check if first stage can even use libbase, but if libbase is
+    // causing the issue, it'll be pretty ambiguous because we'll see this log and not the other
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
+
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
     }
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     boot_clock::time_point start_time = boot_clock::now();
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     SelinuxSetupKernelLogging();
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     // TODO(b/287206497): refactor into different headers to only include what we need.
     if (IsMicrodroid()) {
@@ -699,8 +707,10 @@ int SetupSelinux(char** argv) {
     } else {
         LoadSelinuxPolicyAndroid();
     }
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     SelinuxSetEnforcement();
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     // We're in the kernel domain and want to transition to the init domain.  File systems that
     // store SELabels in their xattrs, such as ext4 do not need an explicit restorecon here,
@@ -709,8 +719,10 @@ int SetupSelinux(char** argv) {
     if (selinux_android_restorecon("/system/bin/init", 0) == -1) {
         PLOG(FATAL) << "restorecon failed of /system/bin/init failed";
     }
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     setenv(kEnvSelinuxStartedAt, std::to_string(start_time.time_since_epoch().count()).c_str(), 1);
+    LOG(INFO) << __FILE__ << ":" << __LINE__ << " asdf";
 
     const char* path = "/system/bin/init";
     const char* args[] = {path, "second_stage", nullptr};
