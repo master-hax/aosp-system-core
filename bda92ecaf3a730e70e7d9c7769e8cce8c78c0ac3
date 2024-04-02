@@ -16,6 +16,41 @@
       "message": "One more thing that we want to think about is throttling. Performing the same mitigation (reboot with ramdump in this case) multiple times wouldn`t help if it hasnt helped the first time, right?\n\nAlso should the change be behind a flag?",
       "revId": "bda92ecaf3a730e70e7d9c7769e8cce8c78c0ac3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "485d6638_821cde74",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-02T21:23:14Z",
+      "side": 1,
+      "message": "Re: throttling -- I agree this is a good idea, but probably out of scope for the changes we\u0027re making here. woodylin@ if you\u0027re interested in implementing this, let us know.\n\nRe: flagging, I think trunk stable docs indicate flags are used for new features; a change this small wouldn\u0027t need one hopefully.",
+      "parentUuid": "199bbf1a_0ccb4359",
+      "revId": "bda92ecaf3a730e70e7d9c7769e8cce8c78c0ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "adf23e33_0d529041",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-02T21:23:14Z",
+      "side": 1,
+      "message": "Add a constant with a comment on it referencing PackageWatchdog so people will understand why this value was chosen?",
+      "revId": "bda92ecaf3a730e70e7d9c7769e8cce8c78c0ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
