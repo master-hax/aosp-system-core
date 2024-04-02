@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b3fc6974_7e2463dd",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-04-02T17:15:55Z",
+      "side": 1,
+      "message": "also uintptr_t (or void*) since this is address in crashed process.",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "65f2ad61_199a087b",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 4
