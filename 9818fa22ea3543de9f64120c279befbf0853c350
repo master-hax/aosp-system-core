@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d857d951_a9c9cd32",
+        "filename": "fs_mgr/libdm/dm_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-02T15:47:44Z",
+      "side": 1,
+      "message": "```\nusing namespace android::storage_literals;\n\nconstexpr uint64_t kMetaSize \u003d 2_MiB;\nconstexpr uint64_t kDataSize \u003d 64_MiB;\nconstexpr uint64_t kThinSize \u003d 1_TiB;\n```",
+      "revId": "9818fa22ea3543de9f64120c279befbf0853c350",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
