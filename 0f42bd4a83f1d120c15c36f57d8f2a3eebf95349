@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e589e778_bc2f8861",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1416371
+      },
+      "writtenOn": "2024-04-02T20:55:58Z",
+      "side": 1,
+      "message": "You could probably make this a little cleaner by implementing `Error` for your error type, which would require it to implement `Display`, then displaying the error, but this is less invasive.",
+      "revId": "0f42bd4a83f1d120c15c36f57d8f2a3eebf95349",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
