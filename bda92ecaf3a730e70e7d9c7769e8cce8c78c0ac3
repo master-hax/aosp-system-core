@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "199bbf1a_0ccb4359",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-02T20:54:24Z",
+      "side": 1,
+      "message": "One more thing that we want to think about is throttling. Performing the same mitigation (reboot with ramdump in this case) multiple times wouldn`t help if it hasnt helped the first time, right?\n\nAlso should the change be behind a flag?",
+      "revId": "bda92ecaf3a730e70e7d9c7769e8cce8c78c0ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
