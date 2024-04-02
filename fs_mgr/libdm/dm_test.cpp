@@ -773,3 +773,45 @@ TEST_F(DmTest, GetNameAndUuid) {
     ASSERT_EQ(name, test_name_);
     ASSERT_FALSE(uuid.empty());
 }
+
+TEST_F(DmTest, ThinProvisioning) {
+    if (!DeviceMapper::Instance().GetTargetByName("thin-pool", nullptr)) GTEST_SKIP();
+
+    constexpr uint64_t KiB = 1024UL;
+    constexpr uint64_t MiB = KiB * KiB;
+    constexpr uint64_t TiB = MiB * MiB;
+    constexpr uint64_t MetaSize = 2 * MiB;
+    constexpr uint64_t DataSize = 64 * MiB;
+    constexpr uint64_t ThinSize = 1 * TiB;
+
+    // Prepare two loop devices for meta and data devices.
+    TemporaryFile meta;
+    ASSERT_GE(meta.fd, 0);
+    ASSERT_EQ(0, ftruncate64(meta.fd, MetaSize));
+    TemporaryFile data;
+    ASSERT_GE(data.fd, 0);
+    ASSERT_EQ(0, ftruncate64(data.fd, DataSize));
+
+    LoopDevice loop_meta(meta.fd, 10s);
+    ASSERT_TRUE(loop_meta.valid());
+    LoopDevice loop_data(data.fd, 10s);
+    ASSERT_TRUE(loop_data.valid());
+
+    // Create a thin-pool
+    DmTable poolTable;
+    poolTable.Emplace<DmTargetThinPool>(0, DataSize / kSectorSize, loop_meta.device(),
+                                        loop_data.device(), 128, 0);
+    TempDevice pool("pool", poolTable);
+    ASSERT_TRUE(pool.valid());
+
+    // Create a thin volumn
+    uint64_t thin_volume_id = 0;
+    ASSERT_TRUE(DeviceMapper::Instance().SendMessage(
+            "pool", 0, "create_thin " + std::to_string(thin_volume_id)));
+
+    // Use a thin volume to create a 1T device
+    DmTable thinTable;
+    thinTable.Emplace<DmTargetThin>(0, ThinSize / kSectorSize, pool.path(), thin_volume_id);
+    TempDevice thin("thin", thinTable);
+    ASSERT_TRUE(thin.valid());
+}
