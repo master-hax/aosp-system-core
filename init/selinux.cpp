@@ -683,7 +683,7 @@ void LoadSelinuxPolicyAndroid() {
 
 int SetupSelinux(char** argv) {
     SetStdioToDevNull(argv);
-    InitKernelLogging(argv);
+    //InitKernelLogging(argv);
 
     if (REBOOT_BOOTLOADER_ON_PANIC) {
         InstallRebootSignalHandlers();
