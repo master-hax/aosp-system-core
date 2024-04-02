@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65f2ad61_199a087b",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-04-02T16:47:42Z",
+      "side": 1,
+      "message": "```\nfs_base + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE*sizeof(unitptr_t)\n```\n\nin this case you can remove reinterpret case above.",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f137042f_6f240b56",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-04-02T16:47:42Z",
+      "side": 1,
+      "message": "and we probably need to add arm64 here as well (not sure if we want to add support for arm32?)",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
