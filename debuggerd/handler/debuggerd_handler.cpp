@@ -100,13 +100,42 @@ static bool property_parse_bool(const char* name) {
   return cookie;
 }
 
+static bool get_prog_name(char* buf, size_t len) {
+  unique_fd fd(open("/proc/self/cmdline", O_RDONLY | O_CLOEXEC));
+  if (fd == -1) {
+    return false;
+  }
+
+  ssize_t rc = read(fd, buf, len);
+  if (rc == -1) {
+    return false;
+  } else if (rc == 0) {
+    // Should never happen?
+    return false;
+  }
+
+  // There's a trailing newline, replace it with a NUL.
+  buf[rc - 1] = '\0';
+
+  //get rid of /xxx/xxx/progname 
+  char* lastSlash = strrchr(buf, '/');
+  if (lastSlash != nullptr) {
+    // Copy the content after the last '/' to the beginning of buf
+    size_t remainingLen = strlen(lastSlash + 1);
+    memmove(buf, lastSlash + 1, remainingLen + 1);
+  }
+  return true;
+}
+
 static bool is_permissive_mte() {
   // Environment variable for testing or local use from shell.
   char* permissive_env = getenv("MTE_PERMISSIVE");
   char process_sysprop_name[512];
+  char progname[512];
+  get_prog_name(progname, 512);
   async_safe_format_buffer(process_sysprop_name, sizeof(process_sysprop_name),
                            "persist.device_config.memory_safety_native.permissive.process.%s",
-                           getprogname());
+                           progname);
   // DO NOT REPLACE this with GetBoolProperty. That uses std::string which allocates, so it is
   // not async-safe (and this functiong gets used in a signal handler).
   return property_parse_bool("persist.sys.mte.permissive") ||
