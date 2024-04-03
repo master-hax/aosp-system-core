@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "299c08f9_5838bfbc",
+        "filename": "init/service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-03T11:57:23Z",
+      "side": 1,
+      "message": "I\u0027m not sure what the odds are that we\u0027d be crashing in both system server and another process this watchdog is monitoring at the same time, and that PackageWatchdog could do anything to help. So probably for now we don\u0027t have to worry about this.\n\nThere is a risk that this watchdog is monitoring another package that starts crashing but where recovery is possible via other mechanisms, and they never run because this watchdog triggers bootlooping. That would be an issue independent of this change... the best way to avoid that would be to either not monitor such a package or have the throttling mentioned previously so that you only reboot the device once per day or something.",
+      "parentUuid": "7eb5fca3_de7b7e4f",
+      "range": {
+        "startLine": 358,
+        "startChar": 20,
+        "endLine": 358,
+        "endChar": 80
+      },
+      "revId": "adb651cb02263c52530cb743173469690ab7425c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "05b7b282_d7e2f6a0",
         "filename": "init/service.cpp",
         "patchSetId": 3
