@@ -16,6 +16,24 @@
       "message": "I thought even vts_libsnapshot_test also uses this isn\u0027t it.. \n\nbtw, if we switch this here, does it also mean all the devices get switched to v3 ? If the devices don\u0027t see the PRODUCT_DEFAULT_COW_VERSION, this change would switch to v3 right ?",
       "revId": "8bfb78747395172738598cf6ac0a9d131fac7889",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76009784_2c119b8c",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-04-03T23:32:32Z",
+      "side": 1,
+      "message": "I don\u0027t see this variable used anywhere else besides the tests. \n\nfor the second point, no this shouldn\u0027t affect if update_engine uses v2 or v3. There\u0027s another constant kCowVersionManifest used to set default version, but we should also remove that dependency from update_engine",
+      "parentUuid": "94e2177b_e7ac01c8",
+      "revId": "8bfb78747395172738598cf6ac0a9d131fac7889",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
