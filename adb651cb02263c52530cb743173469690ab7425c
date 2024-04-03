@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "612b33a9_9f7e7e27",
+        "filename": "init/service.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-03T16:20:34Z",
+      "side": 1,
+      "message": "For now, I think we\u0027d rather have the limit of 20 without worrying about distinguishing between crashes in system server vs. other services so that in cases where only system server is crashing we get the correct behavior.\n\nWe could use your help or Woody\u0027s help in implementing throttling or any logic to distinguish between system server and other crashes; as this isn\u0027t our code we\u0027re not sure how to make the changes in question.",
+      "parentUuid": "5bf2c58f_cc8a2b00",
+      "range": {
+        "startLine": 358,
+        "startChar": 20,
+        "endLine": 358,
+        "endChar": 80
+      },
+      "revId": "adb651cb02263c52530cb743173469690ab7425c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "05b7b282_d7e2f6a0",
         "filename": "init/service.cpp",
         "patchSetId": 3
