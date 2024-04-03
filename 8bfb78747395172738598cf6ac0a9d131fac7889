@@ -34,6 +34,24 @@
       "parentUuid": "94e2177b_e7ac01c8",
       "revId": "8bfb78747395172738598cf6ac0a9d131fac7889",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f046429_28421b9a",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/cow_format.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-04-03T23:35:55Z",
+      "side": 1,
+      "message": "actually, that dependency is already removed aosp/3019783",
+      "parentUuid": "76009784_2c119b8c",
+      "revId": "8bfb78747395172738598cf6ac0a9d131fac7889",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
