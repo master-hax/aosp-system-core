@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e68be71b_99ee76b2",
+        "filename": "init/service.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-04T16:25:21Z",
+      "side": 1,
+      "message": "marking this as resolved.. will follow up offline.",
+      "parentUuid": "485d6638_821cde74",
+      "revId": "bda92ecaf3a730e70e7d9c7769e8cce8c78c0ac3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "adf23e33_0d529041",
