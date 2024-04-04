@@ -3,6 +3,91 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "23554e43_dc67b9c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "I think it would be better to have a new separate implementation rather (albeit with some copypasta) rather than changing the existing one -- it will probably make any transition from old-\u003enew on devices easier.",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a459ca3a_4549951c",
+        "filename": "trusty/gatekeeper/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "If the HAL service is just forwarding normal-binder to RPC-binder, is the `libgatekeeper` dependency still needed?\n\n(And more generally, are there any other deps that are no longer needed?)",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2f87ada_ea53e50c",
+        "filename": "trusty/gatekeeper/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Is the existing `android.hardware.gatekeeper-V1-ndk` dependency not enough?  AIUI the `-cpp` targets aren\u0027t stable for vendor\u003c-\u003esystem communication.",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "487e048c_1c9521fa",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Just to flag here what was also discussed elsewhere: this approach currently forces a dependency on Binder-RPC, which might not be acceptable to all potential users of a reference implementation.",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0294f8fe_a7df8bbe",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Are these `using` statements still needed?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d39942ce_8327da70",
         "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
         "patchSetId": 1
@@ -14,6 +99,148 @@
       "writtenOn": "2024-03-21T01:49:56Z",
       "side": 1,
       "message": "```suggestion\n#define GATEKEEPER_PORT \"com.android.trusty.gatekeeper_v2\"\n```",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39c024c3_6137c013",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "It would be nice to come up with a different way of distinguishing variants than \"_v2\" because of the danger of confusion with HAL versions (this is a new implementation of the **v1** HAL)",
+      "range": {
+        "startLine": 42,
+        "startChar": 56,
+        "endLine": 42,
+        "endChar": 59
+      },
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2eb6297d_53670364",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "I wonder if we should simplify the error processing and just assert that `gk_` is non-`nullptr` here -- is there any point in the service continuing to run without a backing TA?\n\n(That would allow all the `if (gk_ \u003d\u003d nullptr)` checks to be dropped.)",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42db5521_bd98a252",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Is this still required?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80bd9d11_910c1be5",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "If this is just forwarding to the inner binder-RPC version, is it possible to just pass things on more directly?  \n\n```c++\n{\n    return gk_-\u003eenroll(uid, currentPasswordHandle, currentPassword, desiredPassword, rsp);\n}\n```\n\nOr are the binder-RPC types not quite the same as the regular-binder types somehow?\n\n(Same for all the other entrypoints)",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b0a7a2e_161bf60f",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Are all these `using` statements still needed?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d97733d_c5d89cce",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "pre-existing: comment doesn\u0027t match current parameter names",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1779768e_718a2018",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "nit, pre-existing: comment doesn\u0027t match current parameter names",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1400072_254e7e63",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-04T17:07:14Z",
+      "side": 1,
+      "message": "Are all these private methods still needed?",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
