@@ -16,6 +16,23 @@
       "message": "Hopefully it\u0027s more clear now with the commit msg :)",
       "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e2b67f4_69faf97e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-05T09:49:38Z",
+      "side": 1,
+      "message": "FYI. This can be submitted after at least one another review gives +2.",
+      "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
