@@ -22,6 +22,30 @@
       },
       "revId": "25e882725ef50a8c060d82be199203e31a8fac9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0071cd1_1fc38ee4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1981530
+      },
+      "writtenOn": "2024-04-05T14:12:33Z",
+      "side": 1,
+      "message": "The whole OS needs to be able to read the file--aconfig codegen\u0027d APIs will read this file, which most of the OS uses in flagging.",
+      "parentUuid": "b39a1c93_c1325480",
+      "range": {
+        "startLine": 651,
+        "startChar": 46,
+        "endLine": 651,
+        "endChar": 47
+      },
+      "revId": "25e882725ef50a8c060d82be199203e31a8fac9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
