@@ -16,6 +16,24 @@
       "message": "/data/bootanim was changed to /boot/misc/bootanim by Lee with aosp/2676056.\n\nWas /data/misc being already encrypted considered then?",
       "revId": "867f0ada9a7d9f1b381063b32c040327e5598f86",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7af4661f_240f8e0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1020839
+      },
+      "writtenOn": "2024-04-05T14:58:57Z",
+      "side": 1,
+      "message": "rootdir/init.rc line 728 already does the following:\n\n    mkdir /data/misc 01771 system misc encryption\u003dRequire\n\nIf I understand correctly, none of the /data/misc subfolders are supposed to set the encryption policy since /data/misc itself has it set. I don\u0027t see any other /data/misc subfolder setting the encryption policy flag.\n\nCorrect me if I\u0027m wrong but before aosp/2676056 it was required since it was a top level folder not covered by other encryption policies.\n\nThis change fixes boot on various devices after the 14 QPR2 merge",
+      "parentUuid": "5c872422_87eeae8e",
+      "revId": "867f0ada9a7d9f1b381063b32c040327e5598f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
