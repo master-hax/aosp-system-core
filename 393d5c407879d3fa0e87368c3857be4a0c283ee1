@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3eedea6f_b7e8bd0b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-05T14:30:18Z",
+      "side": 1,
+      "message": "what\u0027s the `_1`? should 1, 2, etc be _under_ here?\n\nand why isn\u0027t `test_mission` under the existing `/metadata/aconfig/`?",
+      "range": {
+        "startLine": 652,
+        "startChar": 40,
+        "endLine": 652,
+        "endChar": 42
+      },
+      "revId": "393d5c407879d3fa0e87368c3857be4a0c283ee1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
