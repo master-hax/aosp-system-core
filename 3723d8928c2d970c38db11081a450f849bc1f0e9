@@ -39,6 +39,30 @@
       },
       "revId": "3723d8928c2d970c38db11081a450f849bc1f0e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a447f2ce_444ebbc2",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1975910
+      },
+      "writtenOn": "2024-04-05T09:28:44Z",
+      "side": 1,
+      "message": "this only prints the basename of the firmware expected by the event\n`ueventd: firmware: loading \u0027vpu20_4v.mbn\u0027 for \u0027/devices/platform/soc/aa00000.qcom,vidc/firmware/vpu20_4v.mbn\u0027`\nmy change also adds\n`ueventd: loading /vendor/firmware_mnt/image/vpu20_4v.mbn for /devices/platform/soc/aa00000.qcom,vidc/firmware/vpu20_4v.mbn`\nmaybe it should be replaced with that instead?",
+      "parentUuid": "0039ef9a_77ab2d4e",
+      "range": {
+        "startLine": 263,
+        "startChar": 0,
+        "endLine": 263,
+        "endChar": 93
+      },
+      "revId": "3723d8928c2d970c38db11081a450f849bc1f0e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
