@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c872422_87eeae8e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-05T02:21:35Z",
+      "side": 1,
+      "message": "/data/bootanim was changed to /boot/misc/bootanim by Lee with aosp/2676056.\n\nWas /data/misc being already encrypted considered then?",
+      "revId": "867f0ada9a7d9f1b381063b32c040327e5598f86",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
