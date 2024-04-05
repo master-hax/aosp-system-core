@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b39a1c93_c1325480",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-04-05T14:06:51Z",
+      "side": 1,
+      "message": "why 5? Who are the expected readers of these files?",
+      "range": {
+        "startLine": 651,
+        "startChar": 46,
+        "endLine": 651,
+        "endChar": 47
+      },
+      "revId": "25e882725ef50a8c060d82be199203e31a8fac9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
