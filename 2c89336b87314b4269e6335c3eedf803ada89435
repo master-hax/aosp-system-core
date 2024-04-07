@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3fa37c7c_15f71b33",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2024-04-07T07:06:46Z",
+      "side": 1,
+      "message": "here is what happaned:\ni add a log in is_permissive_mte():\n \u003easync_safe_format_log(ANDROID_LOG_INFO, \"libc\", \"looking for property: %s\", \nprocess_sysprop_name);\n \u003easync_safe_format_log(ANDROID_LOG_INFO, \"libc\", \"is_permissive_mte use getprogname at %p\\n\", getprogname);\n\nmeanwhile, app \"com.sample.nativetest\" has code:\n\n \u003esprintf(tmp, \"app use getprogname at %p\\n\", getprogname);\n \u003ereturn std::string(getprogname()) + std::string(tmp);\n    \nthen i set properties:\n\n \u003esetprop persist.device_config.memory_safety_native.permissive.process.com.sample.nativetest true\n \u003esetprop persist.sys.mte.permissive false\n\nrun app , fire a mte error, app crashed. get log:\n\n\u003e2024-03-24 22:18:37.140  8609-8609  libc                    pid-8609                             I  looking for property: persist.device_config.memory_safety_native.permissive.process.(null)\n\u003e2024-03-24 22:18:37.140  8609-8609  libc                    pid-8609                   I is_permissive_mte use getprogname at 0x71e8dd8b30\n\u003e2024-03-24 22:18:37.140  8609-8609  com.sample.nativetest                    pid-8609 I com.sample.nativetest app use getprogname at 0x71e3de7400\n\napperently, is_permissive_mte doesn\u0027t get the right progname and permissive mode not work. libdebuggerd_handler and app use different getprogname().\n\ni guess the problem is:\nlibdebuggerd_handler_core is staticly linked to linker64, it uses a staticly linked getprogname(). But app dynamicly links getprogname() which can get the right value set by setprogname().",
+      "parentUuid": "a0acad33_6a4a3456",
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "308b4658_3d22039e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -37,6 +55,47 @@
         "endLine": 11,
         "endChar": 35
       },
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0564d68_97d3c89a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2024-04-07T07:06:46Z",
+      "side": 1,
+      "message": "no, not the linker itself. see #9 reply.",
+      "parentUuid": "308b4658_3d22039e",
+      "range": {
+        "startLine": 11,
+        "startChar": 27,
+        "endLine": 11,
+        "endChar": 35
+      },
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5799aea0_c1de1642",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2067490
+      },
+      "writtenOn": "2024-04-07T07:06:46Z",
+      "side": 1,
+      "message": "thank you for your comments.",
       "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
