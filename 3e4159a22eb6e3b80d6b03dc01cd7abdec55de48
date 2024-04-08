@@ -67,6 +67,24 @@
       "message": "should probably start \"firmware: \" like the other messages from this subsystem?",
       "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "809c2175_646a5104",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1081223
+      },
+      "writtenOn": "2024-04-08T15:23:03Z",
+      "side": 1,
+      "message": "in HandleUevent it doesn\u0027t use it... I used that as example, shall I change it?",
+      "parentUuid": "506fe009_7fba9a9c",
+      "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
