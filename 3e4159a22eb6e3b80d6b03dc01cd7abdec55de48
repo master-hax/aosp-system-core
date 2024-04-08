@@ -33,6 +33,23 @@
       "message": "FYI. This can be submitted after at least one another review gives +2.",
       "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e8f51dc_ea4369dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1975910
+      },
+      "writtenOn": "2024-04-08T15:09:47Z",
+      "side": 1,
+      "message": "friendly ping, trying to avoid loosing presubmit... :)",
+      "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
