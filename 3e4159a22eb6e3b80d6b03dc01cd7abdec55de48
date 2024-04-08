@@ -85,6 +85,24 @@
       "parentUuid": "506fe009_7fba9a9c",
       "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f42bc012_9ac656b3",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-08T15:39:16Z",
+      "side": 1,
+      "message": "eh, i\u0027ll defer to dvander in that case --- it\u0027s certainly always more important to have detail like that in _error_ messages, and they\u0027re all fine. i don\u0027t have such a strong opinion about \"progress\" messages, and i\u0027ve never needed to debug an issue here personally...",
+      "parentUuid": "809c2175_646a5104",
+      "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
