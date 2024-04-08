@@ -50,6 +50,24 @@
       "message": "and we probably need to add arm64 here as well (not sure if we want to add support for arm32?)",
       "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7266be3a_a63a996c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-08T21:39:28Z",
+      "side": 1,
+      "message": "I don\u0027t think there is any practical need to support arm32 here.",
+      "parentUuid": "f137042f_6f240b56",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
