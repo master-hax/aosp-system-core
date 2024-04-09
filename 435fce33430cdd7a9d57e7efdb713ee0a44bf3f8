@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68837e66_df3ebe9c",
+        "filename": "init/service.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-09T21:50:46Z",
+      "side": 1,
+      "message": "Possibly this should be inside the !GetBoolProperty if statement.\n\nI guess running this logic doesn\u0027t hurt exactly if that flag is true, but it looks like we wouldn\u0027t do any actual rebooting in that case?",
+      "revId": "435fce33430cdd7a9d57e7efdb713ee0a44bf3f8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
