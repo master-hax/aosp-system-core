@@ -355,27 +355,37 @@ void Service::Reap(const siginfo_t& siginfo) {
     // If we crash > 4 times in 'fatal_crash_window_' minutes or before boot_completed,
     // reboot into bootloader or set crashing property
     boot_clock::time_point now = boot_clock::now();
+    std::string rebooted_after_crash = "persist.init.crashrecovery.rebooted_after_crash";
+    uint64_t throttle_window =
+            std::chrono::duration_cast<std::chrono::seconds>(std::chrono::hours(24)).count();
     if (((flags_ & SVC_CRITICAL) || is_process_updatable) && !(flags_ & SVC_RESTART) &&
         !was_last_exit_ok_) {
         bool boot_completed = GetBoolProperty("sys.boot_completed", false);
         if (now < time_crashed_ + fatal_crash_window_ || !boot_completed) {
             if (++crash_count_ > 4) {
-                auto exit_reason = boot_completed ?
-                    "in " + std::to_string(fatal_crash_window_.count()) + " minutes" :
-                    "before boot completed";
-                if (flags_ & SVC_CRITICAL) {
-                    if (!GetBoolProperty("init.svc_debug.no_fatal." + name_, false)) {
-                        // Aborts into `fatal_reboot_target_'.
-                        SetFatalRebootTarget(fatal_reboot_target_);
-                        LOG(FATAL) << "critical process '" << name_ << "' exited 4 times "
-                                   << exit_reason;
+                uint64_t epochTime = std::chrono::duration_cast<std::chrono::seconds>(
+                                             std::chrono::system_clock::now().time_since_epoch())
+                                             .count();
+                if (epochTime - GetIntProperty(rebooted_after_crash, 0) > throttle_window) {
+                    SetProperty(rebooted_after_crash, std::to_string(epochTime));
+                    auto exit_reason =
+                            boot_completed ? "in " + std::to_string(fatal_crash_window_.count()) +
+                                                     " minutes"
+                                           : "before boot completed";
+                    if (flags_ & SVC_CRITICAL) {
+                        if (!GetBoolProperty("init.svc_debug.no_fatal." + name_, false)) {
+                            // Aborts into `fatal_reboot_target_'.
+                            SetFatalRebootTarget(fatal_reboot_target_);
+                            LOG(FATAL) << "critical process '" << name_ << "' exited 4 times "
+                                       << exit_reason;
+                        }
+                    } else {
+                        LOG(ERROR) << "process with updatable components '" << name_
+                                   << "' exited 4 times " << exit_reason;
+                        // Notifies update_verifier and apexd
+                        SetProperty("sys.init.updatable_crashing_process_name", name_);
+                        SetProperty("sys.init.updatable_crashing", "1");
                     }
-                } else {
-                    LOG(ERROR) << "process with updatable components '" << name_
-                               << "' exited 4 times " << exit_reason;
-                    // Notifies update_verifier and apexd
-                    SetProperty("sys.init.updatable_crashing_process_name", name_);
-                    SetProperty("sys.init.updatable_crashing", "1");
                 }
             }
         } else {
