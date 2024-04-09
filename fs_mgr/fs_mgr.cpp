@@ -373,6 +373,12 @@ static void tune_quota(const std::string& blk_device, const FstabEntry& entry,
     bool want_quota = entry.fs_mgr_flags.quota;
     // Enable projid support by default
     bool want_projid = true;
+    // using prop to disable projid for device lunch before R
+    if (android::base::GetIntProperty("ro.product.first_api_level", -1) <
+        __ANDROID_API_R__) {
+      want_projid = android::base::GetBoolProperty(
+          "external_storage.projid.enabled", true);
+    }
     if (has_quota == want_quota) {
         return;
     }
