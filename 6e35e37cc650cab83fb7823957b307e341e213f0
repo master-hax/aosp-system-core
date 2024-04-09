@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec7a1ab4_2907310a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-09T23:27:11Z",
+      "side": 1,
+      "message": "Why is that a problem? In my understanding, the main idea was that package watchdog gets the first chance to mitigate the issue, and then falls back to other means which I think includes fs checkpoint rollback.",
+      "range": {
+        "startLine": 9,
+        "startChar": 54,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33a33e0e_0a02a550",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-09T23:27:11Z",
+      "side": 1,
+      "message": "we don\u0027t have to construct a string in the heap.\n\n`constexpr const char native_watchdog_reboot_time[] \u003d \"...\";`",
+      "range": {
+        "startLine": 358,
+        "startChar": 4,
+        "endLine": 358,
+        "endChar": 43
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "009cbd4b_3b3be178",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-09T23:27:11Z",
+      "side": 1,
+      "message": "nit: style. `epoch_time`",
+      "range": {
+        "startLine": 373,
+        "startChar": 33,
+        "endLine": 373,
+        "endChar": 42
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36434d8a_c6a4e6ca",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-09T23:27:11Z",
+      "side": 1,
+      "message": "It\u0027s a pity that we have GetIntProperty but not SetIntProperty. :(",
+      "range": {
+        "startLine": 380,
+        "startChar": 28,
+        "endLine": 380,
+        "endChar": 39
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45bdb2e0_239e1c74",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-09T23:27:11Z",
+      "side": 1,
+      "message": "For debugging, you may want to leave some logs for the `else` case as well.",
+      "range": {
+        "startLine": 385,
+        "startChar": 24,
+        "endLine": 385,
+        "endChar": 25
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
