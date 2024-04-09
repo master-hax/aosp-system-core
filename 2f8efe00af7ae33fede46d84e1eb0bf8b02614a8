@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7010728f_8ee13323",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-04-09T06:01:41Z",
+      "side": 1,
+      "message": "nit: update the comment?",
+      "range": {
+        "startLine": 226,
+        "startChar": 49,
+        "endLine": 226,
+        "endChar": 61
+      },
+      "revId": "2f8efe00af7ae33fede46d84e1eb0bf8b02614a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2a34172_9cfb89f9",
+        "filename": "init/persistent_properties.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-04-09T06:01:41Z",
+      "side": 1,
+      "message": "nit: remove?",
+      "range": {
+        "startLine": 242,
+        "startChar": 8,
+        "endLine": 242,
+        "endChar": 27
+      },
+      "revId": "2f8efe00af7ae33fede46d84e1eb0bf8b02614a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5daed2c_86cb81fb",
+        "filename": "init/persistent_properties_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-04-09T06:01:41Z",
+      "side": 1,
+      "message": "LGTM. The only concern is that we do not \"write\" when it\u0027s no-op as this test code reveals, which is a slight behavioral change. But I highly doubt that anything relies on it.",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 183,
+        "endChar": 34
+      },
+      "revId": "2f8efe00af7ae33fede46d84e1eb0bf8b02614a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
