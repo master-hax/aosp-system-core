@@ -51,6 +51,24 @@
       "parentUuid": "c6456898_80cb5d77",
       "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f272d7b1_1eaabafc",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-04-09T17:21:49Z",
+      "side": 1,
+      "message": "See the comment on aosp/2826453:\n\n```\n$ adb shell ls -l /dev/trusty-ipc-dev0\ncrw-rw---- 1 system drmrpc 501,   0 2024-01-10 16:49 /dev/trusty-ipc-dev0\n```",
+      "parentUuid": "23fb0ac9_0746ce66",
+      "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
