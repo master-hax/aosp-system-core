@@ -33,6 +33,24 @@
       "message": "Is the change to user/group needed?\n\n(ISTR from aosp/2826453 that system didn\u0027t work for me)",
       "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23fb0ac9_0746ce66",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1897307
+      },
+      "writtenOn": "2024-04-09T17:12:56Z",
+      "side": 1,
+      "message": "\u003e change to user/group needed\n\nI haven\u0027t tested it but I don\u0027t understand why the group is `drmrpc`? Sk has nothing much to do with DRM?",
+      "parentUuid": "c6456898_80cb5d77",
+      "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
