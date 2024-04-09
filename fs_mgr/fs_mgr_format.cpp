@@ -180,6 +180,11 @@ int fs_mgr_do_format(const FstabEntry& entry) {
 
     if (entry.mount_point == "/data") {
         needs_casefold = android::base::GetBoolProperty("external_storage.casefold.enabled", false);
+        if (android::base::GetIntProperty("ro.product.first_api_level", -1) <
+            __ANDROID_API_R__) {
+          needs_projid = android::base::GetBoolProperty(
+              "external_storage.projid.enabled", true);
+        }
     }
 
     if (entry.fs_type == "f2fs") {
