@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b76eb44c_3a696e5f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1060436
+      },
+      "writtenOn": "2024-04-10T14:26:01Z",
+      "side": 1,
+      "message": "My main concern with the change we made earlier is that after an OTA / Mainline update that breaks a critical service, this watchdog wouldn\u0027t kick in early, and the device would actually make it to a successful boot but be broken... at which point the filesystem based rollback would be erased I believe.\n\nBy allowing one reboot early, we allow the filesystem rollback to be applied; if there isn\u0027t one, the throttling here will ensure that next reboot PackageWatchdog gets a chance to run.",
+      "parentUuid": "c9c3345e_cdd67600",
+      "range": {
+        "startLine": 9,
+        "startChar": 54,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "33a33e0e_0a02a550",
         "filename": "init/service.cpp",
         "patchSetId": 6
