@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "95ab8fc3_681c1a31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1076798
+      },
+      "writtenOn": "2024-04-10T22:51:02Z",
+      "side": 1,
+      "message": "IIRC, the bug is that this happens when we\u0027re not the controlling process",
+      "revId": "73f12aefe26e86fd64f8924c583759974d3f5d30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
