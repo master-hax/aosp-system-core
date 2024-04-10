@@ -46,6 +46,30 @@
       },
       "revId": "393d5c407879d3fa0e87368c3857be4a0c283ee1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46ac449a_908d2267",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-10T17:53:43Z",
+      "side": 1,
+      "message": "(defer to jeffv for whether/why we need different directories for aconfigd/system_server --- it\u0027s all just root:system here, but maybe selinux cares?)",
+      "parentUuid": "1ae05c15_8e791981",
+      "range": {
+        "startLine": 652,
+        "startChar": 40,
+        "endLine": 652,
+        "endChar": 42
+      },
+      "revId": "393d5c407879d3fa0e87368c3857be4a0c283ee1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
