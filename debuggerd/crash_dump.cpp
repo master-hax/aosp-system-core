@@ -407,10 +407,12 @@ int main(int argc, char** argv) {
   DefuseSignalHandlers();
   InstallSigPipeHandler();
 
-  // There appears to be a bug in the kernel where our death causes SIGHUP to
-  // be sent to our process group if we exit while it has stopped jobs (e.g.
-  // because of wait_for_debugger). Use setsid to create a new process group to
-  // avoid hitting this.
+  // If debuggerd exits with stopped jobs then SIGHUP is sent to our process group. This behavior is
+  // required by the POSIX standard. From the _Exit man page: "If the process is a controlling
+  // process, the SIGHUP signal shall be sent to each process in the foreground process group of the
+  // controlling terminal belonging to the calling process." Source:
+  // https://pubs.opengroup.org/onlinepubs/9699919799/functions/_Exit.html#tag_16_01. Use setsid to
+  // create a new process group to avoid hitting this.
   setsid();
 
   atrace_begin(ATRACE_TAG, "before reparent");
