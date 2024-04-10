@@ -16,6 +16,57 @@
       "message": "PS#10 looks OK. The bugs in the previous versions appear to have been fixed. This is a relatively large change though, so I would prefer a second review preferable by @cranes@google.com who is already familiar with this code base.",
       "revId": "bcc44e028a1f928949126a7f2cabb95e9f9109dc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19651700_f4c99814",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2024-04-10T23:52:22Z",
+      "side": 1,
+      "message": "Do you ever set any fd state to `SS_CLEAN_NEED_SYMLINK`? I can\u0027t find where that happens.",
+      "revId": "bcc44e028a1f928949126a7f2cabb95e9f9109dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f76996d9_cc14fed7",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2024-04-10T23:52:22Z",
+      "side": 1,
+      "message": "nit: I would expect `\u003cfile\u003e:\u003cmapping\u003e` but that\u0027s a tiny thing.",
+      "revId": "bcc44e028a1f928949126a7f2cabb95e9f9109dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a4aa194_54939bf5",
+        "filename": "trusty/storage/proxy/proxy.c",
+        "patchSetId": 10
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1809421
+      },
+      "writtenOn": "2024-04-10T23:52:22Z",
+      "side": 1,
+      "message": "Could we put the documentation from the commit message here as well? We\u0027re adding non-obvious and easily mistaken args.",
+      "revId": "bcc44e028a1f928949126a7f2cabb95e9f9109dc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
