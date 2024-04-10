@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c9c3345e_cdd67600",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-10T14:00:06Z",
+      "side": 1,
+      "message": "We dont mind fs checkpoint rollback being performed before RescueParty. Our concern was that none of RescueParty mitigations were executed at all. This way fs checkpoint rollback behaves the same way as before and ramdump is taken as well but only once in 24hrs. RescueParty can takeover if the issue still exists.\n\nBut we are open to consider either. Which do you think is a better way in this scenario?",
+      "parentUuid": "ec7a1ab4_2907310a",
+      "range": {
+        "startLine": 9,
+        "startChar": 54,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "33a33e0e_0a02a550",
         "filename": "init/service.cpp",
         "patchSetId": 6
@@ -37,6 +61,30 @@
       "writtenOn": "2024-04-09T23:27:11Z",
       "side": 1,
       "message": "we don\u0027t have to construct a string in the heap.\n\n`constexpr const char native_watchdog_reboot_time[] \u003d \"...\";`",
+      "range": {
+        "startLine": 358,
+        "startChar": 4,
+        "endLine": 358,
+        "endChar": 43
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0eb187e0_01bbfc75",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-10T14:00:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33a33e0e_0a02a550",
       "range": {
         "startLine": 358,
         "startChar": 4,
@@ -60,6 +108,30 @@
       "writtenOn": "2024-04-09T23:27:11Z",
       "side": 1,
       "message": "nit: style. `epoch_time`",
+      "range": {
+        "startLine": 373,
+        "startChar": 33,
+        "endLine": 373,
+        "endChar": 42
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4799a18a_b98a4358",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-10T14:00:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "009cbd4b_3b3be178",
       "range": {
         "startLine": 373,
         "startChar": 33,
@@ -106,6 +178,30 @@
       "writtenOn": "2024-04-09T23:27:11Z",
       "side": 1,
       "message": "For debugging, you may want to leave some logs for the `else` case as well.",
+      "range": {
+        "startLine": 385,
+        "startChar": 24,
+        "endLine": 385,
+        "endChar": 25
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb9c0256_19ece7c6",
+        "filename": "init/service.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 1977615
+      },
+      "writtenOn": "2024-04-10T14:00:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45bdb2e0_239e1c74",
       "range": {
         "startLine": 385,
         "startChar": 24,
