@@ -46,6 +46,30 @@
       },
       "revId": "25e882725ef50a8c060d82be199203e31a8fac9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b424a443_415a631c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-04-10T21:14:48Z",
+      "side": 1,
+      "message": "For the read permission, that makes sense. I\u0027ve also filed b/333768798 here, as there may be another issue, and I\u0027m not sure if Jeff is getting after that.",
+      "parentUuid": "b0071cd1_1fc38ee4",
+      "range": {
+        "startLine": 651,
+        "startChar": 46,
+        "endLine": 651,
+        "endChar": 47
+      },
+      "revId": "25e882725ef50a8c060d82be199203e31a8fac9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
