@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1be206c7_555cb8dc",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 1794338
+      },
+      "writtenOn": "2024-04-11T11:26:17Z",
+      "side": 1,
+      "message": "Yes,T skips for android TV.",
+      "parentUuid": "d7d961c6_02a2c84a",
+      "range": {
+        "startLine": 377,
+        "startChar": 0,
+        "endLine": 378,
+        "endChar": 28
+      },
+      "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ff40b616_2a101349",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 1
@@ -54,6 +78,30 @@
       "writtenOn": "2024-04-11T09:31:38Z",
       "side": 1,
       "message": "I am a bit uncomfortable with this change, because this would change the behavior for devices that did not specify this property in their device build. Eg in theory,  a device could exist that launched with Q, then updated to T and removed the property (because it was enabled by default since T), and now suddenly it will be disabled again.\n\nTo make this safer, can we change the default of GetBoolProperty to true, and then have sabrina manually set it to false?",
+      "range": {
+        "startLine": 380,
+        "startChar": 28,
+        "endLine": 380,
+        "endChar": 34
+      },
+      "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9020e2d4_6c6df5df",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1794338
+      },
+      "writtenOn": "2024-04-11T11:26:17Z",
+      "side": 1,
+      "message": "done.\nPlease also review CL: https://partner-android-review.googlesource.com/c/device/google/sabrina/+/2792547",
+      "parentUuid": "ff40b616_2a101349",
       "range": {
         "startLine": 380,
         "startChar": 28,
