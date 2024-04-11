@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "792ef987_07f351ea",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-11T02:13:54Z",
+      "side": 1,
+      "message": "Ok. So, you want to minimize the impact of this change, and it was not your intention to implement the suggested relationship between package watchdog init at least in this CL. Got it.",
+      "parentUuid": "b76eb44c_3a696e5f",
+      "range": {
+        "startLine": 9,
+        "startChar": 54,
+        "endLine": 10,
+        "endChar": 30
+      },
+      "revId": "6e35e37cc650cab83fb7823957b307e341e213f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "33a33e0e_0a02a550",
