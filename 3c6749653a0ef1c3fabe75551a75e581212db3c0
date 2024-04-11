@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8bdeb64_51a852cb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1794338
+      },
+      "writtenOn": "2024-04-11T13:02:40Z",
+      "side": 1,
+      "message": "please check topic: https://android-review.googlesource.com/q/topic:%22bug_332244767%22\nShould recovery factory reset also needs to add this function?",
+      "parentUuid": "f96e27da_e7d672a2",
+      "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d7d961c6_02a2c84a",
