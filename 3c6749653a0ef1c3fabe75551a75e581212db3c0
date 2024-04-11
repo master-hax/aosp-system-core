@@ -110,6 +110,30 @@
       },
       "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51074fd3_9aa54447",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2024-04-11T11:55:43Z",
+      "side": 1,
+      "message": "Sorry, could you only allow the property to override if the first_api_level before R, like in your original change?\n\nSo launch before R, prop can override (but default true), launch after R, unconditionally true.",
+      "parentUuid": "9020e2d4_6c6df5df",
+      "range": {
+        "startLine": 380,
+        "startChar": 28,
+        "endLine": 380,
+        "endChar": 34
+      },
+      "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
