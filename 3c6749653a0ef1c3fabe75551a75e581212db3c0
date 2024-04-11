@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f96e27da_e7d672a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1013030
+      },
+      "writtenOn": "2024-04-11T12:03:03Z",
+      "side": 1,
+      "message": "By the way @yidong.zhang@amlogic.com, you might want to address this one, too.",
+      "parentUuid": "f9d2fb6b_48059fa0",
+      "revId": "3c6749653a0ef1c3fabe75551a75e581212db3c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d7d961c6_02a2c84a",
