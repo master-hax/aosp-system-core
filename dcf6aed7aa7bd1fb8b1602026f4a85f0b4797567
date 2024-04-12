@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b91e3962_40905cc1",
+        "filename": "trusty/gatekeeper/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "We do still need libgatekeeper as we need the message types to construct messages in trusty_gatekeeper.cpp. However I was able to tear out some other unused code.",
+      "parentUuid": "a459ca3a_4549951c",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a2f87ada_ea53e50c",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-04-04T17:07:14Z",
       "side": 1,
       "message": "Is the existing `android.hardware.gatekeeper-V1-ndk` dependency not enough?  AIUI the `-cpp` targets aren\u0027t stable for vendor\u003c-\u003esystem communication.",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7786c73a_f6da80d3",
+        "filename": "trusty/gatekeeper/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "@ahomescu@google.com I think you had some ideas here?",
+      "parentUuid": "a2f87ada_ea53e50c",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -82,6 +118,24 @@
       "writtenOn": "2024-04-04T17:07:14Z",
       "side": 1,
       "message": "Are these `using` statements still needed?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85fecae3_ff38bf54",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0294f8fe_a7df8bbe",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -126,6 +180,48 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "26e51c43_c6581deb",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d39942ce_8327da70",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34b5f9ba_a46e9593",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "I changed it to gatekeeper_rust instead.",
+      "parentUuid": "39c024c3_6137c013",
+      "range": {
+        "startLine": 42,
+        "startChar": 56,
+        "endLine": 42,
+        "endChar": 59
+      },
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2eb6297d_53670364",
@@ -143,6 +239,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5efb92eb_043ad575",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2eb6297d_53670364",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "42db5521_bd98a252",
@@ -156,6 +270,24 @@
       "writtenOn": "2024-04-04T17:07:14Z",
       "side": 1,
       "message": "Is this still required?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae5a571e_0a443824",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "The destructor must be present but I think it can be empty.",
+      "parentUuid": "42db5521_bd98a252",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -195,6 +327,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b053288_a29bb0d0",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Like Andre said, we have to do this manually because of the different types. Same on the Gatekeeper side in Rust.",
+      "parentUuid": "0da67b12_2259bab1",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b0a7a2e_161bf60f",
@@ -208,6 +358,24 @@
       "writtenOn": "2024-04-04T17:07:14Z",
       "side": 1,
       "message": "Are all these `using` statements still needed?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3919c1aa_8158535a",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b0a7a2e_161bf60f",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -229,6 +397,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dfbcf241_133f603e",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d97733d_c5d89cce",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1779768e_718a2018",
@@ -246,6 +432,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd920b06_eda9c09e",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1779768e_718a2018",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c1400072_254e7e63",
@@ -259,6 +463,24 @@
       "writtenOn": "2024-04-04T17:07:14Z",
       "side": 1,
       "message": "Are all these private methods still needed?",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "719faec7_5031a3b9",
+        "filename": "trusty/gatekeeper/trusty_gatekeeper.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 2059246
+      },
+      "writtenOn": "2024-04-12T05:44:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1400072_254e7e63",
       "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
