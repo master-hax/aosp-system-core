@@ -70,6 +70,30 @@
       },
       "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71390855_aa08e00d",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2024-04-12T05:28:12Z",
+      "side": 1,
+      "message": "Right now the ABI tool does not check the annotations.\nI made a few CLs aosp/3003679 for experiment but didn\u0027t submit them.",
+      "parentUuid": "c615fa7c_db3d9892",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
