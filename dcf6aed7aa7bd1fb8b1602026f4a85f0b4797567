@@ -90,6 +90,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9d050bdc_aefcba90",
+        "filename": "trusty/gatekeeper/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-04-12T06:34:01Z",
+      "side": 1,
+      "message": "We need the `-cpp` ones for vendor-Trusty (specifically the `-cpp.vendor` ones), not for vendor-system (still `-ndk` there).",
+      "parentUuid": "7786c73a_f6da80d3",
+      "revId": "dcf6aed7aa7bd1fb8b1602026f4a85f0b4797567",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "487e048c_1c9521fa",
         "filename": "trusty/gatekeeper/trusty_gatekeeper.cpp",
         "patchSetId": 1
