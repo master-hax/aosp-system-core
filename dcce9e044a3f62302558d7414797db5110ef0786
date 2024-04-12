@@ -22,6 +22,30 @@
       },
       "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff006e21_e80176a6",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1130827
+      },
+      "writtenOn": "2024-04-12T05:11:42Z",
+      "side": 1,
+      "message": "Append it to function declarations in headers like\n\nvoid api() __INTRODUCED_IN_LLNDK(202404) ;\n\nThe ABI tool gets the version information from either the version scripts or this macro. The two methods do not make much difference. If you want to abandon enable_if, you may also remove this macro.",
+      "parentUuid": "d36ded20_dae85168",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
