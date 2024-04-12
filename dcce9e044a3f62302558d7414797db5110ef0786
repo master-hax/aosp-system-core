@@ -46,6 +46,30 @@
       },
       "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c615fa7c_db3d9892",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-04-12T05:24:24Z",
+      "side": 1,
+      "message": "We may not use `enable_if` here because of b/333973388. Now the only purpose of this macro is to annotate the symbol with the version for ABI dump and readability.\nIf the abi dump already checks this annotation to be the same with the map.txt file, I think it is better to keep this annotation for the readability.\n\nWe need to update the details to SAC.",
+      "parentUuid": "ff006e21_e80176a6",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
