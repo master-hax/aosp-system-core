@@ -94,6 +94,30 @@
       },
       "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80703b01_b2fe23d2",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-04-12T05:45:56Z",
+      "side": 1,
+      "message": "Can the tool detect the symbol mismatch between the header files and map.txt files on build? Or should we run the tool outside of build?\nIf we cannot guarantee the symbol versioning of the headers and map.txt files are the same, I agree it would be better to remove the `__INTRODUCED_IN_LLNDK` annotation in header files.",
+      "parentUuid": "71390855_aa08e00d",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
