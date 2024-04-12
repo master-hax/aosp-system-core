@@ -125,7 +125,7 @@ cc_defaults {
         "libfiemap_headers",
     ],
     target: {
-        platform: {
+        android: {
             required: [
                 "e2freefrag",
                 "e2fsdroid",

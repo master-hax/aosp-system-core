@@ -277,7 +277,7 @@ cc_defaults {
     srcs: ["main.cpp"],
     symlinks: ["ueventd"],
     target: {
-        platform: {
+        android: {
             required: [
                 "init.rc",
                 "ueventd.rc",
