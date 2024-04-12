@@ -118,6 +118,30 @@
       },
       "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "699ef0aa_de5449f6",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-04-12T06:20:37Z",
+      "side": 1,
+      "message": "Let\u0027s discuss this in b/333973388 to submit the fix first.",
+      "parentUuid": "80703b01_b2fe23d2",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 12
+      },
+      "revId": "dcce9e044a3f62302558d7414797db5110ef0786",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
