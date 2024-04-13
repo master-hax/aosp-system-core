@@ -34,6 +34,24 @@
       "parentUuid": "a686b2c4_6eced30b",
       "revId": "789b4415faf5cba0fdd1ac17f3a3181f1b1481a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c95798a1_bd004369",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-13T01:43:40Z",
+      "side": 1,
+      "message": "oh, I missed that RequiredModuleNames() is a part of the Module interface. Thanks. I will fix addRequiredDeps accordingly.",
+      "parentUuid": "ed4d21e7_3b90c446",
+      "revId": "789b4415faf5cba0fdd1ac17f3a3181f1b1481a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
