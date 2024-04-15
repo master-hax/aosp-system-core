@@ -34,7 +34,46 @@ or first added something to toybox.)
 
 Also note that in any given release `toybox` probably contains more
 commands than there are symlinks for in `/system/bin`. You can get the
-full list for a release by running `toybox` directly.
+full list for any given release by running `toybox` directly.
+
+
+## Android 15 ("V")
+
+BSD: fsck\_msdos newfs\_msdos
+
+bzip2: bzcat bzip2 bunzip2
+
+gavinhoward/bc: bc
+
+one-true-awk: awk
+
+toolbox: getevent getprop setprop start stop
+
+toybox ([0.8.11](https://landley.net/toybox/news.html#08-04-2024)-ish):
+[ acpi base64 basename blkdiscard blkid blockdev brctl cal cat chattr
+chcon chgrp chmod chown chroot chrt cksum clear cmp comm cp cpio cut
+date dd devmem df diff dirname dmesg dos2unix du echo egrep env expand
+expr fallocate false fgrep file find flock fmt free freeramdisk fsfreeze
+fsync getconf getenforce **getfattr** getopt **gpiodetect** **gpiofind**
+**gpioget** **gpioinfo** **gpioset** grep groups gunzip gzip head help hostname
+hwclock i2cdetect i2cdump i2cget i2cset **i2ctransfer** iconv id ifconfig
+inotifyd insmod install ionice iorenice iotop kill killall ln load\_policy
+log logger logname losetup ls lsattr lsmod lsof lspci lsusb makedevs
+md5sum **memeater** microcom mkdir mkfifo mknod mkswap mktemp modinfo modprobe
+more mount mountpoint mv nbd-client nc netcat netstat nice nl nohup
+nproc nsenter od partprobe paste patch pgrep pidof ping ping6 pivot\_root
+pkill pmap printenv printf prlimit ps pwd pwdx readelf readlink realpath
+renice restorecon rev rfkill rm rmdir rmmod rtcwake runcon sed sendevent
+seq setenforce **setfattr** setsid sha1sum sha224sum sha256sum sha384sum
+sha512sum sleep sort split stat strings stty swapoff swapon sync sysctl
+tac tail tar taskset tee test time timeout top touch tr traceroute
+traceroute6 true truncate tty tunctl uclampset ulimit umount uname
+uniq unix2dos unlink unshare uptime usleep uudecode uuencode uuidgen
+vconfig vi vmstat watch wc which whoami xargs xxd yes zcat
+
+Note: technically getfattr and setfattr were available in earlier versions,
+but the symlinks were missing until this release, so they were only available
+as `toybox getfattr` and `toybox setfattr` rather than directly.
 
 
 ## Android 14 ("U")
