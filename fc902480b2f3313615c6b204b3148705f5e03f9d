@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e72b5b96_6904e99b",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-04-16T04:07:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1cd34325_043ab95e",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "513bb101_b8e96fc0",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-04-16T03:41:05Z",
       "side": 1,
       "message": "```suggestion\n            let res \u003d socket::connect(s.as_raw_fd(), \u0026sa);\n```\nbecause nix changed the return type of `socket()` to `OwnedFd`.",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "846b4499_f1bd4401",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-04-16T04:07:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "513bb101_b8e96fc0",
       "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -66,6 +102,24 @@
       "side": 1,
       "message": "The `unsafe` might not be needed anymore.",
       "parentUuid": "2cbd45e6_0c760710",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d82fd422_8d15eda5",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-04-16T04:07:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83b7ace8_e3d7a468",
       "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
