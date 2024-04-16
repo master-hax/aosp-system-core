@@ -50,6 +50,24 @@
       "message": "```suggestion\n        let mut channel \u003d Self(unsafe { File::from(s) });\n```",
       "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83b7ace8_e3d7a468",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-04-16T03:44:56Z",
+      "side": 1,
+      "message": "The `unsafe` might not be needed anymore.",
+      "parentUuid": "2cbd45e6_0c760710",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
