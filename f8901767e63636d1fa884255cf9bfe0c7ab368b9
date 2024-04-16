@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c535e392_d01a7d92",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-16T20:08:00Z",
+      "side": 1,
+      "message": "`CgroupSetup() will complain about the absence of MGLRU support, so we will have double errors.` Actually this is not true. We get either this log or the one from `CgroupSetup`.",
+      "parentUuid": "efa3ea13_17637330",
+      "range": {
+        "startLine": 456,
+        "startChar": 8,
+        "endLine": 456,
+        "endChar": 71
+      },
+      "revId": "f8901767e63636d1fa884255cf9bfe0c7ab368b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4eec165_0fd4b085",
@@ -61,6 +85,30 @@
       "writtenOn": "2024-04-15T23:25:53Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 477,
+        "startChar": 8,
+        "endLine": 478,
+        "endChar": 18
+      },
+      "revId": "f8901767e63636d1fa884255cf9bfe0c7ab368b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "641f9169_611959d8",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-16T20:08:00Z",
+      "side": 1,
+      "message": "same as above",
+      "parentUuid": "f4eec165_0fd4b085",
       "range": {
         "startLine": 477,
         "startChar": 8,
