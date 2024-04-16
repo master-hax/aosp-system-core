@@ -69,6 +69,24 @@
       "parentUuid": "23fb0ac9_0746ce66",
       "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ee377d1_bc7844b8",
+        "filename": "trusty/secretkeeper/android.hardware.security.secretkeeper.trusty.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1060831
+      },
+      "writtenOn": "2024-04-16T11:07:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f272d7b1_1eaabafc",
+      "revId": "8c1a668526c651cee793520e910879d4ad08afaf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
