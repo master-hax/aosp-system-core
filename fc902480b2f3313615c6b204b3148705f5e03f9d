@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cd34325_043ab95e",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-04-16T03:41:05Z",
+      "side": 1,
+      "message": "Going to need `std::convert::From` here.",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "513bb101_b8e96fc0",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-04-16T03:41:05Z",
+      "side": 1,
+      "message": "```suggestion\n            let res \u003d socket::connect(s.as_raw_fd(), \u0026sa);\n```\nbecause nix changed the return type of `socket()` to `OwnedFd`.",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cbd45e6_0c760710",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 6
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1809582
+      },
+      "writtenOn": "2024-04-16T03:41:05Z",
+      "side": 1,
+      "message": "```suggestion\n        let mut channel \u003d Self(unsafe { File::from(s) });\n```",
+      "revId": "fc902480b2f3313615c6b204b3148705f5e03f9d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
