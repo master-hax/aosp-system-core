@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22ba545f_0b0e34a3",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1958854
+      },
+      "writtenOn": "2024-04-17T15:10:21Z",
+      "side": 1,
+      "message": "nit:\n\n```\ndescription: \"Targets the APIs of libutils\",\n...\n```",
+      "range": {
+        "startLine": 281,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 63
+      },
+      "revId": "541f850372064958bb956c5290216e5931fb5912",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
