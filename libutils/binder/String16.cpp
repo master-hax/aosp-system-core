@@ -344,6 +344,8 @@ void String16::release()
     }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
 bool String16::isStaticString() const {
     // See String16.h for notes on the memory layout of String16::StaticData and
     // SharedBuffer.
@@ -359,6 +361,7 @@ size_t String16::staticStringSize() const {
     const uint32_t* p = reinterpret_cast<const uint32_t*>(mString);
     return static_cast<size_t>(*(p - 1));
 }
+#pragma clang diagnostic pop
 
 status_t String16::replaceAll(char16_t replaceThis, char16_t withThis)
 {
