@@ -380,6 +380,8 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
     static_assert(sizeof(CrashInfoHeader) + sizeof(CrashInfoDataDynamic) ==
                       kHeaderSize + sizeof(thread_info->process_info),
                   "Wire protocol structs do not match the data sent.");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
 #define ASSERT_SAME_OFFSET(MEMBER1, MEMBER2) \
     static_assert(sizeof(CrashInfoHeader) + offsetof(CrashInfoDataDynamic, MEMBER1) == \
                       kHeaderSize + offsetof(debugger_process_info, MEMBER2), \
@@ -395,6 +397,7 @@ static int debuggerd_dispatch_pseudothread(void* arg) {
     ASSERT_SAME_OFFSET(recoverable_crash, recoverable_crash);
     ASSERT_SAME_OFFSET(crash_detail_page, crash_detail_page);
 #undef ASSERT_SAME_OFFSET
+#pragma clang diagnostic pop
 
     iovs[3] = {.iov_base = &thread_info->process_info,
                .iov_len = sizeof(thread_info->process_info)};
