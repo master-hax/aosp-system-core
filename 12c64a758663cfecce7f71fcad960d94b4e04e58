@@ -3,6 +3,29 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "8c706bdb_c1248e88",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2024-04-17T16:39:08Z",
+      "side": 1,
+      "message": "We should make it an error in the build system for two modules to be installed to the same place and silently override one another.",
+      "range": {
+        "startLine": 21,
+        "startChar": 29,
+        "endLine": 21,
+        "endChar": 51
+      },
+      "revId": "12c64a758663cfecce7f71fcad960d94b4e04e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "f20eacbe_eb5924f9",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
