@@ -16,6 +16,46 @@
       "message": "See https://android-build.corp.google.com/abtd/run/L93500030003248425/?referrer\u003demail",
       "revId": "12c64a758663cfecce7f71fcad960d94b4e04e58",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1faf27b3_9661ad39",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-04-17T07:32:08Z",
+      "side": 1,
+      "message": "The commit message is crystal clear!",
+      "revId": "12c64a758663cfecce7f71fcad960d94b4e04e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58cafc26_05c9666e",
+        "filename": "init/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-04-17T07:32:08Z",
+      "side": 1,
+      "message": "nit: how about moving this to init_second_stage out of defaults?",
+      "range": {
+        "startLine": 275,
+        "startChar": 4,
+        "endLine": 275,
+        "endChar": 29
+      },
+      "revId": "12c64a758663cfecce7f71fcad960d94b4e04e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
