@@ -101,3 +101,9 @@ prebuilt_etc {
     src: "init.usb.configfs.rc",
     sub_dir: "init/hw",
 }
+
+prebuilt_etc {
+    name: "hosts",
+    src: "etc/hosts",
+    filename: "hosts",
+}
