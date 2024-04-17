@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f20eacbe_eb5924f9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-17T07:01:02Z",
+      "side": 1,
+      "message": "See https://android-build.corp.google.com/abtd/run/L93500030003248425/?referrer\u003demail",
+      "revId": "12c64a758663cfecce7f71fcad960d94b4e04e58",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
