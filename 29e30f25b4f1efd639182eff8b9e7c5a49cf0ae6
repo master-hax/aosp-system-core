@@ -52,6 +52,24 @@
       "parentUuid": "dd6d0336_881fb151",
       "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8bb4bdf_2ee7e920",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-18T17:07:38Z",
+      "side": 1,
+      "message": "Just barely though: https://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/processgroup.cpp;l\u003d628-634;drc\u003dd1e048f95618b6fb7f66c81e1c650482d95cd452\n\nKeeping the `CHECK`s in `KillProcessGroup`, and adding `if`+`return`s to `killProcessGroup`/`killProcessGroupOnce` makes the `CHECK`s dead code since `KillProcessGroup` is only called from `kill*`.",
+      "parentUuid": "09c9e53f_825f374b",
+      "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
