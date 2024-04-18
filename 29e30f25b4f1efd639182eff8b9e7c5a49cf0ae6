@@ -16,6 +16,24 @@
       "message": "Hmm ... why this revert? Isn\u0027t the following CL sufficient: \"libprocessgroup: Check validity of uid and pid arguments for createProcessGroup\"?",
       "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd6d0336_881fb151",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-04-18T16:48:12Z",
+      "side": 1,
+      "message": "The CHECK_GT is where the SIGABRT is coming from: https://cs.android.com/android/platform/superproject/main/+/main:system/libbase/include/android-base/logging.h;drc\u003de4116cf722c8cfa54cab0a90af2e504aaa990a5b;l\u003d265",
+      "parentUuid": "5d73b340_ee0efb34",
+      "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
