@@ -34,6 +34,24 @@
       "parentUuid": "5d73b340_ee0efb34",
       "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09c9e53f_825f374b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2024-04-18T16:55:06Z",
+      "side": 1,
+      "message": "I agree that the CHECK_GT() / CHECK_GE() statements should be converted into if / return statements in createProgressGroup(). I think that these can be retained in KillProcessGroup() because it is an internal function.",
+      "parentUuid": "dd6d0336_881fb151",
+      "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
