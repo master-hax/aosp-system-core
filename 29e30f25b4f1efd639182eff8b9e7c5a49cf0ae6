@@ -70,6 +70,24 @@
       "parentUuid": "09c9e53f_825f374b",
       "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f85ee7a3_0f1f7ffe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2024-04-18T17:31:06Z",
+      "side": 1,
+      "message": "OK, let\u0027s proceed with the revert.",
+      "parentUuid": "d8bb4bdf_2ee7e920",
+      "revId": "29e30f25b4f1efd639182eff8b9e7c5a49cf0ae6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
