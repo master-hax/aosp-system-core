@@ -53,6 +53,7 @@ struct FstabEntry {
     off64_t erase_blk_size = 0;
     off64_t logical_blk_size = 0;
     std::string sysfs_path;
+    std::string userdata_exp;
     std::string vbmeta_partition;
     uint64_t zram_backingdev_size = 0;
     std::string avb_keys;

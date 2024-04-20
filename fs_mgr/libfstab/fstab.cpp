@@ -322,6 +322,12 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
                 LINFO << "Removed ATGC in fs_options as " << entry->fs_options
                       << " for zoned device=" << entry->zoned_device;
             }
+        } else if (StartsWith(flag, "userdata_exp=")) {
+            // Let's assume the single partition path
+            std::string path = "/dev/block/by-name/userdata_exp." + arg;
+            if (access(path.c_str(), F_OK) == 0) {
+                entry->userdata_exp = path;
+            }
         } else {
             LWARNING << "Warning: unknown flag: " << flag;
         }
