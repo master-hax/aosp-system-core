@@ -22,6 +22,30 @@
       },
       "revId": "63ef65c1389f005cff2fda18dd6bdc705c898916",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "13a82f58_fb0938b3",
+        "filename": "trusty/storage/proxy/storage.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 781,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-04-22T22:17:53Z",
+      "side": 0,
+      "message": "Correct - I made the same point, but Donnie pointed out that it has to be `uint64_t` because the constant at line 43 is too large:\n```\nstatic uint64_t max_file_size \u003d 0x10000000000;\n```",
+      "parentUuid": "a2d45b54_1048b6aa",
+      "range": {
+        "startLine": 781,
+        "startChar": 71,
+        "endLine": 781,
+        "endChar": 73
+      },
+      "revId": "63ef65c1389f005cff2fda18dd6bdc705c898916",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
