@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "549472ce_76b4af33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-04-22T20:41:30Z",
+      "side": 1,
+      "message": "Fix pending in aosp/3053402",
+      "revId": "15ad57527009b9d62e70f10d81d6e37182161757",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
