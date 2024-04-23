@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "10e2c4c8_9920e108",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-23T22:24:00Z",
+      "side": 1,
+      "message": "Gotcha, updated to void* so can keep the nullptr return case and will cast it later when called.",
+      "parentUuid": "b3fc6974_7e2463dd",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "65f2ad61_199a087b",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-04-02T16:47:42Z",
       "side": 1,
       "message": "```\nfs_base + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE*sizeof(unitptr_t)\n```\n\nin this case you can remove reinterpret case above.",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb21c6d3_7eb3bde8",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-23T22:24:00Z",
+      "side": 1,
+      "message": "Gotcha, changed as suggested.",
+      "parentUuid": "65f2ad61_199a087b",
       "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -66,6 +102,24 @@
       "side": 1,
       "message": "I don\u0027t think there is any practical need to support arm32 here.",
       "parentUuid": "f137042f_6f240b56",
+      "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f80970c_a033936f",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-23T22:24:00Z",
+      "side": 1,
+      "message": "Added and tested the arm64 case for getting TLS_SLOT_THREAD_ID info.",
+      "parentUuid": "7266be3a_a63a996c",
       "revId": "0ea38776bb0f3650dfde8f8fbfc14cb04a42a8d7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
