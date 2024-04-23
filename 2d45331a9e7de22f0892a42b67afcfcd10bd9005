@@ -34,6 +34,24 @@
       "parentUuid": "8486fdc9_84f007a7",
       "revId": "2d45331a9e7de22f0892a42b67afcfcd10bd9005",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7e2bd06_1092f5b1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-04-23T05:21:34Z",
+      "side": 1,
+      "message": "(Also, we have `g_target_thread` in crash_dump)",
+      "parentUuid": "ebf7c2c6_ef7c638c",
+      "revId": "2d45331a9e7de22f0892a42b67afcfcd10bd9005",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
