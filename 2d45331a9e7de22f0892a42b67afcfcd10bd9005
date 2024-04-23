@@ -16,6 +16,24 @@
       "message": "do we already use \"target\" elsewhere? (otherwise i wonder about \"crashing\". but \"target\" is definitely less confusing than \"main\"!)",
       "revId": "2d45331a9e7de22f0892a42b67afcfcd10bd9005",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebf7c2c6_ef7c638c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-04-23T04:56:47Z",
+      "side": 1,
+      "message": "We used `target_thread` for the tid of this thread, so I went with that.",
+      "parentUuid": "8486fdc9_84f007a7",
+      "revId": "2d45331a9e7de22f0892a42b67afcfcd10bd9005",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
