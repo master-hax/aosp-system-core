@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "49ae7fe7_8d2909de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-04-24T19:27:34Z",
+      "side": 1,
+      "message": "Yes, eventually. The idea is that the replacement for current stack-based workflows will be to use acrash to collect proto tombstones from the device during local development, and app-specific code to collect proto tombstones from the field. In both cases, this tool would be used to symbolize the tombstones.",
+      "parentUuid": "f5e3c2dd_2c57c0c6",
+      "revId": "9e1d47b7a5fa0f7cb5bada8c5b280e8a6d267ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "b018668b_522bcacb",
