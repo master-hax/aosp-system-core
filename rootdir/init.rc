@@ -886,6 +886,9 @@ on post-fs-data
     mkdir /data/local/tests/unrestricted 0701 shell shell
     mkdir /data/local/tests/vendor 0701 shell shell
 
+    # Create directory for app metadata files
+    mkdir /data/app-metadata 0770 system system encryption=Require
+
     # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 root root encryption=Require
     # create the A/B OTA directory, so as to enforce our permissions
