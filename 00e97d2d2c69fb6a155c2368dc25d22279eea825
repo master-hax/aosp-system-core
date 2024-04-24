@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d686980_3175bcb4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-24T08:14:49Z",
+      "side": 1,
+      "message": "Could you add a bit more on ASL in the commit description?",
+      "range": {
+        "startLine": 9,
+        "startChar": 9,
+        "endLine": 9,
+        "endChar": 12
+      },
+      "revId": "00e97d2d2c69fb6a155c2368dc25d22279eea825",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9889432_e173abbd",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-24T08:14:49Z",
+      "side": 1,
+      "message": "Do you have a corresponding sepolicy change for this directory? This directory and files in it should be labeled explicitly and you need to have some new allow rules which give access for the label to certain processes (not just any random process with system uid).",
+      "range": {
+        "startLine": 874,
+        "startChar": 16,
+        "endLine": 874,
+        "endChar": 28
+      },
+      "revId": "00e97d2d2c69fb6a155c2368dc25d22279eea825",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
