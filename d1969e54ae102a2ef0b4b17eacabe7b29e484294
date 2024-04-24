@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5b2566e0_32010559",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:51:01Z",
+      "side": 1,
+      "message": "Actually since you don\u0027t return them, it\u0027s better to allocate on stack:\n\n```\nNativeBridgeGuestRegs guest_regs;\n```",
+      "parentUuid": "bb3b6cb0_c5c06456",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0d7bb25f_3f6912b9",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
