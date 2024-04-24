@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d40bcce4_3bdf5596",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:46:14Z",
+      "side": 1,
+      "message": "We should not do this if current process isn\u0027t using native-bridge (i.e. there is no guest registers). I don\u0027t see a check here or anywhere else that would implement this logic. Am I missing something?",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb3b6cb0_c5c06456",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:46:14Z",
+      "side": 1,
+      "message": "In case of failure this needs to be freed. Prefer https://en.cppreference.com/w/cpp/language/raii. Using `std::unique_ptr` should suffice here.\n\nIt\u0027s also probably a good idea to allocate them closer to the first use at #481. This way you\u0027ll skip two potential failure points.",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d7bb25f_3f6912b9",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:46:14Z",
+      "side": 1,
+      "message": "This also needs to be freed after we taken out the registers.",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "648fc697_c02d2978",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:46:14Z",
+      "side": 1,
+      "message": "Are you sure you need this cast? I though `void*` to `const void*` is cast automatically.",
+      "range": {
+        "startLine": 481,
+        "startChar": 26,
+        "endLine": 481,
+        "endChar": 55
+      },
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "091d7716_a7f6ed42",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-24T00:46:14Z",
+      "side": 1,
+      "message": "You cannot return a pointer to stack memory (stack is scratched on return). We need to allocate `arm_user_regs` on heap (e.g. using `new`)",
+      "range": {
+        "startLine": 489,
+        "startChar": 76,
+        "endLine": 489,
+        "endChar": 90
+      },
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
