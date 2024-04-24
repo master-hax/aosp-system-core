@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b8b9d4c_4622c778",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1941531
+      },
+      "writtenOn": "2024-04-24T22:39:35Z",
+      "side": 1,
+      "message": "Thanks for the reviews!\n\nI added more information on ASL in the commit description and added a link to the ASL-in-APK design doc in the attached bug.",
+      "parentUuid": "44119a14_8b37dfa1",
+      "range": {
+        "startLine": 9,
+        "startChar": 9,
+        "endLine": 9,
+        "endChar": 12
+      },
+      "revId": "00e97d2d2c69fb6a155c2368dc25d22279eea825",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f9889432_e173abbd",
@@ -61,6 +85,30 @@
       "writtenOn": "2024-04-24T08:14:49Z",
       "side": 1,
       "message": "Do you have a corresponding sepolicy change for this directory? This directory and files in it should be labeled explicitly and you need to have some new allow rules which give access for the label to certain processes (not just any random process with system uid).",
+      "range": {
+        "startLine": 874,
+        "startChar": 16,
+        "endLine": 874,
+        "endChar": 28
+      },
+      "revId": "00e97d2d2c69fb6a155c2368dc25d22279eea825",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0411cfd_4de6750f",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 1941531
+      },
+      "writtenOn": "2024-04-24T22:39:35Z",
+      "side": 1,
+      "message": "Created a sepolicy change for this directory: aosp/3059168.",
+      "parentUuid": "f9889432_e173abbd",
       "range": {
         "startLine": 874,
         "startChar": 16,
