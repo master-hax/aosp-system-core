@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d73f008c_205ecd5f",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-24T21:34:45Z",
+      "side": 1,
+      "message": "do you need this...",
+      "revId": "f18b72081e5e4383c92b4f1e2230243ff7f374a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b76d1b23_16a312d7",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-24T21:34:45Z",
+      "side": 1,
+      "message": "...*and* this?",
+      "revId": "f18b72081e5e4383c92b4f1e2230243ff7f374a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "889990d7_e50d40d4",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-24T21:34:45Z",
+      "side": 1,
+      "message": "PLOG",
+      "range": {
+        "startLine": 249,
+        "startChar": 12,
+        "endLine": 249,
+        "endChar": 15
+      },
+      "revId": "f18b72081e5e4383c92b4f1e2230243ff7f374a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b8d7fce_e05544d8",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-24T21:34:45Z",
+      "side": 1,
+      "message": "just inline GetPageSizeSuffix() rather than have a single-use variable?\n\nand is there a reason not to just use StringPrintf()? that would make L255 easier to read.",
+      "range": {
+        "startLine": 253,
+        "startChar": 49,
+        "endLine": 253,
+        "endChar": 65
+      },
+      "revId": "f18b72081e5e4383c92b4f1e2230243ff7f374a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89fa78af_09c69b26",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-24T21:34:45Z",
+      "side": 1,
+      "message": "`S_ISDIR(st.st_mode)`",
+      "range": {
+        "startLine": 255,
+        "startChar": 49,
+        "endLine": 255,
+        "endChar": 81
+      },
+      "revId": "f18b72081e5e4383c92b4f1e2230243ff7f374a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
