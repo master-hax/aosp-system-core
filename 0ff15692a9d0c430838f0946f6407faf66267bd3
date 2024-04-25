@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6c49439_cdf64321",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2024-04-25T18:17:40Z",
+      "side": 1,
+      "message": "Thanks!",
+      "parentUuid": "21bef6e9_c3490ea6",
+      "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94c1b069_220c852b",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-04-25T15:23:02Z",
       "side": 1,
       "message": "devname.pop_back() is slightly more efficient",
+      "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8583417_5d16f45a",
+        "filename": "init/devices.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1291337
+      },
+      "writtenOn": "2024-04-25T18:17:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94c1b069_220c852b",
       "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
