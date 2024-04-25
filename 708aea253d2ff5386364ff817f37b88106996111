@@ -16,6 +16,115 @@
       "message": "looks good, but you\u0027ll also need owners review",
       "revId": "708aea253d2ff5386364ff817f37b88106996111",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67c67fa0_62384bee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-04-25T21:20:42Z",
+      "side": 1,
+      "message": "It\u0027s very difficult to see how this is used. I would suggest combining the debuggerd changes as one cl rather than breaking it into these three pieces.",
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82dd8cbf_d8717629",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-04-25T21:20:42Z",
+      "side": 1,
+      "message": "Technically, this extra indentation is not needed because there is not really any extra code after this.",
+      "range": {
+        "startLine": 412,
+        "startChar": 0,
+        "endLine": 412,
+        "endChar": 3
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49cb85d3_5da47cef",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-04-25T21:20:42Z",
+      "side": 1,
+      "message": "Don\u0027t you need a cast here or the compiler will be unhappy?",
+      "range": {
+        "startLine": 415,
+        "startChar": 24,
+        "endLine": 415,
+        "endChar": 30
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "325d397e_15bca4c2",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-04-25T21:20:42Z",
+      "side": 1,
+      "message": "Do you need a cast for this code?\n\nAlso, should you check for an error? I know it\u0027s unlikely to fail, but it could happen and then this would segfault.",
+      "range": {
+        "startLine": 442,
+        "startChar": 25,
+        "endLine": 442,
+        "endChar": 31
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84b30d37_959e7a47",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-04-25T21:20:42Z",
+      "side": 1,
+      "message": "This feels very dangerous to return something that may or may not be a valid pointer. Looking at the other CL, it looks like you are mixing and matching between using ptrace to read the value through ptr and using it as a raw pointer.",
+      "range": {
+        "startLine": 443,
+        "startChar": 33,
+        "endLine": 443,
+        "endChar": 43
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
