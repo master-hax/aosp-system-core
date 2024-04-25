@@ -98,6 +98,40 @@
       "message": "thank you for your comments.",
       "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60d6a6aa_8b8cb194",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-04-25T23:05:54Z",
+      "side": 1,
+      "message": "this is duplicated code from get_main_thread_name, I suggest you factor it out into a helper function",
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e51f0ef1_d8640589",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-04-25T23:05:54Z",
+      "side": 1,
+      "message": "there is no trailing newline in that file",
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
