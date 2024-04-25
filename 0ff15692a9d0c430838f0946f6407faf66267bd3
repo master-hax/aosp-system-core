@@ -16,6 +16,40 @@
       "message": "Wondering if you think this is a reasonable change or if it violates the security properties of `ueventd`. We can live without it but it would be helpful to Cuttlefish.",
       "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21bef6e9_c3490ea6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-25T15:23:02Z",
+      "side": 1,
+      "message": "Seems reasonable.",
+      "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94c1b069_220c852b",
+        "filename": "init/devices.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-25T15:23:02Z",
+      "side": 1,
+      "message": "devname.pop_back() is slightly more efficient",
+      "revId": "0ff15692a9d0c430838f0946f6407faf66267bd3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
