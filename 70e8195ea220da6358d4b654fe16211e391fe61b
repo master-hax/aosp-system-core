@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c62d9d68_73669049",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-25T22:59:14Z",
+      "side": 1,
+      "message": "What does it mean to \"add a raw partition to /data\"? Is this an extension of the f2fs partition, and if so, why is it separate? Does it have different factory reset/formatting requirements?",
+      "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
