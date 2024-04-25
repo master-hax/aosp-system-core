@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8f928e7c_43f175ca",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-25T17:41:15Z",
+      "side": 1,
+      "message": "Is there a check that can be used here? Is something like `#ifdef NATIVE_BRIDGE` (ART_TARGET_ANDROID)?",
+      "parentUuid": "d40bcce4_3bdf5596",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bb3b6cb0_c5c06456",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
