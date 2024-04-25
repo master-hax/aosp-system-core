@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1061000d_79fd0622",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1069991
+      },
+      "writtenOn": "2024-04-25T17:55:41Z",
+      "side": 1,
+      "message": "This couldn\u0027t be determined statically. In fact it\u0027s not even property of the process, it\u0027s property of the process **thread**.\n\nIf appropriate TLS slot doesn\u0027t have reference to valid guest CPU state then such thread is native-only and if it crashed then we should store host registers.",
+      "parentUuid": "8f928e7c_43f175ca",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bb3b6cb0_c5c06456",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
