@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "44d7d860_af688943",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-25T21:03:54Z",
+      "side": 1,
+      "message": "On a closer look, your `PTRACE_PEEKDATA` call will return -1 if ptr points to unmapped memory or is invalid (i.e. guest state is uninitialized). The result won\u0027t match the signature and we\u0027ll return. Maybe just add a comment that we thought this scenario through.",
+      "parentUuid": "1061000d_79fd0622",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bb3b6cb0_c5c06456",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
