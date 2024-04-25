@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f482a8bf_b6d6b387",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 874,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-04-25T00:44:34Z",
+      "side": 1,
+      "message": "according to the sepolicy change, it looks like only system_server will access this and other processes won\u0027t even read this. then can this be 0700?",
+      "range": {
+        "startLine": 874,
+        "startChar": 29,
+        "endLine": 874,
+        "endChar": 33
+      },
+      "revId": "0f2b88c37905bf31b74734a47c2df32233907a68",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
