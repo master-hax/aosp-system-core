@@ -96,6 +96,23 @@ static const char* abi_string(const Tombstone& tombstone) {
   }
 }
 
+static const char* guest_abi_string(const Tombstone& tombstone) {
+  switch (tombstone.guest_arch()) {
+    case Architecture::ARM32:
+      return "arm";
+    case Architecture::ARM64:
+      return "arm64";
+    case Architecture::RISCV64:
+      return "riscv64";
+    case Architecture::X86:
+      return "x86";
+    case Architecture::X86_64:
+      return "x86_64";
+    default:
+      return "<unknown>";
+  }
+}
+
 static int pointer_width(const Tombstone& tombstone) {
   switch (tombstone.arch()) {
     case Architecture::ARM32:
@@ -145,8 +162,9 @@ static void print_register_row(CallbackType callback, int word_size,
   callback(output, should_log);
 }
 
+template <typename Tthread>
 static void print_thread_registers(CallbackType callback, const Tombstone& tombstone,
-                                   const Thread& thread, bool should_log) {
+                                   const Tthread& thread, bool should_log) {
   static constexpr size_t column_count = 4;
   std::vector<std::pair<std::string, uint64_t>> current_row;
   std::vector<std::pair<std::string, uint64_t>> special_row;
@@ -583,6 +601,7 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   CBL("Build fingerprint: '%s'", tombstone.build_fingerprint().c_str());
   CBL("Revision: '%s'", tombstone.revision().c_str());
   CBL("ABI: '%s'", abi_string(tombstone));
+  CBL("Guest architecture: %s", guest_abi_string(tombstone));
   CBL("Timestamp: %s", tombstone.timestamp().c_str());
   CBL("Process uptime: %ds", tombstone.process_uptime());
 
@@ -627,6 +646,13 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   }
 
   print_logs(callback, tombstone, 0);
+
+  // Process guest thread
+  if (tombstone.has_guest_thread()) {
+    CBS("--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---");
+    CBS("Guest thread information");
+    print_thread_registers(callback, tombstone, tombstone.guest_thread(), true);
+  }
 
   return true;
 }

@@ -79,11 +79,14 @@
 #include "tombstone_handler.h"
 
 #include "protocol.h"
+#include "tombstone.pb.h"
 #include "util.h"
 
 using android::base::ErrnoRestorer;
 using android::base::StringPrintf;
 using android::base::unique_fd;
+
+static Architecture _guest_arch;
 
 static bool pid_contains_tid(int pid_proc_fd, pid_t tid) {
   struct stat st;
@@ -498,6 +501,8 @@ static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs, pid_t t
         arm_user_regs.regs[i] = guest_regs.regs_arm.r[i];
       }
       *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm::Read(&arm_user_regs));
+
+      _guest_arch = Architecture::ARM32;
       break;
     }
 #if defined(__LP64__)
@@ -508,6 +513,8 @@ static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs, pid_t t
       }
       arm64_user_regs.pc = guest_regs.regs_arm64.ip;
       *regs = std::unique_ptr<unwindstack::Regs>(unwindstack::RegsArm64::Read(&arm64_user_regs));
+
+      _guest_arch = Architecture::ARM64;
       break;
     }
     case NATIVE_BRIDGE_ARCH_RISCV64: {
@@ -519,6 +526,8 @@ static void ReadGuestRegisters(std::unique_ptr<unwindstack::Regs>* regs, pid_t t
       }
       *regs = std::unique_ptr<unwindstack::Regs>(
           unwindstack::RegsRiscv64::Read(&riscv64_user_regs, tid));
+
+      _guest_arch = Architecture::RISCV64;
       break;
     }
 #endif
@@ -783,8 +792,32 @@ int main(int argc, char** argv) {
 
     {
       ATRACE_NAME("engrave_tombstone");
-      engrave_tombstone(std::move(g_output_fd), std::move(g_proto_fd), &unwinder, thread_info,
-                        g_target_thread, process_info, &open_files, &amfd_data);
+      unwindstack::ArchEnum regs_arch = unwindstack::ARCH_UNKNOWN;
+      switch (_guest_arch) {
+        case Architecture::ARM32: {
+          regs_arch = unwindstack::ARCH_ARM;
+          break;
+        }
+        case Architecture::ARM64: {
+          regs_arch = unwindstack::ARCH_ARM64;
+          break;
+        }
+        case Architecture::RISCV64: {
+          regs_arch = unwindstack::ARCH_RISCV64;
+          break;
+        }
+        default: {
+        }
+      }
+      if (regs_arch == unwindstack::ARCH_UNKNOWN) {
+        engrave_tombstone(std::move(g_output_fd), std::move(g_proto_fd), &unwinder, thread_info,
+                          g_target_thread, process_info, &open_files, &amfd_data, nullptr, nullptr);
+      } else {
+        unwindstack::AndroidRemoteUnwinder guest_unwinder(vm_pid, regs_arch);
+        engrave_tombstone(std::move(g_output_fd), std::move(g_proto_fd), &unwinder, thread_info,
+                          g_target_thread, process_info, &open_files, &amfd_data, &_guest_arch,
+                          &guest_unwinder);
+      }
     }
   }
 
