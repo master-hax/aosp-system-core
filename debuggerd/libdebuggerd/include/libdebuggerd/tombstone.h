@@ -73,5 +73,8 @@ bool tombstone_proto_to_text(
 
 void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& frame);
 void set_human_readable_cause(Cause* cause, uint64_t fault_addr);
-
+#if defined(__aarch64__)
+void read_stack_history(unwindstack::Memory* process_memory, uintptr_t target_tls,
+                        std::function<void(uintptr_t, uintptr_t, uintptr_t)> fn);
+#endif
 #endif  // _DEBUGGERD_TOMBSTONE_H
