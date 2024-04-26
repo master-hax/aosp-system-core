@@ -401,8 +401,9 @@ void fill_in_backtrace_frame(BacktraceFrame* f, const unwindstack::FrameData& fr
   f->set_build_id(frame.map_info->GetPrintableBuildID());
 }
 
+template <typename Tthread>
 static void dump_registers(unwindstack::AndroidUnwinder* unwinder,
-                           const std::unique_ptr<unwindstack::Regs>& regs, Thread& thread,
+                           const std::unique_ptr<unwindstack::Regs>& regs, Tthread& thread,
                            bool memory_dump) {
   if (regs == nullptr) {
     return;
@@ -482,7 +483,8 @@ static void dump_thread_backtrace(std::vector<unwindstack::FrameData>& frames, T
 }
 
 static void dump_thread(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder,
-                        const ThreadInfo& thread_info, bool memory_dump = false) {
+                        const ThreadInfo& thread_info, bool memory_dump = false,
+                        unwindstack::AndroidUnwinder* guest_unwinder = nullptr) {
   Thread thread;
 
   thread.set_id(thread_info.tid);
@@ -509,6 +511,30 @@ static void dump_thread(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwi
 
   auto& threads = *tombstone->mutable_threads();
   threads[thread_info.tid] = thread;
+
+  if (guest_unwinder) {
+    if (!thread_info.guest_registers) {
+      async_safe_format_log(ANDROID_LOG_INFO, LOG_TAG,
+                            "No guest state registers information for tid %d", thread_info.tid);
+      return;
+    }
+    GuestThread guest_thread;
+    unwindstack::AndroidUnwinderData guest_data;
+    guest_data.saved_initial_regs = std::make_optional<std::unique_ptr<unwindstack::Regs>>();
+    bool unwind_guest_ret;
+    unwind_guest_ret = guest_unwinder->Unwind(thread_info.guest_registers.get(), guest_data);
+    if (!unwind_guest_ret) {
+      async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG,
+                            "Unwind guest state registers failed for tid %d: Error %s",
+                            thread_info.tid, guest_data.GetErrorString().c_str());
+    }
+    async_safe_format_log(ANDROID_LOG_INFO, LOG_TAG,
+                          "sijiec: should dump guest state registers information for tid %d",
+                          thread_info.tid);
+    dump_registers(guest_unwinder, *guest_data.saved_initial_regs, guest_thread, false);
+    auto& guest_threads = *tombstone->mutable_guest_threads();
+    guest_threads[thread_info.tid] = guest_thread;
+  }
 }
 
 static void dump_mappings(Tombstone* tombstone, unwindstack::Maps* maps,
@@ -686,10 +712,15 @@ static void dump_tags_around_fault_addr(Signal* signal, const Tombstone& tombsto
 
 void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder,
                              const std::map<pid_t, ThreadInfo>& threads, pid_t target_thread,
-                             const ProcessInfo& process_info, const OpenFilesList* open_files) {
+                             const ProcessInfo& process_info, const OpenFilesList* open_files,
+                             Architecture* guest_arch = nullptr,
+                             unwindstack::AndroidUnwinder* guest_unwinder = nullptr) {
   Tombstone result;
 
   result.set_arch(get_arch());
+  if (guest_arch != nullptr) {
+    result.set_guest_arch(*guest_arch);
+  }
   result.set_build_fingerprint(android::base::GetProperty("ro.build.fingerprint", "unknown"));
   result.set_revision(android::base::GetProperty("ro.revision", "unknown"));
   result.set_timestamp(get_timestamp());
@@ -747,7 +778,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   dump_abort_message(&result, unwinder->GetProcessMemory(), process_info);
   dump_crash_details(&result, unwinder->GetProcessMemory(), process_info);
   // Dump the main thread, but save the memory around the registers.
-  dump_thread(&result, unwinder, main_thread, /* memory_dump */ true);
+  dump_thread(&result, unwinder, main_thread, /* memory_dump */ true, guest_unwinder);
 
   for (const auto& [tid, thread_info] : threads) {
     if (tid != target_thread) {

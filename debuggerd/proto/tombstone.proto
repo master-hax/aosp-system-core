@@ -43,11 +43,12 @@ message Tombstone {
   repeated Cause causes = 15;
 
   map<uint32, Thread> threads = 16;
+  map<uint32, GuestThread> guest_threads = 23;
   repeated MemoryMapping memory_mappings = 17;
   repeated LogBuffer log_buffers = 18;
   repeated FD open_fds = 19;
 
-  reserved 23 to 999;
+  reserved 24 to 999;
 }
 
 enum Architecture {

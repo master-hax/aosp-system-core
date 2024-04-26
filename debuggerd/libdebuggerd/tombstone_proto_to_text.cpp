@@ -145,8 +145,9 @@ static void print_register_row(CallbackType callback, int word_size,
   callback(output, should_log);
 }
 
+template <typename Tthread>
 static void print_thread_registers(CallbackType callback, const Tombstone& tombstone,
-                                   const Thread& thread, bool should_log) {
+                                   const Tthread& thread, bool should_log) {
   static constexpr size_t column_count = 4;
   std::vector<std::pair<std::string, uint64_t>> current_row;
   std::vector<std::pair<std::string, uint64_t>> special_row;
@@ -599,6 +600,16 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   print_main_thread(callback, tombstone, main_thread);
 
   print_logs(callback, tombstone, 50);
+
+  const auto& guest_threads = tombstone.guest_threads();
+  auto main_guest_thread_it = guest_threads.find(tombstone.tid());
+  if (main_guest_thread_it == guest_threads.end()) {
+    CBL("failed to find entry for main guest thread in tombstone");
+  } else {
+    const auto& main_guest_thread = main_guest_thread_it->second;
+    CBS("GUEST THREAD--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---");
+    print_thread_registers(callback, tombstone, main_guest_thread, true);
+  }
 
   // protobuf's map is unordered, so sort the keys first.
   std::set<int> thread_ids;
