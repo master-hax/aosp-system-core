@@ -85,6 +85,14 @@ message Signal {
   reserved 11 to 999;
 }
 
+message StackHistoryBufferEntry {
+  BacktraceFrame addr = 1;
+  uint64 fp = 2;
+  uint64 tag = 3;
+
+  reserved 4 to 999;
+}
+
 message HeapObject {
   uint64 address = 1;
   uint64 size = 2;
@@ -94,6 +102,11 @@ message HeapObject {
 
   uint64 deallocation_tid = 5;
   repeated BacktraceFrame deallocation_backtrace = 6;
+}
+
+message StackObject {
+  uint64 tid = 1;
+  repeated StackHistoryBufferEntry stack_history_buffer = 2;
 }
 
 message MemoryError {
@@ -112,16 +125,18 @@ message MemoryError {
     INVALID_FREE = 3;
     BUFFER_OVERFLOW = 4;
     BUFFER_UNDERFLOW = 5;
+    STACK_MISMATCH = 6;
 
-    reserved 6 to 999;
+    reserved 7 to 999;
   }
   Type type = 2;
 
   oneof location {
     HeapObject heap = 3;
+    StackObject stack = 4;
   }
 
-  reserved 4 to 999;
+  reserved 5 to 999;
 }
 
 message Cause {

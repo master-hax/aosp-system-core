@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <sys/types.h>
 #define LOG_TAG "DEBUG"
 
 #include "libdebuggerd/tombstone.h"
@@ -27,6 +28,7 @@
 #include <inttypes.h>
 #include <signal.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
@@ -49,9 +51,10 @@
 
 #include <android/log.h>
 #include <android/set_abort_message.h>
+#include <bionic/crash_detail_internal.h>
 #include <bionic/macros.h>
 #include <bionic/reserved_signals.h>
-#include <bionic/crash_detail_internal.h>
+#include <bionic/tls_defines.h>
 #include <log/log.h>
 #include <log/log_read.h>
 #include <log/logprint.h>
@@ -202,8 +205,92 @@ void set_human_readable_cause(Cause* cause, uint64_t fault_addr) {
       error_type_str, diff, byte_suffix, location_str, heap_object.size(), heap_object.address()));
 }
 
+#if defined(__aarch64__)
+void read_stack_history(unwindstack::Memory* process_memory, uintptr_t target_tls,
+                        std::function<void(uintptr_t, uintptr_t, uintptr_t)> fn) {
+  target_tls += sizeof(void*) * TLS_SLOT_STACK_MTE;
+  uintptr_t stack_mte;
+  if (!process_memory->ReadFully(target_tls, &stack_mte, sizeof(stack_mte))) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG,
+                          "dump_stack_history: failed to read TLS_SLOT_STACK_MTE: %m");
+    return;
+  }
+  if (stack_mte == 0) {
+    async_safe_format_log(ANDROID_LOG_DEBUG, LOG_TAG,
+                          "dump_stack_history: stack history buffer is null");
+    return;
+  }
+  uintptr_t buf_pages = stack_mte >> 56;
+  uintptr_t untagged_stack_mte = stack_mte & ((1ULL << 56) - 1ULL);
+  if (buf_pages == 0) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG, "dump_stack_history: empty size");
+    return;
+  }
+  uintptr_t buf_size = buf_pages * 4096;
+  uintptr_t buf_start = untagged_stack_mte & ~(buf_size - 1ULL);
+  std::vector<char> buf(buf_size);
+  if (!process_memory->ReadFully(buf_start, buf.data(), buf.size())) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG,
+                          "dump_stack_history: failed to read stack history: %m");
+    return;
+  }
+  uintptr_t original_off = untagged_stack_mte - buf_start;
+  if (original_off % 16 || original_off > buf_size) {
+    async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG,
+                          "dump_stack_history: invalid offset: %" PRIuPTR, original_off);
+    return;
+  }
+
+  // The original_off is the next slot that would have been written, so the last
+  // slot that was written is the previous one.
+  for (uintptr_t idx = 16; idx <= buf_size; idx += 16) {
+    int64_t off = original_off - idx;
+    if (off < 0) off += buf_size;
+    uintptr_t pc, taggedfp;
+    memcpy(&pc, &(buf[off]), sizeof(pc));
+    memcpy(&taggedfp, &(buf[off + 8]), sizeof(taggedfp));
+
+    if (pc == 0) break;
+    uintptr_t fp = taggedfp & ((1ULL << 56) - 1ULL);
+    uintptr_t tag = taggedfp >> 56;
+    fn(pc, fp, tag);
+  }
+}
+
+static void dump_stack_history(unwindstack::AndroidUnwinder* unwinder, uintptr_t target_tls,
+                               StackObject& stack_obj) {
+  read_stack_history(unwinder->GetProcessMemory().get(), target_tls,
+                     [&](uintptr_t pc, uintptr_t fp, uintptr_t tag) {
+                       unwindstack::FrameData frame_data = unwinder->BuildFrameFromPcOnly(pc);
+
+                       StackHistoryBufferEntry* entry = stack_obj.add_stack_history_buffer();
+                       fill_in_backtrace_frame(entry->mutable_addr(), frame_data);
+                       entry->set_fp(fp);
+                       entry->set_tag(tag);
+                     });
+}
+#endif
+
+static pid_t get_containing_thread(unwindstack::MapInfo* map_info, pid_t main_tid) {
+  if (map_info == nullptr) return 0;
+
+  std::string name = map_info->name();
+  if (name == "[stack]") {
+    return main_tid;
+  }
+  constexpr const char* kPrefix = "[anon:stack_and_tls:";
+  if (name.compare(0, strlen(kPrefix), kPrefix) != 0) return 0;
+  std::string thread = name.substr(strlen(kPrefix), name.size() - strlen(kPrefix) - 1);
+  char* end;
+  long long pid = strtoll(thread.c_str(), &end, 10);
+  if (*end != '\0' || pid < 0) return 0;
+  return static_cast<pid_t>(pid);
+}
+
 static void dump_probable_cause(Tombstone* tombstone, unwindstack::AndroidUnwinder* unwinder,
-                                const ProcessInfo& process_info, const ThreadInfo& target_thread) {
+                                const ProcessInfo& process_info, const ThreadInfo& target_thread,
+                                const std::map<pid_t, ThreadInfo>& threads) {
+  (void)(threads);
 #if defined(USE_SCUDO)
   ScudoCrashData scudo_crash_data(unwinder->GetProcessMemory().get(), process_info);
   if (scudo_crash_data.CrashIsMine()) {
@@ -247,7 +334,29 @@ static void dump_probable_cause(Tombstone* tombstone, unwindstack::AndroidUnwind
     } else {
       cause = get_stack_overflow_cause(fault_addr, target_thread.registers->sp(), maps);
     }
-  } else if (si->si_signo == SIGSYS && si->si_code == SYS_SECCOMP) {
+  }
+#if defined(__aarch64__) && defined(SEGV_MTESERR)
+  else if (si->si_signo == SIGSEGV && si->si_code == SEGV_MTESERR) {
+    auto map_info = maps->Find(untag_address(fault_addr));
+    pid_t tid = get_containing_thread(map_info.get(), target_thread.tid);
+    if (tid) {
+      Cause* cause_proto = tombstone->add_causes();
+      cause_proto->set_human_readable(StringPrintf("stack tag-mismatch on thread %u", tid));
+      MemoryError* mem_error = cause_proto->mutable_memory_error();
+      mem_error->set_type(MemoryError_Type_STACK_MISMATCH);
+      StackObject* stack_obj = mem_error->mutable_stack();
+      stack_obj->set_tid(tid);
+      auto it = threads.find(tid);
+      if (it != threads.end()) {
+        dump_stack_history(unwinder, it->second.tls, *stack_obj);
+      } else {
+        async_safe_format_log(ANDROID_LOG_ERROR, LOG_TAG,
+                              "dump_probable_cause: unknown target thread %d", tid);
+      }
+    }
+  }
+#endif
+  else if (si->si_signo == SIGSYS && si->si_code == SYS_SECCOMP) {
     cause = StringPrintf("seccomp prevented call to disallowed %s system call %d", ABI_STRING,
                          si->si_syscall);
   }
@@ -787,7 +896,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
     }
   }
 
-  dump_probable_cause(&result, unwinder, process_info, target_thread);
+  dump_probable_cause(&result, unwinder, process_info, target_thread, threads);
 
   dump_mappings(&result, unwinder->GetMaps(), unwinder->GetProcessMemory());
 
