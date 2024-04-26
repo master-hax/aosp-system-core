@@ -37,7 +37,6 @@ struct ThreadInfo {
   std::vector<std::string> command_line;
   std::string selinux_label;
 
-  int signo = 0;
   siginfo_t* siginfo = nullptr;
 };
 

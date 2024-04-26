@@ -724,7 +724,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   }
 
   Signal sig;
-  sig.set_number(target_thread.signo);
+  sig.set_number(target_thread.siginfo->si_signo);
   sig.set_name(get_signame(target_thread.siginfo));
   sig.set_code(target_thread.siginfo->si_code);
   sig.set_code_name(get_sigcode(target_thread.siginfo));
