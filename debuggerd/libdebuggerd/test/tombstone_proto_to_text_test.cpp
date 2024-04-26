@@ -134,3 +134,32 @@ TEST_F(TombstoneProtoToTextTest, crash_detail_bytes) {
   ProtoToString();
   EXPECT_MATCH(text_, R"(CRASH_DETAIL_NAME: 'helloworld\\1\\255\\3')");
 }
+
+TEST_F(TombstoneProtoToTextTest, stack_record) {
+  auto* cause = tombstone_->add_causes();
+  cause->set_human_readable("stack tag-mismatch on thread 123");
+  auto* memory_error = cause->mutable_memory_error();
+  memory_error->set_type(MemoryError_Type_STACK_MISMATCH);
+  auto* stack = memory_error->mutable_stack();
+  stack->set_tid(123);
+  {
+    auto* shb = stack->add_stack_history_buffer();
+    shb->set_fp(0x1);
+    shb->set_tag(0xb);
+    auto* addr = shb->mutable_addr();
+    addr->set_rel_pc(0x567);
+    addr->set_file_name("foo.so");
+  }
+  {
+    auto* shb = stack->add_stack_history_buffer();
+    shb->set_fp(0x2);
+    shb->set_tag(0xc);
+    auto* addr = shb->mutable_addr();
+    addr->set_rel_pc(0x678);
+    addr->set_file_name("bar.so");
+  }
+  ProtoToString();
+  EXPECT_MATCH(text_, "stack tag-mismatch on thread 123");
+  EXPECT_MATCH(text_, "stack_record fp:0x1 tag:0xb pc:foo\\.so\\+0x567");
+  EXPECT_MATCH(text_, "stack_record fp:0x2 tag:0xc pc:bar\\.so\\+0x678");
+}
