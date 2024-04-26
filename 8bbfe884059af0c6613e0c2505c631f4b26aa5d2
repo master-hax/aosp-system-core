@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40f82ab5_9ccff133",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-26T16:16:16Z",
+      "side": 1,
+      "message": "lgtm, but you\u0027ll need cferris to +2 too anyway...\n\n(i do wonder whether it\u0027s worth a separate cleanup where we remove this `signo` field entirely and just use `siginfo-\u003esi_signo` instead?)",
+      "revId": "8bbfe884059af0c6613e0c2505c631f4b26aa5d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
