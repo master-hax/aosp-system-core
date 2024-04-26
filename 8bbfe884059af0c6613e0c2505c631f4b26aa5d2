@@ -33,6 +33,24 @@
       "message": "Can you add a test for this?\n\nIf we do remove the signo field, it would be good to have a test we can use to verify that it didn\u0027t break this case.",
       "revId": "8bbfe884059af0c6613e0c2505c631f4b26aa5d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76ea1d16_8d020be9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-26T17:59:29Z",
+      "side": 1,
+      "message": "given that this seems to have broken the existing tests, it\u0027s possible we do already have a test for this and just don\u0027t know it because we\u0027ve hard-coded the wrong expectation :-)",
+      "parentUuid": "246463ee_1f1ebc76",
+      "revId": "8bbfe884059af0c6613e0c2505c631f4b26aa5d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
