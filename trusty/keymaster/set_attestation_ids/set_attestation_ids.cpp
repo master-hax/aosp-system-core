@@ -28,6 +28,7 @@ namespace {
 const char* sopts = "hb:d:p:s:M:m:i:c:";
 const struct option lopts[] = {
         {"help", no_argument, nullptr, 'h'},
+        {"wipe", no_argument, nullptr, 'W'},
         {"brand", required_argument, nullptr, 'b'},
         {"device", required_argument, nullptr, 'd'},
         {"product", required_argument, nullptr, 'p'},
@@ -101,6 +102,7 @@ void print_usage(const char* prog, const keymaster::SetAttestationIdsKM3Request&
             "\n"
             "options:\n"
             "  -h, --help                 prints this message and exit\n"
+            "  -W, --wipe                 deletes all KeyMint keys\n"
             "  -b, --brand <val>          set brand (default '%s')\n"
             "  -d, --device <val>         set device (default '%s')\n"
             "  -p, --product <val>        set product (default '%s')\n"
@@ -151,6 +153,25 @@ void populate_ids(keymaster::SetAttestationIdsKM3Request* req) {
     set_to(&req->second_imei, imei2);
 }
 
+int wipe() {
+    int ret = trusty_keymaster_connect();
+    if (ret) {
+        fprintf(stderr, "trusty_keymaster_connect failed: %d\n", ret);
+        return EXIT_FAILURE;
+    }
+    keymaster::DeleteAllKeysRequest req(/* ver = */ 4);
+    keymaster::EmptyKeymasterResponse rsp(/* ver = */ 4);
+    ret = trusty_keymaster_send(KM_DELETE_ALL_KEYS, req, &rsp);
+    trusty_keymaster_disconnect();
+    if (ret) {
+        fprintf(stderr, "DELETE_ALL_KEYS failed: %d\n", ret);
+        return EXIT_FAILURE;
+    } else {
+        printf("DELETE_ALL_KEYS done\n");
+        return EXIT_SUCCESS;
+    }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -192,6 +213,9 @@ int main(int argc, char** argv) {
                 break;
             case '2':
                 req.second_imei.Reinitialize(optarg, strlen(optarg));
+                break;
+            case 'W':
+                exit(wipe());
                 break;
             case 'h':
                 print_usage(argv[0], req);
