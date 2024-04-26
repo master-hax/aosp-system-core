@@ -58,6 +58,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "775a896b_2aa9e967",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-26T22:17:11Z",
+      "side": 1,
+      "message": "I see. Removed the indentation.",
+      "parentUuid": "82dd8cbf_d8717629",
+      "range": {
+        "startLine": 412,
+        "startChar": 0,
+        "endLine": 412,
+        "endChar": 3
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "49cb85d3_5da47cef",
@@ -71,6 +95,30 @@
       "writtenOn": "2024-04-25T21:20:42Z",
       "side": 1,
       "message": "Don\u0027t you need a cast here or the compiler will be unhappy?",
+      "range": {
+        "startLine": 415,
+        "startChar": 24,
+        "endLine": 415,
+        "endChar": 30
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "501e9478_5335c018",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 415,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-26T22:17:11Z",
+      "side": 1,
+      "message": "I wonder if because the ptrace returns long and can be converted to uintptr_t (unsigned long)implicitly so the compiler doesn\u0027t throw an error. Added a cast to avoid potential failure.",
+      "parentUuid": "49cb85d3_5da47cef",
       "range": {
         "startLine": 415,
         "startChar": 24,
@@ -104,6 +152,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "28545aa7_9ae2e176",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-26T22:17:11Z",
+      "side": 1,
+      "message": "Added a static cast here and checking the errno value for any failure.",
+      "parentUuid": "325d397e_15bca4c2",
+      "range": {
+        "startLine": 442,
+        "startChar": 25,
+        "endLine": 442,
+        "endChar": 31
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84b30d37_959e7a47",
@@ -117,6 +189,30 @@
       "writtenOn": "2024-04-25T21:20:42Z",
       "side": 1,
       "message": "This feels very dangerous to return something that may or may not be a valid pointer. Looking at the other CL, it looks like you are mixing and matching between using ptrace to read the value through ptr and using it as a raw pointer.",
+      "range": {
+        "startLine": 443,
+        "startChar": 33,
+        "endLine": 443,
+        "endChar": 43
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93889cb1_2b5c6f0c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-26T22:17:11Z",
+      "side": 1,
+      "message": "Will add the check error logic resolve the concerns? Some explanation around the pointers. `ptrace` is used to get the content of the TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE, otherwise a segfault will happen if doing `tp_reg[TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE]`. The TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE slot stores a pointer pointing to a crash process. So ptrace will be used again to get the content of the TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE\u0027s slot\u0027s pointer points to.",
+      "parentUuid": "84b30d37_959e7a47",
       "range": {
         "startLine": 443,
         "startChar": 33,
