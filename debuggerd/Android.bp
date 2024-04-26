@@ -357,6 +357,7 @@ cc_test {
     cflags: ["-Wno-missing-field-initializers"],
     srcs: [
         "libdebuggerd/test/dump_memory_test.cpp",
+        "libdebuggerd/test/mte_stack_record_test.cpp",
         "libdebuggerd/test/elf_fake.cpp",
         "libdebuggerd/test/log_fake.cpp",
         "libdebuggerd/test/open_files_list_test.cpp",
