@@ -46,6 +46,30 @@
       },
       "revId": "6e774bae19bc8d92e1cb714237df43287eaba00d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bafa16a8_8e7e75bf",
+        "filename": "libpackagelistparser/include/packagelistparser/packagelistparser.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1480715
+      },
+      "writtenOn": "2024-04-26T18:07:55Z",
+      "side": 1,
+      "message": "Oh wow, thank you so much for the detailed explanation. I didn\u0027t realize that these are unix uids. It makes sense to to change the type. I wasn\u0027t aware of the potential consequences here of letting apex/sdk-libraries of having a UID of -1. It\u0027s good to know that side effect seems to be small after all... Thanks for the detailed explanation!",
+      "parentUuid": "c3f3f4c4_a47fb576",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 7
+      },
+      "revId": "6e774bae19bc8d92e1cb714237df43287eaba00d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
