@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fca313b_592a4406",
+        "filename": "libpackagelistparser/include/packagelistparser/packagelistparser.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1480715
+      },
+      "writtenOn": "2024-04-26T17:19:34Z",
+      "side": 1,
+      "message": "Looks like this is also an unsigned int? Would it make sense to change it to an int (which probably means changing `__kernel_uid32_t` as well)?",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 7
+      },
+      "revId": "6e774bae19bc8d92e1cb714237df43287eaba00d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
