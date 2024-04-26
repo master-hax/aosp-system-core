@@ -39,6 +39,7 @@ struct ThreadInfo {
 
   int signo = 0;
   siginfo_t* siginfo = nullptr;
+  uintptr_t tls;
 };
 
 // This struct is written into a pipe from inside the crashing process.
