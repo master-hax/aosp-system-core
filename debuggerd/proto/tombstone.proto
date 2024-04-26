@@ -43,11 +43,12 @@ message Tombstone {
   repeated Cause causes = 15;
 
   map<uint32, Thread> threads = 16;
+  GuestThread guest_thread = 23;
   repeated MemoryMapping memory_mappings = 17;
   repeated LogBuffer log_buffers = 18;
   repeated FD open_fds = 19;
 
-  reserved 23 to 999;
+  reserved 24 to 999;
 }
 
 enum Architecture {
@@ -153,8 +154,10 @@ message GuestThread {
   repeated Register registers = 1;
   repeated BacktraceFrame current_backtrace = 2;
   repeated MemoryDump memory_dump = 3;
+  repeated string backtrace_note = 4;
+  repeated string unreadable_elf_files = 5;
 
-  reserved 4 to 999;
+  reserved 6 to 999;
 }
 
 message BacktraceFrame {
