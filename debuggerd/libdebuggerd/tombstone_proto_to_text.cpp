@@ -531,6 +531,18 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
         CBL("allocated by thread %" PRIu64 ":", heap_object.allocation_tid());
         print_backtrace(callback, tombstone, heap_object.allocation_backtrace(), true);
       }
+    } else if (cause.has_memory_error() && cause.memory_error().has_stack()) {
+      const StackObject& stack_object = cause.memory_error().stack();
+      for (const StackHistoryBufferEntry& shbe : stack_object.stack_history_buffer()) {
+        if (!shbe.addr().build_id().empty()) {
+          CBL("stack_record fp:0x%" PRIx64 " tag:0x%" PRIx64 " pc:%s+0x%" PRIx64 " (BuildId: %s)",
+              shbe.fp(), shbe.tag(), shbe.addr().file_name().c_str(), shbe.addr().rel_pc(),
+              shbe.addr().build_id().c_str());
+        } else {
+          CBL("stack_record fp:0x%" PRIx64 " tag:0x%" PRIx64 " pc:%s+0x%" PRIx64, shbe.fp(),
+              shbe.tag(), shbe.addr().file_name().c_str(), shbe.addr().rel_pc());
+        }
+      }
     }
   }
 
