@@ -502,17 +502,19 @@ int main(int argc, char** argv) {
       }
 
       ThreadInfo info;
+      siginfo_t siginfo_thread;
       info.pid = target_process;
       info.tid = thread;
       info.uid = getuid();
       info.thread_name = get_thread_name(thread);
+      info.siginfo = &siginfo_thread;
 
       unique_fd attr_fd(openat(target_proc_fd, "attr/current", O_RDONLY | O_CLOEXEC));
       if (!android::base::ReadFdToString(attr_fd, &info.selinux_label)) {
         PLOG(WARNING) << "failed to read selinux label";
       }
 
-      if (!ptrace_interrupt(thread, &info.signo)) {
+      if (!ptrace_interrupt(thread, &info.siginfo->si_signo)) {
         PLOG(WARNING) << "failed to ptrace interrupt thread " << thread;
         ptrace(PTRACE_DETACH, thread, 0, 0);
         continue;
@@ -540,8 +542,6 @@ int main(int argc, char** argv) {
         // Read the thread's registers along with the rest of the crash info out of the pipe.
         ReadCrashInfo(input_pipe, &siginfo, &info.registers, &process_info, &recoverable_crash);
         info.siginfo = &siginfo;
-        info.signo = info.siginfo->si_signo;
-
         info.command_line = get_command_line(g_target_thread);
       } else {
         info.registers.reset(unwindstack::Regs::RemoteGet(thread));
@@ -583,7 +583,7 @@ int main(int argc, char** argv) {
 
   // Detach from all of our attached threads before resuming.
   for (const auto& [tid, thread] : thread_info) {
-    int resume_signal = thread.signo == BIONIC_SIGNAL_DEBUGGER ? 0 : thread.signo;
+    int resume_signal = thread.siginfo->si_signo == BIONIC_SIGNAL_DEBUGGER ? 0 : thread.siginfo->si_signo;
     if (wait_for_debugger) {
       resume_signal = 0;
       if (tgkill(target_process, tid, SIGSTOP) != 0) {
