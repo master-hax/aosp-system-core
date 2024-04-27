@@ -72,6 +72,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7ccbb7a_8e1238b3",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-27T05:34:05Z",
+      "side": 1,
+      "message": "In the case, the TLS doesn\u0027t have a valid reference, the GetGuestStateTlsPointer() will return nullptr. I can do a nullptr check before ptrace call. Added a comment for the scenario for unmapped memory or invalid.",
+      "parentUuid": "44d7d860_af688943",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bb3b6cb0_c5c06456",
@@ -103,6 +121,24 @@
       "side": 1,
       "message": "Actually since you don\u0027t return them, it\u0027s better to allocate on stack:\n\n```\nNativeBridgeGuestRegs guest_regs;\n```",
       "parentUuid": "bb3b6cb0_c5c06456",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5790f41a_72b639de",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-27T05:34:05Z",
+      "side": 1,
+      "message": "Makes sense, moved it to line 481 and allocate it on stack.",
+      "parentUuid": "5b2566e0_32010559",
       "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -144,6 +180,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "23e24c04_56975eed",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-27T05:34:05Z",
+      "side": 1,
+      "message": "The guest_state_data_copy needs to be `void*`. Tried to use `get()` but the result is different from using malloc. I wonder if the guest_state_data_copy will be cast to CPU State type so make it unsigned char[] change things? Added a `free()` function.",
+      "parentUuid": "046faeaa_15b3649d",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648fc697_c02d2978",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
@@ -155,6 +209,30 @@
       "writtenOn": "2024-04-24T00:46:14Z",
       "side": 1,
       "message": "Are you sure you need this cast? I though `void*` to `const void*` is cast automatically.",
+      "range": {
+        "startLine": 481,
+        "startChar": 26,
+        "endLine": 481,
+        "endChar": 55
+      },
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7c886f8_4c81ff0b",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-27T05:34:05Z",
+      "side": 1,
+      "message": "Ah, okay, removed this cast.",
+      "parentUuid": "648fc697_c02d2978",
       "range": {
         "startLine": 481,
         "startChar": 26,
@@ -202,6 +280,30 @@
       "side": 1,
       "message": "Maybe use here `make_unique`, too?\n\nThe code here is not using `make_unique` but that\u0027s for historical reasons: make_unique is C++14 construct and I suspect that code was written when C++14 wasn\u0027t available.\n\nhttps://abseil.io/tips/126",
       "parentUuid": "091d7716_a7f6ed42",
+      "range": {
+        "startLine": 489,
+        "startChar": 76,
+        "endLine": 489,
+        "endChar": 90
+      },
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d3235c9_ea2fb769",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-27T05:34:05Z",
+      "side": 1,
+      "message": "Hmm, I might miss something. I think the function `unwindstack::RegsArm::Read()` will return a pointer to heap: http://shortn/_CcF3X3R7Il. The data in `arm_user_regs` seems get copied over.",
+      "parentUuid": "3984ffef_e11a9029",
       "range": {
         "startLine": 489,
         "startChar": 76,
