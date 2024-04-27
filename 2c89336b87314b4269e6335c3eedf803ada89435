@@ -119,6 +119,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ce58d8ee_ea6cbddc",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-04-27T00:54:22Z",
+      "side": 1,
+      "message": "error log here?",
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e51f0ef1_d8640589",
         "filename": "debuggerd/handler/debuggerd_handler.cpp",
         "patchSetId": 1
@@ -130,6 +147,52 @@
       "writtenOn": "2024-04-25T23:05:54Z",
       "side": 1,
       "message": "there is no trailing newline in that file",
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ded5ef7_4b77af49",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-04-27T00:54:22Z",
+      "side": 1,
+      "message": "remove trailing space\n```suggestion\n  //get rid of /xxx/xxx/progname\n```",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 33
+      },
+      "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81815deb_301c9b03",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-04-27T00:54:22Z",
+      "side": 1,
+      "message": "please follow variable style: `last_slash`\n\nwouldn\u0027t it be easier and cheaper to have this function return the `char*` into the buffer, then we don\u0027t need to move it around. \n\n```suggestion\n  char* last_slash \u003d strrchr(buf, \u0027/\u0027);\n  if (last_slash !\u003d nullptr) {\n    return last_slash+1;\n  }\n  return buf;\n```",
+      "range": {
+        "startLine": 121,
+        "startChar": 8,
+        "endLine": 121,
+        "endChar": 17
+      },
       "revId": "2c89336b87314b4269e6335c3eedf803ada89435",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
