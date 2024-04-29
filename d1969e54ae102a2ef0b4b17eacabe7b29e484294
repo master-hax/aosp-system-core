@@ -90,6 +90,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "39cd99ba_b9fb14e5",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-29T16:42:04Z",
+      "side": 1,
+      "message": "AFAICT `GetGuestStateTlsPointer` returns whatever is stored in native bridge slot in TLS. I\u0027m not sure it\u0027s guarateed to be nullptr if that thread doesn\u0027t use native bridge.",
+      "parentUuid": "d7ccbb7a_8e1238b3",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bb3b6cb0_c5c06456",
@@ -192,6 +210,24 @@
       "side": 1,
       "message": "The guest_state_data_copy needs to be `void*`. Tried to use `get()` but the result is different from using malloc. I wonder if the guest_state_data_copy will be cast to CPU State type so make it unsigned char[] change things? Added a `free()` function.",
       "parentUuid": "046faeaa_15b3649d",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e83ec02f_478dffa0",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-29T16:42:04Z",
+      "side": 1,
+      "message": "`get()` should generally work. What do you mean by `the result is different`? Is it not compiling? Or is your test failing?",
+      "parentUuid": "23e24c04_56975eed",
       "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -304,6 +340,30 @@
       "side": 1,
       "message": "Hmm, I might miss something. I think the function `unwindstack::RegsArm::Read()` will return a pointer to heap: http://shortn/_CcF3X3R7Il. The data in `arm_user_regs` seems get copied over.",
       "parentUuid": "3984ffef_e11a9029",
+      "range": {
+        "startLine": 489,
+        "startChar": 76,
+        "endLine": 489,
+        "endChar": 90
+      },
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89ddc739_73ded0a8",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-29T16:42:04Z",
+      "side": 1,
+      "message": "You are right. I misinterpreted the semantics of `RegsArm::Read()`, thinking it returns a field reference from the argument. Since it makes a copy on heap, what you have is good.",
+      "parentUuid": "3d3235c9_ea2fb769",
       "range": {
         "startLine": 489,
         "startChar": 76,

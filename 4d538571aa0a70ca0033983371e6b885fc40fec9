@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df035652_dab57466",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-04-29T16:42:04Z",
+      "side": 1,
+      "message": "Not for this CL, but this look like instead of introducing `NativeBridgeGuestRegs*`, we could have used `unwindstack::*_user_regs` directly. @dimitry@google.com",
+      "revId": "4d538571aa0a70ca0033983371e6b885fc40fec9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
