@@ -16,6 +16,23 @@
       "message": "What does it mean to \"add a raw partition to /data\"? Is this an extension of the f2fs partition, and if so, why is it separate? Does it have different factory reset/formatting requirements?",
       "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "002fdc93_a1f6eb40",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-29T22:37:19Z",
+      "side": 1,
+      "message": "Let\u0027s call this \"devices\" to match the F2FS terminology, here, and in the Fstab struct. And, let\u0027s formalize the path a bit:\n\n(1) It should reject the path if \"arg\" contains a delimiter character (\u0027:\u0027 maybe?). Then in the future we can make it delimited to support multiple devices if we want.\n(2) It should take absolute paths, and not make assumptions about /dev/block/by-name.",
+      "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
