@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7017e85f_f496ba88",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-29T16:13:12Z",
+      "side": 1,
+      "message": "squash these commits rather than duplicating in one and then removing the duplication in the next...",
+      "revId": "fb0aa3cd878d07cf542abd3b3a868fd3a44af388",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
