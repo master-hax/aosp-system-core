@@ -16,6 +16,24 @@
       "message": "Not for this CL, but this look like instead of introducing `NativeBridgeGuestRegs*`, we could have used `unwindstack::*_user_regs` directly. @dimitry@google.com",
       "revId": "4d538571aa0a70ca0033983371e6b885fc40fec9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "635062bf_7ee501fb",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-04-29T17:43:34Z",
+      "side": 1,
+      "message": "debuggerd is not the only user of guest_state_accessor. We want to minimize dependencies for third party tools.",
+      "parentUuid": "df035652_dab57466",
+      "revId": "4d538571aa0a70ca0033983371e6b885fc40fec9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
