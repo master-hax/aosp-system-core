@@ -100,31 +100,41 @@ static bool property_parse_bool(const char* name) {
   return cookie;
 }
 
-static bool get_prog_name(char* buf, size_t len) {
-  unique_fd fd(open("/proc/self/cmdline", O_RDONLY | O_CLOEXEC));
+static bool read_from_proc(char* filename, char* buf, size_t len) {
+  unique_fd fd(open(filename, O_RDONLY | O_CLOEXEC));
   if (fd == -1) {
+    async_safe_format_log(ANDROID_LOG_WARN, "libc",
+                        "open %s faild for tid %d, pid %d", filename, __gettid(), __getpid());
     return false;
   }
 
   ssize_t rc = read(fd, buf, len);
   if (rc == -1) {
+    async_safe_format_log(ANDROID_LOG_WARN, "libc",
+                        "read %s faild for tid %d, pid %d", filename, __gettid(), __getpid());
     return false;
   } else if (rc == 0) {
-    // Should never happen?
+    async_safe_format_log(ANDROID_LOG_WARN, "libc",
+                        "read 0B from %s for tid %d, pid %d", filename, __gettid(), __getpid());
     return false;
   }
 
   // There's a trailing newline, replace it with a NUL.
   buf[rc - 1] = '\0';
-
-  //get rid of /xxx/xxx/progname 
-  char* lastSlash = strrchr(buf, '/');
-  if (lastSlash != nullptr) {
-    // Copy the content after the last '/' to the beginning of buf
-    size_t remainingLen = strlen(lastSlash + 1);
-    memmove(buf, lastSlash + 1, remainingLen + 1);
-  }
   return true;
+}
+
+static bool get_prog_name(char* buf, size_t len) {
+  if (read_from_proc("/proc/self/cmdline", buf, len)) {
+    //some cmdline looks like: /xxx/.../xxx/progname, we just need progname
+    char* last_slash = strrchr(buf, '/');
+    if (last_slash != nullptr) {
+      size_t remaining_len = strlen(last_slash + 1);
+      memmove(buf, last_slash + 1, remaining_len + 1);
+    }
+    return true;
+  }
+  return false;
 }
 
 static bool is_permissive_mte() {
@@ -189,22 +199,7 @@ static void __noreturn __printflike(1, 2) fatal_errno(const char* fmt, ...) {
 }
 
 static bool get_main_thread_name(char* buf, size_t len) {
-  unique_fd fd(open("/proc/self/comm", O_RDONLY | O_CLOEXEC));
-  if (fd == -1) {
-    return false;
-  }
-
-  ssize_t rc = read(fd, buf, len);
-  if (rc == -1) {
-    return false;
-  } else if (rc == 0) {
-    // Should never happen?
-    return false;
-  }
-
-  // There's a trailing newline, replace it with a NUL.
-  buf[rc - 1] = '\0';
-  return true;
+  return read_from_proc("/proc/self/comm", buf, len);
 }
 
 /*
