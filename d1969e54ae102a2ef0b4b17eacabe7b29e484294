@@ -234,6 +234,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "91515cef_fd6e2d37",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-29T18:02:18Z",
+      "side": 1,
+      "message": "For my following up CL: aosp/3062926, it outputs the registers values, but the values are different for using `get()` and `malloc()`: https://paste.googleplex.com/6240342969417728",
+      "parentUuid": "e83ec02f_478dffa0",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648fc697_c02d2978",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
