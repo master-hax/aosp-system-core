@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa476b8d_2e34b7e6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1947108
+      },
+      "writtenOn": "2024-04-29T08:14:05Z",
+      "side": 1,
+      "message": "Hi Akilesh,\n\nWe have addressed all the review comments. Could you please have one more look at the CL?",
+      "revId": "6a35191e8a0a2cf34a6552a4bd91c7afa6887e44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
