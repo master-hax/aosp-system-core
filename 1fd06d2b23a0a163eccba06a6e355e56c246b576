@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58826216_b4f8c00c",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-30T20:14:36Z",
+      "side": 1,
+      "message": "I think:\n\n    if (msg \u003d\u003d \"stop\") return PROP_SUCCESS;",
+      "revId": "1fd06d2b23a0a163eccba06a6e355e56c246b576",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
