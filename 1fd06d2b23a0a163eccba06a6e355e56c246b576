@@ -16,6 +16,24 @@
       "message": "I think:\n\n    if (msg \u003d\u003d \"stop\") return PROP_SUCCESS;",
       "revId": "1fd06d2b23a0a163eccba06a6e355e56c246b576",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "088fb450_3437fee9",
+        "filename": "init/property_service.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-04-30T20:20:50Z",
+      "side": 1,
+      "message": "ah, yeah, the syntax is `setprop ctl.stop service-name`. for some reason it thought the name of the service went in the property name, not the value. fixed...",
+      "parentUuid": "58826216_b4f8c00c",
+      "revId": "1fd06d2b23a0a163eccba06a6e355e56c246b576",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
