@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f7c19b2_062750ed",
+        "filename": "fs_mgr/liblp/fuzzer/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-30T16:14:20Z",
+      "side": 1,
+      "message": "android-systems-storage@",
+      "revId": "0ff0b26cc0233e817a9096a9475ab7bc0643e1de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
