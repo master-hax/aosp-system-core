@@ -270,6 +270,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d2b1360a_ea9363a2",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-04-30T23:27:04Z",
+      "side": 1,
+      "message": "Sure, uploaded the code. Basically, I changed the line `malloc` with `make_unique`. I tried out `(std::make_unique\u003cunsigned char[]\u003e(guest_state_data_size)).get()`, and `reinterpret_cast\u003cvoid*\u003e((std::make_unique\u003cunsigned char[]\u003e(guest_state_data_size)).get())`.",
+      "parentUuid": "4d88c374_1c7f5b59",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648fc697_c02d2978",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
