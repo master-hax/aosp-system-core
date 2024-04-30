@@ -288,6 +288,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e58ab417_d6f345b2",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1069991
+      },
+      "writtenOn": "2024-04-30T23:47:56Z",
+      "side": 1,
+      "message": "Oh. No wonder nothing worked!\n\nPlease read https://abseil.io/tips/5 to understand why that would never work.\n\nC++ is dangerous here (and not just here, unfortunately).\n\nTo use `unique_ptr` you have to give it some name, or else memory would be freed at the end of the expression and then `guest_state_data_copy` would be instantly invalid.",
+      "parentUuid": "d2b1360a_ea9363a2",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "648fc697_c02d2978",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 5
