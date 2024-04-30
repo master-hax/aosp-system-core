@@ -51,6 +51,24 @@
       "parentUuid": "002fdc93_a1f6eb40",
       "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "698ea681_64a63291",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-04-30T01:28:31Z",
+      "side": 1,
+      "message": "I\u0027ve been trying to implement that, but a bit stuck, since it seems vdc.cpp-\u003emain() is very hard to determine the variable strings of device paths. Thoughts?",
+      "parentUuid": "286da544_9f9ba628",
+      "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
