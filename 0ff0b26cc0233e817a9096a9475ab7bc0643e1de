@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "14726101_9625e555",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1559553
+      },
+      "writtenOn": "2024-04-30T22:26:05Z",
+      "side": 1,
+      "message": "Looks good to me after updating the `cc` field as requested by dvander@.",
+      "revId": "0ff0b26cc0233e817a9096a9475ab7bc0643e1de",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9f7c19b2_062750ed",
