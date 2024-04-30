@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3634fc5a_08fb3fb3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-04-30T02:00:58Z",
+      "side": 1,
+      "message": "Based on the discussion in ag/25760532, I provided an API to replace ro.vndk.version.",
+      "revId": "c0659f0107014651f24d7d14cc8ce301e6a0467d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
