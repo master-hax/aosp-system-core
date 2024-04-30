@@ -69,6 +69,24 @@
       "parentUuid": "286da544_9f9ba628",
       "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2788ef4_dcfb57cb",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-04-30T16:13:22Z",
+      "side": 1,
+      "message": "Store the \"arg\" as a string right in fstab. Add a method to libfstab like:\n\n    std::vector\u003cstd::pair\u003cstd::string, std::string\u003e\u003e ParseMountDevices(const std::string\u0026 string);\n\nReturning empty if parsing failed. Parse the whole string to vdc, then vold can parse it out.\n\nLater this year we\u0027ll clean this up so that fs_mgr doesn\u0027t need to call to vdc.",
+      "parentUuid": "698ea681_64a63291",
+      "revId": "70e8195ea220da6358d4b654fe16211e391fe61b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
