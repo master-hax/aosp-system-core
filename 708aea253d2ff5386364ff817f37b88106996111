@@ -221,6 +221,30 @@
       },
       "revId": "708aea253d2ff5386364ff817f37b88106996111",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54817186_2ffd5ec4",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-01T18:34:04Z",
+      "side": 1,
+      "message": "Discussed with Dimitry, it makes sense that this function returns a pointer that will need ptrace to get values will be confusing. I modified this function to retrieve the content of TLS slot pointer points to. Combined this CL and the next one aosp/3012385 for easier reviewing.",
+      "parentUuid": "93889cb1_2b5c6f0c",
+      "range": {
+        "startLine": 443,
+        "startChar": 33,
+        "endLine": 443,
+        "endChar": 43
+      },
+      "revId": "708aea253d2ff5386364ff817f37b88106996111",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
