@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16c05e6c_04173bfc",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-01T23:21:32Z",
+      "side": 1,
+      "message": "Can we just push_back(param[1]) unconditionally? Why do we need to special case \"exp\"?",
+      "revId": "c823c7a88b2869c41fb1a8d6dedcad941d7ded21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
