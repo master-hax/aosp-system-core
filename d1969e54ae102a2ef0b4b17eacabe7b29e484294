@@ -304,6 +304,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cead13c0_17e81c18",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-01T18:36:05Z",
+      "side": 1,
+      "message": "Ah, thanks for sharing the article! Fixed the issue by separating the `unique_ptr` creation and `get()`.\n\nWill upload the updated version shortly.",
+      "parentUuid": "e58ab417_d6f345b2",
+      "revId": "d1969e54ae102a2ef0b4b17eacabe7b29e484294",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "648fc697_c02d2978",
