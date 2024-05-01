@@ -1,0 +1,33 @@
+soong_namespace {
+}
+
+cc_binary {
+    name: "init_first_stage.microdroid",
+    defaults: [
+        "avf_build_flags_cc",
+        "init_first_stage_defaults",
+    ],
+    cflags: ["-DMICRODROID=1"],
+}
+
+cc_library_static {
+    name: "libinit.microdroid",
+    defaults: [
+        "avf_build_flags_cc",
+        "libinit_defaults",
+    ],
+    recovery_available: false,
+    cflags: ["-DMICRODROID=1"],
+}
+
+cc_binary {
+    name: "init_second_stage.microdroid",
+    defaults: [
+        "avf_build_flags_cc",
+        "init_second_stage_defaults",
+    ],
+    recovery_available: false,
+    static_libs: ["libinit.microdroid"],
+    cflags: ["-DMICRODROID=1"],
+    visibility: ["//packages/modules/Virtualization/microdroid"],
+}
