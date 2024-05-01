@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2a4c6a8_b458cc64",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-01T00:51:19Z",
+      "side": 1,
+      "message": "can you put these in our Android.bp so we catch them?",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 12,
+        "endChar": 23
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "141bbc5d_3540e89f",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-01T00:51:19Z",
+      "side": 1,
+      "message": "I think someone else put a patch up for this recently. Are you sure it\u0027s still needed?",
+      "range": {
+        "startLine": 25,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
