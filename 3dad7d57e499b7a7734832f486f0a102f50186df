@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "32d934f6_1635beed",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Removed this and following unused imports. I added for debugging but forgot to remove.",
+      "parentUuid": "ee3e07fb_83da2792",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2664ab31_a6d712fa",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-05-02T02:25:13Z",
       "side": 1,
       "message": "ditto, I don\u0027t immediatly see new code using this.",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f347898e_cec38f08",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2664ab31_a6d712fa",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d540367_91824514",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4543407_844361a2",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e915f997_b4b7c4aa",
@@ -82,6 +136,24 @@
       "writtenOn": "2024-05-02T06:35:44Z",
       "side": 1,
       "message": "If you instead return bool and save value into `uintptr_t* result` you can use construction like this below\n\n```\nif(!PtrecePeek(PTRACE_PEEKUSER, tid, ..., \u0026result)) {\n  return false;\n}\n```\n\nI would also suggest renaming this method to PtracePeek, since the helper is only needed for PEEK* reuqests.\n\nWhy is Addr templated?",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "905305b6_5247f7fe",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Ah, makes sense. Updated the function. For the Addr template, the pass in addresses are different for different calls. `offsetof(user_regs_struct, fs_base)` is unsigned long, `PtracePeek(PTRACE_PEEKDATA, tid, ptr...`\u0027s ptr is NativeBridgeGuestStateHeader*, etc. I tried to use unsigned long or void* but didn\u0027t work. It seems the `ptrace` signature uses `void*`, don\u0027t understand why it works for `ptrace()`.",
+      "parentUuid": "e915f997_b4b7c4aa",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -121,6 +193,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0838b950_60f7fa99",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Ah, gotcha, found the example: https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/libbase/include/android-base/logging.h;l\u003d33-38;drc\u003da42e5bd845b7f4b09fa5608f4fb433b0cd2eebcf;bpv\u003d0;bpt\u003d1.",
+      "parentUuid": "dc46fa2e_285a9bac",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "de179f1f_7cefbff4",
@@ -134,6 +224,30 @@
       "writtenOn": "2024-05-02T02:25:13Z",
       "side": 1,
       "message": "nit: I\u0027d suggest either `ptrace_success` or `is_ptrace_successful`",
+      "range": {
+        "startLine": 441,
+        "startChar": 7,
+        "endLine": 441,
+        "endChar": 24
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d4390bc_6dc6a442",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Modified the function to return boolean so doesn\u0027t need this variable anymore.",
+      "parentUuid": "de179f1f_7cefbff4",
       "range": {
         "startLine": 441,
         "startChar": 7,
@@ -167,6 +281,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "334c9b24_e0a19166",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Is it because the uintptr_t is unsigned long so can be implicitly casted? Removed all casts.",
+      "parentUuid": "26533ae0_6659c6c3",
+      "range": {
+        "startLine": 443,
+        "startChar": 22,
+        "endLine": 443,
+        "endChar": 45
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2452c645_963955d9",
@@ -184,6 +322,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f9d7b0e_ba3c3889",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Gotcha, revert to the previous code.",
+      "parentUuid": "2452c645_963955d9",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5baff55c_97c03f11",
@@ -197,6 +353,24 @@
       "writtenOn": "2024-05-02T02:25:13Z",
       "side": 1,
       "message": "```suggestion\n  auto ptr_to_guest_slot \u003d reg + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uintptr_t);\n```",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4433e64_fc11f53a",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5baff55c_97c03f11",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -224,6 +398,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bf7d873_40f231f1",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3b67a06_6f37d484",
+      "range": {
+        "startLine": 477,
+        "startChar": 2,
+        "endLine": 477,
+        "endChar": 19
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "427b7a30_e6bb9207",
@@ -237,6 +435,24 @@
       "writtenOn": "2024-05-02T02:25:13Z",
       "side": 1,
       "message": "assert that is_ptrace_success is true?",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72dec89d_a56dd245",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Checked the new function return true before this check.",
+      "parentUuid": "427b7a30_e6bb9207",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -258,6 +474,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "26fe8901_110dac18",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Ah, didn\u0027t know this way, updated all.",
+      "parentUuid": "33d520fb_5dd93027",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be59ffd1_f67df671",
@@ -271,6 +505,24 @@
       "writtenOn": "2024-05-02T02:25:13Z",
       "side": 1,
       "message": "Not for this CL, but we also need to add sp to NativeBridgeGuestRegsArm64, and copy it over in here. Let\u0027s add a TODO for now.\n```suggestion\n      // TODO(b/232431111): Add sp to NativeBridgeGuestRegsArm64 and copy it over here.\n      arm64_user_regs.pc \u003d guest_regs.regs_arm64.ip;\n```",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ac5e392_472f809b",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T19:42:59Z",
+      "side": 1,
+      "message": "Gotcha, added todo.",
+      "parentUuid": "be59ffd1_f67df671",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
