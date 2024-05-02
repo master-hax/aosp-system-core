@@ -1,0 +1,209 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d03e8f05_b874f398",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "looks good overall, but there is still quite a bit of polishing to do",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee3e07fb_83da2792",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "Is the code you are adding actually using this? Or is it a missing include for the existing code?",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2664ab31_a6d712fa",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "ditto, I don\u0027t immediatly see new code using this.",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4543407_844361a2",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "remove duplicated header",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de179f1f_7cefbff4",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "nit: I\u0027d suggest either `ptrace_success` or `is_ptrace_successful`",
+      "range": {
+        "startLine": 441,
+        "startChar": 7,
+        "endLine": 441,
+        "endChar": 24
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26533ae0_6659c6c3",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "I don\u0027t think this cast is needed and you don\u0027t consistently cast it below anyway.",
+      "range": {
+        "startLine": 443,
+        "startChar": 22,
+        "endLine": 443,
+        "endChar": 45
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5baff55c_97c03f11",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "```suggestion\n  auto ptr_to_guest_slot \u003d reg + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uintptr_t);\n```",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3b67a06_6f37d484",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "and remove `is_valid`\n\n```suggestion\n  return false;\n```",
+      "range": {
+        "startLine": 477,
+        "startChar": 2,
+        "endLine": 477,
+        "endChar": 19
+      },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "427b7a30_e6bb9207",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "assert that is_ptrace_success is true?",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33d520fb_5dd93027",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "I\u0027d suggest a shorter syntax. Same below\n\n```suggestion\n      regs-\u003ereset(unwindstack::RegsArm::Read(\u0026arm_user_regs));\n```",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be59ffd1_f67df671",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-02T02:25:13Z",
+      "side": 1,
+      "message": "Not for this CL, but we also need to add sp to NativeBridgeGuestRegsArm64, and copy it over in here. Let\u0027s add a TODO for now.\n```suggestion\n      // TODO(b/232431111): Add sp to NativeBridgeGuestRegsArm64 and copy it over here.\n      arm64_user_regs.pc \u003d guest_regs.regs_arm64.ip;\n```",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
