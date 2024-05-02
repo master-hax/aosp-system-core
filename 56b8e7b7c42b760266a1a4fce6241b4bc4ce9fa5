@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "093a96c9_197acf1b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-02T11:27:13Z",
+      "side": 1,
+      "message": "ThreadType here and elsewhere",
+      "revId": "56b8e7b7c42b760266a1a4fce6241b4bc4ce9fa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91147068_737420fe",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-02T11:27:13Z",
+      "side": 1,
+      "message": "maybe extract function that returns string based on Architecture and call it from these both functions.",
+      "revId": "56b8e7b7c42b760266a1a4fce6241b4bc4ce9fa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
