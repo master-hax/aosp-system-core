@@ -71,6 +71,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e915f997_b4b7c4aa",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-02T06:35:44Z",
+      "side": 1,
+      "message": "If you instead return bool and save value into `uintptr_t* result` you can use construction like this below\n\n```\nif(!PtrecePeek(PTRACE_PEEKUSER, tid, ..., \u0026result)) {\n  return false;\n}\n```\n\nI would also suggest renaming this method to PtracePeek, since the helper is only needed for PEEK* reuqests.\n\nWhy is Addr templated?",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bba99da8_b300eec0",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-02T06:35:44Z",
+      "side": 1,
+      "message": "here you can also add strerror(errno) to provide more context.",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "de179f1f_7cefbff4",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 13
@@ -111,6 +145,23 @@
         "endLine": 443,
         "endChar": 45
       },
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2452c645_963955d9",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-02T06:35:44Z",
+      "side": 1,
+      "message": "you don\u0027t really need to use the helper for GETREGSET - my understanding is that confusion with result only happens for PEEK* queries.",
       "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
