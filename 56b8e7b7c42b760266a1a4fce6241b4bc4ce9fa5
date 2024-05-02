@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac523a8e_dbf20217",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T21:05:49Z",
+      "side": 1,
+      "message": "Sure, updated all.",
+      "parentUuid": "093a96c9_197acf1b",
+      "revId": "56b8e7b7c42b760266a1a4fce6241b4bc4ce9fa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91147068_737420fe",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-05-02T11:27:13Z",
       "side": 1,
       "message": "maybe extract function that returns string based on Architecture and call it from these both functions.",
+      "revId": "56b8e7b7c42b760266a1a4fce6241b4bc4ce9fa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0fec439_89f83715",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-02T21:05:49Z",
+      "side": 1,
+      "message": "Ah, makes sense. Updated.",
+      "parentUuid": "91147068_737420fe",
       "revId": "56b8e7b7c42b760266a1a4fce6241b4bc4ce9fa5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
