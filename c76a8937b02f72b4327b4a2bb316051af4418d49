@@ -34,6 +34,24 @@
       "parentUuid": "5931b55a_5b5d1bc2",
       "revId": "c76a8937b02f72b4327b4a2bb316051af4418d49",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6839278_86495529",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-02T21:35:35Z",
+      "side": 1,
+      "message": "Yep, I will submit since it does look like it\u0027s getting fixed soon.",
+      "parentUuid": "f0065206_1e4de232",
+      "revId": "c76a8937b02f72b4327b4a2bb316051af4418d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
