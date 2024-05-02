@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5931b55a_5b5d1bc2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-02T00:34:25Z",
+      "side": 1,
+      "message": "enh, I think you mentioned possibly doing this in the future. Obviously, I\u0027m not submitting until that other bug is fixed though.",
+      "revId": "c76a8937b02f72b4327b4a2bb316051af4418d49",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
