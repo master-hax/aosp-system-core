@@ -585,6 +585,8 @@ bool tombstone_proto_to_text(const Tombstone& tombstone, CallbackType callback) 
   CBL("ABI: '%s'", abi_string(tombstone));
   CBL("Timestamp: %s", tombstone.timestamp().c_str());
   CBL("Process uptime: %ds", tombstone.process_uptime());
+  CBL("Page size: %d bytes", tombstone.page_size());
+  CBL("Has been in 16kb mode: %s", tombstone.has_been_16kb_mode() ? "yes" : "no");
 
   // Process header
   const auto& threads = tombstone.threads();
