@@ -91,6 +91,30 @@
       },
       "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65c1aed7_436dc51a",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-03T20:05:36Z",
+      "side": 1,
+      "message": "31 is `sp` in `arm64_user_regs` and it doesn\u0027t exist in `NativeBridgeGuestRegsArm64` yet. There is a TODO for this at line#515",
+      "parentUuid": "62401df1_d6337a18",
+      "range": {
+        "startLine": 512,
+        "startChar": 25,
+        "endLine": 512,
+        "endChar": 55
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
