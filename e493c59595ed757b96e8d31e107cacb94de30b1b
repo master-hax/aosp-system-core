@@ -169,6 +169,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b0ddd0c4_bd8f5229",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-05-03T23:49:12Z",
+      "side": 1,
+      "message": "It looks like we can\u0027t make the proto fields optional right now.\n\n```\nsystem/core/debuggerd/proto/tombstone.proto: is a proto3 file that contains optional fields, but code generator protoc-gen-javastream hasn\u0027t been updated to support optional fields in proto3. Please ask the owner of this code generator to support proto3 optional.--javastream_out\n```\n\nWe can choose not to print anything in the proto_to_text file though.",
+      "parentUuid": "77785007_4f304f36",
+      "range": {
+        "startLine": 588,
+        "startChar": 0,
+        "endLine": 588,
+        "endChar": 52
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "81975262_62666249",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1
