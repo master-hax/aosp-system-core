@@ -94,6 +94,29 @@
       },
       "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c342cf56_5a81f3af",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-03T23:35:44Z",
+      "side": 1,
+      "message": "btw should this be:\n\n```\nif (tombstone.page_size() !\u003d 4096) { ... }\n```\n\nsame with the one below?\n\nidk if we want to expose this on 1,000,000,000s of devices if they are only 4096 mode.",
+      "range": {
+        "startLine": 588,
+        "startChar": 0,
+        "endLine": 588,
+        "endChar": 52
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
