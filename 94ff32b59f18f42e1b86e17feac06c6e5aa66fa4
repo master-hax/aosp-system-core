@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf89a7aa_e5c5b3bb",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T19:45:17Z",
+      "side": 1,
+      "message": "It doesn\u0027t look like you are using the unwind_guest_ret any where else, so it would probably be better to restructure this slightly:\n\nif (guest_unwinder-\u003eUnwind(...)) {\n  dump();\n} else {\n  // error\n}",
+      "range": {
+        "startLine": 526,
+        "startChar": 0,
+        "endLine": 533,
+        "endChar": 5
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89faeb74_08385c88",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T19:45:17Z",
+      "side": 1,
+      "message": "It might be better to only print this if the guest architecture is not unknown. Otherwise, it might confuse people looking at the line in a normal tombstone.",
+      "range": {
+        "startLine": 614,
+        "startChar": 0,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
