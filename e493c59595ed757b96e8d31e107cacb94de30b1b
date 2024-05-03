@@ -98,6 +98,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6245698f_468e265f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-03T23:41:47Z",
+      "side": 1,
+      "message": "I think it\u0027s probably because of this rule:\n```\ndontaudit crash_dump property_type:file read;\n```\n\nYou should need:\n\n```\ngetprop(crash_dump, misctrl_prop)\n```\n\nand also need to include a `-crash_dump` in the associated neverallow.\n\nYou should be able to test on pgagnostic CF, or I can try as well, to make sure it can print \u0027true\u0027.",
+      "parentUuid": "4a6b3c7a_5097b57a",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c342cf56_5a81f3af",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1
