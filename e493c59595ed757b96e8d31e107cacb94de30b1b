@@ -70,6 +70,30 @@
       },
       "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a6b3c7a_5097b57a",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-05-03T22:57:23Z",
+      "side": 1,
+      "message": "Also added fatal log to the health service on boot with no root access and still no avc denial. Whatever is creating these tombstones([crash_dump64](https://source.android.com/docs/core/tests/debug#debuggerd)?) doesn\u0027t seem to need permission.",
+      "parentUuid": "cc996c19_f8a685f7",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
