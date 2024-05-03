@@ -193,6 +193,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c1ca1263_c30645ba",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-03T23:57:34Z",
+      "side": 1,
+      "message": "The proto probably should always have the data, but we don\u0027t have to print it yeah. You might see what crash_dump peeps think, but I imagine when most devices are still 4KB, it might be more of a distraction.",
+      "parentUuid": "b0ddd0c4_bd8f5229",
+      "range": {
+        "startLine": 588,
+        "startChar": 0,
+        "endLine": 588,
+        "endChar": 52
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "81975262_62666249",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1
@@ -228,6 +252,30 @@
       "side": 1,
       "message": "Only show this particular line if it\u0027s true, or only show either of these fields if this is true?\n\nLike a natural 16k devices without switching to/from doesn\u0027t need this info?",
       "parentUuid": "81975262_62666249",
+      "range": {
+        "startLine": 589,
+        "startChar": 0,
+        "endLine": 589,
+        "endChar": 82
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d7f2919_0fb7e547",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-03T23:57:34Z",
+      "side": 1,
+      "message": "I think the best condition might be:\n\n```\nif (tombstone.has_been_16kb_mode() \u0026\u0026 tombstone.page_size() !\u003d 16384) {\n    CBL(\"Has been in 16kb mode: %s\", tombstone.has_been_16kb_mode() ? \"yes\" : \"no\");\n```\n\n(both conditions because 99.999% of the time it will be false, and also if the page size is 16K, this one should also be true)",
+      "parentUuid": "ac6e55ed_d6322d2d",
       "range": {
         "startLine": 589,
         "startChar": 0,
