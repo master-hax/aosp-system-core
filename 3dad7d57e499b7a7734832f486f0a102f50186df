@@ -160,6 +160,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "34548124_53f4d927",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1069898
+      },
+      "writtenOn": "2024-05-03T01:14:04Z",
+      "side": 1,
+      "message": "`ptrace` is a [variadic function](https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:bionic/libc/bionic/ptrace.cpp;l\u003d34?q\u003dbionic%20ptrace\u0026sq\u003drepo:googleplex-android%2Fplatform%2Fsuperproject%2Fmain%20b:main). It means that compiler doesn\u0027t check if types of arguments you provide really match what that function expects.\n\nThis template-based casting doesn\u0027t look safe. It\u0027s better to take either `void*` or `uintptr_t` as the argument to `PtracePeek`, and cast the argument on the caller side where needed (you don\u0027t need to cast `Type*` to `void*` explicitly). You can also make two `PtracePeek` overloads: one taking `void*` and another taking `uintptr_t`, one of them casting this argument and calling the other.",
+      "parentUuid": "905305b6_5247f7fe",
+      "revId": "3dad7d57e499b7a7734832f486f0a102f50186df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bba99da8_b300eec0",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 13
