@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05d98e9d_4a40e76c",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T18:45:49Z",
+      "side": 1,
+      "message": "There is a little bit of copy/paste code here. It\u0027s not bad, but you could change this slightly to something like:\n\nuintptr_t header_ptr \u003d 0;\nuintptr_t base \u003d 0;\n\n#if defined(_x86_64__)\n  .\n  .\n  .\n  base \u003d fs_base;\n#elif defined(__aarch64__)\n  .\n  .\n  .\n  base \u003d reg;\n #else\n  .\n  .\n  .\n #endif\n \n  uintptr_t addr \u003d base + TLS_SLOT_NATIVE_BRIDGE_GUEST_STATE * sizeof(uintptr_t);\n  if (!PtracePeek(PTRACE_PEEKDATA, tid, addr, 0,\n                  \"failed to get guest state TLS slot content for thread \" + std::to_string(tid),\n                  \u0026header_ptr)) {\n    return false;\n  }\n  \nAs mentioned in the other comment, the address value for ptrace should be either a pointer or a uintptr_t. You might have to do a cast for the base \u003d reg though.",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 445,
+        "endChar": 3
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4505d9b5_70cea633",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T18:45:49Z",
+      "side": 1,
+      "message": "Is it possible to change this to a single ptrace that reads the whole structure? Or is the worry that the structure will not be the same depending on the arch of the debuggerd code? It\u0027s probably safer to do two reads, but it might also be a good idea to keep them in a copy of the structure also.",
+      "range": {
+        "startLine": 474,
+        "startChar": 7,
+        "endLine": 474,
+        "endChar": 17
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8c76f3b_812f33b8",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T18:45:49Z",
+      "side": 1,
+      "message": "There is a way to create a memory object using the libunwindstack code to create an object that can be used to read memory from the remote process. You would create it like:\n\nauto process_memory \u003d unwindstack::Memory::CreateProcessMemoryCached(tid);\n\nThen use it like:\n\n  if (!process_memory-\u003eReadFully(addr, \u0026data, size_of_data_to_read)) {\n    return false;\n  }\n  \nI think it might make this code easier to read and avoid all of the ptrace calls.\n\nBut it\u0027s up to you. I\u0027m a bit worried that the open might fail due to some security restrictions.",
+      "range": {
+        "startLine": 484,
+        "startChar": 0,
+        "endLine": 484,
+        "endChar": 77
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62401df1_d6337a18",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-03T18:45:49Z",
+      "side": 1,
+      "message": "Should this be \u003c\u003d? Otherwise you got get register 31.",
+      "range": {
+        "startLine": 512,
+        "startChar": 25,
+        "endLine": 512,
+        "endChar": 55
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
