@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c75098f3_76c9f848",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-04T00:37:38Z",
+      "side": 1,
+      "message": "N/A.",
+      "parentUuid": "4e6e9295_9993b8aa",
+      "range": {
+        "startLine": 474,
+        "startChar": 7,
+        "endLine": 474,
+        "endChar": 17
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c8c76f3b_812f33b8",
