@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a2dccd12_7605efbf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-04T00:37:46Z",
+      "side": 1,
+      "message": "where does the build fail then? Can we disable the warning there, or can we add a test for that?",
+      "parentUuid": "649f16a7_5b2b4af0",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 12,
+        "endChar": 23
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "141bbc5d_3540e89f",
         "filename": "libutils/binder/Android.bp",
         "patchSetId": 1
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "Just synced and I\u0027m still hitting it: https://paste.googleplex.com/6256092748709888?raw",
       "parentUuid": "141bbc5d_3540e89f",
+      "range": {
+        "startLine": 25,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b4b4732_0de2ea5c",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-04T00:37:46Z",
+      "side": 1,
+      "message": "can you guard the specific section rather than disabling it everywhere?",
+      "parentUuid": "b58dc640_ea822e34",
       "range": {
         "startLine": 25,
         "startChar": 2,
