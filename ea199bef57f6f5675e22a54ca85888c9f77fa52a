@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8f9e249b_fbc5ae00",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-04T00:36:25Z",
+      "side": 1,
+      "message": "Ah, thanks for catching this. Is it safe to assume that uint64_t is the same as uintptr_t in ARM64? It seems the base \u003d reg can work directly. Wonder if can use `base` to replace with `reg`.",
+      "parentUuid": "05d98e9d_4a40e76c",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 445,
+        "endChar": 3
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4505d9b5_70cea633",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 17
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4e6e9295_9993b8aa",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-04T00:36:25Z",
+      "side": 1,
+      "message": "Do you mean the whole NativeBridgeGuestStateHeader structure? Hmm, as I understand the ptrace(PTRACE_PEEKDATA,...) return a word per time, but the whole structure is larger than that",
+      "parentUuid": "4505d9b5_70cea633",
+      "range": {
+        "startLine": 474,
+        "startChar": 7,
+        "endLine": 474,
+        "endChar": 17
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c8c76f3b_812f33b8",
         "filename": "debuggerd/crash_dump.cpp",
         "patchSetId": 17
@@ -60,6 +108,30 @@
       "writtenOn": "2024-05-03T18:45:49Z",
       "side": 1,
       "message": "There is a way to create a memory object using the libunwindstack code to create an object that can be used to read memory from the remote process. You would create it like:\n\nauto process_memory \u003d unwindstack::Memory::CreateProcessMemoryCached(tid);\n\nThen use it like:\n\n  if (!process_memory-\u003eReadFully(addr, \u0026data, size_of_data_to_read)) {\n    return false;\n  }\n  \nI think it might make this code easier to read and avoid all of the ptrace calls.\n\nBut it\u0027s up to you. I\u0027m a bit worried that the open might fail due to some security restrictions.",
+      "range": {
+        "startLine": 484,
+        "startChar": 0,
+        "endLine": 484,
+        "endChar": 77
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da3d9312_198b1f49",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-04T00:36:25Z",
+      "side": 1,
+      "message": "Ah, this looks nice, thanks. Didn\u0027t know this function. Updated to use this function, but keep ptrace call for PTRACE_PEEKUSER and PTRACE_GETREGSET.",
+      "parentUuid": "c8c76f3b_812f33b8",
       "range": {
         "startLine": 484,
         "startChar": 0,
@@ -107,6 +179,30 @@
       "side": 1,
       "message": "31 is `sp` in `arm64_user_regs` and it doesn\u0027t exist in `NativeBridgeGuestRegsArm64` yet. There is a TODO for this at line#515",
       "parentUuid": "62401df1_d6337a18",
+      "range": {
+        "startLine": 512,
+        "startChar": 25,
+        "endLine": 512,
+        "endChar": 55
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79b4bb43_0515fb56",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-04T00:36:25Z",
+      "side": 1,
+      "message": "Thanks Lev for the explanation. Right, the NativeBridgeGuestRegs... doesn\u0027t match the .._user_regs exactly.",
+      "parentUuid": "65c1aed7_436dc51a",
       "range": {
         "startLine": 512,
         "startChar": 25,
