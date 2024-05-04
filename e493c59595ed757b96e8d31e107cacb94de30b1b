@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "75412dc8_4d8f3b58",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-04T00:01:46Z",
+      "side": 1,
+      "message": "Android",
+      "range": {
+        "startLine": 9,
+        "startChar": 9,
+        "endLine": 9,
+        "endChar": 17
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d8850443_44a94a5e",
         "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
         "patchSetId": 1
@@ -110,6 +133,30 @@
       "side": 1,
       "message": "I think it\u0027s probably because of this rule:\n```\ndontaudit crash_dump property_type:file read;\n```\n\nYou should need:\n\n```\ngetprop(crash_dump, misctrl_prop)\n```\n\nand also need to include a `-crash_dump` in the associated neverallow.\n\nYou should be able to test on pgagnostic CF, or I can try as well, to make sure it can print \u0027true\u0027.",
       "parentUuid": "4a6b3c7a_5097b57a",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4abdf46_06b16947",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-04T00:01:46Z",
+      "side": 1,
+      "message": "we don\u0027t include properties in the tombstone --- they\u0027re all bug reports separately anyway.",
+      "parentUuid": "6245698f_468e265f",
       "range": {
         "startLine": 718,
         "startChar": 0,
@@ -276,6 +323,30 @@
       "side": 1,
       "message": "I think the best condition might be:\n\n```\nif (tombstone.has_been_16kb_mode() \u0026\u0026 tombstone.page_size() !\u003d 16384) {\n    CBL(\"Has been in 16kb mode: %s\", tombstone.has_been_16kb_mode() ? \"yes\" : \"no\");\n```\n\n(both conditions because 99.999% of the time it will be false, and also if the page size is 16K, this one should also be true)",
       "parentUuid": "ac6e55ed_d6322d2d",
+      "range": {
+        "startLine": 589,
+        "startChar": 0,
+        "endLine": 589,
+        "endChar": 82
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b808ae3b_b1627903",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-04T00:01:46Z",
+      "side": 1,
+      "message": "yeah, +1 to not saying anything unless it\u0027s not 4096.",
+      "parentUuid": "7d7f2919_0fb7e547",
       "range": {
         "startLine": 589,
         "startChar": 0,
