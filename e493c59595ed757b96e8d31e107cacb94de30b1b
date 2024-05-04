@@ -217,6 +217,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "aa3b3df2_3d81d37d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-04T00:47:55Z",
+      "side": 1,
+      "message": "or do you mean crash_dump isn\u0027t safe to read it?",
+      "parentUuid": "0994e4e6_9cdb1ea3",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c342cf56_5a81f3af",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1
