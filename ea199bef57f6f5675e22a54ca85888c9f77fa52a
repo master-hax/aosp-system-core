@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6662e259_ffb9f763",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-06T21:27:57Z",
+      "side": 1,
+      "message": "Gotcha, thanks for the explanation.",
+      "parentUuid": "93f710ca_5788c9be",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 445,
+        "endChar": 3
+      },
+      "revId": "ea199bef57f6f5675e22a54ca85888c9f77fa52a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4505d9b5_70cea633",
