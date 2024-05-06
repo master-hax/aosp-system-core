@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8e8d742_4b6f8c8c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-05-06T17:31:50Z",
+      "side": 1,
+      "message": "Well, it only fails when built with GCC or Clang outside of Android. We aim to test building binder_sdk on TreeHugger, don\u0027t we?\n\nI disabled a bunch of warnings there: http://shortn/_L659rdfd1h - but these few I decided would be worth fixing.",
+      "parentUuid": "a2dccd12_7605efbf",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 12,
+        "endChar": 23
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "141bbc5d_3540e89f",
@@ -133,6 +157,30 @@
       "side": 1,
       "message": "can you guard the specific section rather than disabling it everywhere?",
       "parentUuid": "b58dc640_ea822e34",
+      "range": {
+        "startLine": 25,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "667d5080cdaa7508f0839e49ee3f09be74bd6467",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33a8e666_0eddd758",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-05-06T17:31:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b4b4732_0de2ea5c",
       "range": {
         "startLine": 25,
         "startChar": 2,
