@@ -241,6 +241,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f45a9264_6d34951f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-06T22:17:00Z",
+      "side": 1,
+      "message": "I don\u0027t have a strong opinion on this, I think it should be okay to add this property reading if it really can\u0027t be found any other way. But we should really avoid adding too many.\n\nIt depends on how strong an aversion to this enh has, I don\u0027t remember any history that means we should avoid this. But enh might have a case that could be a problem.\n\nI wonder if there is any problem that could cause this to deadlock if the process is reading a property when it crashes.",
+      "parentUuid": "aa3b3df2_3d81d37d",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c342cf56_5a81f3af",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1

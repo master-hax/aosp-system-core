@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53587d81_146e0959",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-06T22:17:00Z",
+      "side": 1,
+      "message": "I did do a quick check on this, and it\u0027s basically a nop on a device that is 4K page size and does not set the property. I also verified that this works on a secured process, my go to process to test is media.swcodec.",
+      "revId": "beb7d0fdc6ee4c5755343d0d5b83330caf23afb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41d11c6c_c6896aed",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-06T22:17:00Z",
+      "side": 1,
+      "message": "I don\u0027t know if this comment is useful. If the property ever changes, then the comment becomes wrong. And it\u0027s unlikely to be modified. The name of the field seems pretty descriptive, which is why I don\u0027t think the comment adds a lot of value, and might one day be harmful.",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 78
+      },
+      "revId": "beb7d0fdc6ee4c5755343d0d5b83330caf23afb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
