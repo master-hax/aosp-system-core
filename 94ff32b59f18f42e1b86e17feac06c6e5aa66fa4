@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bec5334d_9c801685",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-06T18:03:10Z",
+      "side": 1,
+      "message": "Gotcha, updated to removed the variable.",
+      "parentUuid": "bf89a7aa_e5c5b3bb",
+      "range": {
+        "startLine": 526,
+        "startChar": 0,
+        "endLine": 533,
+        "endChar": 5
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "89faeb74_08385c88",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-05-03T19:45:17Z",
       "side": 1,
       "message": "It might be better to only print this if the guest architecture is not unknown. Otherwise, it might confuse people looking at the line in a normal tombstone.",
+      "range": {
+        "startLine": 614,
+        "startChar": 0,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1f61df7_499c16b3",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-06T18:03:10Z",
+      "side": 1,
+      "message": "Do we want to print this when the guest state is supported? Currently is riscv but might be extended to other arch in the future.",
+      "parentUuid": "89faeb74_08385c88",
       "range": {
         "startLine": 614,
         "startChar": 0,
