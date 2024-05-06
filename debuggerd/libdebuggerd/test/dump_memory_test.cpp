@@ -83,6 +83,9 @@ const char g_expected_partial_dump[] = \
 "    12345630 53525150 57565554 5b5a5958 5f5e5d5c  PQRSTUVWXYZ[\\]^_\n";
 #endif
 
+constexpr size_t k4kPageSizeBytes = 0x1000;
+constexpr size_t k16kPageSizeBytes = 0x4000;
+
 class MemoryMock : public unwindstack::Memory {
  public:
   virtual ~MemoryMock() = default;
@@ -490,10 +493,12 @@ TEST_F(DumpMemoryTest, first_read_empty) {
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
   ASSERT_TRUE(android::base::ReadFdToString(log_.tfd, &tombstone_contents));
-  const char* expected_dump = \
-"\nmemory near r4:\n"
+  if (page_size == k4kPageSizeBytes) {
+    // 4k page size
+    const char* expected_dump =
+        "\nmemory near r4:\n"
 #if defined(__LP64__)
-R"(    0000000010001000 8786858483828180 8f8e8d8c8b8a8988  ................
+        R"(    0000000010001000 8786858483828180 8f8e8d8c8b8a8988  ................
     0000000010001010 9796959493929190 9f9e9d9c9b9a9998  ................
     0000000010001020 a7a6a5a4a3a2a1a0 afaeadacabaaa9a8  ................
     0000000010001030 b7b6b5b4b3b2b1b0 bfbebdbcbbbab9b8  ................
@@ -503,7 +508,7 @@ R"(    0000000010001000 8786858483828180 8f8e8d8c8b8a8988  ................
     0000000010001070 f7f6f5f4f3f2f1f0 fffefdfcfbfaf9f8  ................
 )";
 #else
-R"(    10001000 83828180 87868584 8b8a8988 8f8e8d8c  ................
+        R"(    10001000 83828180 87868584 8b8a8988 8f8e8d8c  ................
     10001010 93929190 97969594 9b9a9998 9f9e9d9c  ................
     10001020 a3a2a1a0 a7a6a5a4 abaaa9a8 afaeadac  ................
     10001030 b3b2b1b0 b7b6b5b4 bbbab9b8 bfbebdbc  ................
@@ -514,6 +519,35 @@ R"(    10001000 83828180 87868584 8b8a8988 8f8e8d8c  ................
 )";
 #endif
   ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
+  } else if (page_size == k16kPageSizeBytes) {
+    // 16k page size
+    const char* expected_dump =
+        "\nmemory near r4:\n"
+#if defined(__LP64__)
+        R"(    0000000010004000 8786858483828180 8f8e8d8c8b8a8988  ................
+    0000000010004010 9796959493929190 9f9e9d9c9b9a9998  ................
+    0000000010004020 a7a6a5a4a3a2a1a0 afaeadacabaaa9a8  ................
+    0000000010004030 b7b6b5b4b3b2b1b0 bfbebdbcbbbab9b8  ................
+    0000000010004040 c7c6c5c4c3c2c1c0 cfcecdcccbcac9c8  ................
+    0000000010004050 d7d6d5d4d3d2d1d0 dfdedddcdbdad9d8  ................
+    0000000010004060 e7e6e5e4e3e2e1e0 efeeedecebeae9e8  ................
+    0000000010004070 f7f6f5f4f3f2f1f0 fffefdfcfbfaf9f8  ................
+)";
+#else
+        R"(    10004000 83828180 87868584 8b8a8988 8f8e8d8c  ................
+    10004010 93929190 97969594 9b9a9998 9f9e9d9c  ................
+    10004020 a3a2a1a0 a7a6a5a4 abaaa9a8 afaeadac  ................
+    10004030 b3b2b1b0 b7b6b5b4 bbbab9b8 bfbebdbc  ................
+    10004040 c3c2c1c0 c7c6c5c4 cbcac9c8 cfcecdcc  ................
+    10004050 d3d2d1d0 d7d6d5d4 dbdad9d8 dfdedddc  ................
+    10004060 e3e2e1e0 e7e6e5e4 ebeae9e8 efeeedec  ................
+    10004070 f3f2f1f0 f7f6f5f4 fbfaf9f8 fffefdfc  ................
+)";
+#endif
+    ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
+  } else {
+    FAIL() << "Unsupported page size for test case: " << page_size;
+  }
 
   // Verify that the log buf is empty, and no error messages.
   ASSERT_STREQ("", getFakeLogBuf().c_str());
@@ -535,16 +569,31 @@ TEST_F(DumpMemoryTest, first_read_empty_second_read_stops) {
   std::string tombstone_contents;
   ASSERT_TRUE(lseek(log_.tfd, 0, SEEK_SET) == 0);
   ASSERT_TRUE(android::base::ReadFdToString(log_.tfd, &tombstone_contents));
-  const char* expected_dump = \
-"\nmemory near r4:\n"
+  if (page_size == k4kPageSizeBytes) {
+    const char* expected_dump =
+        "\nmemory near r4:\n"
 #if defined(__LP64__)
-"    0000000010001000 c7c6c5c4c3c2c1c0 cfcecdcccbcac9c8  ................\n"
-"    0000000010001010 d7d6d5d4d3d2d1d0 dfdedddcdbdad9d8  ................\n";
+        "    0000000010001000 c7c6c5c4c3c2c1c0 cfcecdcccbcac9c8  ................\n"
+        "    0000000010001010 d7d6d5d4d3d2d1d0 dfdedddcdbdad9d8  ................\n";
 #else
-"    10001000 c3c2c1c0 c7c6c5c4 cbcac9c8 cfcecdcc  ................\n"
-"    10001010 d3d2d1d0 d7d6d5d4 dbdad9d8 dfdedddc  ................\n";
+        "    10001000 c3c2c1c0 c7c6c5c4 cbcac9c8 cfcecdcc  ................\n"
+        "    10001010 d3d2d1d0 d7d6d5d4 dbdad9d8 dfdedddc  ................\n";
 #endif
   ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
+  } else if (page_size == k16kPageSizeBytes) {
+    const char* expected_dump =
+        "\nmemory near r4:\n"
+#if defined(__LP64__)
+        "    0000000010004000 c7c6c5c4c3c2c1c0 cfcecdcccbcac9c8  ................\n"
+        "    0000000010004010 d7d6d5d4d3d2d1d0 dfdedddcdbdad9d8  ................\n";
+#else
+        "    10004000 c3c2c1c0 c7c6c5c4 cbcac9c8 cfcecdcc  ................\n"
+        "    10004010 d3d2d1d0 d7d6d5d4 dbdad9d8 dfdedddc  ................\n";
+#endif
+    ASSERT_STREQ(expected_dump, tombstone_contents.c_str());
+  } else {
+    FAIL() << "Unsupported page size for test case: " << page_size;
+  }
 
   // Verify that the log buf is empty, and no error messages.
   ASSERT_STREQ("", getFakeLogBuf().c_str());
