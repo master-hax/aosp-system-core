@@ -39,6 +39,30 @@
       },
       "revId": "beb7d0fdc6ee4c5755343d0d5b83330caf23afb6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "427ac6f8_0f4e85b0",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-05-06T22:21:07Z",
+      "side": 1,
+      "message": "Agreed! It\u0027s not useful. Removed.",
+      "parentUuid": "41d11c6c_c6896aed",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 78
+      },
+      "revId": "beb7d0fdc6ee4c5755343d0d5b83330caf23afb6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
