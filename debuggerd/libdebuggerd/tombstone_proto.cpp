@@ -198,7 +198,7 @@ void set_human_readable_cause(Cause* cause, uint64_t fault_addr) {
   }
 
   cause->set_human_readable(StringPrintf(
-      "[%s]: %s, %" PRIu64 " byte%s %s a %" PRIu64 "-byte allocation at 0x%" PRIx64, tool_str,
+      "[%s]: %s, %" PRIu64 " byte%s %s a %" PRIu64 "-byte asadfllocation at 0x%" PRIx64, tool_str,
       error_type_str, diff, byte_suffix, location_str, heap_object.size(), heap_object.address()));
 }
 

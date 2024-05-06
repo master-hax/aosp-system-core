@@ -1826,10 +1826,14 @@ GwpAsanTestParameters gwp_asan_tests[] = {
      "Use After Free, 0 bytes into a 7-byte allocation"},
     {/* alloc_size */ 15, /* free_before_access */ true, /* access_offset */ 1,
      "Use After Free, 1 byte into a 15-byte allocation"},
-    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ 4098,
-     "Buffer Overflow, 2 bytes right of a 4096-byte allocation"},
-    {/* alloc_size */ 4096, /* free_before_access */ false, /* access_offset */ -1,
-     "Buffer Underflow, 1 byte left of a 4096-byte allocation"},
+    {/* alloc_size */ static_cast<size_t>(getpagesize()), /* free_before_access */ false,
+     /* access_offset */ getpagesize() + 2,
+     getpagesize() == 4096 ? "Buffer Overflow, 2 bytes right of a page size allocation"
+                           : "Buffer Overflow, 2 bytes right of a 16384-byte allocation"},
+    {/* alloc_size */ static_cast<size_t>(getpagesize()), /* free_before_access */ false,
+     /* access_offset */ -1,
+     getpagesize() == 4096 ? "Buffer Underflow, 1 byte left of a page size allocation"
+                           : "Buffer Underflow, 1 byte left of a 16384-byte allocation"},
 };
 
 INSTANTIATE_TEST_SUITE_P(
@@ -2973,31 +2977,36 @@ TEST_F(CrasherTest, verify_map_format) {
 
   std::string match_str;
   // Verify none.
+  const char* page_string = getpagesize() == 0x1000 ? "1000" : "4000";
   match_str = android::base::StringPrintf(
-      "    %s-%s ---         0      1000\\n",
+      "    %s-%s ---         0      %s\\n",
       format_map_pointer(reinterpret_cast<uintptr_t>(none_map)).c_str(),
-      format_map_pointer(reinterpret_cast<uintptr_t>(none_map) + getpagesize() - 1).c_str());
+      format_map_pointer(reinterpret_cast<uintptr_t>(none_map) + getpagesize() - 1).c_str(),
+      page_string);
   ASSERT_MATCH(result, match_str);
 
   // Verify read-only.
   match_str = android::base::StringPrintf(
-      "    %s-%s r--         0      1000\\n",
+      "    %s-%s r--         0      %s\\n",
       format_map_pointer(reinterpret_cast<uintptr_t>(r_map)).c_str(),
-      format_map_pointer(reinterpret_cast<uintptr_t>(r_map) + getpagesize() - 1).c_str());
+      format_map_pointer(reinterpret_cast<uintptr_t>(r_map) + getpagesize() - 1).c_str(),
+      page_string);
   ASSERT_MATCH(result, match_str);
 
   // Verify write-only.
   match_str = android::base::StringPrintf(
-      "    %s-%s -w-         0      1000\\n",
+      "    %s-%s -w-         0      %s\\n",
       format_map_pointer(reinterpret_cast<uintptr_t>(w_map)).c_str(),
-      format_map_pointer(reinterpret_cast<uintptr_t>(w_map) + getpagesize() - 1).c_str());
+      format_map_pointer(reinterpret_cast<uintptr_t>(w_map) + getpagesize() - 1).c_str(),
+      page_string);
   ASSERT_MATCH(result, match_str);
 
   // Verify exec-only.
   match_str = android::base::StringPrintf(
-      "    %s-%s --x         0      1000\\n",
+      "    %s-%s --x         0      %s\\n",
       format_map_pointer(reinterpret_cast<uintptr_t>(x_map)).c_str(),
-      format_map_pointer(reinterpret_cast<uintptr_t>(x_map) + getpagesize() - 1).c_str());
+      format_map_pointer(reinterpret_cast<uintptr_t>(x_map) + getpagesize() - 1).c_str(),
+      page_string);
   ASSERT_MATCH(result, match_str);
 
   // Verify file map with non-zero offset and a name.
