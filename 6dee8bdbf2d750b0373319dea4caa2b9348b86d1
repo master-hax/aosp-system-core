@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "86d153af_b51e033b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-07T22:25:51Z",
+      "side": 1,
+      "message": "This supercedes the cl:\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/3075584\n\nI\u0027d prefer to make this a bit more generic and remove so many copy-paste of the memory dumps.\n\nI believe this should work on a non-4K page size device, but if someone can confirm that, it would great. I used the aosp_cf_x86_64_phone_pgagnostic-trunk_staging-userdebug target but it doesn\u0027t look like that sets a non-4K page size by default.",
+      "revId": "6dee8bdbf2d750b0373319dea4caa2b9348b86d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
