@@ -311,6 +311,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb3a1660_3678698d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-07T19:36:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "0099723f_bc965fc9",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c342cf56_5a81f3af",
