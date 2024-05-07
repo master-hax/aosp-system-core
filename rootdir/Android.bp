@@ -113,7 +113,3 @@ prebuilt_etc {
     src: "init-debug.rc",
     sub_dir: "init",
 }
-
-llndk_libraries_txt {
-    name: "llndk.libraries.txt",
-}
