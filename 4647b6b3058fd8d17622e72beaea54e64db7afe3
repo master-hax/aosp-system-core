@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e6314a2_b3abf12a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-07T19:40:39Z",
+      "side": 1,
+      "message": "I\u0027m approving since I think the property read should be fine.\n\nHowever, we might need a follow-up cl if enh has any comments.",
+      "revId": "4647b6b3058fd8d17622e72beaea54e64db7afe3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
