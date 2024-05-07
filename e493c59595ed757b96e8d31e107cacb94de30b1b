@@ -289,6 +289,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0099723f_bc965fc9",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 718,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-05-07T15:40:31Z",
+      "side": 1,
+      "message": "Properties are already being read during tombstone creation with the same APIs. \n\n20 lines before this we have:\n```\n  result.set_build_fingerprint(android::base::GetProperty(\"ro.build.fingerprint\", \"unknown\"));\n  result.set_revision(android::base::GetProperty(\"ro.revision\", \"unknown\"));\n```\n\nIs there something special about this property that would cause problem?",
+      "parentUuid": "364406cc_9721effc",
+      "range": {
+        "startLine": 718,
+        "startChar": 0,
+        "endLine": 718,
+        "endChar": 97
+      },
+      "revId": "e493c59595ed757b96e8d31e107cacb94de30b1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c342cf56_5a81f3af",
         "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
         "patchSetId": 1
