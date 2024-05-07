@@ -2195,6 +2195,23 @@ bool SnapshotManager::UpdateUsesUserSnapshots(LockedFile* lock) {
         is_legacy_snapuserd_ = update_status.legacy_snapuserd();
     }
 
+    // If we are able to connect to the daemon even in fist stage init,
+    // then that given an indication that vendor is updated. Hence, forcefully
+    // enable userspace_snapshot.
+    //
+    // If vendor ramdisk is on Android S, then this check will fail and we would
+    // fallback to legacy dm-snapshot which is on Android S.
+    auto slot = GetCurrentSlot();
+    if (is_legacy_snapuserd_.has_value() && is_legacy_snapuserd_.value() == false &&
+        slot == Slot::Target) {
+        auto client = SnapuserdClient::Connect(android::snapshot::kSnapuserdSocket, 10s);
+        if (client) {
+            is_snapshot_userspace_ = true;
+            is_legacy_snapuserd_ = false;
+            return true;
+        }
+    }
+
     if (IsLegacySnapuserdPostReboot()) {
         return false;
     }
