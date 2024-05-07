@@ -93,6 +93,30 @@
       },
       "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "986d9c1b_1f289642",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-07T18:33:02Z",
+      "side": 1,
+      "message": "I don\u0027t think so. It feels like this would be confusing unless this has some kind of meaning.\n\nHowever, if you, or someone working on this wants something to indicate that guest state is supported, it might be better to add something like guest architecture supported yes/no. Or some other indication, and maybe the guest states that are supported.",
+      "parentUuid": "c1f61df7_499c16b3",
+      "range": {
+        "startLine": 614,
+        "startChar": 0,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
