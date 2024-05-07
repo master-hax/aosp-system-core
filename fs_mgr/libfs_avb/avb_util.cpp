@@ -24,6 +24,7 @@
 #include <android-base/file.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <libdm/dm.h>
 
 #include "util.h"
 
@@ -68,7 +69,7 @@ bool ConstructVerityTable(const FsAvbHashtreeDescriptor& hashtree_desc,
             hashtree_desc.image_size / hashtree_desc.data_block_size,
             hashtree_desc.tree_offset / hashtree_desc.hash_block_size, hash_algorithm.str(),
             hashtree_desc.root_digest, hashtree_desc.salt);
-    if (hashtree_desc.fec_size > 0) {
+    if (hashtree_desc.fec_size > 0 && !IsSnapshot(fstab_entry->logical_partition_name)) {
         target.UseFec(blk_device, hashtree_desc.fec_num_roots,
                       hashtree_desc.fec_offset / hashtree_desc.data_block_size,
                       hashtree_desc.fec_offset / hashtree_desc.data_block_size);
@@ -175,6 +176,33 @@ std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
     return hashtree_desc;
 }
 
+bool IsSnapshot(const std::string& dm_name) {
+    auto& dm = dm::DeviceMapper::Instance();
+    if (dm.GetState(dm_name) == dm::DmDeviceState::INVALID) {
+        return false;
+    }
+
+    std::vector<dm::DeviceMapper::TargetInfo> targets;
+    bool result = dm.GetTableStatus(dm_name, &targets);
+
+    if (!result) {
+        LINFO << "Could not query device: " << dm_name << " status";
+        return false;
+    }
+    if (targets.size() != 1) {
+        return false;
+    }
+
+    dm::DeviceMapper::TargetInfo dev_target_info = std::move(targets[0]);
+
+    auto dev_target_type = dm::DeviceMapper::GetTargetType(dev_target_info.spec);
+    if (dev_target_type != "snapshot") {
+        LINFO << "Unexpected target type " << dev_target_type << " for "<< dm_name;
+        return false;
+    }
+    return true;
+}
+
 bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity_dev,
                                    const std::vector<VBMetaData>& vbmeta_images,
                                    const std::string& ab_suffix,
@@ -192,6 +220,11 @@ bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity
             GetHashtreeDescriptor(partition_name, vbmeta_images);
     if (!hashtree_descriptor) {
         return false;
+    }
+
+    if (IsSnapshot(fstab_entry->logical_partition_name)) {
+        hashtree_descriptor->fec_size = 0;
+        LWARNING << "Turn off FEC on the first boot after OTA";
     }
 
     // Converts HASHTREE descriptor to verity table to load into kernel.
