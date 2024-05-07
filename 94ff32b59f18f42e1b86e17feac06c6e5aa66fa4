@@ -117,6 +117,30 @@
       },
       "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba899f14_bf954a7c",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-07T23:51:19Z",
+      "side": 1,
+      "message": "Gotcha. The project is intended for all arch supports although team needs riscv for now. It makes sense to check for unknown instead of current supported arch. Updated the check.",
+      "parentUuid": "986d9c1b_1f289642",
+      "range": {
+        "startLine": 614,
+        "startChar": 0,
+        "endLine": 614,
+        "endChar": 68
+      },
+      "revId": "94ff32b59f18f42e1b86e17feac06c6e5aa66fa4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
