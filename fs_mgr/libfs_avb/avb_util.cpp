@@ -24,6 +24,7 @@
 #include <android-base/file.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+#include <libdm/dm.h>
 
 #include "util.h"
 
@@ -34,6 +35,34 @@ using android::base::unique_fd;
 
 namespace android {
 namespace fs_mgr {
+
+
+bool IsSnapshot(const std::string& dm_name) {
+    auto& dm = dm::DeviceMapper::Instance();
+    if (dm.GetState(dm_name) == dm::DmDeviceState::INVALID) {
+        return false;
+    }
+
+    std::vector<dm::DeviceMapper::TargetInfo> targets;
+    bool result = dm.GetTableStatus(dm_name, &targets);
+
+    if (!result) {
+        LINFO << "Could not query device: " << dm_name << " status";
+        return false;
+    }
+    if (targets.size() != 1) {
+        return false;
+    }
+
+    dm::DeviceMapper::TargetInfo dev_target_info = std::move(targets[0]);
+
+    auto dev_target_type = dm::DeviceMapper::GetTargetType(dev_target_info.spec);
+    if (dev_target_type != "snapshot") {
+        LINFO << "Unexpected target type " << dev_target_type << " for "<< dm_name;
+        return false;
+    }
+    return true;
+}
 
 // Constructs dm-verity arguments for sending DM_TABLE_LOAD ioctl to kernel.
 // See the following link for more details:
@@ -68,7 +97,7 @@ bool ConstructVerityTable(const FsAvbHashtreeDescriptor& hashtree_desc,
             hashtree_desc.image_size / hashtree_desc.data_block_size,
             hashtree_desc.tree_offset / hashtree_desc.hash_block_size, hash_algorithm.str(),
             hashtree_desc.root_digest, hashtree_desc.salt);
-    if (hashtree_desc.fec_size > 0) {
+    if (hashtree_desc.fec_size > 0 && !IsSnapshot(fstab_entry->logical_partition_name)) {
         target.UseFec(blk_device, hashtree_desc.fec_num_roots,
                       hashtree_desc.fec_offset / hashtree_desc.data_block_size,
                       hashtree_desc.fec_offset / hashtree_desc.data_block_size);
