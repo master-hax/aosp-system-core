@@ -175,6 +175,33 @@ std::unique_ptr<FsAvbHashtreeDescriptor> GetHashtreeDescriptor(
     return hashtree_desc;
 }
 
+bool IsSnapshot(const std::string& dm_name) {
+    auto& dm = dm::DeviceMapper::Instance();
+    if (dm.GetState(dm_name) == dm::DmDeviceState::INVALID) {
+        return false;
+    }
+
+    std::vector<dm::DeviceMapper::TargetInfo> targets;
+    bool result = dm.GetTableStatus(dm_name, &targets);
+
+    if (!result) {
+        LINFO << "Could not query device: " << dm_name << " status";
+        return false;
+    }
+    if (targets.size() != 1) {
+        return false;
+    }
+
+    dm::DeviceMapper::TargetInfo dev_target_info = std::move(targets[0]);
+
+    auto dev_target_type = dm::DeviceMapper::GetTargetType(dev_target_info.spec);
+    if (dev_target_type != "snapshot") {
+        LINFO << "Unexpected target type " << dev_target_type << " for "<< dm_name;
+        return false;
+    }
+    return true;
+}
+
 bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity_dev,
                                    const std::vector<VBMetaData>& vbmeta_images,
                                    const std::string& ab_suffix,
@@ -192,6 +219,11 @@ bool LoadAvbHashtreeToEnableVerity(FstabEntry* fstab_entry, bool wait_for_verity
             GetHashtreeDescriptor(partition_name, vbmeta_images);
     if (!hashtree_descriptor) {
         return false;
+    }
+
+    if (IsSnapshot(fstab_entry->logical_partition_name)) {
+        hashtree_descriptor->fec_size = 0;
+        LWARNING << "Turn off FEC on the first boot after OTA";
     }
 
     // Converts HASHTREE descriptor to verity table to load into kernel.
