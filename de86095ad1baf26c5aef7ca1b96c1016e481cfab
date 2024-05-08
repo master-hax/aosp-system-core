@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9099f4c_da8a9090",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "I don\u0027t see the tombstone proto being used in this file, is this needed?",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 25
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68595e18_f86c2e3f",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "Should have mentioned this earlier, but we use the name g_XXX for globals. Also, can you add a comment for this? It think it would be difficult to figure out how this is used.",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 32
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80779e5a_7a9502ef",
+        "filename": "debuggerd/libdebuggerd/tombstone.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "This needs to be in the include file. And if you do that, you can remove the nullptr, nullptr from the call in crash_dump.cpp.",
+      "range": {
+        "startLine": 128,
+        "startChar": 72,
+        "endLine": 128,
+        "endChar": 81
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff91f5f9_e716bce6",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 713,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "As with the other engrave function, setting this here doesn\u0027t really do anything. Given that the only call to engrave_tombstone_proto always passes in the guest parameters, I don\u0027t think you need the default parameters at all.",
+      "range": {
+        "startLine": 713,
+        "startChar": 54,
+        "endLine": 713,
+        "endChar": 63
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fea429a3_8350653a",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 720,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "You should really add a new architecture type NONE (or something similar) and set it to unknown in the else path. Otherwise, it\u0027s just some random value.",
+      "range": {
+        "startLine": 720,
+        "startChar": 2,
+        "endLine": 720,
+        "endChar": 3
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a767ae80_6cb2ec4c",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:49:31Z",
+      "side": 1,
+      "message": "If you add an NONE architecture, then you can change this to check the arch is not NONE instead of doing this.",
+      "range": {
+        "startLine": 611,
+        "startChar": 0,
+        "endLine": 611,
+        "endChar": 65
+      },
+      "revId": "de86095ad1baf26c5aef7ca1b96c1016e481cfab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
