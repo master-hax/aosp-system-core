@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7a04598_4f8ae9a5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019013
+      },
+      "writtenOn": "2024-05-08T14:24:35Z",
+      "side": 1,
+      "message": "It would be better if we hardcode default dev in the `.rc` and make dev name mandatory (which seems to be the convention), but this looks good enough.",
+      "revId": "2da0242f3c83d8d0b5d5f4b059c603426234b350",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
