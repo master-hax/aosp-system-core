@@ -106,6 +106,24 @@
       "parentUuid": "9f0db1b8_d74ddfab",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5eddaa54_21a50212",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-08T19:51:06Z",
+      "side": 1,
+      "message": "As enh mentions, it feels like this would be better adding a value to the Thread message than do this. It would also simplify some of the code to avoid the templated functions.",
+      "parentUuid": "5e2edd24_03afc6e0",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
