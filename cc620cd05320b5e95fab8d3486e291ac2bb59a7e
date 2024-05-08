@@ -16,6 +16,23 @@
       "message": "This chain of CL LGTM up to here. Let me trigger autosubmit to minimize pending changes.",
       "revId": "cc620cd05320b5e95fab8d3486e291ac2bb59a7e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3def50bd_c1e68ae4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019013
+      },
+      "writtenOn": "2024-05-08T14:24:36Z",
+      "side": 1,
+      "message": "It would be better if we hardcode default dev in the `.rc` and make dev name mandatory (which seems to be the convention), but this looks good enough.",
+      "revId": "cc620cd05320b5e95fab8d3486e291ac2bb59a7e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
