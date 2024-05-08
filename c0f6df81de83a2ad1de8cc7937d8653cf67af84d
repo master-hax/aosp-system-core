@@ -124,6 +124,24 @@
       "parentUuid": "5e2edd24_03afc6e0",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14b0c680_60ca3a84",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-08T23:31:59Z",
+      "side": 1,
+      "message": "Do you mean let the GuestThread be part of Thread instead of in Tombstone? for example:\n```\nmessage Thread {\n...\n GuestThread guest_thread \u003d10;\n...\n}\nShould the `guest_arch` still be part of `Tombstone`?",
+      "parentUuid": "5eddaa54_21a50212",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
