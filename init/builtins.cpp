@@ -1316,6 +1316,78 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> RestoreconDataDir(const BuiltinArguments& args) {
+    std::vector<std::string> non_const_args(args.args);
+    non_const_args.insert(std::next(non_const_args.begin()), "--force");
+    non_const_args.insert(std::next(non_const_args.begin()), "--data-data");
+    non_const_args.push_back("/data");
+
+    SetProperty("ro.boot.need_restore_data", "1");
+    android::base::Timer t;
+    Result<void> res = do_restorecon_recursive({std::move(non_const_args), args.context});
+    SetProperty("ro.restore_data.duration", std::to_string(t.duration().count()));
+    const std::string success = res.ok() ? "1" : "0";
+    SetProperty("ro.restore_data.status", success);
+    return res;
+}
+
+static Result<void> do_verify_data_secontext(const BuiltinArguments& args) {
+    std::vector<const char*> paths{"/data/property/persistent_properties", "/data/tombstones",
+                                   "/data/misc/bootstat", "/data/app", "/data/dalvik-cache"};
+    std::string expected_secontext;
+    char* actual_secontext = nullptr;
+
+    for (const char* path : paths) {
+        bool lookup_result = SelabelLookupFileContext(path, 0, &expected_secontext);
+        int getfilecon_result = lgetfilecon(path, &actual_secontext);
+        if (getfilecon_result < 0 || !lookup_result) {
+            LOG(ERROR) << "Error when getting the selinux info of " << path
+                       << "\nlgetfilecon result: " << getfilecon_result
+                       << "; SelabelLookup result: " << lookup_result;
+            continue;
+        }
+        if (actual_secontext != expected_secontext) {
+            freecon(actual_secontext);
+            return RestoreconDataDir(args);
+        }
+    }
+
+    const std::vector<const std::string> data_app_sub_paths = {
+            "/data/app/.*/oat", "/data/app/vmdl.*.tmp", "/data/app/"};
+    std::vector<std::string> expected_contexts;
+    for (std::string path : data_app_sub_paths) {
+        if (SelabelLookupFileContext(path, 0, &expected_secontext)) {
+            expected_contexts.push_back(expected_secontext);
+        } else {
+            LOG(ERROR) << "Error when getting the selinux label of " << path;
+        }
+    }
+
+    const std::string& data_app_path = "/data/app";
+    DIR* data_app_dir = opendir(data_app_path.c_str());
+    struct dirent* file;
+    while (data_app_dir && (file = readdir(data_app_dir)) != nullptr) {
+        if (file->d_type != DT_DIR) continue;
+        if (!strcmp(file->d_name, ".") || !strcmp(file->d_name, "..")) continue;
+        const std::string sub_path_to_check = data_app_path + "/" + file->d_name;
+        int result_code = lgetfilecon(sub_path_to_check.c_str(), &actual_secontext);
+        if (result_code < 0) {
+            LOG(ERROR) << "Error when getting the selinux context of " << sub_path_to_check << ": "
+                       << result_code;
+            continue;
+        }
+        if (std::find(expected_contexts.begin(), expected_contexts.end(), actual_secontext) !=
+            expected_contexts.end()) {
+            continue;
+        }
+        freecon(actual_secontext);
+        return RestoreconDataDir(args);
+    }
+    closedir(data_app_dir);
+    freecon(actual_secontext);
+    return {};
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap& GetBuiltinFunctionMap() {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1376,6 +1448,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"symlink",                 {2,     2,    {true,   do_symlink}}},
         {"sysclktz",                {1,     1,    {false,  do_sysclktz}}},
         {"trigger",                 {1,     1,    {false,  do_trigger}}},
+        {"verify_data_secontext",   {0,     0,    {true,   do_verify_data_secontext}}},
         {"verity_update_state",     {0,     0,    {false,  do_verity_update_state}}},
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
