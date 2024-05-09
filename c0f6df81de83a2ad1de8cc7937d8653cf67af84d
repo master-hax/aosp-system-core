@@ -160,6 +160,24 @@
       "parentUuid": "14b0c680_60ca3a84",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15fa56f1_09c9422a",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-09T00:09:33Z",
+      "side": 1,
+      "message": "Kind of. I think you could simply remove GuestThread completely and have guest_thread be a Thread. No other changes necessary, then you could remove all of the templated functions since there is only one kind of thread type. There are a couple of fields you aren\u0027t using in Thread for the guest thread, but that\u0027s probably better than trying to make sure the two threads stay in sync.",
+      "parentUuid": "b5d95e49_8c26dbec",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
