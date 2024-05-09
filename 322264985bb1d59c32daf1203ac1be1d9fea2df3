@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f118ada6_0d537df4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-09T18:43:30Z",
+      "side": 1,
+      "message": "Combined this CL with aosp/3062926. Abandoning this one.",
+      "revId": "322264985bb1d59c32daf1203ac1be1d9fea2df3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

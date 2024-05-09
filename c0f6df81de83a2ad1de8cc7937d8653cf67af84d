@@ -178,6 +178,24 @@
       "parentUuid": "b5d95e49_8c26dbec",
       "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4fe39532_79c3264a",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-09T18:43:30Z",
+      "side": 1,
+      "message": "Gotcha. I removed the GuestThread and updated codes accordingly. I combined this change to the aosp/3062926, which actually use this proto.",
+      "parentUuid": "15fa56f1_09c9422a",
+      "revId": "c0f6df81de83a2ad1de8cc7937d8653cf67af84d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
