@@ -16,6 +16,24 @@
       "message": "I am not sure this is correct... we have multiple thread that could be guest threads, we probably want at least map here as a reflection of line 45",
       "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "669f7437_a316cb0e",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 13
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-09T22:40:28Z",
+      "side": 1,
+      "message": "I was setting when it is the target thread then print out the guest threads, refer to http://shortn/_W0hSgWkFdN. Do we want every thread to check for guest thread instead?",
+      "parentUuid": "b32ac833_115e8550",
+      "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
