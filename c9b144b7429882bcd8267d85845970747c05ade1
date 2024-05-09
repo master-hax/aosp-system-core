@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2f1f7d3_e873e47c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019013
+      },
+      "writtenOn": "2024-05-09T15:37:52Z",
+      "side": 1,
+      "message": "Just out of my curiosity, what prevents you to get review and submit this CL? It looks working although it has some issues such as `SOCK_SEQPACKET` and no DICE authentification.",
+      "revId": "c9b144b7429882bcd8267d85845970747c05ade1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
