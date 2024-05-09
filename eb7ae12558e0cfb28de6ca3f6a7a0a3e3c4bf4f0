@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da308a9d_f00c2b00",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-09T15:58:19Z",
+      "side": 1,
+      "message": "Is there a bug filed for this? What version is your vendor partition? This won\u0027t work on Android T+ launch devices.",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
