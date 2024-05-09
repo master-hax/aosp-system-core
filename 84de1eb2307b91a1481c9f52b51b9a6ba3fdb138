@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98bf8bfe_5b9b09d5",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-09T19:43:43Z",
+      "side": 1,
+      "message": "You don\u0027t need this template any more since there is only one thread type now.",
+      "revId": "84de1eb2307b91a1481c9f52b51b9a6ba3fdb138",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5eaafc18_fb7fa296",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-09T19:43:43Z",
+      "side": 1,
+      "message": "Same as above, not necessary any more.",
+      "revId": "84de1eb2307b91a1481c9f52b51b9a6ba3fdb138",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
