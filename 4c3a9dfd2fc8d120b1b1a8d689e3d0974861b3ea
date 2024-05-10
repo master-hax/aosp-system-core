@@ -34,6 +34,24 @@
       "parentUuid": "b32ac833_115e8550",
       "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06d7364a_d34c8da1",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 13
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-10T04:07:31Z",
+      "side": 1,
+      "message": "yes - we want every thread that has guest state.",
+      "parentUuid": "669f7437_a316cb0e",
+      "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
