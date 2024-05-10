@@ -16,6 +16,41 @@
       "message": "Is there a bug filed for this? What version is your vendor partition? This won\u0027t work on Android T+ launch devices.",
       "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d24513fc_776f16d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3424654
+      },
+      "writtenOn": "2024-05-10T11:32:16Z",
+      "side": 1,
+      "message": "issue id: 339588170 304205526\nandroid version: vendor-s + system-T\n\nWhy doesn\u0027t it work on the Android T+?\n\nThe f2fs file system lost the mapping relationship information of the inode part of the cow file, resulting in some space of the cow file being allocated to other files during the boot process",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31151fda_d75a7e0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3424654
+      },
+      "writtenOn": "2024-05-10T11:32:16Z",
+      "side": 1,
+      "message": "issue id: 339588170   304205526\nandroid version: vendor-s + system-T\n\nWhy doesn\u0027t it work on the Android T+?\n\nThe f2fs file system lost the mapping relationship information of the inode part of the cow file, resulting in some space of the cow file being allocated to other files during the boot process",
+      "parentUuid": "da308a9d_f00c2b00",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
