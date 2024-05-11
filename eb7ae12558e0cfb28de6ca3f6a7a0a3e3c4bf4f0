@@ -104,6 +104,23 @@
       "parentUuid": "6d0b43a5_d15c4410",
       "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c5eea0c_b349b029",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3424654
+      },
+      "writtenOn": "2024-05-11T07:06:02Z",
+      "side": 1,
+      "message": "From the results, the problem appears to be in the f2fs file system exception; Both snapshot and dm-user will face the same problem, so we hope to disable the fec function so that the machine can detect problems in advance when it starts up for the first time after OTA, rather than continuing to start up with problems",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
