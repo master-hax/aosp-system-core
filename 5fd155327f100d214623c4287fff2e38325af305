@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e24cb5bd_cc568e3e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-11T01:15:24Z",
+      "side": 1,
+      "message": "can we add warnings in Android.bp here, otherwise lg",
+      "revId": "5fd155327f100d214623c4287fff2e38325af305",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f489b613_d7aba965",
+        "filename": "libutils/binder/String16.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-11T01:15:24Z",
+      "side": 1,
+      "message": "can\u0027t we always just use \u0027clang\u0027\n\nwe don\u0027t support gcc",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 66
+      },
+      "revId": "5fd155327f100d214623c4287fff2e38325af305",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
