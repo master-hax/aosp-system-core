@@ -69,6 +69,41 @@
       "parentUuid": "d24513fc_776f16d7",
       "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74ded1e8_cc19f430",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3424654
+      },
+      "writtenOn": "2024-05-11T03:15:09Z",
+      "side": 1,
+      "message": "Before the first boot merge, the inode that manages the cow file has lost some mapping relationships. That is, the f2fs file system treats a portion of the cover file\u0027s space as free blocks, and f2fs will gradually allocate the free blocks to other files for use. As the cow file slowly destroys, snapshots will gradually become corrupted to the point where they cannot be corrected\n\nf2fs.fsck run, but it did not fix this issue",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2bb6a2e1_cbc11a3b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3424654
+      },
+      "writtenOn": "2024-05-11T03:15:09Z",
+      "side": 1,
+      "message": "1. Before the first boot merge, the inode that manages the cow file has lost some mapping relationships. That is, the f2fs file system treats a portion of the cover file\u0027s space as free blocks, and f2fs will gradually allocate the free blocks to other files for use. As the cow file slowly destroys, snapshots will gradually become corrupted to the point where they cannot be corrected\n\n2. f2fs.fsck run, but it did not fix this issue",
+      "parentUuid": "6d0b43a5_d15c4410",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
