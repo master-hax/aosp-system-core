@@ -121,6 +121,24 @@
       "message": "From the results, the problem appears to be in the f2fs file system exception; Both snapshot and dm-user will face the same problem, so we hope to disable the fec function so that the machine can detect problems in advance when it starts up for the first time after OTA, rather than continuing to start up with problems",
       "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85826f54_f1e8b224",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-05-13T16:27:27Z",
+      "side": 1,
+      "message": "I am not comfortable with this approach. If you perceive an issue with data integrity, please root cause that and fix it.\n\nI agree to use this approach for debugging purposes but not for production. There shouldn\u0027t be any specific logic post OTA reboot in AVB boot flow.",
+      "parentUuid": "9c5eea0c_b349b029",
+      "revId": "eb7ae12558e0cfb28de6ca3f6a7a0a3e3c4bf4f0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
