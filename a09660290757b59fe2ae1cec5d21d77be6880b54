@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "931a45f8_e96875c9",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-13T20:29:49Z",
+      "side": 1,
+      "message": "Ah, not needed, removed.",
+      "parentUuid": "45a9fa41_9c1c208f",
+      "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b3fdac28_42157ba8",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-05-13T08:28:55Z",
       "side": 1,
       "message": "const?",
+      "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a06bdf2_53f99b6d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-13T20:29:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3fdac28_42157ba8",
       "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b540ee52_09e19cab",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-13T20:29:49Z",
+      "side": 1,
+      "message": "Ah, right, was followed the main host thread printout, but this would be duplicated.",
+      "parentUuid": "f0705f6d_de148840",
+      "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5bf8f531_17a178a9",
@@ -65,6 +119,24 @@
       "writtenOn": "2024-05-13T08:28:55Z",
       "side": 1,
       "message": "if you are using find you might want to avoid doing it twice by remembering the iterator and reusing it in print_guest_thread below",
+      "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "295976f0_cd2af7bb",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 659,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-13T20:29:49Z",
+      "side": 1,
+      "message": "Makes sense, updated.",
+      "parentUuid": "5bf8f531_17a178a9",
       "revId": "a09660290757b59fe2ae1cec5d21d77be6880b54",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
