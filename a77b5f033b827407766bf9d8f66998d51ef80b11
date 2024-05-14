@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb73f957_0b731135",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-14T08:04:01Z",
+      "side": 1,
+      "message": "otherwise lgtm",
+      "revId": "a77b5f033b827407766bf9d8f66998d51ef80b11",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2efe03bd_c851ca9c",
@@ -48,6 +65,24 @@
       "writtenOn": "2024-05-14T07:48:42Z",
       "side": 1,
       "message": "it still collects data only on the crashing thread.",
+      "revId": "a77b5f033b827407766bf9d8f66998d51ef80b11",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e56d656_63b1c8f5",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 654,
+      "author": {
+        "id": 1041673
+      },
+      "writtenOn": "2024-05-14T08:04:01Z",
+      "side": 1,
+      "message": "I see you did it in the next commit - please move it here.",
+      "parentUuid": "894002d6_c2cd3943",
       "revId": "a77b5f033b827407766bf9d8f66998d51ef80b11",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
