@@ -101,6 +101,7 @@ struct metrics_resp {
 struct metrics_report_crash_req {
     char app_id[UUID_STR_SIZE];
     uint32_t crash_reason;
+    bool is_crash;
 } __attribute__((__packed__));
 
 enum TrustyStorageErrorType {
