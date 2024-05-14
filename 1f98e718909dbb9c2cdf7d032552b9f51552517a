@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5622e0d_7e25b7ca",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2024-05-14T17:30:48Z",
+      "side": 1,
+      "message": "nit: is there reference client code which uses this API?\n\nI would like to double check below use case:\n\nSince the local static variable initialized only once - the very first time the API is called, if the libstatssocket.so is not ready - the initial value will be NULL\nand each consecutive call will not try to update this value/will and try to load library again\n\nhttps://en.cppreference.com/w/cpp/language/storage_duration#Static_local_variables\n\n```\nVariables declared at block scope with the specifier static ... are initialized the first time control passes through their declaration. On all further calls, the declaration is skipped.\n```\n\nwill it make consecutive calls to `IsAvailable` no op if very first call was too early?\n\nThank you",
+      "fixSuggestions": [
+        {
+          "fixId": "27523b59_58776120",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+              "range": {
+                "startLine": 84,
+                "startChar": 0,
+                "endLine": 86,
+                "endChar": 0
+              },
+              "replacement": "    return LoadLibstatssocket(RTLD_NOW) !\u003d nullptr;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "1f98e718909dbb9c2cdf7d032552b9f51552517a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
