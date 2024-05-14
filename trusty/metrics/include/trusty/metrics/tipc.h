@@ -17,6 +17,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * DOC: Metrics
@@ -94,13 +95,16 @@ struct metrics_resp {
 /**
  * struct metrics_report_crash_req - arguments of %METRICS_CMD_REPORT_CRASH
  *                                   requests
- * @app_id: uuid of the app that crashed
+ * @app_id: app_id in the form UUID in ascii format
+ *          "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  * @crash_reason: architecture-specific code representing the reason for the
- *                crash
+ *                crash or exit code
+ * @is_crash: boolean indicating if it is a crash or exit
  */
 struct metrics_report_crash_req {
     char app_id[UUID_STR_SIZE];
     uint32_t crash_reason;
+    bool is_crash;
 } __attribute__((__packed__));
 
 enum TrustyStorageErrorType {
