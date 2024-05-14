@@ -7,6 +7,12 @@ package {
 
 cc_library_static {
     name: "libstatssocket_lazy",
+    local_include_dirs: [
+        "include",
+    ],
+    export_include_dirs: [
+        "include",
+    ],
     header_libs: [
         "libstatssocket_headers",
     ],

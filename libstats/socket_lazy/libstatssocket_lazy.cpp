@@ -23,8 +23,10 @@
 
 #include "log/log.h"
 
-#include "stats_event.h"
-#include "stats_socket.h"
+#include <stats_event.h>
+#include <stats_socket.h>
+
+#include "statssocket_lazy.h"
 
 // This file provides a lazy interface to libstatssocket.so to address early boot dependencies.
 // Specifically bootanimation, surfaceflinger, and lmkd run before the statsd APEX is loaded and
@@ -75,6 +77,11 @@ static void* LoadLibstatssocket(int dlopen_flags) {
         return nullptr;
     }
     return dlopen("libstatssocket.so", dlopen_flags);
+}
+
+bool AStatsSocketLazy_isAvailable() {
+    static void* handle = LoadLibstatssocket(RTLD_NOW);
+    return handle != nullptr;
 }
 
 //
