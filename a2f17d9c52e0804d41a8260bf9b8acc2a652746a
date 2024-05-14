@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "96d8c585_c7b607e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2024-05-14T05:23:20Z",
+      "side": 1,
+      "message": "+muhammad, vova as FYI, feel free to take a look.",
+      "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "6d23222a_a16e6434",
         "filename": "libstats/socket_lazy/Android.bp",
         "patchSetId": 2
@@ -37,6 +54,23 @@
         "endLine": 41,
         "endChar": 6
       },
+      "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "414f6a43_c469649e",
+        "filename": "libstats/socket_lazy/include/statssocket_lazy.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2024-05-14T05:23:20Z",
+      "side": 1,
+      "message": "nit: should this follow the native api naming convention given that it is not a real API?",
       "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
