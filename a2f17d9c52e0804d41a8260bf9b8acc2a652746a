@@ -73,6 +73,24 @@
       "message": "nit: should this follow the native api naming convention given that it is not a real API?",
       "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81b29455_55d43967",
+        "filename": "libstats/socket_lazy/include/statssocket_lazy.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-05-14T05:35:24Z",
+      "side": 1,
+      "message": "Oh, you\u0027re right. I missed that. We could put this in a namespace like `android::statssocket::lazy`. Just let me know if you prefer this.",
+      "parentUuid": "414f6a43_c469649e",
+      "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
