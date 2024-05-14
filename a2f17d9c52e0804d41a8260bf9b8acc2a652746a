@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f04be98_802b2bd3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-05-14T05:13:48Z",
+      "side": 1,
+      "message": "Hey Tej,\n\nThis is what we discussed back in February.\nhttps://r.android.com/c/platform/system/core/+/2945025/comment/3b1b1727_d259bba1/",
+      "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d23222a_a16e6434",
+        "filename": "libstats/socket_lazy/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-05-14T05:13:48Z",
+      "side": 1,
+      "message": "unrelated, but just fixing bpfmt lint warning.",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 6
+      },
+      "revId": "a2f17d9c52e0804d41a8260bf9b8acc2a652746a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
