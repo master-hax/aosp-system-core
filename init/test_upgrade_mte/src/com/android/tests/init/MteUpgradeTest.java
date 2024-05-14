@@ -68,6 +68,7 @@ public class MteUpgradeTest extends BaseHostJUnit4Test {
     public void testCrash() throws Exception {
         String uuid = java.util.UUID.randomUUID().toString();
         getDevice().reboot();
+        getDevice().enableAdbRoot();
         assertThat(getDevice().setProperty("sys.mte_crash_test_uuid", uuid)).isTrue();
 
         CommandResult result = getDevice().executeShellV2Command("start mte_upgrade_test_helper");
@@ -100,6 +101,7 @@ public class MteUpgradeTest extends BaseHostJUnit4Test {
     public void testCrashOverridden() throws Exception {
         String uuid = java.util.UUID.randomUUID().toString();
         getDevice().reboot();
+        getDevice().enableAdbRoot();
         assertThat(getDevice().setProperty("sys.mte_crash_test_uuid", uuid)).isTrue();
 
         CommandResult result =
