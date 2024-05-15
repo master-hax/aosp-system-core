@@ -16,6 +16,24 @@
       "message": "do you actually have a _use_ for this though? because it does seem more likely to be a mistake than deliberate...",
       "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d278016_f7d2200a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1935515
+      },
+      "writtenOn": "2024-05-15T13:40:28Z",
+      "side": 1,
+      "message": "The use case would be something like pa/2821146 which is generating a ramdisk fragment containing only special device nodes. We could allow no directories in just this case, or I can continue to work around by specifying an empty temp dir.",
+      "parentUuid": "7aef31ec_27848ad7",
+      "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
