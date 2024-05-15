@@ -34,6 +34,24 @@
       ],
       "revId": "1f98e718909dbb9c2cdf7d032552b9f51552517a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e82985bc_0e6c8bef",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-05-15T01:54:19Z",
+      "side": 1,
+      "message": "\u003e nit: is there reference client code which uses this API?\n\nYes, see aosp/3081209.\n\n\u003e will it make consecutive calls to IsAvailable no op if very first call was too early?\n\nYes, that\u0027s my intention. I don\u0027t think there\u0027s a case where libstatssocket.so **becomes** available after opening it once failed. So, when it\u0027s unavailable, the API returns false always. When it\u0027s not, the API returns true always without increasing the library again and again.",
+      "parentUuid": "f5622e0d_7e25b7ca",
+      "revId": "1f98e718909dbb9c2cdf7d032552b9f51552517a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
