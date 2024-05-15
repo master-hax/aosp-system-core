@@ -52,6 +52,24 @@
       "parentUuid": "0d278016_f7d2200a",
       "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98555954_c3b74634",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1935515
+      },
+      "writtenOn": "2024-05-15T14:52:50Z",
+      "side": 1,
+      "message": "Sure, cpio will handle empty archives `echo -n | cpio -oc | cpio -it`\nSince it reads from stdin by default, you do have to explicitly feed it nothing, iyswim.\nAnyway, that\u0027s all the motivation I have to give you. So feel free to give a definitive thumbs up or down. In the latter case I don\u0027t mind abandoning this CL.",
+      "parentUuid": "fefd3063_9dc86594",
+      "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
