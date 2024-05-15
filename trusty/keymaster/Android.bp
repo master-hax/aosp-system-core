@@ -208,3 +208,36 @@ cc_binary {
         "-Werror",
     ],
 }
+
+prebuilt_etc {
+    name: "rkp_uds_cert_test.xml",
+    vendor: true,
+    src: "set_uds_certs/rkp_uds_cert_test.xml",
+}
+
+cc_binary {
+    name: "trusty_rkp_set_uds_cert",
+    vendor: true,
+
+    srcs: [
+        "set_uds_certs/set_uds_certificates.cpp",
+        "ipc/trusty_keymaster_ipc.cpp",
+    ],
+
+    local_include_dirs: ["include"],
+
+    shared_libs: [
+        "libc",
+        "libcrypto",
+        "liblog",
+        "libtrusty",
+        "libhardware",
+        "libkeymaster_messages",
+        "libutils",
+        "libxml2",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}
