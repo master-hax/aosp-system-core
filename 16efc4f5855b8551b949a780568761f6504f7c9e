@@ -70,6 +70,24 @@
       "parentUuid": "fefd3063_9dc86594",
       "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ba0a1b0_d4400394",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-15T15:59:17Z",
+      "side": 1,
+      "message": "that sounds convincing enough to me. just make the commit message a bit stronger? (\"it\u0027s not clear\" was pretty weak, but \"cpio \".)",
+      "parentUuid": "98555954_c3b74634",
+      "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
