@@ -88,6 +88,24 @@
       "parentUuid": "98555954_c3b74634",
       "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3109d48a_4813c80c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1935515
+      },
+      "writtenOn": "2024-05-15T16:06:42Z",
+      "side": 1,
+      "message": "Thanks! Commit message updated.",
+      "parentUuid": "9ba0a1b0_d4400394",
+      "revId": "16efc4f5855b8551b949a780568761f6504f7c9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
