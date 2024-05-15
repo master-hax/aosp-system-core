@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <fcntl.h>
 #include <linux/prctl.h>
 #include <signal.h>
 #include <stdio.h>
@@ -22,6 +23,7 @@
 #include <sys/prctl.h>
 #include <time.h>
 #include <unistd.h>
+
 #include <memory>
 
 int MaybeDowngrade() {
@@ -65,7 +67,8 @@ int main(int argc, char** argv) {
     // This binary gets run by src/com/android/tests/init/MteUpgradeTest.java, which
     // asserts that it crashes as expected.
     f[17] = 'x';
-    char buf[1];
-    read(1, buf, 1);
+    // We need a sys-call to force the async crash to happen.
+    int fd = open("/dev/null", O_RDONLY);
+    close(fd);
     return 0;
 }
