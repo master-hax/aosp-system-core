@@ -52,6 +52,24 @@
       "parentUuid": "f5622e0d_7e25b7ca",
       "revId": "1f98e718909dbb9c2cdf7d032552b9f51552517a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "494eb066_b83ff42f",
+        "filename": "libstats/socket_lazy/libstatssocket_lazy.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2024-05-15T01:57:10Z",
+      "side": 1,
+      "message": "nit: const",
+      "parentUuid": "e82985bc_0e6c8bef",
+      "revId": "1f98e718909dbb9c2cdf7d032552b9f51552517a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
