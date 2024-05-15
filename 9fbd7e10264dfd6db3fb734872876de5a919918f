@@ -16,6 +16,24 @@
       "message": "did you actually mean you _didn\u0027t_ need the syscall?\n\nnote that `return 0;` isn\u0027t syscall-less --- libc initialization ends with `exit(main(...));`.",
       "revId": "9fbd7e10264dfd6db3fb734872876de5a919918f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec4e7dbe_590d5d60",
+        "filename": "init/test_upgrade_mte/mte_upgrade_test_helper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-15T16:04:54Z",
+      "side": 0,
+      "message": "yeah typo :)",
+      "parentUuid": "984404e3_f9ba5771",
+      "revId": "9fbd7e10264dfd6db3fb734872876de5a919918f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
