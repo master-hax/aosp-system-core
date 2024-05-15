@@ -68,10 +68,11 @@ struct dm_user_message {
     __u64 seq;
     __u64 type;
     __u64 flags;
+    __u16 ioprio;
     __u64 sector;
     __u64 len;
     __u8 buf[];
-};
+} __attribute__((packed));
 
 #endif
 
@@ -202,7 +203,7 @@ static int simple_daemon(const std::string& control_path, const std::string& bac
 
             std::cerr << "dmuserd: Got " << type << " request " << flags << " for sector "
                       << std::to_string(msg.sector) << " with length " << std::to_string(msg.len)
-                      << "\n";
+                      << " ioprio 0x" << std::hex << msg.ioprio << "\n";
         }
 
         type = msg.type;
