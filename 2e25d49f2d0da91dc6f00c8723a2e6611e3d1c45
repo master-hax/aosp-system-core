@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcffe2ef_ceca5489",
+        "filename": "libutils/binder/String8_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-05-16T00:59:15Z",
+      "side": 1,
+      "message": "The out-of-date libc++ in external/libcxx doesn\u0027t support calling `operator\u003d\u003d` on two `std::strong_order` values, but it does allow comparing an `std::strong_order` value with a 0 literal.\n\nWe can\u0027t use EXPECT_EQ / EXPECT_LT / EXPECT_GT with a 0 literal, probably because gtest would convert the 0 literal into a non-literal of type `int`, which can\u0027t be compared to `std::strong_order`.",
+      "revId": "2e25d49f2d0da91dc6f00c8723a2e6611e3d1c45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
