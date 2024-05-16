@@ -17,20 +17,22 @@
 package com.android.tests.init;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import static org.junit.Assume.assumeTrue;
 
 import com.android.server.os.TombstoneProtos.Tombstone;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
 import com.android.tradefed.util.CommandResult;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 @RunWith(DeviceJUnit4ClassRunner.class)
 public class PermissiveMteTest extends BaseHostJUnit4Test {
@@ -97,6 +99,36 @@ public class PermissiveMteTest extends BaseHostJUnit4Test {
     }
     assertThat(numberTombstones).isEqualTo(1);
   }
+
+    @Test
+    public void testReenableCrash() throws Exception {
+        CommandResult result =
+                getDevice()
+                        .executeShellV2Command(
+                                "MTE_PERMISSIVE=1 MTE_PERMISSIVE_REENABLE_TIMER=1 "
+                                        + "/data/local/tmp/mte_crash testReenableCrash "
+                                        + mUUID);
+        assertThat(result.getExitCode()).isEqualTo(0);
+        int numberTombstones = 0;
+        String[] tombstones = getDevice().getChildren("/data/tombstones");
+        for (String tombstone : tombstones) {
+            if (!tombstone.endsWith(".pb")) {
+                continue;
+            }
+            String tombstonePath = "/data/tombstones/" + tombstone;
+            Tombstone tombstoneProto = parseTombstone(tombstonePath);
+            if (!tombstoneProto.getCommandLineList().stream().anyMatch(x -> x.contains(mUUID))) {
+                continue;
+            }
+            if (!tombstoneProto.getCommandLineList().stream()
+                    .anyMatch(x -> x.contains("testReenableCrash"))) {
+                continue;
+            }
+            numberTombstones++;
+        }
+        assertThat(numberTombstones).isEqualTo(2);
+    }
+
   @Test
   public void testCrashProperty() throws Exception {
     String prevValue = getDevice().getProperty("persist.sys.mte.permissive");
