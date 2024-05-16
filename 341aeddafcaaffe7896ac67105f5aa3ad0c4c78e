@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3820122a_2f36b700",
+        "filename": "trusty/metrics/include/trusty/metrics/tipc.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-05-16T11:11:52Z",
+      "side": 1,
+      "message": "Please mirror the suggestion / changes in the other cl too.",
+      "revId": "341aeddafcaaffe7896ac67105f5aa3ad0c4c78e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
