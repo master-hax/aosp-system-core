@@ -16,7 +16,11 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <cutils/iosched_policy.h>
 #include <snapuserd/snapuserd_kernel.h>
+#if defined(__ANDROID__)
+#include <linux/ioprio.h>
+#endif
 #include "snapuserd_logging.h"
 
 namespace android {
@@ -46,12 +50,42 @@ bool DmUserBlockServer::ProcessRequests() {
     SNAP_LOG(DEBUG) << "Daemon: msg->sector: " << std::dec << header->sector;
     SNAP_LOG(DEBUG) << "Daemon: msg->type: " << std::dec << header->type;
     SNAP_LOG(DEBUG) << "Daemon: msg->flags: " << std::dec << header->flags;
+    SNAP_LOG(DEBUG) << "Daemon: msg->ioprio: 0x" << std::hex << header->ioprio;
 
+    IoSchedClass ioprio_class =
+        static_cast<IoSchedClass>(header->ioprio >> IOPRIO_CLASS_SHIFT);
+    int ioprio_value = header->ioprio & 0xff;
+    IoSchedClass orig_ioprio_class = IoSchedClass_NONE;
+    int orig_ioprio_value = 0;
+    bool ioprio_changed = false;
+
+    if (android_get_ioprio(0, &orig_ioprio_class, &orig_ioprio_value) == 0) {
+        if ((orig_ioprio_class != ioprio_class) ||
+	    (orig_ioprio_value != ioprio_value)) {
+            ioprio_changed = true;
+        }
+    } else {
+        SNAP_PLOG(ERROR) << "Failed to android_get_ioprio";
+    }
+
+    if (ioprio_changed) {
+        android_set_ioprio(0, ioprio_class, ioprio_value);
+    }
     if (!ProcessRequest(header)) {
         if (header->type != DM_USER_RESP_ERROR) {
             SendError();
         }
+        if (ioprio_changed) {
+            if (android_set_ioprio(0, orig_ioprio_class, orig_ioprio_value) != 0) {
+                SNAP_PLOG(ERROR) << "Failed to android_set_ioprio";
+            }
+        }
         return false;
+    }
+    if (ioprio_changed) {
+        if (android_set_ioprio(0, orig_ioprio_class, orig_ioprio_value) != 0) {
+            SNAP_PLOG(ERROR) << "Failed to android_set_ioprio";
+        }
     }
     return true;
 }

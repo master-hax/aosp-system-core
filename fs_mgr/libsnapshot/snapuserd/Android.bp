@@ -120,6 +120,7 @@ cc_defaults {
         "libbase",
         "libbrotli",
         "libcutils_sockets",
+        "libcutils",
         "libdm",
         "libext2_uuid",
         "libfs_mgr_file_wait",
