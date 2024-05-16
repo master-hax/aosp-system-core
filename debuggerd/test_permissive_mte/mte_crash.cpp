@@ -20,5 +20,14 @@
 int main(int, char**) {
   volatile char* f = (char*)malloc(1);
   printf("%c\n", f[17]);
+#ifdef __aarch64__
+  if (getenv("MTE_PERMISSIVE_REENABLE_TIMER")) {
+    // Burn some cycles because the MTE_PERMISSIVE_REENABLE_TIMER is based on CPU clock.
+    for (int i = 0; i < 1000000000; ++i) {
+      asm("isb");
+    }
+    printf("%c\n", f[17]);
+  }
+#endif
   return 0;
 }
