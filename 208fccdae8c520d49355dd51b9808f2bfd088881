@@ -22,6 +22,30 @@
       },
       "revId": "208fccdae8c520d49355dd51b9808f2bfd088881",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7045ecfc_70b01227",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1034,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-05-17T11:48:30Z",
+      "side": 1,
+      "message": "the init tasks for aconfigd does the following:\n1, copy persist flag value file from /metadata/flags to /metadata/boot\n2, write a record to a pb file under /metadata/boot to mark that storage files for this container is avaialble.\n\nOnce RO partitions like /system is ready, we want to initialize them so that any process started afterwards have access of the flags. Like here, once mainline module has been activated, we like to set the flag storage ready. If we do both init task here. Then there is gap between RO partition mount and perform_apex_config, during this gap, even though /system is available, processes are starting, but flag storage is not ready.\n\nThat is the reason why we do init tasks right before any processes can be created from the binary provided in the respective container (platform partitions, mainline modules).\n\nAconfigd service starts a socket and the process stays alive forever. So it won\u0027t return. So we cannot use exec_start for this service as exec_start is blocking until it returns. However, we do want the init task to be blocking. So two seperate services.",
+      "parentUuid": "c252e331_5d9ea3d7",
+      "range": {
+        "startLine": 1034,
+        "startChar": 4,
+        "endLine": 1034,
+        "endChar": 18
+      },
+      "revId": "208fccdae8c520d49355dd51b9808f2bfd088881",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
