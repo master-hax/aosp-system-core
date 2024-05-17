@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c252e331_5d9ea3d7",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1034,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-05-17T02:18:50Z",
+      "side": 1,
+      "message": "Q. why do you need two separate -init processes? If aconfigd is okay to start at this point, then I think you can have a single -init process to the all preparation (for platform and mainline) here and then start aconfigd.\n\nAnd if aconfigd follows right after blocking call to aconfigd-mainline-init, can it be just a part of aconfigd?",
+      "range": {
+        "startLine": 1034,
+        "startChar": 4,
+        "endLine": 1034,
+        "endChar": 18
+      },
+      "revId": "208fccdae8c520d49355dd51b9808f2bfd088881",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
