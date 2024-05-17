@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d580be4e_7f657211",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-17T12:23:44Z",
+      "side": 1,
+      "message": "(ack that this seems like the right long-term direction, even if it gives us more problems between now and then...)",
+      "parentUuid": "49ae7fe7_8d2909de",
+      "revId": "9e1d47b7a5fa0f7cb5bada8c5b280e8a6d267ac1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "b018668b_522bcacb",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
