@@ -625,6 +625,11 @@ cc_defaults {
             enabled: false,
         },
     },
+    product_variables: {
+        shipping_api_level: {
+            cflags: ["-DBUILD_SHIPPING_API_LEVEL=%s"],
+        },
+    },
 }
 
 cc_binary {
