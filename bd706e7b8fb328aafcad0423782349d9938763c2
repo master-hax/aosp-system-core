@@ -152,6 +152,30 @@
       },
       "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5ce63ec_fe345249",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-05-20T09:05:42Z",
+      "side": 1,
+      "message": "Yes, the problem this patch is pointing to is still very much a problem...\n\n(and becoming a bit of a blocking one for me, as I currently have no way to actually build a releasable version of M-2024-08 mainline tethering apex)\n\nBut... I don\u0027t feel hard coding codenames in here is the right solution... it\u0027ll be *another* spot that will need to be fixed *all* the time...\n\nFurthermore with trunk stable and quarterly releases, \u0027code names\u0027 are even worse than before...\n\nI don\u0027t know *when* W will release (is it a quarter after V? a year? 2 quarters?).\nI don\u0027t know what the SDK version for it will be (will it be 36? 39? 37? 202509?).\nI don\u0027t know what the code name for W will be (WeddingCake? [google query for treats starting with W and picking a \u0027nicer\u0027 one...]).\n\nI think what should happen is, every quarter, within ~24 hours after we branch the next quarterly release, we should bump some constant in aosp/main by 1, that this logic checks.  Perhaps \u0027ro.build.version.mainline_init_rc_level\u0027 or something...\nif we want to somehow match this with sdk levels, it could be sdk_level * 10 + quarter, or something like that, or we use a date/timestamp (perhaps 2409 for V meaning 2024-09 release or 2406 for V meaning 2024-06 branch date, or just use submit date or whatever).",
+      "parentUuid": "d176753f_a13392b8",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 21
+      },
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
