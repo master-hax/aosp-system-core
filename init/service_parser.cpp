@@ -52,6 +52,12 @@ using android::base::StartsWith;
 namespace android {
 namespace init {
 
+#ifdef INIT_FULL_SOURCES
+constexpr bool kFullSources = true;
+#else
+constexpr bool kFullSources = false;
+#endif
+
 Result<void> ServiceParser::ParseCapabilities(std::vector<std::string>&& args) {
     service_->capabilities_ = 0;
 
@@ -680,7 +686,12 @@ Result<void> ServiceParser::EndSection() {
     }
 
     if (service_->proc_attr_.parsed_uid == std::nullopt) {
+<<<<<<< PATCH SET (189380 init: enable 'user root' check at build time)
+        if (!kFullSources ||
+            android::base::GetIntProperty("ro.vendor.api_level", 0) > __ANDROID_API_V__) {
+=======
         if (android::base::GetIntProperty("ro.vendor.api_level", 0) > 202404) {
+>>>>>>> BASE      (cdd4cb Merge "Revert^2 "Only write appcompat properties if flag is )
             return Error() << "No user specified for service '" << service_->name()
                            << "', so it would have been root.";
         } else {
