@@ -176,6 +176,30 @@
       },
       "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9ef14b0_0d1a677b",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-20T13:01:51Z",
+      "side": 1,
+      "message": "I think the source of this is the unclear distinction between different terms/concepts: android api level, sdk version, sdk platform version, sdk version code, platform codename, platform release version, android version, etc. Nobody seems to be obliged to (or at least interested in) fix this mess, which as you said has gotten worse after trunk stable.\n\nI strongly believe we (platform developers) should depart from thinking in sdk versions (34, 35, ...). They are originally for app developers and doesn\u0027t correctly capture what we want. For platform developers, we have tried to fit in the model by adding the concept of api surfaces (public, system, test) to the version number, but it only has increased confusion.\n\nWhat we need should satisfy following conditions:\n\n* should be a number\n* should refer to a platform release, not a release of api set\n* should be predictable and available far before the release date, and even the branch fork date.\n* shouldn\u0027t be affected by the release cadence; yearly, quarterly, monthly\n* shouldn\u0027t be affected by the marketing strategy change; remember KitKat!\n\nI think the closest which can satisfy these are YYYYMM format.\n\n----------\n\nBut we can\u0027t change everything all at once. For now, we can\u0027t help but using the sdk version. It only satisfies the first and the last requirement. In contrast, codenames satisfy all the requirements except the first and the third. So, I suggested converting codename into sdk version to fill the gap.",
+      "parentUuid": "c5ce63ec_fe345249",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 21
+      },
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
