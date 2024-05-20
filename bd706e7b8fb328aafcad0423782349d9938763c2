@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9d61c48e_793c15f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-20T02:15:05Z",
+      "side": 1,
+      "message": "ping?",
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "06487932_239fcf30",
         "filename": "init/apex_init_util.cpp",
         "patchSetId": 1
@@ -103,6 +120,30 @@
       "side": 1,
       "message": "ro.build.version.sdk is evil. It\u0027s not useful for platform developers. It\u0027s mostly for app developers. It\u0027s a shame that we use codename for the future releases and version number for released ones. \n\nAnyway, to be precise, the derivation of the variable `sdk` should be as follows.\n\n```\nif $(ro.build.version.codename) \u003d\u003d REL {\n  sdk \u003d $(ro.build.version.sdk)\n} else {\n  sdk \u003d codename_to_version($(ro.build.version.codename))\n}\n\nfunc codename_to_version(codename) {\n   switch codename {\n      match \"VanillaIceCream\": 35\n      ...\n   }\n}\n```",
       "parentUuid": "31d70ae5_515d78f8",
+      "range": {
+        "startLine": 111,
+        "startChar": 4,
+        "endLine": 111,
+        "endChar": 21
+      },
+      "revId": "bd706e7b8fb328aafcad0423782349d9938763c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d176753f_a13392b8",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-20T02:15:05Z",
+      "side": 1,
+      "message": "Ping?",
+      "parentUuid": "f0a38ca6_f744dd15",
       "range": {
         "startLine": 111,
         "startChar": 4,
