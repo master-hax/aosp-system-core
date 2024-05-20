@@ -52,6 +52,12 @@ using android::base::StartsWith;
 namespace android {
 namespace init {
 
+#ifdef INIT_FULL_SOURCES
+constexpr bool kFullSources = true;
+#else
+constexpr bool kFullSources = false;
+#endif
+
 Result<void> ServiceParser::ParseCapabilities(std::vector<std::string>&& args) {
     service_->capabilities_ = 0;
 
@@ -680,7 +686,8 @@ Result<void> ServiceParser::EndSection() {
     }
 
     if (service_->proc_attr_.parsed_uid == std::nullopt) {
-        if (android::base::GetIntProperty("ro.vendor.api_level", 0) > __ANDROID_API_V__) {
+        if (!kFullSources ||
+            android::base::GetIntProperty("ro.vendor.api_level", 0) > __ANDROID_API_V__) {
             return Error() << "No user specified for service '" << service_->name()
                            << "', so it would have been root.";
         } else {
