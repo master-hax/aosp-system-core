@@ -32,6 +32,7 @@
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
+#include <span>
 #include <string>
 
 #include "fs_mgr_priv.h"
@@ -126,7 +127,7 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
 
 static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs_projid,
                        bool needs_casefold, bool fs_compress, bool is_zoned,
-                       const std::vector<std::string>& user_devices) {
+                       std::span<const std::string> user_devices) {
     if (!dev_sz) {
         int rc = get_dev_sz(fs_blkdev, &dev_sz);
         if (rc) {
