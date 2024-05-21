@@ -51,6 +51,24 @@
       "parentUuid": "69bffd01_9cf3815a",
       "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c562bf45_b372ce7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1279898
+      },
+      "writtenOn": "2024-05-21T18:14:04Z",
+      "side": 1,
+      "message": "Ah! Okay, that detail was lost on me - if there\u0027s no risk of this affecting the previous kernel, then this seems good to me. Thanks for clarifying!",
+      "parentUuid": "897513b6_af532b71",
+      "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
