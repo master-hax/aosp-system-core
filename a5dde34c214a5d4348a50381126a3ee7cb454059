@@ -16,6 +16,24 @@
       "message": "This doesn\u0027t appear to be as effective as it was expected.\n\nThe link [1] compares various metrics around boot time with and without this change. The measurement was made on Pixel 6. Sorry, the link is not accessible to the public, but here\u0027s the summary.\n\n* Zygote64Timing_ZygoteInit-mean: increase by ~100ms\n* bootloader_time-mean: decreased by ~15ms // irrelevant\n* TOTAL_BOOT_TIME-mean: decreased by ~150ms\n* init_bootanim_DURATION-mean: decreased by ~100ms\n* SystemServerTiming_StartServices-mean: decreased by ~110ms\n* SystemServerTiming_PhaseActivityManagerReady-mean: decreased by ~40ms\n\nI see ~100ms of decrease, but they seem to be within the variance.\n\n[1] https://crystalball-presubmit.corp.google.com/dashboard/I83700010278618426?host\u003dandroid-review.googlesource.com\u0026change_number\u003d3094957\u0026patchset\u003d1\u0026omit_non_regressed_metrics\u003dFalse\u0026blocking_only\u003dTrue",
       "revId": "a5dde34c214a5d4348a50381126a3ee7cb454059",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc1823de_a398cb3b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-21T15:26:22Z",
+      "side": 1,
+      "message": "Indeed, not a very clear/strong signal. I\u0027d probably lean toward not taking the change then, but if there is a device it helps, it\u0027s a pretty small change.",
+      "parentUuid": "df0af6a0_933494b1",
+      "revId": "a5dde34c214a5d4348a50381126a3ee7cb454059",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
