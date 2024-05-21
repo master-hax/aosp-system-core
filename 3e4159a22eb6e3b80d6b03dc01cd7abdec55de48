@@ -137,6 +137,24 @@
       "parentUuid": "809c2175_646a5104",
       "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71ec8032_e18e9c97",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-21T16:15:21Z",
+      "side": 1,
+      "message": "Sorry, missed this! I also see ERROR cases that don\u0027t have the prefix... it\u0027s a little weird that it\u0027s not internally consistent. I don\u0027t have a strong opinion though.",
+      "parentUuid": "f42bc012_9ac656b3",
+      "revId": "3e4159a22eb6e3b80d6b03dc01cd7abdec55de48",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
