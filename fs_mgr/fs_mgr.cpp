@@ -1566,6 +1566,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
 
             if (current_entry.mount_point == "/data") {
+                android::base::SetProperty("ro.fstype.data", attempted_entry.fs_type);
                 userdata_mounted = true;
             }
 
@@ -1605,6 +1606,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                               nullptr)) {
                     LERROR << "Encryption failed";
                 } else {
+                    android::base::SetProperty("ro.fstype.data", current_entry.fs_type);
                     userdata_mounted = true;
                     continue;
                 }
@@ -1632,6 +1634,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                           nullptr)) {
                 ++error_count;
             } else if (current_entry.mount_point == "/data") {
+                android::base::SetProperty("ro.fstype.data", attempted_entry.fs_type);
                 userdata_mounted = true;
             }
             encryptable = FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED;
