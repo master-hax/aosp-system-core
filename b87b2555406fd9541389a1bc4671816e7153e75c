@@ -33,6 +33,24 @@
       "message": "Please don\u0027t land this yet! Although the patches may be in the mainline kernel, it doesn\u0027t mean the kernel prebuilt has landed in-tree. Please confirm if the riscv64 CF image boots with this change (you can run the build-test-on-demand to have infra boot a device to confirm).",
       "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "897513b6_af532b71",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1058768
+      },
+      "writtenOn": "2024-05-21T18:09:09Z",
+      "side": 1,
+      "message": "This CL doesn\u0027t _require_ a newer kernel. If the kernel doesn\u0027t have the necessary patches to support 33-bit mmap randomness, we\u0027ll just end up with 24 bits instead like before. That being said, I\u0027ll test this with the current prebuilt kernel before submitting.",
+      "parentUuid": "69bffd01_9cf3815a",
+      "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
