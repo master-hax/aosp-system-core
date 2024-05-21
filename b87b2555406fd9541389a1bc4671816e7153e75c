@@ -16,6 +16,23 @@
       "message": "woo hoo!",
       "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69bffd01_9cf3815a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1279898
+      },
+      "writtenOn": "2024-05-21T17:56:17Z",
+      "side": 1,
+      "message": "Please don\u0027t land this yet! Although the patches may be in the mainline kernel, it doesn\u0027t mean the kernel prebuilt has landed in-tree. Please confirm if the riscv64 CF image boots with this change (you can run the build-test-on-demand to have infra boot a device to confirm).",
+      "revId": "b87b2555406fd9541389a1bc4671816e7153e75c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
