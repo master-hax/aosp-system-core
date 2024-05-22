@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c40192ec_e9c94d9a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1768,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-05-22T19:23:43Z",
+      "side": 1,
+      "message": "This won\u0027t work post OTA reboot. This function gets invoked during selinux transition in first stage init.\n\nThis has to reside in proto and read from /metadata",
+      "fixSuggestions": [
+        {
+          "fixId": "eb6f0a06_169451bf",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapshot.cpp",
+              "range": {
+                "startLine": 1767,
+                "startChar": 0,
+                "endLine": 1771,
+                "endChar": 0
+              },
+              "replacement": "            if (transition \u003d\u003d InitTransition::SELINUX_DETACH) {\n                auto read_ahead_size \u003d android::base::GetUintProperty\u003cuint\u003e(\n                        \"ro.virtual_ab.read_ahead_size\", kReadAheadSizeKb);\n                SetReadAheadSize(cow_image_device, read_ahead_size);\n                SetReadAheadSize(source_device, read_ahead_size);\n            }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "2dfb47431b5586e16fb7c4d04c8de75fb4f173df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
