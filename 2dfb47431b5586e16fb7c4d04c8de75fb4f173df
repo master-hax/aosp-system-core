@@ -34,6 +34,24 @@
       ],
       "revId": "2dfb47431b5586e16fb7c4d04c8de75fb4f173df",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4d5acf2_e9976709",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1768,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-05-22T19:24:42Z",
+      "side": 1,
+      "message": "ah gotcha, so this is one of the properties that needs to read from metadata.",
+      "parentUuid": "c40192ec_e9c94d9a",
+      "revId": "2dfb47431b5586e16fb7c4d04c8de75fb4f173df",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
