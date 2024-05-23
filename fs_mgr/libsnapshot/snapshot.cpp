@@ -1726,7 +1726,9 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
             LOG(ERROR) << "Unable to read snapshot status: " << snapshot;
             continue;
         }
-
+        if (snapshot_status.o_direct()) {
+            snapuserd_argv->emplace_back("-o_direct");
+        }
         auto misc_name = user_cow_name;
 
         std::string source_device_name;
