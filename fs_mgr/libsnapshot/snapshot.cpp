@@ -1696,6 +1696,11 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         snapuserd_argv->emplace_back("-user_snapshot");
         if (UpdateUsesIouring(lock.get())) {
             snapuserd_argv->emplace_back("-io_uring");
+        } else {
+            LOG(FATAL) << "IOURING";
+        }
+        if (UpdateUsesODirect(lock.get())) {
+            snapuserd_argv->emplace_back("-o_direct");
         }
     }
 
@@ -2112,6 +2117,11 @@ bool SnapshotManager::UpdateUsesCompression(LockedFile* lock) {
 bool SnapshotManager::UpdateUsesIouring(LockedFile* lock) {
     SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
     return update_status.io_uring_enabled();
+}
+
+bool SnapshotManager::UpdateUsesODirect(LockedFile* lock) {
+    SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
+    return update_status.o_direct();
 }
 
 /*
@@ -3016,6 +3026,8 @@ bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state,
         status.set_userspace_snapshots(old_status.userspace_snapshots());
         status.set_io_uring_enabled(old_status.io_uring_enabled());
         status.set_legacy_snapuserd(old_status.legacy_snapuserd());
+        LOG(ERROR) << "old status; " << old_status.o_direct();
+        status.set_o_direct(old_status.o_direct());
     }
     return WriteSnapshotUpdateStatus(lock, status);
 }
@@ -3310,17 +3322,19 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     }
     auto read_ahead_size =
             android::base::GetUintProperty<uint>("ro.virtual_ab.read_ahead_size", kReadAheadSizeKb);
-    PartitionCowCreator cow_creator{.target_metadata = target_metadata.get(),
-                                    .target_suffix = target_suffix,
-                                    .target_partition = nullptr,
-                                    .current_metadata = current_metadata.get(),
-                                    .current_suffix = current_suffix,
-                                    .update = nullptr,
-                                    .extra_extents = {},
-                                    .using_snapuserd = using_snapuserd,
-                                    .compression_algorithm = compression_algorithm,
-                                    .compression_factor = compression_factor,
-                                    .read_ahead_size = read_ahead_size};
+    PartitionCowCreator cow_creator{
+            .target_metadata = target_metadata.get(),
+            .target_suffix = target_suffix,
+            .target_partition = nullptr,
+            .current_metadata = current_metadata.get(),
+            .current_suffix = current_suffix,
+            .update = nullptr,
+            .extra_extents = {},
+            .using_snapuserd = using_snapuserd,
+            .compression_algorithm = compression_algorithm,
+            .compression_factor = compression_factor,
+            .read_ahead_size = read_ahead_size,
+    };
 
     if (dap_metadata.vabc_feature_set().has_threaded()) {
         cow_creator.enable_threading = dap_metadata.vabc_feature_set().threaded();
@@ -3388,7 +3402,12 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
             status.set_io_uring_enabled(true);
             LOG(INFO) << "io_uring for snapshots enabled";
         }
+        LOG(ERROR) << "o direct prop: " << GetODirectEnabledProperty();
 
+        if (GetODirectEnabledProperty()) {
+            status.set_o_direct(true);
+            LOG(ERROR) << "o_direct reads enabled";
+        }
         if (is_legacy_snapuserd) {
             LOG(INFO) << "Setting legacy_snapuserd to true";
             status.set_legacy_snapuserd(true);
@@ -3827,6 +3846,7 @@ bool SnapshotManager::Dump(std::ostream& os) {
     ss << "Using snapuserd: " << update_status.using_snapuserd() << std::endl;
     ss << "Using userspace snapshots: " << update_status.userspace_snapshots() << std::endl;
     ss << "Using io_uring: " << update_status.io_uring_enabled() << std::endl;
+    ss << "Using o_direct: " << update_status.o_direct() << std::endl;
     ss << "Using XOR compression: " << GetXorCompressionEnabledProperty() << std::endl;
     ss << "Current slot: " << device_->GetSlotSuffix() << std::endl;
     ss << "Boot indicator: booting from " << GetCurrentSlot() << " slot" << std::endl;
