@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6191bf7b_8a595f03",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "I\u0027m not quite sure why you are storing the symbol data in the protobuf. Is there a plan to pass around these protobufs somewhere else? All of the protos on device will never have any symbol data. Since they are empty, it\u0027s probably fine to put them there but always empty but it\u0027s a little odd.\n\nAlso, can you add some tests for this.",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e50436d6_12980e51",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "Use #pragma once\n\nWe still have old headers that use this, but as we modify any header file we switch it.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "241e8383_c2e974af",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "For the debuggerd code, we use the format of system .h file, C++ headers, then global android headers, then local debuggerd headers.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 17
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "720be1d6_520bbabd",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "None of this code uses anonymous namespaces. So better to leave this off, although we should at some point create a real namespace for this code.",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 9
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6bc3a80_1f7448b5",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "We use CamelCase for function names in the debuggerd code.",
+      "range": {
+        "startLine": 48,
+        "startChar": 21,
+        "endLine": 48,
+        "endChar": 35
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03644587_34141b35",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "It might be easier to use the unique_fd and Pipe functions (from libbase unique_fd.h). You can see an example of how this is used in crash_dump.cpp at around line 556.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 30
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8c44229_33f3e2ae",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "Even though it\u0027s not likely, you should still check for fork failure.",
+      "range": {
+        "startLine": 73,
+        "startChar": 6,
+        "endLine": 73,
+        "endChar": 9
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11fb2b38_c32d9b48",
+        "filename": "debuggerd/pbtombstone.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-23T01:20:31Z",
+      "side": 1,
+      "message": "Add includes for \u003cstring\u003e and \u003cvector\u003e",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
