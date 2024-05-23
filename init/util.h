@@ -108,6 +108,14 @@ inline constexpr bool IsMicrodroid() {
 #endif
 }
 
+inline constexpr bool IsArcvm() {
+#ifdef ARCVM
+    return ARCVM;
+#else
+    return false;
+#endif
+}
+
 bool Has32BitAbi();
 
 std::string GetApexNameFromFileName(const std::string& path);
