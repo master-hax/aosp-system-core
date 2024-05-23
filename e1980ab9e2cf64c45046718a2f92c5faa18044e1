@@ -16,6 +16,29 @@
       "message": "I wasn\u0027t sure what the convention is for moving the Android-specific dependencies back into a default, so please let me know if I should correct anything. Thanks!",
       "revId": "e1980ab9e2cf64c45046718a2f92c5faa18044e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "856a2734_68a7eb10",
+        "filename": "init/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1000701
+      },
+      "writtenOn": "2024-05-23T22:32:46Z",
+      "side": 1,
+      "message": "I think just \"init_second_stage_defaults\" is fine\n\nThen there\u0027s \"init_second_stage_defaults\" and \"init_second_stage_arc\"",
+      "range": {
+        "startLine": 283,
+        "startChar": 11,
+        "endLine": 283,
+        "endChar": 45
+      },
+      "revId": "e1980ab9e2cf64c45046718a2f92c5faa18044e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
