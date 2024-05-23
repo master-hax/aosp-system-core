@@ -318,6 +318,14 @@ cc_binary {
 }
 
 cc_binary {
+    name: "init_second_stage.arcvm",
+    defaults: ["init_second_stage_defaults"],
+    cflags: ["-DARCVM=1"],
+    overrides: ["init_second_stage", "init_system", "init"],
+    visibility: ["//device/google/bertha:__subpackages__"],
+}
+
+cc_binary {
     name: "init_second_stage.microdroid",
     defaults: [
         "avf_build_flags_cc",
@@ -467,6 +475,14 @@ init_first_stage_cc_defaults {
 cc_binary {
     name: "init_first_stage",
     defaults: ["init_first_stage_defaults"],
+}
+
+cc_binary {
+    name: "init_first_stage.arcvm",
+    defaults: ["init_first_stage_defaults"],
+    cflags: ["-DARCVM=1"],
+    overrides: ["init_first_stage", "init_vendor"],
+    visibility: ["//device/google/bertha:__subpackages__"],
 }
 
 cc_binary {
