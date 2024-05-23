@@ -135,7 +135,10 @@ class DeviceHandler : public UeventHandler {
     static std::string GetPartitionNameForDevice(const std::string& device);
 
   private:
-    enum class LinkType { kBdev };
+    // Type of a symbolic link to a block device: either a link to the block
+    // device itself (/dev/block/...) or a link to the sysfs information about
+    // the block device (/sys/class/block/...).
+    enum class LinkType { kBdev, kSysfs };
 
     // A symbolic link on a file system to a block device (bdev).
     struct BdevLink {

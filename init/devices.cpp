@@ -449,6 +449,8 @@ std::vector<DeviceHandler::BdevLink> DeviceHandler::GetBlockDeviceSymlinks(
         !StartsWith(model, "none")) {
         links.emplace_back(
                 BdevLink{.type = LinkType::kBdev, .path = "/dev/block/by-name/zoned_device"});
+        links.emplace_back(
+                BdevLink{.type = LinkType::kSysfs, .path = "/dev/sys/block/by-name/zoned_device"});
     }
 
     auto last_slash = uevent.path.rfind('/');
@@ -502,12 +504,21 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
                 PLOG(ERROR) << "Failed to create directory " << Dirname(link.path);
             }
 
-            if (symlink(devpath.c_str(), link.path.c_str())) {
+            std::string target;
+            switch (link.type) {
+                case LinkType::kBdev:
+                    target = devpath;
+                    break;
+                case LinkType::kSysfs:
+                    target = "/sys/class/block/" + Basename(devpath);
+                    break;
+            }
+            if (symlink(target.c_str(), link.path.c_str())) {
                 if (errno != EEXIST) {
-                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link.path;
+                    PLOG(ERROR) << "Failed to symlink " << target << " to " << link.path;
                 } else if (std::string link_path;
-                           Readlink(link.path, &link_path) && link_path != devpath) {
-                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link.path
+                           Readlink(link.path, &link_path) && link_path != target) {
+                    PLOG(ERROR) << "Failed to symlink " << target << " to " << link.path
                                 << ", which already links to: " << link_path;
                 }
             }
