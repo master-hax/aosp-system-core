@@ -39,6 +39,30 @@
       },
       "revId": "e1980ab9e2cf64c45046718a2f92c5faa18044e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b071c9e4_49d370b4",
+        "filename": "init/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1967151
+      },
+      "writtenOn": "2024-05-23T23:14:56Z",
+      "side": 1,
+      "message": "I think the problem is that microdroid already uses the other \"init_second_stage_defaults\" that doesn\u0027t include all of the targets, etc. as init_second_stage and init_second_stage.arc do",
+      "parentUuid": "856a2734_68a7eb10",
+      "range": {
+        "startLine": 283,
+        "startChar": 11,
+        "endLine": 283,
+        "endChar": 45
+      },
+      "revId": "e1980ab9e2cf64c45046718a2f92c5faa18044e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
