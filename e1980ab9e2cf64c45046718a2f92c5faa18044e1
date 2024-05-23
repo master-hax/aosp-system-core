@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3124b52_17886f8e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1967151
+      },
+      "writtenOn": "2024-05-23T20:52:50Z",
+      "side": 1,
+      "message": "I wasn\u0027t sure what the convention is for moving the Android-specific dependencies back into a default, so please let me know if I should correct anything. Thanks!",
+      "revId": "e1980ab9e2cf64c45046718a2f92c5faa18044e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
