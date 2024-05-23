@@ -418,6 +418,7 @@ bool SnapshotManager::CreateSnapshot(LockedFile* lock, PartitionCowCreator* cow_
     status->set_compression_algorithm(cow_creator->compression_algorithm);
     status->set_compression_factor(cow_creator->compression_factor);
     status->set_read_ahead_size(cow_creator->read_ahead_size);
+    status->set_o_direct(cow_creator->o_direct);
     if (cow_creator->enable_threading) {
         status->set_enable_threading(cow_creator->enable_threading);
     }
@@ -1726,7 +1727,9 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
             LOG(ERROR) << "Unable to read snapshot status: " << snapshot;
             continue;
         }
-
+        if (snapshot_status.o_direct()) {
+            snapuserd_argv->emplace_back("-o_direct");
+        }
         auto misc_name = user_cow_name;
 
         std::string source_device_name;
@@ -3310,6 +3313,8 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     }
     auto read_ahead_size =
             android::base::GetUintProperty<uint>("ro.virtual_ab.read_ahead_size", kReadAheadSizeKb);
+    auto o_direct = GetODirectEnabledProperty();
+    LOG(INFO) << "READ ONLY PROP O_DIRECT: " << o_direct;
     PartitionCowCreator cow_creator{.target_metadata = target_metadata.get(),
                                     .target_suffix = target_suffix,
                                     .target_partition = nullptr,
@@ -3320,7 +3325,8 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
                                     .using_snapuserd = using_snapuserd,
                                     .compression_algorithm = compression_algorithm,
                                     .compression_factor = compression_factor,
-                                    .read_ahead_size = read_ahead_size};
+                                    .read_ahead_size = read_ahead_size,
+                                    .o_direct = o_direct};
 
     if (dap_metadata.vabc_feature_set().has_threaded()) {
         cow_creator.enable_threading = dap_metadata.vabc_feature_set().threaded();
