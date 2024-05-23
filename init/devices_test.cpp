@@ -43,7 +43,7 @@ class DeviceHandlerTester {
 
         mkdir_recursive(android::base::Dirname(fake_sys_root.path + uevent.path), 0777);
 
-        std::vector<std::string> result;
+        std::vector<DeviceHandler::BdevLink> result;
         result = device_handler_.GetBlockDeviceSymlinks(uevent);
 
         auto expected_size = expected_links.size();
@@ -52,7 +52,8 @@ class DeviceHandlerTester {
 
         // Explicitly iterate so the results are visible if a failure occurs
         for (unsigned int i = 0; i < expected_size; ++i) {
-            EXPECT_EQ(expected_links[i], result[i]);
+            EXPECT_EQ(result[i].path, expected_links[i]);
+            EXPECT_EQ(result[i].type, DeviceHandler::LinkType::kBdev);
         }
     }
 

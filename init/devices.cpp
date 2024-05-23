@@ -269,11 +269,12 @@ void DeviceHandler::FixupSysPermissions(const std::string& upath,
 }
 
 std::tuple<mode_t, uid_t, gid_t> DeviceHandler::GetDevicePermissions(
-    const std::string& path, const std::vector<std::string>& links) const {
+        const std::string& path, const std::vector<BdevLink>& links) const {
     // Search the perms list in reverse so that ueventd.$hardware can override ueventd.rc.
     for (auto it = dev_permissions_.crbegin(); it != dev_permissions_.crend(); ++it) {
-        if (it->Match(path) || std::any_of(links.cbegin(), links.cend(),
-                                           [it](const auto& link) { return it->Match(link); })) {
+        if (it->Match(path) || std::any_of(links.cbegin(), links.cend(), [it](const auto& link) {
+                return it->Match(link.path);
+            })) {
             return {it->perm(), it->uid(), it->gid()};
         }
     }
@@ -282,12 +283,16 @@ std::tuple<mode_t, uid_t, gid_t> DeviceHandler::GetDevicePermissions(
 }
 
 void DeviceHandler::MakeDevice(const std::string& path, bool block, int major, int minor,
-                               const std::vector<std::string>& links) const {
+                               const std::vector<BdevLink>& links) const {
     auto[mode, uid, gid] = GetDevicePermissions(path, links);
     mode |= (block ? S_IFBLK : S_IFCHR);
 
+    std::vector<std::string> link_paths;
+    for (const auto& link : links) {
+        link_paths.emplace_back(link.path);
+    }
     std::string secontext;
-    if (!SelabelLookupFileContextBestMatch(path, links, mode, &secontext)) {
+    if (!SelabelLookupFileContextBestMatch(path, link_paths, mode, &secontext)) {
         PLOG(ERROR) << "Device '" << path << "' not created; cannot find SELinux label";
         return;
     }
@@ -370,7 +375,8 @@ void SanitizePartitionName(std::string* string) {
     }
 }
 
-std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uevent) const {
+std::vector<DeviceHandler::BdevLink> DeviceHandler::GetBlockDeviceSymlinks(
+        const Uevent& uevent) const {
     std::string device;
     std::string type;
     std::string partition;
@@ -393,16 +399,18 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
     } else if (FindVbdDevicePrefix(uevent.path, &device)) {
         type = "vbd";
     } else if (FindDmDevice(uevent, &partition, &uuid)) {
-        std::vector<std::string> symlinks = {"/dev/block/mapper/" + partition};
+        std::vector<BdevLink> symlinks{
+                {.type = LinkType::kBdev, .path = "/dev/block/mapper/" + partition}};
         if (!uuid.empty()) {
-            symlinks.emplace_back("/dev/block/mapper/by-uuid/" + uuid);
+            symlinks.emplace_back(BdevLink{.type = LinkType::kBdev,
+                                           .path = "/dev/block/mapper/by-uuid/" + uuid});
         }
         return symlinks;
     } else {
         return {};
     }
 
-    std::vector<std::string> links;
+    std::vector<BdevLink> links;
 
     LOG(VERBOSE) << "found " << type << " device " << device;
 
@@ -416,29 +424,36 @@ std::vector<std::string> DeviceHandler::GetBlockDeviceSymlinks(const Uevent& uev
             LOG(VERBOSE) << "Linking partition '" << uevent.partition_name << "' as '"
                          << partition_name_sanitized << "'";
         }
-        links.emplace_back(link_path + "/by-name/" + partition_name_sanitized);
+        links.emplace_back(BdevLink{.type = LinkType::kBdev,
+                                    .path = link_path + "/by-name/" + partition_name_sanitized});
         // Adds symlink: /dev/block/by-name/<partition_name>.
         if (is_boot_device) {
-            links.emplace_back("/dev/block/by-name/" + partition_name_sanitized);
+            links.emplace_back(
+                    BdevLink{.type = LinkType::kBdev,
+                             .path = "/dev/block/by-name/" + partition_name_sanitized});
         }
     } else if (is_boot_device) {
         // If we don't have a partition name but we are a partition on a boot device, create a
         // symlink of /dev/block/by-name/<device_name> for symmetry.
-        links.emplace_back("/dev/block/by-name/" + uevent.device_name);
+        links.emplace_back(BdevLink{.type = LinkType::kBdev,
+                                    .path = "/dev/block/by-name/" + uevent.device_name});
         auto partition_name = GetPartitionNameForDevice(uevent.device_name);
         if (!partition_name.empty()) {
-            links.emplace_back("/dev/block/by-name/" + partition_name);
+            links.emplace_back(BdevLink{.type = LinkType::kBdev,
+                                        .path = "/dev/block/by-name/" + partition_name});
         }
     }
 
     std::string model;
     if (ReadFileToString("/sys/class/block/" + uevent.device_name + "/queue/zoned", &model) &&
         !StartsWith(model, "none")) {
-        links.emplace_back("/dev/block/by-name/zoned_device");
+        links.emplace_back(
+                BdevLink{.type = LinkType::kBdev, .path = "/dev/block/by-name/zoned_device"});
     }
 
     auto last_slash = uevent.path.rfind('/');
-    links.emplace_back(link_path + "/" + uevent.path.substr(last_slash + 1));
+    links.emplace_back(BdevLink{.type = LinkType::kBdev,
+                                .path = link_path + "/" + uevent.path.substr(last_slash + 1)});
 
     return links;
 }
@@ -471,7 +486,7 @@ static void RemoveDeviceMapperLinks(const std::string& devpath) {
 }
 
 void DeviceHandler::HandleDevice(const std::string& action, const std::string& devpath, bool block,
-                                 int major, int minor, const std::vector<std::string>& links) const {
+                                 int major, int minor, const std::vector<BdevLink>& links) const {
     if (action == "add") {
         MakeDevice(devpath, block, major, minor, links);
     }
@@ -483,16 +498,16 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
     // event.
     if (action == "add" || (action == "change" && StartsWith(devpath, "/dev/block/dm-"))) {
         for (const auto& link : links) {
-            if (!mkdir_recursive(Dirname(link), 0755)) {
-                PLOG(ERROR) << "Failed to create directory " << Dirname(link);
+            if (!mkdir_recursive(Dirname(link.path), 0755)) {
+                PLOG(ERROR) << "Failed to create directory " << Dirname(link.path);
             }
 
-            if (symlink(devpath.c_str(), link.c_str())) {
+            if (symlink(devpath.c_str(), link.path.c_str())) {
                 if (errno != EEXIST) {
-                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link;
+                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link.path;
                 } else if (std::string link_path;
-                           Readlink(link, &link_path) && link_path != devpath) {
-                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link
+                           Readlink(link.path, &link_path) && link_path != devpath) {
+                    PLOG(ERROR) << "Failed to symlink " << devpath << " to " << link.path
                                 << ", which already links to: " << link_path;
                 }
             }
@@ -505,8 +520,8 @@ void DeviceHandler::HandleDevice(const std::string& action, const std::string& d
         }
         for (const auto& link : links) {
             std::string link_path;
-            if (Readlink(link, &link_path) && link_path == devpath) {
-                unlink(link.c_str());
+            if (Readlink(link.path, &link_path) && link_path == devpath) {
+                unlink(link.path.c_str());
             }
         }
         unlink(devpath.c_str());
@@ -540,7 +555,7 @@ void DeviceHandler::HandleUevent(const Uevent& uevent) {
     if (uevent.major < 0 || uevent.minor < 0) return;
 
     std::string devpath;
-    std::vector<std::string> links;
+    std::vector<BdevLink> links;
     bool block = false;
 
     if (uevent.subsystem == "block") {

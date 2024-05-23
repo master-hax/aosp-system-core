@@ -135,15 +135,24 @@ class DeviceHandler : public UeventHandler {
     static std::string GetPartitionNameForDevice(const std::string& device);
 
   private:
+    enum class LinkType { kBdev };
+
+    // A symbolic link on a file system to a block device (bdev).
+    struct BdevLink {
+        LinkType type;
+        std::string path;
+    };
+
     void ColdbootDone() override;
     bool FindPlatformDevice(std::string path, std::string* platform_device_path) const;
-    std::tuple<mode_t, uid_t, gid_t> GetDevicePermissions(
-        const std::string& path, const std::vector<std::string>& links) const;
+    std::tuple<mode_t, uid_t, gid_t> GetDevicePermissions(const std::string& path,
+                                                          const std::vector<BdevLink>& links) const;
     void MakeDevice(const std::string& path, bool block, int major, int minor,
-                    const std::vector<std::string>& links) const;
-    std::vector<std::string> GetBlockDeviceSymlinks(const Uevent& uevent) const;
+                    const std::vector<BdevLink>& links) const;
+    std::vector<BdevLink> GetBlockDeviceSymlinks(const Uevent& uevent) const;
+
     void HandleDevice(const std::string& action, const std::string& devpath, bool block, int major,
-                      int minor, const std::vector<std::string>& links) const;
+                      int minor, const std::vector<BdevLink>& links) const;
     void FixupSysPermissions(const std::string& upath, const std::string& subsystem) const;
     void HandleAshmemUevent(const Uevent& uevent);
 
