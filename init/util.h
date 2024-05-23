@@ -108,6 +108,14 @@ inline constexpr bool IsMicrodroid() {
 #endif
 }
 
+inline constexpr bool IsArcvm() {
+#ifdef ARCVM
+    return ARCVM;
+#else
+    return false;
+#endif
+}
+
 bool Has32BitAbi();
 
 std::string GetApexNameFromFileName(const std::string& path);
@@ -122,5 +130,7 @@ std::vector<std::string> FilterVersionedConfigs(const std::vector<std::string>& 
 // Child's stderr is captured and logged using LOG(ERROR).
 bool ForkExecveAndWaitForCompletion(const char* filename, char* const argv[]);
 
+=======
+>>>>>>> 2c603e41a0 (Introduce ARCVM-specific init_first_stage and init_second_stage)
 }  // namespace init
 }  // namespace android
