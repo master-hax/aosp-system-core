@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d18606a_67326fe3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-05-24T18:25:41Z",
+      "side": 1,
+      "message": "Hi @enh@google.com, thanks for your quick review! It seems the presubmit is blocked by a preexisted test failure. Is it preferred that I wait until this test get fixed or can I bypass the presubmit?",
+      "revId": "75ed08fb0bcd3306897d7dfbad189ea4d2fb8919",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
