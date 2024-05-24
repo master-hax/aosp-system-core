@@ -280,6 +280,12 @@ TEST(RefBase, StackOwnershipDeath) {
     EXPECT_DEATH({ Foo foo(&isDeleted); foo.incStrong(nullptr); }, "");
 }
 
+TEST(RefBase, StackUnownedFine) {
+    bool isDeleted;
+    { Foo foo(&isDeleted); }
+    EXPECT_TRUE(isDeleted);
+}
+
 // Set up a situation in which we race with visit2AndRremove() to delete
 // 2 strong references.  Bar destructor checks that there are no early
 // deletions and prior updates are visible to destructor.

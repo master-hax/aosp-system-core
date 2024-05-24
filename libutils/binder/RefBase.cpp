@@ -767,16 +767,8 @@ RefBase::RefBase()
 RefBase::~RefBase()
 {
     int32_t flags = mRefs->mFlags.load(std::memory_order_relaxed);
-    // Life-time of this object is extended to WEAK, in
-    // which case weakref_impl doesn't out-live the object and we
-    // can free it now.
-    if ((flags & OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_WEAK) {
-        // It's possible that the weak count is not 0 if the object
-        // re-acquired a weak reference in its destructor
-        if (mRefs->mWeak.load(std::memory_order_relaxed) == 0) {
-            delete mRefs;
-        }
-    } else {
+    // If the object has a strong reference, we can't free it now.
+    if ((flags & OBJECT_LIFETIME_MASK) == OBJECT_LIFETIME_STRONG) {
         int32_t strongs = mRefs->mStrong.load(std::memory_order_relaxed);
 
         if (strongs == INITIAL_STRONG_VALUE) {
@@ -798,6 +790,18 @@ RefBase::~RefBase()
                              strongs);
         }
     }
+
+    // For weak lifetimes:
+    // It's possible that the weak count is not 0 if the object
+    // re-acquired a weak reference in its destructor
+    //
+    // For strong lifetimes:
+    // weakref_impl normally deletes itself in decWeak, but if
+    // there is no weak count, that would never get called.
+    if (mRefs->mWeak.load(std::memory_order_relaxed) == 0) {
+        delete mRefs;
+    }
+
     // For debugging purposes, clear mRefs.  Ineffective against outstanding wp's.
     const_cast<weakref_impl*&>(mRefs) = nullptr;
 }
