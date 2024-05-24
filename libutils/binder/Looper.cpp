@@ -1,3 +1,4 @@
+// clang-format off
 //
 // Copyright 2010 The Android Open Source Project
 //
@@ -23,6 +24,52 @@
 #include <cinttypes>
 
 namespace android {
+
+typedef int64_t nsecs_t; // nano-seconds
+
+enum {
+    SYSTEM_TIME_REALTIME = 0,  // system-wide realtime clock
+    SYSTEM_TIME_MONOTONIC = 1, // monotonic time since unspecified starting point
+    SYSTEM_TIME_PROCESS = 2,   // high-resolution per-process clock
+    SYSTEM_TIME_THREAD = 3,    // high-resolution per-thread clock
+    SYSTEM_TIME_BOOTTIME = 4,  // same as SYSTEM_TIME_MONOTONIC, but including CPU suspend time
+};
+
+static nsecs_t systemTime(int clock) {
+    //    checkClockId(clock);
+    static constexpr clockid_t clocks[] = {CLOCK_REALTIME, CLOCK_MONOTONIC,
+                                           CLOCK_PROCESS_CPUTIME_ID, CLOCK_THREAD_CPUTIME_ID,
+                                           CLOCK_BOOTTIME};
+    timespec t = {};
+    clock_gettime(clocks[clock], &t);
+    return nsecs_t(t.tv_sec) * 1000000000LL + t.tv_nsec;
+}
+
+[[maybe_unused]] static constexpr inline nsecs_t nanoseconds_to_milliseconds(nsecs_t secs) {
+    return secs / 1000000;
+}
+
+[[maybe_unused]] static constexpr inline nsecs_t milliseconds_to_nanoseconds(nsecs_t secs)
+{
+    return secs*1000000;
+}
+
+[[maybe_unused]] static int64_t uptimeNanos() {
+    return systemTime(SYSTEM_TIME_MONOTONIC);
+}
+
+[[maybe_unused]] static int64_t uptimeMillis() // TODO: use std::chrono::steady_clock
+{
+    return nanoseconds_to_milliseconds(uptimeNanos());
+}
+
+static int toMillisecondTimeoutDelay(nsecs_t referenceTime, nsecs_t timeoutTime) {
+    if (timeoutTime <= referenceTime) return 0;
+
+    uint64_t timeoutDelay = uint64_t(timeoutTime - referenceTime);
+    if (timeoutDelay > uint64_t((INT_MAX - 1) * 1000000LL)) return -1;
+    return (timeoutDelay + 999999LL) / 1000000LL;
+}
 
 namespace {
 
@@ -84,7 +131,7 @@ Looper::Looper(bool allowNonCallbacks)
     mWakeEventFd.reset(eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC));
     LOG_ALWAYS_FATAL_IF(mWakeEventFd.get() < 0, "Could not make wake event fd: %s", strerror(errno));
 
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     rebuildEpollLocked();
 }
 
@@ -145,7 +192,7 @@ bool Looper::getAllowNonCallbacks() const {
 
 void Looper::rebuildEpollLocked() {
     // Close old epoll instance if we have one.
-    if (mEpollFd >= 0) {
+    if (mEpollFd.ok()) {
 #if DEBUG_CALLBACKS
         ALOGD("%p ~ rebuildEpollLocked - rebuilding epoll set", this);
 #endif
@@ -154,7 +201,7 @@ void Looper::rebuildEpollLocked() {
 
     // Allocate the new epoll instance and register the WakeEventFd.
     mEpollFd.reset(epoll_create1(EPOLL_CLOEXEC));
-    LOG_ALWAYS_FATAL_IF(mEpollFd < 0, "Could not create epoll instance: %s", strerror(errno));
+    LOG_ALWAYS_FATAL_IF(!mEpollFd.ok(), "Could not create epoll instance: %s", strerror(errno));
 
     epoll_event wakeEvent = createEpollEvent(EPOLLIN, WAKE_EVENT_FD_SEQ);
     int result = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, mWakeEventFd.get(), &wakeEvent);
@@ -366,7 +413,7 @@ Done: ;
             // we need to be a little careful when removing the file descriptor afterwards.
             int callbackResult = response.request.callback->handleEvent(fd, events, data);
             if (callbackResult == 0) {
-                AutoMutex _l(mLock);
+                std::unique_lock<std::mutex> _l(mLock);
                 removeSequenceNumberLocked(response.seq);
             }
 
@@ -458,7 +505,7 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
     }
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
         // There is a sequence number reserved for the WakeEventFd.
         if (mNextRequestSeq == WAKE_EVENT_FD_SEQ) mNextRequestSeq++;
         const SequenceNumber seq = mNextRequestSeq++;
@@ -524,7 +571,7 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
 }
 
 int Looper::removeFd(int fd) {
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     const auto& it = mSequenceNumberByFd.find(fd);
     if (it == mSequenceNumberByFd.end()) {
         return 0;
@@ -533,7 +580,7 @@ int Looper::removeFd(int fd) {
 }
 
 int Looper::repoll(int fd) {
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     const auto& it = mSequenceNumberByFd.find(fd);
     if (it == mSequenceNumberByFd.end()) {
         return 0;
@@ -624,7 +671,7 @@ void Looper::sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler
 
     size_t i = 0;
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         size_t messageCount = mMessageEnvelopes.size();
         while (i < messageCount && uptime >= mMessageEnvelopes.itemAt(i).uptime) {
@@ -655,7 +702,7 @@ void Looper::removeMessages(const sp<MessageHandler>& handler) {
 #endif
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         for (size_t i = mMessageEnvelopes.size(); i != 0; ) {
             const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(--i);
@@ -672,7 +719,7 @@ void Looper::removeMessages(const sp<MessageHandler>& handler, int what) {
 #endif
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         for (size_t i = mMessageEnvelopes.size(); i != 0; ) {
             const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(--i);

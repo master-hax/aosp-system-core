@@ -163,12 +163,6 @@ cc_defaults {
                 "Trace.cpp",
             ],
         },
-        linux: {
-            header_libs: ["libbase_headers"],
-            srcs: [
-                "Looper.cpp",
-            ],
-        },
     },
 
     apex_available: [
