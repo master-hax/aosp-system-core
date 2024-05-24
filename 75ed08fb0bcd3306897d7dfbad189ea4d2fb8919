@@ -16,6 +16,24 @@
       "message": "Hi @enh@google.com, thanks for your quick review! It seems the presubmit is blocked by a preexisted test failure. Is it preferred that I wait until this test get fixed or can I bypass the presubmit?",
       "revId": "75ed08fb0bcd3306897d7dfbad189ea4d2fb8919",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "626f4d25_b83a4b13",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-24T18:30:01Z",
+      "side": 1,
+      "message": "either\u0027s fine when it\u0027s a known failure and the test in question is unlikely to _also_ find problems with your change. (and this specific test seems unlikely to run any of our code!)",
+      "parentUuid": "3d18606a_67326fe3",
+      "revId": "75ed08fb0bcd3306897d7dfbad189ea4d2fb8919",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
