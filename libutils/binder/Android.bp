@@ -21,6 +21,14 @@ cc_defaults {
         "Unicode.cpp",
         "VectorImpl.cpp",
     ],
+    target: {
+        linux: {
+            header_libs: ["libbinder_headers_base"], // libbase_headers?
+            srcs: [
+                "Looper.cpp",
+            ],
+        },
+    },
 
     cflags: [
         "-Winvalid-offsetof",
