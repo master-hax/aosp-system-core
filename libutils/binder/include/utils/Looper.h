@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -18,18 +19,20 @@
 #define UTILS_LOOPER_H
 
 #include <utils/RefBase.h>
-#include <utils/Timers.h>
 #include <utils/Vector.h>
-#include <utils/threads.h>
 
 #include <sys/epoll.h>
 
-#include <android-base/unique_fd.h>
+#include <binder/unique_fd.h>
 
+#include <mutex>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 
 namespace android {
+
+typedef int64_t nsecs_t;
 
 /*
  * NOTE: Since Looper is used to implement the NDK ALooper, the Looper
@@ -265,7 +268,10 @@ public:
      * This method does not return until it has finished invoking the appropriate callbacks
      * for all file descriptors that were signalled.
      */
-    int pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData);
+    int pollOnce(std::chrono::milliseconds timeout, int* outFd, int* outEvents, void** outData);
+    inline int pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
+        return pollOnce(std::chrono::milliseconds(timeoutMillis), outFd, outEvents, outData);
+    }
     inline int pollOnce(int timeoutMillis) {
         return pollOnce(timeoutMillis, nullptr, nullptr, nullptr);
     }
@@ -275,7 +281,10 @@ public:
      * data has been consumed or a file descriptor is available with no callback.
      * This function will never return POLL_CALLBACK.
      */
-    int pollAll(int timeoutMillis, int* outFd, int* outEvents, void** outData);
+    int pollAll(std::chrono::milliseconds timeout, int* outFd, int* outEvents, void** outData);
+    inline int pollAll(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
+        return pollAll(std::chrono::milliseconds(timeoutMillis), outFd, outEvents, outData);
+    }
     inline int pollAll(int timeoutMillis) {
         return pollAll(timeoutMillis, nullptr, nullptr, nullptr);
     }
@@ -372,8 +381,12 @@ public:
      * The handler must not be null.
      * This method can be called on any thread.
      */
-    void sendMessageDelayed(nsecs_t uptimeDelay, const sp<MessageHandler>& handler,
+    void sendMessageDelayed(std::chrono::nanoseconds uptimeDelay, const sp<MessageHandler>& handler,
             const Message& message);
+    inline void sendMessageDelayed(nsecs_t uptimeDelay, const sp<MessageHandler>& handler,
+            const Message& message) {
+        sendMessageDelayed(std::chrono::nanoseconds(uptimeDelay), handler, message);
+    }
 
     /**
      * Enqueues a message to be processed by the specified handler after all pending messages
@@ -383,8 +396,13 @@ public:
      * The handler must not be null.
      * This method can be called on any thread.
      */
-    void sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler,
-            const Message& message);
+    void sendMessageAtTime(std::chrono::steady_clock::time_point uptime,
+            const sp<MessageHandler>& handler, const Message& message);
+    inline void sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler,
+            const Message& message) {
+        sendMessageAtTime(std::chrono::steady_clock::time_point(std::chrono::nanoseconds(uptime)),
+                handler, message);
+    }
 
     /**
      * Removes all messages for the specified handler from the queue.
@@ -453,20 +471,20 @@ private:
     };
 
     struct MessageEnvelope {
-        MessageEnvelope() : uptime(0) { }
+        MessageEnvelope() : uptime(std::chrono::steady_clock::now()) { }
 
-        MessageEnvelope(nsecs_t u, sp<MessageHandler> h, const Message& m)
+        MessageEnvelope(std::chrono::steady_clock::time_point u, sp<MessageHandler> h, const Message& m)
             : uptime(u), handler(std::move(h)), message(m) {}
 
-        nsecs_t uptime;
+        std::chrono::steady_clock::time_point uptime;
         sp<MessageHandler> handler;
         Message message;
     };
 
     const bool mAllowNonCallbacks; // immutable
 
-    android::base::unique_fd mWakeEventFd;  // immutable
-    Mutex mLock;
+    binder::unique_fd mWakeEventFd;  // immutable
+    std::mutex mLock;
 
     Vector<MessageEnvelope> mMessageEnvelopes; // guarded by mLock
     bool mSendingMessage; // guarded by mLock
@@ -475,7 +493,7 @@ private:
     // any use of it is racy anyway.
     volatile bool mPolling;
 
-    android::base::unique_fd mEpollFd;  // guarded by mLock but only modified on the looper thread
+    binder::unique_fd mEpollFd;  // guarded by mLock but only modified on the looper thread
     bool mEpollRebuildRequired; // guarded by mLock
 
     // Locked maps of fds and sequence numbers monitoring requests.
@@ -491,9 +509,9 @@ private:
     // it runs on a single thread.
     Vector<Response> mResponses;
     size_t mResponseIndex;
-    nsecs_t mNextMessageUptime; // set to LLONG_MAX when none
+    std::optional<std::chrono::steady_clock::time_point> mNextMessageUptime;
 
-    int pollInner(int timeoutMillis);
+    int pollInner(std::chrono::milliseconds timeout);
     int removeSequenceNumberLocked(SequenceNumber seq);  // requires mLock
     void awoken();
     void rebuildEpollLocked();
