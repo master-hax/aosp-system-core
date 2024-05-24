@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -18,18 +19,21 @@
 #define UTILS_LOOPER_H
 
 #include <utils/RefBase.h>
-#include <utils/Timers.h>
+//#include <utils/Timers.h>
 #include <utils/Vector.h>
-#include <utils/threads.h>
+//#include <utils/threads.h>
 
 #include <sys/epoll.h>
 
-#include <android-base/unique_fd.h>
+#include <binder/unique_fd.h>
 
 #include <unordered_map>
 #include <utility>
+#include <mutex>
 
 namespace android {
+
+typedef int64_t nsecs_t;
 
 /*
  * NOTE: Since Looper is used to implement the NDK ALooper, the Looper
@@ -465,8 +469,8 @@ private:
 
     const bool mAllowNonCallbacks; // immutable
 
-    android::base::unique_fd mWakeEventFd;  // immutable
-    Mutex mLock;
+    binder::unique_fd mWakeEventFd;  // immutable
+    std::mutex mLock;
 
     Vector<MessageEnvelope> mMessageEnvelopes; // guarded by mLock
     bool mSendingMessage; // guarded by mLock
@@ -475,7 +479,7 @@ private:
     // any use of it is racy anyway.
     volatile bool mPolling;
 
-    android::base::unique_fd mEpollFd;  // guarded by mLock but only modified on the looper thread
+    binder::unique_fd mEpollFd;  // guarded by mLock but only modified on the looper thread
     bool mEpollRebuildRequired; // guarded by mLock
 
     // Locked maps of fds and sequence numbers monitoring requests.
