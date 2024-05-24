@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "00c442c8_eb785a33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "One motivation would be to allow stack traces to be partially symbolized and then distributed in proto format (this could be useful if the full set of symbol files is split between multiple parties, e.g. an OEM and an app developer), but it also makes the code simpler this way since we don\u0027t need to pass around the symbolized stack traces on the side.\n\nWhat do you have in mind for tests? I was thinking we could check in a prebuilt library and a proto tombstone file and check that the pbtombstone output is correct. Another possibility would be to write an end-to-end test that triggers a crash on the device, pulls the tombstone and symbolizes it, but maybe that test should be part of acrash.",
+      "parentUuid": "6191bf7b_8a595f03",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e50436d6_12980e51",
         "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
         "patchSetId": 4
@@ -31,6 +49,30 @@
       "writtenOn": "2024-05-23T01:20:31Z",
       "side": 1,
       "message": "Use #pragma once\n\nWe still have old headers that use this, but as we modify any header file we switch it.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6833866_716c69ac",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e50436d6_12980e51",
       "range": {
         "startLine": 17,
         "startChar": 0,
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49f5a7db_33afd1d1",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "It looks like the debuggerd headers usually come first though?\n```\npcc@pcc-desktop ~/2/aosp (work)\u003e for i in system/core/debuggerd/libdebuggerd/*.cpp\n                                     grep \u0027#include\u0027 $i | head -1\n                                 end\n#include \"libdebuggerd/backtrace.h\"\n#include \"libdebuggerd/gwp_asan.h\"\n#include \"libdebuggerd/open_files_list.h\"\n#include \"libdebuggerd/scudo.h\"\n#include \"libdebuggerd/tombstone.h\"\n#include \"libdebuggerd/tombstone.h\"\n#include \u003clibdebuggerd/tombstone_proto_to_text.h\u003e\n#include \"libdebuggerd/tombstone_symbolize.h\"\n#include \"libdebuggerd/utility.h\"\n#include \"libdebuggerd/utility_host.h\"\n```\nAside from that, the order you mentioned seems to be the most popular one so I reordered it. And it looks like the other files that include `tombstone.pb.h` have it at the end so I moved it.",
+      "parentUuid": "241e8383_c2e974af",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 17
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "720be1d6_520bbabd",
@@ -77,6 +143,30 @@
       "writtenOn": "2024-05-23T01:20:31Z",
       "side": 1,
       "message": "None of this code uses anonymous namespaces. So better to leave this off, although we should at some point create a real namespace for this code.",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 9
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99695b5e_2713073f",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "720be1d6_520bbabd",
       "range": {
         "startLine": 33,
         "startChar": 0,
@@ -110,6 +200,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6de57bf_a4d3c199",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6bc3a80_1f7448b5",
+      "range": {
+        "startLine": 48,
+        "startChar": 21,
+        "endLine": 48,
+        "endChar": 35
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "03644587_34141b35",
@@ -123,6 +237,54 @@
       "writtenOn": "2024-05-23T01:20:31Z",
       "side": 1,
       "message": "It might be easier to use the unique_fd and Pipe functions (from libbase unique_fd.h). You can see an example of how this is used in crash_dump.cpp at around line 556.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 30
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40aa16e0_7b42f075",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03644587_34141b35",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 30
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1cab49af_de4a5bb2",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "I think I tried doing it that way but it was more cumbersome than just calling pipe directly.",
+      "parentUuid": "03644587_34141b35",
       "range": {
         "startLine": 54,
         "startChar": 0,
@@ -156,6 +318,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2dabb7a2_9022835a",
+        "filename": "debuggerd/libdebuggerd/tombstone_symbolize.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8c44229_33f3e2ae",
+      "range": {
+        "startLine": 73,
+        "startChar": 6,
+        "endLine": 73,
+        "endChar": 9
+      },
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "11fb2b38_c32d9b48",
@@ -169,6 +355,24 @@
       "writtenOn": "2024-05-23T01:20:31Z",
       "side": 1,
       "message": "Add includes for \u003cstring\u003e and \u003cvector\u003e",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa23b820_7cbcbd8b",
+        "filename": "debuggerd/pbtombstone.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-05-24T02:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "11fb2b38_c32d9b48",
       "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
