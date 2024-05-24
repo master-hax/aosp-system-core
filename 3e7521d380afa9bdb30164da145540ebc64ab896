@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9e678ea6_2643a1d0",
+        "filename": "init/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-24T05:44:35Z",
+      "side": 1,
+      "message": "Sorry, this wouldn\u0027t work because this doesn\u0027t disable the original module. The build system will anyway generate install rules for both this and that module and therefore there will be a conflict.\n\nCan this be detected at runtime? For example, you could install an empty file only for ARCVM and init could detect the existence of the file to know that it\u0027s running on ARCVM.\n\nex:\n\n```\nprebuilt_etc {\n    name: \"arcvm_marker\",\n    src: [\"an_empty_file\"],\n}\n\n// Add this only for ARCVM.\nPRODUCT_PACKAGES +\u003d arcvm_marker\n\n// inside of init\nbool IsArcvm() {\n   static bool ret \u003d access(\"/system/etc/arcvm_marker\", F_OK ) !\u003d -1;\n   return ret;\n}\n```",
+      "parentUuid": "57c3d8b0_f10c92d7",
+      "range": {
+        "startLine": 329,
+        "startChar": 0,
+        "endLine": 329,
+        "endChar": 31
+      },
+      "revId": "3e7521d380afa9bdb30164da145540ebc64ab896",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aeb126b0_9eebd46a",
         "filename": "init/Android.bp",
         "patchSetId": 5
