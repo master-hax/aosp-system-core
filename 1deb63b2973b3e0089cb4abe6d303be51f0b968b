@@ -22,6 +22,30 @@
       },
       "revId": "1deb63b2973b3e0089cb4abe6d303be51f0b968b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7bba9d2_f9d5f056",
+        "filename": "init/devices.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2024-05-24T16:36:02Z",
+      "side": 1,
+      "message": "I have made the following changes:\n- The CL \"Introduce struct DeviceHandler::BdevLink\" has been dropped.\n- The link target is derived from the link name prefix.\n\nPlease let me know if I misunderstood your request.",
+      "parentUuid": "d8fb0334_638f7b2b",
+      "range": {
+        "startLine": 453,
+        "startChar": 60,
+        "endLine": 453,
+        "endChar": 69
+      },
+      "revId": "1deb63b2973b3e0089cb4abe6d303be51f0b968b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
