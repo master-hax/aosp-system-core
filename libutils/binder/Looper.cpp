@@ -1,3 +1,4 @@
+// clang-format off
 //
 // Copyright 2010 The Android Open Source Project
 //
@@ -21,6 +22,8 @@
 
 #include <sys/eventfd.h>
 #include <cinttypes>
+
+using namespace std::chrono_literals;
 
 namespace android {
 
@@ -80,11 +83,11 @@ Looper::Looper(bool allowNonCallbacks)
       mEpollRebuildRequired(false),
       mNextRequestSeq(WAKE_EVENT_FD_SEQ + 1),
       mResponseIndex(0),
-      mNextMessageUptime(LLONG_MAX) {
+      mNextMessageUptime(std::nullopt) {
     mWakeEventFd.reset(eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC));
     LOG_ALWAYS_FATAL_IF(mWakeEventFd.get() < 0, "Could not make wake event fd: %s", strerror(errno));
 
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     rebuildEpollLocked();
 }
 
@@ -145,7 +148,7 @@ bool Looper::getAllowNonCallbacks() const {
 
 void Looper::rebuildEpollLocked() {
     // Close old epoll instance if we have one.
-    if (mEpollFd >= 0) {
+    if (mEpollFd.ok()) {
 #if DEBUG_CALLBACKS
         ALOGD("%p ~ rebuildEpollLocked - rebuilding epoll set", this);
 #endif
@@ -154,7 +157,7 @@ void Looper::rebuildEpollLocked() {
 
     // Allocate the new epoll instance and register the WakeEventFd.
     mEpollFd.reset(epoll_create1(EPOLL_CLOEXEC));
-    LOG_ALWAYS_FATAL_IF(mEpollFd < 0, "Could not create epoll instance: %s", strerror(errno));
+    LOG_ALWAYS_FATAL_IF(!mEpollFd.ok(), "Could not create epoll instance: %s", strerror(errno));
 
     epoll_event wakeEvent = createEpollEvent(EPOLLIN, WAKE_EVENT_FD_SEQ);
     int result = epoll_ctl(mEpollFd.get(), EPOLL_CTL_ADD, mWakeEventFd.get(), &wakeEvent);
@@ -182,7 +185,8 @@ void Looper::scheduleEpollRebuildLocked() {
     }
 }
 
-int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
+int Looper::pollOnce(std::chrono::milliseconds timeout, int* outFd, int* outEvents,
+        void** outData) {
     int result = 0;
     for (;;) {
         while (mResponseIndex < mResponses.size()) {
@@ -214,26 +218,26 @@ int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outDa
             return result;
         }
 
-        result = pollInner(timeoutMillis);
+        result = pollInner(timeout);
     }
 }
 
-int Looper::pollInner(int timeoutMillis) {
+int Looper::pollInner(std::chrono::milliseconds timeout) {
 #if DEBUG_POLL_AND_WAKE
-    ALOGD("%p ~ pollOnce - waiting: timeoutMillis=%d", this, timeoutMillis);
+    ALOGD("%p ~ pollOnce - waiting: timeout=%lld", this, (long long)timeout.count());
 #endif
-
     // Adjust the timeout based on when the next message is due.
-    if (timeoutMillis != 0 && mNextMessageUptime != LLONG_MAX) {
-        nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
-        int messageTimeoutMillis = toMillisecondTimeoutDelay(now, mNextMessageUptime);
-        if (messageTimeoutMillis >= 0
-                && (timeoutMillis < 0 || messageTimeoutMillis < timeoutMillis)) {
-            timeoutMillis = messageTimeoutMillis;
+    if (timeout.count() != 0 && mNextMessageUptime.has_value()) {
+        const auto now = std::chrono::steady_clock::now();
+        const auto messageTimeoutMillis = mNextMessageUptime.value() - now;
+        if (messageTimeoutMillis >= 0ms
+                && (timeout < 0ms || messageTimeoutMillis < timeout)) {
+            timeout = std::chrono::duration_cast<std::chrono::milliseconds>(messageTimeoutMillis);
         }
 #if DEBUG_POLL_AND_WAKE
-        ALOGD("%p ~ pollOnce - next message in %" PRId64 "ns, adjusted timeout: timeoutMillis=%d",
-                this, mNextMessageUptime - now, timeoutMillis);
+        ALOGD("%p ~ pollOnce - next message in %" PRId64 "ns, adjusted timeout: timeout=%" PRId64,
+                this, (int64_t)(mNextMessageUptime.value() - now).count(),
+                (int64_t)timeout.count());
 #endif
     }
 
@@ -246,7 +250,7 @@ int Looper::pollInner(int timeoutMillis) {
     mPolling = true;
 
     struct epoll_event eventItems[EPOLL_MAX_EVENTS];
-    int eventCount = epoll_wait(mEpollFd.get(), eventItems, EPOLL_MAX_EVENTS, timeoutMillis);
+    int eventCount = epoll_wait(mEpollFd.get(), eventItems, EPOLL_MAX_EVENTS, timeout.count());
 
     // No longer idling.
     mPolling = false;
@@ -314,9 +318,9 @@ int Looper::pollInner(int timeoutMillis) {
 Done: ;
 
     // Invoke pending message callbacks.
-    mNextMessageUptime = LLONG_MAX;
+    mNextMessageUptime = std::nullopt;
     while (mMessageEnvelopes.size() != 0) {
-        nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+        const auto now = std::chrono::steady_clock::now();
         const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(0);
         if (messageEnvelope.uptime <= now) {
             // Remove the envelope from the list.
@@ -366,7 +370,7 @@ Done: ;
             // we need to be a little careful when removing the file descriptor afterwards.
             int callbackResult = response.request.callback->handleEvent(fd, events, data);
             if (callbackResult == 0) {
-                AutoMutex _l(mLock);
+                std::unique_lock<std::mutex> _l(mLock);
                 removeSequenceNumberLocked(response.seq);
             }
 
@@ -379,26 +383,24 @@ Done: ;
     return result;
 }
 
-int Looper::pollAll(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
-    if (timeoutMillis <= 0) {
+int Looper::pollAll(std::chrono::milliseconds timeout, int* outFd, int* outEvents, void** outData) {
+    if (timeout <= 0ms) {
         int result;
         do {
-            result = pollOnce(timeoutMillis, outFd, outEvents, outData);
+            result = pollOnce(timeout, outFd, outEvents, outData);
         } while (result == POLL_CALLBACK);
         return result;
     } else {
-        nsecs_t endTime = systemTime(SYSTEM_TIME_MONOTONIC)
-                + milliseconds_to_nanoseconds(timeoutMillis);
+        const auto endTime = std::chrono::steady_clock::now() + timeout;
 
         for (;;) {
-            int result = pollOnce(timeoutMillis, outFd, outEvents, outData);
+            int result = pollOnce(timeout, outFd, outEvents, outData);
             if (result != POLL_CALLBACK) {
                 return result;
             }
 
-            nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
-            timeoutMillis = toMillisecondTimeoutDelay(now, endTime);
-            if (timeoutMillis == 0) {
+            const auto now = std::chrono::steady_clock::now();
+            if (now < endTime) {
                 return POLL_TIMEOUT;
             }
         }
@@ -458,7 +460,7 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
     }
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
         // There is a sequence number reserved for the WakeEventFd.
         if (mNextRequestSeq == WAKE_EVENT_FD_SEQ) mNextRequestSeq++;
         const SequenceNumber seq = mNextRequestSeq++;
@@ -524,7 +526,7 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
 }
 
 int Looper::removeFd(int fd) {
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     const auto& it = mSequenceNumberByFd.find(fd);
     if (it == mSequenceNumberByFd.end()) {
         return 0;
@@ -533,7 +535,7 @@ int Looper::removeFd(int fd) {
 }
 
 int Looper::repoll(int fd) {
-    AutoMutex _l(mLock);
+    std::unique_lock<std::mutex> _l(mLock);
     const auto& it = mSequenceNumberByFd.find(fd);
     if (it == mSequenceNumberByFd.end()) {
         return 0;
@@ -605,26 +607,28 @@ int Looper::removeSequenceNumberLocked(SequenceNumber seq) {
 }
 
 void Looper::sendMessage(const sp<MessageHandler>& handler, const Message& message) {
-    nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
-    sendMessageAtTime(now, handler, message);
+    const auto now = std::chrono::steady_clock::now();
+    const auto nowNanoseconds =
+            std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count();
+    sendMessageAtTime(nowNanoseconds, handler, message);
 }
 
-void Looper::sendMessageDelayed(nsecs_t uptimeDelay, const sp<MessageHandler>& handler,
-        const Message& message) {
-    nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+void Looper::sendMessageDelayed(std::chrono::nanoseconds uptimeDelay,
+        const sp<MessageHandler>& handler, const Message& message) {
+    const auto now = std::chrono::steady_clock::now();
     sendMessageAtTime(now + uptimeDelay, handler, message);
 }
 
-void Looper::sendMessageAtTime(nsecs_t uptime, const sp<MessageHandler>& handler,
-        const Message& message) {
+void Looper::sendMessageAtTime(const std::chrono::steady_clock::time_point uptime,
+        const sp<MessageHandler>& handler, const Message& message) {
 #if DEBUG_CALLBACKS
     ALOGD("%p ~ sendMessageAtTime - uptime=%" PRId64 ", handler=%p, what=%d",
-            this, uptime, handler.get(), message.what);
+            this, uptime.time_since_epoch().count(), handler.get(), message.what);
 #endif
 
     size_t i = 0;
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         size_t messageCount = mMessageEnvelopes.size();
         while (i < messageCount && uptime >= mMessageEnvelopes.itemAt(i).uptime) {
@@ -655,7 +659,7 @@ void Looper::removeMessages(const sp<MessageHandler>& handler) {
 #endif
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         for (size_t i = mMessageEnvelopes.size(); i != 0; ) {
             const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(--i);
@@ -672,7 +676,7 @@ void Looper::removeMessages(const sp<MessageHandler>& handler, int what) {
 #endif
 
     { // acquire lock
-        AutoMutex _l(mLock);
+        std::unique_lock<std::mutex> _l(mLock);
 
         for (size_t i = mMessageEnvelopes.size(); i != 0; ) {
             const MessageEnvelope& messageEnvelope = mMessageEnvelopes.itemAt(--i);
