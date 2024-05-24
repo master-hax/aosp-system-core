@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57c3d8b0_f10c92d7",
+        "filename": "init/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-24T01:44:20Z",
+      "side": 1,
+      "message": "This should be init_second_stage",
+      "range": {
+        "startLine": 329,
+        "startChar": 0,
+        "endLine": 329,
+        "endChar": 31
+      },
+      "revId": "3e7521d380afa9bdb30164da145540ebc64ab896",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aeb126b0_9eebd46a",
+        "filename": "init/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-05-24T01:44:20Z",
+      "side": 1,
+      "message": "this should be init_first_stage",
+      "range": {
+        "startLine": 489,
+        "startChar": 17,
+        "endLine": 489,
+        "endChar": 28
+      },
+      "revId": "3e7521d380afa9bdb30164da145540ebc64ab896",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
