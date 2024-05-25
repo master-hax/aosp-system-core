@@ -105,6 +105,29 @@
       },
       "revId": "5fd155327f100d214623c4287fff2e38325af305",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ec3bb89_9c9b6f26",
+        "filename": "libutils/binder/String16.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-25T01:10:38Z",
+      "side": 1,
+      "message": "we should ignore only the relevant one, not all of them",
+      "range": {
+        "startLine": 35,
+        "startChar": 52,
+        "endLine": 35,
+        "endChar": 59
+      },
+      "revId": "5fd155327f100d214623c4287fff2e38325af305",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
