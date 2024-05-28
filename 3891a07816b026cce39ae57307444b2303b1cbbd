@@ -70,6 +70,24 @@
       "parentUuid": "af2d1c30_40a8f51a",
       "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c79e089_2722d677",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-05-28T22:25:16Z",
+      "side": 1,
+      "message": "mikemcternan@google.com and swillden@google.com are not in the trusty-team group, so I would leave them in after the include for now until we have common files to include for them as well.",
+      "parentUuid": "8e8d9451_35179aef",
+      "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
