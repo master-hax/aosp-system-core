@@ -34,6 +34,24 @@
       "parentUuid": "366bfbbf_138036ec",
       "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af2d1c30_40a8f51a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-05-28T19:47:51Z",
+      "side": 1,
+      "message": "`include` statements are common in other OWNERS files, so I used that instead of \u0027file\u0027. The block I pasted above is from https://android.googlesource.com/trusty/external/qemu-keycodemapdb/+/refs/heads/trusty-main/OWNERS\n\nAlso see aosp/2959622",
+      "parentUuid": "5ca66c48_75591bcc",
+      "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
