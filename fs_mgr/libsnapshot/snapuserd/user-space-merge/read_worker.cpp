@@ -17,6 +17,7 @@
 #include <libsnapshot/cow_format.h>
 #include <pthread.h>
 
+#include "android-base/properties.h"
 #include "read_worker.h"
 #include "snapuserd_core.h"
 #include "utility.h"
