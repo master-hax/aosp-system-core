@@ -17,6 +17,7 @@
 #include <libsnapshot/cow_format.h>
 #include <pthread.h>
 
+#include "android-base/properties.h"
 #include "merge_worker.h"
 #include "snapuserd_core.h"
 #include "utility.h"
@@ -35,7 +36,10 @@ MergeWorker::MergeWorker(const std::string& cow_device, const std::string& misc_
 
 int MergeWorker::PrepareMerge(uint64_t* source_offset, int* pending_ops,
                               std::vector<const CowOperation*>* replace_zero_vec) {
-    int num_ops = *pending_ops;
+    int num_ops = std::min(
+            android::base::GetIntProperty<int>("ro.virtual_ab.cow_op_merge_size", *pending_ops),
+            *pending_ops);
+
     int nr_consecutive = 0;
     bool checkOrderedOp = (replace_zero_vec == nullptr);
     size_t num_blocks = 1;
