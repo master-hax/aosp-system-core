@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e34d02a_01b48c0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-28T13:09:01Z",
+      "side": 1,
+      "message": "Is there a reason why the two sizes would be meaningfully different?",
+      "revId": "837bff44b21935ba11cabe78a06e46d533f5db1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
