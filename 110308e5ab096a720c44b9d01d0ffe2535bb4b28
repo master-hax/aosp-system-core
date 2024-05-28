@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2269178_ae404e59",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-05-28T14:46:59Z",
+      "side": 0,
+      "message": "I don\u0027t like landing this workaround because it actually brings back exactly this regression.\nIf we don\u0027t set this to PRIVATE then something like this would fail:\n```\nadb remount /product/app\nadb remount /product  # \u003c-- fail, because /product/app cannot be moved\n```\n\nThe fix should be to just reboot after initial overlayfs setup, this way the device would boot with a fresh \u0026 good state with overlayfs already mounted.\n\nAt the very least, this workaround should be applied to only the \"/\" or \"/system\" mount point. Or only to mount points we know that have _no_ parent mount.",
+      "range": {
+        "startLine": 454,
+        "startChar": 0,
+        "endLine": 455,
+        "endChar": 64
+      },
+      "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

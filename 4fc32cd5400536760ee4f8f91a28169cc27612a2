@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22c39e77_5c44a9e8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-05-28T14:46:59Z",
+      "side": 1,
+      "message": "This problem seems similar to aosp/If2ff4852516292ccbc7abdeebe0e9a7c1c7ba606\nThe problem is that that change only affects second-stage-init.\nFirst-stage-init shouldn\u0027t see the problem you described at all because all of first-stage happens in the bootstrap namespace, right? So I guess you are seeing the problem because after initial remount setup you didn\u0027t reboot.\n\nCould you confirm the above?\n\nIf so I think the correct _fix_ is to ensure a reboot after initial remount:\n```\n$ adb remount\n# would print something about new overlayfs is setup\n$ adb reboot\n$ adb remount\n# would print something about _existing_ overlayfs is remounted RW\n$ adb shell cat /proc/self/mountinfo\n# should be in a \"good\" mount state?\n```",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
