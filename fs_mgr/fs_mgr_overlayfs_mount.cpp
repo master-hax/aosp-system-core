@@ -412,6 +412,7 @@ static bool fs_mgr_overlayfs_mount_one(const FstabEntry& fstab_entry) {
     bool retval = true;
     bool move_dir_shared = true;
     bool parent_shared = true;
+    bool parent_made_private = false;
     bool root_shared = true;
     bool root_made_private = false;
 
@@ -451,16 +452,6 @@ static bool fs_mgr_overlayfs_mount_one(const FstabEntry& fstab_entry) {
         mountinfo.clear();
     }
 
-    // Need to make the original mountpoint MS_PRIVATE, so that the overlayfs can be MS_MOVE.
-    // This could happen if its parent mount is remounted later.
-    if (!fs_mgr_overlayfs_set_shared_mount(mount_point, false)) {
-        // If failed to set "/system" mount type, it might be due to "/system" not being a valid
-        // mountpoint after switch root. Retry with "/" in this case.
-        if (errno == EINVAL && mount_point == "/system") {
-            root_made_private = fs_mgr_overlayfs_set_shared_mount("/", false);
-        }
-    }
-
     for (const auto& entry : mountinfo) {
         // Find all immediate submounts.
         if (!android::base::StartsWith(entry.mount_point, mount_point + "/")) {
@@ -497,6 +488,18 @@ static bool fs_mgr_overlayfs_mount_one(const FstabEntry& fstab_entry) {
             }
         }
 
+        if (!parent_made_private) {
+            // Need to make the original mountpoint MS_PRIVATE, so that the overlayfs can be MS_MOVE.
+            // This could happen if its parent mount is remounted later.
+            parent_made_private = fs_mgr_overlayfs_set_shared_mount(mount_point, false);
+            // If failed to set "/system" mount type, it might be due to "/system" not being a valid
+            // mountpoint after switch root. Retry with "/" in this case.
+            if (!parent_made_private && errno == EINVAL && mount_point == "/system") {
+                parent_made_private = fs_mgr_overlayfs_set_shared_mount("/", false);
+                root_made_private = parent_made_private;
+            }
+        }
+
         if (new_entry.shared_flag) {
             new_entry.shared_flag = fs_mgr_overlayfs_set_shared_mount(new_entry.mount_point, false);
         }
@@ -524,7 +527,7 @@ static bool fs_mgr_overlayfs_mount_one(const FstabEntry& fstab_entry) {
         rmdir(entry.dir.c_str());
     }
     // If the original (overridden) mount was MS_SHARED, then set the overlayfs mount to MS_SHARED.
-    if (parent_shared) {
+    if (parent_shared && parent_made_private) {
         fs_mgr_overlayfs_set_shared_mount(mount_point, true);
     }
     if (root_shared && root_made_private) {
