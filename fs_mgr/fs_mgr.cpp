@@ -1556,7 +1556,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                                    attempted_entry.mount_point, wiped ? "true" : "false",
                                    attempted_entry.fs_type,
                                    attempted_entry.fs_mgr_flags.is_zoned ? "true" : "false",
-                                   android::base::Join(attempted_entry.user_devices, ' ')},
+                                   android::base::Join(attempted_entry.user_devices, ' '),
+                                   std::to_string(attempted_entry.length)},
                                   nullptr)) {
                         LERROR << "Encryption failed";
                         set_type_property(encryptable);
@@ -1601,7 +1602,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                                current_entry.mount_point, "true" /* shouldFormat */,
                                current_entry.fs_type,
                                current_entry.fs_mgr_flags.is_zoned ? "true" : "false",
-                               android::base::Join(current_entry.user_devices, ' ')},
+                               android::base::Join(current_entry.user_devices, ' '),
+                               std::to_string(current_entry.length)},
                               nullptr)) {
                     LERROR << "Encryption failed";
                 } else {
@@ -1628,7 +1630,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             if (!call_vdc({"cryptfs", "mountFstab", attempted_entry.blk_device,
                            attempted_entry.mount_point,
                            current_entry.fs_mgr_flags.is_zoned ? "true" : "false",
-                           android::base::Join(current_entry.user_devices, ' ')},
+                           android::base::Join(current_entry.user_devices, ' ')
+                           std::to_string(attempted_entry.length)},
                           nullptr)) {
                 ++error_count;
             } else if (current_entry.mount_point == "/data") {
