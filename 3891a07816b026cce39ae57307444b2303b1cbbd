@@ -16,6 +16,24 @@
       "message": "OK, but can we add\n```\n# include OWNERS from the top level trusty repo\ninclude trusty:main:/OWNERS\n```\ninstead of maintaining a separate list of people here",
       "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ca66c48_75591bcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1833664
+      },
+      "writtenOn": "2024-05-28T19:35:46Z",
+      "side": 1,
+      "message": "I\u0027m not super comfortable with \"advanced\" OWNERS syntax, but this could work:\n\n`file:\u003cpath/to/common\u003e:main:\u003cpath/to/OWNERS\u003e`\n\nBased on my read of [this](https://android-review.googlesource.com/plugins/code-owners/Documentation/backend-find-owners.html#syntax), the file syntax only works if both projects are checked out. So I think we have to assume they\u0027re always in a repo together?\n\nFrankly, I dunno if all that is correct or not. If you want to go extra cred it here and get fancy, go for it 😊 I\u0027m a bit nervous that if I tried this I\u0027d just hose your OWNERS setup and have trusty devs upset with me, so my inclination is to not get fancy in any change I author for another team\u0027s OWNERS file.",
+      "parentUuid": "366bfbbf_138036ec",
+      "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
