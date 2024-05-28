@@ -106,7 +106,9 @@ bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** ar
         }
         return user_server_.Run();
     }
-
+    uint32_t cow_op_merge_size =
+            android::base::GetUintProperty<uint32_t>("ro.virtual_ab.cow_op_merge_size", 0);
+    LOG(ERROR) << "COW OP MERGE SIZE: " << cow_op_merge_size;
     for (int i = arg_start; i < argc; i++) {
         auto parts = android::base::Split(argv[i], ",");
 
@@ -114,8 +116,8 @@ bool Daemon::StartServerForUserspaceSnapshots(int arg_start, int argc, char** ar
             LOG(ERROR) << "Malformed message, expected at least four sub-arguments.";
             return false;
         }
-        auto handler =
-                user_server_.AddHandler(parts[0], parts[1], parts[2], parts[3], FLAGS_o_direct);
+        auto handler = user_server_.AddHandler(parts[0], parts[1], parts[2], parts[3],
+                                               FLAGS_o_direct, cow_op_merge_size);
         if (!handler || !user_server_.StartHandler(parts[0])) {
             return false;
         }

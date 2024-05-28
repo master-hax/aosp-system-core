@@ -18,6 +18,7 @@
 
 #include <pthread.h>
 
+#include "android-base/properties.h"
 #include "snapuserd_core.h"
 #include "utility.h"
 
@@ -61,9 +62,10 @@ void ReadAhead::CheckOverlap(const CowOperation* cow_op) {
 int ReadAhead::PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
                                     std::vector<uint64_t>& blocks,
                                     std::vector<const CowOperation*>& xor_op_vec) {
-    int num_ops = *pending_ops;
+    int num_ops = std::min(
+            android::base::GetIntProperty<int>("ro.virtual_ab.cow_op_merge_size", *pending_ops),
+            *pending_ops);
     int nr_consecutive = 0;
-
     bool is_ops_present = (!RAIterDone() && num_ops);
 
     if (!is_ops_present) {
