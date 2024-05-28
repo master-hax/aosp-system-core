@@ -34,6 +34,24 @@
       "parentUuid": "9e34d02a_01b48c0d",
       "revId": "837bff44b21935ba11cabe78a06e46d533f5db1a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af824062_3c37f9d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970380
+      },
+      "writtenOn": "2024-05-28T13:58:50Z",
+      "side": 1,
+      "message": "Two sizes \n1) one is configured via BOARD_USERDATA_PARTITION_SIZE, which we can use the same as length\u003d in fstab\n2) userdata keeps it in last partition in GPT and mentioned to grow in LUN. so, which will grow by filling remaining space which makes userdata size increased rather than configured afterwards",
+      "parentUuid": "ac2e3075_d7b82c47",
+      "revId": "837bff44b21935ba11cabe78a06e46d533f5db1a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
