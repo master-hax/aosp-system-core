@@ -140,6 +140,24 @@
       "parentUuid": "c75d83fe_f6084b12",
       "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a19e3e1_71e448ff",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1396566
+      },
+      "writtenOn": "2024-05-28T22:32:02Z",
+      "side": 1,
+      "message": "I would be happy to migrate ashmem_test.cpp to use MappedFile, but that feels like it should be in a separate CL, since it would be a fairly large refector of ashmem_test.cpp, and much of that refactoring would be unrelated to getting it working on host Windows.\n\nI looked at all of the tests in ashmem_test.cpp and the BasicTest is the only one that currently works on all host platforms. FileOperationsTest fails because MinGW does not have SEEK_HOLE and SEEK_DATA, the Prot* tests do not work because ashmem-host does not support protection bit. The fork tests fail because Windows has slightly different behavior with inheriting file descriptors. For ashmem-host.cpp, it\u0027s not a requirement to support fork, ashmem-host.cpp is only used in single process environments as far as I know.",
+      "parentUuid": "af6f2175_b58315d9",
+      "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
