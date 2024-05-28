@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "366bfbbf_138036ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-05-28T19:28:07Z",
+      "side": 1,
+      "message": "OK, but can we add\n```\n# include OWNERS from the top level trusty repo\ninclude trusty:main:/OWNERS\n```\ninstead of maintaining a separate list of people here",
+      "revId": "3891a07816b026cce39ae57307444b2303b1cbbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
