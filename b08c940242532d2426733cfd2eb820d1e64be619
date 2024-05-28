@@ -1,0 +1,62 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e3ebacd_e3b607fd",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-28T23:46:29Z",
+      "side": 1,
+      "message": "missing sys.mte?",
+      "range": {
+        "startLine": 161,
+        "startChar": 36,
+        "endLine": 161,
+        "endChar": 61
+      },
+      "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45c9c317_3bc014ee",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 671,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-28T23:46:29Z",
+      "side": 1,
+      "message": "what happens if the thread is gone when the timer fires? is the signal lost? that would be best, otherwise we should make the handler resistant to this condition",
+      "fixSuggestions": [
+        {
+          "fixId": "bdac412e_df259c69",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "debuggerd/handler/debuggerd_handler.cpp",
+              "range": {
+                "startLine": 671,
+                "startChar": 0,
+                "endLine": 671,
+                "endChar": 0
+              },
+              "replacement": "      // If the thread is gone, the timer will be ignored.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
