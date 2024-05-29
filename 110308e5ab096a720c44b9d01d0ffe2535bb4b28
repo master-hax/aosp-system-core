@@ -22,6 +22,30 @@
       },
       "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "082749a3_8a55ccd9",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 3312642
+      },
+      "writtenOn": "2024-05-29T01:47:34Z",
+      "side": 0,
+      "message": "I thought move would happen in L506 and L494 would set \"/product\" to PRIVATE, am I misunderstand something?\n\nIf reboot is needed to ensure a clean environment after initial overlayfs setup, can we avoid mounting the overlay until reboot like with avb enabled?",
+      "parentUuid": "b2269178_ae404e59",
+      "range": {
+        "startLine": 454,
+        "startChar": 0,
+        "endLine": 455,
+        "endChar": 64
+      },
+      "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -22,6 +22,30 @@
       },
       "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef605352_120bfa87",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3312642
+      },
+      "writtenOn": "2024-05-29T01:47:34Z",
+      "side": 1,
+      "message": "Yes, I have checked the order of namesapce switch and overlay mounts before and confirmed that this problem won\u0027t happen again after reboot.\n\nOur problem is that after the first remount and reboot, data corruption may occur because /data is not unmounted. I didn\u0027t express it clearly in this commit.",
+      "parentUuid": "22c39e77_5c44a9e8",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
