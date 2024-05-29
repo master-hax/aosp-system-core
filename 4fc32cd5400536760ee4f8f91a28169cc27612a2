@@ -46,6 +46,30 @@
       },
       "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0691e404_a62fda72",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-05-29T16:03:24Z",
+      "side": 1,
+      "message": "I see. I\u0027ll see what I can do to handle your use case \u003d)\n\nBTW, \n\n\u003e Our problem is that after the first remount and reboot, data corruption may occur because /data is not unmounted.\n\nDoes this mean right before reboot you run a service/process/daemon to unmount /data? Why is the process run in the bootstrap namespace and is it possible to switch to default namespace before unmount?",
+      "parentUuid": "ef605352_120bfa87",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

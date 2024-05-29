@@ -46,6 +46,30 @@
       },
       "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89b9953e_2c716ad1",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-05-29T16:03:24Z",
+      "side": 0,
+      "message": "There is a more detailed example in I6cdbe8c52d826a6f03fd363c909ebb0005446b96\n\nThe problem happens when the remount order is inverted. If the user first remount /product and then /product/app then it\u0027s fine.\n\nIf the user first remount /product/app and then /product, then it would be problematic because:\n\n1. After remounting /product/app, an overlayfs would override the original /product/app mountpoint. so there would be two filesystems mounted on /producr/app, the first one is the original mount (A), the second is the overlayfs (B). The parent mount of the overlayfs mount (B) is the original mount (A).\n2. When remounting /product, the remount procedure would want to move mount /product/app (B). If the original mount (A), which is the parent of (B), is not MS_PRIVATE, then moving (B) would fail.\n\nHope this clears things up... I understand that it\u0027s very difficult to comprehend.\n\n\n\u003e If reboot is needed to ensure a clean environment after initial overlayfs setup, can we avoid mounting the overlay until reboot like with avb enabled?\n\nI\u0027ll consider it.",
+      "parentUuid": "082749a3_8a55ccd9",
+      "range": {
+        "startLine": 454,
+        "startChar": 0,
+        "endLine": 455,
+        "endChar": 64
+      },
+      "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
