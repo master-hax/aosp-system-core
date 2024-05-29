@@ -1662,10 +1662,9 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             LOG(ERROR) << "Could't load fstab from /proc/mounts , unable to set ro.fstype.data . "
                           "init.rc actions depending on this prop would not run, boot might fail.";
         } else {
-            for (const auto& entry : mounted_fstab) {
-                if (entry.mount_point == "/data") {
-                    android::base::SetProperty("ro.fstype.data", entry.fs_type);
-                }
+            const auto entry = GetEntryForMountPoint(&mounted_fstab, "/data");
+            if (entry) {
+                android::base::SetProperty("ro.fstype.data", entry->fs_type);
             }
         }
     }
