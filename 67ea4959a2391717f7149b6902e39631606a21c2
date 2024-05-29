@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f6ee4b1_9a977457",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3323,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-29T14:18:33Z",
+      "side": 1,
+      "message": "Is it easier to put these on the global update status, rather than per-snapshot? It feels like it could be less plumbing...",
+      "revId": "67ea4959a2391717f7149b6902e39631606a21c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
