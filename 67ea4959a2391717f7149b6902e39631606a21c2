@@ -34,6 +34,24 @@
       "parentUuid": "2f6ee4b1_9a977457",
       "revId": "67ea4959a2391717f7149b6902e39631606a21c2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9c5a1b7_1bcc4f4e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3323,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-29T17:29:42Z",
+      "side": 1,
+      "message": "I wouldn\u0027t move existing ones. I\u0027d just evaluate on a case by case basis for new ones, particularly if it makes plumbing more difficult.",
+      "parentUuid": "52b6574e_046e3992",
+      "revId": "67ea4959a2391717f7149b6902e39631606a21c2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
