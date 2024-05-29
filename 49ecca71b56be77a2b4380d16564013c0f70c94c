@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b07925ea_8392dbf9",
+        "filename": "libcutils/fs_config.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-29T21:49:03Z",
+      "side": 1,
+      "message": "(i wonder whether this was meant to cover the same files, before .rc files were used more generally?)",
+      "revId": "49ecca71b56be77a2b4380d16564013c0f70c94c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
