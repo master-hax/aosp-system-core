@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1abacd5b_90293714",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-29T00:13:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e3ebacd_e3b607fd",
+      "range": {
+        "startLine": 161,
+        "startChar": 36,
+        "endLine": 161,
+        "endChar": 61
+      },
+      "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "45c9c317_3bc014ee",
@@ -55,6 +79,24 @@
           ]
         }
       ],
+      "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8b94617_d931d245",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 671,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-29T00:13:39Z",
+      "side": 1,
+      "message": "From my experiments yes, the signal is lost: https://gist.github.com/fmayer/498fc8200e0da1b4f10f007a4c1712a0\n\nI can also do a kernel deep-dive to double confirm.",
+      "parentUuid": "45c9c317_3bc014ee",
       "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
