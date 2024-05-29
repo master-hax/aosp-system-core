@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b419b76c_d57fcb41",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-29T13:26:17Z",
+      "side": 1,
+      "message": "By \"recommend\", does that mean the value is already set somewhere else, or is this the first instance?",
+      "revId": "5088e588f7d68716e7641f520b961f28e06f676b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
