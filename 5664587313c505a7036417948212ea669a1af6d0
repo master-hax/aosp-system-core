@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe0cdd1b_f2f81813",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-05-29T14:20:49Z",
+      "side": 1,
+      "message": "Akilesh should take a look but I believe we may not have access to properties here (if resuming a merge).",
+      "revId": "5664587313c505a7036417948212ea669a1af6d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
