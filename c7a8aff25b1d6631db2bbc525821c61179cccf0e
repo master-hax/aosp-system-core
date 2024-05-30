@@ -158,6 +158,24 @@
       "parentUuid": "af6f2175_b58315d9",
       "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed21d4f3_b33de7c6",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-05-30T20:52:13Z",
+      "side": 1,
+      "message": "ah, okay. yeah, all the choices look bad in that case, so i guess this is okay...\n\n(if the tests would _build_ on Windows and just fail, i\u0027d be tempted to `GTEST_SKIP()` them with your comments as to why, since you\u0027ve already done the work to work that out, but since we\u0027d actually need to #ifdef each one, that seems like a cure that\u0027s at least as bad as the disease :-( )",
+      "parentUuid": "8a19e3e1_71e448ff",
+      "revId": "c7a8aff25b1d6631db2bbc525821c61179cccf0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
