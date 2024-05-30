@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0193a55b_00698e28",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-30T23:51:22Z",
+      "side": 1,
+      "message": "would not it be more readable to iterate from size() down to 0, and look up (original_off - off) % size ?",
+      "fixSuggestions": [
+        {
+          "fixId": "4685299f_447c23d1",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+              "range": {
+                "startLine": 258,
+                "startChar": 0,
+                "endLine": 264,
+                "endChar": 0
+              },
+              "replacement": "  for (uintptr_t off \u003d buf_size; off !\u003d 0; off -\u003d 16) {\n    if (handle_off(off - 16)) {\n      return;\n    }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fba6dcb_e10c0436",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-30T23:51:22Z",
+      "side": 1,
+      "message": "This looks wrong - StackObject should refer to a candidate stack allocation, not raw history dump. Also, the result of parsing this history would be potentially multiple MemoryError structs, so I guess it should live directly in Tombstone.",
+      "fixSuggestions": [
+        {
+          "fixId": "6bfe6bf9_b7d962f4",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "debuggerd/proto/tombstone.proto",
+              "range": {
+                "startLine": 107,
+                "startChar": 0,
+                "endLine": 108,
+                "endChar": 0
+              },
+              "replacement": "message StackHistoryBuffer {\n"
+            },
+            {
+              "path": "debuggerd/proto/tombstone.proto",
+              "range": {
+                "startLine": 136,
+                "startChar": 0,
+                "endLine": 137,
+                "endChar": 0
+              },
+              "replacement": "    StackHistoryBuffer stack \u003d 4;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
