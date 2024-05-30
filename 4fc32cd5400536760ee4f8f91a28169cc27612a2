@@ -70,6 +70,30 @@
       },
       "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a02967f_d50addf5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3312642
+      },
+      "writtenOn": "2024-05-30T02:52:08Z",
+      "side": 1,
+      "message": "We don\u0027t have an additional service to unmount /data.\n\nAfter mount_all, /data will be mounted in both the bootstrap and default namespaces. When reboot, init will try to unmount /data, which is in the default namespace. If the peer group of \"/\" changes, mount of \"/data\" in the bootstrap namespace won\u0027t be unmounted. Please let me know if I misunderstand this.\n\nI asked in the issue whether we could consider switching init to bootstrap namespace when umounting, but I\u0027m not sure if it\u0027s worth to do it.",
+      "parentUuid": "0691e404_a62fda72",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

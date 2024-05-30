@@ -70,6 +70,30 @@
       },
       "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c518d7fb_39de1d5c",
+        "filename": "fs_mgr/fs_mgr_overlayfs_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 3312642
+      },
+      "writtenOn": "2024-05-30T02:52:08Z",
+      "side": 0,
+      "message": "Thanks for your patience in explaining, now I got it.\n\nThis means that \"/\" can be shared as a lowerdir, because it doesn‘t have any patents to do remount. So just doing a workaround for \"/\" won\u0027t cause regression.\n\nI can modify this patch to do it If that\u0027s acceptable. But I\u0027d also prefer a non-workaround solution.",
+      "parentUuid": "89b9953e_2c716ad1",
+      "range": {
+        "startLine": 454,
+        "startChar": 0,
+        "endLine": 455,
+        "endChar": 64
+      },
+      "revId": "110308e5ab096a720c44b9d01d0ffe2535bb4b28",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
