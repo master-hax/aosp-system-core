@@ -556,7 +556,7 @@ static bool CreateScratchOnData(std::string* scratch_device, bool* partition_exi
         if (!size) {
             size = GetIdealDataScratchSize();
         }
-        if (!size) {
+        if (!size || size > 2_GiB) {
             size = 2_GiB;
         }
 
