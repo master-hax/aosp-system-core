@@ -169,6 +169,24 @@
       "parentUuid": "6887cdb8_5130f7a6",
       "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f075c04_5cb9a301",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-31T22:55:14Z",
+      "side": 1,
+      "message": "but it is naturally associated with the thread; and it is not user-actionable without additional parsing, so hiding it down there is a good thing. Also, I\u0027m not sure if print it to logcat is a good idea, it would be very long/spammy.",
+      "parentUuid": "bcec4f0f_93b4094e",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
