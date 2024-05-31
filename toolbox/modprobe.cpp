@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <string>
 
@@ -87,9 +88,12 @@ void MyLogger(android::base::LogId id, android::base::LogSeverity severity, cons
 
 // Find directories in format of "/lib/modules/x.y.z-*".
 static int KernelVersionNameFilter(const dirent* de) {
-    unsigned int major, minor;
-    static std::string kernel_version;
+    unsigned int major, minor, mod_pgsize_kb;
     utsname uts;
+    int mod_sfx_len;
+    const char* mod_sfx;
+    static std::string kernel_version;
+    static const size_t kernel_pgsize_kb = sysconf(_SC_PAGE_SIZE) / 1024;
 
     if (kernel_version.empty()) {
         if ((uname(&uts) != 0) || (sscanf(uts.release, "%u.%u", &major, &minor) != 2)) {
@@ -99,10 +103,17 @@ static int KernelVersionNameFilter(const dirent* de) {
         kernel_version = android::base::StringPrintf("%u.%u", major, minor);
     }
 
-    if (android::base::StartsWith(de->d_name, kernel_version)) {
-        return 1;
+    if (!android::base::StartsWith(de->d_name, kernel_version)) {
+        return 0;
     }
-    return 0;
+
+    mod_sfx = strrchr(de->d_name, '_');
+    if (mod_sfx == NULL || sscanf(mod_sfx, "_%uk%n", &mod_pgsize_kb, &mod_sfx_len) != 1 ||
+        strlen(mod_sfx) != mod_sfx_len) {
+        mod_pgsize_kb = 4;
+    }
+
+    return kernel_pgsize_kb == mod_pgsize_kb;
 }
 
 }  // anonymous namespace
