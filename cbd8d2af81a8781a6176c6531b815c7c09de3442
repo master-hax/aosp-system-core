@@ -187,6 +187,24 @@
       "parentUuid": "bcec4f0f_93b4094e",
       "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10b51eea_448342cf",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-31T22:56:35Z",
+      "side": 1,
+      "message": "I think it is, people will copy-paste what they get from logcat into go/as. And it\u0027s the same we do for HWASan",
+      "parentUuid": "2f075c04_5cb9a301",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
