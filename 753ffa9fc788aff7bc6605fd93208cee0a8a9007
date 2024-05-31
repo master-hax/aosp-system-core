@@ -174,6 +174,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "afbfab96_e14a43d6",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 769,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T17:50:27Z",
+      "side": 1,
+      "message": "Good point, so no change. extendObjectLifeTime is protected (not private) today, so we have to assume it may be used.",
+      "parentUuid": "f24d7872_65fda640",
+      "range": {
+        "startLine": 769,
+        "startChar": 44,
+        "endLine": 769,
+        "endChar": 64
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "29a5a5af_de0f2d61",
@@ -318,6 +342,30 @@
       "side": 1,
       "message": "I agree that this should probably be an acquire load. In the weak lifetime case, if we reacquire a weak reference in the destructor, some other thread could presumably have gotten a hold of it and incremented the count, and we need to make sure it has again released the count before the deletion here? And there is no real cost to making it acquire since it\u0027s basically never executed; it\u0027s probably worth it just to avoid the comment.\n\nIt\u0027s also unclear to me this can ever work in all corner cases. It looks to me like attemptIncStrong can be used to promote a weak reference if the strong reference has never been used? So if I create a weak reference in the destructor, and another thread promotes that to a strong one, I doubt anything good happens? \n\nIt increasingly feels to me that if you violate our usage advice, and then try to exercise all the odd corner cases, you will probably lose sooner or later.",
       "parentUuid": "5e55976e_b84cbd81",
+      "range": {
+        "startLine": 803,
+        "startChar": 31,
+        "endLine": 803,
+        "endChar": 51
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b94aec7_836dfea7",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T17:50:27Z",
+      "side": 1,
+      "message": "Whether it\u0027s acquire or relaxed, it doesn\u0027t change whether attemptIncStrong is UB in the case another thread double-owns weakref_type, but let me hold off for this CL for now, you give me two new ideas.",
+      "parentUuid": "d41c3a57_4f75cfff",
       "range": {
         "startLine": 803,
         "startChar": 31,
