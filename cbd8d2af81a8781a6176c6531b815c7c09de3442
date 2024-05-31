@@ -151,6 +151,24 @@
       "parentUuid": "a553a0fa_41fb0957",
       "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcec4f0f_93b4094e",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-31T22:51:19Z",
+      "side": 1,
+      "message": "I am not sure if interspersing it with the thread  dumps is a good idea (and the threads don\u0027t get printed to logcat, only to the tombstone).",
+      "parentUuid": "6887cdb8_5130f7a6",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
