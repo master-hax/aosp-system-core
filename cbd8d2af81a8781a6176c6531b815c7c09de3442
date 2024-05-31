@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e102d423_643bee9c",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-31T00:02:59Z",
+      "side": 1,
+      "message": "I am confused. We need to start at original_off (so we can bail out at the first missing entry, and so we can keep the LRU order), so we would be iterating _up_ to size. That would work % we have to fix up the remainder for negative values (`-1 % 3 \u003d\u003d -1`)",
+      "parentUuid": "0193a55b_00698e28",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5fba6dcb_e10c0436",
         "filename": "debuggerd/proto/tombstone.proto",
         "patchSetId": 11
