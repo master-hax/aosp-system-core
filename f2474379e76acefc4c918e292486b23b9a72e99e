@@ -70,6 +70,24 @@
       "parentUuid": "d7233243_2464dd0f",
       "revId": "f2474379e76acefc4c918e292486b23b9a72e99e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ae36bfd_175d0da7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-05-31T22:58:39Z",
+      "side": 1,
+      "message": "There is a copy of this in the main google code base and all sorts of different places. We have extended the other parts of the proto a number of times and the proto definition is always migrated eventually. Maybe this particular part is used somewhere else that it\u0027s not copied properly. I may be misunderstanding about what you are worried about though, is there a particularly place you are worried about it showing up?",
+      "parentUuid": "05406b90_1c07c648",
+      "revId": "f2474379e76acefc4c918e292486b23b9a72e99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
