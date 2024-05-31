@@ -128,6 +128,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5a72590f_aa4b8394",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 769,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T15:37:14Z",
+      "side": 1,
+      "message": "probably decay or old mistake in 20yo code. We could change it, as you\u0027re right it\u0027s a bit silly, though iirc - atomic + relaxed should be virtually no difference here? does it matter except code clarity?",
+      "parentUuid": "a545a946_8ad9099c",
+      "range": {
+        "startLine": 769,
+        "startChar": 44,
+        "endLine": 769,
+        "endChar": 64
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "29a5a5af_de0f2d61",
         "filename": "libutils/binder/RefBase.cpp",
         "patchSetId": 1
@@ -163,6 +187,30 @@
           ]
         }
       ],
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2659a8fb_4c81b075",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T15:37:14Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "29a5a5af_de0f2d61",
+      "range": {
+        "startLine": 770,
+        "startChar": 0,
+        "endLine": 770,
+        "endChar": 55
+      },
       "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -210,6 +258,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5e55976e_b84cbd81",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T15:37:14Z",
+      "side": 1,
+      "message": "It\u0027s funny the AI-suggested fix explains what memory_order_relaxed is, instead of why it\u0027s okay.\n\nIf it uses a stronger memory order, it may catch some cases where stack allocated (or equivalently, allocated but not-inc\u0027d) RefBase are double-owned, sent to another thread, and used while being deleted here. Hans, wdyt?\n\nHonestly, part of me thinks the leak is better than risking an extra \u0027delete\u0027 to help a case which is already managing objects in an unsupported way, since this change could make certain types of UB worse. Though - I am not a coward.",
+      "parentUuid": "01f1b852_a329dc2a",
+      "range": {
+        "startLine": 803,
+        "startChar": 31,
+        "endLine": 803,
+        "endChar": 51
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42ba59f1_ba8a9f82",
         "filename": "libutils/binder/RefBase_test.cpp",
         "patchSetId": 1
@@ -221,6 +293,30 @@
       "writtenOn": "2024-05-31T14:45:07Z",
       "side": 1,
       "message": "nit: would initialize to false make the code more clear?",
+      "range": {
+        "startLine": 284,
+        "startChar": 17,
+        "endLine": 284,
+        "endChar": 19
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e85e8eb8_584ff856",
+        "filename": "libutils/binder/RefBase_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-05-31T15:37:14Z",
+      "side": 1,
+      "message": "Yes, though the pattern in this test relies on constructor to set false, so I\u0027m okay with it.",
+      "parentUuid": "42ba59f1_ba8a9f82",
       "range": {
         "startLine": 284,
         "startChar": 17,
