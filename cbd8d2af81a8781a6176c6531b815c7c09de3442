@@ -133,6 +133,24 @@
       "parentUuid": "5fba6dcb_e10c0436",
       "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6887cdb8_5130f7a6",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-05-31T22:48:06Z",
+      "side": 1,
+      "message": "Actually... why don\u0027t we put it in the corresponding Thread object? And then proto-to-text conversion will naturally group it with the target thread dump, where it makes a lot more sense.",
+      "parentUuid": "a553a0fa_41fb0957",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
