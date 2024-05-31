@@ -52,6 +52,24 @@
       "parentUuid": "6cd57a8e_3f9b98ab",
       "revId": "f2474379e76acefc4c918e292486b23b9a72e99e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05406b90_1c07c648",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-05-31T22:45:11Z",
+      "side": 1,
+      "message": "\u003e I believe it\u0027s updated automatically by different processes.\n\nPlease elaborate?.",
+      "parentUuid": "d7233243_2464dd0f",
+      "revId": "f2474379e76acefc4c918e292486b23b9a72e99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
