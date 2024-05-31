@@ -152,6 +152,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f24d7872_65fda640",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 769,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-05-31T17:29:36Z",
+      "side": 1,
+      "message": "What about extendObjectLifetime? I don\u0027t think the interface currently prevents it from being called concurrently. Thankfully, I think it actually isn\u0027t. But that restriction would need to be documented.\n\nFor the loads, it probably generates about the same code either way. Atomic implies some minor optimization restrictions. The load cannot be reordered with another load that could possibly alias it. However it does make some difference for the code generated for extendObjectLifeTime. The atomic read-modify-write is usually appreciably slower than load-or-store.",
+      "parentUuid": "5a72590f_aa4b8394",
+      "range": {
+        "startLine": 769,
+        "startChar": 44,
+        "endLine": 769,
+        "endChar": 64
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "29a5a5af_de0f2d61",
         "filename": "libutils/binder/RefBase.cpp",
         "patchSetId": 1
@@ -270,6 +294,30 @@
       "side": 1,
       "message": "It\u0027s funny the AI-suggested fix explains what memory_order_relaxed is, instead of why it\u0027s okay.\n\nIf it uses a stronger memory order, it may catch some cases where stack allocated (or equivalently, allocated but not-inc\u0027d) RefBase are double-owned, sent to another thread, and used while being deleted here. Hans, wdyt?\n\nHonestly, part of me thinks the leak is better than risking an extra \u0027delete\u0027 to help a case which is already managing objects in an unsupported way, since this change could make certain types of UB worse. Though - I am not a coward.",
       "parentUuid": "01f1b852_a329dc2a",
+      "range": {
+        "startLine": 803,
+        "startChar": 31,
+        "endLine": 803,
+        "endChar": 51
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d41c3a57_4f75cfff",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-05-31T17:29:36Z",
+      "side": 1,
+      "message": "I agree that this should probably be an acquire load. In the weak lifetime case, if we reacquire a weak reference in the destructor, some other thread could presumably have gotten a hold of it and incremented the count, and we need to make sure it has again released the count before the deletion here? And there is no real cost to making it acquire since it\u0027s basically never executed; it\u0027s probably worth it just to avoid the comment.\n\nIt\u0027s also unclear to me this can ever work in all corner cases. It looks to me like attemptIncStrong can be used to promote a weak reference if the strong reference has never been used? So if I create a weak reference in the destructor, and another thread promotes that to a strong one, I doubt anything good happens? \n\nIt increasingly feels to me that if you violate our usage advice, and then try to exercise all the odd corner cases, you will probably lose sooner or later.",
+      "parentUuid": "5e55976e_b84cbd81",
       "range": {
         "startLine": 803,
         "startChar": 31,
