@@ -16,6 +16,219 @@
       "message": "(forgot to add reviewers)",
       "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f813471d_07d16dd6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-05-31T14:45:07Z",
+      "side": 1,
+      "message": "lgtm, will defer to Hans for the +2.  minor nits only, feel free to ignore.",
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a545a946_8ad9099c",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 769,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-05-31T14:45:07Z",
+      "side": 1,
+      "message": "nit: why are we using an atomic for mFlags? seems unnecessary as it appears set/modified only in the ctor.",
+      "range": {
+        "startLine": 769,
+        "startChar": 44,
+        "endLine": 769,
+        "endChar": 64
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "06646853_c04ab2bf",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 190,
+                "startChar": 0,
+                "endLine": 191,
+                "endChar": 0
+              },
+              "replacement": "    int32_t                mFlags;\n"
+            },
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 500,
+                "startChar": 0,
+                "endLine": 501,
+                "endChar": 0
+              },
+              "replacement": "        int32_t flags \u003d refs-\u003emFlags;\n"
+            },
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 584,
+                "startChar": 0,
+                "endLine": 585,
+                "endChar": 0
+              },
+              "replacement": "    int32_t flags \u003d impl-\u003emFlags;\n"
+            },
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 638,
+                "startChar": 0,
+                "endLine": 639,
+                "endChar": 0
+              },
+              "replacement": "        int32_t flags \u003d impl-\u003emFlags;\n"
+            },
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 769,
+                "startChar": 0,
+                "endLine": 770,
+                "endChar": 0
+              },
+              "replacement": "    int32_t flags \u003d mRefs-\u003emFlags;\n"
+            },
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 817,
+                "startChar": 0,
+                "endLine": 818,
+                "endChar": 0
+              },
+              "replacement": "    mRefs-\u003emFlags |\u003d mode;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29a5a5af_de0f2d61",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-05-31T14:45:07Z",
+      "side": 1,
+      "message": "nit: stale comment after change.",
+      "range": {
+        "startLine": 770,
+        "startChar": 0,
+        "endLine": 770,
+        "endChar": 55
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "4989ca89_6c95fe60",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 770,
+                "startChar": 0,
+                "endLine": 773,
+                "endChar": 0
+              },
+              "replacement": "    // If the object has a strong reference, we can\u0027t free it now.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01f1b852_a329dc2a",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 803,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-05-31T14:45:07Z",
+      "side": 1,
+      "message": "nit: please add a comment why memory_order_relaxed is okay here, as it does not provide a memory barrier.  See references:\n\nhttps://en.cppreference.com/w/cpp/atomic/memory_order#Relaxed_ordering\nhttps://www.boost.org/doc/libs/1_57_0/doc/html/atomic/usage_examples.html#boost_atomic.usage_examples.example_reference_counters",
+      "range": {
+        "startLine": 803,
+        "startChar": 31,
+        "endLine": 803,
+        "endChar": 51
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "a05a2643_c35ad454",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 803,
+                "startChar": 0,
+                "endLine": 803,
+                "endChar": 0
+              },
+              "replacement": "    //\n    // We use memory_order_relaxed here because we don\u0027t care about the\n    // ordering of the load and the delete.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42ba59f1_ba8a9f82",
+        "filename": "libutils/binder/RefBase_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-05-31T14:45:07Z",
+      "side": 1,
+      "message": "nit: would initialize to false make the code more clear?",
+      "range": {
+        "startLine": 284,
+        "startChar": 17,
+        "endLine": 284,
+        "endChar": 19
+      },
+      "revId": "753ffa9fc788aff7bc6605fd93208cee0a8a9007",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
