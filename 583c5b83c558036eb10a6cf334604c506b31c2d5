@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4e44dd5f_3b3faf2a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-03T20:07:55Z",
+      "side": 1,
+      "message": "we should talk about what sm implementation we would need in other places. The one we have today is very Android-centric, somewhat coupled with init. It only needs looper due to lazy HAL support (and even then, it could setup epoll itself, but ....)",
+      "parentUuid": "6f93a522_3171aabf",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d256003e_bdbb2a7e",
         "filename": "libutils/Android.bp",
         "patchSetId": 6
