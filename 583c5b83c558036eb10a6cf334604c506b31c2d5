@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f1137b65_55b81da0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-06-03T20:18:20Z",
+      "side": 1,
+      "message": "Are you suggesting to strip looper through ifdefs or writing new service manager from scratch (or fork)?",
+      "parentUuid": "4e44dd5f_3b3faf2a",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d256003e_bdbb2a7e",
         "filename": "libutils/Android.bp",
         "patchSetId": 6
