@@ -94,6 +94,30 @@
       },
       "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55944afb_7e948b9c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-06-03T14:08:32Z",
+      "side": 1,
+      "message": "Could you verify if I19ca62018149f1fa81186824a9d7f1c32d9d6008 fixes or workarounds your issue?\n\n\u003e Please let me know if I misunderstand this.\n\nI think your understanding is correct.\n\n\u003e I asked in the issue whether we could consider switching init to bootstrap namespace when umounting, but I\u0027m not sure if it\u0027s worth to do it.\n\nI19ca62018149f1fa81186824a9d7f1c32d9d6008 only worksaround the \u0027remount\u0027 case. Should another part of the system temper with the mount namespace, then you would see the same problem showing up again.\nI think letting init umount from both \u0027bootstrap\u0027 and \u0027default\u0027 namespace is the true way to guarantee a clean umount of /data. I still think this is the correct \"fix\" of your problem.",
+      "parentUuid": "2a02967f_d50addf5",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
