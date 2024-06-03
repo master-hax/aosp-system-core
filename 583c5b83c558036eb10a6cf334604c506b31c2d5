@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "69e18dfc_98e6bbd2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-03T20:23:25Z",
+      "side": 1,
+      "message": "I\u0027m not defining a particular path, but let\u0027s define the scope of this project explicitly now. Running kernel binder or servicemanager outside of Android is beyond what I thought you wanted for binder SDK, and it\u0027s different than what we\u0027re doing for AVF.",
+      "parentUuid": "f1137b65_55b81da0",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d256003e_bdbb2a7e",
         "filename": "libutils/Android.bp",
         "patchSetId": 6
