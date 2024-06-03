@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ff0179a_a596e52e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-03T19:50:46Z",
+      "side": 1,
+      "message": "why - please always add why",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d256003e_bdbb2a7e",
+        "filename": "libutils/Android.bp",
+        "patchSetId": 6
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-03T19:50:46Z",
+      "side": 1,
+      "message": "this should also move to libutiles_binder_test",
+      "range": {
+        "startLine": 357,
+        "startChar": 0,
+        "endLine": 357,
+        "endChar": 34
+      },
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
