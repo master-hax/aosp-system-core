@@ -110,6 +110,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0ab17a66_30e49c6f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-03T20:42:43Z",
+      "side": 1,
+      "message": "You\u0027d want work to guarantee the services really are built together or don\u0027t get mixed. Also, turning off security probably shouldn\u0027t be a solution.\n\nNote - microdroid uses rpc binder over UDS for local communication.",
+      "parentUuid": "c11b1da0_8b092fcd",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d256003e_bdbb2a7e",
         "filename": "libutils/Android.bp",
         "patchSetId": 6
