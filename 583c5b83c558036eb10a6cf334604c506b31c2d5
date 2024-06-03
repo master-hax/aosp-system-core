@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c11b1da0_8b092fcd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-06-03T20:40:25Z",
+      "side": 1,
+      "message": "Agree. Let me discuss what exactly my SDV RPC/IPC team needs and I\u0027ll get back to you. I guess this is a list of things they might or might not need:\n- basic Binder IPC: let two vendor processes connect to each other, both on Linux side, same partition, same release package (.deb, .zip, whatever), built together\n- no need to enforce security context (SELinux) between processes on Linux side, calling permissions\n- no need for lazy HAL services\n- manual service manager startup (or: controlled by the SDK user)\n- no split between service manager and vendor service manager (-DVENDORSERVICEMANAGER)\n- no app id (AID_) support\n- no support for AIDL SafeInterface, shmem, MemoryHeapBase\n- no support for native Rust (Rust would need to use C to talk over AIDL)\n- no need to support new kernel features (scheduling policy, inherit rt)\n- no vintf\n\nAm I missing something?",
+      "parentUuid": "69e18dfc_98e6bbd2",
+      "revId": "583c5b83c558036eb10a6cf334604c506b31c2d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d256003e_bdbb2a7e",
         "filename": "libutils/Android.bp",
         "patchSetId": 6
