@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5b03b57_02aa6645",
+        "filename": "libutils/binder/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-06-03T19:48:50Z",
+      "side": 1,
+      "message": "Is it circular dependency? It\u0027s for unique_fd. See the comment at Looper.h:26",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 72
+      },
+      "revId": "9f778cb9633be4e19066dec34c531f11f9409c16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f6d86b9_570ccc50",
+        "filename": "libutils/binder/include/utils/Looper.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-06-03T19:48:50Z",
+      "side": 1,
+      "message": "TODO: to be reformatted after first pass of reviews.",
+      "revId": "9f778cb9633be4e19066dec34c531f11f9409c16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f37f73c_4ea79a78",
+        "filename": "libutils/binder/include/utils/Looper.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1135107
+      },
+      "writtenOn": "2024-06-03T19:48:50Z",
+      "side": 1,
+      "message": "Should I create libbase_stub for this instead? It would only include a symlink to binder/unique_fd.h.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 29
+      },
+      "revId": "9f778cb9633be4e19066dec34c531f11f9409c16",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
