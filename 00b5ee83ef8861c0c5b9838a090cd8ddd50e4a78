@@ -1,0 +1,175 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb07aea1_d005c170",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "how is this likely to be used? \"where would i come up with a suitable time?\"",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97024764_4afc063c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "errno isn\u0027t necessarily valid after a failed strtol. (and i don\u0027t think it would help you much in the case where it _is_ valid anyway. should be obvious by eye.)",
+      "range": {
+        "startLine": 125,
+        "startChar": 83,
+        "endLine": 125,
+        "endChar": 98
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84b1ec09_7942c5aa",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "rather than pass name in manually, just use the name that\u0027s automatically given to the callback anyway?",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19f44cba_cfcfb01a",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "format these just before you use them, so the order in which the names appear in the source matches the order in which they\u0027re queried?",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9894d1ce_a14b8262",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "(the rfc-style \"MUST be\" is more idomatic :-) )",
+      "range": {
+        "startLine": 672,
+        "startChar": 14,
+        "endLine": 672,
+        "endChar": 23
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0f5bbaa_49672a04",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "\"timer_create() failed\"",
+      "range": {
+        "startLine": 676,
+        "startChar": 21,
+        "endLine": 676,
+        "endChar": 43
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ac2cc2f_c0e21699",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "\"timer_settime() failed\"",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14fd5cd2_ca328451",
+        "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "(do we even build this for non-arm64?)",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d4bb289_43a6f31f",
+        "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-03T16:32:57Z",
+      "side": 1,
+      "message": "that\u0027s probably worth mentioning in the log message...",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
