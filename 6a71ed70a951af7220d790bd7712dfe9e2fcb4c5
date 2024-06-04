@@ -16,6 +16,24 @@
       "message": "The format thing is silly. http://r.android.com/3114280 to prevent that from ever popping up again.",
       "revId": "6a71ed70a951af7220d790bd7712dfe9e2fcb4c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d70d5363_bb153dbb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2024-06-04T23:13:58Z",
+      "side": 1,
+      "message": "Yeah I need to look into how to make that a global preupload check. But BTW you don\u0027t need to vote Lint+2 on it, it\u0027s only a warning.",
+      "parentUuid": "a8f875c6_60dda665",
+      "revId": "6a71ed70a951af7220d790bd7712dfe9e2fcb4c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
