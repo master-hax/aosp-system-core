@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <sys/cdefs.h>
 #include <sys/types.h>
 #include <initializer_list>
 #include <span>
