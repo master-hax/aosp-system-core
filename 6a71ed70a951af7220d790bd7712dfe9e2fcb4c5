@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8f875c6_60dda665",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-04T23:12:09Z",
+      "side": 1,
+      "message": "The format thing is silly. http://r.android.com/3114280 to prevent that from ever popping up again.",
+      "revId": "6a71ed70a951af7220d790bd7712dfe9e2fcb4c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
