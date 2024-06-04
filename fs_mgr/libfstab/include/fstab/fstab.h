@@ -58,6 +58,8 @@ struct FstabEntry {
     std::string avb_keys;
     std::string lowerdir;
     std::string avb_hashtree_digest;
+    int mthp_reserve_order = 0;
+    int mthp_reserve_percent = 0;
 
     struct FsMgrFlags {
         bool wait : 1;

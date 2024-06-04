@@ -336,6 +336,14 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             }
         } else if (StartsWith(flag, "device=")) {
             ParseUserDevices(arg, entry);
+        } else if (StartsWith(flag, "mthp_reserve_order=")) {
+            if (!ParseInt(arg, &entry->mthp_reserve_order)) {
+                LWARNING << "Warning: mthp_reserve_order= flag malformed: " << arg;
+            }
+        } else if (StartsWith(flag, "mthp_reserve_percent=")) {
+            if (!ParseInt(arg, &entry->mthp_reserve_percent)) {
+                LWARNING << "Warning: mthp_reserve_percent= flag malformed: " << arg;
+            }
         } else {
             LWARNING << "Warning: unknown flag: " << flag;
         }
