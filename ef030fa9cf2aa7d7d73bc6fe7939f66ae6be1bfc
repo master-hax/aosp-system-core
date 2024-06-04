@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "60abaed5_c0b25a8e",
+        "filename": "init/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2024-06-04T20:01:13Z",
+      "side": 1,
+      "message": "you also need to put the `-D` flag in `init_host_defaults`, because `init_host_verifier` only uses those defaults and includes the service_parser.cpp.",
+      "revId": "ef030fa9cf2aa7d7d73bc6fe7939f66ae6be1bfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ecdf4a30_dd5adda4",
         "filename": "init/Android.bp",
         "patchSetId": 4
