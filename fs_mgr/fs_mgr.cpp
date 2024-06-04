@@ -2161,6 +2161,12 @@ bool fs_mgr_swapon_all(const Fstab& fstab) {
         if (entry.swap_prio >= 0) {
             flags = (entry.swap_prio << SWAP_FLAG_PRIO_SHIFT) & SWAP_FLAG_PRIO_MASK;
             flags |= SWAP_FLAG_PREFER;
+        } else if (entry.mthp_reserve_order || entry.mthp_reserve_percent) {
+            flags |= SWAP_FLAG_MTHP_RESERVE;
+            flags = (entry.mthp_reserve_order << SWAP_FLAG_MTHP_RESERVE_ORDER_SHIFT) &
+                    SWAP_FLAG_MTHP_RESERVE_ORDER_MASK;
+            flags = (entry.mthp_reserve_order << SWAP_FLAG_MTHP_RESERVE_ORDER_SHIFT) &
+                    SWAP_FLAG_MTHP_RESERVE_ORDER_MASK;
         } else {
             flags = 0;
         }
