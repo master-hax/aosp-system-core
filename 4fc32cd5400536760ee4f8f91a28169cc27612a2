@@ -118,6 +118,30 @@
       },
       "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8afa0ae_5aa76ca5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3312642
+      },
+      "writtenOn": "2024-06-04T02:24:20Z",
+      "side": 1,
+      "message": "\u003eCould you verify if I19ca62018149f1fa81186824a9d7f1c32d9d6008 fixes or workarounds \u003eyour issue?\n\nThis patch can workaround our issue, thanks.",
+      "parentUuid": "55944afb_7e948b9c",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "4fc32cd5400536760ee4f8f91a28169cc27612a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
