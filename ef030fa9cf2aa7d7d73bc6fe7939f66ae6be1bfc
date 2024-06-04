@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecdf4a30_dd5adda4",
+        "filename": "init/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2024-06-04T00:02:35Z",
+      "side": 1,
+      "message": "Does the %s syntax work here? I thought that was only supported in soong config value variables.",
+      "range": {
+        "startLine": 156,
+        "startChar": 49,
+        "endLine": 156,
+        "endChar": 51
+      },
+      "revId": "ef030fa9cf2aa7d7d73bc6fe7939f66ae6be1bfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
