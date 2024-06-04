@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0265f9a_8c49193b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1060646
+      },
+      "writtenOn": "2024-06-04T23:30:03Z",
+      "side": 1,
+      "message": "Existing build breakage on aosp-trusty-master. Bypassing Presubmit \u003d/\nhttps://android-build.corp.google.com/build_explorer/branch/aosp-trusty-master/",
+      "revId": "f28b9a8b882d7a3ef5efdce1d7428e6b5e654116",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
