@@ -69,6 +69,24 @@
       "message": "What is GetIdealDataScratchSize() returning? And how much space is free on /data?",
       "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca2f9216_dc2ca8d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045138
+      },
+      "writtenOn": "2024-06-04T03:34:16Z",
+      "side": 1,
+      "message": "[libfs_mgr] ### ideal_size \u003d 3828259430, super_info.size \u003d 4294967296, s.f_frsize \u003d 4096, s.f_bfree \u003d 1099569, s.f_bsize \u003d 4096\n[libfs_mgr] ### set ideal_size \u003d 3828260864 remainder \u003d 2662\n[libfs_mgr] ### scratch.img.0000 size \u003d 3828260864\n\nadb shell df -h\nFilesystem            Size Used Avail Use% Mounted on\n/dev/block/dm-38      4.5G 3.9G  635M  87% /data\n\nsun:/data/gsi/remount # ls -l\ntotal 3743324\n-rw-r----- 1 root root         17 2024-05-31 15:40 scratch.img\n-rw------- 1 root root 3828260864 2024-05-31 15:40 scratch.img.0000",
+      "parentUuid": "2ea5d2b6_3804d42a",
+      "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
