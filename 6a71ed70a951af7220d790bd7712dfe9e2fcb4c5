@@ -34,6 +34,24 @@
       "parentUuid": "a8f875c6_60dda665",
       "revId": "6a71ed70a951af7220d790bd7712dfe9e2fcb4c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2659438b_ee60e087",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-04T23:23:31Z",
+      "side": 1,
+      "message": "I\u0027d like a lot more global ones, though C++/Java is a hard sale due to different formats.\n\nSee here: https://cs.android.com/android/platform/superproject/main/+/main:tools/repohooks/README.md;l\u003d38;drc\u003dd98423a6d5eb673991cdc6bdc253a0de386b02a8\n\nI know it\u0027s only a warning, but I thought Lint+2 helped emphasize my statement and intention.",
+      "parentUuid": "d70d5363_bb153dbb",
+      "revId": "6a71ed70a951af7220d790bd7712dfe9e2fcb4c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
