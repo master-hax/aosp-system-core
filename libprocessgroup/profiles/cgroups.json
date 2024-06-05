@@ -21,14 +21,6 @@
       "UID": "system",
       "GID": "system"
     },
-    {
-      "Controller": "memory",
-      "Path": "/dev/memcg",
-      "Mode": "0700",
-      "UID": "root",
-      "GID": "system",
-      "Optional": true
-    }
   ],
   "Cgroups2": {
     "Path": "/sys/fs/cgroup",
@@ -39,6 +31,13 @@
       {
         "Controller": "freezer",
         "Path": "."
+      },
+      {
+        "Controller": "memory",
+        "Path": ".",
+        "NeedsActivation": true,
+        "MaxActivationDepth": 1,
+        "Optional": true
       }
     ]
   }

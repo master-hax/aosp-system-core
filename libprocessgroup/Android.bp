@@ -9,6 +9,7 @@ soong_config_module_type {
     bool_variables: [
         "memcg_v2_force_enabled",
         "cgroup_v2_sys_app_isolation",
+        "release_platform_version_codename_is_V", // Remove after b/322868540 is fixed
     ],
     properties: [
         "cflags",
@@ -28,6 +29,13 @@ libprocessgroup_flag_aware_cc_defaults {
             cflags: [
                 "-DCGROUP_V2_SYS_APP_ISOLATION=true",
             ],
+        },
+        // Remove after b/322868540 is fixed
+        release_platform_version_codename_is_V: {
+            cflags: ["-DPROCESSGROUP_VERSION_V=10000"],
+            conditions_default: {
+                cflags: ["-DPROCESSGROUP_VERSION_V=35"],
+            },
         },
     },
 }
@@ -84,6 +92,7 @@ cc_library {
     header_libs: [
         "libcutils_headers",
         "libprocessgroup_headers",
+        "libprocessgroup_util",
     ],
     export_include_dirs: ["include"],
     export_header_lib_headers: [
