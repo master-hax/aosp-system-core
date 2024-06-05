@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "cbef2e04_ed3179b2",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-05T14:48:49Z",
+      "side": 1,
+      "message": "Ha! I think that ship sailed when somebody called `scandir()`...",
+      "parentUuid": "8edb984a_04d1bf86",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 91,
+        "endChar": 44
+      },
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f77a6b67_2a2ce338",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 1
@@ -43,6 +67,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4cc72e4e_03da0607",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-05T14:48:49Z",
+      "side": 1,
+      "message": "Sure. I blindly copied this out of the patch I reverted, but `getpagesize()` looks cleaner so I\u0027ll use that instead.",
+      "parentUuid": "f77a6b67_2a2ce338",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8a487845_51b82545",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 1
@@ -54,6 +96,24 @@
       "writtenOn": "2024-06-05T12:50:20Z",
       "side": 1,
       "message": "(while we\u0027re microoptimizing, you can probably avoid the strlen() by having a %c instead of the %n, and checking that you only get 1 rather than 2 returned by sscanf()? it\u0027s shorter code too, though as a libc maintainer i\u0027m genuinely not sure whether this %n or the %c trick is more readable to most people?)",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6932ef1_5e361279",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-05T14:48:49Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s quite the same, as it would make the \"k\" suffix optional.\nI suppose we could do:\n\n```\nchar k, unused;\n...\nif (mod_sfx \u003d\u003d NULL || sscanf(mod_sfx, \"_%u%c%c\", \u0026mod_pgsize_kb, \u0026k, \u0026unused) !\u003d 2 || k !\u003d \u0027k\u0027) {\n```\n\nbut I\u0027m not convinced it\u0027s any better. Or did you have something else in mind?",
+      "parentUuid": "8a487845_51b82545",
       "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
