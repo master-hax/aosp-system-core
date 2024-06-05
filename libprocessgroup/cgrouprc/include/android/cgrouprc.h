@@ -78,6 +78,14 @@ __attribute__((warn_unused_result, weak)) uint32_t ACgroupController_getFlags(
         const ACgroupController*) __INTRODUCED_IN(30);
 
 /**
+ * Returns the maximum activation depth of the given controller.
+ * If the given controller is null, return UINT32_MAX.
+ * Only applicable to cgroup v2 controllers.
+ */
+__attribute__((warn_unused_result)) uint32_t ACgroupController_getMaxActivationDepth(
+        const ACgroupController* controller) __INTRODUCED_IN(35);
+
+/**
  * Returns the name of the given controller.
  * If the given controller is null, return nullptr.
  */
