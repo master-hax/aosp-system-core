@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9a73245_70c23027",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-05T19:52:51Z",
+      "side": 1,
+      "message": "sure, though that makes the parsing slightly less precise, but it doesn\u0027t matter.",
+      "parentUuid": "b0b7ae02_795876a2",
+      "range": {
+        "startLine": 280,
+        "startChar": 2,
+        "endLine": 286,
+        "endChar": 33
+      },
+      "revId": "d19ab8ea3b1d3e3799f4cbc2a33e573fb985a5dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e33b198d_fe6f4cb6",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-06-05T18:35:57Z",
       "side": 1,
       "message": "[[maybe_unused]]",
+      "revId": "d19ab8ea3b1d3e3799f4cbc2a33e573fb985a5dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dec60ca2_29123787",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-05T19:52:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e33b198d_fe6f4cb6",
       "revId": "d19ab8ea3b1d3e3799f4cbc2a33e573fb985a5dd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
