@@ -105,6 +105,24 @@
       "parentUuid": "31c323f4_9ab57171",
       "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4dfc6c1_fa2c5ce9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045138
+      },
+      "writtenOn": "2024-06-05T01:56:49Z",
+      "side": 1,
+      "message": "I apologize, I really don’t understand the img generation algorithm and its purpose. If it does indeed cause other large storage devices to crash, please ignore this modification, I will abandon it. Perhaps we need other storage and OTA solutions.",
+      "parentUuid": "e3b340d6_3f5a9df4",
+      "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
