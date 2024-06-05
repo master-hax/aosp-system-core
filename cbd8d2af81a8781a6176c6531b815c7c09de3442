@@ -295,6 +295,24 @@
       "parentUuid": "826bb8e3_c9f249f3",
       "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7d0e4990_8ce13a24",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-05T21:01:37Z",
+      "side": 1,
+      "message": "I added what the eventual goal of this is to the CL description\n\nIf this CL looks good, I will send out https://android-review.git.corp.google.com/c/platform/development/+/3102458 to do the changes to stack to make it so.",
+      "parentUuid": "12be0aa4_5a959b21",
+      "revId": "cbd8d2af81a8781a6176c6531b815c7c09de3442",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
