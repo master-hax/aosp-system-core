@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "567f7be6_03b5cc40",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-05T15:58:01Z",
+      "side": 1,
+      "message": "well, that\u0027s the benefit of being a superset --- you get to keep the good bits of the thing you\u0027re supersetting. (though if you\u0027d prefer to use https://en.cppreference.com/w/cpp/filesystem/directory_iterator you actually can now, after rprichard\u0027s recent libc++ upgrade which made the std::filesystem stuff available to all code.)",
+      "parentUuid": "cbef2e04_ed3179b2",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 91,
+        "endChar": 44
+      },
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f77a6b67_2a2ce338",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 1
@@ -114,6 +138,24 @@
       "side": 1,
       "message": "I don\u0027t think that\u0027s quite the same, as it would make the \"k\" suffix optional.\nI suppose we could do:\n\n```\nchar k, unused;\n...\nif (mod_sfx \u003d\u003d NULL || sscanf(mod_sfx, \"_%u%c%c\", \u0026mod_pgsize_kb, \u0026k, \u0026unused) !\u003d 2 || k !\u003d \u0027k\u0027) {\n```\n\nbut I\u0027m not convinced it\u0027s any better. Or did you have something else in mind?",
       "parentUuid": "8a487845_51b82545",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c87c361b_7f2d4add",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-05T15:58:01Z",
+      "side": 1,
+      "message": "i just meant this:\n```\nif (mod_sfx \u003d\u003d NULL || sscanf(mod_sfx, \"_%uk%c\", \u0026mod_pgsize_kb, \u0026k, \u0026unused) !\u003d 1) {\n```\nyou know you want a `k`, so you leave that in, and the `%c` is _expected_ to fail because you\u0027re trying to assert that there _aren\u0027t_ more characters.\n\nbut the fact that someone familiar enough with scanf() to use the `%n` trick didn\u0027t get what i was suggesting seems like a bad sign in terms of how readable it is, so probably a bad idea after all :-)",
+      "parentUuid": "f6932ef1_5e361279",
       "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
