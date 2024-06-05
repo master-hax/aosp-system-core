@@ -123,6 +123,24 @@
       "parentUuid": "e3b340d6_3f5a9df4",
       "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e3ae999_434167ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-06-05T17:13:32Z",
+      "side": 1,
+      "message": "\u003e I feel like a hard cap on \"adb remount\" will break someone\n\nYeah I agree. Take Ied9cee6e98d3b2dd594babcf213071a80bd3cf14 for example, which is a previous request to use _more_ storage for scratch instead of less.\n\n\u003e but we\u0027re also running right up to the free space limit on this device\n\nAlso agree. I recall we had a similar conversation previously, in the comment section of Ied9cee6e98d3b2dd594babcf213071a80bd3cf14, and I said that it would be very difficult to come up with a generic heuristic, given the wide range of android device configurations.\n\nEven the 2gb default/fallback is kind of random, as we have no good reason that it is a good default size. For phone (where storage is plenty), 2gb is too small. For watch, 2gb might be way to luxurious.\n\n---\n\nSanity t, is there any reason not to set kDataScratchSizeMbProp to a preferable size o your device?",
+      "parentUuid": "b4dfc6c1_fa2c5ce9",
+      "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
