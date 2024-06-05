@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8edb984a_04d1bf86",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-05T12:50:20Z",
+      "side": 1,
+      "message": "don\u0027t introduce variables until you can assign to them. we\u0027re not C programmers :-P",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 91,
+        "endChar": 44
+      },
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f77a6b67_2a2ce338",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-05T12:50:20Z",
+      "side": 1,
+      "message": "use getpagesize() if you\u0027re microoptimizing?",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a487845_51b82545",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-05T12:50:20Z",
+      "side": 1,
+      "message": "(while we\u0027re microoptimizing, you can probably avoid the strlen() by having a %c instead of the %n, and checking that you only get 1 rather than 2 returned by sscanf()? it\u0027s shorter code too, though as a libc maintainer i\u0027m genuinely not sure whether this %n or the %c trick is more readable to most people?)",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
