@@ -19,6 +19,9 @@ cc_library_static {
     shared_libs: [
         "libbase",
     ],
+    whole_static_libs: [
+        "libexthandler",
+    ],
     export_include_dirs: ["include/"],
 }
 
@@ -27,6 +30,9 @@ cc_test {
     cflags: ["-Werror"],
     shared_libs: [
         "libbase",
+    ],
+    whole_static_libs: [
+        "libexthandler",
     ],
     local_include_dirs: ["include/"],
     srcs: [
