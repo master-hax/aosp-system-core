@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b46f260f_9ff27cf2",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-06T09:44:58Z",
+      "side": 1,
+      "message": "Tell you what, I\u0027ll shift the page-size parsing stuff into a helper function, which will tidy up the locals at the same time.",
+      "parentUuid": "567f7be6_03b5cc40",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 91,
+        "endChar": 44
+      },
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f77a6b67_2a2ce338",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 1
@@ -174,6 +198,24 @@
       "side": 1,
       "message": "(oops; forgot to remove a bit more...)\n```\nif (mod_sfx \u003d\u003d NULL || sscanf(mod_sfx, \"_%uk%c\", \u0026mod_pgsize_kb, \u0026unused) !\u003d 1) {\n```",
       "parentUuid": "c87c361b_7f2d4add",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2903e9aa_52ee6221",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-06T09:44:58Z",
+      "side": 1,
+      "message": "Hmm, I\u0027m still not seeing how that handles the missing \"k\". For example, if I have a directory called `modules_16`, then sscanf() will return 1 and we\u0027ll go with a 16KiB page size.",
+      "parentUuid": "4ed83258_5865833c",
       "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
