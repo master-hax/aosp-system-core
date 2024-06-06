@@ -23,7 +23,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include <android-base/result.h>
 #include <android-base/thread_annotations.h>
+using android::base::Result;
 
 class Modprobe {
   public:
@@ -59,6 +61,7 @@ class Modprobe {
     bool ParseSoftdepCallback(const std::vector<std::string>& args);
     bool ParseLoadCallback(const std::vector<std::string>& args);
     bool ParseOptionsCallback(const std::vector<std::string>& args);
+    bool ParseDynOptionsCallback(const std::vector<std::string>& args);
     bool ParseBlocklistCallback(const std::vector<std::string>& args);
     void ParseKernelCmdlineOptions();
     void ParseCfg(const std::string& cfg, std::function<bool(const std::vector<std::string>&)> f);
