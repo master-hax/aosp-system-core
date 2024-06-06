@@ -141,6 +141,24 @@
       "parentUuid": "b4dfc6c1_fa2c5ce9",
       "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cee6fa8e_46e4b8b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1045138
+      },
+      "writtenOn": "2024-06-06T01:44:28Z",
+      "side": 1,
+      "message": "Whether you would consider making the size of this image to be a configurable option? And provide the algorithmic relationship between the size of this image and other partition sizes, so that users can configure it according to their own needs.",
+      "parentUuid": "6e3ae999_434167ba",
+      "revId": "f0e95f9f27d0f801afaf70a69b301c08598f1ce5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
