@@ -96,6 +96,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cf9306f_83856702",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-06T11:25:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b46f260f_9ff27cf2",
+      "range": {
+        "startLine": 91,
+        "startChar": 31,
+        "endLine": 91,
+        "endChar": 44
+      },
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f77a6b67_2a2ce338",
@@ -127,6 +151,24 @@
       "side": 1,
       "message": "Sure. I blindly copied this out of the patch I reverted, but `getpagesize()` looks cleaner so I\u0027ll use that instead.",
       "parentUuid": "f77a6b67_2a2ce338",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c7baefc_5c0d41a0",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1572468
+      },
+      "writtenOn": "2024-06-06T11:25:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cc72e4e_03da0607",
       "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
