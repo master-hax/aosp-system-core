@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "381da93a_8b35528a",
+        "filename": "libprocessgroup/cgrouprc/libcgrouprc.map.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-06-06T20:32:47Z",
+      "side": 1,
+      "message": "any reason this is not a number like others?",
+      "range": {
+        "startLine": 20,
+        "startChar": 30,
+        "endLine": 20,
+        "endChar": 45
+      },
+      "revId": "daeb2a972b25671db233d99127ceed9f9612e17d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
