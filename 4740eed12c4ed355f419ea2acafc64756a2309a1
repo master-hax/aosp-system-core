@@ -260,6 +260,24 @@
       "parentUuid": "4ed83258_5865833c",
       "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ee66e02_11542c50",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-06T11:54:15Z",
+      "side": 1,
+      "message": "yeah, you\u0027re right --- i missed that we need the \"expected optional\" thing to come after all the literal text. and the alternative using std::regex is [although maybe _simpler_ code] more code than sscanf()+`%n`+strlen.",
+      "parentUuid": "2903e9aa_52ee6221",
+      "revId": "4740eed12c4ed355f419ea2acafc64756a2309a1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
