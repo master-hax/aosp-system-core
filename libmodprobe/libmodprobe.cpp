@@ -17,8 +17,11 @@
 #include <modprobe/modprobe.h>
 
 #include <fnmatch.h>
+#include <grp.h>
+#include <pwd.h>
 #include <sys/stat.h>
 #include <sys/syscall.h>
+#include <sys/wait.h>
 
 #include <algorithm>
 #include <map>
@@ -30,8 +33,18 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/parseint.h>
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
+
+#include "libexthandler/libexthandler.h"
+
+using android::base::ErrnoError;
+using android::base::Error;
+using android::base::ReadFdToString;
+using android::base::Split;
+using android::base::Trim;
+using android::base::unique_fd;
 
 std::string Modprobe::MakeCanonical(const std::string& module_path) {
     auto start = module_path.find_last_of('/');
@@ -164,6 +177,10 @@ bool Modprobe::ParseOptionsCallback(const std::vector<std::string>& args) {
     auto it = args.begin();
     const std::string& type = *it++;
 
+    if (type == "dyn_options") {
+        return ParseDynOptionsCallback(args);
+    }
+
     if (type != "options") {
         LOG(ERROR) << "non-options line encountered in modules.options";
         return false;
@@ -190,6 +207,60 @@ bool Modprobe::ParseOptionsCallback(const std::vector<std::string>& args) {
     }
 
     auto [unused, inserted] = this->module_options_.emplace(canonical_name, options);
+    if (!inserted) {
+        LOG(ERROR) << "multiple options lines present for module " << module;
+        return false;
+    }
+    return true;
+}
+
+bool Modprobe::ParseDynOptionsCallback(const std::vector<std::string>& args) {
+    auto it = args.begin();
+    const std::string& type = *it++;
+    int arg_size = 4;
+
+    if (args.size() < arg_size) {
+        LOG(ERROR) << type << " lines in modules.options must have at least" << arg_size
+                   << " entries, not " << args.size();
+        return false;
+    }
+
+    const std::string& module = *it++;
+
+    const std::string& canonical_name = MakeCanonical(module);
+    if (canonical_name.empty()) {
+        return false;
+    }
+
+    const std::string& pwnam = *it++;
+    passwd* pwd = getpwnam(pwnam.c_str());
+    if (!pwd) {
+        LOG(ERROR) << "invalid handler uid'" << pwnam << "'";
+        return false;
+    }
+
+    std::string handler_path = "";
+
+    while (it != args.end()) {
+        handler_path += *it++;
+        if (it != args.end()) {
+            handler_path += " ";
+        }
+    }
+    handler_path.erase(std::remove(handler_path.begin(), handler_path.end(), '\"'),
+                       handler_path.end());
+
+    LOG(INFO) << "Launching external module options handler: '" << handler_path
+              << " for module: " << module;
+    auto result = RunExternalHandler(handler_path, pwd->pw_uid, 0);
+    if (!result.ok()) {
+        LOG(ERROR) << "External module handler failed: " << result.error();
+        return false;
+    }
+
+    LOG(INFO) << "Dynamic options for module: " << module << " are '" << *result << "'";
+
+    auto [unused, inserted] = this->module_options_.emplace(canonical_name, *result);
     if (!inserted) {
         LOG(ERROR) << "multiple options lines present for module " << module;
         return false;
