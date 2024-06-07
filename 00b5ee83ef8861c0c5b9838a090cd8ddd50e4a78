@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "abefb9bd_27dba92c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97024764_4afc063c",
+      "range": {
+        "startLine": 125,
+        "startChar": 83,
+        "endLine": 125,
+        "endChar": 98
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84b1ec09_7942c5aa",
@@ -54,6 +78,24 @@
       "writtenOn": "2024-06-03T16:32:57Z",
       "side": 1,
       "message": "rather than pass name in manually, just use the name that\u0027s automatically given to the callback anyway?",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49b5adc9_2f730608",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "84b1ec09_7942c5aa",
       "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -75,6 +117,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d3ee688_e49cc2f8",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19f44cba_cfcfb01a",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9894d1ce_a14b8262",
@@ -88,6 +148,30 @@
       "writtenOn": "2024-06-03T16:32:57Z",
       "side": 1,
       "message": "(the rfc-style \"MUST be\" is more idomatic :-) )",
+      "range": {
+        "startLine": 672,
+        "startChar": 14,
+        "endLine": 672,
+        "endChar": 23
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0151244d_1762b92b",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9894d1ce_a14b8262",
       "range": {
         "startLine": 672,
         "startChar": 14,
@@ -121,6 +205,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bdcb205_3db6a565",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0f5bbaa_49672a04",
+      "range": {
+        "startLine": 676,
+        "startChar": 21,
+        "endLine": 676,
+        "endChar": 43
+      },
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7ac2cc2f_c0e21699",
@@ -134,6 +242,24 @@
       "writtenOn": "2024-06-03T16:32:57Z",
       "side": 1,
       "message": "\"timer_settime() failed\"",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de68072d_224073a1",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 683,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac2cc2f_c0e21699",
       "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -157,6 +283,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6560dc8d_132c1c96",
+        "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Yes, currently we do.",
+      "parentUuid": "14fd5cd2_ca328451",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d4bb289_43a6f31f",
         "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
         "patchSetId": 11
@@ -168,6 +312,24 @@
       "writtenOn": "2024-06-03T16:32:57Z",
       "side": 1,
       "message": "that\u0027s probably worth mentioning in the log message...",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e146177c_b68e4027",
+        "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-07T19:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d4bb289_43a6f31f",
       "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
