@@ -371,7 +371,7 @@ static void crash_request_cb(evutil_socket_t sockfd, short ev, void* arg) {
 
   if (request.packet_type != CrashPacketType::kDumpRequest) {
     LOG(WARNING) << "unexpected crash packet type, expected kDumpRequest, received  "
-                 << StringPrintf("%#2hhX", request.packet_type);
+                 << StringPrintf("%#2hhX", static_cast<unsigned char>(request.packet_type));
     return;
   }
 
