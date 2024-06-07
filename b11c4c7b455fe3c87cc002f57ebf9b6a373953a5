@@ -34,6 +34,24 @@
       "parentUuid": "46c475b9_b54a0a69",
       "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9abd785_b1606929",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-07T18:12:02Z",
+      "side": 1,
+      "message": "isn\u0027t this exactly that pattern? it\u0027s an enum (that\u0027s backed by uint8_t), but it\u0027ll be promoted to int through varargs, so it\u0027s fine? or am i missing something?",
+      "parentUuid": "54acb8cc_11fe4bdd",
+      "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
