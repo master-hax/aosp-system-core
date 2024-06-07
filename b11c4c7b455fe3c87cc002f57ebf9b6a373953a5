@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46c475b9_b54a0a69",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-07T11:59:03Z",
+      "side": 1,
+      "message": "i thought we were fixing clang instead? https://b.corp.google.com/issues/315250603#comment8",
+      "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
