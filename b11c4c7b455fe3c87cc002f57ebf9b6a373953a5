@@ -16,6 +16,24 @@
       "message": "i thought we were fixing clang instead? https://b.corp.google.com/issues/315250603#comment8",
       "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54acb8cc_11fe4bdd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1087625
+      },
+      "writtenOn": "2024-06-07T12:13:31Z",
+      "side": 1,
+      "message": "Yes, we fixed Clang. We moved some patterns to `-Wformat-pedantic`, and we are turning those warnings off, and switch `-Wformat` itself back on: https://r.android.com/3118813",
+      "parentUuid": "46c475b9_b54a0a69",
+      "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
