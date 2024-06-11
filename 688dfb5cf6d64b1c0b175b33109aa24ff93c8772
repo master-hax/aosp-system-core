@@ -22,6 +22,30 @@
       },
       "revId": "688dfb5cf6d64b1c0b175b33109aa24ff93c8772",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ba29212_127c85e6",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-06-11T22:16:31Z",
+      "side": 1,
+      "message": "How about we do this:\n\n```\nif (mod_dirs.empty() || getpagesize() \u003d\u003d 4096)\n```\n\nThat way we will still support booting a 16k device with the modules under `/lib/modules`. The caveat is that we won\u0027t support dual booting a 16k kernel with the 16k modules under `/lib/modules` and 4k modules under some subdirectory of `/lib/modules/...`.\n\nUltimately, I would prefer to not support modules under `/lib/modules` when dual booting so that you don\u0027t need to assume anything.",
+      "parentUuid": "d881777f_4dfd76cf",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 252,
+        "endChar": 0
+      },
+      "revId": "688dfb5cf6d64b1c0b175b33109aa24ff93c8772",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
