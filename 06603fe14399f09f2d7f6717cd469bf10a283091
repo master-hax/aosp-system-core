@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9016bd8_cbd6fac6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-11T19:12:44Z",
+      "side": 1,
+      "message": "d\u0027oh! annoying that NONE is 5 rather than 0, but too late to change that now :-(",
+      "revId": "06603fe14399f09f2d7f6717cd469bf10a283091",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
