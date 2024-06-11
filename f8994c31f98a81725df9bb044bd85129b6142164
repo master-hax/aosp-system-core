@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e181697_01c95234",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-11T18:22:04Z",
+      "side": 1,
+      "message": "If we\u0027re writing any value for those fields, and the assignments change, then the target build may read the wrong value (or fail to parse) since field #19 will change type and field #20 won\u0027t be valid.\n\nIf we\u0027re absolutely sure those fields are not being written, it\u0027s safe. But even safer is not to change them.",
+      "parentUuid": "f8411a93_5fb40d6b",
+      "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "91eee2f4_aa3f9098",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 9
