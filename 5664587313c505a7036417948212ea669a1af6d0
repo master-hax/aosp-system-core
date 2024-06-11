@@ -16,6 +16,24 @@
       "message": "Akilesh should take a look but I believe we may not have access to properties here (if resuming a merge).",
       "revId": "5664587313c505a7036417948212ea669a1af6d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3949a980_83998eee",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-11T20:24:28Z",
+      "side": 1,
+      "message": "does this mean the merge get\u0027s interrupted and has to restart? It seems available if we don\u0027t interrupt the merge process.",
+      "parentUuid": "fe0cdd1b_f2f81813",
+      "revId": "5664587313c505a7036417948212ea669a1af6d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
