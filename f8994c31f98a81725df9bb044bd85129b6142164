@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "640bede2_b82a3502",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-11T18:14:46Z",
+      "side": 1,
+      "message": "Once a protobuf ships, changing the field numbers can lead to compatibility issues. Instead just replace \"bool o_direct \u003d 18;\" with \"reserved 18;\" and keep all the other numbers the same.",
+      "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91eee2f4_aa3f9098",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1701,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-11T18:14:46Z",
+      "side": 1,
+      "message": "S launch devices are stuck on S versions of snapuserd, due to us placing it in vendor code for that release. Adding this flag will cause their snapuserd to exit with \"unknown command line flag\".\n\nIf the o_direct flag is disabled by default in the build, no problem, S launch devices won\u0027t get it. If it\u0027s enabled by default, we should add some code to ignore the property on S launches.",
+      "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
