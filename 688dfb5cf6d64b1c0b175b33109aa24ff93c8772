@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d881777f_4dfd76cf",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-06-11T17:49:56Z",
+      "side": 1,
+      "message": "This is a hack and will break devices with non-4k page size by default with all the modules under `/lib/modules`.",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 252,
+        "endChar": 0
+      },
+      "revId": "688dfb5cf6d64b1c0b175b33109aa24ff93c8772",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
