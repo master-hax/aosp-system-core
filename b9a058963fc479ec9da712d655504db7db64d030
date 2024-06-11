@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "706277be_50d02354",
+        "filename": "libprocessgroup/util/include/processgroup/util.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-06-11T17:46:12Z",
+      "side": 1,
+      "message": "static ?",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 10
+      },
+      "revId": "b9a058963fc479ec9da712d655504db7db64d030",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
