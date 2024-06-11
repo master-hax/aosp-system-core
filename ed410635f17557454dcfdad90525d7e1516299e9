@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b04912e4_5018d8f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-06-11T18:23:05Z",
+      "side": 1,
+      "message": "Those are the names of the language features being used here. A simpler way to say this is, \"initialize class variables in the header and remove no-op constructor to simplify code\". I\u0027ll add this to the end of the commit message.",
+      "parentUuid": "95b0971b_78a947b2",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 42
+      },
+      "revId": "ed410635f17557454dcfdad90525d7e1516299e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a82bb7d9_08870eba",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-06-11T17:43:17Z",
       "side": 1,
       "message": "Bug number here and in the follow-up patches.",
+      "revId": "ed410635f17557454dcfdad90525d7e1516299e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "903a9a39_bc2de53e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-06-11T18:23:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a82bb7d9_08870eba",
       "revId": "ed410635f17557454dcfdad90525d7e1516299e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
