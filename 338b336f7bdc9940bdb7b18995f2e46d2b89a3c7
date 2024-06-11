@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b35224cf_47339930",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/read_worker.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-11T23:21:18Z",
+      "side": 1,
+      "message": "ReadWorker is definitely started in first-stage init. As long as it\u0027s safe to call GetProperty and have it soft fail, this seems fine, but make sure the full OTA flow has been tested.",
+      "revId": "338b336f7bdc9940bdb7b18995f2e46d2b89a3c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
