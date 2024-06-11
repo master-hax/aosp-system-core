@@ -22,6 +22,23 @@
       },
       "revId": "ed410635f17557454dcfdad90525d7e1516299e9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a82bb7d9_08870eba",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-06-11T17:43:17Z",
+      "side": 1,
+      "message": "Bug number here and in the follow-up patches.",
+      "revId": "ed410635f17557454dcfdad90525d7e1516299e9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
