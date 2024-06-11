@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f8411a93_5fb40d6b",
+        "filename": "fs_mgr/libsnapshot/android/snapshot/snapshot.proto",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-11T18:18:20Z",
+      "side": 1,
+      "message": "I don\u0027t think any devices have these configurations enabled yet. Would that bypass the compatibility issues?",
+      "parentUuid": "640bede2_b82a3502",
+      "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "91eee2f4_aa3f9098",
         "filename": "fs_mgr/libsnapshot/snapshot.cpp",
         "patchSetId": 9
@@ -31,6 +49,24 @@
       "writtenOn": "2024-06-11T18:14:46Z",
       "side": 1,
       "message": "S launch devices are stuck on S versions of snapuserd, due to us placing it in vendor code for that release. Adding this flag will cause their snapuserd to exit with \"unknown command line flag\".\n\nIf the o_direct flag is disabled by default in the build, no problem, S launch devices won\u0027t get it. If it\u0027s enabled by default, we should add some code to ignore the property on S launches.",
+      "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41a4a7b4_dfd601bc",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1701,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-11T18:18:20Z",
+      "side": 1,
+      "message": "o_direct is disabled by default so this shouldn\u0027t pose a problem.",
+      "parentUuid": "91eee2f4_aa3f9098",
       "revId": "f8994c31f98a81725df9bb044bd85129b6142164",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
