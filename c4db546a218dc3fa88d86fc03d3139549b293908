@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03e9fbf7_715b828c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1878380
+      },
+      "writtenOn": "2024-06-11T23:08:09Z",
+      "side": 1,
+      "message": "I think the presubmit errors are unrelated. Other reviewers seem to be running into the test-mapping-art-mainline-presubmit test failures, possibly caused by b/346510164\n\nBypassing presubmit since I had a PV+2 vote previously",
+      "revId": "c4db546a218dc3fa88d86fc03d3139549b293908",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
