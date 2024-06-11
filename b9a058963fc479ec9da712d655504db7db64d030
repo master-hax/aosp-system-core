@@ -22,6 +22,30 @@
       },
       "revId": "b9a058963fc479ec9da712d655504db7db64d030",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c6adeac_25f226e0",
+        "filename": "libprocessgroup/util/include/processgroup/util.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-06-11T20:23:38Z",
+      "side": 1,
+      "message": "Not needed inside a namespace like this. It already has internal linkage. Actually it would have internal linkage even outside of the namespace because it\u0027s `const`.",
+      "parentUuid": "706277be_50d02354",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 10
+      },
+      "revId": "b9a058963fc479ec9da712d655504db7db64d030",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
