@@ -52,6 +52,24 @@
       "parentUuid": "3949a980_83998eee",
       "revId": "5664587313c505a7036417948212ea669a1af6d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3289b04e_de24f615",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-06-11T20:35:07Z",
+      "side": 1,
+      "message": "I think this is ok here as we don\u0027t start the merge until after properties are loaded. This is true even for merge resume section as well. Snapshot-merge (start or resume) is driven by update-engine process - so, this should be ok.\n\n\u003e the merge resumes in first-stage init, where properties aren\u0027t loaded yet.\n\nYes - This is true in the world of dm-snapshot merge wherein snapshot-merge would immediately kick off as soon as we mount the partition as merge target. However, when we moved to userspace snapshots, we decided not to do it and let update-engine process drive the snapshot-merge.",
+      "parentUuid": "2593e710_a8cc6041",
+      "revId": "5664587313c505a7036417948212ea669a1af6d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
