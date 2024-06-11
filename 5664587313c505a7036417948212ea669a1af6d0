@@ -70,6 +70,24 @@
       "parentUuid": "2593e710_a8cc6041",
       "revId": "5664587313c505a7036417948212ea669a1af6d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "437a9fb6_348af7c9",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-11T23:25:14Z",
+      "side": 1,
+      "message": "Makes sense. I\u0027d still argue for passing in via Handler, as that makes testing easier. (merge size definitely seems like something more sensitive than say thread priority)",
+      "parentUuid": "3289b04e_de24f615",
+      "revId": "5664587313c505a7036417948212ea669a1af6d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
