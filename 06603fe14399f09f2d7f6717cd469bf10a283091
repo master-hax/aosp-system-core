@@ -16,6 +16,24 @@
       "message": "d\u0027oh! annoying that NONE is 5 rather than 0, but too late to change that now :-(",
       "revId": "06603fe14399f09f2d7f6717cd469bf10a283091",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c81fb74_604dc033",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1997365
+      },
+      "writtenOn": "2024-06-11T20:27:31Z",
+      "side": 1,
+      "message": "Thanks for reviewing! Right, the NONE is added later so too late to make it 0.",
+      "parentUuid": "c9016bd8_cbd6fac6",
+      "revId": "06603fe14399f09f2d7f6717cd469bf10a283091",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
