@@ -22,6 +22,30 @@
       },
       "revId": "db560090e4dcf19aa0909a27da473c4ac704af88",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8418806c_4dd06964",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-12T20:37:25Z",
+      "side": 1,
+      "message": "I was wondering the exact same thing. Will look into it",
+      "parentUuid": "a4c56c26_918213c1",
+      "range": {
+        "startLine": 13,
+        "startChar": 6,
+        "endLine": 13,
+        "endChar": 8
+      },
+      "revId": "db560090e4dcf19aa0909a27da473c4ac704af88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
