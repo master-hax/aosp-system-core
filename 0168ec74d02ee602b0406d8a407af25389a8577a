@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "02a1508c_3be42001",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1042793
+      },
+      "writtenOn": "2024-06-12T20:47:13Z",
+      "side": 1,
+      "message": "just as a suggestion, next time you attempt to revert a commit, let\u0027s include both the original bug ID and the breakage bug ID so that the relevant bugs can also be updated.",
+      "revId": "0168ec74d02ee602b0406d8a407af25389a8577a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "11a10093_e08f7f38",
