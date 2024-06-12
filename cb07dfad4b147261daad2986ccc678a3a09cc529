@@ -16,6 +16,23 @@
       "message": "Hi David,\n\nCould you please review this commit ?\n\nThanks,",
       "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49ac8f16_72779bdf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-12T17:20:27Z",
+      "side": 1,
+      "message": "This function is getting very complex and is badly in need of some kind of unit test, but I don\u0027t really know what to do about it. It\u0027s just complex in general.\n\n\"adb remount\" could set a flag, reboot the device. First-stage init could create a mount structure that bypasses the need for MS_MOVE, by putting a shadow dir structure in tmpfs, and then mounting overlays directly into /system etc. Creating the workdirs would happen inline. Per-mount remounts would go away (if they haven\u0027t already, they should). I\u0027d also argue that needing to remount twice is silly... always remounting writable would eliminate more code, and simplify the developer experience.\n\nAnyway, +2\u0027ing to not block the change, but it\u0027s worth thinking about...",
+      "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
