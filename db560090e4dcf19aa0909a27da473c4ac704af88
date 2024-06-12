@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4c56c26_918213c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1042793
+      },
+      "writtenOn": "2024-06-12T20:36:44Z",
+      "side": 1,
+      "message": "@zhengdaniel@google.com, @dvander@google.com: After addressing all the build breakages, can you please look into why presubmit could not catch the issue?",
+      "range": {
+        "startLine": 13,
+        "startChar": 6,
+        "endLine": 13,
+        "endChar": 8
+      },
+      "revId": "db560090e4dcf19aa0909a27da473c4ac704af88",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
