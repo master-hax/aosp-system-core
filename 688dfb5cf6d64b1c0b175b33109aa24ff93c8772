@@ -70,6 +70,30 @@
       },
       "revId": "688dfb5cf6d64b1c0b175b33109aa24ff93c8772",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19409884_8faf91d8",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-06-12T03:41:48Z",
+      "side": 1,
+      "message": "https://r.android.com/3110063 is not a hack. It adds support to upgrade a device\u0027s kernel to a newer LTS version without needing to re-compile the vendor modules. That is required for GKI testing and isn\u0027t going away. Up to this point we have only supported updating stable kernels.\n\nThe real issue is that https://r.android.com/3050322 added support to modprobe to boot a second kernel that is not ABI compatible with the existing vendor kernel modules, but doesn\u0027t sufficiently handle all the cases where we assumed the kernel modules were ABI compatible with all supported kernels. The change https://r.android.com/3110063 tried to fix this by factoring in the page size when selecting which kernel modules to load, but missed this case where the modules under `/lib/modules` don\u0027t define the underlying page size. Unfortunately, with devices launching with 16k page sizes in the not-too-far future, we can\u0027t assume modules under `/lib/modules` were compiled with 4k pages. Instead we should only assume the modules directly under `/lib/modules` were compiled with 4k pages if there are multiple sets of vendor kernel modules (IOW mod_dirs is not empty). \n\nIn the future, I would recommend any device that supports dual booting multiple kernels with different ABIs should put all of the modules under a folder that explicitly defines the kernel version and page size.",
+      "parentUuid": "cf4a36a1_233107ca",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 252,
+        "endChar": 0
+      },
+      "revId": "688dfb5cf6d64b1c0b175b33109aa24ff93c8772",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
