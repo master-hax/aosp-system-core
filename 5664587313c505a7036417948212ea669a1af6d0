@@ -88,6 +88,24 @@
       "parentUuid": "3289b04e_de24f615",
       "revId": "5664587313c505a7036417948212ea669a1af6d0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9d23137_2393fbd5",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-17T16:11:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "437a9fb6_348af7c9",
+      "revId": "5664587313c505a7036417948212ea669a1af6d0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
