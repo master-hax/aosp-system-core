@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2cd85ec_5a5aaf04",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-17T16:13:32Z",
+      "side": 1,
+      "message": "according to b347359924 android::base might\u0027ve gotten renamed to android::os? This might\u0027ve caused the breakage last time, although still don\u0027t understand how that would pass presubmit",
+      "revId": "02e1ceaeec22a373aa0477372580c772b886df04",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
