@@ -33,6 +33,24 @@
       "message": "This function is getting very complex and is badly in need of some kind of unit test, but I don\u0027t really know what to do about it. It\u0027s just complex in general.\n\n\"adb remount\" could set a flag, reboot the device. First-stage init could create a mount structure that bypasses the need for MS_MOVE, by putting a shadow dir structure in tmpfs, and then mounting overlays directly into /system etc. Creating the workdirs would happen inline. Per-mount remounts would go away (if they haven\u0027t already, they should). I\u0027d also argue that needing to remount twice is silly... always remounting writable would eliminate more code, and simplify the developer experience.\n\nAnyway, +2\u0027ing to not block the change, but it\u0027s worth thinking about...",
       "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45f98848_caf166d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-06-18T11:12:02Z",
+      "side": 1,
+      "message": "\u003e This function is getting very complex\n\nAgree. Even I spend a non-trivial amount of time just to understand it, but I\u0027m also the one who wrote this pile of code in the first place.\n\n\u003e First-stage init could create a mount structure that bypasses the need for MS_MOVE\n\nI think MS_MOVE doesn\u0027t affect first-stage-init anyway, because we only have one namespace in first-stage-init (one process; one namespace). The separate mount namespace happens after second-stage-init. The problem Jianan is seeing only happens right after the initial overlay setup, and before rebooting . (So the mountpoints were just moved and mount namespace of /data is dissociated between _bootstrap_ and _default_ namespace)\n\n\u003e I\u0027d also argue that needing to remount twice is silly... always remounting writable would eliminate more code, and simplify the developer experience.\n\nyeah... I kind of wanted to just make the `-R` behavior mandatory, and don\u0027t allow remount RW right after initial overlayfs setup. Thus only allow remount RW after reboot. This would make the code path much simpler, but would break a lot of the expectations of existing scripts that expects `adb remount` to behave similar to `adb shell mount -o remount,rw`.\n\n\u003e Anyway, +2\u0027ing to not block the change\n\nthanks!",
+      "parentUuid": "49ac8f16_72779bdf",
+      "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
