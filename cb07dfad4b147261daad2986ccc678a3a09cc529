@@ -51,6 +51,24 @@
       "parentUuid": "49ac8f16_72779bdf",
       "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "267a736e_0fd16864",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-19T00:16:52Z",
+      "side": 1,
+      "message": "I\u0027m not thinking -R should be the default. Instead, *no* remount logic should happen after first-stage init. adb remount, -R or not, would just flip a bit somewhere. first-stage init would then mount ro partitions off in some shadow directory structure, and build the overlays on top of the \"real\" structure in /.\n\nMy guess is that there could be a little complication in submounts still but a lot of this logic could go away. The only scripts that would break are ones expecting \"adb remount \u0026\u0026 adb reboot\" to wind up in readonly overlay mode. But that mode is not very useful and it\u0027s not clear why anyone would rely on it.",
+      "parentUuid": "45f98848_caf166d2",
+      "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
