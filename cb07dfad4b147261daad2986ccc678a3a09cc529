@@ -69,6 +69,24 @@
       "parentUuid": "45f98848_caf166d2",
       "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "162c7c1d_9e13ec7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-06-19T11:04:43Z",
+      "side": 1,
+      "message": "\u003e Instead, no remount logic should happen after first-stage init.\n\nThat\u0027s precisely what I meant for \"make -R default\". I meant to make _reboot_ a mandatory step of enabling overlayfs, and don\u0027t allow overlayfs usage until reboot had happened. This guaranteed that the overlays are mounted by first stage init, AND we don\u0027t need to move mounts during initial overlay setup.\n\n\u003e My guess is that there could be a little complication in submounts\n\nTrue. \"little ocmplication\" being that overlayfs cannot discover file paths cross file system boundary. So we would still need one overlayfs per mount point. But the move mount logic can be greatly simplified because every thing should be MS_PRIVATE in first stage init. \n\n\u003e scripts that would break\n\nThere are scripts that expects device is initially AVB disabled, and expects `adb remount` to just work without reboot. These are the ones that I recall are problematic and sensitive to any code changes in remount. They also have (good?) reason to do this because they want to (1) cut down test run time by avoiding unnecessary reboots (2) less reboot -\u003e less flaky test behavior.",
+      "parentUuid": "267a736e_0fd16864",
+      "revId": "cb07dfad4b147261daad2986ccc678a3a09cc529",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
