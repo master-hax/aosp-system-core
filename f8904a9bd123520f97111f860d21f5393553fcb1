@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5765a6f6_5ec3a684",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-20T22:45:03Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e24d8b35_07050b58",
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b20b6892_63418ca2",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-06-20T20:32:07Z",
       "side": 1,
       "message": "|sort",
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1983e30f_3c57c8d3",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 21
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-20T22:45:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b20b6892_63418ca2",
       "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -58,6 +94,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b01ea238_fcca4e7d",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-20T22:45:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cee4116b_392367ba",
+      "range": {
+        "startLine": 44,
+        "startChar": 27,
+        "endLine": 44,
+        "endChar": 31
+      },
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "69e099bd_ad2f9132",
@@ -71,6 +131,30 @@
       "writtenOn": "2024-06-20T20:32:07Z",
       "side": 1,
       "message": "(same)",
+      "range": {
+        "startLine": 228,
+        "startChar": 35,
+        "endLine": 228,
+        "endChar": 39
+      },
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78621cce_9c813aca",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-20T22:45:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69e099bd_ad2f9132",
       "range": {
         "startLine": 228,
         "startChar": 35,
