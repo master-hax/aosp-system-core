@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e24d8b35_07050b58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-20T20:32:07Z",
+      "side": 1,
+      "message": "(defer to cferris for the real review though, in conjunction with the `stack` script change...)",
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b20b6892_63418ca2",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 21
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-20T20:32:07Z",
+      "side": 1,
+      "message": "|sort",
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cee4116b_392367ba",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-20T20:32:07Z",
+      "side": 1,
+      "message": "same constant comment as in bionic. (should this be in the mte header?)",
+      "range": {
+        "startLine": 44,
+        "startChar": 27,
+        "endLine": 44,
+        "endChar": 31
+      },
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69e099bd_ad2f9132",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-20T20:32:07Z",
+      "side": 1,
+      "message": "(same)",
+      "range": {
+        "startLine": 228,
+        "startChar": 35,
+        "endLine": 228,
+        "endChar": 39
+      },
+      "revId": "f8904a9bd123520f97111f860d21f5393553fcb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
