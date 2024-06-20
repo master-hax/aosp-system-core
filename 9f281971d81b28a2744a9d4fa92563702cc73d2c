@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae48535d_53e2befc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-06-20T20:40:45Z",
+      "side": 1,
+      "message": "adding #include to android properties here directly. Hopefully that fixes things",
+      "revId": "9f281971d81b28a2744a9d4fa92563702cc73d2c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
