@@ -88,6 +88,7 @@ static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
         "/metadata/ota/snapshot-boot-without-slot-switch";
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
+static constexpr char kVendorUpdatedFromAndroid12[] = "/metadata/ota/vendor-updated-12";
 static constexpr auto kUpdateStateCheckInterval = 2s;
 /*
  * The readahead size is set to 32kb so that
@@ -318,7 +319,7 @@ bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock, const std::function
     std::vector<std::string> files = {
             GetSnapshotBootIndicatorPath(),          GetRollbackIndicatorPath(),
             GetForwardMergeIndicatorPath(),          GetOldPartitionMetadataPath(),
-            GetBootSnapshotsWithoutSlotSwitchPath(),
+            GetBootSnapshotsWithoutSlotSwitchPath(), GetVendorUpdatedPath(),
     };
     for (const auto& file : files) {
         RemoveFileIfExists(file);
@@ -1457,6 +1458,10 @@ std::string SnapshotManager::GetRollbackIndicatorPath() {
     return metadata_dir_ + "/" + android::base::Basename(kRollbackIndicatorPath);
 }
 
+std::string SnapshotManager::GetVendorUpdatedPath() {
+    return metadata_dir_ + "/" + android::base::Basename(kVendorUpdatedFromAndroid12);
+}
+
 std::string SnapshotManager::GetForwardMergeIndicatorPath() {
     return metadata_dir_ + "/allow-forward-merge";
 }
@@ -2122,6 +2127,16 @@ bool SnapshotManager::UpdateUsesODirect(LockedFile* lock) {
     return update_status.o_direct();
 }
 
+bool SnapshotManager::MarkVendorUpdated() {
+    auto path = GetVendorUpdatedPath();
+
+    if (!android::base::WriteStringToFile("1", path)) {
+        PLOG(ERROR) << "Unable to write to vendor update path: " << path;
+        return false;
+    }
+    return true;
+}
+
 /*
  * Please see b/304829384 for more details.
  *
@@ -2163,6 +2178,10 @@ bool SnapshotManager::IsLegacySnapuserdPostReboot() {
     if (is_legacy_snapuserd_.has_value() && is_legacy_snapuserd_.value() == true) {
         auto slot = GetCurrentSlot();
         if (slot == Slot::Target) {
+            if (access(GetVendorUpdatedPath().c_str(), F_OK) == 0) {
+                LOG(INFO) << "Vendor path is mark as updated";
+                return false;
+            }
             return true;
         }
     }
