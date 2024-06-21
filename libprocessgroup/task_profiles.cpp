@@ -51,6 +51,7 @@ using android::base::WriteStringToFile;
 
 static constexpr const char* TASK_PROFILE_DB_FILE = "/etc/task_profiles.json";
 static constexpr const char* TASK_PROFILE_DB_VENDOR_FILE = "/vendor/etc/task_profiles.json";
+static constexpr const char* TASK_PROFILE_DB_ODM_FILE = "/odm/etc/task_profiles.json";
 
 static constexpr const char* TEMPLATE_TASK_PROFILE_API_FILE =
         "/etc/task_profiles/task_profiles_%u.json";
@@ -828,6 +829,12 @@ TaskProfiles::TaskProfiles() {
         !Load(CgroupMap::GetInstance(), TASK_PROFILE_DB_VENDOR_FILE)) {
         LOG(ERROR) << "Loading " << TASK_PROFILE_DB_VENDOR_FILE << " for [" << getpid()
                    << "] failed";
+    }
+
+    // load odm task profiles if the file exists
+    if (!access(TASK_PROFILE_DB_ODM_FILE, F_OK) &&
+        !Load(CgroupMap::GetInstance(), TASK_PROFILE_DB_ODM_FILE)) {
+        LOG(ERROR) << "Loading " << TASK_PROFILE_DB_ODM_FILE << " for [" << getpid() << "] failed";
     }
 }
 
