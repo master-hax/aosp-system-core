@@ -2163,6 +2163,12 @@ bool SnapshotManager::IsLegacySnapuserdPostReboot() {
     if (is_legacy_snapuserd_.has_value() && is_legacy_snapuserd_.value() == true) {
         auto slot = GetCurrentSlot();
         if (slot == Slot::Target) {
+            auto client = SnapuserdClient::Connect(android::snapshot::kSnapuserdSocket, 10s);
+            if (client) {
+                LOG(INFO) << "Vendor is updated from Android 12. Legacy snapuserd is no longer "
+                             "required";
+                return false;
+            }
             return true;
         }
     }

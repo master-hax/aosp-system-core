@@ -395,12 +395,7 @@ bool FirstStageMountVBootV2::CreateSnapshotPartitions(SnapshotManager* sm) {
 
     use_snapuserd_ = sm->IsSnapuserdRequired();
     if (use_snapuserd_) {
-        if (sm->UpdateUsesUserSnapshots()) {
-            LaunchFirstStageSnapuserd();
-        } else {
-            LOG(FATAL) << "legacy virtual-ab is no longer supported";
-            return false;
-        }
+        LaunchFirstStageSnapuserd();
     }
 
     sm->SetUeventRegenCallback([this](const std::string& device) -> bool {
@@ -416,9 +411,6 @@ bool FirstStageMountVBootV2::CreateSnapshotPartitions(SnapshotManager* sm) {
         return false;
     }
 
-    if (use_snapuserd_) {
-        CleanupSnapuserdSocket();
-    }
     return true;
 }
 

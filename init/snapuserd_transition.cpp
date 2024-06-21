@@ -305,6 +305,8 @@ bool SnapuserdSelinuxHelper::TestSnapuserdIsReady() {
 }
 
 void SnapuserdSelinuxHelper::RelaunchFirstStageSnapuserd() {
+    CleanupSnapuserdSocket();
+
     if (!sm_->DetachFirstStageSnapuserdForSelinux()) {
         LOG(FATAL) << "Could not perform selinux transition";
     }
