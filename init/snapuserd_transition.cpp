@@ -100,6 +100,10 @@ void LaunchFirstStageSnapuserd() {
     }
     if (client->SupportsSecondStageSocketHandoff()) {
         setenv(kSnapuserdFirstStageInfoVar, "socket", 1);
+        auto sm = SnapshotManager::NewForFirstStageMount();
+        if (!sm->MarkVendorUpdated()) {
+            LOG(ERROR) << "Failed to update MarkVendorUpdated";
+        }
     }
 
     setenv(kSnapuserdFirstStagePidVar, std::to_string(pid).c_str(), 1);
