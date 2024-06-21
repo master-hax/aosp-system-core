@@ -16,6 +16,24 @@
       "message": "@sharaienko@google.com can you take a look?",
       "revId": "3b795a1a7b6b17a3c593ff01bab2ad209552faf1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c45245_ca42497b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1884477
+      },
+      "writtenOn": "2024-06-21T23:00:22Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a0597cc6_ffcdda63",
+      "revId": "3b795a1a7b6b17a3c593ff01bab2ad209552faf1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
