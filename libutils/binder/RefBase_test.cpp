@@ -300,7 +300,7 @@ private:
     std::atomic<int>* mDeleteCount;
 };
 
-[[clang::no_destroy]] static constinit sp<Bar> buffer;
+[[no_destroy]] static constinit sp<Bar> buffer;
 static constinit std::atomic<bool> bufferFull(false);
 
 // Wait until bufferFull has value val.
@@ -380,7 +380,7 @@ TEST(RefBase, RacingDestructors) {
     }  // Otherwise this is slow and probably pointless on a uniprocessor.
 }
 
-[[clang::no_destroy]] static constinit wp<Bar> wpBuffer;
+[[no_destroy]] static constinit wp<Bar> wpBuffer;
 static constinit std::atomic<bool> wpBufferFull(false);
 
 // Wait until wpBufferFull has value val.
