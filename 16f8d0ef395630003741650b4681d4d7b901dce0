@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db9448f2_61f323c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-25T22:28:25Z",
+      "side": 1,
+      "message": "A race can still exist in this case (if the pointer is null and two threads set it at the same time). Why exclude this case? Is the performance impact that important?",
+      "range": {
+        "startLine": 9,
+        "startChar": 28,
+        "endLine": 10,
+        "endChar": 9
+      },
+      "revId": "16f8d0ef395630003741650b4681d4d7b901dce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
