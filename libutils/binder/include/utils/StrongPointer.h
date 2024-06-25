@@ -243,8 +243,10 @@ sp<T>& sp<T>::operator=(T* other) {
     if (other) {
         other->incStrong(this);
     }
-    if (oldPtr) oldPtr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (oldPtr) {
+        oldPtr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = other;
     return *this;
 }
@@ -293,8 +295,10 @@ sp<T>& sp<T>::operator =(const sp<T>& other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
-    if (oldPtr) oldPtr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (oldPtr) {
+        oldPtr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = otherPtr;
     return *this;
 }
@@ -302,8 +306,10 @@ sp<T>& sp<T>::operator =(const sp<T>& other) {
 template <typename T>
 sp<T>& sp<T>::operator=(sp<T>&& other) noexcept {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
-    if (oldPtr) oldPtr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (oldPtr) {
+        oldPtr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = other.m_ptr;
     other.m_ptr = nullptr;
     return *this;
@@ -314,8 +320,10 @@ sp<T>& sp<T>::operator =(const sp<U>& other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
-    if (oldPtr) oldPtr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (oldPtr) {
+        oldPtr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = otherPtr;
     return *this;
 }
@@ -323,8 +331,10 @@ sp<T>& sp<T>::operator =(const sp<U>& other) {
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator =(sp<U>&& other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
-    if (m_ptr) m_ptr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (m_ptr) {
+        m_ptr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = other.m_ptr;
     other.m_ptr = nullptr;
     return *this;
@@ -335,8 +345,10 @@ template<typename T> template<typename U>
 sp<T>& sp<T>::operator =(U* other) {
     T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
     if (other) (static_cast<T*>(other))->incStrong(this);
-    if (oldPtr) oldPtr->decStrong(this);
-    if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    if (oldPtr) {
+        oldPtr->decStrong(this);
+        if (oldPtr != *const_cast<T* volatile*>(&m_ptr)) sp_report_race();
+    }
     m_ptr = other;
     return *this;
 }
