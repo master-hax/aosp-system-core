@@ -70,6 +70,24 @@
       "parentUuid": "f5784292_405e569a",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73d5a7d8_9b1c2db4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1903040
+      },
+      "writtenOn": "2024-06-26T23:10:19Z",
+      "side": 1,
+      "message": "We never raised error for this scenario. It always happened silently and get ignored. We will raise error from now on and I am manually exempting modules that are failing. However I agree that these module configs should be fixed.",
+      "parentUuid": "96a23788_89e88669",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
