@@ -16,6 +16,29 @@
       "message": "oh, yeah, not checking all the log is just silly...",
       "revId": "47fde793b111aecdb34edba598b5697ba9c4701c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ac2161d_b69b828f",
+        "filename": "libutils/CallStack_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-26T18:02:04Z",
+      "side": 1,
+      "message": "is there a reason you didn\u0027t go with INT_MAX? a quick click through the source (and a quick `adb logcat -t 99999999`) makes it seem like that should work?",
+      "range": {
+        "startLine": 76,
+        "startChar": 48,
+        "endLine": 76,
+        "endChar": 53
+      },
+      "revId": "47fde793b111aecdb34edba598b5697ba9c4701c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
