@@ -16,6 +16,24 @@
       "message": "What does this option do ? trying to understand on what cases this test won\u0027t be executed as this is an important unit test",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b97099d1_6668983b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1903040
+      },
+      "writtenOn": "2024-06-26T21:26:56Z",
+      "side": 1,
+      "message": "This option tells GTest to not raise an exception if the test binary is missing. Ideally we want to raise an exception. But it seems that these modules are not configured properly. so we are exempting them manually from the error.\n\nThis is the context- https://b.corp.google.com/issues/348446766#comment16 and b/348472529.\nTLDR: The test modules are scheduled to run for both `arm64` and `arm` abi, but they are not compiled for both abi. So the test module fails for the abi that was not compiled.",
+      "parentUuid": "73b741e1_58804d42",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
