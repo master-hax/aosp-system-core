@@ -34,6 +34,24 @@
       "parentUuid": "73b741e1_58804d42",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5784292_405e569a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-06-26T21:29:26Z",
+      "side": 1,
+      "message": "I see.. so its failing for 32 bit.. Makes sense.",
+      "parentUuid": "b97099d1_6668983b",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
