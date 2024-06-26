@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73b741e1_58804d42",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-06-26T21:06:01Z",
+      "side": 1,
+      "message": "What does this option do ? trying to understand on what cases this test won\u0027t be executed as this is an important unit test",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
