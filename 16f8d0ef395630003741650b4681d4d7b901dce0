@@ -22,6 +22,30 @@
       },
       "revId": "16f8d0ef395630003741650b4681d4d7b901dce0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8eca6e17_6f1d0d2a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1080076
+      },
+      "writtenOn": "2024-06-26T20:31:53Z",
+      "side": 1,
+      "message": "It would, but the detection in that case ends up being just two consecutive reads with nothing in between (at least in most cases, I actually missed a few where we\u0027d have an increment for the other argument), and the chance of that actually detecting a race is miniscule. The optimization isn\u0027t that big either, so I\u0027m fine with abandoning it if you believe there\u0027s value in the current way",
+      "parentUuid": "db9448f2_61f323c2",
+      "range": {
+        "startLine": 9,
+        "startChar": 28,
+        "endLine": 10,
+        "endChar": 9
+      },
+      "revId": "16f8d0ef395630003741650b4681d4d7b901dce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
