@@ -46,6 +46,30 @@
       },
       "revId": "16f8d0ef395630003741650b4681d4d7b901dce0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33b1f84b_7b4a791e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-06-26T20:53:37Z",
+      "side": 1,
+      "message": "This is precisely the race this code is meant to prevent.\n\nSure, the chance a given time it will happen is small, but if code is executed many times, even if the race is rare, it\u0027ll catch sometimes and we\u0027ll get the bug and fix it. That\u0027s important.",
+      "parentUuid": "8eca6e17_6f1d0d2a",
+      "range": {
+        "startLine": 9,
+        "startChar": 28,
+        "endLine": 10,
+        "endChar": 9
+      },
+      "revId": "16f8d0ef395630003741650b4681d4d7b901dce0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
