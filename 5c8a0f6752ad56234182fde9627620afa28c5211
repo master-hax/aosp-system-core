@@ -52,6 +52,24 @@
       "parentUuid": "b97099d1_6668983b",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96a23788_89e88669",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-26T22:51:54Z",
+      "side": 1,
+      "message": "_does_ that make sense? isn\u0027t the configuration wrong? and this is just papering over the problem in a way that means we wouldn\u0027t see other problems at all?",
+      "parentUuid": "f5784292_405e569a",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
