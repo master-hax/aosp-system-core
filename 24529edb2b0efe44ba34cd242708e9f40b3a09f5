@@ -16,6 +16,75 @@
       "message": "PTAL",
       "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d452795_1e1aaae0",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-06-26T23:08:06Z",
+      "side": 1,
+      "message": "Is there a reason you aren\u0027t exporting the version of dump_stack_history that has the above code and use that to test? It\u0027s a bit trickier to test, but then when people are looking at the code, they don\u0027t need to figure out if there are other real callers with a different function being passed in. It\u0027s not immediately obvious that only one real version exists, and the rest are for testing purposes.",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 24
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c7a4140_d920734b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-06-26T23:08:06Z",
+      "side": 1,
+      "message": "It feels like you could create a single function for this rather than put all of the logic right here. That would allow you to rework some of the logic, for example, pulling in the get_containing_thread function into this bigger function.",
+      "range": {
+        "startLine": 336,
+        "startChar": 0,
+        "endLine": 349,
+        "endChar": 5
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c150965_bfac64dd",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-06-26T23:08:06Z",
+      "side": 1,
+      "message": "Better done keeping this as a string and appending the build id if present. That way there aren\u0027t two copies of the same print code.",
+      "range": {
+        "startLine": 516,
+        "startChar": 6,
+        "endLine": 516,
+        "endChar": 44
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
