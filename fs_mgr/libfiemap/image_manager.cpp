@@ -655,6 +655,10 @@ bool ImageManager::RemoveAllImages() {
     return ok && RemoveAllMetadata(metadata_dir_);
 }
 
+bool ImageManager::DisableAllImages() {
+    return true;
+}
+
 bool ImageManager::Validate() {
     auto metadata = OpenMetadata(metadata_dir_);
     if (!metadata) {
