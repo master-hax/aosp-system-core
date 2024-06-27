@@ -2017,11 +2017,23 @@ bool SnapshotManager::RemoveAllSnapshots(LockedFile* lock) {
     }
 
     if (ok || !has_mapped_cow_images) {
+        if(!EnsureImageManager()) {
+            LOG(ERROR) << "Image manager not present when removing snapshot artifacts";
+            return false;
+        }
+        // If a device is in recovery, we need to mark the snapshots for cleanup
+        // upon next reboot, since we cannot delete them here
+        if (device_->IsRecovery()) {
+            if (!images_->DisableAllImages()) {
+                LOG(ERROR) << "Could not remove all snapshot artifacts in Recovery";
+                return false;
+            }
+        }
         // Delete any image artifacts as a precaution, in case an update is
         // being cancelled due to some corrupted state in an lp_metadata file.
         // Note that we do not do this if some cow images are still mapped,
         // since we must not remove backing storage if it's in use.
-        if (!EnsureImageManager() || !images_->RemoveAllImages()) {
+        else if (!images_->RemoveAllImages()) {
             LOG(ERROR) << "Could not remove all snapshot artifacts";
             return false;
         }
