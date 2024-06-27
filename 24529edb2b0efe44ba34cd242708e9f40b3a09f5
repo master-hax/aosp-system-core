@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38b16b68_3ce26120",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-27T00:52:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d452795_1e1aaae0",
+      "range": {
+        "startLine": 262,
+        "startChar": 0,
+        "endLine": 269,
+        "endChar": 24
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c7a4140_d920734b",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6e3ed16_f179b439",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-27T00:52:57Z",
+      "side": 1,
+      "message": "OK. I would rather keep `get_containing_thread` a separate function, it\u0027s nicely encapsulated functionality.",
+      "parentUuid": "3c7a4140_d920734b",
+      "range": {
+        "startLine": 336,
+        "startChar": 0,
+        "endLine": 349,
+        "endChar": 5
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c150965_bfac64dd",
@@ -77,6 +125,30 @@
       "writtenOn": "2024-06-26T23:08:06Z",
       "side": 1,
       "message": "Better done keeping this as a string and appending the build id if present. That way there aren\u0027t two copies of the same print code.",
+      "range": {
+        "startLine": 516,
+        "startChar": 6,
+        "endLine": 516,
+        "endChar": 44
+      },
+      "revId": "24529edb2b0efe44ba34cd242708e9f40b3a09f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa18cc3e_73f71f74",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 22
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-06-27T00:52:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c150965_bfac64dd",
       "range": {
         "startLine": 516,
         "startChar": 6,
