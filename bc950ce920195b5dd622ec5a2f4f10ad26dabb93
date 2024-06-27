@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f31552a_c50f843e",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-27T12:27:24Z",
+      "side": 1,
+      "message": "reporting, but ignoring errors?!",
+      "revId": "bc950ce920195b5dd622ec5a2f4f10ad26dabb93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

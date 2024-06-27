@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c2117655_1efb39d5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-27T12:27:24Z",
+      "side": 1,
+      "message": "don\u0027t tell me, tell posterity... if we don\u0027t document it, why implement it?",
+      "parentUuid": "4d6c5e46_746ee50b",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "97024764_4afc063c",
         "filename": "debuggerd/handler/debuggerd_handler.cpp",
         "patchSetId": 11
@@ -313,6 +331,24 @@
       "side": 1,
       "message": "Yes, currently we do.",
       "parentUuid": "14fd5cd2_ca328451",
+      "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "902597f9_c38f5233",
+        "filename": "debuggerd/test_permissive_mte/mte_crash.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-27T12:27:24Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6560dc8d_132c1c96",
       "revId": "00b5ee83ef8861c0c5b9838a090cd8ddd50e4a78",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
