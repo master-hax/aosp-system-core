@@ -72,8 +72,7 @@ TEST(CallStackTest, thread_backtrace) {
 TEST(CallStackTest, log_stack) {
     android::CallStack::logStack("callstack_test");
     auto logger_list = android_logger_list_open(android_name_to_log_id("main"),
-                                                ANDROID_LOG_NONBLOCK,
-                                                10000 /* tail */, getpid());
+                                                ANDROID_LOG_NONBLOCK, 1000, getpid());
     ASSERT_NE(nullptr, logger_list);
     std::string log;
     while (true) {
