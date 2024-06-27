@@ -88,6 +88,24 @@
       "parentUuid": "96a23788_89e88669",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4308e7e_42a6db04",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-06-27T11:24:00Z",
+      "side": 1,
+      "message": "\u003e We never raised error for this scenario. It always happened silently and get ignored.\n\nwhich is why the config didn\u0027t get fixed...\n\n\u003e We will raise error from now on and I am manually exempting modules that are failing.\n\n...which means this module won\u0027t see errors even if _all_ their testing fails.\n\nthat\u0027s _worse_.\n\n\u003e However I agree that these module configs should be fixed.\n\nyes, but _only_ that. this change shouldn\u0027t have been made --- this is a bad workaround, that potentially causes worse problems in future, no?",
+      "parentUuid": "73d5a7d8_9b1c2db4",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
