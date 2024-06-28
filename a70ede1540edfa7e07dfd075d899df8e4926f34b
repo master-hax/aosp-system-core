@@ -16,6 +16,24 @@
       "message": "The name here (and of the filename) is confusing since a device launching on Android 13+ will hit this path. Something like \"boot-snapuserd-is-system\" would be better.",
       "revId": "a70ede1540edfa7e07dfd075d899df8e4926f34b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75d44180_e0ce0a14",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-06-28T22:36:24Z",
+      "side": 1,
+      "message": "Renamed the function.\n\nI have left the filename as-is as we still make daemon transitions.",
+      "parentUuid": "e61b4721_eec53071",
+      "revId": "a70ede1540edfa7e07dfd075d899df8e4926f34b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
