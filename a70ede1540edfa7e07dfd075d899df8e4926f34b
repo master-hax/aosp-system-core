@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e61b4721_eec53071",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-06-28T20:30:29Z",
+      "side": 1,
+      "message": "The name here (and of the filename) is confusing since a device launching on Android 13+ will hit this path. Something like \"boot-snapuserd-is-system\" would be better.",
+      "revId": "a70ede1540edfa7e07dfd075d899df8e4926f34b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
