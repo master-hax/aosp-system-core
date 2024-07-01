@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2f8ff046_08393491",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-07-01T20:41:49Z",
+      "side": 1,
+      "message": "Okay, I guess we don\u0027t need to add it now. So instead we could add another callback to the tombstone printer:\n```\nusing SymbolizeCallback \u003d std::function\u003cvoid(BacktraceFrame\u0026 frame)\u003e;\nbool tombstone_proto_to_text(const Tombstone\u0026 tombstone, CallbackType callback, SymbolizeCallback symbolize);\n```\nThen pbtombstone can pass in a callback that does the symbolization and debuggerd can pass in a no-op. This API design won\u0027t support symbolization of multiple stack trace frames in parallel but we can address that if that ever gets implemented.",
+      "parentUuid": "9247a8db_9b52a654",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e50436d6_12980e51",
         "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
         "patchSetId": 4
