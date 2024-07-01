@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30e676ea_7f1e3522",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 27
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-01T20:02:39Z",
+      "side": 1,
+      "message": "This function isn\u0027t used anymore correct?",
+      "range": {
+        "startLine": 209,
+        "startChar": 5,
+        "endLine": 209,
+        "endChar": 23
+      },
+      "revId": "f50c17efc237f63200172cbfc894b237c9f2472e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
