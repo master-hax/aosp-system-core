@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "219cc7f6_e3cc321a",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-01T20:28:08Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it be better to only include this to be compiled for host? Since it will never yield information in any other case.",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 47
+      },
+      "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

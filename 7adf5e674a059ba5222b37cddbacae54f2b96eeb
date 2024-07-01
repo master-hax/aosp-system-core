@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9247a8db_9b52a654",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-01T20:28:08Z",
+      "side": 1,
+      "message": "Sorry about taking so much time. Putting it in the tombstone, where it\u0027s only going to be present in very rare circumstances feels like the wrong thing to do. It\u0027s going to confuse people who grab it and see that it\u0027s always empty. Maybe all of this code should be moved into the pbtombstone tool.",
+      "parentUuid": "23fc00e6_9d653cb5",
+      "revId": "7adf5e674a059ba5222b37cddbacae54f2b96eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e50436d6_12980e51",
         "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_symbolize.h",
         "patchSetId": 4
