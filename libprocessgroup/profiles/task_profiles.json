@@ -76,6 +76,11 @@
       "Name": "FreezerState",
       "Controller": "freezer",
       "File": "cgroup.freeze"
+    },
+    {
+      "Name": "InputLatencySensitive",
+      "Controller": "cpu",
+      "File": "cpu.input.latency_sensitive"
     }
   ],
 
@@ -619,6 +624,19 @@
           {
             "Controller": "memory",
             "Path": "system"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InputLowLatencyPriority",
+      "Actions": [
+        {
+          "Name": "SetAttribute",
+          "Params":
+          {
+            "Name": "InputLatencySensitive",
+            "Value": "1"
           }
         }
       ]
