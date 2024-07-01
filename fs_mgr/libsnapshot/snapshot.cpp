@@ -2185,18 +2185,24 @@ bool SnapshotManager::MarkSnapuserdFromSystem() {
  *
  */
 bool SnapshotManager::IsLegacySnapuserdPostReboot() {
-    if (is_legacy_snapuserd_.has_value() && is_legacy_snapuserd_.value() == true) {
-        auto slot = GetCurrentSlot();
-        if (slot == Slot::Target) {
-            // If this marker is present, then daemon can handle userspace
-            // snapshots; also, it indicates that the vendor partition was
-            // updated from Android 12.
-            if (access(GetSnapuserdFromSystemPath().c_str(), F_OK) == 0) {
-                return false;
-            }
+    auto slot = GetCurrentSlot();
+    if (slot == Slot::Target) {
+        /*
+            If this marker is present, the daemon can handle userspace snapshots.
+            During post-OTA reboot, this implies that the vendor partition is
+            Android 13 or higher. If the snapshots were created on an
+            Android 12 vendor, this means the vendor partition has been updated.
+        */
+        if (access(GetSnapuserdFromSystemPath().c_str(), F_OK) == 0) {
+            is_snapshot_userspace_ = true;
+            return false;
+        }
+        // If the marker isn't present and if the vendor is still in Android 12
+        if (is_legacy_snapuserd_.has_value() && is_legacy_snapuserd_.value() == true) {
             return true;
         }
     }
+
     return false;
 }
 
