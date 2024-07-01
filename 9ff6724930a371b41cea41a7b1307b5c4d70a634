@@ -46,6 +46,30 @@
       },
       "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccc08ee5_d2043de7",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-01T20:52:36Z",
+      "side": 1,
+      "message": "It feels like a potential security issue since it\u0027s execing llvm-symbolizer. I don\u0027t know if it could be used to elevate privileges, but this is definitely something that could cause problems.",
+      "parentUuid": "0aa68d62_962717da",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 47
+      },
+      "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
