@@ -52,6 +52,23 @@
       "parentUuid": "54acb8cc_11fe4bdd",
       "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e225409_56e16a8e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-02T00:11:34Z",
+      "side": 1,
+      "message": "Is this still needed? It looks like the new clang doesn\u0027t require this change.",
+      "revId": "b11c4c7b455fe3c87cc002f57ebf9b6a373953a5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
