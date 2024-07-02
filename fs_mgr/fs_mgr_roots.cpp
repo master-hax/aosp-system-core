@@ -27,6 +27,8 @@
 #include "fs_mgr_dm_linear.h"
 #include "fs_mgr_priv.h"
 
+#define MNT_DETACH 2
+
 namespace android {
 namespace fs_mgr {
 
@@ -179,7 +181,7 @@ bool EnsurePathUnmounted(Fstab* fstab, const std::string& path) {
         return true;
     }
 
-    int result = umount(rec->mount_point.c_str());
+    int result = umount2(rec->mount_point.c_str(), MNT_DETACH);
     if (result == -1) {
         PWARNING << "Failed to umount " << rec->mount_point;
         return false;
