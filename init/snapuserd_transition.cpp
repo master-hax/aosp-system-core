@@ -108,6 +108,14 @@ void LaunchFirstStageSnapuserd() {
         LOG(ERROR) << "RemoveTransitionedDaemonIndicator failed";
     }
 
+    // Disable verity prefetching
+    if (!android::base::WriteStringToFile("0",
+                                          "/sys/module/dm_verity/parameters/prefetch_cluster")) {
+        PLOG(ERROR) << "Disabling verity prefetch cluster failed";
+    } else {
+        LOG(INFO) << "Verity prefetching disabled";
+    }
+
     LOG(INFO) << "Relaunched snapuserd with pid: " << pid;
 }
 
