@@ -34,6 +34,24 @@
       "parentUuid": "cb4f5971_2f898dfa",
       "revId": "512393a2244f3d26544242d5725421323fd3cd14",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f77618f6_a86d71fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-07-02T16:07:36Z",
+      "side": 1,
+      "message": "Top-app being defined as only the last-touched foreground app doesn\u0027t sound like the most useful distinction to me with multiple apps displayed at once on multiple/large screens so I\u0027m not opposed to adding a new category. But where are the system_server changes that would use this?",
+      "parentUuid": "8895afbf_38fc344e",
+      "revId": "512393a2244f3d26544242d5725421323fd3cd14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
