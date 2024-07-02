@@ -27,6 +27,8 @@
 #include "fs_mgr_dm_linear.h"
 #include "fs_mgr_priv.h"
 
+#define MNT_DETACH 2
+
 namespace android {
 namespace fs_mgr {
 
