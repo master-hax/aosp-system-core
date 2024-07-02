@@ -664,10 +664,22 @@ sh_binary {
     filename_from_src: true,
 }
 
-phony {
+soong_config_module_type {
+    name: "board_use_recovery_as_boot_phony",
+    module_type: "phony",
+    config_namespace: "ANDROID",
+    bool_variables: ["BOARD_USES_RECOVERY_AS_BOOT"],
+    properties: ["required"],
+}
+
+board_use_recovery_as_boot_phony {
     name: "init_vendor",
-    required: select(soong_config_variable("ANDROID", "BOARD_USES_RECOVERY_AS_BOOT"), {
-        true: [],
-        default: ["init_first_stage"],
-    }),
+    soong_config_variables: {
+        BOARD_USES_RECOVERY_AS_BOOT: {
+            required: [],
+            conditions_default: {
+                required: ["init_first_stage"],
+            },
+        },
+    },
 }
