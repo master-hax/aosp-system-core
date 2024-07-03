@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90a53e5f_ca5d7da4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-07-03T19:31:26Z",
+      "side": 1,
+      "message": "We don\u0027t want to complicate the loading process by introducing additional files. Vendors can already override system profiles using vendor profiles file, so please use them instead of adding more complexity. See https://b.corp.google.com/issues/348551443#comment6",
+      "revId": "2f16a0a8472f2ed94582ee75c50b951c96b4f4bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
