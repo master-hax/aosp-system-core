@@ -94,6 +94,30 @@
       },
       "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5909043e_06e52e63",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-03T01:52:11Z",
+      "side": 1,
+      "message": "The problem is that this code would now exist as a ROP target. Even though it\u0027s not reachable, it feels very dangerous to leave it since it\u0027s in every single process.",
+      "parentUuid": "1467bdd8_dee464db",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 47
+      },
+      "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
