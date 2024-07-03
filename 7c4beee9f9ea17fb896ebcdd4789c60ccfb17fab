@@ -69,6 +69,40 @@
       "parentUuid": "9d580b91_b7635367",
       "revId": "7c4beee9f9ea17fb896ebcdd4789c60ccfb17fab",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "758579fe_1880351c",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2024-07-03T12:18:08Z",
+      "side": 1,
+      "message": "We should probably use `ASSERT_TRUE` here.  If `region1` is null, then our `memcpy` below will crash.  When a unit test crashes, it can take more time for folks to figure out what\u0027s going on.  If we halt the test with an ASSERT failure instead, it\u0027s much more immediately clear to folks where the issue is.",
+      "revId": "7c4beee9f9ea17fb896ebcdd4789c60ccfb17fab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcd4b952_24854474",
+        "filename": "libcutils/ashmem_base_test.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2024-07-03T12:18:08Z",
+      "side": 1,
+      "message": "Same comment about using `ASSERT_TRUE`, due to the `memcmp` usage below.",
+      "revId": "7c4beee9f9ea17fb896ebcdd4789c60ccfb17fab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
