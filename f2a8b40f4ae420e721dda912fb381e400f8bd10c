@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5afcbb6_f0c19d8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1069543
+      },
+      "writtenOn": "2024-07-03T23:21:47Z",
+      "side": 1,
+      "message": "Sid, this is a totally bogus patch, but we somehow need to express a dependency on \"kernel-lifetimes.xml\" to trigger copying the prebuilt. Since I expect it to be consumed by libvintf, that\u0027s probably the right place to express the dependency. Not sure where you are planning to consume the approved builds XML/JSON - perhaps vintf? Or a new library?\n\nAnyway, this patch should be replaced by a proper dependency.",
+      "revId": "f2a8b40f4ae420e721dda912fb381e400f8bd10c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
