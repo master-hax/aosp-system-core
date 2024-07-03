@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "97427cce_68749c2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2024-07-03T03:08:33Z",
+      "side": 1,
+      "message": "This is a new feature request, so WM team will help implement that part, and the feature will complete with this change.",
+      "parentUuid": "f77618f6_a86d71fb",
+      "revId": "512393a2244f3d26544242d5725421323fd3cd14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9baedfc4_20e45902",
         "filename": "libprocessgroup/profiles/task_profiles.json",
         "patchSetId": 1
@@ -67,6 +85,30 @@
       "writtenOn": "2024-07-02T16:08:59Z",
       "side": 1,
       "message": "Where are these new profiles being used? If only from vendor-specific code then they should be defined as vendor-specific task profiles. If they are used by Android framework then please point me to the patch that adds the usage.",
+      "range": {
+        "startLine": 705,
+        "startChar": 15,
+        "endLine": 705,
+        "endChar": 38
+      },
+      "revId": "512393a2244f3d26544242d5725421323fd3cd14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ce245d3_a1b19455",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 705,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2024-07-03T03:08:33Z",
+      "side": 1,
+      "message": "This is a new feature request, so WM team will help implement the change.",
+      "parentUuid": "9baedfc4_20e45902",
       "range": {
         "startLine": 705,
         "startChar": 15,
