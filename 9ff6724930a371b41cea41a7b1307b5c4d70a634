@@ -166,6 +166,30 @@
       },
       "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9051cea7_ddec639f",
+        "filename": "debuggerd/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-07-03T02:04:15Z",
+      "side": 1,
+      "message": "Currently pbtombstone is built only for the device. My other change would make it build for both the host and the device. I would be happy in principle with not building it for the device, but I don\u0027t know whether people have started using it on the device (e.g. in apps).",
+      "parentUuid": "dc28629e_4652dc3f",
+      "range": {
+        "startLine": 210,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 47
+      },
+      "revId": "9ff6724930a371b41cea41a7b1307b5c4d70a634",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
