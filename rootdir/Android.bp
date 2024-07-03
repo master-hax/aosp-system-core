@@ -41,6 +41,7 @@ prebuilt_etc {
         "platform-bootclasspath",
         "init.boringssl.zygote64.rc",
         "init.boringssl.zygote64_32.rc",
+	"kernel-lifetimes.xml",
     ],
 }
 
