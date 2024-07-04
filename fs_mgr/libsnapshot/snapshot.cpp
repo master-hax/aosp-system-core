@@ -3955,16 +3955,56 @@ bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callba
         // We allow the wipe to continue, because if we can't mount /metadata,
         // it is unlikely the device would have booted anyway. If there is no
         // metadata partition, then the device predates Virtual A/B.
+        LOG(INFO) << "/metadata not found; allowing wipe.";
         return true;
     }
 
-    // Check this early, so we don't accidentally start trying to populate
-    // the state file in recovery. Note we don't call GetUpdateState since
-    // we want errors in acquiring the lock to be propagated, instead of
-    // returning UpdateState::None.
-    auto state_file = GetStateFilePath();
-    if (access(state_file.c_str(), F_OK) != 0 && errno == ENOENT) {
-        return true;
+    // This could happen if /metadata mounted but there is no filesystem
+    // structure. Weird, but we have to assume there's no OTA pending, and
+    // thus we let the wipe proceed.
+    UpdateState state;
+    {
+        auto lock = LockExclusive();
+        if (!lock) {
+            LOG(ERROR) << "Unable to determine update state; allowing wipe.";
+            return true;
+        }
+
+        state = ReadUpdateState(lock.get());
+        LOG(INFO) << "Update state before wipe: " << state << "; slot: " << GetCurrentSlot()
+                  << "; suffix: " << device_->GetSlotSuffix();
+    }
+
+    switch (state) {
+        case UpdateState::None:
+        case UpdateState::Initiated:
+            LOG(INFO) << "Wipe is not impacted by update state; allowing wipe.";
+            return true;
+        case UpdateState::Unverified:
+            if (GetCurrentSlot() != Slot::Target) {
+                LOG(INFO) << "Wipe is not impacted by rolled back update; allowing wipe";
+                return true;
+            }
+            if (!HasForwardMergeIndicator()) {
+                auto slot_number = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
+
+                // We're not allowed to forward merge, so forcefully rollback the
+                // slot switch.
+                LOG(INFO) << "Allowing wipe due to lack of forward merge indicator; reverting to "
+                             "old slot since update will be deleted.";
+                device_->SetSlotAsUnbootable(slot_number);
+                return true;
+            }
+
+            // Forward merge indicator means we have to mount snapshots and try to merge.
+            LOG(INFO) << "Forward merge indicator is present.";
+            break;
+        case UpdateState::MergeNeedsReboot:
+        case UpdateState::Cancelled:
+            LOG(INFO) << "Unexpected update state in recovery; allowing wipe.";
+            return true;
+        default:
+            break;
     }
 
     auto slot_number = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
@@ -3981,11 +4021,7 @@ bool SnapshotManager::HandleImminentDataWipe(const std::function<void()>& callba
         return true;
     };
 
-    in_factory_data_reset_ = true;
-    UpdateState state =
-            ProcessUpdateStateOnDataWipe(true /* allow_forward_merge */, process_callback);
-    in_factory_data_reset_ = false;
-
+    state = ProcessUpdateStateOnDataWipe(process_callback);
     if (state == UpdateState::MergeFailed) {
         return false;
     }
@@ -4038,58 +4074,40 @@ bool SnapshotManager::FinishMergeInRecovery() {
     return true;
 }
 
-UpdateState SnapshotManager::ProcessUpdateStateOnDataWipe(bool allow_forward_merge,
-                                                          const std::function<bool()>& callback) {
-    auto slot_number = SlotNumberForSlotSuffix(device_->GetSlotSuffix());
-    UpdateState state = ProcessUpdateState(callback);
-    LOG(INFO) << "Update state in recovery: " << state;
-    switch (state) {
-        case UpdateState::MergeFailed:
-            LOG(ERROR) << "Unrecoverable merge failure detected.";
-            return state;
-        case UpdateState::Unverified: {
-            // If an OTA was just applied but has not yet started merging:
-            //
-            // - if forward merge is allowed, initiate merge and call
-            // ProcessUpdateState again.
-            //
-            // - if forward merge is not allowed, we
-            // have no choice but to revert slots, because the current slot will
-            // immediately become unbootable. Rather than wait for the device
-            // to reboot N times until a rollback, we proactively disable the
-            // new slot instead.
-            //
-            // Since the rollback is inevitable, we don't treat a HAL failure
-            // as an error here.
-            auto slot = GetCurrentSlot();
-            if (slot == Slot::Target) {
-                if (allow_forward_merge &&
-                    access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0) {
-                    LOG(INFO) << "Forward merge allowed, initiating merge now.";
-
-                    if (!InitiateMerge()) {
-                        LOG(ERROR) << "Failed to initiate merge on data wipe.";
-                        return UpdateState::MergeFailed;
-                    }
-                    return ProcessUpdateStateOnDataWipe(false /* allow_forward_merge */, callback);
+UpdateState SnapshotManager::ProcessUpdateStateOnDataWipe(const std::function<bool()>& callback) {
+    while (true) {
+        UpdateState state = ProcessUpdateState(callback);
+        LOG(INFO) << "Processed updated state in recovery: " << state;
+        switch (state) {
+            case UpdateState::MergeFailed:
+                LOG(ERROR) << "Unrecoverable merge failure detected.";
+                return state;
+            case UpdateState::Unverified: {
+                // Unverified was already handled earlier, in HandleImminentDataWipe,
+                // but it will fall through here if a forward merge is required.
+                //
+                // If InitiateMerge fails, we early return. If it succeeds, then we
+                // are guaranteed that the next call to ProcessUpdateState will not
+                // return Unverified.
+                if (!InitiateMerge()) {
+                    LOG(ERROR) << "Failed to initiate merge on data wipe.";
+                    return UpdateState::MergeFailed;
                 }
-
-                LOG(ERROR) << "Reverting to old slot since update will be deleted.";
-                device_->SetSlotAsUnbootable(slot_number);
-            } else {
-                LOG(INFO) << "Booting from " << slot << " slot, no action is taken.";
+                continue;
             }
-            break;
+            case UpdateState::MergeNeedsReboot:
+                // We shouldn't get here, because nothing is depending on
+                // logical partitions.
+                LOG(ERROR) << "Unexpected merge-needs-reboot state in recovery.";
+                return state;
+            default:
+                return state;
         }
-        case UpdateState::MergeNeedsReboot:
-            // We shouldn't get here, because nothing is depending on
-            // logical partitions.
-            LOG(ERROR) << "Unexpected merge-needs-reboot state in recovery.";
-            break;
-        default:
-            break;
     }
-    return state;
+}
+
+bool SnapshotManager::HasForwardMergeIndicator() {
+    return access(GetForwardMergeIndicatorPath().c_str(), F_OK) == 0;
 }
 
 bool SnapshotManager::EnsureNoOverflowSnapshot(LockedFile* lock) {
