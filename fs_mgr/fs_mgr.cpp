@@ -152,6 +152,19 @@ static bool is_f2fs(const std::string& fs_type) {
     return fs_type == "f2fs";
 }
 
+static bool get_encrypt_status() {
+  std::string value;
+  std::string file_patch = "/metadata/vold/metadata_encryption/encrypt_file";
+  if (!android::base::ReadFileToString(file_patch, &value)) {
+    return false;
+  }
+
+  if (value == "1") {
+    return true;
+  }
+  return false;
+}
+
 static std::string realpath(const std::string& blk_device) {
     std::string real_path;
     if (!Realpath(blk_device, &real_path)) {
@@ -1625,6 +1638,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         }
 
         // mount(2) returned an error, handle the encryptable/formattable case.
+        bool encrypt_status = get_encrypt_status();
         if (mount_errno != EBUSY && mount_errno != EACCES &&
             should_use_metadata_encryption(attempted_entry)) {
             if (!call_vdc({"cryptfs", "mountFstab", attempted_entry.blk_device,
@@ -1632,7 +1646,27 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                            current_entry.fs_mgr_flags.is_zoned ? "true" : "false",
                            android::base::Join(current_entry.user_devices, ' ')},
                           nullptr)) {
+              if ((current_entry.mount_point == "/data") &&
+                  (current_entry.fs_type == "f2fs") && !encrypt_status) {
+                LERROR << "Maybe encryptFstab sudden power off, retry again";
+                encryptable = FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED;
+                set_type_property(encryptable);
+
+                if (!call_vdc(
+                        {"cryptfs", "encryptFstab", current_entry.blk_device,
+                         current_entry.mount_point, "true",
+                         current_entry.fs_type, current_entry.zoned_device},
+                        nullptr)) {
+                  LERROR << "Encryption failed";
+                  ++error_count;
+                } else {
+                  userdata_mounted = true;
+                  continue;
+                }
+              } else {
                 ++error_count;
+              }
+
             } else if (current_entry.mount_point == "/data") {
                 userdata_mounted = true;
             }
