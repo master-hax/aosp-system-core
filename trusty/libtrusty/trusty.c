@@ -120,18 +120,24 @@ static int tipc_vsock_connect(const char* type_cid_port_str, const char* srv_nam
         close(fd);
         return ret < 0 ? ret : -1;
     }
+
     /*
-     * TODO: Current vsock tipc bridge in trusty expects a port name in the
-     * first packet. We need to replace this with a protocol that also does DICE
-     * based authentication.
+     * TODO: get the base port from libsysprop instead of using hardcoded value
      */
-    ret = TEMP_FAILURE_RETRY(write(fd, srv_name, strlen(srv_name)));
-    if (ret != strlen(srv_name)) {
-        ret = -errno;
-        ALOGE("%s: vsock %ld:%ld: failed to send tipc service name \"%s\" (err=%d)\n", __func__,
-              cid, port, srv_name, errno);
-        close(fd);
-        return ret < 0 ? ret : -1;
+    if (port == 4096) {
+        /*
+         * TODO: Current vsock tipc bridge in trusty expects a port name in the
+         * first packet. We need to replace this with a protocol that also does DICE
+         * based authentication.
+         */
+        ret = TEMP_FAILURE_RETRY(write(fd, srv_name, strlen(srv_name)));
+        if (ret != strlen(srv_name)) {
+            ret = -errno;
+            ALOGE("%s: vsock %ld:%ld: failed to send tipc service name \"%s\" (err=%d)\n", __func__,
+                  cid, port, srv_name, errno);
+            close(fd);
+            return ret < 0 ? ret : -1;
+        }
     }
     /*
      * Work around lack of seq packet support. Read a status byte to prevent
