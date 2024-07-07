@@ -170,14 +170,15 @@ impl TipcChannel {
             thread::sleep(time::Duration::from_secs(5));
         }
         trace!("connected");
-        // TODO: Current vsock tipc bridge in trusty expects a port name in the
-        // first packet. We need to replace this with a protocol that also does DICE
-        // based authentication.
         // SAFETY: s is a valid file descriptor because it came from socket::socket.
         let mut channel = Self(File::from(s));
-        channel.send(service.as_bytes())?;
-        trace!("sent tipc port name");
-
+        if port == 4096 {
+            // TODO: Current vsock tipc bridge in trusty expects a port name in the
+            // first packet. We need to replace this with a protocol that also does DICE
+            // based authentication.
+            channel.send(service.as_bytes())?;
+            trace!("sent tipc port name");
+        }
         // Work around lack of seq packet support. Read a status byte to prevent
         // the caller from sending more data until srv_name has been read.
         let mut status = [0; 1];
