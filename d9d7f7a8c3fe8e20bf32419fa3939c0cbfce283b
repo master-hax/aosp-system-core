@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "35b5d4b6_cf9c75dc",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-07-08T17:57:54Z",
+      "side": 1,
+      "message": "There are many calls, but I would be very surprised if we ever saw this message. I expect it\u0027s the poll at the end that\u0027s timing out, but I want to confirm that. I thought about what you\u0027re suggesting, but the probability of needing that seems low enough that I\u0027m willing to tolerate another iteration if we get there.",
+      "parentUuid": "c9f5911b_3200e5d0",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b6eb3e88_5b14111e",
         "filename": "debuggerd/client/debuggerd_client.cpp",
         "patchSetId": 1
@@ -49,6 +67,24 @@
       "writtenOn": "2024-07-08T11:25:51Z",
       "side": 1,
       "message": "isn\u0027t this weird? we\u0027re saying \"if it\u0027s already expired, wait forever\"?\n\nshould this entire block be `if (timeout_ms \u003c 0) timeout_ms \u003d 0;`? (that is \"if we\u0027d say \u0027wait forever\u0027, just return immediately anyway, and let the regular poll() timeout expired code below handle the timeout\".)",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94f30a46_0ea0c0cb",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-07-08T17:57:54Z",
+      "side": 1,
+      "message": "This looks OK, though a bit baroque, to me. \u0027remaining_ms\u0027 at this point is really the poll timeout argument, timeout_ms is purely an input to this function, with \"0 or negative\" interpreted as \"wait forever\". So it\u0027s just saying that if we were asked to wait forever, we should pass -1 to poll. And it\u0027s preventing us from executing the following (bogus in that case) check for whether we already timed out. We could clean it up, but ...",
+      "parentUuid": "b6eb3e88_5b14111e",
       "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
