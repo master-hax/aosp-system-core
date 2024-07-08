@@ -13,7 +13,7 @@ on post-fs-data
     # Storage proxy
     restart storageproxyd
 
-service storageproxyd /vendor/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev:-/dev/trusty-ipc-dev0} \
+service storageproxyd /vendor/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev.storage.proxy:-/dev/trusty-ipc-dev0} \
         -r /dev/socket/rpmb_mock -p /data/vendor/ss -t sock
     class early_hal
     user system
