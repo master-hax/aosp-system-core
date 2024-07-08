@@ -20,7 +20,6 @@
 #include <android-base/scopeguard.h>
 #include <android-base/strings.h>
 
-#include "android-base/properties.h"
 #include "snapuserd_core.h"
 
 namespace android {
@@ -105,9 +104,7 @@ bool UpdateVerify::VerifyBlocks(const std::string& partition_name,
     }
 
     loff_t file_offset = offset;
-    auto verify_block_size = android::base::GetUintProperty<uint>("ro.virtual_ab.verify_block_size",
-                                                                  kBlockSizeVerify);
-    const uint64_t read_sz = verify_block_size;
+    const uint64_t read_sz = kBlockSizeVerify;
 
     void* addr;
     ssize_t page_size = getpagesize();
@@ -133,7 +130,7 @@ bool UpdateVerify::VerifyBlocks(const std::string& partition_name,
         }
 
         bytes_read += to_read;
-        file_offset += (skip_blocks * verify_block_size);
+        file_offset += (skip_blocks * kBlockSizeVerify);
         if (file_offset >= dev_sz) {
             break;
         }
@@ -187,9 +184,7 @@ bool UpdateVerify::VerifyPartition(const std::string& partition_name,
      * latency.
      */
     int num_threads = kMinThreadsToVerify;
-    auto verify_threshold_size = android::base::GetUintProperty<uint>(
-            "ro.virtual_ab.verify_threshold_size", kThresholdSize);
-    if (dev_sz > verify_threshold_size) {
+    if (dev_sz > kThresholdSize) {
         num_threads = kMaxThreadsToVerify;
     }
 
@@ -197,13 +192,11 @@ bool UpdateVerify::VerifyPartition(const std::string& partition_name,
     off_t start_offset = 0;
     const int skip_blocks = num_threads;
 
-    auto verify_block_size =
-            android::base::GetUintProperty("ro.virtual_ab.verify_block_size", kBlockSizeVerify);
     while (num_threads) {
         threads.emplace_back(std::async(std::launch::async, &UpdateVerify::VerifyBlocks, this,
                                         partition_name, dm_block_device, start_offset, skip_blocks,
                                         dev_sz));
-        start_offset += verify_block_size;
+        start_offset += kBlockSizeVerify;
         num_threads -= 1;
         if (start_offset >= dev_sz) {
             break;
