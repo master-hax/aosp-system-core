@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66b3f8a8_c22bc7e5",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-08T11:25:51Z",
+      "side": 1,
+      "message": "is this actually going to help you in practice? there are a _lot_ of calls to update_timeout later...",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6eb3e88_5b14111e",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-08T11:25:51Z",
+      "side": 1,
+      "message": "isn\u0027t this weird? we\u0027re saying \"if it\u0027s already expired, wait forever\"?\n\nshould this entire block be `if (timeout_ms \u003c 0) timeout_ms \u003d 0;`? (that is \"if we\u0027d say \u0027wait forever\u0027, just return immediately anyway, and let the regular poll() timeout expired code below handle the timeout\".)",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
