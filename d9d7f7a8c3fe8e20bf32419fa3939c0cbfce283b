@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "94db1e61_49dfbbfa",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-07-08T18:19:17Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "35b5d4b6_cf9c75dc",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b6eb3e88_5b14111e",
@@ -103,6 +121,24 @@
       "side": 1,
       "message": "oh, yeah, i didn\u0027t notice that the comparison was on the function argument `timeout_ms` and not `remaining_ms`! that makes me dislike this even more, but, sure, \"not a regression\"...",
       "parentUuid": "94f30a46_0ea0c0cb",
+      "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f497a39b_0e2326f4",
+        "filename": "debuggerd/client/debuggerd_client.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1042828
+      },
+      "writtenOn": "2024-07-08T18:19:17Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "033ea009_089a67a1",
       "revId": "d9d7f7a8c3fe8e20bf32419fa3939c0cbfce283b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
