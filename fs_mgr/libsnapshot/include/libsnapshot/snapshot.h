@@ -299,6 +299,8 @@ class ISnapshotManager {
 
     // Return the associated ISnapshotMergeStats instance. Never null.
     virtual ISnapshotMergeStats* GetSnapshotMergeStatsInstance() = 0;
+
+    virtual void NukeExistingSnapshotsIfRequired() = 0;
 };
 
 class SnapshotManager final : public ISnapshotManager {
@@ -353,6 +355,7 @@ class SnapshotManager final : public ISnapshotManager {
     void UpdateCowStats(ISnapshotMergeStats* stats) override;
     MergeFailureCode ReadMergeFailureCode() override;
     bool InitiateMerge() override;
+    void NukeExistingSnapshotsIfRequired() override;
     UpdateState ProcessUpdateState(const std::function<bool()>& callback = {},
                                    const std::function<bool()>& before_cancel = {}) override;
     UpdateState GetUpdateState(double* progress = nullptr) override;

@@ -24,6 +24,7 @@ namespace android::snapshot {
 class MockSnapshotManager : public ISnapshotManager {
   public:
     MOCK_METHOD(bool, BeginUpdate, (), (override));
+    MOCK_METHOD(void, NukeExistingSnapshotsIfRequired, (), (override));
     MOCK_METHOD(bool, CancelUpdate, (), (override));
     MOCK_METHOD(bool, FinishedSnapshotWrites, (bool wipe), (override));
     MOCK_METHOD(void, UpdateCowStats, (ISnapshotMergeStats * stats), (override));

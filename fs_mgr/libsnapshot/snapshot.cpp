@@ -258,6 +258,48 @@ bool SnapshotManager::TryCancelUpdate(bool* needs_merge) {
     return true;
 }
 
+static bool RemoveFileIfExists(const std::string& path) {
+    std::string message;
+    if (!android::base::RemoveFileIfExists(path, &message)) {
+        LOG(ERROR) << "Remove failed: " << path << ": " << message;
+        return false;
+    }
+    return true;
+}
+
+void SnapshotManager::NukeExistingSnapshotsIfRequired() {
+    if (!device_->IsRecovery()) {
+        LOG(ERROR) << __func__ << " is only allowed in recovery.";
+        return;
+    }
+    auto mount = EnsureMetadataMounted();
+    if (!mount || !mount->HasDevice()) {
+        return;
+    }
+    if (!CancelUpdate()) {
+        // Couldn't cancel as merge is in-progress
+        auto lock = LockExclusive();
+        // TODO: This isn't correct yet.. This should delete all the Device
+        // mapper mapped snapshot and COW devices explicitly.. 
+        if (!RemoveAllSnapshots(lock.get())) {
+            LOG(ERROR) << "RemoveSnapshot failed";
+        }
+        // Just remove the snapshot related files
+        std::vector<std::string> files = {
+          GetSnapshotBootIndicatorPath(),          GetRollbackIndicatorPath(),
+          GetForwardMergeIndicatorPath(),          GetOldPartitionMetadataPath(),
+          GetBootSnapshotsWithoutSlotSwitchPath(),
+        };
+        for (const auto& file : files) {
+          RemoveFileIfExists(file);
+        }
+
+        // If this fails, we'll keep trying to remove the update state (as the
+        // device reboots or starts a new update) until it finally succeeds.
+        WriteUpdateState(lock.get(), UpdateState::None);
+    }
+}
+
 std::string SnapshotManager::ReadUpdateSourceSlotSuffix() {
     auto boot_file = GetSnapshotBootIndicatorPath();
     std::string contents;
@@ -285,15 +327,6 @@ std::string SnapshotManager::GetSnapshotSlotSuffix() {
         default:
             return device_->GetOtherSlotSuffix();
     }
-}
-
-static bool RemoveFileIfExists(const std::string& path) {
-    std::string message;
-    if (!android::base::RemoveFileIfExists(path, &message)) {
-        LOG(ERROR) << "Remove failed: " << path << ": " << message;
-        return false;
-    }
-    return true;
 }
 
 bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock, const std::function<bool()>& prolog) {

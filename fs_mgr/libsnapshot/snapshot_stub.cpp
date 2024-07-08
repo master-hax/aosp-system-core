@@ -33,6 +33,11 @@ bool SnapshotManagerStub::BeginUpdate() {
     return false;
 }
 
+void SnapshotManagerStub::NukeExistingSnapshotsIfRequired() {
+    LOG(ERROR) << __FUNCTION__ << " should never be called.";
+    return;
+}
+
 bool SnapshotManagerStub::CancelUpdate() {
     LOG(ERROR) << __FUNCTION__ << " should never be called.";
     return false;

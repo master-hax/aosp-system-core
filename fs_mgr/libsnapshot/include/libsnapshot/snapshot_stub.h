@@ -26,6 +26,7 @@ class SnapshotManagerStub : public ISnapshotManager {
 
     // ISnapshotManager overrides.
     bool BeginUpdate() override;
+    void NukeExistingSnapshotsIfRequired() override;
     bool CancelUpdate() override;
     bool FinishedSnapshotWrites(bool wipe) override;
     void UpdateCowStats(ISnapshotMergeStats* stats) override;
