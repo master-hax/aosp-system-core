@@ -47,7 +47,7 @@ using namespace android::dm;
 
 // We cap the maximum number of extents as a robustness measure.
 static constexpr uint32_t kMaxExtents = 50000;
-
+static constexpr uint64_t kWriteZeroSizes = 1 * 1024 * 1024;
 // TODO: Fallback to using fibmap if FIEMAP_EXTENT_MERGED is set.
 static constexpr const uint32_t kUnsupportedExtentFlags =
         FIEMAP_EXTENT_UNKNOWN | FIEMAP_EXTENT_UNWRITTEN | FIEMAP_EXTENT_DELALLOC |
@@ -386,27 +386,75 @@ static bool PinFile(int file_fd, const std::string& file_path, uint32_t fs_type)
 static FiemapStatus WriteZeroes(int file_fd, const std::string& file_path, size_t blocksz,
                                 uint64_t file_size,
                                 const std::function<bool(uint64_t, uint64_t)>& on_progress) {
-    auto buffer = std::unique_ptr<void, decltype(&free)>(calloc(1, blocksz), free);
-    if (buffer == nullptr) {
-        LOG(ERROR) << "failed to allocate memory for writing file";
+    /* Modify and optimize direct IO write to fill 0 blocks to improve system memory
+    // auto buffer = std::unique_ptr<void, decltype(&free)>(calloc(1, blocksz), free);
+
+    // if (buffer == nullptr) {
+    //     LOG(ERROR) << "failed to allocate memory for writing file";
+    //     return FiemapStatus::Error();
+    // }
+    */
+    std::unique_ptr<char, decltype(&free)> buffer(nullptr, free);
+
+    char* raw_buffer = nullptr;
+    if (posix_memalign(reinterpret_cast<void**>(&raw_buffer), blocksz, kWriteZeroSizes) != 0) {
+        LOG(ERROR) << "Failed to allocate memory for writing file";
         return FiemapStatus::Error();
+    }
+
+    buffer.reset(raw_buffer);
+
+    memset(buffer.get(), '\0', kWriteZeroSizes);
+
+    int old_flags = fcntl(file_fd, F_GETFL);
+    if (old_flags == -1) {
+        PLOG(ERROR) << "Failed to get file flags for " << file_path;
+        return FiemapStatus::FromErrno(errno);
+    }
+
+    int direct_flags = old_flags | O_DIRECT;
+    if (fcntl(file_fd, F_SETFL, direct_flags) == -1) {
+        PLOG(ERROR) << "Failed to set direct_flags for: " << file_path;
     }
 
     off64_t offset = lseek64(file_fd, 0, SEEK_SET);
     if (offset < 0) {
         PLOG(ERROR) << "Failed to seek at the beginning of : " << file_path;
+        if (fcntl(file_fd, F_SETFL, old_flags) == -1) {
+            PLOG(ERROR) << "Failed to set lseek_old_flags for: " << file_path;
+        }
         return FiemapStatus::FromErrno(errno);
     }
 
     int permille = -1;
     while (offset < file_size) {
-        if (!::android::base::WriteFully(file_fd, buffer.get(), blocksz)) {
+        size_t write_size = (file_size - offset) > kWriteZeroSizes ? kWriteZeroSizes:(file_size - offset);
+        if (write_size < kWriteZeroSizes) {
+            if (write_size > blocksz)
+                write_size = blocksz;
+            else {
+                if (fsync(file_fd)) {
+                    PLOG(ERROR) << "Failed to fsync written file:" << file_path;
+                    return FiemapStatus::FromErrno(errno);
+                }
+
+                if (fcntl(file_fd, F_SETFL, old_flags) == -1) {
+                    PLOG(ERROR) << "Failed to set fsync_old_flags for: " << file_path;
+                    return FiemapStatus::FromErrno(errno);
+                }
+            }
+        }
+
+        if (!::android::base::WriteFully(file_fd, buffer.get(), write_size)) {
             PLOG(ERROR) << "Failed to write" << blocksz << " bytes at offset" << offset
                         << " in file " << file_path;
+            if (fcntl(file_fd, F_SETFL, old_flags) == -1) {
+                PLOG(ERROR) << "Failed to set writeFully_old_flags for: " << file_path;
+            }
             return FiemapStatus::FromErrno(errno);
         }
 
-        offset += blocksz;
+        offset += write_size;
 
         // Don't invoke the callback every iteration - wait until a significant
         // chunk (here, 1/1000th) of the data has been processed.
@@ -417,6 +465,11 @@ static FiemapStatus WriteZeroes(int file_fd, const std::string& file_path, size_
             }
             permille = new_permille;
         }
+    }
+
+    if (fcntl(file_fd, F_SETFL, old_flags) == -1) {
+        PLOG(ERROR) << "Failed to set old_flags for: " << file_path;
+        return FiemapStatus::FromErrno(errno);
     }
 
     if (lseek64(file_fd, 0, SEEK_SET) < 0) {
