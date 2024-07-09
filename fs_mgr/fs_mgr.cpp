@@ -880,7 +880,7 @@ static int __mount(const std::string& source, const std::string& target, const F
     }
     PINFO << __FUNCTION__ << "(source=" << source << source_missing << ",target=" << target
           << target_missing << ",type=" << entry.fs_type << ")=" << ret;
-    if ((ret == 0) && (mountflags & MS_RDONLY) != 0) {
+    if ((ret == 0) && (mountflags & MS_RDONLY) != 0 && strcmp(target.c_str(), "/data")) {
         fs_mgr_set_blk_ro(source);
     }
     if (ret == 0) {
