@@ -34,6 +34,24 @@
       "parentUuid": "38a32a2a_07badc6b",
       "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f82829b_ed5b1d4b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-11T21:21:34Z",
+      "side": 1,
+      "message": "ah, i see...\n\nis any of this actually still needed? why is there nothing for t/u/v? +bowgotsai...",
+      "parentUuid": "b356b50b_e200a3d4",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
