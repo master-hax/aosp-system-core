@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8abbeec2_1ceafd5f",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 664,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T16:11:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2ed4ecde_7e9fb29f",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "78676162_50bf0916",
@@ -35,6 +53,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0ac8928_c2d80610",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T16:11:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "78676162_50bf0916",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "718bfb5f_51874db0",
@@ -48,6 +84,24 @@
       "writtenOn": "2024-07-11T03:45:42Z",
       "side": 1,
       "message": "if (!EnsureImageManager()) can be factored outside of the IsRecovery check.",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "229b1446_9a92ee4e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2008,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T16:11:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "718bfb5f_51874db0",
       "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
