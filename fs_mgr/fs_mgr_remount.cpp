@@ -71,7 +71,8 @@ Options:
                   << R"(
 Options:
     -h --help       this help
-    -R --reboot     disable verity & reboot to facilitate remount
+    -R --reboot     disable verity & reboot to facilitate remount.
+                    If rebooted, return 255.
     -v --verbose    be noisy
     -T --fstab      custom fstab file location
     partition       specific partition(s) (empty does all)
