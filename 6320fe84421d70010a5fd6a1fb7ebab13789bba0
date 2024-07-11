@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed58b2d2_672783b2",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T16:01:04Z",
+      "side": 1,
+      "message": "Is this true for devices with vendor partition that launched post Android 12 ? Or does this strictly mean device launched with 12 -\u003e upgraded past 12",
+      "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
