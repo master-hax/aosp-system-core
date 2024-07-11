@@ -219,6 +219,8 @@ uint64_t GetSize(PartitionUpdate* partition_update);
 
 bool IsVirtualAbEnabled();
 
+bool IsVendorOnAndroidS();
+
 #define SKIP_IF_NON_VIRTUAL_AB()                                                        \
     do {                                                                                \
         if (!IsVirtualAbEnabled()) GTEST_SKIP() << "Test for Virtual A/B devices only"; \
@@ -233,6 +235,21 @@ bool IsVirtualAbEnabled();
     } while (0)
 
 #define RETURN_IF_NON_VIRTUAL_AB() RETURN_IF_NON_VIRTUAL_AB_MSG("")
+
+#define SKIP_IF_VENDOR_ON_ANDROID_S()                                                              \
+    do {                                                                                           \
+        if (IsVendorOnAndroidS()) GTEST_SKIP() << "Skip test as Vendor partition is on Android S"; \
+    } while (0)
+
+#define RETURN_IF_VENDOR_ON_ANDROID_S_MSG(msg) \
+    do {                                       \
+        if (IsVendorOnAndroidS()) {            \
+            std::cerr << (msg);                \
+            return;                            \
+        }                                      \
+    } while (0)
+
+#define RETURN_IF_VENDOR_ON_ANDROID_S() RETURN_IF_VENDOR_ON_ANDROID_S_MSG("")
 
 }  // namespace snapshot
 }  // namespace android

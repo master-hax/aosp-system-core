@@ -27,6 +27,8 @@
 #include <openssl/sha.h>
 #include <payload_consumer/file_descriptor.h>
 
+#include "utility.h"
+
 namespace android {
 namespace snapshot {
 
@@ -211,6 +213,10 @@ uint64_t GetSize(PartitionUpdate* partition_update) {
 
 bool IsVirtualAbEnabled() {
     return android::base::GetBoolProperty("ro.virtual_ab.enabled", false);
+}
+
+bool IsVendorOnAndroidS() {
+    return IsVendorFromAndroid12();
 }
 
 SnapshotTestPropertyFetcher::SnapshotTestPropertyFetcher(
