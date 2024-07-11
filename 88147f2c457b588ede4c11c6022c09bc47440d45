@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d51387c_133d20bd",
+        "filename": "fs_mgr/libsnapshot/test_helpers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T18:26:54Z",
+      "side": 1,
+      "message": "can we call this function directly rather than create a wrapper ?",
+      "range": {
+        "startLine": 219,
+        "startChar": 11,
+        "endLine": 219,
+        "endChar": 32
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "ea6ba8f1_1a648cce",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/test_helpers.cpp",
+              "range": {
+                "startLine": 217,
+                "startChar": 0,
+                "endLine": 221,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "88147f2c457b588ede4c11c6022c09bc47440d45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
