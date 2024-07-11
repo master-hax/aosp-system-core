@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ed4ecde_7e9fb29f",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 664,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-07-11T03:45:42Z",
+      "side": 1,
+      "message": "This should be \"return false\"",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78676162_50bf0916",
+        "filename": "fs_mgr/libfiemap/image_manager.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-07-11T03:45:42Z",
+      "side": 1,
+      "message": "This should be \"return ok\". We don\u0027t want to remove all the metadata, otherwise all the DisableImage calls were for naught.",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "718bfb5f_51874db0",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2008,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-07-11T03:45:42Z",
+      "side": 1,
+      "message": "if (!EnsureImageManager()) can be factored outside of the IsRecovery check.",
+      "revId": "9039983c71c406d430c0977bbe7ed9f50d48a7cb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
