@@ -52,6 +52,24 @@
       "parentUuid": "7e3889e1_66b544f5",
       "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "883a7dfe_62790976",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-07-11T17:25:38Z",
+      "side": 1,
+      "message": "agreed, this would be clearer: \"If this marker is present, the daemon can handle userspace snapshots. During post-OTA reboot, this implies that the vendor partition is Android 13 or higher. If the snapshots were created on an Android 12 vendor, this means the vendor partition has been updated.\"",
+      "parentUuid": "c0900eb1_849b66af",
+      "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
