@@ -68,6 +68,7 @@ int ReadAhead::PrepareNextReadAhead(uint64_t* source_offset, int* pending_ops,
     if (cow_op_merge_size_ != 0) {
         num_ops = std::min(static_cast<int>(cow_op_merge_size_), *pending_ops);
     }
+    LOG(ERROR) << "daniel: cow op merge size: " << cow_op_merge_size_;
 
     int nr_consecutive = 0;
     bool is_ops_present = (!RAIterDone() && num_ops);
