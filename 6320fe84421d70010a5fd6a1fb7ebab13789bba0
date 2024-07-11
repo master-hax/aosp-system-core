@@ -34,6 +34,24 @@
       "parentUuid": "ed58b2d2_672783b2",
       "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0900eb1_849b66af",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-11T17:16:07Z",
+      "side": 1,
+      "message": "okay, I think the comment wording makes it sound like it\u0027s only true for devices that are updated from Android 12",
+      "parentUuid": "7e3889e1_66b544f5",
+      "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
