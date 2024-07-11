@@ -52,6 +52,23 @@
       "parentUuid": "b356b50b_e200a3d4",
       "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0717ccb0_0c7ff01b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-11T21:22:40Z",
+      "side": 1,
+      "message": "(i\u0027ll give you OWNERS anyway, since this seems like a move in the right direction, but i\u0027ll keep my fingers crossed that this can actually be deleted [or at least converted to whatever\u0027s being used for t/u/v!].)",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
