@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af9353de_d7272385",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-07-11T23:57:43Z",
+      "side": 1,
+      "message": "I skipped the clang-format step since it didn\u0027t seem useful.",
+      "revId": "a3a6c8e0525ffdeeb1b773f0d388bbb84eb2f0a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
