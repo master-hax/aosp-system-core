@@ -16,6 +16,24 @@
       "message": "if this is always true, why is it even in the .bp file? doesn\u0027t that mean we can just delete it?\n\n(otherwise this change looks good!)",
       "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b356b50b_e200a3d4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1318142
+      },
+      "writtenOn": "2024-07-11T21:15:16Z",
+      "side": 1,
+      "message": "I think what Nelson means is the value of BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT is synced with BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT so there is no need to check BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT.",
+      "parentUuid": "38a32a2a_07badc6b",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
