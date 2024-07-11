@@ -16,6 +16,201 @@
       "message": "Hi Akilesh,\n\nWe have addressed all the review comments. Could you please have one more look at the CL?",
       "revId": "6a35191e8a0a2cf34a6552a4bd91c7afa6887e44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6eb39485_cf2fab27",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-07-11T04:45:37Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be a bool return wherein all failures are reported.",
+      "fixSuggestions": [
+        {
+          "fixId": "fe340e94_e0b9a38e",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 51,
+                "startChar": 0,
+                "endLine": 53,
+                "endChar": 0
+              },
+              "replacement": "    bool invokeRead();\n    bool invokeWrite();\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 117,
+                "startChar": 0,
+                "endLine": 118,
+                "endChar": 0
+              },
+              "replacement": "bool SnapShotCowFuzzer::invokeRead() {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 121,
+                "startChar": 0,
+                "endLine": 122,
+                "endChar": 0
+              },
+              "replacement": "        return false;\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 155,
+                "startChar": 0,
+                "endLine": 155,
+                "endChar": 0
+              },
+              "replacement": "    return true;\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 157,
+                "startChar": 0,
+                "endLine": 158,
+                "endChar": 0
+              },
+              "replacement": "bool SnapShotCowFuzzer::invokeWrite() {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 161,
+                "startChar": 0,
+                "endLine": 162,
+                "endChar": 0
+              },
+              "replacement": "        return false;\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 238,
+                "startChar": 0,
+                "endLine": 238,
+                "endChar": 0
+              },
+              "replacement": "    return true;\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 241,
+                "startChar": 0,
+                "endLine": 244,
+                "endChar": 0
+              },
+              "replacement": "    if (!invokeWrite()) {\n        return;\n    }\n    if (!mFinalizedStatus) {\n        return;\n    }\n    if (!invokeRead()) {\n        return;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "6a35191e8a0a2cf34a6552a4bd91c7afa6887e44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "641c7694_448412f0",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-07-11T04:45:37Z",
+      "side": 1,
+      "message": "Can we verify the data here to check the integrity",
+      "fixSuggestions": [
+        {
+          "fixId": "e9040e1d_711c2563",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 148,
+                "startChar": 0,
+                "endLine": 148,
+                "endChar": 0
+              },
+              "replacement": "                    if (buffer !\u003d op-\u003edata.substr(ignoreBytes)) {\n                        return;\n                    }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "6a35191e8a0a2cf34a6552a4bd91c7afa6887e44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1acd3655_d13bd02d",
+        "filename": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-07-11T04:45:37Z",
+      "side": 1,
+      "message": "No error handling for all these APIs ?",
+      "fixSuggestions": [
+        {
+          "fixId": "0efc467e_06ce35a8",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 207,
+                "startChar": 0,
+                "endLine": 210,
+                "endChar": 0
+              },
+              "replacement": "                    if (!mCowWriter-\u003eAddRawBlocks(\n                                mFdp.ConsumeIntegralInRange\u003cuint32_t\u003e(\n                                        kMinStartSize, kMaxSize) /*new_block_start*/,\n                                initData.data() /*data*/, initData.size() /*size*/)) {\n                        return;\n                    }\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 223,
+                "startChar": 0,
+                "endLine": 224,
+                "endChar": 0
+              },
+              "replacement": "                    if (!mCowWriter-\u003eAddXorBlocks(\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/fuzz/libsnapshot_cow_fuzzer.cpp",
+              "range": {
+                "startLine": 229,
+                "startChar": 0,
+                "endLine": 230,
+                "endChar": 0
+              },
+              "replacement": "                            mFdp.ConsumeIntegralInRange\u003cuint32_t\u003e(kMinSize, kMaxSize) /*offset*/)) {\n                        return;\n                    }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "6a35191e8a0a2cf34a6552a4bd91c7afa6887e44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
