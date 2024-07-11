@@ -16,6 +16,24 @@
       "message": "Is this true for devices with vendor partition that launched post Android 12 ? Or does this strictly mean device launched with 12 -\u003e upgraded past 12",
       "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e3889e1_66b544f5",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-07-11T16:41:14Z",
+      "side": 1,
+      "message": "This will always be true for devices launched post 12.\n\nFor GRF devices with Vendor on 12, this will be false as the marker will not be created in first stage init given the vendor ramdisk will be from Android S.\n\nIf the Vendor is also updated from 12, then this will be true.",
+      "parentUuid": "ed58b2d2_672783b2",
+      "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
