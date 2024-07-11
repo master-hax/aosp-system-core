@@ -54,6 +54,7 @@ std::shared_ptr<HandlerThread> SnapshotHandlerManager::AddHandler(
         const std::string& backing_device, const std::string& base_path_merge,
         std::shared_ptr<IBlockServerOpener> opener, int num_worker_threads, bool use_iouring,
         bool o_direct, uint32_t cow_op_merge_size) {
+    LOG(ERROR) << "daniel: cow op merge size: " << cow_op_merge_size;
     auto snapuserd = std::make_shared<SnapshotHandler>(
             misc_name, cow_device_path, backing_device, base_path_merge, opener, num_worker_threads,
             use_iouring, perform_verification_, o_direct, cow_op_merge_size);
