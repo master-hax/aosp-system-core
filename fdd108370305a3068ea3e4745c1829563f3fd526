@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5929ea4_77b6a36a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-12T01:31:31Z",
+      "side": 1,
+      "message": "From current observations, these 3 files are added to `PRODUCT_PACKAGES` in `build/make/target/product/developer_gsi_keys.mk`:\n```\nPRODUCT_PACKAGES +\u003d \nq-developer-gsi.avbpubkey \nr-developer-gsi.avbpubkey \ns-developer-gsi.avbpubkey \n```\n`developer_gsi_keys.mk` is included by files like `device/google/gs-common/device.mk`, `device/google/sunfish/device.mk` ..., etc.  \n\nAnd `device/google/gs-common/device.mk` is further included by \ndevice/google/`zuma`/device.mk,\ndevice/google/`gs201`/device.mk, and \ndevice/google/`gs101`/device.mk.\n\nTherefore, currently, `all` devices add these three files to `PRODUCT_PACKAGES`.\n\n-----\nAs for keys t, u, v and above, code search shows that currently only `t-gsi_avbpubkey` is used in `test/vts-testcase/security/avb/data/Android.bp`, but `-gsi_avbpubkey` and `-developer-gsi.avbpubkey` are not the same key. \nWhether they are actually used is uncertain.",
+      "parentUuid": "7f82829b_ed5b1d4b",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
