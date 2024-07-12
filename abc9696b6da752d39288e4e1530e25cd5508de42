@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c9c3bab_c2ff2139",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-07-12T16:23:53Z",
+      "side": 1,
+      "message": "Is that right that \"RO\" is only called for inline encryption in somewhat managed condition? I just checked that, if the disk was not umounted successfully which may need to recover some files/data, RO mount on RO disk can fail. In that case, it needs to mount RW first to recover and then do RO.",
+      "range": {
+        "startLine": 829,
+        "startChar": 0,
+        "endLine": 831,
+        "endChar": 5
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "82235f4c_4232ebb7",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/fs_mgr.cpp",
+              "range": {
+                "startLine": 829,
+                "startChar": 0,
+                "endLine": 831,
+                "endChar": 0
+              },
+              "replacement": "    if (read_only) {\n        if (!fs_mgr_set_blk_ro(source, read_only)) {\n            PLOG(ERROR) \u003c\u003c \"Failed to set \" \u003c\u003c source \u003c\u003c \" as \" \u003c\u003c (read_only ? \"RO\" : \"RW\");\n        }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "abc9696b6da752d39288e4e1530e25cd5508de42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
