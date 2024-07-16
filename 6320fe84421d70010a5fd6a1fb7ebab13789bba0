@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6bfacba_33c2a504",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1352498
+      },
+      "writtenOn": "2024-07-16T07:43:15Z",
+      "side": 1,
+      "message": "Hi Akilesh and David, is there any remaining concerns/issues with this change? this is a blocking issue to MTK. Please kindly advise.",
+      "revId": "6320fe84421d70010a5fd6a1fb7ebab13789bba0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ed58b2d2_672783b2",
