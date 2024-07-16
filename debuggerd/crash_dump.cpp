@@ -544,6 +544,10 @@ int main(int argc, char** argv) {
 
   // Open /proc/`getppid()` before we daemonize.
   std::string target_proc_path = "/proc/" + std::to_string(target_process);
+  if (access(target_proc_path.c_str(), R_OK) != 0) {
+    PLOG(FATAL_WITHOUT_ABORT) << "failed to access " << target_proc_path;
+    return 0;
+  }
   int target_proc_fd = open(target_proc_path.c_str(), O_DIRECTORY | O_RDONLY);
   if (target_proc_fd == -1) {
     PLOG(FATAL) << "failed to open " << target_proc_path;
