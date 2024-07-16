@@ -72,6 +72,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc1ee1dd_2bce7227",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-16T07:21:18Z",
+      "side": 1,
+      "message": "\u003e is any of this actually still needed? why is there nothing for t/u/v? +bowgotsai..\n\n\nYup, this is still needed for devices to opt-in using DSU to load a GSI system.img in locked state.\n\nhttps://developer.android.com/topic/generic-system-image\n\nhttps://developer.android.com/topic/dsu\n\nInitially we decided to create a new key for each Android release. However, this seems creates too much overheads without much benefits. So we finally decided to reuse/rotate q/r/s keys for future GSI releases.",
+      "parentUuid": "d5929ea4_77b6a36a",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
