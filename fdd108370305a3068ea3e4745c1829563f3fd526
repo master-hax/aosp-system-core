@@ -90,6 +90,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8bab1ad_bdf73b64",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-16T07:58:04Z",
+      "side": 1,
+      "message": "\u003e `BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT` and\n`BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT` are always set to true together in all devices.\n\n\nHi,\n\nThis might be correct for the existing Pixel devices, which usually don\u0027t have a dedicated /recovery partition. \n\nHowever, many OEM devices do have the /recovery partition, where `BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT` will be empty. So it\u0027s possible for them to set BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT to true and keep BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT as empty.\n\nhttps://source.android.com/docs/core/architecture/partitions/generic-boot#board-configurations\n\nhttps://source.android.com/docs/core/architecture/partitions/generic-boot#combinations\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/rootdir/avb/Android.mk;l\u003d3;drc\u003df6f7ec0835382bbcb035997467eb8ff41afb6d6d\n\nFor devices without a dedicated recovery partition (e.g., Pixel devices), they use /boot + /vendor_boot partition to constitute a ramdisk at runtime for both \"normal boot\" and \"recovery boot\".\n\nAnd in \"normal boot\", \u0027init\u0027 will switch root to \"/first_stage_ramdisk\" directory, which has the environment for \"normal boot\". Because /boot + /vendor_boot contains too much resources for recovery, and are not for normal boot.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/init/first_stage_init.cpp;l\u003d503;drc\u003dd28f45772fe9ce2bf16013fa19c53de0e1021cac",
+      "parentUuid": "dc1ee1dd_2bce7227",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
