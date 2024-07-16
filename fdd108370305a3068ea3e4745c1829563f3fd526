@@ -108,6 +108,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d3eac91_7a9f53f1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-16T08:38:05Z",
+      "side": 1,
+      "message": "\u003e https://cs.android.com/android/platform/superproject/main/+/main:system/core/rootdir/avb/Android.mk;l\u003d3;drc\u003df6f7ec0835382bbcb035997467eb8ff41afb6d6d\n\nThe above link is incorrect, should be the following one:\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/rootdir/avb/Android.mk;l\u003d3;drc\u003d0c99f933513ae4e2d3143ddff529df0b9207f88e",
+      "parentUuid": "a8bab1ad_bdf73b64",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
