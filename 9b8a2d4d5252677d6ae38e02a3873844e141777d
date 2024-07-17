@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0f8a31b3_2f1f60c9",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1308044
+      },
+      "writtenOn": "2024-07-17T06:06:10Z",
+      "side": 1,
+      "message": "+1 and if that the case seems asan_extract could also do the same way?",
+      "parentUuid": "4532edd7_bb52a7cd",
+      "range": {
+        "startLine": 120,
+        "startChar": 4,
+        "endLine": 123,
+        "endChar": 7
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31bc0ace_378a7f37",
         "filename": "rootdir/Android.bp",
         "patchSetId": 1
