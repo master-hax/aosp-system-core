@@ -114,6 +114,27 @@ prebuilt_etc {
     sub_dir: "init",
 }
 
+prebuilt_etc {
+    name: "asan.options",
+    src: "asan.options",
+    enabled: select(soong_config_variable("ANDROID", "ASAN_ENABLED"), {
+        true: true,
+        default: false,
+    }),
+}
+
+sh_binary {
+    name: "asan_extract",
+    src: "asan_extract.sh",
+    init_rc: ["asan_extract.rc"],
+    // We need bzip2 on device for extraction.
+    required: ["bzip2"],
+    enabled: select((soong_config_variable("ANDROID", "ASAN_ENABLED"), soong_config_variable("ANDROID", "SANITIZE_TARGET_SYSTEM_ENABLED")), {
+        (true, true): true,
+        (default, default): false,
+    }),
+}
+
 llndk_libraries_txt {
     name: "llndk.libraries.txt",
 }
