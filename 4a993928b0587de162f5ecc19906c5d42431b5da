@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa668a9c_9fff8eed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-17T12:13:45Z",
+      "side": 1,
+      "message": "seems like an issue with your system if we can\u0027t open that directory... and this change doesn\u0027t \"fix\" anything --- it _disables_ crash dumping in that case.",
+      "revId": "4a993928b0587de162f5ecc19906c5d42431b5da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
