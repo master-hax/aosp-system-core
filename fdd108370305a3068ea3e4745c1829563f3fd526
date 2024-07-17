@@ -126,6 +126,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "97b022b1_8a47f373",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-17T00:53:49Z",
+      "side": 1,
+      "message": "@bowgotsai, \nThank you for your suggestion. I will update it later.",
+      "parentUuid": "0d3eac91_7a9f53f1",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
