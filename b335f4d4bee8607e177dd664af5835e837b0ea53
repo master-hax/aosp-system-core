@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27c62cda_6b7d3419",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-17T09:29:03Z",
+      "side": 1,
+      "message": "will this impact the existing targets that have `asan.options` and `asan_extract?\n\nBtw, can we include some sanitizer expert to take a look?",
+      "range": {
+        "startLine": 16,
+        "startChar": 32,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
