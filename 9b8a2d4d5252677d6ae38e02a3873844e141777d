@@ -3,6 +3,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4ed1c0a2_d31b9a8b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1318142
+      },
+      "writtenOn": "2024-07-17T05:19:53Z",
+      "side": 1,
+      "message": "SANITIZE_TARGET_SYSTEM\u003dtrue? I think you talk about make variables here. But then you mentioned they are soong config variables on line 12, it is a little confusing.",
+      "range": {
+        "startLine": 11,
+        "startChar": 1,
+        "endLine": 11,
+        "endChar": 36
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4532edd7_bb52a7cd",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1318142
+      },
+      "writtenOn": "2024-07-17T05:19:53Z",
+      "side": 1,
+      "message": "should it be enabled by default and added to module init.environ.rc \"required\" using select?",
+      "range": {
+        "startLine": 120,
+        "startChar": 4,
+        "endLine": 123,
+        "endChar": 7
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31bc0ace_378a7f37",
         "filename": "rootdir/Android.bp",
         "patchSetId": 1
