@@ -46,6 +46,30 @@
       },
       "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da6e1622_a0d60ec1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-07-17T18:39:31Z",
+      "side": 1,
+      "message": "We technically support this on non-Arm64, but I\u0027m not sure if there are any users at this point or if it even still works. Maybe Haiku still needs SANITIZE_TARGET\u003daddress builds?",
+      "parentUuid": "a7dedaff_c1f206a6",
+      "range": {
+        "startLine": 16,
+        "startChar": 32,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
