@@ -40,6 +40,30 @@
       ],
       "revId": "abc9696b6da752d39288e4e1530e25cd5508de42",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87a75695_6d51f6a6",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-17T23:37:16Z",
+      "side": 1,
+      "message": "Isn\u0027t the original issue arise because we didn\u0027t set RO before mount? Current fs_mgr.cpp code only sets RO after the mount.",
+      "parentUuid": "6c9c3bab_c2ff2139",
+      "range": {
+        "startLine": 829,
+        "startChar": 0,
+        "endLine": 831,
+        "endChar": 5
+      },
+      "revId": "abc9696b6da752d39288e4e1530e25cd5508de42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
