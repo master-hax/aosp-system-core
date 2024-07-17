@@ -22,6 +22,30 @@
       },
       "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7dedaff_c1f206a6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-17T12:21:41Z",
+      "side": 1,
+      "message": "yeah, +eugenis because i don\u0027t know whether this is even still supported... (asan\u0027s largely bitrotted post-hwasan, so it\u0027s possible we should just delete all this instead?)",
+      "parentUuid": "27c62cda_6b7d3419",
+      "range": {
+        "startLine": 16,
+        "startChar": 32,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
