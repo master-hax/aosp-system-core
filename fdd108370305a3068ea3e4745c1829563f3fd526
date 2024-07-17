@@ -164,6 +164,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "55883514_15d7754d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-17T09:10:49Z",
+      "side": 1,
+      "message": "OK, got it. LGTM!",
+      "parentUuid": "90fc0a53_1d3d6c36",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "0717ccb0_0c7ff01b",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
