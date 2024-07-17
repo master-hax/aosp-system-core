@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31bc0ace_378a7f37",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1317851
+      },
+      "writtenOn": "2024-07-17T02:53:53Z",
+      "side": 1,
+      "message": "Do we need to consider (default, true) or (true, default)?",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 34
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
