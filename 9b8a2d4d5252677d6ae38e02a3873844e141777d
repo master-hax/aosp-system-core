@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "146b41c6_86e80ef2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-17T07:01:17Z",
+      "side": 1,
+      "message": "Thanks, updated the description.",
+      "parentUuid": "4ed1c0a2_d31b9a8b",
+      "range": {
+        "startLine": 11,
+        "startChar": 1,
+        "endLine": 11,
+        "endChar": 36
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4532edd7_bb52a7cd",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "+1 and if that the case seems asan_extract could also do the same way?",
       "parentUuid": "4532edd7_bb52a7cd",
+      "range": {
+        "startLine": 120,
+        "startChar": 4,
+        "endLine": 123,
+        "endChar": 7
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b09d9d7_b9843821",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-17T07:01:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0f8a31b3_2f1f60c9",
       "range": {
         "startLine": 120,
         "startChar": 4,
