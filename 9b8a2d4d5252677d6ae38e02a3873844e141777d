@@ -22,6 +22,30 @@
       },
       "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ceae7200_7ece70cf",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-17T03:03:30Z",
+      "side": 1,
+      "message": "The documentation for \"select\" indicates that we do not need to enumerate all possible cases: https://docs.google.com/document/d/1gYlirNBL6lpuGhj5ywNlARwPfYOuxC9XecH8uRyEpFk/edit?pli\u003d1\u0026resourcekey\u003d0-yAiKbUIX1aOyjhXyt01FgQ\u0026tab\u003dt.0#heading\u003dh.3f9gnq6c0hyn  \n\n-----\nThe syntax allows for the use of default as a wildcard to match any unspecified value for a given axis. In the example provided:\n```\nselect((arch(), os()), {\n  (\"arm\", \"linux\"): \"foo\",\n  (default, \"windows\"): \"bar\",\n  (default, default): \"baz\",\n})\n```\n- The first branch will be chosen only if both `arch()` returns `\"arm\"` and `os()` returns `\"linux\"`.\n- The second branch will be chosen if `os()` returns `\"windows\"`, regardless of the value returned by arch().\n- The third branch `(default, default)` acts as a `catch-all` and will be chosen if neither of the previous conditions are met.\n\n\n-----\nI also have also tested the following combinations locally:\n\n- `SANITIZE_TARGET_SYSTEM\u003d`true` SANITIZE_TARGET\u003d`address`\n- SANITIZE_TARGET\u003d`address`\n- SANITIZE_TARGET_SYSTEM\u003d`true`   \n\nThe results are consistent with the documentation mentioned above.",
+      "parentUuid": "31bc0ace_378a7f37",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 34
+      },
+      "revId": "9b8a2d4d5252677d6ae38e02a3873844e141777d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
