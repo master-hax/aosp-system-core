@@ -144,6 +144,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "90fc0a53_1d3d6c36",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-17T05:40:50Z",
+      "side": 1,
+      "message": "@bowgotsai,\n\nI\u0027ve updated the original logic. It now uses `BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT` to determine whether it should be installed to `vendor_ramdisk` or `ramdisk`.\n\nThe remaining logic for `BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT` and `BOARD_USES_RECOVERY_AS_BOO`T is the same as the `modulePartition()` function in `build/soong/android/paths.go`.   \n\n\nThank you for your suggestion.",
+      "parentUuid": "97b022b1_8a47f373",
+      "revId": "fdd108370305a3068ea3e4745c1829563f3fd526",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0717ccb0_0c7ff01b",
