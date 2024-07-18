@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f21ce037_bbd55300",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-07-18T15:21:44Z",
+      "side": 1,
+      "message": "Note the vendor side of this change change be found in ag/28276033 and the associated topic.",
+      "revId": "afdc3cb378961df60f5bf76578b8e06a661996ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
