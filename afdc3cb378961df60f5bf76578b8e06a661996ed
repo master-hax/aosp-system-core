@@ -16,6 +16,23 @@
       "message": "Note the vendor side of this change change be found in ag/28276033 and the associated topic.",
       "revId": "afdc3cb378961df60f5bf76578b8e06a661996ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ca3f567_bdb3493b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-07-18T15:43:38Z",
+      "side": 1,
+      "message": "Please also add a note about this in the documentation here as well:\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md;l\u003d500;drc\u003d5c4217cf6eb0686fcab73cd55d216859549b6250",
+      "revId": "afdc3cb378961df60f5bf76578b8e06a661996ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
