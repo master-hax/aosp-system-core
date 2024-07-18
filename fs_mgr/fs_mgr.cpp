@@ -28,6 +28,7 @@
 #include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/swap.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
@@ -2069,11 +2070,37 @@ static bool InstallZramDevice(const std::string& device) {
     return true;
 }
 
+static bool ZramBackingDeviceSizeAvailable(off64_t size) {
+
+    constexpr const char* data_path = "/data";
+    static constexpr uint64_t kSizeThreshold = 512 * 1024 * 1024;  // 512 MB
+
+    struct statvfs vst;
+    if (statvfs(data_path, &vst) < 0) {
+        PERROR << "Cannot check available space: " << data_path;
+        return false;
+    }
+
+    uint64_t size_free = static_cast<uint64_t>(vst.f_bfree) * vst.f_frsize;
+    uint64_t size_required = size + kSizeThreshold;
+    if (size_required > size_free) {
+        PERROR << "Free space is not enough for zram backing device: "
+            << size_required << " > " << size_free;
+        return false;
+    }
+    return true;
+}
+
 static bool PrepareZramBackingDevice(off64_t size) {
 
     constexpr const char* file_path = "/data/per_boot/zram_swap";
     if (size == 0) return true;
 
+    // Check available space
+    if (!ZramBackingDeviceSizeAvailable(size)) {
+        PERROR << "No space for target path: " << file_path;
+        return false;
+    }
     // Prepare target path
     unique_fd target_fd(TEMP_FAILURE_RETRY(open(file_path, O_RDWR | O_CREAT | O_CLOEXEC, 0600)));
     if (target_fd.get() == -1) {
@@ -2082,6 +2109,7 @@ static bool PrepareZramBackingDevice(off64_t size) {
     }
     if (fallocate(target_fd.get(), 0, 0, size) < 0) {
         PERROR << "Cannot truncate target path: " << file_path;
+        unlink(file_path);
         return false;
     }
 
