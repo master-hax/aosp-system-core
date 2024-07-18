@@ -94,6 +94,30 @@
       },
       "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18fc3925_45100d76",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1307893
+      },
+      "writtenOn": "2024-07-18T02:46:23Z",
+      "side": 1,
+      "message": "\u003e will this impact the existing targets that have asan.options and `asan_extract?\n\n`asan.options` and `asan_extract` are only used by `init.environ.rc` within this Android.mk.\n\nThe reason why the original Android.mk added an `ifeq` condition to `asan.options` and `asan_extract` is solely because `init.environ.rc` only adds them to its `LOCAL_REQUIRED_MODULES` when `SANITIZE_TARGET_SYSTEM\u003dtrue` and `SANITIZE_TARGET\u003daddress`.\n\nFurthermore, `asan.options` and `asan_extract` are independent modules that can be built directly.\nDirectly deleting the `ifeq` in the original `asan.options` and `asan_extract` will not affect `init.environ.rc`.\nSo logically, there should be no problem.\n\n----------\n\n\u003e Maybe Haiku still needs SANITIZE_TARGET\u003daddress builds?  \n\nIs `Haiku` currently still built using `SANITIZE_TARGET\u003daddress`?\nI\u0027m not very familiar with the relevant history.\nAre `asan.options`, `asan_extract`, and `init.environ.rc` in this Android.mk still in use?\nIf not, perhaps we can `delete` them directly instead of converting them to Android.bp.",
+      "parentUuid": "910d6e13_90de41b2",
+      "range": {
+        "startLine": 16,
+        "startChar": 32,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
