@@ -118,6 +118,30 @@
       },
       "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0c27fef_ab2d2e2c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-07-18T04:08:13Z",
+      "side": 1,
+      "message": "\u003e because init.environ.rc only adds them to its LOCAL_REQUIRED_MODULES when SANITIZE_TARGET_SYSTEM\u003dtrue and SANITIZE_TARGET\u003daddress.\n\nic, this answers my question. Thanks!",
+      "parentUuid": "18fc3925_45100d76",
+      "range": {
+        "startLine": 16,
+        "startChar": 32,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "b335f4d4bee8607e177dd664af5835e837b0ea53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
