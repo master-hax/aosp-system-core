@@ -33,6 +33,23 @@
       "message": "Seems fine, but I\u0027ll let @dvander@google.com or @zhangkelvin@google.com to make the final decision",
       "revId": "22a683c7aa8648fdc66503ae68c8e3e22d7d26aa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8225c318_10f1f7ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3386406
+      },
+      "writtenOn": "2024-07-18T15:04:20Z",
+      "side": 1,
+      "message": "Seems all approvals are in, can this change be submitted at someone\u0027s earliest convenience? Thanks!",
+      "revId": "22a683c7aa8648fdc66503ae68c8e3e22d7d26aa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
