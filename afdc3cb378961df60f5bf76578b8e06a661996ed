@@ -33,6 +33,24 @@
       "message": "Please also add a note about this in the documentation here as well:\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md;l\u003d500;drc\u003d5c4217cf6eb0686fcab73cd55d216859549b6250",
       "revId": "afdc3cb378961df60f5bf76578b8e06a661996ed",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cad4653_291b1785",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-07-19T08:12:33Z",
+      "side": 1,
+      "message": "Done!",
+      "parentUuid": "4ca3f567_bdb3493b",
+      "revId": "afdc3cb378961df60f5bf76578b8e06a661996ed",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
