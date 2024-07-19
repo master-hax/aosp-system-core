@@ -43,6 +43,8 @@
 
 #define UUID_STR_SIZE (37)
 
+#define HASH_SIZE 128
+
 /**
  * enum metrics_cmd - command identifiers for metrics interface
  * @METRICS_CMD_RESP_BIT:             message is a response
@@ -112,10 +114,18 @@ struct metrics_report_exit_req {
  *          "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  * @crash_reason: architecture-specific code representing the reason for the
  *                crash
+ * @far: Fault Address Register corresponding to the crash
+ * @far_hash: Fault Address Register obfuscated
+ * @elr: Exception Link Register corresponding to the crash
+ * @elr_hash: Exception Link Register obfuscated
  */
 struct metrics_report_crash_req {
     char app_id[UUID_STR_SIZE];
     uint32_t crash_reason;
+    uint64_t far;
+    char far_hash[HASH_SIZE];
+    uintptr_t elr;
+    char elr_hash[HASH_SIZE];
 } __attribute__((__packed__));
 
 enum TrustyStorageErrorType {
