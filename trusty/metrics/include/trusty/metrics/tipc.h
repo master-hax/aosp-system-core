@@ -112,10 +112,14 @@ struct metrics_report_exit_req {
  *          "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  * @crash_reason: architecture-specific code representing the reason for the
  *                crash
+ * @far: Fault Address Register corresponding to the crash
+ * @elr: Exception Link Register corresponding to the crash
  */
 struct metrics_report_crash_req {
     char app_id[UUID_STR_SIZE];
     uint32_t crash_reason;
+    uint64_t far;
+    uintptr_t elr;
 } __attribute__((__packed__));
 
 enum TrustyStorageErrorType {
