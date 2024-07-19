@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b49a0ce8_188f22e6",
+        "filename": "init/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-07-19T16:37:48Z",
+      "side": 1,
+      "message": "for code portability, I wonder if we should also trigger it in this case, or no?",
+      "range": {
+        "startLine": 503,
+        "startChar": 28,
+        "endLine": 503,
+        "endChar": 86
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "3bfc7447_268f8a70",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/README.md",
+              "range": {
+                "startLine": 503,
+                "startChar": 0,
+                "endLine": 504,
+                "endChar": 0
+              },
+              "replacement": "      after an OTA update. Not triggered if checkpointing is not needed or supported.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f9173d63b2ef5b9bfc9ad0356f7ff4b43e69c08f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
