@@ -40,6 +40,30 @@
       ],
       "revId": "f9173d63b2ef5b9bfc9ad0356f7ff4b43e69c08f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3dacdcee_45e9a772",
+        "filename": "init/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-07-19T16:43:09Z",
+      "side": 1,
+      "message": "I did consider this and it feels like a more consistent set of triggers if they always fire.  However, I didn\u0027t want to design for unknown possible future requirements.  I also considered that things may then start to rely on `post-fs-data-checkpointed` when `post-fs-data` would be fine or more correct.\nSo having this trigger only when a checkpoint completed ensures it\u0027s used only for checkpoint related things for now.  I hope.",
+      "parentUuid": "b49a0ce8_188f22e6",
+      "range": {
+        "startLine": 503,
+        "startChar": 28,
+        "endLine": 503,
+        "endChar": 86
+      },
+      "revId": "f9173d63b2ef5b9bfc9ad0356f7ff4b43e69c08f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
