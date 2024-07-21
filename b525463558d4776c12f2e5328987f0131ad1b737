@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1122eecf_14304294",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1091,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-07-21T13:41:34Z",
+      "side": 1,
+      "message": "There\u0027s no `on` section named `post-fs-data-checkpointed`. Where can I find it?",
+      "range": {
+        "startLine": 1091,
+        "startChar": 12,
+        "endLine": 1091,
+        "endChar": 37
+      },
+      "revId": "b525463558d4776c12f2e5328987f0131ad1b737",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
