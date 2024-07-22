@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90ff6ae5_df0be787",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-07-22T05:08:38Z",
+      "side": 1,
+      "message": "Doesn\u0027t this just mean that adb-over-wifi is \"enabled\". It does NOT tell you whether adb-over-wifi is currently is use, does it?\n\nIf my understanding is right, a side effect of this change is that adb is NOT stopped even when a USB cable is inserted if adb-over-wifi is enabled (but not in use).",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
