@@ -16,6 +16,24 @@
       "message": "I\u0027m not fully understanding the change. Does this change allow for update_engine to correctly remove this file? If that\u0027s the case I think we can clarify a little bit in this comment.",
       "revId": "1b76cb48ef83bceb2a5f85ec0e18f69dde9ba0ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7bb4fb3_06309d26",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2151,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-07-22T18:06:45Z",
+      "side": 1,
+      "message": "This file is created in first_stage_init by \"init\" process. When that file is created, there are no sepolicy loaded and hence, the selinux label for this file would be \"unlabled\". When there is no selinux label, update-engine cannot remove this file post snapshot-merge completion as selinux will fail. Hence, we will label this file with label with the same as other files under /metadata/ota/. Thus, update-engine can now safely remove this file.\n\nHope that clarifies.",
+      "parentUuid": "80c8e386_233f4e0b",
+      "revId": "1b76cb48ef83bceb2a5f85ec0e18f69dde9ba0ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
