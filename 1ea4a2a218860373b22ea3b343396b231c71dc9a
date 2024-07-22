@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "60e4aa8c_632ce2eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-22T13:03:39Z",
+      "side": 1,
+      "message": "+sanglardf has been looking at the adb wifi properties recently...",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "90ff6ae5_df0be787",
