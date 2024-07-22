@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b8f9f2d3_0efcf444",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-22T16:14:40Z",
+      "side": 1,
+      "message": "[since it\u0027s midnight in unisoc\u0027s timezone, i\u0027ll guess and say...] i think they\u0027re claiming that if you\u0027re using adb over wifi and have usb set up for charge only (i think that\u0027s what `sys.usb.config\u003dnone` means), then plugging in a usb cable to charge will stop adbd?",
+      "parentUuid": "9999208b_d5ee4c7f",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "90ff6ae5_df0be787",
         "filename": "rootdir/init.usb.configfs.rc",
         "patchSetId": 2
