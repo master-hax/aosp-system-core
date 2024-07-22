@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9999208b_d5ee4c7f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2024-07-22T16:07:26Z",
+      "side": 1,
+      "message": "Can you be more explicit about what problem this CL fixes? There is no bug description and the commit message is less than explicit.",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "90ff6ae5_df0be787",
         "filename": "rootdir/init.usb.configfs.rc",
         "patchSetId": 2
