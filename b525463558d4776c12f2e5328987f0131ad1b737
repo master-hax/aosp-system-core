@@ -22,6 +22,30 @@
       },
       "revId": "b525463558d4776c12f2e5328987f0131ad1b737",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcc97474_184860ea",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1091,
+      "author": {
+        "id": 1952791
+      },
+      "writtenOn": "2024-07-22T08:03:31Z",
+      "side": 1,
+      "message": "It is added here: ag/28276033",
+      "parentUuid": "1122eecf_14304294",
+      "range": {
+        "startLine": 1091,
+        "startChar": 12,
+        "endLine": 1091,
+        "endChar": 37
+      },
+      "revId": "b525463558d4776c12f2e5328987f0131ad1b737",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
