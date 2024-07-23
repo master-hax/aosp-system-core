@@ -87,6 +87,9 @@ struct Args {
     /// Tipc device path
     #[arg(short, long, default_value_t = DEFAULT_DEVICE.to_string())]
     dev: String,
+    /// HAL Service instance name
+    #[arg(short, long, default_value_t = SERVICE_INSTANCE)]
+    instance: String,
 }
 
 fn main() {
@@ -128,7 +131,7 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     // Register the Keymint service
     let km_service = keymint::Device::new_as_binder(tipc_channel.clone());
-    let km_service_name = format!("{}/{}", KM_SERVICE_NAME, SERVICE_INSTANCE);
+    let km_service_name = format!("{}/{}", KM_SERVICE_NAME, args.dev.as_str());
     binder::add_service(&km_service_name, km_service.as_binder()).map_err(|e| {
         HalServiceError(format!(
             "Failed to register service {} because of {:?}.",
@@ -138,7 +141,7 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     // Register the Remotely Provisioned Component service
     let rpc_service = rpc::Device::new_as_binder(tipc_channel.clone());
-    let rpc_service_name = format!("{}/{}", RPC_SERVICE_NAME, SERVICE_INSTANCE);
+    let rpc_service_name = format!("{}/{}", RPC_SERVICE_NAME, args.instance);
     binder::add_service(&rpc_service_name, rpc_service.as_binder()).map_err(|e| {
         HalServiceError(format!(
             "Failed to register service {} because of {:?}.",
@@ -148,7 +151,7 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     // Register the Secure Clock service
     let sclock_service = secureclock::Device::new_as_binder(tipc_channel.clone());
-    let sclock_service_name = format!("{}/{}", SECURE_CLOCK_SERVICE_NAME, SERVICE_INSTANCE);
+    let sclock_service_name = format!("{}/{}", SECURE_CLOCK_SERVICE_NAME, args.instance);
     binder::add_service(&sclock_service_name, sclock_service.as_binder()).map_err(|e| {
         HalServiceError(format!(
             "Failed to register service {} because of {:?}.",
@@ -158,7 +161,7 @@ fn inner_main() -> Result<(), HalServiceError> {
 
     // Register the Shared Secret service
     let ssecret_service = sharedsecret::Device::new_as_binder(tipc_channel.clone());
-    let ssecret_service_name = format!("{}/{}", SHARED_SECRET_SERVICE_NAME, SERVICE_INSTANCE);
+    let ssecret_service_name = format!("{}/{}", SHARED_SECRET_SERVICE_NAME, args.instance);
     binder::add_service(&ssecret_service_name, ssecret_service.as_binder()).map_err(|e| {
         HalServiceError(format!(
             "Failed to register service {} because of {:?}.",

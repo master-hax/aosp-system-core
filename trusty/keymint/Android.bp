@@ -41,3 +41,25 @@ rust_binary {
         "android.hardware.hardware_keystore.xml",
     ],
 }
+
+rust_binary {
+    name: "android.hardware.security.keymint-service.rust.trusty.vm",
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["android.hardware.security.keymint-service.rust.trusty.vm.rc"],
+    vintf_fragments: ["android.hardware.security.keymint-service.rust.trusty.vm.xml"],
+    srcs: [
+        "src/keymint_hal_main.rs",
+    ],
+    rustlibs: [
+        "libandroid_logger",
+        "libbinder_rs",
+        "libclap",
+        "libkmr_wire",
+        "libkmr_hal",
+        "libtrusty-rs",
+        "liblibc",
+        "liblog_rust",
+    ],
+    prefer_rlib: true,
+}
