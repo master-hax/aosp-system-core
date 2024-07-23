@@ -64,6 +64,30 @@
       },
       "revId": "abc9696b6da752d39288e4e1530e25cd5508de42",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dc5d2e1_6edc5669",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-07-23T19:19:04Z",
+      "side": 1,
+      "message": "Maybe. It seems we don\u0027t need to worry about the recovery in this flow, since RO mount should be failed at second+ boots. IOWs, at the first boot, RO mount on RO block device would be enough.",
+      "parentUuid": "87a75695_6d51f6a6",
+      "range": {
+        "startLine": 829,
+        "startChar": 0,
+        "endLine": 831,
+        "endChar": 5
+      },
+      "revId": "abc9696b6da752d39288e4e1530e25cd5508de42",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
