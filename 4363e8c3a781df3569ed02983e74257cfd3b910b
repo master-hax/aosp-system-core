@@ -16,6 +16,24 @@
       "message": "Why would battery level be non-zero if status is unknown? It seems that the old code and the new code should be equivalent if the HAL is behaving correctly.",
       "revId": "4363e8c3a781df3569ed02983e74257cfd3b910b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "735c321d_19f8b266",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-23T17:50:22Z",
+      "side": 1,
+      "message": "It sounds like a bug in the HAL if it is reporting UNKNOWN status with non-zero level.",
+      "parentUuid": "106b776f_ab358572",
+      "revId": "4363e8c3a781df3569ed02983e74257cfd3b910b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
