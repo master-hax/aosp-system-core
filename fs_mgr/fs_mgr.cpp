@@ -38,10 +38,8 @@
 
 #include <array>
 #include <chrono>
-#include <functional>
 #include <map>
 #include <memory>
-#include <numeric>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -66,6 +64,7 @@
 #include <fs_mgr/file_wait.h>
 #include <fs_mgr_overlayfs.h>
 #include <fscrypt/fscrypt.h>
+#include <fstab/fstab.h>
 #include <libdm/dm.h>
 #include <libdm/loop_control.h>
 #include <liblp/metadata_format.h>
@@ -78,17 +77,17 @@
 #include "blockdev.h"
 #include "fs_mgr_priv.h"
 
-#define E2FSCK_BIN      "/system/bin/e2fsck"
-#define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
-#define MKSWAP_BIN      "/system/bin/mkswap"
-#define TUNE2FS_BIN     "/system/bin/tune2fs"
+#define E2FSCK_BIN "/system/bin/e2fsck"
+#define F2FS_FSCK_BIN "/system/bin/fsck.f2fs"
+#define MKSWAP_BIN "/system/bin/mkswap"
+#define TUNE2FS_BIN "/system/bin/tune2fs"
 #define RESIZE2FS_BIN "/system/bin/resize2fs"
 
-#define FSCK_LOG_FILE   "/dev/fscklogs/log"
+#define FSCK_LOG_FILE "/dev/fscklogs/log"
 
-#define ZRAM_CONF_DEV   "/sys/block/zram0/disksize"
-#define ZRAM_CONF_MCS   "/sys/block/zram0/max_comp_streams"
-#define ZRAM_BACK_DEV   "/sys/block/zram0/backing_dev"
+#define ZRAM_CONF_DEV "/sys/block/zram0/disksize"
+#define ZRAM_CONF_MCS "/sys/block/zram0/max_comp_streams"
+#define ZRAM_BACK_DEV "/sys/block/zram0/backing_dev"
 
 #define SYSFS_EXT4_VERITY "/sys/fs/ext4/features/verity"
 #define SYSFS_EXT4_CASEFOLD "/sys/fs/ext4/features/casefold"
@@ -138,8 +137,8 @@ enum FsStatFlags {
 static void log_fs_stat(const std::string& blk_device, int fs_stat) {
     std::string msg =
             android::base::StringPrintf("\nfs_stat,%s,0x%x\n", blk_device.c_str(), fs_stat);
-    android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(FSCK_LOG_FILE, O_WRONLY | O_CLOEXEC |
-                                                        O_APPEND | O_CREAT, 0664)));
+    android::base::unique_fd fd(TEMP_FAILURE_RETRY(
+            open(FSCK_LOG_FILE, O_WRONLY | O_CLOEXEC | O_APPEND | O_CREAT, 0664)));
     if (fd == -1 || !android::base::WriteStringToFd(msg, fd)) {
         LWARNING << __FUNCTION__ << "() cannot log " << msg;
     }
@@ -419,7 +418,8 @@ static void tune_reserved_size(const std::string& blk_device, const FstabEntry& 
 
     if (reserved_blocks > max_reserved_blocks) {
         LWARNING << "Reserved blocks " << reserved_blocks << " is too large; "
-                 << "capping to " << max_reserved_blocks;
+                 << "capping to "
+                 << max_reserved_blocks;
         reserved_blocks = max_reserved_blocks;
     }
 
@@ -487,7 +487,8 @@ static void tune_encrypt(const std::string& blk_device, const FstabEntry& entry,
     LINFO << "Enabling ext4 flags " << flags << " on " << blk_device;
     if (!run_command(argv, ARRAY_SIZE(argv))) {
         LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 flags " << flags << " on " << blk_device;
+               << "ext4 flags " << flags << " on "
+               << blk_device;
         *fs_stat |= FS_STAT_ENABLE_ENCRYPTION_FAILED;
     }
 }
@@ -523,8 +524,7 @@ static void tune_verity(const std::string& blk_device, const FstabEntry& entry,
 
     const char* argv[] = {TUNE2FS_BIN, "-O", "verity", blk_device.c_str()};
     if (!run_command(argv, ARRAY_SIZE(argv))) {
-        LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 verity on " << blk_device;
+        LERROR << "Failed to run " TUNE2FS_BIN " to enable " << "ext4 verity on " << blk_device;
         *fs_stat |= FS_STAT_ENABLE_VERITY_FAILED;
     }
 }
@@ -593,17 +593,19 @@ static void tune_metadata_csum(const std::string& blk_device, const FstabEntry& 
 
     // Must give `-T now` to prevent last_fsck_time from growing too large,
     // otherwise, tune2fs won't enable metadata_csum.
-    const char* tune2fs_args[] = {TUNE2FS_BIN, "-O",        "metadata_csum,64bit,extent",
+    const char* tune2fs_args[] = {TUNE2FS_BIN, "-O",  "metadata_csum,64bit,extent",
                                   "-T",        "now", blk_device.c_str()};
     const char* resize2fs_args[] = {RESIZE2FS_BIN, "-b", blk_device.c_str()};
 
     if (!run_command(tune2fs_args, ARRAY_SIZE(tune2fs_args))) {
         LERROR << "Failed to run " TUNE2FS_BIN " to enable "
-               << "ext4 metadata_csum on " << blk_device;
+               << "ext4 metadata_csum on "
+               << blk_device;
         *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
     } else if (!run_command(resize2fs_args, ARRAY_SIZE(resize2fs_args))) {
         LERROR << "Failed to run " RESIZE2FS_BIN " to enable "
-               << "ext4 metadata_csum on " << blk_device;
+               << "ext4 metadata_csum on "
+               << blk_device;
         *fs_stat |= FS_STAT_ENABLE_METADATA_CSUM_FAILED;
     }
 }
@@ -1430,6 +1432,35 @@ bool WasMetadataEncryptionInterrupted(const FstabEntry& entry) {
     return access(fs_mgr_metadata_encryption_in_progress_file_name(entry).c_str(), R_OK) == 0;
 }
 
+FstabEntry* LocateFormattableEntry(FstabEntry* begin, FstabEntry* const end) {
+    const bool dev_option_enabled =
+            android::base::GetBoolProperty("ro.product.build.16k_page.enabled", false);
+    const auto& blk_device = begin->blk_device;
+    FstabEntry* f2fs_entry = nullptr;
+    for (; begin->blk_device == blk_device && begin < end; begin++) {
+        if (begin->fs_mgr_flags.formattable) {
+            if (getpagesize() != 4096 && is_f2fs(begin->fs_type) && dev_option_enabled) {
+                f2fs_entry = begin;
+                continue;
+            }
+            if (f2fs_entry) {
+                LOG(INFO) << "Skipping F2FS format for block device " << begin->blk_device << " @ "
+                          << begin->mount_point
+                          << " in non-4K mode for dev option enabled devices, "
+                             "as these devices need to toggle between 4K/16K mode, and F2FS does "
+                             "not support page_size != block_size configuration.";
+            }
+            return begin;
+        }
+    }
+    if (f2fs_entry) {
+        LOG(INFO) << "Using F2FS for " << begin->blk_device << " @ " << begin->mount_point
+                  << " even though we are in non-4K mode. Device might require a data wipe after "
+                     "going back to 4K mode, as F2FS does not support page_size != block_size";
+    }
+    return f2fs_entry;
+}
+
 // When multiple fstab records share the same mount_point, it will try to mount each
 // one in turn, and ignore any duplicates after a first successful mount.
 // Returns -1 on error, and  FS_MGR_MNTALL_* otherwise.
@@ -1540,8 +1571,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
         }
 
-        int last_idx_inspected;
-        int top_idx = i;
+        int last_idx_inspected = -1;
+        const int top_idx = i;
         int attempted_idx = -1;
 
         bool encryption_interrupted = WasMetadataEncryptionInterrupted(current_entry);
@@ -1591,7 +1622,8 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             // Success!  Go get the next one.
             continue;
         }
-
+        auto formattable_entry =
+                LocateFormattableEntry(fstab->data() + top_idx, fstab->data() + fstab->size());
         // Mounting failed, understand why and retry.
         wiped = partition_wiped(current_entry.blk_device.c_str());
         if (mount_errno != EBUSY && mount_errno != EACCES &&
@@ -1619,12 +1651,12 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 encryptable = FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED;
                 set_type_property(encryptable);
 
-                if (!call_vdc({"cryptfs", "encryptFstab", current_entry.blk_device,
-                               current_entry.mount_point, "true" /* shouldFormat */,
-                               current_entry.fs_type,
-                               current_entry.fs_mgr_flags.is_zoned ? "true" : "false",
-                               std::to_string(current_entry.length),
-                               android::base::Join(current_entry.user_devices, ' ')},
+                if (!call_vdc({"cryptfs", "encryptFstab", formattable_entry->blk_device,
+                               formattable_entry->mount_point, "true" /* shouldFormat */,
+                               formattable_entry->fs_type,
+                               formattable_entry->fs_mgr_flags.is_zoned ? "true" : "false",
+                               std::to_string(formattable_entry->length),
+                               android::base::Join(formattable_entry->user_devices, ' ')},
                               nullptr)) {
                     LERROR << "Encryption failed";
                 } else {
@@ -1633,12 +1665,12 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 }
             }
 
-            if (fs_mgr_do_format(current_entry) == 0) {
+            if (fs_mgr_do_format(*formattable_entry) == 0) {
                 // Let's replay the mount actions.
                 i = top_idx - 1;
                 continue;
             } else {
-                LERROR << __FUNCTION__ << "(): Format failed. "
+                LERROR << __FUNCTION__ << "(): Format failed. " 
                        << "Suggest recovery...";
                 encryptable = FS_MGR_MNTALL_DEV_NEEDS_RECOVERY;
                 continue;
@@ -1933,12 +1965,12 @@ int fs_mgr_do_mount_one(const FstabEntry& entry, const std::string& alt_mount_po
     int ret = prepare_fs_for_mount(entry.blk_device, entry, mount_point);
     // Wiped case doesn't require to try __mount below.
     if (ret & FS_STAT_INVALID_MAGIC) {
-      return FS_MGR_DOMNT_FAILED;
+        return FS_MGR_DOMNT_FAILED;
     }
 
     ret = __mount(entry.blk_device, mount_point, entry);
     if (ret) {
-      ret = (errno == EBUSY) ? FS_MGR_DOMNT_BUSY : FS_MGR_DOMNT_FAILED;
+        ret = (errno == EBUSY) ? FS_MGR_DOMNT_BUSY : FS_MGR_DOMNT_FAILED;
     }
 
     return ret;
