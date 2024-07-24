@@ -34,6 +34,24 @@
       "parentUuid": "106b776f_ab358572",
       "revId": "4363e8c3a781df3569ed02983e74257cfd3b910b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d421695_94d4b2fd",
+        "filename": "healthd/healthd_mode_charger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2024-07-24T02:57:18Z",
+      "side": 1,
+      "message": "This is because BatteryStatus briefly reports `POWER_SUPPLY_STATUS_UNKNOWN` during initialization.\n```\nstatic int gbatt_get_status(struct batt_drv *batt_drv,\n\t\t\t    union power_supply_propval *val)\n{\n...\n\tif (batt_drv-\u003essoc_state.buck_enabled \u003d\u003d -1) {\n\t\tval-\u003eintval \u003d POWER_SUPPLY_STATUS_UNKNOWN;\n\t\treturn 0;\n\t}\n...\n}\n```\nAnd FG is ready to report battery level before that.\nThis is a transient state, BatteryStatus will be ready once buck is done.",
+      "parentUuid": "735c321d_19f8b266",
+      "revId": "4363e8c3a781df3569ed02983e74257cfd3b910b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
