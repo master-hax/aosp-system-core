@@ -37,10 +37,8 @@
 
 #include <array>
 #include <chrono>
-#include <functional>
 #include <map>
 #include <memory>
-#include <numeric>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -1416,6 +1414,26 @@ static bool IsMountPointMounted(const std::string& mount_point) {
     return GetEntryForMountPoint(&fstab, mount_point) != nullptr;
 }
 
+FstabEntry* LocateFormattableEntry(FstabEntry* begin) {
+    const bool dev_option_enabled =
+            android::base::GetBoolProperty("ro.product.build.16k_page.enabled", false);
+    const auto& blk_device = begin->blk_device;
+    for (; begin->blk_device == blk_device; begin++) {
+        if (begin->fs_mgr_flags.formattable) {
+            if (getpagesize() != 4096 && is_f2fs(begin->fs_type) && dev_option_enabled) {
+                LOG(INFO) << "Skipping F2FS format for block device " << begin->blk_device
+                          << " mount point " << begin->mount_point
+                          << " in non-4K mode for dev option enabled devices, "
+                             "as these devices need to toggle between 4K/16K mode, and F2FS does "
+                             "not support page_size != block_size configuration.";
+                continue;
+            }
+            return begin;
+        }
+    }
+    return nullptr;
+}
+
 // When multiple fstab records share the same mount_point, it will try to mount each
 // one in turn, and ignore any duplicates after a first successful mount.
 // Returns -1 on error, and  FS_MGR_MNTALL_* otherwise.
@@ -1526,10 +1544,9 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
         }
 
-        int last_idx_inspected;
-        int top_idx = i;
+        int last_idx_inspected = -1;
+        const int top_idx = i;
         int attempted_idx = -1;
-
         bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx);
         auto& attempted_entry = (*fstab)[attempted_idx];
         i = last_idx_inspected;
@@ -1575,17 +1592,22 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             // Success!  Go get the next one.
             continue;
         }
-
+        auto formattable_entry = LocateFormattableEntry(&(*fstab)[top_idx]);
         // Mounting failed, understand why and retry.
         wiped = partition_wiped(current_entry.blk_device.c_str());
-        if (mount_errno != EBUSY && mount_errno != EACCES &&
-            current_entry.fs_mgr_flags.formattable && wiped) {
+        if (wiped && !formattable_entry) {
+            LOG(ERROR) << "Partition " << current_entry.blk_device << " @ "
+                       << current_entry.mount_point
+                       << " is wiped, but no valid formattable entry found.";
+        }
+        if (mount_errno != EBUSY && mount_errno != EACCES && formattable_entry != nullptr &&
+            wiped) {
             // current_entry and attempted_entry point at the same partition, but sometimes
             // at two different lines in the fstab.  Use current_entry for formatting
             // as that is the preferred one.
             LERROR << __FUNCTION__ << "(): " << realpath(current_entry.blk_device)
-                   << " is wiped and " << current_entry.mount_point << " " << current_entry.fs_type
-                   << " is formattable. Format it.";
+                   << " is wiped and " << current_entry.mount_point << " "
+                   << formattable_entry->fs_type << " is formattable. Format it.";
 
             checkpoint_manager.Revert(&current_entry);
 
@@ -1598,12 +1620,12 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 encryptable = FS_MGR_MNTALL_DEV_IS_METADATA_ENCRYPTED;
                 set_type_property(encryptable);
 
-                if (!call_vdc({"cryptfs", "encryptFstab", current_entry.blk_device,
-                               current_entry.mount_point, "true" /* shouldFormat */,
-                               current_entry.fs_type,
-                               current_entry.fs_mgr_flags.is_zoned ? "true" : "false",
-                               std::to_string(current_entry.length),
-                               android::base::Join(current_entry.user_devices, ' ')},
+                if (!call_vdc({"cryptfs", "encryptFstab", formattable_entry->blk_device,
+                               formattable_entry->mount_point, "true" /* shouldFormat */,
+                               formattable_entry->fs_type,
+                               formattable_entry->fs_mgr_flags.is_zoned ? "true" : "false",
+                               std::to_string(formattable_entry->length),
+                               android::base::Join(formattable_entry->user_devices, ' ')},
                               nullptr)) {
                     LERROR << "Encryption failed";
                 } else {
@@ -1612,7 +1634,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 }
             }
 
-            if (fs_mgr_do_format(current_entry) == 0) {
+            if (fs_mgr_do_format(*formattable_entry) == 0) {
                 // Let's replay the mount actions.
                 i = top_idx - 1;
                 continue;
