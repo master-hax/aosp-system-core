@@ -37,10 +37,8 @@
 
 #include <array>
 #include <chrono>
-#include <functional>
 #include <map>
 #include <memory>
-#include <numeric>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -1416,6 +1414,25 @@ static bool IsMountPointMounted(const std::string& mount_point) {
     return GetEntryForMountPoint(&fstab, mount_point) != nullptr;
 }
 
+FstabEntry* LocateFormattableEntry(FstabEntry* begin, FstabEntry* end) {
+    const bool dev_option_enabled =
+            android::base::GetBoolProperty("ro.product.build.16k_page.enabled", false);
+    while (begin < end) {
+        if (begin->fs_mgr_flags.formattable) {
+            if (getpagesize() != 4096 && is_f2fs(begin->fs_type) && dev_option_enabled) {
+                LOG(INFO) << "Skipping F2FS format for block device " << begin->blk_device
+                          << " mount point " << begin->mount_point
+                          << " in non-4K mode for dev option enabled devices, "
+                             "as these devices need to toggle between 4K/16K mode, and F2FS does "
+                             "not support page_size != block_size configuration.";
+                continue;
+            }
+            return begin;
+        }
+    }
+    return nullptr;
+}
+
 // When multiple fstab records share the same mount_point, it will try to mount each
 // one in turn, and ignore any duplicates after a first successful mount.
 // Returns -1 on error, and  FS_MGR_MNTALL_* otherwise.
@@ -1526,10 +1543,9 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
         }
 
-        int last_idx_inspected;
+        int last_idx_inspected = -1;
         int top_idx = i;
         int attempted_idx = -1;
-
         bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx);
         auto& attempted_entry = (*fstab)[attempted_idx];
         i = last_idx_inspected;
@@ -1575,11 +1591,12 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             // Success!  Go get the next one.
             continue;
         }
-
+        auto formattable_entry =
+                LocateFormattableEntry(fstab->data() + i, fstab->data() + last_idx_inspected);
         // Mounting failed, understand why and retry.
         wiped = partition_wiped(current_entry.blk_device.c_str());
-        if (mount_errno != EBUSY && mount_errno != EACCES &&
-            current_entry.fs_mgr_flags.formattable && wiped) {
+        if (mount_errno != EBUSY && mount_errno != EACCES && formattable_entry != nullptr &&
+            wiped) {
             // current_entry and attempted_entry point at the same partition, but sometimes
             // at two different lines in the fstab.  Use current_entry for formatting
             // as that is the preferred one.
@@ -1612,7 +1629,7 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
                 }
             }
 
-            if (fs_mgr_do_format(current_entry) == 0) {
+            if (fs_mgr_do_format(*formattable_entry) == 0) {
                 // Let's replay the mount actions.
                 i = top_idx - 1;
                 continue;
