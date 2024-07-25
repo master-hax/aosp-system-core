@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "de8f7d59_3f30cc01",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-07-25T15:32:16Z",
+      "side": 1,
+      "message": "should this be 1 since we\u0027re writing that to mark boot success?",
+      "range": {
+        "startLine": 367,
+        "startChar": 46,
+        "endLine": 367,
+        "endChar": 47
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "613364f5_f36e3e3b",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_server.cpp",
+              "range": {
+                "startLine": 367,
+                "startChar": 0,
+                "endLine": 368,
+                "endChar": 0
+              },
+              "replacement": "        (access(kBootSuccessNewSlot, F_OK) \u003d\u003d 1)) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "30be97148f2cbf9c30440b4d8809df409c36c1b5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
