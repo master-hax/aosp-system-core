@@ -42,6 +42,7 @@ static constexpr uint32_t kMaxPacketSize = 512;
 
 static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
         "/metadata/ota/snapshot-boot-without-slot-switch";
+static constexpr char kBootSuccessNewSlot[] = "/metadata/ota/boot-success-new-slot";
 
 class UserSnapshotServer {
   private:

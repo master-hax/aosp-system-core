@@ -674,6 +674,7 @@ class SnapshotManager final : public ISnapshotManager {
     std::string GetOldPartitionMetadataPath();
     std::string GetBootSnapshotsWithoutSlotSwitchPath();
     std::string GetSnapuserdFromSystemPath();
+    std::string GetBootSuccessNewSlotPath();
 
     const LpMetadata* ReadOldPartitionMetadata(LockedFile* lock);
 
