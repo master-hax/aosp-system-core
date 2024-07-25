@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39fb270f_f690eb09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-25T17:35:59Z",
+      "side": 1,
+      "message": "+elsk for fs_mgr OWNERS...",
+      "revId": "c6dfdbb761da5709b0cb9379ea2a9908775dd2fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
