@@ -91,6 +91,7 @@ static constexpr char kBootSnapshotsWithoutSlotSwitch[] =
 static constexpr char kBootIndicatorPath[] = "/metadata/ota/snapshot-boot";
 static constexpr char kRollbackIndicatorPath[] = "/metadata/ota/rollback-indicator";
 static constexpr char kSnapuserdFromSystem[] = "/metadata/ota/snapuserd-from-system";
+static constexpr char kBootSuccessNewSlot[] = "/metadata/ota/boot-success-new-slot";
 static constexpr auto kUpdateStateCheckInterval = 2s;
 static constexpr char kOtaFileContext[] = "u:object_r:ota_metadata_file:s0";
 
@@ -321,9 +322,13 @@ bool SnapshotManager::RemoveAllUpdateState(LockedFile* lock, const std::function
     // - For ForwardMerge, FinishedSnapshotWrites asserts that the existence of the indicator
     // matches the incoming update.
     std::vector<std::string> files = {
-            GetSnapshotBootIndicatorPath(),          GetRollbackIndicatorPath(),
-            GetForwardMergeIndicatorPath(),          GetOldPartitionMetadataPath(),
-            GetBootSnapshotsWithoutSlotSwitchPath(), GetSnapuserdFromSystemPath(),
+            GetSnapshotBootIndicatorPath(),
+            GetRollbackIndicatorPath(),
+            GetForwardMergeIndicatorPath(),
+            GetOldPartitionMetadataPath(),
+            GetBootSnapshotsWithoutSlotSwitchPath(),
+            GetSnapuserdFromSystemPath(),
+            GetBootSuccessNewSlotPath(),
     };
     for (const auto& file : files) {
         RemoveFileIfExists(file);
@@ -909,6 +914,14 @@ bool SnapshotManager::InitiateMerge() {
         return false;
     }
 
+    auto path = GetBootSuccessNewSlotPath();
+    if (!android::base::WriteStringToFile("1", path)) {
+        // It's ok to continue if there was an error as this marker would just be an indication
+        // to the snapuserd daemon to check if the boot was successful. Daemon
+        // would use this as an hint to check if blocks are to be verified
+        PLOG(ERROR) << "Unable to write to boot success: " << path;
+    }
+
     auto reported_code = MergeFailureCode::Ok;
     for (const auto& snapshot : *merge_group) {
         // If this fails, we have no choice but to continue. Everything must
@@ -1464,6 +1477,10 @@ std::string SnapshotManager::GetRollbackIndicatorPath() {
 
 std::string SnapshotManager::GetSnapuserdFromSystemPath() {
     return metadata_dir_ + "/" + android::base::Basename(kSnapuserdFromSystem);
+}
+
+std::string SnapshotManager::GetBootSuccessNewSlotPath() {
+    return metadata_dir_ + "/" + android::base::Basename(kBootSuccessNewSlot);
 }
 
 std::string SnapshotManager::GetForwardMergeIndicatorPath() {

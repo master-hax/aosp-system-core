@@ -363,7 +363,8 @@ std::shared_ptr<HandlerThread> UserSnapshotServer::AddHandler(const std::string&
     }
 
     if (android::base::EndsWith(misc_name, "-init") || is_socket_present_ ||
-        (access(kBootSnapshotsWithoutSlotSwitch, F_OK) == 0)) {
+        (access(kBootSnapshotsWithoutSlotSwitch, F_OK) == 0) ||
+        (access(kBootSuccessNewSlot, F_OK) == 0)) {
         handlers_->DisableVerification();
     }
 
