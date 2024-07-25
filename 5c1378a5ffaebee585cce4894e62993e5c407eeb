@@ -22,6 +22,30 @@
       },
       "revId": "5c1378a5ffaebee585cce4894e62993e5c407eeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "782d0f62_ea9b2d90",
+        "filename": "trusty/keymaster/set_uds_certs/rkp_uds_cert_test.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1347934
+      },
+      "writtenOn": "2024-07-25T16:44:08Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "02ce5955_f9a66814",
+      "range": {
+        "startLine": 2,
+        "startChar": 1,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "5c1378a5ffaebee585cce4894e62993e5c407eeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
