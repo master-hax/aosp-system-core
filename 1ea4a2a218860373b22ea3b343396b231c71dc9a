@@ -133,6 +133,30 @@
       },
       "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e9714f6_a5fdfa69",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2024-07-26T16:02:41Z",
+      "side": 1,
+      "message": "The commit message says \"don\u0027t kill adbd `if adb-over-wifi is enabled`\" I don\u0027t see where the check for wifi is done here.\n\nIt am not well versed in .rc file syntax, what is this line testing really?\n\n```\non property:sys.usb.config\u003dnone \u0026\u0026 property:sys.usb.configfs\u003d1\n```\n\nDo we have any documentation on `property:sys.usb.config` and `property:sys.usb.configfs`?",
+      "parentUuid": "f4fdf6eb_4e4ba9b3",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
