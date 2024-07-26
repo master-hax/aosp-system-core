@@ -53,6 +53,41 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "30a60605_cb08a84b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1614919
+      },
+      "writtenOn": "2024-07-26T09:00:18Z",
+      "side": 1,
+      "message": "Actually we raised a  google issue, pls refer to : 352492292",
+      "parentUuid": "b8f9f2d3_0efcf444",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4287c79_af5800ff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1614919
+      },
+      "writtenOn": "2024-07-26T09:00:18Z",
+      "side": 1,
+      "message": "reply comments",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "90ff6ae5_df0be787",
@@ -66,6 +101,30 @@
       "writtenOn": "2024-07-22T05:08:38Z",
       "side": 1,
       "message": "Doesn\u0027t this just mean that adb-over-wifi is \"enabled\". It does NOT tell you whether adb-over-wifi is currently is use, does it?\n\nIf my understanding is right, a side effect of this change is that adb is NOT stopped even when a USB cable is inserted if adb-over-wifi is enabled (but not in use).",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4fdf6eb_4e4ba9b3",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1614919
+      },
+      "writtenOn": "2024-07-26T09:00:18Z",
+      "side": 1,
+      "message": "yes. Adb will not stopped in this case. By now we haven\u0027t have a proper solution to judge adb over wifi is in use. \n\nwe raised a google-issue before, pls refer to : 352492292",
+      "parentUuid": "90ff6ae5_df0be787",
       "range": {
         "startLine": 1,
         "startChar": 75,
