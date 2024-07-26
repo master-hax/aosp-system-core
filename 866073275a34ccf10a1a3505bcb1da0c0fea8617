@@ -16,6 +16,24 @@
       "message": "What is the motivation behind this change? Can you share performance numbers before/after and how we can reproduce them?",
       "revId": "866073275a34ccf10a1a3505bcb1da0c0fea8617",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16646e48_c32b1d63",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1993160
+      },
+      "writtenOn": "2024-07-26T01:31:38Z",
+      "side": 1,
+      "message": "Sure，This change is because when creating virtual AB COW devices, due to the large size of COW devices, the system IO is busy, blocked, and cache consumption is excessive, resulting in performance lag issues.\n\nWhen creating COW devices to fill 0 blocks, direct IO is used to align and write to the disk according to memory, saving system cache while not affecting the write rate.\n\nTest data: IO PSI has decreased from 50-70 to 10, Cache consumption has been reduced by 1-2 G, and write rate remains the same as before.",
+      "parentUuid": "253af0b3_01501f30",
+      "revId": "866073275a34ccf10a1a3505bcb1da0c0fea8617",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
