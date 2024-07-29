@@ -16,6 +16,24 @@
       "message": "David OOO for a while, so adding another owner, Akilesh (who will be back next week) to the review.",
       "revId": "88aa151ad074bfec30a33003b69fa1f8ca328ff2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "832884e9_b93c7f97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1556267
+      },
+      "writtenOn": "2024-07-29T19:52:46Z",
+      "side": 1,
+      "message": "Thank\u0027s for the update!",
+      "parentUuid": "cfc8b034_70bbe8cd",
+      "revId": "88aa151ad074bfec30a33003b69fa1f8ca328ff2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
