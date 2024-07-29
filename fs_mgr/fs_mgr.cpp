@@ -930,7 +930,8 @@ static bool should_use_metadata_encryption(const FstabEntry& entry) {
 // attempted_idx: On return, will indicate which fstab entry
 //     succeeded. In case of failure, it will be the start_idx.
 // Sets errno to match the 1st mount failure on failure.
-static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx, int* attempted_idx) {
+static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx, int* attempted_idx,
+                                    bool interrupted) {
     unsigned long i;
     int mount_errno = 0;
     bool mounted = false;
@@ -946,6 +947,13 @@ static bool mount_with_alternatives(Fstab& fstab, int start_idx, int* end_idx, i
             LINFO << __FUNCTION__ << "(): skipping fstab dup mountpoint=" << fstab[i].mount_point
                   << " rec[" << i << "].fs_type=" << fstab[i].fs_type << " already mounted as "
                   << fstab[*attempted_idx].fs_type;
+            continue;
+        }
+
+        if (interrupted) {
+            LINFO << __FUNCTION__ << "(): skipping fstab mountpoint=" << fstab[i].mount_point
+                  << " rec[" << i << "].fs_type=" << fstab[i].fs_type
+                  << " (previously interrupted during encryption step)";
             continue;
         }
 
@@ -1416,6 +1424,16 @@ static bool IsMountPointMounted(const std::string& mount_point) {
     return GetEntryForMountPoint(&fstab, mount_point) != nullptr;
 }
 
+std::string fs_mgr_metadata_encryption_in_progress_file_name(const FstabEntry& entry) {
+    return entry.metadata_key_dir + "/in_progress";
+}
+
+bool WasMetadataEncryptionInterrupted(const FstabEntry& entry) {
+    if (!should_use_metadata_encryption(entry)) return false;
+    struct stat buf;
+    return (stat(fs_mgr_metadata_encryption_in_progress_file_name(entry).c_str(), &buf) == 0);
+}
+
 // When multiple fstab records share the same mount_point, it will try to mount each
 // one in turn, and ignore any duplicates after a first successful mount.
 // Returns -1 on error, and  FS_MGR_MNTALL_* otherwise.
@@ -1530,7 +1548,9 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         int top_idx = i;
         int attempted_idx = -1;
 
-        bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx);
+        bool encryption_interrupted = WasMetadataEncryptionInterrupted(current_entry);
+        bool mret = mount_with_alternatives(*fstab, i, &last_idx_inspected, &attempted_idx,
+                                            encryption_interrupted);
         auto& attempted_entry = (*fstab)[attempted_idx];
         i = last_idx_inspected;
         int mount_errno = errno;
@@ -1579,13 +1599,18 @@ MountAllResult fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         // Mounting failed, understand why and retry.
         wiped = partition_wiped(current_entry.blk_device.c_str());
         if (mount_errno != EBUSY && mount_errno != EACCES &&
-            current_entry.fs_mgr_flags.formattable && wiped) {
+            current_entry.fs_mgr_flags.formattable && (wiped || encryption_interrupted)) {
             // current_entry and attempted_entry point at the same partition, but sometimes
             // at two different lines in the fstab.  Use current_entry for formatting
             // as that is the preferred one.
-            LERROR << __FUNCTION__ << "(): " << realpath(current_entry.blk_device)
-                   << " is wiped and " << current_entry.mount_point << " " << current_entry.fs_type
-                   << " is formattable. Format it.";
+            if (wiped)
+                LERROR << __FUNCTION__ << "(): " << realpath(current_entry.blk_device)
+                       << " is wiped and " << current_entry.mount_point << " "
+                       << current_entry.fs_type << " is formattable. Format it.";
+            if (encryption_interrupted)
+                LERROR << __FUNCTION__ << "(): " << realpath(current_entry.blk_device)
+                       << " was interrupted during encryption and " << current_entry.mount_point
+                       << " " << current_entry.fs_type << " is formattable. Format it.";
 
             checkpoint_manager.Revert(&current_entry);
 
