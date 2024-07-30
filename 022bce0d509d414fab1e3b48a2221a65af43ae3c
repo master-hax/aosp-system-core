@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7be3ca55_d5ae0113",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1421,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T23:14:15Z",
+      "side": 1,
+      "message": "We will increment `begin` later, so need to save the initial value of `begin-\u003eblk_device`",
+      "parentUuid": "3d005919_9e3ec243",
+      "range": {
+        "startLine": 1421,
+        "startChar": 4,
+        "endLine": 1421,
+        "endChar": 47
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f542a1b4_46a877a9",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 8
@@ -54,6 +78,30 @@
       "writtenOn": "2024-07-30T23:08:34Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 1423,
+        "startChar": 11,
+        "endLine": 1423,
+        "endChar": 46
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef497e30_d73c1cc6",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1423,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T23:14:15Z",
+      "side": 1,
+      "message": "We will increment `begin` at the end of iteration, the intention is to stop iterating when we see a different block device(fstab might have more than 1 entries for a single block device)",
+      "parentUuid": "f542a1b4_46a877a9",
       "range": {
         "startLine": 1423,
         "startChar": 11,
@@ -107,6 +155,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "825271c0_991a9861",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T23:14:15Z",
+      "side": 1,
+      "message": "Not really, `fstab` is a pointer to `std::vector` , so this is really\n\n```\nstd::vector\u003cEntry\u003e arr \u003d *fstab;\nLocateFormattableEntry(\u0026arr[top_index])\n```",
+      "parentUuid": "b253eb01_360c3af2",
+      "range": {
+        "startLine": 1607,
+        "startChar": 39,
+        "endLine": 1607,
+        "endChar": 57
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68567bf9_cabfb994",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 8
@@ -142,6 +214,30 @@
           ]
         }
       ],
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f79d9ba7_463e9867",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1610,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T23:14:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "68567bf9_cabfb994",
+      "range": {
+        "startLine": 1610,
+        "startChar": 21,
+        "endLine": 1610,
+        "endChar": 39
+      },
       "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
