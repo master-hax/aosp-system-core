@@ -45,6 +45,29 @@
       },
       "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "187d219d_4ead8dc5",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1535516
+      },
+      "writtenOn": "2024-07-30T17:40:37Z",
+      "side": 1,
+      "message": "I would just use `[]` here, `unset` is more advanced and intended for use in defaults modules.",
+      "range": {
+        "startLine": 185,
+        "startChar": 28,
+        "endLine": 185,
+        "endChar": 33
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
