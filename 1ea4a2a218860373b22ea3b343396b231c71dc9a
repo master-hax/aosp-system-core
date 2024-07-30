@@ -181,6 +181,30 @@
       },
       "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "785dfda6_e555d5b9",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1083168
+      },
+      "writtenOn": "2024-07-30T19:48:02Z",
+      "side": 1,
+      "message": "Thank for the doc about `rc`. What would have been even better is if we had something that document the actual properties values/lifetime.\n\nWhat does `none` in `sys.usb.config` mean? That nothing is plugged in USB? If I try on a Google watch 2 connected wirelessly, I still see \"adb\" there. If I plug the watch via USB, I still see `adb` so my assumption can\u0027t be right.\n\nSame thing about `sys.usb.configfs`. What does that property reflects? It seems values can be `0`, `1`, or `2`. I guess it could also have value `omelette au fromage` as far as I can guess.\n\nHow are both of you able to tell what `sys.usb.config` and `sys.usb.configfs` do besides pocking around in `cs.android.com`? Is there anything describing them anywhere?",
+      "parentUuid": "6b3eea1a_4babc8ef",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
