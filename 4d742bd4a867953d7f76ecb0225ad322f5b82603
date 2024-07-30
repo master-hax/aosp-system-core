@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "062b4cec_35e7eed7",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-07-30T12:11:53Z",
+      "side": 1,
+      "message": "no need to use tab here",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 5
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4b26a9b_43f98639",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-07-30T12:11:53Z",
+      "side": 1,
+      "message": "Can you just append these, instead of replacing the keywords?",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 173,
+        "endChar": 139
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
