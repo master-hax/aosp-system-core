@@ -34,6 +34,24 @@
       "parentUuid": "60df879f_3ef6b62f",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a5a88f7_60d799f4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T03:41:30Z",
+      "side": 1,
+      "message": "system property SGTM",
+      "parentUuid": "1acfbecc_306b895b",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
