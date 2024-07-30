@@ -52,6 +52,24 @@
       "parentUuid": "1acfbecc_306b895b",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d59293fb_ef0961f0",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T16:27:55Z",
+      "side": 1,
+      "message": "On a closer look, the caller already passes in a size, and the 512MB margin is only served as a head room? What is causing the caller supplied size to be inaccurate?",
+      "parentUuid": "8a5a88f7_60d799f4",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
