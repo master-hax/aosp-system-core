@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60df879f_3ef6b62f",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-30T01:36:22Z",
+      "side": 1,
+      "message": "How is this threshold determined? Could different platforms configure different sizes for backing device? Is this value going to be good for all OEMs?",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
