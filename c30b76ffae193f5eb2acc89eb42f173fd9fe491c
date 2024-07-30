@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c9569bc_e0b08cc6",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 934,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2024-07-30T22:08:51Z",
+      "side": 1,
+      "message": "Make this the third parameter, to keep the output parameters at the end of the list.  See https://google.github.io/styleguide/cppguide.html#Inputs_and_Outputs",
+      "range": {
+        "startLine": 934,
+        "startChar": 36,
+        "endLine": 934,
+        "endChar": 52
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9580155_20289b99",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2024-07-30T22:08:51Z",
+      "side": 1,
+      "message": "This can use `access(path, R_OK)` to avoid needing a `struct stat`.",
+      "range": {
+        "startLine": 1433,
+        "startChar": 0,
+        "endLine": 1434,
+        "endChar": 94
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9c18bf8_b5eeedb1",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1602,
+      "author": {
+        "id": 1137063
+      },
+      "writtenOn": "2024-07-30T22:08:51Z",
+      "side": 1,
+      "message": "So what happens if the entry doesn\u0027t have the formattable flag, but encryption_interrupted is true?  It looks like both mounting and formatting get skipped -- is that desirable?",
+      "range": {
+        "startLine": 1602,
+        "startChar": 12,
+        "endLine": 1602,
+        "endChar": 50
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
