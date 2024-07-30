@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dad9de81_768ef489",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-07-30T15:06:13Z",
+      "side": 1,
+      "message": "i\u0027m not sure i understand ... doesn\u0027t this make the experience even worse, because you have an unmountable fs when you\u0027re in the configuration that isn\u0027t the one that _did_ do the format?",
+      "revId": "4b859fd1fd1e03c0f23da1a9e05fd441fdbf7d22",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
