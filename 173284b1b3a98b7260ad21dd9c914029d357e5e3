@@ -16,6 +16,24 @@
       "message": "How is this threshold determined? Could different platforms configure different sizes for backing device? Is this value going to be good for all OEMs?",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1acfbecc_306b895b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2024-07-30T03:25:15Z",
+      "side": 1,
+      "message": "The threshold is from the local testing on pixel devices (with additional margins)\nBut you are right, different platform may require different threshold.\nHow about adding a system property to let OEMs customize the value?",
+      "parentUuid": "60df879f_3ef6b62f",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
