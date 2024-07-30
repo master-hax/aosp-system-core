@@ -157,6 +157,30 @@
       },
       "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b3eea1a_4babc8ef",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-07-30T12:43:35Z",
+      "side": 1,
+      "message": "let me keep this thread opened.\n\nFabien, the rc language spec(?) is here. https://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md",
+      "parentUuid": "3e9714f6_a5fdfa69",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
