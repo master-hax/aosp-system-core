@@ -144,3 +144,6 @@ bool fs_mgr_create_canonical_mount_point(const std::string& mount_point);
 // Unlike fs_mgr_overlayfs, mount overlayfs without upperdir and workdir, so the
 // filesystem cannot be remount read-write.
 bool fs_mgr_mount_overlayfs_fstab_entry(const android::fs_mgr::FstabEntry& entry);
+
+android::fs_mgr::FstabEntry* LocateFormattableEntry(android::fs_mgr::FstabEntry* begin,
+                                                    android::fs_mgr::FstabEntry* end);
