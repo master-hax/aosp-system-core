@@ -1,0 +1,149 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "acdbd957_d5759e3d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-30T23:08:34Z",
+      "side": 1,
+      "message": "I only did a review based on static analysis in my head. I didn\u0027t review the semantics.",
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d005919_9e3ec243",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1421,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-30T23:08:34Z",
+      "side": 1,
+      "message": "Doesn\u0027t seem to be useful",
+      "range": {
+        "startLine": 1421,
+        "startChar": 4,
+        "endLine": 1421,
+        "endChar": 47
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f542a1b4_46a877a9",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1423,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-30T23:08:34Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1423,
+        "startChar": 11,
+        "endLine": 1423,
+        "endChar": 46
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b253eb01_360c3af2",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-30T23:08:34Z",
+      "side": 1,
+      "message": "nit: this is just `fstab + top_idx` right? I am not against this format though; it seems cleaner than pointer arithmetic.",
+      "range": {
+        "startLine": 1607,
+        "startChar": 39,
+        "endLine": 1607,
+        "endChar": 57
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "17512267_74a99e6a",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/fs_mgr.cpp",
+              "range": {
+                "startLine": 1606,
+                "startChar": 0,
+                "endLine": 1608,
+                "endChar": 0
+              },
+              "replacement": "        auto formattable_entry \u003d LocateFormattableEntry(\u0026(*fstab)[top_idx], fstab + top_idx);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68567bf9_cabfb994",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1610,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-07-30T23:08:34Z",
+      "side": 1,
+      "message": "nit: use `formattable_entry \u003d\u003d nullptr` for an explicit check.",
+      "range": {
+        "startLine": 1610,
+        "startChar": 21,
+        "endLine": 1610,
+        "endChar": 39
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "1e036409_341f9312",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/fs_mgr.cpp",
+              "range": {
+                "startLine": 1610,
+                "startChar": 0,
+                "endLine": 1611,
+                "endChar": 0
+              },
+              "replacement": "        if (wiped \u0026\u0026 formattable_entry \u003d\u003d nullptr) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
