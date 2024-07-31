@@ -18,7 +18,8 @@ use clap::Parser;
 use kmr_hal::{
     extract_rsp, keymint, rpc, secureclock, send_hal_info, sharedsecret, SerializedChannel,
 };
-use log::{error, info};
+use kmr_hal_nonsecure::{attestation_id_info, get_boot_info};
+use log::{debug, error, info};
 use std::{
     ffi::CString,
     ops::DerefMut,
@@ -165,10 +166,21 @@ fn inner_main() -> Result<(), HalServiceError> {
             ssecret_service_name, e
         ))
     })?;
+    let boot_req = get_boot_info();
+    debug!("boot/HAL->TA: boot info is {:?}", boot_req);
+    kmr_hal::send_boot_info(tipc_channel.lock().unwrap().deref_mut(), boot_req)
+        .map_err(|e| HalServiceError(format!("Failed to send boot info: {:?}", e)))?;
 
     // Send the HAL service information to the TA
     send_hal_info(tipc_channel.lock().unwrap().deref_mut())
         .map_err(|e| HalServiceError(format!("Failed to populate HAL info: {:?}", e)))?;
+
+    // Let the TA know about attestation IDs. (In a real device these would be pre-provisioned into
+    // the TA.)
+    let attest_ids = attestation_id_info();
+    if let Err(e) = kmr_hal::send_attest_ids(tipc_channel.lock().unwrap().deref_mut(), attest_ids) {
+        error!("Failed to send attestation ID info: {:?}", e);
+    }
 
     info!("Successfully registered KeyMint HAL services.");
     info!("Joining thread pool now.");

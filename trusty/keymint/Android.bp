@@ -30,6 +30,7 @@ rust_binary {
         "libandroid_logger",
         "libbinder_rs",
         "libclap",
+        "libkmr_hal_nonsecure",
         "libkmr_wire",
         "libkmr_hal",
         "libtrusty-rs",
