@@ -179,6 +179,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b173f260_3321669c",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1607,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-07-31T17:24:05Z",
+      "side": 1,
+      "message": "rewrite the code a little bit, hopefully it\u0027s clear now",
+      "parentUuid": "825271c0_991a9861",
+      "range": {
+        "startLine": 1607,
+        "startChar": 39,
+        "endLine": 1607,
+        "endChar": 57
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68567bf9_cabfb994",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 8
