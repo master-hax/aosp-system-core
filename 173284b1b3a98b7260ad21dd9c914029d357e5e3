@@ -88,6 +88,24 @@
       "parentUuid": "d59293fb_ef0961f0",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfc578bc_cf362305",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2024-07-31T09:10:14Z",
+      "side": 1,
+      "message": "Update the system property version and tested on Pixel devices.\nPlease help review the change. Thanks!",
+      "parentUuid": "8c8facf3_06cd78a4",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
