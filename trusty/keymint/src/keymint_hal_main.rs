@@ -109,7 +109,11 @@ fn inner_main() -> Result<(), HalServiceError> {
         error!("{}", panic_info);
     }));
 
-    info!("Trusty KM HAL service is starting.");
+    if cfg!(feature = "nonsecure") {
+        warn!("Non-secure Trusty KM HAL service is starting.");
+    } else {
+        info!("Trusty KM HAL service is starting.");
+    }
 
     info!("Starting thread pool now.");
     binder::ProcessState::start_thread_pool();
@@ -125,6 +129,25 @@ fn inner_main() -> Result<(), HalServiceError> {
             },
         )?;
     let tipc_channel = Arc::new(Mutex::new(TipcChannel(connection)));
+
+    #[cfg(feature = "nonsecure")]
+    {
+        // When the non-secure feature is enabled, we send the RoT and device ID, which are
+        // mostly the correct values, to the TA during the HAL service registration.
+        // In a real device, the bootloader should provide these data to the TA directly.
+        let boot_req = kmr_hal_nonsecure::get_boot_info();
+        info!("boot/HAL->TA: boot info is {:?}", boot_req);
+        kmr_hal::send_boot_info(tipc_channel.lock().unwrap().deref_mut(), boot_req)
+            .map_err(|e| HalServiceError(format!("Failed to send boot info: {:?}", e)))?;
+
+        let attest_ids = kmr_hal_nonsecure::attestation_id_info();
+        if let Err(e) =
+            kmr_hal::send_attest_ids(tipc_channel.lock().unwrap().deref_mut(), attest_ids)
+        {
+            error!("Failed to send attestation ID info: {:?}", e);
+        }
+        info!("Successfully sent non-secure boot info and attestation IDs to the TA.");
+    }
 
     // Register the Keymint service
     let km_service = keymint::Device::new_as_binder(tipc_channel.clone());
