@@ -70,6 +70,24 @@
       "parentUuid": "8a5a88f7_60d799f4",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c8facf3_06cd78a4",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2024-07-31T03:06:50Z",
+      "side": 1,
+      "message": "The zram backing device will create a file in userdata during booting. When the free space in userdata is low, it has chance to run out the remaining disk size and cause the booting failure.\nThat\u0027s why we want to add the margin size.",
+      "parentUuid": "d59293fb_ef0961f0",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
