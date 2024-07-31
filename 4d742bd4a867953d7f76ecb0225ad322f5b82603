@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f950dd3d_67a62562",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-07-31T04:13:00Z",
+      "side": 1,
+      "message": "oops. done.",
+      "parentUuid": "062b4cec_35e7eed7",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 5
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e4b26a9b_43f98639",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c0ae0d5_1713a550",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-07-31T04:13:00Z",
+      "side": 1,
+      "message": "I think it\u0027s better to upload a separate change for such refactoring. PTAL aosp/3201170.",
+      "parentUuid": "e4b26a9b_43f98639",
+      "range": {
+        "startLine": 169,
+        "startChar": 0,
+        "endLine": 173,
+        "endChar": 139
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "187d219d_4ead8dc5",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-07-30T17:40:37Z",
       "side": 1,
       "message": "I would just use `[]` here, `unset` is more advanced and intended for use in defaults modules.",
+      "range": {
+        "startLine": 185,
+        "startChar": 28,
+        "endLine": 185,
+        "endChar": 33
+      },
+      "revId": "4d742bd4a867953d7f76ecb0225ad322f5b82603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd5f96fd_09eca31a",
+        "filename": "rootdir/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-07-31T04:13:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "187d219d_4ead8dc5",
       "range": {
         "startLine": 185,
         "startChar": 28,
