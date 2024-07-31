@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "84a9074c_79cf8381",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 934,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2024-07-31T01:15:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c9569bc_e0b08cc6",
+      "range": {
+        "startLine": 934,
+        "startChar": 36,
+        "endLine": 934,
+        "endChar": 52
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d9580155_20289b99",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f11a8009_2bad7319",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2024-07-31T01:15:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9580155_20289b99",
+      "range": {
+        "startLine": 1433,
+        "startChar": 0,
+        "endLine": 1434,
+        "endChar": 94
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c9c18bf8_b5eeedb1",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-07-30T22:08:51Z",
       "side": 1,
       "message": "So what happens if the entry doesn\u0027t have the formattable flag, but encryption_interrupted is true?  It looks like both mounting and formatting get skipped -- is that desirable?",
+      "range": {
+        "startLine": 1602,
+        "startChar": 12,
+        "endLine": 1602,
+        "endChar": 50
+      },
+      "revId": "c30b76ffae193f5eb2acc89eb42f173fd9fe491c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72ba79d0_74b67942",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1602,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2024-07-31T01:15:05Z",
+      "side": 1,
+      "message": "If we can\u0027t format it, then there\u0027s nothing to do there. I\u0027ll add a check to the next mounting block to skip mounting and return the appropriate error, depending on no_fail.",
+      "parentUuid": "c9c18bf8_b5eeedb1",
       "range": {
         "startLine": 1602,
         "startChar": 12,
