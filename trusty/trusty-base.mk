@@ -29,7 +29,12 @@
 # - C++ implementation:    (any other value of TRUSTY_KEYMINT_IMPL)
 
 ifeq ($(TRUSTY_KEYMINT_IMPL),rust)
-    LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty
+    ifeq ($(TRUSTY_KEYMINT_IMPL_NONSECURE),true)
+		LOCAL_KEYMINT_PRODUCT_PACKAGE := \
+		    android.hardware.security.keymint-service.rust.trusty.nonsecure
+	else
+		LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty
+    endif
 else
     # Default to the C++ implementation
     LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.trusty
