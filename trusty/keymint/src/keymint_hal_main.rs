@@ -109,7 +109,11 @@ fn inner_main() -> Result<(), HalServiceError> {
         error!("{}", panic_info);
     }));
 
-    info!("Trusty KM HAL service is starting.");
+    if cfg!(feature = "nonsecure") {
+        info!("Non-secure Trusty KM HAL service is starting.");
+    } else {
+        info!("Trusty KM HAL service is starting.");
+    }
 
     info!("Starting thread pool now.");
     binder::ProcessState::start_thread_pool();
@@ -165,6 +169,24 @@ fn inner_main() -> Result<(), HalServiceError> {
             ssecret_service_name, e
         ))
     })?;
+
+    #[cfg(feature = "nonsecure")]
+    {
+        // When the nonsecure feature is enabled, we will send the fake RoT to the TA.
+        // In a real device these would be pre-provisioned into the TA.
+        let boot_req = kmr_hal_nonsecure::get_boot_info();
+        info!("boot/HAL->TA: boot info is {:?}", boot_req);
+        kmr_hal::send_boot_info(tipc_channel.lock().unwrap().deref_mut(), boot_req)
+            .map_err(|e| HalServiceError(format!("Failed to send boot info: {:?}", e)))?;
+
+        let attest_ids = kmr_hal_nonsecure::attestation_id_info();
+        if let Err(e) =
+            kmr_hal::send_attest_ids(tipc_channel.lock().unwrap().deref_mut(), attest_ids)
+        {
+            error!("Failed to send attestation ID info: {:?}", e);
+        }
+        info!("Successfully sent non-secure boot info and attestation IDs to the TA.");
+    }
 
     // Send the HAL service information to the TA
     send_hal_info(tipc_channel.lock().unwrap().deref_mut())
