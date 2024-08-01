@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37920388_d96d84c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-01T11:56:34Z",
+      "side": 1,
+      "message": "Hi David,\n\nRegarding the KeyMint RoT issue on cuttlefish, I would like to add a new binary to set the required data. Since anyway we don\u0027t have a valid DICE chain in VM on cuttlefish, it doesn\u0027t matter much if the RoT is also fake.\n\nThere are no changes on the existing host binary.\n\nWDYT?",
+      "revId": "7fb8e6c23b80966262aa1af7a5db4f1b2d084264",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
