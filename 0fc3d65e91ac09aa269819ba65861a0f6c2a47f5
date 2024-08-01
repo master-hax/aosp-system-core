@@ -70,6 +70,30 @@
       },
       "revId": "0fc3d65e91ac09aa269819ba65861a0f6c2a47f5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e313e83e_8802c4c6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-01T03:46:06Z",
+      "side": 1,
+      "message": "before\n\n```\nEXPORT_GLOBAL_HWASAN_OPTIONS \u003d select((soong_config_variable(\"ANDROID\", \"HWASAN_ENABLED\"), soong_config_variable(\"ANDROID\", \"HWADDRESS_SANITIZER_GLOBAL_OPTIONS\")), {\n    (true, \"\"): \"\",\n    (true, any @ options): \"export HWASAN_OPTIONS \" + options,\n    (default, default): \"\",\n})\n```\n\nafter\n\n```\nEXPORT_GLOBAL_HWASAN_OPTIONS \u003d select(soong_config_variable(\"ANDROID\", \"HWASAN_ENABLED\"), {\n    true: \"export HWASAN_OPTIONS heap_history_size\u003d1023,stack_history_size\u003d512,export_memory_stats\u003d0,max_malloc_fill_size\u003d131072,malloc_fill_byte\u003d0\",\n    default: \"\",\n})\n```\n\nI moved the hard-coded configs from Soong to Android.bp. The variable `HWADDRESS_SANITIZER_GLOBAL_OPTIONS` was being exported with makeVars, which is not available for soong config variables.",
+      "parentUuid": "b9aa1bf0_d6531bd4",
+      "range": {
+        "startLine": 12,
+        "startChar": 15,
+        "endLine": 12,
+        "endChar": 38
+      },
+      "revId": "0fc3d65e91ac09aa269819ba65861a0f6c2a47f5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
