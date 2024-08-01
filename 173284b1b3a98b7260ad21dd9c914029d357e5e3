@@ -142,6 +142,24 @@
       "parentUuid": "c6afdfae_1c436565",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15fedd45_e15d1c03",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-08-01T03:48:59Z",
+      "side": 1,
+      "message": "Make sense, thanks for the explanation! Can we document this consideration in comment? Mention that zram backing device can be created as long as `/data` has at least `size` free space, though we want to leave some room for remaining boot process.",
+      "parentUuid": "c0f053d6_6d7071c8",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
