@@ -123,7 +123,7 @@ const std::string& ProfileAttribute::file_name() const {
     return file_name_;
 }
 
-void ProfileAttribute::Reset(const CgroupController& controller, const std::string& file_name,
+void ProfileAttribute::Reset(const CgroupControllerWrapper& controller, const std::string& file_name,
                              const std::string& file_v2_name) {
     controller_ = controller;
     file_name_ = file_name;
@@ -333,7 +333,7 @@ bool SetAttributeAction::IsValidForTask(pid_t tid) const {
     return optional_;
 }
 
-SetCgroupAction::SetCgroupAction(const CgroupController& c, const std::string& p)
+SetCgroupAction::SetCgroupAction(const CgroupControllerWrapper& c, const std::string& p)
     : controller_(c), path_(p) {
     FdCacheHelper::Init(controller_.GetTasksFilePath(path_), fd_[ProfileAction::RCT_TASK]);
     // uid and pid don't matter because IsAppDependentPath ensures the path doesn't use them
