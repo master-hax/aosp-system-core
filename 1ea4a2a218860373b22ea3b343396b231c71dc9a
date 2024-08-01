@@ -205,6 +205,30 @@
       },
       "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09dd3aae_bfd91b74",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-08-01T01:18:03Z",
+      "side": 1,
+      "message": "Your questions are specific to the USB subsystem, which I am not familiar with. @enh@google.com may know it or at least have a pointer.",
+      "parentUuid": "785dfda6_e555d5b9",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
