@@ -124,6 +124,24 @@
       "parentUuid": "dfc578bc_cf362305",
       "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0f053d6_6d7071c8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2076,
+      "author": {
+        "id": 1894539
+      },
+      "writtenOn": "2024-08-01T03:35:14Z",
+      "side": 1,
+      "message": "Before this patch, for example, if `size` is 1024MB and /data has 1025MB free space, then the zram backing device file can be created successfully but /data only left 1MB. It will impact the remaining booting.",
+      "parentUuid": "c6afdfae_1c436565",
+      "revId": "173284b1b3a98b7260ad21dd9c914029d357e5e3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
