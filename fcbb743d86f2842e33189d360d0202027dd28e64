@@ -16,6 +16,24 @@
       "message": "is it worth a comment here as a warning that extra exports will be appended here? (so someone doesn\u0027t add an `on something-else` section, say?)",
       "revId": "fcbb743d86f2842e33189d360d0202027dd28e64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "20a3ee71_167c6689",
+        "filename": "rootdir/init.environ.rc.in",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-02T06:56:15Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "cdfc8b89_6102b76c",
+      "revId": "fcbb743d86f2842e33189d360d0202027dd28e64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
