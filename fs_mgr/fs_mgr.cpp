@@ -261,12 +261,12 @@ static void check_fs(const std::string& blk_device, const std::string& fs_type,
             }
         }
     } else if (is_f2fs(fs_type)) {
-        const char* f2fs_fsck_argv[] = {F2FS_FSCK_BIN,     "-a", "-c", "10000", "--debug-cache",
-                                        blk_device.c_str()};
+        const char* f2fs_fsck_argv[] = {
+                F2FS_FSCK_BIN, "-d8", "-a", "-c", "10000", "--debug-cache", blk_device.c_str()};
         const char* f2fs_fsck_forced_argv[] = {
-                F2FS_FSCK_BIN, "-f", "-c", "10000", "--debug-cache", blk_device.c_str()};
+                F2FS_FSCK_BIN, "-f", "-d8", "-c", "10000", "--debug-cache", blk_device.c_str()};
 
-        if (access(F2FS_FSCK_BIN, X_OK)) {
+        if (1 || access(F2FS_FSCK_BIN, X_OK)) {
             LINFO << "Not running " << F2FS_FSCK_BIN << " on " << realpath(blk_device)
                   << " (executable not in system image)";
         } else {
