@@ -648,6 +648,14 @@ on late-fs
     chmod 0755 /sys/kernel/tracing
     chmod 0755 /sys/kernel/debug/tracing
 
+    # Early HALs may use early VM. Mount /early-vm before starting such HALs.
+    mount tmpfs tmpfs /early-vm nosuid nodev noexec rw
+    chown system system /early-vm
+    chmod 0770 /early-vm
+    # init doesn't have chown / chmod permission on early-vm, so restorecon
+    # after chown / chmod
+    restorecon /early-vm
+
     # HALs required before storage encryption can get unlocked (FBE)
     class_start early_hal
 
