@@ -55,7 +55,7 @@ void Printer::printFormatLine(const char* format, ...) {
 
     va_end(arglist);
 
-    printLine(formattedString);
+    printMine(formattedString);
     free(formattedString);
 }
 
@@ -72,7 +72,7 @@ LogPrinter::LogPrinter(const char* logtag,
         mIgnoreBlankLines(ignoreBlankLines) {
 }
 
-void LogPrinter::printLine(const char* string) {
+void LogPrinter::printMine(const char* string) {
     if (string == nullptr) {
         ALOGW("%s: NULL string passed in", __FUNCTION__);
         return;
@@ -106,7 +106,7 @@ FdPrinter::FdPrinter(int fd, unsigned int indent, const char* prefix) :
     snprintf(mFormatString, sizeof(mFormatString), "%%-%us%%s\n", mIndent);
 }
 
-void FdPrinter::printLine(const char* string) {
+void FdPrinter::printMine(const char* string) {
     if (string == nullptr) {
         ALOGW("%s: NULL string passed in", __FUNCTION__);
         return;
@@ -132,7 +132,7 @@ String8Printer::String8Printer(String8* target, const char* prefix) :
     }
 }
 
-void String8Printer::printLine(const char* string) {
+void String8Printer::printMine(const char* string) {
     if (string == nullptr) {
         ALOGW("%s: NULL string passed in", __FUNCTION__);
         return;
@@ -153,7 +153,7 @@ PrefixPrinter::PrefixPrinter(Printer& printer, const char* prefix) :
         mPrinter(printer), mPrefix(prefix ?: "") {
 }
 
-void PrefixPrinter::printLine(const char* string) {
+void PrefixPrinter::printMine(const char* string) {
     mPrinter.printFormatLine("%s%s", mPrefix, string);
 }
 

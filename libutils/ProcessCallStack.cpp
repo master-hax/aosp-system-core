@@ -62,16 +62,16 @@ static void dumpProcessHeader(Printer& printer, pid_t pid, const char* timeStr) 
         procName = const_cast<char*>("<unknown>");
     }
 
-    printer.printLine();
-    printer.printLine();
+    printer.printMine();
+    printer.printMine();
     printer.printFormatLine("----- pid %d at %s -----", pid, timeStr);
     printer.printFormatLine("Cmd line: %s", procName);
 }
 
 static void dumpProcessFooter(Printer& printer, pid_t pid) {
-    printer.printLine();
+    printer.printMine();
     printer.printFormatLine("----- end %d -----", pid);
-    printer.printLine();
+    printer.printMine();
 }
 
 static String8 getThreadName(pid_t tid) {
@@ -212,7 +212,7 @@ void ProcessCallStack::printInternal(Printer& printer, Printer& csPrinter) const
         const ThreadInfo& threadInfo = mThreadMap.valueAt(i);
         const String8& threadName = threadInfo.threadName;
 
-        printer.printLine("");
+        printer.printMine("");
         printer.printFormatLine("\"%s\" sysTid=%d", threadName.c_str(), tid);
 
         threadInfo.callStack.print(csPrinter);

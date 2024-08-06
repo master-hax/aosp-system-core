@@ -82,7 +82,7 @@ String8 CallStack::toString(const char* prefix) const {
 
 void CallStack::print(Printer& printer) const {
     for (size_t i = 0; i < mFrameLines.size(); i++) {
-        printer.printLine(mFrameLines[i].c_str());
+        printer.printMine(mFrameLines[i].c_str());
     }
 }
 

@@ -26,7 +26,7 @@ class Printer {
 public:
     // Print a new line specified by 'string'. \n is appended automatically.
     // -- Assumes that the string has no new line in it.
-    virtual void printLine(const char* string = "") = 0;
+    virtual void printMine(const char* string = "") = 0;
 
     // Print a new line specified by the format string. \n is appended automatically.
     // -- Assumes that the resulting string has no new line in it.
@@ -49,7 +49,7 @@ public:
                bool ignoreBlankLines = false);
 
     // Print the specified line to logcat. No \n at the end is necessary.
-    virtual void printLine(const char* string);
+    virtual void printMine(const char* string);
 
 private:
     void printRaw(const char* string);
@@ -69,7 +69,7 @@ public:
     FdPrinter(int fd, unsigned int indent = 0, const char* prefix = nullptr);
 
     // Print the specified line to the file descriptor. \n is appended automatically.
-    virtual void printLine(const char* string);
+    virtual void printMine(const char* string);
 
 private:
     enum {
@@ -93,7 +93,7 @@ public:
     String8Printer(String8* target, const char* prefix = nullptr);
 
     // Append the specified line to the String8. \n is appended automatically.
-    virtual void printLine(const char* string);
+    virtual void printMine(const char* string);
 
 private:
     String8* mTarget;
@@ -107,7 +107,7 @@ public:
     PrefixPrinter(Printer& printer, const char* prefix);
 
     // Print the line (prefixed with prefix) using the printer.
-    virtual void printLine(const char* string);
+    virtual void printMine(const char* string);
 
 private:
     Printer& mPrinter;
