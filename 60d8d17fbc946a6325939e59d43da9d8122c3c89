@@ -34,6 +34,24 @@
       ],
       "revId": "60d8d17fbc946a6325939e59d43da9d8122c3c89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c027fadc_2a7219f8",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1954115
+      },
+      "writtenOn": "2024-08-07T16:50:27Z",
+      "side": 0,
+      "message": "Yes, seems not required. Removed dm_user_message and dm_user_payload embedded structure as well.",
+      "parentUuid": "147fb69b_99ea4d4a",
+      "revId": "60d8d17fbc946a6325939e59d43da9d8122c3c89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

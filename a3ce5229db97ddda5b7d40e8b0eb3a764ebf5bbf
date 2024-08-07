@@ -51,6 +51,24 @@
       ],
       "revId": "a3ce5229db97ddda5b7d40e8b0eb3a764ebf5bbf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e96b8466_fcbef3d0",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1954115
+      },
+      "writtenOn": "2024-08-07T16:50:27Z",
+      "side": 1,
+      "message": "Thanks, fixed in V3.",
+      "parentUuid": "453cc699_06a3b627",
+      "revId": "a3ce5229db97ddda5b7d40e8b0eb3a764ebf5bbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
