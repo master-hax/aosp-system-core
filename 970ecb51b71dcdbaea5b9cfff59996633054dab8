@@ -16,6 +16,24 @@
       "message": "We shouldn\u0027t have a safetydoc if there\u0027s no unsafe block after it.",
       "revId": "970ecb51b71dcdbaea5b9cfff59996633054dab8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e08ccdad_7e683436",
+        "filename": "trusty/libtrusty-rs/src/lib.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-07T11:28:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "44a6784b_d1fb3152",
+      "revId": "970ecb51b71dcdbaea5b9cfff59996633054dab8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
