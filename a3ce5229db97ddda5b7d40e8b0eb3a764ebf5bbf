@@ -16,6 +16,41 @@
       "message": "+2 but Akilesh should take a look to confirm that no header is needed in MergeWorker.",
       "revId": "a3ce5229db97ddda5b7d40e8b0eb3a764ebf5bbf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "453cc699_06a3b627",
+        "filename": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-07T04:59:11Z",
+      "side": 1,
+      "message": "nit: s/header_size_/header_size",
+      "fixSuggestions": [
+        {
+          "fixId": "b90fc37f_e460578b",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/include/snapuserd/snapuserd_buffer.h",
+              "range": {
+                "startLine": 34,
+                "startChar": 0,
+                "endLine": 35,
+                "endChar": 0
+              },
+              "replacement": "    void Initialize(size_t header_size, size_t size);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "a3ce5229db97ddda5b7d40e8b0eb3a764ebf5bbf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

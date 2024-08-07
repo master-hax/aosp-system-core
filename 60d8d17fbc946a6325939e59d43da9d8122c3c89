@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "147fb69b_99ea4d4a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-07T04:59:11Z",
+      "side": 0,
+      "message": "Do we still need dm_user_message structure after this removal. It looks like these are the only two places it was used. We can probably remove it now.",
+      "fixSuggestions": [
+        {
+          "fixId": "4ec8c158_f0bab66c",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/snapuserd_buffer.cpp",
+              "range": {
+                "startLine": 70,
+                "startChar": 0,
+                "endLine": 75,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "60d8d17fbc946a6325939e59d43da9d8122c3c89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
