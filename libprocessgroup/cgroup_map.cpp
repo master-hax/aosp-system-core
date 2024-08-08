@@ -221,7 +221,7 @@ int CgroupMap::ActivateControllers(const std::string& path) const {
             if (__builtin_available(android 36, *)) {
                 max_activation_depth = ACgroupController_getMaxActivationDepth(controller);
             }
-            const int depth = util::GetCgroupDepth(ACgroupController_getPath(controller), path);
+            const int depth = GetCgroupDepth(ACgroupController_getPath(controller), path);
 
             if (flags & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION && depth < max_activation_depth) {
                 std::string str("+");
