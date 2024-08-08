@@ -45,6 +45,54 @@
       },
       "revId": "2fcce94af48caff8f86d4f51dd44f2d8064600c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d69b74d8_c79a2fe0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2024-08-08T16:04:57Z",
+      "side": 1,
+      "message": "yeah, we want to move the current foreground group to a new group.",
+      "parentUuid": "6b032cd8_3030c222",
+      "range": {
+        "startLine": 9,
+        "startChar": 20,
+        "endLine": 9,
+        "endChar": 31
+      },
+      "revId": "2fcce94af48caff8f86d4f51dd44f2d8064600c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7e99144_9de4a929",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1324603
+      },
+      "writtenOn": "2024-08-08T16:04:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "802028fc_f6f54b9b",
+      "range": {
+        "startLine": 9,
+        "startChar": 31,
+        "endLine": 9,
+        "endChar": 32
+      },
+      "revId": "2fcce94af48caff8f86d4f51dd44f2d8064600c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
