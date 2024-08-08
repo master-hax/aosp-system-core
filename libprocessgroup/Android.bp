@@ -75,7 +75,6 @@ cc_library {
     double_loadable: true,
     shared_libs: [
         "libbase",
-        "libcgrouprc",
         "libjsoncpp",
     ],
     static_libs: [
@@ -111,7 +110,6 @@ cc_test {
     ],
     shared_libs: [
         "libbase",
-        "libcgrouprc",
         "libprocessgroup",
         "libprocessgroup_util",
     ],
