@@ -30,9 +30,9 @@ unsigned int GetCgroupDepth(const std::string& controller_root, const std::strin
 #include "cgroup_descriptor.h"
 
 // TODO Eh, maybe these need their own header, or move to cgroup_descriptor or cgroup_controller
-#define CGROUPRC_CONTROLLER_FLAG_MOUNTED 0x1
-#define CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION 0x2
-#define CGROUPRC_CONTROLLER_FLAG_OPTIONAL 0x4
+#define CGROUP_CONTROLLER_FLAG_MOUNTED 0x1
+#define CGROUP_CONTROLLER_FLAG_NEEDS_ACTIVATION 0x2
+#define CGROUP_CONTROLLER_FLAG_OPTIONAL 0x4
 
 using CgroupControllerName = std::string;
 using CgroupDescriptorMap = std::map<CgroupControllerName, CgroupDescriptor>;
