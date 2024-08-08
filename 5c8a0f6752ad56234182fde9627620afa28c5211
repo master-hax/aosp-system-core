@@ -106,6 +106,24 @@
       "parentUuid": "73d5a7d8_9b1c2db4",
       "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8eb2dfb4_0ef1a0ce",
+        "filename": "fs_mgr/libsnapshot/snapuserd/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-08T00:19:24Z",
+      "side": 1,
+      "message": "This is now fixed and tests are enabled on 32-bit platforms: https://r.android.com/3194188",
+      "parentUuid": "b4308e7e_42a6db04",
+      "revId": "5c8a0f6752ad56234182fde9627620afa28c5211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
