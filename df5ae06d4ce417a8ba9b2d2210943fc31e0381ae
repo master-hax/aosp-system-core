@@ -33,6 +33,24 @@
       "message": "(alternatively, you could put this in bionic/libc/platform/bionic/mte.h to share it?)",
       "revId": "df5ae06d4ce417a8ba9b2d2210943fc31e0381ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf78c59b_3076343e",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-08T20:04:37Z",
+      "side": 1,
+      "message": "Yeah, if in the future I really try to pull these into their own pieces. However, for testing I kind of like having it two different places so it\u0027s obvious if something about the way it works changes. For now, I\u0027ll leave it like this.",
+      "parentUuid": "9cb6752a_9f73630b",
+      "revId": "df5ae06d4ce417a8ba9b2d2210943fc31e0381ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
