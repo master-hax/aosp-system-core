@@ -14,9 +14,9 @@ CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,
 void CgroupDescriptor::set_mounted(bool mounted) {
     uint32_t flags = controller_.flags();
     if (mounted) {
-        flags |= CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+        flags |= CGROUP_CONTROLLER_FLAG_MOUNTED;
     } else {
-        flags &= ~CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+        flags &= ~CGROUP_CONTROLLER_FLAG_MOUNTED;
     }
     controller_.set_flags(flags);
 }
