@@ -189,6 +189,30 @@
       },
       "revId": "512393a2244f3d26544242d5725421323fd3cd14",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36e80b26_e3de79f1",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 705,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-08-08T15:53:03Z",
+      "side": 1,
+      "message": "Why ag/28679734 and ag/28697678 are not posted in AOSP?",
+      "parentUuid": "499022a6_55c6b65d",
+      "range": {
+        "startLine": 705,
+        "startChar": 15,
+        "endLine": 705,
+        "endChar": 38
+      },
+      "revId": "512393a2244f3d26544242d5725421323fd3cd14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
