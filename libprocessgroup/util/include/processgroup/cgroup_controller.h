@@ -20,11 +20,7 @@
 #include <cstdint>
 #include <string>
 
-namespace android {
-namespace cgrouprc {
-namespace format {
-
-// Minimal controller description to be mmapped into process address space
+// Minimal controller description
 struct CgroupController {
   public:
     CgroupController() = default;
@@ -40,6 +36,8 @@ struct CgroupController {
     void set_flags(uint32_t flags);
 
   private:
+    // DON'T MODIFY ANYTHING THAT AFFECTS THE BINARY LAYOUT until cgroup.rc is removed
+    // and vendor libprocessgroup.sos have all been updated to not depend on cgroup.rc.
     static constexpr size_t CGROUP_NAME_BUF_SZ = 16;
     static constexpr size_t CGROUP_PATH_BUF_SZ = 32;
 
@@ -49,7 +47,3 @@ struct CgroupController {
     char name_[CGROUP_NAME_BUF_SZ] = {};
     char path_[CGROUP_PATH_BUF_SZ] = {};
 };
-
-}  // namespace format
-}  // namespace cgrouprc
-}  // namespace android
