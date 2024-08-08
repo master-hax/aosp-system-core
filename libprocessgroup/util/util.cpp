@@ -85,11 +85,11 @@ void MergeCgroupToDescriptors(CgroupDescriptorMap* descriptors, const Json::Valu
     uint32_t controller_flags = 0;
 
     if (cgroup["NeedsActivation"].isBool() && cgroup["NeedsActivation"].asBool()) {
-        controller_flags |= CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION;
+        controller_flags |= CGROUP_CONTROLLER_FLAG_NEEDS_ACTIVATION;
     }
 
     if (cgroup["Optional"].isBool() && cgroup["Optional"].asBool()) {
-        controller_flags |= CGROUPRC_CONTROLLER_FLAG_OPTIONAL;
+        controller_flags |= CGROUP_CONTROLLER_FLAG_OPTIONAL;
     }
 
     uint32_t max_activation_depth = UINT32_MAX;
@@ -258,11 +258,11 @@ bool ActivateControllers(const std::string& path, const CgroupDescriptorMap& des
             const uint32_t max_activation_depth = descriptor.controller()->max_activation_depth();
             const int depth = GetCgroupDepth(descriptor.controller()->path(), path);
 
-            if (flags & CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION && depth < max_activation_depth) {
+            if (flags & CGROUP_CONTROLLER_FLAG_NEEDS_ACTIVATION && depth < max_activation_depth) {
                 std::string str("+");
                 str.append(descriptor.controller()->name());
                 if (!android::base::WriteStringToFile(str, path + "/cgroup.subtree_control")) {
-                    if (flags & CGROUPRC_CONTROLLER_FLAG_OPTIONAL) {
+                    if (flags & CGROUP_CONTROLLER_FLAG_OPTIONAL) {
                         PLOG(WARNING) << "Activation of cgroup controller " << str
                                       << " failed in path " << path;
                     } else {

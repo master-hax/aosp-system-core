@@ -21,9 +21,9 @@
 
 #include "cgroup_descriptor.h"
 
-#define CGROUPRC_CONTROLLER_FLAG_MOUNTED 0x1
-#define CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION 0x2
-#define CGROUPRC_CONTROLLER_FLAG_OPTIONAL 0x4
+#define CGROUP_CONTROLLER_FLAG_MOUNTED 0x1
+#define CGROUP_CONTROLLER_FLAG_NEEDS_ACTIVATION 0x2
+#define CGROUP_CONTROLLER_FLAG_OPTIONAL 0x4
 
 unsigned int GetCgroupDepth(const std::string& controller_root, const std::string& cgroup_path);
 

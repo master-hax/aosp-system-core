@@ -136,7 +136,7 @@ static bool Mkdir(const std::string& path, mode_t mode, const std::string& uid,
 #if defined(__ANDROID__)
 
 static bool IsOptionalController(const CgroupController* controller) {
-    return controller->flags() & CGROUPRC_CONTROLLER_FLAG_OPTIONAL;
+    return controller->flags() & CGROUP_CONTROLLER_FLAG_OPTIONAL;
 }
 
 static bool MountV2CgroupController(const CgroupDescriptor& descriptor) {
@@ -254,9 +254,9 @@ CgroupDescriptor::CgroupDescriptor(uint32_t version, const std::string& name,
 void CgroupDescriptor::set_mounted(bool mounted) {
     uint32_t flags = controller_.flags();
     if (mounted) {
-        flags |= CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+        flags |= CGROUP_CONTROLLER_FLAG_MOUNTED;
     } else {
-        flags &= ~CGROUPRC_CONTROLLER_FLAG_MOUNTED;
+        flags &= ~CGROUP_CONTROLLER_FLAG_MOUNTED;
     }
     controller_.set_flags(flags);
 }
@@ -325,7 +325,7 @@ bool CgroupSetup() {
 
     // setup cgroups
     for (auto& [name, descriptor] : descriptors) {
-        if (descriptor.controller()->flags() & CGROUPRC_CONTROLLER_FLAG_MOUNTED) {
+        if (descriptor.controller()->flags() & CGROUP_CONTROLLER_FLAG_MOUNTED) {
             LOG(WARNING) << "Attempt to call CgroupSetup() more than once";
             return true;
         }
