@@ -38,3 +38,5 @@ using CgroupControllerName = std::string;
 using CgroupDescriptorMap = std::map<CgroupControllerName, CgroupDescriptor>;
 
 bool ReadDescriptors(CgroupDescriptorMap* descriptors);
+
+bool ActivateControllers(const std::string& path, const CgroupDescriptorMap& descriptors);
