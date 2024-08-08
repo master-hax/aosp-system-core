@@ -61,7 +61,7 @@ bool CgroupControllerWrapper::IsUsable() {
     if (state_ == UNKNOWN) {
         if (__builtin_available(android 30, *)) {
             uint32_t flags = controller_->flags();
-            state_ = (flags & CGROUPRC_CONTROLLER_FLAG_MOUNTED) != 0 ? USABLE : MISSING;
+            state_ = (flags & CGROUP_CONTROLLER_FLAG_MOUNTED) != 0 ? USABLE : MISSING;
         } else {
             state_ = access(GetProcsFilePath("", 0, 0).c_str(), F_OK) == 0 ? USABLE : MISSING;
         }
