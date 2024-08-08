@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e15da72e_888665e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-08T02:29:32Z",
+      "side": 1,
+      "message": "I did this because we should separate the libdebuggerd/tests from debuggerd_test and have two different set of tests. However, that could be a lot of work, so I decided to just do the first part to make sure that debuggerd_test is not touching any libdebuggerd internal code.",
+      "revId": "df5ae06d4ce417a8ba9b2d2210943fc31e0381ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
