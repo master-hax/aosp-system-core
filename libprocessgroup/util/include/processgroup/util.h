@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 
 namespace util {
@@ -23,3 +24,17 @@ namespace util {
 unsigned int GetCgroupDepth(const std::string& controller_root, const std::string& cgroup_path);
 
 }  // namespace util
+
+
+
+#include "cgroup_descriptor.h"
+
+// TODO Eh, maybe these need their own header, or move to cgroup_descriptor or cgroup_controller
+#define CGROUPRC_CONTROLLER_FLAG_MOUNTED 0x1
+#define CGROUPRC_CONTROLLER_FLAG_NEEDS_ACTIVATION 0x2
+#define CGROUPRC_CONTROLLER_FLAG_OPTIONAL 0x4
+
+using CgroupControllerName = std::string;
+using CgroupDescriptorMap = std::map<CgroupControllerName, CgroupDescriptor>;
+
+bool ReadDescriptors(CgroupDescriptorMap* descriptors);
