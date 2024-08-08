@@ -17,7 +17,7 @@ soong_config_module_type {
 
 libprocessgroup_flag_aware_cc_defaults {
     name: "libprocessgroup_build_flags_cc",
-    cpp_std: "gnu++20",
+    cpp_std: "gnu++23",
     soong_config_variables: {
         memcg_v2_force_enabled: {
             cflags: [
@@ -76,9 +76,9 @@ cc_library {
     shared_libs: [
         "libbase",
         "libcgrouprc",
+        "libjsoncpp",
     ],
     static_libs: [
-        "libjsoncpp",
         "libprocessgroup_util",
     ],
     // for cutils/android_filesystem_config.h
@@ -113,6 +113,7 @@ cc_test {
         "libbase",
         "libcgrouprc",
         "libprocessgroup",
+        "libprocessgroup_util",
     ],
     static_libs: [
         "libgmock",
