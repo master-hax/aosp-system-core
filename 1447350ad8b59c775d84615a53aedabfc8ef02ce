@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "35766677_d711043d",
+        "filename": "rootdir/Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-08T06:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4eab4f1f_6363b316",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 68
+      },
+      "revId": "1447350ad8b59c775d84615a53aedabfc8ef02ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aaa4bf1b_5c12edcf",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-08-07T11:20:29Z",
       "side": 1,
       "message": "Since this block can\u0027t be conditional, I don\u0027t see a great value in flag-guarding the rest.\n\nI prefer to flag-guard only the entrypoint. i.e. we don\u0027t start early virgmgr unless the flag is on. (or early virtmgr refuses to run if flag is unset)",
+      "range": {
+        "startLine": 651,
+        "startChar": 0,
+        "endLine": 657,
+        "endChar": 24
+      },
+      "revId": "1447350ad8b59c775d84615a53aedabfc8ef02ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36694207_0cd9a15a",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-08T06:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aaa4bf1b_5c12edcf",
       "range": {
         "startLine": 651,
         "startChar": 0,
