@@ -16,6 +16,23 @@
       "message": "I did this because we should separate the libdebuggerd/tests from debuggerd_test and have two different set of tests. However, that could be a lot of work, so I decided to just do the first part to make sure that debuggerd_test is not touching any libdebuggerd internal code.",
       "revId": "df5ae06d4ce417a8ba9b2d2210943fc31e0381ae",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9cb6752a_9f73630b",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-08T12:05:40Z",
+      "side": 1,
+      "message": "(alternatively, you could put this in bionic/libc/platform/bionic/mte.h to share it?)",
+      "revId": "df5ae06d4ce417a8ba9b2d2210943fc31e0381ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
