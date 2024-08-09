@@ -16,6 +16,23 @@
       "message": "Once we mark the slot as unbootable, shouldn\u0027t we mark the other slot as bootable and active ? I see this you haven\u0027t changed the logic but i am thinking if we ever enter a case wherein both the slot could be unbootable ?",
       "revId": "fa690264d454c5aef1447367cca02f3080f5beeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "385cd0ef_fc6be6ee",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4087,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-09T17:54:07Z",
+      "side": 1,
+      "message": "If the update_state is \"UpdateState::Unverified\" and there was a rollback, we still have to UnmapAllPartitions ? \n\nso, this should be outside of \"try_merge\" block but only for \"unverified and rollback\" state ? \n\nOr am I missing something here..",
+      "revId": "fa690264d454c5aef1447367cca02f3080f5beeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
