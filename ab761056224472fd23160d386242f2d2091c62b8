@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98295cd3_9a34184d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-09T23:59:38Z",
+      "side": 1,
+      "message": "This is my first contribution to `system/core` (and in C++ for Android). Please let me know if I\u0027ve missed anything. I\u0027ve tried to follow go/android-cppstyle as much as possible, but it\u0027s likely I\u0027ve missed something.",
+      "revId": "ab761056224472fd23160d386242f2d2091c62b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
