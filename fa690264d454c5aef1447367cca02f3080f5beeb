@@ -33,6 +33,24 @@
       "message": "If the update_state is \"UpdateState::Unverified\" and there was a rollback, we still have to UnmapAllPartitions ? \n\nso, this should be outside of \"try_merge\" block but only for \"unverified and rollback\" state ? \n\nOr am I missing something here..",
       "revId": "fa690264d454c5aef1447367cca02f3080f5beeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b6b27a0_c494d649",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4087,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-09T20:19:29Z",
+      "side": 1,
+      "message": "We only map partitions if try_merge is true, so it shouldn\u0027t be necessary.",
+      "parentUuid": "385cd0ef_fc6be6ee",
+      "revId": "fa690264d454c5aef1447367cca02f3080f5beeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
