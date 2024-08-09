@@ -1,0 +1,24 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_defaults {
+    name: "cpu_features_defaults",
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+        "-fno-exceptions",
+        "-Oz",
+    ],
+    local_include_dirs: ["include"],
+}
+
+cc_binary {
+    name: "cpu-target-features",
+    defaults: ["cpu_features_defaults"],
+    srcs: [
+        "main.cpp",
+        "print_target_features.cpp",
+    ],
+}
