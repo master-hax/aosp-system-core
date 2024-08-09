@@ -16,6 +16,24 @@
       "message": "Whats the point of adding at the end when it is anyway returning. I think just deleting the line at 2843 should suffice.",
       "revId": "5e8302b7d8be2634220549903348eb6647a2de21",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e24a258d_65be857b",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2893,
+      "author": {
+        "id": 2012329
+      },
+      "writtenOn": "2024-08-09T05:50:19Z",
+      "side": 1,
+      "message": "Indeed, I agree with you and have deleted it.",
+      "parentUuid": "268371e7_188474c3",
+      "revId": "5e8302b7d8be2634220549903348eb6647a2de21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
