@@ -99,6 +99,24 @@
       "parentUuid": "45c9c317_3bc014ee",
       "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf68b96f_a8defb52",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 671,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-09T17:32:17Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "d8b94617_d931d245",
+      "revId": "b08c940242532d2426733cfd2eb820d1e64be619",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

@@ -16,6 +16,24 @@
       "message": "reporting, but ignoring errors?!",
       "revId": "bc950ce920195b5dd622ec5a2f4f10ad26dabb93",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00a956c8_84653755",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-09T17:32:17Z",
+      "side": 1,
+      "message": "What do you suggest? if it fails to parse, the value will be `0` and the feature will not be used.",
+      "parentUuid": "4f31552a_c50f843e",
+      "revId": "bc950ce920195b5dd622ec5a2f4f10ad26dabb93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
