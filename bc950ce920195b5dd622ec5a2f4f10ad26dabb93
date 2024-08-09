@@ -34,6 +34,24 @@
       "parentUuid": "4f31552a_c50f843e",
       "revId": "bc950ce920195b5dd622ec5a2f4f10ad26dabb93",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "997ac8fc_1fede93a",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-09T18:48:01Z",
+      "side": 1,
+      "message": "that\u0027s a bit subtle (and a rake in the grass if anyone else wants to use the function but 0 isn\u0027t \"off\" for them) ... return a bool and take an int*?",
+      "parentUuid": "00a956c8_84653755",
+      "revId": "bc950ce920195b5dd622ec5a2f4f10ad26dabb93",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
