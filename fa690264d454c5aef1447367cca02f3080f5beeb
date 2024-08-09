@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb955193_0e5094d7",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4046,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-09T21:05:09Z",
+      "side": 1,
+      "message": "It seems to work either way on Pixel, and I can\u0027t think of a reason not to add this, so I made that change.",
+      "parentUuid": "4875a798_6ee6f061",
+      "revId": "fa690264d454c5aef1447367cca02f3080f5beeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "385cd0ef_fc6be6ee",
