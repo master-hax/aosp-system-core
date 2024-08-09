@@ -1,6 +1,40 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3e2efdf_9ef36f3c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-08-09T01:11:40Z",
+      "side": 1,
+      "message": "LGTM modulo the directory path.",
+      "revId": "f2aad091ef0cb9be2ced880e3b8021347da306c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30ffe603_a91a111c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-08-09T01:11:40Z",
+      "side": 1,
+      "message": "LGTM modulo the directory path.",
+      "revId": "f2aad091ef0cb9be2ced880e3b8021347da306c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1014011d_45ef4858",
