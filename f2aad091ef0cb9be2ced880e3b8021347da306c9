@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0346c07f_5a23a640",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-09T06:45:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30ffe603_a91a111c",
+      "revId": "f2aad091ef0cb9be2ced880e3b8021347da306c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1014011d_45ef4858",
@@ -48,6 +66,30 @@
       "writtenOn": "2024-08-08T19:54:05Z",
       "side": 1,
       "message": "same as the other CL - can we do /vm/early so that we establish a place for all VM-related mounts, and we have room to grow?",
+      "range": {
+        "startLine": 652,
+        "startChar": 23,
+        "endLine": 652,
+        "endChar": 31
+      },
+      "revId": "f2aad091ef0cb9be2ced880e3b8021347da306c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ce74a6b_d40bf58e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-08-09T06:45:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1014011d_45ef4858",
       "range": {
         "startLine": 652,
         "startChar": 23,
