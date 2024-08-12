@@ -202,6 +202,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1412d8bf_c9dc5045",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2024-08-12T20:02:38Z",
+      "side": 1,
+      "message": "\u003e I could commit the target_features that I used for each architecture, mind you. Assuming that list is correct, it would be trivial to write a python script to do this\n\nthis is what I had in mind, FWIW. :) \n\n```\nPER_ARCH_FEATURES \u003d {\n  \"arm32\": [\"__ARM_FEATURE_CRYPTO\", ...],\n}\n\nf \u003d open(opts.output_file, \"w\")\nwrite_file_header(f)\nfor arch, feature_list in PER_ARCH_FEATURES.items():\n  write_fn_start(arch, f)\n  for feature in feature_list:\n    write_feature_to_file(feature, f)\n  write_fn_end(arch, f)\n```\n\nit\u0027s perfectly fine for us to add things to support to an allowlist on an as-needed basis, rather than trying to grep clang files for it",
+      "parentUuid": "7aeee833_1538700d",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 68
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cd45d704_074344c1",
         "filename": "cpu_target_features/print_target_features.cc",
         "patchSetId": 3
