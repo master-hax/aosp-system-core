@@ -133,7 +133,7 @@ static std::vector<Image> images = {
     { "radio",    "radio.img",        "",             "radio",    true,  ImageType::Extra },
     { "recovery", "recovery.img",     "recovery.sig", "recovery", true,  ImageType::BootCritical },
     { "super",    "super.img",        "super.sig",    "super",    true,  ImageType::Extra },
-    { "system",   "system.img",       "system.sig",   "system",   false, ImageType::Normal },
+    { "system",   "system.img",       "system.sig",   "system",   true,  ImageType::Normal },
     { "system_dlkm",
                   "system_dlkm.img",  "system_dlkm.sig",
                                                       "system_dlkm",
