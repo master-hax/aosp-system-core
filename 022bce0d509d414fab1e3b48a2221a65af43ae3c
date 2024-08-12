@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e5dada37_12267014",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1421,
+      "author": {
+        "id": 1045980
+      },
+      "writtenOn": "2024-08-12T22:58:56Z",
+      "side": 1,
+      "message": "Might be easier to parse if instead of moving begin, you moved a separate pointer. like having begin also being const, and changing an `auto\u0026 entry \u003d begin;` instead.",
+      "parentUuid": "7be3ca55_d5ae0113",
+      "range": {
+        "startLine": 1421,
+        "startChar": 4,
+        "endLine": 1421,
+        "endChar": 47
+      },
+      "revId": "022bce0d509d414fab1e3b48a2221a65af43ae3c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f542a1b4_46a877a9",
         "filename": "fs_mgr/fs_mgr.cpp",
         "patchSetId": 8
