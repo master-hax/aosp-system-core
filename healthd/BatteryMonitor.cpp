@@ -50,6 +50,7 @@
 #define FAKE_BATTERY_TEMPERATURE 424
 #define MILLION 1.0e6
 #define DEFAULT_VBUS_VOLTAGE 5000000
+#define DEFAULT_FIRST_USE_DATE_MS 1606780800000
 
 using HealthInfo_1_0 = android::hardware::health::V1_0::HealthInfo;
 using HealthInfo_2_0 = android::hardware::health::V2_0::HealthInfo;
@@ -676,6 +677,7 @@ status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
 
     case BATTERY_PROP_FIRST_USAGE_DATE:
         val->valueInt64 = getBatteryHealthData(BATTERY_PROP_FIRST_USAGE_DATE);
+        if (val->valueInt64 == DEFAULT_FIRST_USE_DATE_MS) val->valueInt64 = 0;
         ret = OK;
         break;
 
