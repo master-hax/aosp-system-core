@@ -107,6 +107,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c7081f21_f611b32b",
+        "filename": "cpu_target_features/main.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-12T19:50:41Z",
+      "side": 1,
+      "message": "Ah, interesting. Yeah I compiled this and checked with clang-tidy and cpplint.py, and nothing for this in particular.\n\nThanks for the catch, fixed!\n\n\u003e especially because we need __riscv too :-)\n\nWould you like riscv here now too?",
+      "parentUuid": "2f146811_577a0b52",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0d9c4a2f_7ee259e9",
         "filename": "cpu_target_features/print_target_features.cc",
         "patchSetId": 3
@@ -154,6 +178,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7aeee833_1538700d",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-12T19:50:41Z",
+      "side": 1,
+      "message": "\u003e did you use a script to generate their bodies\n\nUnfortunately not. Each file had a slightly different test format, and there was no quick universal trick to get everything right. I got 90% of the way there though with ripgrep commands like:\n\n```\nrg -o \u0027\\w+\\s+\\w+$\u0027 ~/aarch64_defines | awk \u0027{print $2}\u0027 | sort -u \u003e aarch64_target_features\n```\n\nAnd vim macros (which is how basically all the code is written). Then went back and checked if I missed anything.\n\nCould try to write a script for this, but there\u0027s not one now.\n\nI could commit the target_features that I used for each architecture, mind you. Assuming that list is correct, it would be trivial to write a python script to do this. Not sure how Android feels about that.\n\n\u003e ...and then switch to a genrule in the .bp file :-)\n\nDo you have any pointers or examples so I can find out how to do this? More advanced Bazel and definitely all of Android .bp are a bit outside my normal day-to-day.",
+      "parentUuid": "0d9c4a2f_7ee259e9",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 68
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cd45d704_074344c1",
         "filename": "cpu_target_features/print_target_features.cc",
         "patchSetId": 3
@@ -165,6 +213,24 @@
       "writtenOn": "2024-08-12T19:14:24Z",
       "side": 1,
       "message": "this seems like it tells you more about the compiler than anything?",
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b290228_505544b7",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-12T19:50:41Z",
+      "side": 1,
+      "message": "Not sure I understand. This is set in both GCC and Clang. There are more of these than listed, but I\u0027m only going after the ones Clang definitely supports. I\u0027ve not looked too closely at what GCC specifies.",
+      "parentUuid": "cd45d704_074344c1",
       "revId": "fafdead43dc5bb49196061af415f6318346321a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
