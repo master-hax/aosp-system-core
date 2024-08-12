@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "16068159_c7a6246e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2024-08-12T13:21:39Z",
+      "side": 1,
+      "message": "lgtm % nits. i\u0027ll leave to enh to +2, since he has more context on android than me. ;)\n\nthanks!",
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f146811_577a0b52",
+        "filename": "cpu_target_features/main.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2024-08-12T13:21:39Z",
+      "side": 1,
+      "message": "nit: i\u0027m surprised this doesn\u0027t warn with `-Wunreachable-code` or similar.\n\nplease prefer a build-time error though:\n\n```suggestion\n#else\n#error Unsupported arch. This binary only supports aarch64, arm, x86, and x86-64.\n#endif\n}\n```",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d9c4a2f_7ee259e9",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2024-08-12T13:21:39Z",
+      "side": 1,
+      "message": "these functions seem prone to copy-paste issues. did you use a script to generate their bodies? if so, please include that.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 68
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
