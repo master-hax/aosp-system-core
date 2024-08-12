@@ -20,6 +20,46 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f797f77b_bbf1d59e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-12T19:14:24Z",
+      "side": 1,
+      "message": "(i\u0027d probably stick this in bionic/ rather than the dumping ground that is system/core/... the only change you should need in system/core/ is the one to add it to the default shell + utilities list so it\u0027s guaranteed to be on the device: https://source.corp.google.com/h/android/platform/superproject/main/+/main:system/core/shell_and_utilities/Android.bp;l\u003d22?q\u003dfile:bp$%20ldd\u0026sq\u003drepo:android%2Fplatform%2Fsuperproject%2Fmain%20b:main%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F )",
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "003dcd08_2fdaf7c3",
+        "filename": "cpu_target_features/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-12T19:14:24Z",
+      "side": 1,
+      "message": "cpp :-)",
+      "range": {
+        "startLine": 21,
+        "startChar": 14,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2f146811_577a0b52",
         "filename": "cpu_target_features/main.cc",
         "patchSetId": 3
@@ -31,6 +71,30 @@
       "writtenOn": "2024-08-12T13:21:39Z",
       "side": 1,
       "message": "nit: i\u0027m surprised this doesn\u0027t warn with `-Wunreachable-code` or similar.\n\nplease prefer a build-time error though:\n\n```suggestion\n#else\n#error Unsupported arch. This binary only supports aarch64, arm, x86, and x86-64.\n#endif\n}\n```",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9da4d668_f81f7b66",
+        "filename": "cpu_target_features/main.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-12T19:14:24Z",
+      "side": 1,
+      "message": "especially because we need `__riscv` too :-)",
+      "parentUuid": "2f146811_577a0b52",
       "range": {
         "startLine": 31,
         "startChar": 0,
@@ -60,6 +124,47 @@
         "endLine": 23,
         "endChar": 68
       },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0ec850e_943a18cb",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-12T19:14:24Z",
+      "side": 1,
+      "message": "...and then switch to a genrule in the .bp file :-)",
+      "parentUuid": "0d9c4a2f_7ee259e9",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 68
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd45d704_074344c1",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-12T19:14:24Z",
+      "side": 1,
+      "message": "this seems like it tells you more about the compiler than anything?",
       "revId": "fafdead43dc5bb49196061af415f6318346321a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
