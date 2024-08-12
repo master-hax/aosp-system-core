@@ -607,6 +607,7 @@ int BatteryMonitor::getBatteryHealthData(int id) {
 status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
     status_t ret = BAD_VALUE;
     std::string buf;
+    int64_t m_date;
 
     val->valueInt64 = LONG_MIN;
 
@@ -675,7 +676,11 @@ status_t BatteryMonitor::getProperty(int id, struct BatteryProperty *val) {
         break;
 
     case BATTERY_PROP_FIRST_USAGE_DATE:
+        // add consistency check as the first usage date cannot be earlier
+        // than the manufacture date.
+        m_date = getBatteryHealthData(BATTERY_PROP_MANUFACTURING_DATE);
         val->valueInt64 = getBatteryHealthData(BATTERY_PROP_FIRST_USAGE_DATE);
+        if (val->valueInt64 < m_date) val->valueInt64 = 0;
         ret = OK;
         break;
 
