@@ -34,6 +34,24 @@
       "parentUuid": "8dc15f82_08f7f837",
       "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c0753c1_bd0a3530",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-12T23:39:25Z",
+      "side": 1,
+      "message": "Sometimes a small permanent change is better than a big complicated heuristic one. But I don\u0027t have a strong opinion here.",
+      "parentUuid": "8bdb6c22_e0c99a3f",
+      "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
