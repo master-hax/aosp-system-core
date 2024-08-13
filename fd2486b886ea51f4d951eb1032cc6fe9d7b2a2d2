@@ -52,6 +52,41 @@
       "parentUuid": "8bdb6c22_e0c99a3f",
       "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f41c0e2_b2887b9f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-08-13T01:05:48Z",
+      "side": 1,
+      "message": "What\u0027s remaining to merge this?",
+      "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7aab10e4_3e7c15c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-08-13T01:05:48Z",
+      "side": 1,
+      "message": "Can\u0027t it depend on the developer option sysprop, we should have good control on that.",
+      "parentUuid": "2c0753c1_bd0a3530",
+      "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
