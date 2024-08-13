@@ -16,6 +16,24 @@
       "message": "This still strikes me as a little hacky, it would be better for the Pixel *driver* to not return bogus values. But it\u0027s better than changing the framework.",
       "revId": "f32ec85bfa6304e781596266490af76e7ad07421",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ffa47e7_e2254302",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-08-13T18:41:16Z",
+      "side": 1,
+      "message": "But BatteryMonitor is used by all HALs. That\u0027s why I am against this change.",
+      "parentUuid": "23681e0e_04e48a31",
+      "revId": "f32ec85bfa6304e781596266490af76e7ad07421",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
