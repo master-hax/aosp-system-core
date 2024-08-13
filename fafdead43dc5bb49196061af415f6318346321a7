@@ -177,6 +177,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "123556b2_609377e5",
+        "filename": "cpu_target_features/main.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-13T19:11:43Z",
+      "side": 1,
+      "message": "Gotcha! Have added risc-v defines in the bionic change I have. Will upload shortly, but still no genrule yet.",
+      "parentUuid": "a9f92358_02ff9942",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0d9c4a2f_7ee259e9",
@@ -345,6 +369,24 @@
       "side": 1,
       "message": "that just seems oddly arbitrary? if we\u0027re going to be arbitrary, gbiv\u0027s \"let\u0027s just do the ones we know we care about\" is the \"least arbitrary arbitrary\" :-) the closer we get to \"everything the compiler sets\", the more i wonder whether we shouldn\u0027t have _everything_ the compiler sets (as mentioned above).",
       "parentUuid": "3b290228_505544b7",
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf0384f2_b0ba232c",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-13T19:11:43Z",
+      "side": 1,
+      "message": "My intent of this was very much \"everything the compiler sets\". If we can agree on a subsets of what defines would be best, I\u0027d be happy to strip this down to that!\n\nUnfortunately, I do not know exactly which defines are (or are not) important, and my thought was there\u0027s zero harm in adding more define checks. Thus,the goal was to get as many as I could find, and not worry about bikeshedding of exactly which ones I missed.",
+      "parentUuid": "e8bce513_347fcd4b",
       "revId": "fafdead43dc5bb49196061af415f6318346321a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
