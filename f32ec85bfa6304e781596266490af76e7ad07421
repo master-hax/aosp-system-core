@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "23681e0e_04e48a31",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-13T15:52:14Z",
+      "side": 1,
+      "message": "This still strikes me as a little hacky, it would be better for the Pixel *driver* to not return bogus values. But it\u0027s better than changing the framework.",
+      "revId": "f32ec85bfa6304e781596266490af76e7ad07421",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
