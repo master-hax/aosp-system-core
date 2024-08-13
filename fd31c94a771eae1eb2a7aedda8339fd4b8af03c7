@@ -52,6 +52,24 @@
       "parentUuid": "0cce7057_8c19290d",
       "revId": "fd31c94a771eae1eb2a7aedda8339fd4b8af03c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a50cd42e_234d55b8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1653796
+      },
+      "writtenOn": "2024-08-13T10:07:50Z",
+      "side": 1,
+      "message": "It is better by replacing with consistency check for the first usage date and the manufacture date",
+      "parentUuid": "d5dd2ae8_bb39798a",
+      "revId": "fd31c94a771eae1eb2a7aedda8339fd4b8af03c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
