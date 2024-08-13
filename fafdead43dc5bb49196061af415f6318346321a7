@@ -155,6 +155,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a9f92358_02ff9942",
+        "filename": "cpu_target_features/main.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-13T18:33:16Z",
+      "side": 1,
+      "message": "yes, this will break in postsubmit otherwise. (riscv64 is postsubmit only atm :-( )",
+      "parentUuid": "c7081f21_f611b32b",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 0
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0d9c4a2f_7ee259e9",
         "filename": "cpu_target_features/print_target_features.cc",
         "patchSetId": 3
@@ -250,6 +274,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "651bef5a_a714b91c",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-13T18:33:16Z",
+      "side": 1,
+      "message": "yeah, gbiv\u0027s \"we\u0027ll just curate the ones we\u0027ve found are actually interesting/useful\" sgtm too.\n\nalternatively, if you do want to go the way of completeness, you could just run the compiler, right, and get it to dump what it\u0027s set the preprocessor for?\n\nthere are many examples of genrules -- https://source.corp.google.com/search?q\u003dfile:bp$%20%5Cbgenrule%5C%20%5C%7B\u0026sq\u003drepo:android%2Fplatform%2Fsuperproject%2Fmain%20b:main%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F -- but i think my ones in external/one-true-awk/Android.bp are some of the simplest? or if you go with gbiv\u0027s suggestion, https://source.corp.google.com/h/android/platform/superproject/main/+/main:system/core/toolbox/Android.bp;l\u003d28?q\u003dfile:bp%20genrule%20file:system%2Fcore\u0026sq\u003drepo:android%2Fplatform%2Fsuperproject%2Fmain%20b:main%20-file:prebuilts%2Fvndk%2F%20-file:prebuilts%2Fruntime%2F is very similar, being a small python script that takes an input file and outputs some source to build.",
+      "parentUuid": "1412d8bf_c9dc5045",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 68
+      },
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cd45d704_074344c1",
         "filename": "cpu_target_features/print_target_features.cc",
         "patchSetId": 3
@@ -279,6 +327,24 @@
       "side": 1,
       "message": "Not sure I understand. This is set in both GCC and Clang. There are more of these than listed, but I\u0027m only going after the ones Clang definitely supports. I\u0027ve not looked too closely at what GCC specifies.",
       "parentUuid": "cd45d704_074344c1",
+      "revId": "fafdead43dc5bb49196061af415f6318346321a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8bce513_347fcd4b",
+        "filename": "cpu_target_features/print_target_features.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-13T18:33:16Z",
+      "side": 1,
+      "message": "that just seems oddly arbitrary? if we\u0027re going to be arbitrary, gbiv\u0027s \"let\u0027s just do the ones we know we care about\" is the \"least arbitrary arbitrary\" :-) the closer we get to \"everything the compiler sets\", the more i wonder whether we shouldn\u0027t have _everything_ the compiler sets (as mentioned above).",
+      "parentUuid": "3b290228_505544b7",
       "revId": "fafdead43dc5bb49196061af415f6318346321a7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
