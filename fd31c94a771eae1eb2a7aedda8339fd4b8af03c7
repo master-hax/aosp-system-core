@@ -16,6 +16,24 @@
       "message": "Seems like a hack. Where does this `1606780800000` come from? Is that upstreamed?\n\nIf this is pixel-specific it needs to go into Pixel\u0027s HAL code",
       "revId": "fd31c94a771eae1eb2a7aedda8339fd4b8af03c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0cce7057_8c19290d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-08-13T04:04:22Z",
+      "side": 1,
+      "message": "\u003e Is that upstreamed?\n\nI mean, is this in the upstream Linux kernel code?",
+      "parentUuid": "42c4e20d_c06fa0dd",
+      "revId": "fd31c94a771eae1eb2a7aedda8339fd4b8af03c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
