@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17c04941_c8c768d0",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2024-08-14T20:48:35Z",
+      "side": 1,
+      "message": "consider \"wi\" for WINDOW",
+      "range": {
+        "startLine": 247,
+        "startChar": 86,
+        "endLine": 247,
+        "endChar": 88
+      },
+      "revId": "710de100e65f6eaee10ebc058f499afc7df23308",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
