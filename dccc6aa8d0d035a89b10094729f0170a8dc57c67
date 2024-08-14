@@ -16,6 +16,63 @@
       "message": "PTAL",
       "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "477a1604_8a1fb995",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-14T19:09:59Z",
+      "side": 1,
+      "message": "do we even need any of this? can\u0027t you just use libbase\u0027s GetIntProperty() with -1 as the default, since negative values are invalid and need rejecting here anyway?",
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e0b0fca_bc29a496",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-14T19:09:59Z",
+      "side": 1,
+      "message": "all these names should have units in them (and probably \"TIME_S\" or whatever rather than \"TIMER\")",
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe97a45e_68441424",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-14T19:09:59Z",
+      "side": 1,
+      "message": "heh, not the unit i guessed",
+      "range": {
+        "startLine": 663,
+        "startChar": 49,
+        "endLine": 663,
+        "endChar": 51
+      },
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
