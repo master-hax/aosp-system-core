@@ -189,3 +189,9 @@ prebuilt_root {
         (default, default): [],
     }),
 }
+
+prebuilt_root {
+    name: "ramdisk_node_list",
+    src: "ramdisk_node_list",
+    install_without_partition: true,
+}
