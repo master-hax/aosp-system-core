@@ -1,0 +1,475 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e856d63_790fd551",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "I\u0027d change this name to CleanupOtaMetadataOnSuper match CreateOtaMetadatOnSuper. or CleanupMetadataScratch",
+      "range": {
+        "startLine": 340,
+        "startChar": 16,
+        "endLine": 340,
+        "endChar": 30
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "f6f4def5_2e601bdc",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+              "range": {
+                "startLine": 340,
+                "startChar": 0,
+                "endLine": 341,
+                "endChar": 0
+              },
+              "replacement": "    static bool CleanupOtaMetadataOnSuper(IDeviceInfo* info \u003d nullptr);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fa89ebc_099c1e5a",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "include license",
+      "fixSuggestions": [
+        {
+          "fixId": "0fade97d_39010bd0",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 1,
+                "startChar": 0,
+                "endLine": 1,
+                "endChar": 0
+              },
+              "replacement": "// Copyright (C) 2023 The Android Open Source Project\n//\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You may obtain a copy of the License at\n//\n//      http://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing, software\n// distributed under the License is distributed on an \"AS IS\" BASIS,\n// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n// See the License for the specific language governing permissions and\n// limitations under the License.\n\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd712ed7_532780b9",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "duplicate error log here. It\u0027s already logged in l62",
+      "fixSuggestions": [
+        {
+          "fixId": "0587e736_21bbdecf",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 72,
+                "startChar": 0,
+                "endLine": 73,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b7087db_e6e29f35",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "const. Or maybe we should define ota_dir as another constant somehwere if it\u0027s not modified",
+      "fixSuggestions": [
+        {
+          "fixId": "7e0e16d7_b29ab5bd",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 125,
+                "startChar": 0,
+                "endLine": 126,
+                "endChar": 0
+              },
+              "replacement": "    const auto ota_dir \u003d dir + \"/\" + \"ota\";\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 131,
+                "startChar": 0,
+                "endLine": 132,
+                "endChar": 0
+              },
+              "replacement": "    const auto snapshot_dir \u003d ota_dir + \"/\" + \"snapshots\";\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3449e8f2_c7aa0ec6",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "do we need this vector ? I don\u0027t see any other fs candidates added",
+      "fixSuggestions": [
+        {
+          "fixId": "24543df4_190d6620",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 149,
+                "startChar": 0,
+                "endLine": 153,
+                "endChar": 0
+              },
+              "replacement": "    if (!fs_mgr_is_ext4(device_path)) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 174,
+                "startChar": 0,
+                "endLine": 182,
+                "endChar": 0
+              },
+              "replacement": "    entry.fs_type \u003d \"ext4\";\n    bool mounted \u003d fs_mgr_do_mount_one(entry) \u003d\u003d 0;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "942938e6_a569624c",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": ".push_back(\"ext4\");",
+      "fixSuggestions": [
+        {
+          "fixId": "bea7bc4a_2e347062",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 151,
+                "startChar": 0,
+                "endLine": 152,
+                "endChar": 0
+              },
+              "replacement": "        filesystem_candidates.push_back(\"ext4\");\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f7e1b4a_cd584538",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "std::string",
+      "fixSuggestions": [
+        {
+          "fixId": "388ac3bf_c7046c51",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 195,
+                "startChar": 0,
+                "endLine": 197,
+                "endChar": 0
+              },
+              "replacement": "    std::string fs_type \u003d \"\";\n    std::string command \u003d \"\";\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec6777a2_cf829890",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "just use kScratchSize if `size` isn\u0027t modified",
+      "fixSuggestions": [
+        {
+          "fixId": "b79ca361_928dca0f",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 220,
+                "startChar": 0,
+                "endLine": 221,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 266,
+                "startChar": 0,
+                "endLine": 267,
+                "endChar": 0
+              },
+              "replacement": "    if (free_space \u003c kScratchSize) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 268,
+                "startChar": 0,
+                "endLine": 269,
+                "endChar": 0
+              },
+              "replacement": "                    \u003c\u003c \" Requested space: \" \u003c\u003c kScratchSize;\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 272,
+                "startChar": 0,
+                "endLine": 273,
+                "endChar": 0
+              },
+              "replacement": "    LOG(INFO) \u003c\u003c \"CreateDynamicScratch: free_space: \" \u003c\u003c free_space \u003c\u003c \" scratch_size: \" \u003c\u003c kScratchSize\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 275,
+                "startChar": 0,
+                "endLine": 276,
+                "endChar": 0
+              },
+              "replacement": "    if (!builder-\u003eResizePartition(partition, kScratchSize)) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 277,
+                "startChar": 0,
+                "endLine": 278,
+                "endChar": 0
+              },
+              "replacement": "                   \u003c\u003c \" scratch_size: \" \u003c\u003c kScratchSize;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "154a296e_fe325581",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "2024",
+      "fixSuggestions": [
+        {
+          "fixId": "bc7653ec_ab808833",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.h",
+              "range": {
+                "startLine": 1,
+                "startChar": 0,
+                "endLine": 2,
+                "endChar": 0
+              },
+              "replacement": "// Copyright (C) 2024 The Android Open Source Project\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e8c8d6c_d054b50d",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "any reason the other variables are const std::string and this is constexpr char? Does this need to be constant at compile time?",
+      "fixSuggestions": [
+        {
+          "fixId": "9e7dc044_be78959e",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.h",
+              "range": {
+                "startLine": 24,
+                "startChar": 0,
+                "endLine": 25,
+                "endChar": 0
+              },
+              "replacement": "const std::string kPhysicalDevice \u003d \"/dev/block/by-name/\";\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d793b3b_93ae36ea",
+        "filename": "fs_mgr/libsnapshot/snapshotctl.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-14T20:21:11Z",
+      "side": 1,
+      "message": "can just compare argv[3] to \"-w\" directly with strcmp(argv[3], \"-w\")",
+      "fixSuggestions": [
+        {
+          "fixId": "b9cd3f09_09b750b8",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapshotctl.cpp",
+              "range": {
+                "startLine": 607,
+                "startChar": 0,
+                "endLine": 609,
+                "endChar": 0
+              },
+              "replacement": "        if (strcmp(argv[3], \"-w\") \u003d\u003d 0) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/snapshotctl.cpp",
+              "range": {
+                "startLine": 663,
+                "startChar": 0,
+                "endLine": 665,
+                "endChar": 0
+              },
+              "replacement": "        if (strcmp(argv[3], \"-w\") \u003d\u003d 0) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "12da15788a087dec885621762402a54206096202",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
