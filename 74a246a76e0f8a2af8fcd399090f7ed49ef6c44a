@@ -34,6 +34,24 @@
       "parentUuid": "007faf32_294bee60",
       "revId": "74a246a76e0f8a2af8fcd399090f7ed49ef6c44a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "399e1c3f_2304bbc0",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-14T21:51:48Z",
+      "side": 1,
+      "message": "because here we can give an error :-)\n\n(you can predict 80% of my review comments with (a) imagine enh is imagining trying to work out what went wrong from just the log and (b) imagine enh is imagining what incorrect changes someone\u0027s likely to make in 5 years when all the context is gone.)",
+      "parentUuid": "6b5902d5_95d369be",
+      "revId": "74a246a76e0f8a2af8fcd399090f7ed49ef6c44a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
