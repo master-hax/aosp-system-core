@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7edfb461_71fac3d5",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2024-08-14T06:29:38Z",
+      "side": 1,
+      "message": "shall we just call SP_FOREGROUND_WINDOW?",
+      "range": {
+        "startLine": 61,
+        "startChar": 13,
+        "endLine": 61,
+        "endChar": 29
+      },
+      "revId": "bf97c6fe04c56961110863c9e3ae1a68b9e39288",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
