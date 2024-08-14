@@ -87,6 +87,47 @@
       "parentUuid": "2c0753c1_bd0a3530",
       "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13d4df30_58b58f06",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 1450,
+      "author": {
+        "id": 1889140
+      },
+      "writtenOn": "2024-08-14T20:02:31Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be part of the previous `if`?",
+      "range": {
+        "startLine": 1443,
+        "startChar": 8,
+        "endLine": 1450,
+        "endChar": 25
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "8412f5a9_54155652",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/fs_mgr.cpp",
+              "range": {
+                "startLine": 1446,
+                "startChar": 0,
+                "endLine": 1449,
+                "endChar": 0
+              },
+              "replacement": "                          \u003c\u003c \" in non-4K mode for dev option enabled devices, as these devices need to toggle \"\n                             \"between 4K/16K mode, and F2FS does not support page_size !\u003d block_size \"\n                             \"configuration.\";\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fd2486b886ea51f4d951eb1032cc6fe9d7b2a2d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
