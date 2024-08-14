@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "724b7ddc_ead3729c",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-14T20:38:45Z",
+      "side": 1,
+      "message": "That uses std::string, which allocates.",
+      "parentUuid": "477a1604_8a1fb995",
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0e0b0fca_bc29a496",
@@ -52,6 +70,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "10326bf5_769c6feb",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-14T20:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e0b0fca_bc29a496",
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fe97a45e_68441424",
@@ -65,6 +101,30 @@
       "writtenOn": "2024-08-14T19:09:59Z",
       "side": 1,
       "message": "heh, not the unit i guessed",
+      "range": {
+        "startLine": 663,
+        "startChar": 49,
+        "endLine": 663,
+        "endChar": 51
+      },
+      "revId": "dccc6aa8d0d035a89b10094729f0170a8dc57c67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c123306d_2a54c3e7",
+        "filename": "debuggerd/handler/debuggerd_handler.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-14T20:38:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe97a45e_68441424",
       "range": {
         "startLine": 663,
         "startChar": 49,
