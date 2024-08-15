@@ -1,0 +1,62 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ffdf0dc_66dc6031",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-08-15T22:36:05Z",
+      "side": 1,
+      "message": "Bug: 349105928",
+      "revId": "948eda85509c32ab144478e7e7b7d7f80e644e32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27c55112_22ac5774",
+        "filename": "libprocessgroup/processgroup.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-08-15T22:36:05Z",
+      "side": 1,
+      "message": "If `errno` is set correctly you should use `PLOG` then to report the error too.",
+      "range": {
+        "startLine": 666,
+        "startChar": 12,
+        "endLine": 666,
+        "endChar": 15
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "350908f2_a565120f",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/processgroup.cpp",
+              "range": {
+                "startLine": 666,
+                "startChar": 0,
+                "endLine": 667,
+                "endChar": 0
+              },
+              "replacement": "            PLOG(ERROR) \u003c\u003c \"Failed to activate controllers in \" \u003c\u003c uid_path;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "948eda85509c32ab144478e7e7b7d7f80e644e32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

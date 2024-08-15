@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecd0ce20_cba26a6e",
+        "filename": "libprocessgroup/setup/cgroup_map_write.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-08-15T22:36:05Z",
+      "side": 0,
+      "message": "Here we activate only one controller and ActivateControllers() will activate all controllers IIUC. So, this replacement seems to change the behavior, right?",
+      "range": {
+        "startLine": 183,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 5
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "5664d8e1_0232ae34",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/setup/cgroup_map_write.cpp",
+              "range": {
+                "startLine": 183,
+                "startChar": 0,
+                "endLine": 184,
+                "endChar": 0
+              },
+              "replacement": "    return ::ActivateControllers(controller-\u003epath(), descriptors);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f09684c18ac26061bf344bf00289be61bedb6715",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
