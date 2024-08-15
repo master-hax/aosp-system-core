@@ -22,6 +22,30 @@
       },
       "revId": "f145d75dd59c3ebe912058c5e72f9879ad82b3e4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ad8f042_d8da7f0d",
+        "filename": "libprocessgroup/cgrouprc_format/Android.bp",
+        "patchSetId": 16
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-08-15T22:30:32Z",
+      "side": 1,
+      "message": "No. I didn\u0027t do that here because it\u0027s an annoying number of modules that would have to be merged at the same time. The last commit on this chain removes it completely, which allows us to get rid of depending modules piecemeal. I\u0027m hoping to submit everything up to \"Combine all 3 ActivateControllers...\" in one go with this commit.\n\nIf you want them all here on this topic LMK.",
+      "parentUuid": "f7e36a53_775bbf7a",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 34
+      },
+      "revId": "f145d75dd59c3ebe912058c5e72f9879ad82b3e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
