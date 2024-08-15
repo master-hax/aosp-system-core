@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "548ce86e_7f1e28ac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 16
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-08-15T22:29:50Z",
+      "side": 1,
+      "message": "Bug: 349105928",
+      "revId": "e45e62f9cf63a7645ebde0c3045a5d6c3fe614b8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
