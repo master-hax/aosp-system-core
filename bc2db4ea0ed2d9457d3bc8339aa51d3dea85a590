@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed7da1a5_d1c27005",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-16T23:28:00Z",
+      "side": 1,
+      "message": "Call GetBootconfigFromString instead (assuming that works here, it looks like it should).\n\nAnd factor this all out into one helper function, since FirstStageMain() is pretty big.",
+      "revId": "bc2db4ea0ed2d9457d3bc8339aa51d3dea85a590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d081e57e_69acfb25",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-16T23:28:00Z",
+      "side": 1,
+      "message": "android::base::unique_fd fd(open(\"/sys/power/resume\", O_RDWR | O_CLOEXEC));\n    if (fd \u003e\u003d 0) {\n        if (!android::base::WriteStringToFd(stuff, fd)) {\n            PLOG(ERROR) \u003c\u003c \"Failed to write to /sys/power/resume\";\n        }\n    } else {\n        PLOG(ERROR) \u003c\u003c \"Failed to open /sys/power/resume\";\n    }",
+      "revId": "bc2db4ea0ed2d9457d3bc8339aa51d3dea85a590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
