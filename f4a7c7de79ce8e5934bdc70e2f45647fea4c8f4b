@@ -1,0 +1,239 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "176cb5a0_b3faa54e",
+        "filename": "fs_mgr/libsnapshot/device_info.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-16T23:36:27Z",
+      "side": 1,
+      "message": "const std::string \u0026value",
+      "fixSuggestions": [
+        {
+          "fixId": "95908abe_47f5f399",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/device_info.cpp",
+              "range": {
+                "startLine": 44,
+                "startChar": 0,
+                "endLine": 45,
+                "endChar": 0
+              },
+              "replacement": "void DeviceInfo::SetMetadataDir(const std::string\u0026 value) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed34f4b1_d0114e83",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-16T23:36:27Z",
+      "side": 1,
+      "message": "maybe log if is_scratch_metada_ is already set?",
+      "fixSuggestions": [
+        {
+          "fixId": "ca88aff4_f638b7f9",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+              "range": {
+                "startLine": 410,
+                "startChar": 0,
+                "endLine": 411,
+                "endChar": 0
+              },
+              "replacement": "    void SetScratchMetadata() {\n        is_scratch_metadata_ \u003d true;\n        LOG(INFO) \u003c\u003c \"Using scratch metadata\";\n    }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07c8750d_a850d53c",
+        "filename": "fs_mgr/libsnapshot/include_test/libsnapshot/test_helpers.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-16T23:36:27Z",
+      "side": 1,
+      "message": "const std::string \u0026value",
+      "fixSuggestions": [
+        {
+          "fixId": "0bee48ca_20459848",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/include_test/libsnapshot/test_helpers.h",
+              "range": {
+                "startLine": 86,
+                "startChar": 0,
+                "endLine": 87,
+                "endChar": 0
+              },
+              "replacement": "    void SetMetadataDir(const std::string\u0026 value) { metadata_dir_ \u003d value; }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89d69dae_4cd25369",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-16T23:36:27Z",
+      "side": 1,
+      "message": "const?",
+      "fixSuggestions": [
+        {
+          "fixId": "7d5a037b_3b8bbb50",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 84,
+                "startChar": 0,
+                "endLine": 85,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CleanupMetadataScratch(const IDeviceInfo* info) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 228,
+                "startChar": 0,
+                "endLine": 229,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CreateDynamicScratch(const IDeviceInfo* info, std::string* scratch_device) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 414,
+                "startChar": 0,
+                "endLine": 415,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CreateOtaMetadataOnSuper(const IDeviceInfo* info) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 438,
+                "startChar": 0,
+                "endLine": 439,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CleanupMetadataScratch(const IDeviceInfo*) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 442,
+                "startChar": 0,
+                "endLine": 443,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CreateOtaMetadataOnSuper(const IDeviceInfo*) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 446,
+                "startChar": 0,
+                "endLine": 447,
+                "endChar": 0
+              },
+              "replacement": "bool SnapshotManager::CreateDynamicScratch(const IDeviceInfo*, std::string*) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d92ca9d1_b0e13c50",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-08-16T23:36:27Z",
+      "side": 1,
+      "message": "const \u0026",
+      "fixSuggestions": [
+        {
+          "fixId": "d58c7713_114cc847",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 395,
+                "startChar": 0,
+                "endLine": 396,
+                "endChar": 0
+              },
+              "replacement": "std::string MapScratchDevice(const std::string\u0026 scratch_device) {\n"
+            },
+            {
+              "path": "fs_mgr/libsnapshot/scratch_super.cpp",
+              "range": {
+                "startLine": 458,
+                "startChar": 0,
+                "endLine": 459,
+                "endChar": 0
+              },
+              "replacement": "std::string MapScratchDevice(const std::string\u0026) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
