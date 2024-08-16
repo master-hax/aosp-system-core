@@ -303,6 +303,16 @@ static BootMode GetBootMode(const std::string& cmdline, const std::string& bootc
     return BootMode::NORMAL_MODE;
 }
 
+static std::string getHibernationValues(const std::string& bootconfig) {
+    if (bootconfig.find("androidboot.hibernation_resume_device = \"") == std::string::npos) {
+        return std::string();
+    }
+    std::string hibernationResumeDevice = "androidboot.hibernation_resume_device = \"";
+    std::size_t startPos =
+            bootconfig.find(hibernationResumeDevice) + hibernationResumeDevice.length();
+    return bootconfig.substr(startPos, bootconfig.find("\"", startPos) - startPos);
+}
+
 static std::unique_ptr<FirstStageMount> CreateFirstStageMount(const std::string& cmdline) {
     auto ret = FirstStageMount::Create(cmdline);
     if (ret.ok()) {
@@ -440,6 +450,21 @@ int FirstStageMain(int argc, char** argv) {
         setenv(kEnvInitModuleDurationMs, std::to_string(module_elapse_time.count()).c_str(), 1);
         LOG(INFO) << "Loaded " << module_count << " kernel modules took "
                   << module_elapse_time.count() << " ms";
+    }
+
+    std::string hibernationResumeDevice = getHibernationValues(bootconfig);
+    if (!hibernationResumeDevice.empty()) {
+        LOG(INFO) << "Writing " << hibernationResumeDevice << " to /sys/power/resume";
+        FILE* fp = fopen("/sys/power/resume", "w");
+        if (fp == NULL) {
+            LOG(WARNING) << "Error opening file";
+        }
+
+        if (fputs(hibernationResumeDevice.c_str(), fp) == EOF) {
+            LOG(WARNING) << "ERROR WRITING TO FILE";
+        }
+
+        fclose(fp);
     }
 
     std::unique_ptr<FirstStageMount> fsm;
