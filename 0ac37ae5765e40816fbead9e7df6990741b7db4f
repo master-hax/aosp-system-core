@@ -16,6 +16,160 @@
       "message": "PTAL",
       "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab63d60d_154ea277",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "Should this be ifdef\u0027d under aarch64?",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0325abce_503d79f3",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/types.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "It would be good to add a comment that this is only used by mte.",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b247220_338be84e",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "I\u0027m not clear, but should all of the tests skip unless on aarch64?",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d81eff81_3b407028",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "Would it be easier to make this a test fixture and then have SetUp call SKIP_WITH_HWASAN?",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cb55b96_4a4aa1ff",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "Use untag_address since it\u0027s doing the same operation.",
+      "range": {
+        "startLine": 224,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 67
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2063dd02_9bfb3d5e",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "Since you are using sizeof everywhere else, I\u0027d use sizeof(pc) here to make it clearer what you are doing.",
+      "range": {
+        "startLine": 251,
+        "startChar": 34,
+        "endLine": 251,
+        "endChar": 35
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b69e157b_8e30325e",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "Use untag_address.",
+      "range": {
+        "startLine": 254,
+        "startChar": 19,
+        "endLine": 254,
+        "endChar": 27
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a30540c7_c05a8794",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-16T22:37:24Z",
+      "side": 1,
+      "message": "I don\u0027t think this is quite correct. I think it would be more correct to +4 the rel_pc and pc instead of doing it this way.",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
