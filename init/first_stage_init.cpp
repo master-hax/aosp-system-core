@@ -303,6 +303,30 @@ static BootMode GetBootMode(const std::string& cmdline, const std::string& bootc
     return BootMode::NORMAL_MODE;
 }
 
+static std::string getHibernationValues(const std::string& bootconfig) {
+    if (bootconfig.find("androidboot.hibernation_resume_device = \"") == std::string::npos) {
+        return std::string();
+    }
+    std::string hibernationResumeDevice = "androidboot.hibernation_resume_device = \"";
+    std::size_t startPos =
+            bootconfig.find(hibernationResumeDevice) + hibernationResumeDevice.length();
+    return bootconfig.substr(startPos, bootconfig.find("\"", startPos) - startPos);
+}
+
+static void maybeResumeFromHibernation(const std::string& bootconfig) {
+    std::string hibernationResumeDevice = getHibernationValues(bootconfig);
+    if (!hibernationResumeDevice.empty()) {
+        android::base::unique_fd fd(open("/sys/power/resume", O_RDWR | O_CLOEXEC));
+        if (fd >= 0) {
+            if (!android::base::WriteStringToFd(hibernationResumeDevice, fd)) {
+                PLOG(ERROR) << "Failed to write to /sys/power/resume";
+            }
+        } else {
+            PLOG(ERROR) << "Failed to open /sys/power/resume";
+        }
+    }
+}
+
 static std::unique_ptr<FirstStageMount> CreateFirstStageMount(const std::string& cmdline) {
     auto ret = FirstStageMount::Create(cmdline);
     if (ret.ok()) {
@@ -441,6 +465,8 @@ int FirstStageMain(int argc, char** argv) {
         LOG(INFO) << "Loaded " << module_count << " kernel modules took "
                   << module_elapse_time.count() << " ms";
     }
+
+    maybeResumeFromHibernation(bootconfig);
 
     std::unique_ptr<FirstStageMount> fsm;
 
