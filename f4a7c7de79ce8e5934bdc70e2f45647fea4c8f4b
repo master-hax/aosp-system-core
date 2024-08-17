@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ea394aa_e7c05d1a",
+        "filename": "fs_mgr/libsnapshot/device_info.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "176cb5a0_b3faa54e",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ed34f4b1_d0114e83",
@@ -67,6 +85,24 @@
           ]
         }
       ],
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72007e5c_cad929ff",
+        "filename": "fs_mgr/libsnapshot/include/libsnapshot/snapshot.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "I have added a log at the caller as this is invoked when snapshotManager instance is created.",
+      "parentUuid": "ed34f4b1_d0114e83",
       "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -106,6 +142,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d0ea829_0f2fdec6",
+        "filename": "fs_mgr/libsnapshot/include_test/libsnapshot/test_helpers.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "07c8750d_a850d53c",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16a360bd_90993db1",
@@ -123,6 +177,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b6df570d_444efd49",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "I removed these ifdefs. It just gets ugly all over the code.\n\nThere is no security concern. Initially, I thought of getting this only on userdebug but it just makes testing complex and un-necessary complicated ifdefs all over. This is already covered by sepolicy rules.",
+      "parentUuid": "16a360bd_90993db1",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e7c50af2_d1fec6f8",
@@ -136,6 +208,24 @@
       "writtenOn": "2024-08-17T00:15:11Z",
       "side": 1,
       "message": "You need an std::error_code to filesystem calls. Otherwise the error will be an exception, and the PLOG below is unreachable.",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba7eb68d_4f2dcc66",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Thanks.",
+      "parentUuid": "e7c50af2_d1fec6f8",
       "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -225,6 +315,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b6f8842_7e7c9fb3",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89d69dae_4cd25369",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1f46800f_d2ccb354",
@@ -238,6 +346,24 @@
       "writtenOn": "2024-08-17T00:15:11Z",
       "side": 1,
       "message": "Does this need to be in SnapshotManager? It doesn\u0027t seem related to snapshots or OTA. Same for the teardown function. At a glance maybe it could even be a separate library (which would make it easier to exclude on user builds).",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec4b843a_0bd0364b",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "This entire flow is specific to creation of metadata directories for OTA snapshots. I did initially think about extracting this to a command library; if you look at this, most of this core logic is also in overlayfs; but at the end it was just two functions which could have been extracted out: \n\n1: MakeScratchFilesystem\n2: MountScratch\n\nThe rest of the functions is primarily related to creation of OTA specific directories, teardown, checking if the device is present during first stage boot. All these are SnapshtoManager specific. Also, IDeviceInfo used for testing is also embedded into SnapshotManager which made it easy to test.",
+      "parentUuid": "1f46800f_d2ccb354",
       "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -287,6 +413,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e17dc8e1_93e1d93b",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d92ca9d1_b0e13c50",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1d0fd098_259da046",
@@ -304,6 +448,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a88f7e05_9dace825",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "renamed it to kOtaMetadataMount",
+      "parentUuid": "1d0fd098_259da046",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "61e333b2_3d75ad2c",
@@ -317,6 +479,24 @@
       "writtenOn": "2024-08-17T00:15:11Z",
       "side": 1,
       "message": "static std::strings are discouraged, especially in headers where they can lead to ODR violations. Better to use \"constexpr char*\" or constexpr std::string_view literals (sv suffix).",
+      "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "509fb931_2a55233b",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-17T07:07:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61e333b2_3d75ad2c",
       "revId": "f4a7c7de79ce8e5934bdc70e2f45647fea4c8f4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
