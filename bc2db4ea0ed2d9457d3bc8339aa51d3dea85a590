@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b7deb66b_4ee4f5e3",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-19T17:44:12Z",
+      "side": 1,
+      "message": "You can move the declaration to fstab.h.",
+      "parentUuid": "bb34d589_cc96b15f",
+      "revId": "bc2db4ea0ed2d9457d3bc8339aa51d3dea85a590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d081e57e_69acfb25",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 1
