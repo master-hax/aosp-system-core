@@ -118,6 +118,7 @@ cc_test_host {
         "libjsonpbverify",
         "libjsonpbparse",
         "libprocessgroup_proto",
+        "libprocessgroup_util",
     ],
     shared_libs: [
         "libprotobuf-cpp-full",
@@ -125,6 +126,9 @@ cc_test_host {
     data: [
         "cgroups.json",
         "cgroups.recovery.json",
+        "cgroups_28.json",
+        "cgroups_29.json",
+        "cgroups_30.json",
         "task_profiles.json",
     ],
 }
