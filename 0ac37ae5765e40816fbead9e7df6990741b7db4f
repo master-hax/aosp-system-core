@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cd65c3a_89a71df3",
+        "filename": "debuggerd/crash_dump.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 665,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "OK. I also put the TLS member in the ifdef to make that extra clear.",
+      "parentUuid": "ab63d60d_154ea277",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0325abce_503d79f3",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-08-16T22:37:24Z",
       "side": 1,
       "message": "It would be good to add a comment that this is only used by mte.",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5737de5_3aa2f818",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/types.h",
+        "patchSetId": 28
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "I don\u0027t fully see why, but sure. To me, that seems like a comment waiting to get stale.",
+      "parentUuid": "0325abce_503d79f3",
       "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "85f283ee_b3c05a96",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Done. It does pass on x86, but I guess that is more happenstance than something that necessarily has to be true.",
+      "parentUuid": "4b247220_338be84e",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d81eff81_3b407028",
@@ -86,6 +140,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a286c56f_5bccc004",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Not for this one specifically, because it is only one test. But I did it for `MteStackHistoryTest`",
+      "parentUuid": "d81eff81_3b407028",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2cb55b96_4a4aa1ff",
@@ -99,6 +171,30 @@
       "writtenOn": "2024-08-16T22:37:24Z",
       "side": 1,
       "message": "Use untag_address since it\u0027s doing the same operation.",
+      "range": {
+        "startLine": 224,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 67
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c636e927_0d75f10b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2cb55b96_4a4aa1ff",
       "range": {
         "startLine": 224,
         "startChar": 0,
@@ -132,6 +228,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "177e9a8a_5eff208d",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2063dd02_9bfb3d5e",
+      "range": {
+        "startLine": 251,
+        "startChar": 34,
+        "endLine": 251,
+        "endChar": 35
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b69e157b_8e30325e",
@@ -155,6 +275,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5e24598_23079aaf",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b69e157b_8e30325e",
+      "range": {
+        "startLine": 254,
+        "startChar": 19,
+        "endLine": 254,
+        "endChar": 27
+      },
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a30540c7_c05a8794",
@@ -168,6 +312,24 @@
       "writtenOn": "2024-08-16T22:37:24Z",
       "side": 1,
       "message": "I don\u0027t think this is quite correct. I think it would be more correct to +4 the rel_pc and pc instead of doing it this way.",
+      "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd9999fc_5036750f",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 28
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-08-19T19:20:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a30540c7_c05a8794",
       "revId": "0ac37ae5765e40816fbead9e7df6990741b7db4f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
