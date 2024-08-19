@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4ac3955_1b9b7af8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-19T17:37:38Z",
+      "side": 1,
+      "message": "Do these also run on 32-bit; some of these tests are failing on 32-bit systems: http://b/360254891",
+      "revId": "4c6edd3c8f027d45441cd135e3f1129e8b3b12b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
