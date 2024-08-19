@@ -19,6 +19,7 @@
 #include <jsonpb/json_schema_test.h>
 
 #include "cgroups_test.h"
+#include "cgroups_backcompat_test.h"
 #include "task_profiles_test.h"
 
 using namespace ::android::jsonpb;
@@ -40,6 +41,10 @@ INSTANTIATE_TEST_SUITE_P(Cgroups, JsonSchemaTest,
 INSTANTIATE_TEST_SUITE_P(Cgroups, CgroupsTest,
                          ::testing::Values(MakeTestParam<Cgroups>("/cgroups.json"),
                                            MakeTestParam<Cgroups>("/cgroups.recovery.json")));
+INSTANTIATE_TEST_SUITE_P(CgroupsBackcompat, CgroupsBackcompatTest,
+                         ::testing::Values(MakeTestParam<Cgroups>("/cgroups_28.json"),
+                                           MakeTestParam<Cgroups>("/cgroups_29.json"),
+                                           MakeTestParam<Cgroups>("/cgroups_30.json")));
 INSTANTIATE_TEST_SUITE_P(TaskProfiles, TaskProfilesTest,
                          ::testing::Values(MakeTestParam<TaskProfiles>("/task_profiles.json")));
 

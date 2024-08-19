@@ -110,6 +110,31 @@ void MergeCgroupToDescriptors(CgroupDescriptorMap* descriptors, const Json::Valu
     }
 }
 
+using MountDir = std::string;
+using MountOpts = std::string;
+static std::optional<std::map<MountDir, MountOpts>> ReadCgroupV1Mounts() {
+    FILE* fp = setmntent("/proc/mounts", "r");
+    if (fp == nullptr) {
+        PLOG(ERROR) << "Failed to read mounts";
+        return std::nullopt;
+    }
+
+    std::map<MountDir, MountOpts> mounts;
+    const std::string_view CGROUP_V1_TYPE = "cgroup";
+    for (mntent* mentry = getmntent(fp); mentry != nullptr; mentry = getmntent(fp)) {
+        if (mentry->mnt_type && CGROUP_V1_TYPE == mentry->mnt_type &&
+            mentry->mnt_dir && mentry->mnt_opts) {
+            mounts[mentry->mnt_dir] = mentry->mnt_opts;
+        }
+    }
+    endmntent(fp);
+
+    return mounts;
+}
+
+}  // anonymous namespace
+
+// Exported for testing, but not made available by util.h
 bool ReadDescriptorsFromFile(const std::string& file_name, CgroupDescriptorMap* descriptors) {
     static constexpr bool force_memcg_v2 = android::libprocessgroup_flags::force_memcg_v2();
     std::vector<CgroupDescriptor> result;
@@ -170,30 +195,6 @@ bool ReadDescriptorsFromFile(const std::string& file_name, CgroupDescriptorMap* 
 
     return true;
 }
-
-using MountDir = std::string;
-using MountOpts = std::string;
-static std::optional<std::map<MountDir, MountOpts>> ReadCgroupV1Mounts() {
-    FILE* fp = setmntent("/proc/mounts", "r");
-    if (fp == nullptr) {
-        PLOG(ERROR) << "Failed to read mounts";
-        return std::nullopt;
-    }
-
-    std::map<MountDir, MountOpts> mounts;
-    const std::string_view CGROUP_V1_TYPE = "cgroup";
-    for (mntent* mentry = getmntent(fp); mentry != nullptr; mentry = getmntent(fp)) {
-        if (mentry->mnt_type && CGROUP_V1_TYPE == mentry->mnt_type &&
-            mentry->mnt_dir && mentry->mnt_opts) {
-            mounts[mentry->mnt_dir] = mentry->mnt_opts;
-        }
-    }
-    endmntent(fp);
-
-    return mounts;
-}
-
-}  // anonymous namespace
 
 
 unsigned int GetCgroupDepth(const std::string& controller_root, const std::string& cgroup_path) {
