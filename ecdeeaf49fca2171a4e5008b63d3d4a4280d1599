@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "632deebf_25b8e076",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "Only the current slot is needed (unless vbmeta etc is getting flashed twice)",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee669316_9f2b6f0e",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "when is info null?",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19c72bc9_ea5a2136",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "Should this be before updating the partition table?",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31a647cb_88e866af",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "From a glance it looks like info is never null, but I could be wrong. If there are null callers, it\u0027d be better to have a temporary IDeviceInfo instead.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65333b50_6029cbe9",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "LOG()",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d772b609_15c8da70",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "LOG()",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6d6a3b0_bf2146c9",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "same here re: info",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15a5f9f3_37faf6e0",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "These functions don\u0027t have anything to do with OTA, right? I could see including \"Ota\" in the name if we thought we would move OTA metadata here. I\u0027m being a little bit of a stickler here since in a year or two we\u0027ll be digging through OTA code for something and trying to remember how this fits in.\n\nScratchOta/scratch_ota would work (to differentiate from *remount scratch*), since it\u0027s kind of OTA-ish, but we should be very consistent with the name.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15bbc795_7129623e",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "If the intent is to have OTAs be mutually exclusive with incremental flashes, then this logic should be moved to DeviceInfo, which was designed to encapsulate this kind of thing.\n\nThen SnapshotManager should have some kind of \"mode\" to return so callers like update_engine know that non-OTA snapshots are present, and it can\u0027t apply OTAs. I think you already have that via the boolean flag.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0840dfa3_88c3f8b0",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 3333,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-20T00:31:36Z",
+      "side": 1,
+      "message": "The \"\u0026\u0026\" should be \"||\" here since the two scratch types are different. But then the error message doesn\u0027t work, so really it should be a new check.\n\nThis is why I didn\u0027t like the name \"scratch\" :) \"temp_metadata\" or something would make it clearer.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
