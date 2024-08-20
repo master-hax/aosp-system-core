@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abe12321_e1349043",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 29
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-20T22:51:21Z",
+      "side": 1,
+      "message": "You don\u0027t need to do this, the initialize will create an appropriate memory object.\n\nSo all you need is the unwinder without any parameters.",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 61
+      },
+      "revId": "7d22fb1d97d92aa48df40eb468dc62b88a79c325",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50651762_435acec3",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 29
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-20T22:51:21Z",
+      "side": 1,
+      "message": "Should do an ASSERT_TRUE().",
+      "range": {
+        "startLine": 66,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 25
+      },
+      "revId": "7d22fb1d97d92aa48df40eb468dc62b88a79c325",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1742f0a7_453fdc3a",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 29
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-08-20T22:51:21Z",
+      "side": 1,
+      "message": "As above, it would be better to do same three lines from the previous test.\n\nDon\u0027t rely on the fact the read only needs a memory object, because if I change it so that reads fail on an uninit\u0027d object, this would start failing.\n\nYou could also create and init the unwinder object in the SetUp function so it can just be used in all of these functions.",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 61
+      },
+      "revId": "7d22fb1d97d92aa48df40eb468dc62b88a79c325",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
