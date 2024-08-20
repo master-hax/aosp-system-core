@@ -16,6 +16,24 @@
       "message": "I don\u0027t know how to do the Cq-Depend equivalent here. I think it\u0027s via topics? But this must be merged after https://android-review.git.corp.google.com/c/platform/bionic/+/3221143",
       "revId": "f185fbb1df2d39d3003a50161647bb1fdaacef8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ac6a010_64e272d0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096946
+      },
+      "writtenOn": "2024-08-20T22:50:27Z",
+      "side": 1,
+      "message": "You can throw them in the same Gerrit topic, which AIUI enforces:\n- All Presubmit-Ready runs include everything in the topic (even if Presubmit-Ready is only set on one CL).\n- All CLs are submitted simultaneously.\n\nI\u0027m not aware of a directional version of topic in Android for cross-repo changes.",
+      "parentUuid": "be148de8_05a4fff1",
+      "revId": "f185fbb1df2d39d3003a50161647bb1fdaacef8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
