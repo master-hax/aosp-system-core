@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "be148de8_05a4fff1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1873222
+      },
+      "writtenOn": "2024-08-20T20:43:06Z",
+      "side": 1,
+      "message": "I don\u0027t know how to do the Cq-Depend equivalent here. I think it\u0027s via topics? But this must be merged after https://android-review.git.corp.google.com/c/platform/bionic/+/3221143",
+      "revId": "f185fbb1df2d39d3003a50161647bb1fdaacef8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
