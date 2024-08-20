@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "52da31ad_2a5c9cf3",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Right; but the idea is to walk through both the slots and cleanup if there is any metadata if present. I have added a comment and renamed the function. This will ensure that if there were any stale entries it would be removed.",
+      "parentUuid": "632deebf_25b8e076",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ee669316_9f2b6f0e",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-08-20T00:31:36Z",
       "side": 1,
       "message": "when is info null?",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11985a8d_92b9c983",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "\"info\" is null when physical devices when the metadata actually relies on super. For testing, we set \"info\" through TestDeviceInfo.",
+      "parentUuid": "ee669316_9f2b6f0e",
       "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -52,6 +88,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0920c674_39532d4d",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Well, technically both are independent operations; however, UpdatePartitionTable() has strict checks; if those pass then it is better to fallback to DestroyLogicalPartition. I see the same followed in overlayfs logic as well.",
+      "parentUuid": "19c72bc9_ea5a2136",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31a647cb_88e866af",
@@ -65,6 +119,24 @@
       "writtenOn": "2024-08-20T00:31:36Z",
       "side": 1,
       "message": "From a glance it looks like info is never null, but I could be wrong. If there are null callers, it\u0027d be better to have a temporary IDeviceInfo instead.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69666304_ce5a0786",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Created temp device.",
+      "parentUuid": "31a647cb_88e866af",
       "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -86,6 +158,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "20d33761_d882c20a",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "65333b50_6029cbe9",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d772b609_15c8da70",
@@ -99,6 +189,24 @@
       "writtenOn": "2024-08-20T00:31:36Z",
       "side": 1,
       "message": "LOG()",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "928d2e22_8d9d5bb7",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d772b609_15c8da70",
       "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -120,6 +228,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8cd03f7_721f0689",
+        "filename": "fs_mgr/libsnapshot/scratch_super.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Please see above.",
+      "parentUuid": "b6d6a3b0_bf2146c9",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "15a5f9f3_37faf6e0",
@@ -133,6 +259,24 @@
       "writtenOn": "2024-08-20T00:31:36Z",
       "side": 1,
       "message": "These functions don\u0027t have anything to do with OTA, right? I could see including \"Ota\" in the name if we thought we would move OTA metadata here. I\u0027m being a little bit of a stickler here since in a year or two we\u0027ll be digging through OTA code for something and trying to remember how this fits in.\n\nScratchOta/scratch_ota would work (to differentiate from *remount scratch*), since it\u0027s kind of OTA-ish, but we should be very consistent with the name.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3566c772_9e5b399d",
+        "filename": "fs_mgr/libsnapshot/scratch_super.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "Ok. I have renamed all functions to keep this consistent.",
+      "parentUuid": "15a5f9f3_37faf6e0",
       "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -154,6 +298,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d6fef07_2bd5a54b",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "This is very good suggestion. Thanks. I have moved all this logic to DeviceInfo and looks clean now.",
+      "parentUuid": "15bbc795_7129623e",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0840dfa3_88c3f8b0",
@@ -167,6 +329,24 @@
       "writtenOn": "2024-08-20T00:31:36Z",
       "side": 1,
       "message": "The \"\u0026\u0026\" should be \"||\" here since the two scratch types are different. But then the error message doesn\u0027t work, so really it should be a new check.\n\nThis is why I didn\u0027t like the name \"scratch\" :) \"temp_metadata\" or something would make it clearer.",
+      "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "39e15c04_9c8a9225",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 3333,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-20T07:45:25Z",
+      "side": 1,
+      "message": "This check is no longer required. Given now the function to create scratch metadata on super is isolated.",
+      "parentUuid": "0840dfa3_88c3f8b0",
       "revId": "ecdeeaf49fca2171a4e5008b63d3d4a4280d1599",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
