@@ -166,7 +166,9 @@ static Result<Fstab> ReadFirstStageFstabMicrodroid(const std::string& cmdline) {
     if (!ReadDefaultFstab(&fstab)) {
         return Error() << "failed to read fstab";
     }
-    if (cmdline.find("androidboot.microdroid.mount_vendor=1") == std::string::npos) {
+    auto _unused = std::string();
+    if (!android::base::ReadFileToString(
+                "/proc/device-tree/avf/vendor_hashtree_descriptor_root_digest", &_unused, false)) {
         // We weren't asked to mount /vendor partition, filter it out from the fstab.
         auto predicate = [](const auto& entry) { return entry.mount_point == "/vendor"; };
         fstab.erase(std::remove_if(fstab.begin(), fstab.end(), predicate), fstab.end());
