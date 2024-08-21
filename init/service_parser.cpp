@@ -702,14 +702,6 @@ Result<void> ServiceParser::EndSection() {
         }
     }
 
-    if (interface_inheritance_hierarchy_) {
-        if (const auto& check_hierarchy_result = CheckInterfaceInheritanceHierarchy(
-                    service_->interfaces(), *interface_inheritance_hierarchy_);
-            !check_hierarchy_result.ok()) {
-            return Error() << check_hierarchy_result.error();
-        }
-    }
-
     if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_R__) {
         if ((service_->flags() & SVC_CRITICAL) != 0 && (service_->flags() & SVC_ONESHOT) != 0) {
             return Error() << "service '" << service_->name()
