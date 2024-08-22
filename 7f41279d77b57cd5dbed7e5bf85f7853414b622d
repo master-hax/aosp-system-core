@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c87c272f_1eba9e90",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-08-22T21:11:09Z",
+      "side": 1,
+      "message": "I\u0027m thinking we should add an \u0027-f\u0027 flag to the \u0027copy\u0027 builtin to force this to be a hard error, wdyt?",
+      "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
