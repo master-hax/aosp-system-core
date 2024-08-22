@@ -270,6 +270,30 @@
       },
       "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf2ab5d8_34a43784",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-22T13:07:59Z",
+      "side": 1,
+      "message": "(i think the actual usb folks on the bug are the right people for questions like this. this has always been a weird mess of ownership, with the adb folks really only owning the \"what happens when you say `start adbd` or `stop adbd`\" piece, not any part of how you get that far, which is between the SoC vendors, OEMs, and Android usb folks. and, tbh, not entirely clear to me that anyone really understands it.)",
+      "parentUuid": "4ef2ad7d_e6ea7232",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
