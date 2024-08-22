@@ -52,6 +52,24 @@
       "parentUuid": "dea3c1b7_2cff09b4",
       "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cea4acf9_30f7e67d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-08-22T21:29:41Z",
+      "side": 1,
+      "message": "The virtual file /sys/fs/selinux/policy on my test device is approximately 1M in size. Both source and target are virtual kernel files so there\u0027s no filesystem related delays. I can\u0027t see any boot delay at all.",
+      "parentUuid": "192bc048_469a2979",
+      "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
