@@ -70,6 +70,24 @@
       "parentUuid": "192bc048_469a2979",
       "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1c77d01_6c66ac3e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-22T21:35:05Z",
+      "side": 1,
+      "message": "technically i think my actual complaint was more along the lines of \"let\u0027s not reinvent toybox badly\"[1], but, yeah, that does have similar real-world outcomes.\n\nthe \"this line can\u0027t fail\" is an interesting idea ... do we have many lines we\u0027d want to use it on? enough to make it worthwhile?\n\n___\n1. and in this specific case, using `-f` to mean something completely different would be an extreme form of \"badly\" :-)",
+      "parentUuid": "cea4acf9_30f7e67d",
+      "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
