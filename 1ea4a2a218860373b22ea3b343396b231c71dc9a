@@ -88,6 +88,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "003e6748_c29d5feb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1614919
+      },
+      "writtenOn": "2024-08-22T07:31:49Z",
+      "side": 1,
+      "message": "@enh@google.com please help to review.",
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "90ff6ae5_df0be787",
@@ -221,6 +238,30 @@
       "side": 1,
       "message": "Your questions are specific to the USB subsystem, which I am not familiar with. @enh@google.com may know it or at least have a pointer.",
       "parentUuid": "785dfda6_e555d5b9",
+      "range": {
+        "startLine": 1,
+        "startChar": 75,
+        "endLine": 1,
+        "endChar": 104
+      },
+      "revId": "1ea4a2a218860373b22ea3b343396b231c71dc9a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ef2ad7d_e6ea7232",
+        "filename": "rootdir/init.usb.configfs.rc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1614919
+      },
+      "writtenOn": "2024-08-22T07:31:49Z",
+      "side": 1,
+      "message": "@enh@google.com please help to review.",
+      "parentUuid": "09dd3aae_bfd91b74",
       "range": {
         "startLine": 1,
         "startChar": 75,
