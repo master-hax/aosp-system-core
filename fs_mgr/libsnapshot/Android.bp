@@ -281,9 +281,17 @@ cc_defaults {
     header_libs: [
         "libstorage_literals_headers",
     ],
+    compile_multilib: "both",
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
     auto_gen_config: true,
     require_root: true,
-    compile_multilib: "first",
 }
 
 cc_test {
