@@ -88,6 +88,24 @@
       "parentUuid": "cea4acf9_30f7e67d",
       "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbdee676_f74b242e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-08-22T21:49:49Z",
+      "side": 1,
+      "message": "This is the first instance of a \"copy\" line I\u0027m aware of where a fail would have been nice, to prevent a very minor security regression. \n\nThere\u0027s precedence in the Android init language for annotating a service as \"critical\" and forcing a reboot if it doesn\u0027t start. See the \"critical\" keyword at https://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md . If I was strongly worried about subsequent regressions, I could convert this copy into a critical service. However, I think it\u0027s overkill. \n\nI would suggest we not take any action now, and keep an eye out for other similar use cases. Modifying copy for this one particular use case seems like overkill.",
+      "parentUuid": "c1c77d01_6c66ac3e",
+      "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
