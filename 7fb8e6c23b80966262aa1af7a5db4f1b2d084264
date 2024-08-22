@@ -52,6 +52,24 @@
       "parentUuid": "e05574df_f598dd3e",
       "revId": "7fb8e6c23b80966262aa1af7a5db4f1b2d084264",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "359877a8_80c6c09c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "Thanks for clarifying -- just confirming that this code won\u0027t apply to the \"real\" / on-device KeyMint-in-a-VM work is the main thing I was after.",
+      "parentUuid": "b4ee738a_c0d7a7bc",
+      "revId": "7fb8e6c23b80966262aa1af7a5db4f1b2d084264",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

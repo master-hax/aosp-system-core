@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53fe112b_518b2554",
+        "filename": "trusty/keymint/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "Do you also need the `init_rc` and `vintf_fragments` here too?",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d836fc6d_110a2450",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "upgrade to `warn!` ?",
+      "range": {
+        "startLine": 113,
+        "startChar": 8,
+        "endLine": 113,
+        "endChar": 13
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91a4cbec_e16c0a7b",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "I\u0027d avoid the term \"fake\" -- the contents should mostly be the \"real\" RoT contents, just determined by an insecure route (bootloader-\u003eproperties-\u003eHAL service-\u003eTA rather than bootloader-\u003eTA).\n\n(The exception is the verified boot key hash, which isn\u0027t available from a property.)",
+      "range": {
+        "startLine": 135,
+        "startChar": 67,
+        "endLine": 135,
+        "endChar": 75
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63574986_991ca443",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "super-nit: I tend to think of \"provisioning\" as being the stuff that goes on in the factory (which includes setting the device ID stuff below).",
+      "range": {
+        "startLine": 136,
+        "startChar": 43,
+        "endLine": 136,
+        "endChar": 59
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8fc31b1_b34f475c",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-22T13:22:57Z",
+      "side": 1,
+      "message": "Same observation here: the device ID info should mostly be the right info, it\u0027s just arriving via an insecure route.\n\n(The IMEI value(s) are the exception here, as they\u0027re hardcoded to emulator values, cf. b/263188546.)",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
