@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1be9765_e7f0a429",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-08-22T17:53:16Z",
+      "side": 1,
+      "message": "Just access(\"/proc/device-tree/avf/vendor_hashtree_descriptor_root_digest\", F_OK) \u003d\u003d 0?",
+      "range": {
+        "startLine": 170,
+        "startChar": 8,
+        "endLine": 171,
+        "endChar": 96
+      },
+      "revId": "3b2498a82c66881a0481c50fc4c5d44d1688a6be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
