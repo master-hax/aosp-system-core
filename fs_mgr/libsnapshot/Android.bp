@@ -58,7 +58,10 @@ cc_defaults {
     export_header_lib_headers: [
         "libfiemap_headers",
     ],
-    export_include_dirs: ["include"],
+    export_include_dirs: [
+        "include",
+        "snapuserd/include",
+    ],
     proto: {
         type: "lite",
         export_proto_headers: true,
