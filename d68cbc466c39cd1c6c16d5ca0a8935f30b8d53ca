@@ -16,6 +16,24 @@
       "message": "David, do you have any more comments?",
       "revId": "d68cbc466c39cd1c6c16d5ca0a8935f30b8d53ca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35e60b15_0ca5dee0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1998840
+      },
+      "writtenOn": "2024-08-23T18:02:27Z",
+      "side": 1,
+      "message": "I think David is OOO until 8/27",
+      "parentUuid": "d0fb0ffb_9e7ea5fe",
+      "revId": "d68cbc466c39cd1c6c16d5ca0a8935f30b8d53ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
