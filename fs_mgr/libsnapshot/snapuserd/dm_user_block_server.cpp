@@ -16,8 +16,13 @@
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <cutils/iosched_policy.h>
 #include <snapuserd/snapuserd_kernel.h>
 #include "snapuserd_logging.h"
+
+#if defined(__ANDROID__)
+#include <linux/ioprio.h>
+#endif
 
 namespace android {
 namespace snapshot {
@@ -27,21 +32,42 @@ using android::base::unique_fd;
 DmUserBlockServer::DmUserBlockServer(const std::string& misc_name, unique_fd&& ctrl_fd,
                                      Delegate* delegate, size_t buffer_size)
     : misc_name_(misc_name), ctrl_fd_(std::move(ctrl_fd)), delegate_(delegate) {
-    buffer_.Initialize(sizeof(struct dm_user_header), buffer_size);
+    buffer_.Initialize(sizeof_dm_user_header(), buffer_size);
+    dm_user_msg_v.store(ReadShareDmUserMsgV());
 }
 
 bool DmUserBlockServer::ProcessRequests() {
     struct dm_user_header* header =
             reinterpret_cast<struct dm_user_header*>(buffer_.GetHeaderPtr());
-    if (!android::base::ReadFully(ctrl_fd_, header, sizeof(*header))) {
-        if (errno != ENOTBLK) {
-            SNAP_PLOG(ERROR) << "Control-read failed";
+
+    if (dm_user_msg_v.load() == DM_USER_MESSAGE_V2) {
+        struct dm_user_header_v2* header_v2 = reinterpret_cast<struct dm_user_header_v2*>(header);
+	static __u64 ioprio_last;
+
+	if (!android::base::ReadFully(ctrl_fd_, header_v2, sizeof_dm_user_header())) {
+            if (errno != ENOTBLK) {
+                SNAP_PLOG(ERROR) << "Control-read failed";
+            }
+
+            SNAP_PLOG(DEBUG) << "ReadDmUserHeader failed....";
+            return false;
+	}
+
+	if (header_v2->ioprio != ioprio_last) {
+            IoSchedClass ioprio_class = static_cast<IoSchedClass>(IOPRIO_PRIO_CLASS(header_v2->ioprio));
+	    android_set_ioprio(0, ioprio_class, IOPRIO_PRIO_DATA(header_v2->ioprio));
+	    ioprio_last = header_v2->ioprio;
+	}
+    } else {
+        if (!android::base::ReadFully(ctrl_fd_, header, sizeof(*header))) {
+            if (errno != ENOTBLK) {
+                SNAP_PLOG(ERROR) << "Control-read failed";
+            }
+
+            SNAP_PLOG(DEBUG) << "ReadDmUserHeader failed....";
+            return false;
         }
-
-        SNAP_PLOG(DEBUG) << "ReadDmUserHeader failed....";
-        return false;
     }
-
     SNAP_LOG(DEBUG) << "Daemon: msg->seq: " << std::dec << header->seq;
     SNAP_LOG(DEBUG) << "Daemon: msg->len: " << std::dec << header->len;
     SNAP_LOG(DEBUG) << "Daemon: msg->sector: " << std::dec << header->sector;
@@ -112,7 +138,7 @@ bool DmUserBlockServer::WriteDmUserPayload(size_t size) {
     size_t payload_size = size;
     void* buf = buffer_.GetPayloadBufPtr();
     if (header_response_) {
-        payload_size += sizeof(struct dm_user_header);
+        payload_size += sizeof_dm_user_header();
         buf = buffer_.GetBufPtr();
     }
 
