@@ -16,6 +16,24 @@
       "message": "Hey - since it\u0027s turned off in the infra, I think you don\u0027t need to do this. If storaged_defaults ever adds this option, we\u0027d also want to enable it in the fuzzer.",
       "revId": "ed1e5da879f94e98f1a45392a1b0a2f1cd56c2c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1cbcacd4_36fd0d8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956258
+      },
+      "writtenOn": "2024-08-23T21:23:42Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "d5526a25_65875ab8",
+      "revId": "ed1e5da879f94e98f1a45392a1b0a2f1cd56c2c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
