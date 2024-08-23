@@ -82,6 +82,7 @@ class IDeviceMapper {
     virtual bool GetDmDevicePathByName(const std::string& name, std::string* path) = 0;
     virtual bool GetDeviceString(const std::string& name, std::string* dev) = 0;
     virtual bool DeleteDeviceIfExists(const std::string& name) = 0;
+    virtual bool SendMessage(const std::string& name, uint64_t sector, const std::string& message) = 0;
 };
 
 class DeviceMapper final : public IDeviceMapper {

@@ -30,6 +30,7 @@ cc_defaults {
     srcs: [
         "snapuserd_client.cpp",
     ],
+    whole_static_libs: ["libdm"],
 }
 
 cc_library_static {
@@ -119,6 +120,7 @@ cc_defaults {
     static_libs: [
         "libbase",
         "libbrotli",
+        "libcutils",
         "libcutils_sockets",
         "libdm",
         "libext2_uuid",

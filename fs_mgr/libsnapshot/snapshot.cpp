@@ -46,6 +46,7 @@
 
 #include <android/snapshot/snapshot.pb.h>
 #include <libsnapshot/snapshot_stats.h>
+#include <snapuserd/snapuserd_kernel.h>
 #include "device_info.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
@@ -564,6 +565,11 @@ bool SnapshotManager::MapDmUserCow(LockedFile* lock, const std::string& name,
     if (!WaitForDevice(*path, timeout_ms)) {
         LOG(ERROR) << " dm-user: timeout: Failed to create block device for: " << name;
         return false;
+    }
+
+    // Try using the dm-user message with io priority.
+    if (snapuserd_client_->SetDmUserMessageVer(dm_, name, DM_USER_MESSAGE_V2)) {
+        LOG(INFO) << "Success set dm-user message version to V2 for " << name;
     }
 
     auto control_device = "/dev/dm-user/" + misc_name;
