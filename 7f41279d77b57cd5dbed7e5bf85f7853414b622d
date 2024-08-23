@@ -124,6 +124,24 @@
       "parentUuid": "cbdee676_f74b242e",
       "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17cffe4a_80377a57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-08-23T18:27:05Z",
+      "side": 1,
+      "message": "Changed from /sys/fs/selinux/policy to /proc/bootconfig. It\u0027s significantly smaller (2K instead of 1M), incorporates device-class information which churns on a regular basis, and includes device-specific identifiers such as a unique serial number.\n\nPlease see patchset 3. This should address any theoretical performance concern.",
+      "parentUuid": "78ab43b2_27f75fc7",
+      "revId": "7f41279d77b57cd5dbed7e5bf85f7853414b622d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
