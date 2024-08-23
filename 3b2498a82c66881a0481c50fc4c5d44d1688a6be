@@ -22,6 +22,30 @@
       },
       "revId": "3b2498a82c66881a0481c50fc4c5d44d1688a6be",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5149c62_be466353",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1944206
+      },
+      "writtenOn": "2024-08-23T16:00:34Z",
+      "side": 1,
+      "message": "Done - I noticed another function `IsMicrodroidStrictBoot` and created `IsRequestingVendorPartition` with the same TODO, as the two seem to similar in spirit.  Let me know if that makes sense.",
+      "parentUuid": "c1be9765_e7f0a429",
+      "range": {
+        "startLine": 170,
+        "startChar": 8,
+        "endLine": 171,
+        "endChar": 96
+      },
+      "revId": "3b2498a82c66881a0481c50fc4c5d44d1688a6be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
