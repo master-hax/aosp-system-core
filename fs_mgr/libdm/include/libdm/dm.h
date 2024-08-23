@@ -82,6 +82,7 @@ class IDeviceMapper {
     virtual bool GetDmDevicePathByName(const std::string& name, std::string* path) = 0;
     virtual bool GetDeviceString(const std::string& name, std::string* dev) = 0;
     virtual bool DeleteDeviceIfExists(const std::string& name) = 0;
+    virtual bool SendMessage(const std::string& name, uint64_t sector, const std::string& message) = 0;
 };
 
 class DeviceMapper final : public IDeviceMapper {
@@ -308,7 +309,7 @@ class DeviceMapper final : public IDeviceMapper {
     bool GetDeviceNameAndUuid(dev_t dev, std::string* name, std::string* uuid);
 
     // Send |message| to target, pointed by |name| and |sector|. Use 0 if |sector| is not needed.
-    bool SendMessage(const std::string& name, uint64_t sector, const std::string& message);
+    bool SendMessage(const std::string& name, uint64_t sector, const std::string& message) override;
 
   private:
     // Maximum possible device mapper targets registered in the kernel.
