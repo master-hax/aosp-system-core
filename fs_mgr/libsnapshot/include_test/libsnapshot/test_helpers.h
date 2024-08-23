@@ -170,6 +170,9 @@ class DeviceMapperWrapper : public android::dm::IDeviceMapper {
     virtual bool DeleteDeviceIfExists(const std::string& name) {
         return impl_.DeleteDeviceIfExists(name);
     }
+    virtual bool SendMessage(const std::string& name, uint64_t sector, const std::string& message) {
+        return impl_.SendMessage(name, sector, message);
+    }
 
   private:
     android::dm::IDeviceMapper& impl_;

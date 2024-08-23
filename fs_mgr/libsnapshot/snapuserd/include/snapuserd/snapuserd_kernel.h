@@ -15,9 +15,14 @@
 #pragma once
 
 #include <linux/types.h>
+#include <android-base/file.h>
 
 namespace android {
 namespace snapshot {
+
+using android::base::unique_fd;
+using android::base::ReadFdToString;
+using android::base::WriteStringToFd;
 
 #define DM_USER_REQ_MAP_READ 0
 #define DM_USER_REQ_MAP_WRITE 1
@@ -25,6 +30,8 @@ namespace snapshot {
 #define DM_USER_RESP_SUCCESS 0
 #define DM_USER_RESP_ERROR 1
 #define DM_USER_RESP_UNSUPPORTED 2
+
+#define SHARE_DM_USER_MSG_V_PATH "/metadata/ota/dm_user_msg_v"
 
 // Kernel COW header fields
 static constexpr uint32_t SNAP_MAGIC = 0x70416e53;
@@ -91,6 +98,54 @@ struct dm_user_header {
     __u64 sector;
     __u64 len;
 } __attribute__((packed));
+
+// Support ioprio
+struct dm_user_header_v2 {
+    __u64 seq;
+    __u64 type;
+    __u64 flags;
+    __u64 sector;
+    __u64 len;
+    __u64 ioprio;
+} __attribute__((packed));
+
+enum DM_USER_MESSAGE_VERSION {
+    DM_USER_MESSAGE_V1 = 1,
+    DM_USER_MESSAGE_V2 = 2,
+};
+
+static std::atomic<uint32_t> dm_user_msg_v(DM_USER_MESSAGE_V1);
+
+static inline void WriteShareDmUserMsgV(enum DM_USER_MESSAGE_VERSION ver) {
+    auto fd = unique_fd(TEMP_FAILURE_RETRY(open(SHARE_DM_USER_MSG_V_PATH,
+                O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0666)));
+
+    WriteStringToFd(std::to_string(ver), fd);
+    fsync(fd.get());
+}
+
+static inline uint32_t ReadShareDmUserMsgV() {
+    std::string value;
+    uint32_t ret;
+
+    auto fd = unique_fd(TEMP_FAILURE_RETRY(open(SHARE_DM_USER_MSG_V_PATH, O_RDONLY)));
+
+    ReadFdToString(fd, &value);
+    ret = std::stoul(value);
+
+    return ret;
+}
+
+static inline size_t sizeof_dm_user_header() {
+    switch (dm_user_msg_v.load()) {
+        case DM_USER_MESSAGE_V1:
+	    return (sizeof(struct dm_user_header));
+	case DM_USER_MESSAGE_V2:
+	    return (sizeof(struct dm_user_header_v2));
+	default:
+	    return (sizeof(struct dm_user_header));
+    }
+}
 
 }  // namespace snapshot
 }  // namespace android
