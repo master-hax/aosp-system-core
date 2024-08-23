@@ -36,12 +36,15 @@
 #include <android-base/strings.h>
 #include <fs_mgr/file_wait.h>
 #include <snapuserd/snapuserd_client.h>
+#include <snapuserd/snapuserd_kernel.h>
+#include <libdm/dm.h>
 
 namespace android {
 namespace snapshot {
 
 using namespace std::chrono_literals;
 using android::base::unique_fd;
+using android::dm::IDeviceMapper;
 
 bool EnsureSnapuserdStarted() {
     if (android::base::GetProperty("init.svc.snapuserd", "") != "running") {
@@ -367,6 +370,22 @@ void SnapuserdClient::NotifyTransitionDaemonIsReady() {
         PLOG(ERROR) << "Unable to write daemon alive indicator path: "
                     << GetDaemonAliveIndicatorPath();
     }
+}
+
+bool SnapuserdClient::SetDmUserMessageVer(IDeviceMapper& dm, const std::string& name, enum DM_USER_MESSAGE_VERSION ver) {
+    if (dm_user_msg_v.load() == ver) {
+        return true;
+    } else if (dm.SendMessage(name, 0, "dm_user_message_ver " + std::to_string(ver))) {
+	WriteShareDmUserMsgV(ver);
+        dm_user_msg_v.store(ver);
+	LOG(INFO) << "dm-user now supports ioprio.";
+	return true;
+    } else if (access(SHARE_DM_USER_MSG_V_PATH, F_OK) == 0){
+        std::remove(SHARE_DM_USER_MSG_V_PATH);
+	LOG(INFO) << "delete " << SHARE_DM_USER_MSG_V_PATH;
+    }
+    PLOG(ERROR) << "Set dm-user message version failed.";
+    return false;
 }
 
 }  // namespace snapshot

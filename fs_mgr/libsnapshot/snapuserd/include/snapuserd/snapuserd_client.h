@@ -20,9 +20,13 @@
 #include <string>
 
 #include <android-base/unique_fd.h>
+#include <snapuserd/snapuserd_kernel.h>
+#include <libdm/dm.h>
 
 namespace android {
 namespace snapshot {
+
+using android::dm::IDeviceMapper;
 
 static constexpr uint32_t PACKET_SIZE = 512;
 
@@ -108,6 +112,8 @@ class SnapuserdClient {
 
     // Notify init that snapuserd daemon is ready post selinux transition
     void NotifyTransitionDaemonIsReady();
+
+    bool SetDmUserMessageVer(dm::IDeviceMapper& dm, const std::string& name, enum DM_USER_MESSAGE_VERSION ver);
 };
 
 }  // namespace snapshot
