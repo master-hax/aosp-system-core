@@ -47,7 +47,7 @@ cc_defaults {
         "-Wall",
         "-Werror",
         "-Wextra",
-        "-Wno-unused-parameter"
+        "-Wno-unused-parameter",
     ],
 }
 
@@ -152,6 +152,9 @@ cc_defaults {
             "dvander@google.com",
         ],
         triage_assignee: "waghpawan@google.com",
+    },
+    sanitize: {
+        integer_overflow: false,
     },
 }
 
