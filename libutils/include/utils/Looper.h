@@ -138,7 +138,7 @@ private:
  *
  * A looper can be associated with a thread although there is no requirement that it must be.
  */
-class Looper : public RefBase {
+class Looper final : public RefBase {
 protected:
     virtual ~Looper();
 
