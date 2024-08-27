@@ -34,6 +34,24 @@
       "parentUuid": "ac7cdcf8_7f93f01e",
       "revId": "e97f3fb577be971381065657c7632b106b96e527",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91533552_45676c2f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-27T23:42:41Z",
+      "side": 1,
+      "message": "The documentation for Soong says:\n\n\"compile_multilib string, control whether this module compiles for 32-bit, 64-bit, or both. Possible values are \"32\" (compile for 32-bit only), \"64\" (compile for 64-bit only), \"both\" (compile for both architectures), or \"first\" (compile for 64-bit on a 64-bit platform, and 32-bit on a 32-bit platform).\"\n\nSo it seems like \"first\" _should_ be doing what we want?",
+      "parentUuid": "7377d617_40ff4743",
+      "revId": "e97f3fb577be971381065657c7632b106b96e527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
