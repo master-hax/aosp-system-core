@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7f00ce45_43867646",
+        "filename": "trusty/keymint/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-27T16:56:10Z",
+      "side": 1,
+      "message": "OK, I\u0027m confused again -- I thought from the earlier comments that this CL was just going to be used for emulators like Cuttlefish, not for real vendor devices that (optionally) use KeyMint in a VM.",
+      "parentUuid": "d0258199_809dff7f",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d836fc6d_110a2450",
         "filename": "trusty/keymint/src/keymint_hal_main.rs",
         "patchSetId": 8

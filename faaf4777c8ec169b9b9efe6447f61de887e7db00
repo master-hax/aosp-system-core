@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "372d7a74_ac2d7580",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-27T16:56:10Z",
+      "side": 1,
+      "message": "super-nit: \"device ID information\" -- it\u0027s not just a single ID, it\u0027s a bunch (brand/device/product/manufacturer/serial number/IMEI/....)",
+      "range": {
+        "startLine": 135,
+        "startChar": 71,
+        "endLine": 135,
+        "endChar": 80
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48d737d5_fd7f1884",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-27T16:56:10Z",
+      "side": 1,
+      "message": "I think \"mostly correct\" in a comment raises more questions than it answers!\n\nHow about:\n\n\"When the non-secure feature is enabled, retrieve root-of-trust information\n(with the exception of the verified boot key hash) from Android properties, and populate the TA with this information.  On a real device, the bootloader should provide this data to the TA directly.\"\n\nplus:\n\n\"When the non-secure feature is enabled, also retrieve device ID information (except for IMEI/MEID values) from Android properties and populate the TA with this information.  On a real device, a factory provisioning process would populate this information.\"",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 36
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38425525_e658620f",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-08-27T16:56:10Z",
+      "side": 1,
+      "message": "nit: the bootloader would only provide RoT information; the device ID information would be pre-provisioned.",
+      "range": {
+        "startLine": 137,
+        "startChar": 29,
+        "endLine": 137,
+        "endChar": 58
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
