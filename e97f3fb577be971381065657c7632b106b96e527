@@ -52,6 +52,24 @@
       "parentUuid": "7377d617_40ff4743",
       "revId": "e97f3fb577be971381065657c7632b106b96e527",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a86aee3_5a7de4d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-27T23:53:08Z",
+      "side": 1,
+      "message": "I see.. but it looks like for \"first\" the binary seems to be missing per: http://b/360254891#comment1",
+      "parentUuid": "91533552_45676c2f",
+      "revId": "e97f3fb577be971381065657c7632b106b96e527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
