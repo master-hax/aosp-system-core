@@ -16,6 +16,24 @@
       "message": "On 32-bit only systems, shouldn\u0027t \"first\" be enough? Running the test on multilib systems just introduces dependency problems.",
       "revId": "e97f3fb577be971381065657c7632b106b96e527",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7377d617_40ff4743",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-27T19:47:20Z",
+      "side": 1,
+      "message": "If we set it to \"first\" then, tests don\u0027t get compiled for 32-bit. Setting multilib: \"both\" will compile for both 32 and 64 bit. \n\nHowever, vab_legacy_test is failing for 32 bit because of dependency problems as you pointed out: \n\nCANNOT LINK EXECUTABLE \"/data/local/tmp/vab_legacy_tests/arm/vab_legacy_tests32\": library \"android.hardware.boot@1.0.so\" not found: needed by main executable\n\nIs there a way to skip 32-bit compilation or test itself ?",
+      "parentUuid": "ac7cdcf8_7f93f01e",
+      "revId": "e97f3fb577be971381065657c7632b106b96e527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
