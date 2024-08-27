@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0258199_809dff7f",
+        "filename": "trusty/keymint/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-27T14:44:45Z",
+      "side": 1,
+      "message": "No. `init_rc` and `vintf` will be packaged in the cuttlefish apex in `/vendor`, and the HAL registration will stay in the `/system_ext`. Since the KeyMint VM is intended to be an optional feature for W, this is the direction we want to take so that vendors can selectively enable this feature across their devices (b/358091359).",
+      "parentUuid": "53fe112b_518b2554",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d836fc6d_110a2450",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-08-22T13:22:57Z",
       "side": 1,
       "message": "upgrade to `warn!` ?",
+      "range": {
+        "startLine": 113,
+        "startChar": 8,
+        "endLine": 113,
+        "endChar": 13
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1855b25e_915cabde",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-27T14:44:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d836fc6d_110a2450",
       "range": {
         "startLine": 113,
         "startChar": 8,
@@ -66,6 +108,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ffc1bcae_e0a7d0ac",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-27T14:44:45Z",
+      "side": 1,
+      "message": "I see. I reworded this comment, could you please take another look?",
+      "parentUuid": "91a4cbec_e16c0a7b",
+      "range": {
+        "startLine": 135,
+        "startChar": 67,
+        "endLine": 135,
+        "endChar": 75
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "63574986_991ca443",
         "filename": "trusty/keymint/src/keymint_hal_main.rs",
         "patchSetId": 8
@@ -77,6 +143,30 @@
       "writtenOn": "2024-08-22T13:22:57Z",
       "side": 1,
       "message": "super-nit: I tend to think of \"provisioning\" as being the stuff that goes on in the factory (which includes setting the device ID stuff below).",
+      "range": {
+        "startLine": 136,
+        "startChar": 43,
+        "endLine": 136,
+        "endChar": 59
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3f5d4ec_849f2068",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-27T14:44:45Z",
+      "side": 1,
+      "message": "Makes sense. I reworded this to \"provide\" to make this more generic.",
+      "parentUuid": "63574986_991ca443",
       "range": {
         "startLine": 136,
         "startChar": 43,
@@ -100,6 +190,24 @@
       "writtenOn": "2024-08-22T13:22:57Z",
       "side": 1,
       "message": "Same observation here: the device ID info should mostly be the right info, it\u0027s just arriving via an insecure route.\n\n(The IMEI value(s) are the exception here, as they\u0027re hardcoded to emulator values, cf. b/263188546.)",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06f804a5_85c5d1da",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-27T14:44:45Z",
+      "side": 1,
+      "message": "I added device ID to the comment above too.",
+      "parentUuid": "e8fc31b1_b34f475c",
       "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
