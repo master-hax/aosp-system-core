@@ -51,6 +51,24 @@
       "message": "nit: \"MaybeResumeFromHibernation\"",
       "revId": "d68cbc466c39cd1c6c16d5ca0a8935f30b8d53ca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35ee6e3d_fb8189ae",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1998840
+      },
+      "writtenOn": "2024-08-27T16:38:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee9b2bcc_e6d444f9",
+      "revId": "d68cbc466c39cd1c6c16d5ca0a8935f30b8d53ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
