@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ac06a35_ebf5a0df",
+        "filename": "fs_mgr/libsnapshot/device_info.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-28T06:52:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e374139f_d6e9c1b7",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ccbc402f_cd0bb03b",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-08-28T00:58:23Z",
       "side": 1,
       "message": "SetTempMetadata doesn\u0027t need to be virtual/override either, I think?",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9c58cec_95c4ad53",
+        "filename": "fs_mgr/libsnapshot/device_info.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-28T06:52:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ccbc402f_cd0bb03b",
       "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dac11b33_f2cf7257",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-28T06:52:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc2ed372_9e61668a",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "88291ddf_66e5521c",
@@ -86,6 +140,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "671d0426_0946b621",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 2337,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-28T06:52:06Z",
+      "side": 1,
+      "message": "I renamed the function. I didn\u0027t want to move it \"init\" as I wanted to keep changes in \"init\" minimal. Also, there are two functions calls - Encapsulating here would be clean.",
+      "parentUuid": "88291ddf_66e5521c",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e49f8e13_a5e931c2",
@@ -99,6 +171,30 @@
       "writtenOn": "2024-08-28T00:58:23Z",
       "side": 1,
       "message": "Add a comment here explaining why /metadata/ota might not exist, but TestSnapuserdIsReady might be getting invoked.",
+      "range": {
+        "startLine": 272,
+        "startChar": 26,
+        "endLine": 272,
+        "endChar": 29
+      },
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b36f7b18_5b3b255b",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-08-28T06:52:06Z",
+      "side": 1,
+      "message": "I removed this check - No need for special case here.",
+      "parentUuid": "e49f8e13_a5e931c2",
       "range": {
         "startLine": 272,
         "startChar": 26,
