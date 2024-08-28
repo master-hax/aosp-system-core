@@ -36,6 +36,7 @@ rust_defaults {
     prefer_rlib: true,
 }
 
+// vendor flavor for HAL interacting with the Trusty TEE
 rust_binary {
     name: "android.hardware.security.keymint-service.rust.trusty",
     vendor: true,
@@ -47,6 +48,17 @@ rust_binary {
     ],
 }
 
+// system flavor of Keymint Rust HAL interacting with the system Trusty AVF pVM
+// note that the vintf_fragments are packaged separately in the vendor partition
+// by the device specific makefile
+rust_binary {
+    name: "android.hardware.security.keymint-service.rust.trusty.system",
+    system_ext_specific: true,
+    defaults: ["android.hardware.security.keymint-service.rust.trusty.default"],
+    init_rc: ["android.hardware.security.keymint-service.rust.trusty.system.rc"],
+}
+
+// system flavor of Keymint Rust HAL interacting with the system Trusty AVF VM (nonsecure)
 rust_binary {
     name: "android.hardware.security.keymint-service.rust.trusty.system.nonsecure",
     system_ext_specific: true,
