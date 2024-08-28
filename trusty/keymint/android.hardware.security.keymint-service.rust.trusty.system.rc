@@ -1,0 +1,13 @@
+service system.keymint.rust-trusty /system_ext/bin/hw/android.hardware.security.keymint-service.rust.trusty.system \
+                                          --dev ${ro.hardware.trusty_ipc_dev.keymint:-/dev/trusty-ipc-dev0}
+    class early_hal
+    disabled
+    user nobody
+    group drmrpc
+    # The keymint service is not allowed to restart.
+    # If it crashes, a device restart is required.
+    oneshot
+
+on property:ro.hardware.security.keymint.trusty.system=1 && \
+   property:ro.hardware.security.trusty_vm.system=1
+    enable system.keymint.rust-trusty
