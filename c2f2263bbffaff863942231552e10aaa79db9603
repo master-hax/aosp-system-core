@@ -22,6 +22,30 @@
       },
       "revId": "c2f2263bbffaff863942231552e10aaa79db9603",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e468bf9_0f988f87",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1436,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-08-28T19:08:09Z",
+      "side": 1,
+      "message": "Right, this is intended. Current fs_mgr logic also have similar limitations(see mount_with_alternatives), so the idea is to preserve this behavior.",
+      "parentUuid": "1f694c2d_226ec33b",
+      "range": {
+        "startLine": 1436,
+        "startChar": 28,
+        "endLine": 1436,
+        "endChar": 65
+      },
+      "revId": "c2f2263bbffaff863942231552e10aaa79db9603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
