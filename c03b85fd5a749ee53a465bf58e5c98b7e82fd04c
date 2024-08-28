@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f5cc436_b5b2c49e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-08-28T18:20:32Z",
+      "side": 1,
+      "message": "Don\u0027t merge until September 24, 2024.\ngo/android-25Q1",
+      "revId": "c03b85fd5a749ee53a465bf58e5c98b7e82fd04c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
