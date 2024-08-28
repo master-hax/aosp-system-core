@@ -20,8 +20,8 @@ package {
 
 cc_binary {
     name: "storageproxyd",
-    vendor: true,
-
+    vendor_available: true,
+    system_ext_specific: true,
     srcs: [
         "checkpoint_handling.cpp",
         "ipc.c",
