@@ -1,0 +1,40 @@
+# RPMB Mock
+on post-fs && property:ro.hardware.security.trusty_vm.system=1
+    mkdir /mnt/vendor/persist/ss 0770 root system
+    exec_start rpmb_mock_init
+    wait /mnt/vendor/persist/ss/RPMB_DATA
+    start rpmb_mock
+
+on late-fs && property:ro.hardware.security.trusty_vm.system=1 && \
+  property:ro.hardware.trusty_vm_cid=*
+    setprop ro.hardware.trusty_ipc_dev.storage VSOCK:${ro.hardware.trusty_vm_cid}:1
+    start storageproxyd
+
+on post-fs-data && property:ro.hardware.security.trusty_vm.system=1
+    mkdir /data/vendor/ss 0770 root system
+    symlink /mnt/vendor/persist/ss /data/vendor/ss/persist
+    chown root system /data/vendor/ss/persist
+    chmod 0770 /data/vendor/ss/persist
+
+    # Storage proxy
+    restart storageproxyd
+
+service storageproxyd /system_ext/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev.storage:-/dev/trusty-ipc-dev0} \
+        -r /dev/socket/rpmb_mock -p /data/vendor/ss -t sock
+    disabled
+    user system
+    group system
+
+service rpmb_mock_init /system_ext/bin/rpmb_dev.system --dev /mnt/vendor/persist/ss/RPMB_DATA --init --size 2048
+    disabled
+    user system
+    group system
+    oneshot
+
+service rpmb_mock /system_ext/bin/rpmb_dev.system --dev /mnt/vendor/persist/ss/RPMB_DATA \
+                          --sock rpmb_mock
+    class main
+    disabled
+    user system
+    group system
+    socket rpmb_mock stream 660 system system
