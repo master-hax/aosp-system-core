@@ -1,0 +1,13 @@
+# RPMB Mock
+on fs && property:ro.hardware.security.trusty_vm.system.nonsecure=1
+    mkdir /mnt/vendor/persist/ss 0770 root system
+    setprop ro.hardware.security.secure_storage.persist_rdy 1
+
+on post-fs-data && property:ro.hardware.security.trusty_vm.system.nonsecure=1
+    mkdir /data/vendor/ss 0770 root system
+    symlink /mnt/vendor/persist/ss /data/vendor/ss/persist
+    chown root system /data/vendor/ss/persist
+    chmod 0770 /data/vendor/ss/persist
+    # Advertise "data ready" to Secure Storage
+    setprop ro.hardware.security.secure_storage.data_rdy 1
+    trigger hardware_security_secure_storage_data_rdy
