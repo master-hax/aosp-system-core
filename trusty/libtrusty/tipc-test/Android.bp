@@ -18,8 +18,7 @@ package {
 
 cc_test {
     name: "tipc-test",
-    vendor: true,
-
+    vendor_available: true,
     srcs: ["tipc_test.c"],
     shared_libs: [
         "libc",
