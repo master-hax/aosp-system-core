@@ -1,0 +1,33 @@
+service storageproxyd /system_ext/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev.storage:-/dev/trusty-ipc-dev0} \
+        -r /dev/socket/rpmb_mock -p /data/vendor/ss -t sock
+    class early_hal
+    user system
+    group system
+
+service rpmb_mock_init /system_ext/bin/rpmb_dev.system --dev /mnt/vendor/persist/ss/RPMB_DATA --init --size 2048
+    disabled
+    user system
+    group system
+    oneshot
+
+service rpmb_mock /system_ext/bin/rpmb_dev.system --dev /mnt/vendor/persist/ss/RPMB_DATA \
+                          --sock rpmb_mock
+    class main
+    disabled
+    user system
+    group system
+    socket rpmb_mock stream 660 system system
+
+# RPMB Mock
+on post-fs && \
+   property:ro.hardware.security.secure_storage.persist_rdy=1 && \
+   property:ro.hardware.security.trusty_vm.system.nonsecure=1 && \
+   property:ro.hardware.trusty_vm_cid=*
+    setprop ro.hardware.trusty_ipc_dev.storage VSOCK:${ro.hardware.trusty_vm_cid}:1
+    exec_start rpmb_mock_init
+    start rpmb_mock
+    enable storageproxyd
+
+on post-fs-data && \
+  property:ro.hardware.security.secure_storage.data_rdy=1
+    restart storageproxyd
