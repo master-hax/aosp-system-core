@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f694c2d_226ec33b",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 1436,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-08-28T18:57:19Z",
+      "side": 1,
+      "message": "I am assuming that you can only have sequential entries with the same blk_device, but not if the entires are scattered? e.g.\n\n```\n\u003centry A1\u003e \u003cblk_device_A\u003e\n\u003centry B\u003e  \u003cblk_device_B\u003e\n\u003centry A2\u003e \u003cblk_device_A\u003e\n```\n\nThen this for loop will only read A1 but not A2. Is that right?",
+      "range": {
+        "startLine": 1436,
+        "startChar": 28,
+        "endLine": 1436,
+        "endChar": 65
+      },
+      "revId": "c2f2263bbffaff863942231552e10aaa79db9603",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
