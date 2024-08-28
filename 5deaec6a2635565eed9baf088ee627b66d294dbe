@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c2ce408_eca042d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "Thanks, this is looking much closer.",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e374139f_d6e9c1b7",
+        "filename": "fs_mgr/libsnapshot/device_info.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "I think this doesn\u0027t need to be virtual/override.",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccbc402f_cd0bb03b",
+        "filename": "fs_mgr/libsnapshot/device_info.h",
+        "patchSetId": 16
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "SetTempMetadata doesn\u0027t need to be virtual/override either, I think?",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc2ed372_9e61668a",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "Remove is_temp_metadata_, call info-\u003eIsTempMetadata() instead?",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88291ddf_66e5521c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 2337,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "nit: Still refers to \"scratch\" here. You might consider moving this directly to init though, since it doesn\u0027t seem like the callback is adding much.",
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e49f8e13_a5e931c2",
+        "filename": "init/snapuserd_transition.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-08-28T00:58:23Z",
+      "side": 1,
+      "message": "Add a comment here explaining why /metadata/ota might not exist, but TestSnapuserdIsReady might be getting invoked.",
+      "range": {
+        "startLine": 272,
+        "startChar": 26,
+        "endLine": 272,
+        "endChar": 29
+      },
+      "revId": "5deaec6a2635565eed9baf088ee627b66d294dbe",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
