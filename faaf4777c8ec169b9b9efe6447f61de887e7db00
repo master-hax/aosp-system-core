@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da6050e9_ca2aac86",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-28T11:13:50Z",
+      "side": 1,
+      "message": "I see. Thanks for the explanation! updated.",
+      "parentUuid": "372d7a74_ac2d7580",
+      "range": {
+        "startLine": 135,
+        "startChar": 71,
+        "endLine": 135,
+        "endChar": 80
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "48d737d5_fd7f1884",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05925779_e9574cd1",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-28T11:13:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48d737d5_fd7f1884",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 36
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "38425525_e658620f",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-08-27T16:56:10Z",
       "side": 1,
       "message": "nit: the bootloader would only provide RoT information; the device ID information would be pre-provisioned.",
+      "range": {
+        "startLine": 137,
+        "startChar": 29,
+        "endLine": 137,
+        "endChar": 58
+      },
+      "revId": "faaf4777c8ec169b9b9efe6447f61de887e7db00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "338aa0f3_28eb1f37",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 10
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-28T11:13:50Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "38425525_e658620f",
       "range": {
         "startLine": 137,
         "startChar": 29,

@@ -54,6 +54,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d6604ed_5e3ad6ec",
+        "filename": "trusty/keymint/Android.bp",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-28T11:13:50Z",
+      "side": 1,
+      "message": "\u003e this CL was just going to be used for emulators like Cuttlefish, not for real vendor devices that (optionally) use KeyMint in a VM.\n\nYou are right. HAL registration in `/system_ext` and VINT/init_rc in `/vendor` is the general strategy for the KeyMint VM deployment on both emulators and real devices. The nonsecure binary added in this cl is still only for emulators like cf, the other binary will be used on normal devices. I\u0027m simply applying the same separation on cf as we do on real devices.",
+      "parentUuid": "7f00ce45_43867646",
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d836fc6d_110a2450",
@@ -138,6 +156,30 @@
       "side": 1,
       "message": "I see. I reworded this comment, could you please take another look?",
       "parentUuid": "91a4cbec_e16c0a7b",
+      "range": {
+        "startLine": 135,
+        "startChar": 67,
+        "endLine": 135,
+        "endChar": 75
+      },
+      "revId": "5f7d535cd198a0fc4aa1e0dd75f625e9b70843c7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44f10a2d_ef157df5",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-28T11:13:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffc1bcae_e0a7d0ac",
       "range": {
         "startLine": 135,
         "startChar": 67,
