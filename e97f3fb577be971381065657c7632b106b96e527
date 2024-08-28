@@ -70,6 +70,24 @@
       "parentUuid": "91533552_45676c2f",
       "revId": "e97f3fb577be971381065657c7632b106b96e527",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb432f99_4e08be05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2024-08-28T15:20:59Z",
+      "side": 1,
+      "message": "In our tree (and I think also what we ship to partners?), we only build `test_suites_arm64`, and those test suites are used for testing both 64-bit and 32-bit devices.\n\nSo maybe that\u0027s why, when building VTS in automation, \"first\" is seen as 64-bit?  I don\u0027t know exactly how that works, but maybe that\u0027s why?",
+      "parentUuid": "8a86aee3_5a7de4d1",
+      "revId": "e97f3fb577be971381065657c7632b106b96e527",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
