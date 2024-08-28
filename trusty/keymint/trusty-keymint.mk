@@ -15,29 +15,47 @@
 #
 
 #
-# This makefile should be included by devices that use Trusty TEE
-# to pull in a set of Trusty KeyMint specific modules.
+# This makefile should be included by devices that use Trusty VM or TEE
+# to pull in the baseline set of Keymint HAL specific modules.
 #
-# Allow KeyMint HAL service implementation selection at build time. This must be
-# synchronized with the TA implementation included in Trusty. Possible values:
+
+# Allow the KeyMint HAL service implementation to be selected at build time.  This needs to be
+# done in sync with the TA implementation included in Trusty.  Possible values are:
 #
-# - Rust implementation for Trusty VM (requires Trusty VM support):
-#   export TRUSTY_KEYMINT_IMPL=rust
-#   export TRUSTY_SYSTEM_VM=nonsecure
-# - Rust implementation for Trusty TEE (no Trusty VM support):
-#   export TRUSTY_KEYMINT_IMPL=rust
-# - C++ implementation (default): (any other value or unset TRUSTY_KEYMINT_IMPL)
+# - Rust implementation:   export TRUSTY_KEYMINT_IMPL=rust
+# - C++ implementation:    (any other value of TRUSTY_KEYMINT_IMPL)
 
 ifeq ($(TRUSTY_KEYMINT_IMPL),rust)
-    ifeq ($(TRUSTY_SYSTEM_VM),nonsecure)
-        LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty.system.nonsecure
+    ifdef TRUSTY_SYSTEM_VM
+    ifeq ($(TRUSTY_SYSTEM_VM), nonsecure)
+        # Select the nonsecure system HALs (accessing the system Trusty VM)
+    LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty.system.nonsecure
     else
-        LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty
+    # Default to the secure system HALs (accessing the system Trusty pVM)
+    LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty.system
     endif
+    else # ifdef TRUSTY_SYSTEM_VM
+    # vendor hal accessing Keymint in Trusty TEE
+    LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty
+    endif # ifdef TRUSTY_SYSTEM_VM
 else
     # Default to the C++ implementation
     LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.trusty
+    ifdef TRUSTY_SYSTEM_VM # ifdef TRUSTY_SYSTEM_VM
+        $(error TRUSTY_SYSTEM_VM requires TRUSTY_KEYMINT_IMPL=rust)
+    endif
 endif
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.hardware.keystore_desede=true \
+	ro.hardware.keystore=trusty \
 
 PRODUCT_PACKAGES += \
-    $(LOCAL_KEYMINT_PRODUCT_PACKAGE) \
+	$(LOCAL_KEYMINT_PRODUCT_PACKAGE) \
+
+ifdef TRUSTY_VM_IN_SYSTEM
+PRODUCT_COPY_FILES += \
+	frameworks/native/data/etc/android.hardware.keystore.app_attest_key.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/android.hardware.keystore.app_attest_key.xml
+else
+PRODUCT_COPY_FILES += \
+	frameworks/native/data/etc/android.hardware.keystore.app_attest_key.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.keystore.app_attest_key.xml
+endif
