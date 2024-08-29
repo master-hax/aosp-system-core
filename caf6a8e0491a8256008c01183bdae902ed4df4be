@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a2c946b_fecdb11c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-29T11:25:54Z",
+      "side": 1,
+      "message": "Thanks for the review!",
+      "revId": "caf6a8e0491a8256008c01183bdae902ed4df4be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8a2094ac_a154bc94",
@@ -14,6 +31,30 @@
       "writtenOn": "2024-08-29T11:03:25Z",
       "side": 1,
       "message": "super-nit: drop the quote mark",
+      "range": {
+        "startLine": 135,
+        "startChar": 11,
+        "endLine": 135,
+        "endChar": 12
+      },
+      "revId": "caf6a8e0491a8256008c01183bdae902ed4df4be",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a5bf837_5af49b6e",
+        "filename": "trusty/keymint/src/keymint_hal_main.rs",
+        "patchSetId": 12
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-29T11:25:54Z",
+      "side": 1,
+      "message": "Sure. Done",
+      "parentUuid": "8a2094ac_a154bc94",
       "range": {
         "startLine": 135,
         "startChar": 11,
