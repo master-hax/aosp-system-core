@@ -16,6 +16,40 @@
       "message": "I changed this quite a bit, so I think this requires a re-review before proceeding.",
       "revId": "9b2f60cd59c76a1ff7b02659e5cdcd8d3a5690c5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a948dc5_4888d204",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-29T21:03:26Z",
+      "side": 1,
+      "message": "(i trust your tests more than i trust my ability to reason about this stuff, but \"looks plausible to me\" :-) )",
+      "revId": "9b2f60cd59c76a1ff7b02659e5cdcd8d3a5690c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3dcc4aff_1e0992c2",
+        "filename": "debuggerd/handler/debuggerd_fallback.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-08-29T21:03:26Z",
+      "side": 1,
+      "message": "(would this comment be better moved somewhere else now?)",
+      "revId": "9b2f60cd59c76a1ff7b02659e5cdcd8d3a5690c5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
