@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e09458e7_7afa5807",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-08-29T10:50:13Z",
+      "side": 1,
+      "message": "remove? :)",
+      "range": {
+        "startLine": 174,
+        "startChar": 4,
+        "endLine": 174,
+        "endChar": 33
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "d02573df_e0c2d9ff",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/first_stage_mount.cpp",
+              "range": {
+                "startLine": 174,
+                "startChar": 0,
+                "endLine": 175,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "c24ebcedbf702422251b4f0643aefa08a884e504",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
