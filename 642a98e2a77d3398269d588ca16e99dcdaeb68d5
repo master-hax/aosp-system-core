@@ -16,6 +16,24 @@
       "message": "due to the long weekend, can I get a stamp approval first before EOD? If the abtd runs confirmed the revert works, I will merge the revert. Thanks!",
       "revId": "642a98e2a77d3398269d588ca16e99dcdaeb68d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79801b5a_592899fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-08-30T23:19:32Z",
+      "side": 1,
+      "message": "You have it, Code-Owners is automatic for reverts now. :)",
+      "parentUuid": "1ac0d38d_ea089752",
+      "revId": "642a98e2a77d3398269d588ca16e99dcdaeb68d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
