@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2d013a5_0d4cd199",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1944206
+      },
+      "writtenOn": "2024-08-30T16:38:41Z",
+      "side": 1,
+      "message": "@ioffe@google.com should this change be flagged as well?",
+      "range": {
+        "startLine": 174,
+        "startChar": 4,
+        "endLine": 174,
+        "endChar": 41
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "68b8f8bc_43403e51",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/first_stage_mount.cpp",
+              "range": {
+                "startLine": 174,
+                "startChar": 0,
+                "endLine": 175,
+                "endChar": 0
+              },
+              "replacement": "    if (!IsRequestingVendorPartition() \u0026\u0026\n        android::virtualization::IsOpenDiceChangesFlagEnabled()) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "e36e8f7f3b4d41e83b26468504aca9488f167103",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
