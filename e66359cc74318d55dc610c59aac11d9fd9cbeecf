@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad5bc786_231c64d8",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-08-30T14:43:51Z",
+      "side": 1,
+      "message": "It almost works for me except the rpmb - I cannot create this file somehow. The error is from [rpmb_dev.c;l\u003d594](https://cs.android.com/android/platform/superproject/main/+/main:system/core/trusty/utils/rpmb_dev/rpmb_dev.c;l\u003d594;drc\u003d294ba38082a673c64651b393b0cf80979c6d26a4). But I didn\u0027t have such problem with almost the same configuration in https://r.android.com/3208291.\n\nI\u0027ll continue to investigate on Monday.\n\n```\n08-30 14:38:51.100     0     0 I init    : starting service \u0027rpmb_mock_init\u0027...\n08-30 14:38:51.108     0     0 I init    : ... started service \u0027rpmb_mock_init\u0027 has pid 262\n08-30 14:38:51.109     0     0 I init    : SVC_EXEC service \u0027rpmb_mock_init\u0027 pid 262 (uid 1000 gid 1000+0 context default) started; waiting...\n08-30 14:38:51.109     0     0 I init    : Service \u0027exec 3 (/system/bin/recovery-refresh)\u0027 (pid 261) exited with status 254 oneshot service took 0.016000 seconds in background\n08-30 14:38:51.109     0     0 I init    : Sending signal 9 to service \u0027exec 3 (/system/bin/recovery-refresh)\u0027 (pid 261) process group...\n08-30 14:38:51.110     0     0 I libprocessgroup: Removed cgroup /sys/fs/cgroup/uid_1000/pid_261\n08-30 14:38:51.046   262   262 E rpmb_mock: rpmb_dev: Failed to open rpmb data file, /mnt/vendor/persist/ss/RPMB_DATA: No such file or directory\n08-30 14:38:51.123     0     0 I init    : Service \u0027rpmb_mock_init\u0027 (pid 262) exited with status 1 waiting took 0.016000 seconds\n```",
+      "range": {
+        "startLine": 8,
+        "startChar": 61,
+        "endLine": 8,
+        "endChar": 93
+      },
+      "revId": "e66359cc74318d55dc610c59aac11d9fd9cbeecf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
