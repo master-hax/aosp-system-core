@@ -111,7 +111,6 @@ class ISnapshotManager {
         virtual bool IsFirstStageInit() const = 0;
         virtual std::unique_ptr<IImageManager> OpenImageManager() const = 0;
         virtual android::dm::IDeviceMapper& GetDeviceMapper() = 0;
-        virtual bool IsTempMetadata() const = 0;
 
         // Helper method for implementing OpenImageManager.
         std::unique_ptr<IImageManager> OpenImageManager(const std::string& gsid_dir) const;
@@ -329,10 +328,6 @@ class SnapshotManager final : public ISnapshotManager {
     // Helper function for first-stage init to check whether a SnapshotManager
     // might be needed to perform first-stage mounts.
     static bool IsSnapshotManagerNeeded();
-
-    // Map the temp OTA metadata partition from super
-    static bool MapTempOtaMetadataPartitionIfNeeded(
-            const std::function<bool(const std::string&)>& init);
 
     // Helper function for second stage init to restorecon on the rollback indicator.
     static std::string GetGlobalRollbackIndicatorPath();

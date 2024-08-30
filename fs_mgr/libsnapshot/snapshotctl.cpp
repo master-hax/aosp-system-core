@@ -16,6 +16,7 @@
 
 #include <sysexits.h>
 #include <unistd.h>
+
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -45,7 +46,6 @@
 #include <storage_literals/storage_literals.h>
 
 #include "partition_cow_creator.h"
-#include "scratch_super.h"
 
 #ifdef SNAPSHOTCTL_USERDEBUG_OR_ENG
 #include <BootControlClient.h>
@@ -57,8 +57,6 @@ using namespace android::storage_literals;
 using android::base::LogdLogger;
 using android::base::StderrLogger;
 using android::base::TeeLogger;
-using namespace android::dm;
-using namespace android::fs_mgr;
 using android::fs_mgr::CreateLogicalPartitionParams;
 using android::fs_mgr::FindPartition;
 using android::fs_mgr::GetPartitionSize;
@@ -99,7 +97,7 @@ namespace snapshot {
 #ifdef SNAPSHOTCTL_USERDEBUG_OR_ENG
 class MapSnapshots {
   public:
-    MapSnapshots(std::string path = "", bool metadata_super = false);
+    MapSnapshots(std::string path = "");
     bool CreateSnapshotDevice(std::string& partition_name, std::string& patch);
     bool InitiateThreadedSnapshotWrite(std::string& pname, std::string& snapshot_patch);
     bool FinishSnapshotWrites();
@@ -124,12 +122,15 @@ class MapSnapshots {
 
     std::vector<std::string> patchfiles_;
     chromeos_update_engine::DeltaArchiveManifest manifest_;
-    bool metadata_super_ = false;
 };
 
-MapSnapshots::MapSnapshots(std::string path, bool metadata_super) {
+MapSnapshots::MapSnapshots(std::string path) {
+    sm_ = SnapshotManager::New();
+    if (!sm_) {
+        std::cout << "Failed to create snapshotmanager";
+        exit(1);
+    }
     snapshot_dir_path_ = path + "/";
-    metadata_super_ = metadata_super;
 }
 
 std::string MapSnapshots::GetGroupName(const android::fs_mgr::LpMetadata& pt,
@@ -149,12 +150,6 @@ std::string MapSnapshots::GetGroupName(const android::fs_mgr::LpMetadata& pt,
 }
 
 bool MapSnapshots::PrepareUpdate() {
-    if (metadata_super_ && !CreateScratchOtaMetadataOnSuper()) {
-        LOG(ERROR) << "Failed to create OTA metadata on super";
-        return false;
-    }
-    sm_ = SnapshotManager::New();
-
     auto source_slot = fs_mgr_get_slot_suffix();
     auto source_slot_number = SlotNumberForSlotSuffix(source_slot);
     auto super_source = fs_mgr_get_super_partition_name(source_slot_number);
@@ -239,22 +234,14 @@ bool MapSnapshots::PrepareUpdate() {
 
 bool MapSnapshots::GetCowDevicePath(std::string partition_name, std::string* cow_path) {
     auto& dm = android::dm::DeviceMapper::Instance();
-
-    std::string cow_device = partition_name + "-cow-img";
-    if (metadata_super_) {
-        // If COW device exists on /data, then data wipe cannot be done.
-        if (dm.GetDmDevicePathByName(cow_device, cow_path)) {
-            LOG(ERROR) << "COW device exists on /data: " << *cow_path;
-            return false;
-        }
-    }
-
-    cow_device = partition_name + "-cow";
+    std::string cow_device = partition_name + "-cow";
     if (dm.GetDmDevicePathByName(cow_device, cow_path)) {
         return true;
     }
 
     LOG(INFO) << "Failed to find cow path: " << cow_device << " Checking the device for -img path";
+    // If the COW device exists only on /data
+    cow_device = partition_name + "-cow-img";
     if (!dm.GetDmDevicePathByName(cow_device, cow_path)) {
         LOG(ERROR) << "Failed to cow path: " << cow_device;
         return false;
@@ -334,12 +321,6 @@ bool MapSnapshots::ApplyUpdate() {
 }
 
 bool MapSnapshots::BeginUpdate() {
-    if (metadata_super_ && !CreateScratchOtaMetadataOnSuper()) {
-        LOG(ERROR) << "Failed to create OTA metadata on super";
-        return false;
-    }
-    sm_ = SnapshotManager::New();
-
     lock_ = sm_->LockExclusive();
     std::vector<std::string> snapshots;
     sm_->ListSnapshots(lock_.get(), &snapshots);
@@ -489,12 +470,10 @@ bool MapSnapshots::FinishSnapshotWrites() {
 }
 
 bool MapSnapshots::UnmapCowImagePath(std::string& name) {
-    sm_ = SnapshotManager::New();
     return sm_->UnmapCowImage(name);
 }
 
 bool MapSnapshots::DeleteSnapshots() {
-    sm_ = SnapshotManager::New();
     lock_ = sm_->LockExclusive();
     if (!sm_->RemoveAllUpdateState(lock_.get())) {
         LOG(ERROR) << "Remove All Update State failed";
@@ -604,19 +583,13 @@ bool ApplyUpdate(int argc, char** argv) {
     }
 
     if (argc < 3) {
-        std::cerr << " apply-update <directory location where snapshot patches are present> {-w}"
+        std::cerr << " apply-update <directory location where snapshot patches are present>"
                      "    Apply the snapshots to the COW block device\n";
         return false;
     }
 
     std::string path = std::string(argv[2]);
-    bool metadata_on_super = false;
-    if (argc == 4) {
-        if (std::string(argv[3]) == "-w") {
-            metadata_on_super = true;
-        }
-    }
-    MapSnapshots cow(path, metadata_on_super);
+    MapSnapshots cow(path);
     if (!cow.ApplyUpdate()) {
         return false;
     }
@@ -634,7 +607,7 @@ bool MapPrecreatedSnapshots(int argc, char** argv) {
     }
 
     if (argc < 3) {
-        std::cerr << " map-snapshots <directory location where snapshot patches are present> {-w}"
+        std::cerr << " map-snapshots <directory location where snapshot patches are present>"
                      "    Map all snapshots based on patches present in the directory\n";
         return false;
     }
@@ -665,14 +638,7 @@ bool MapPrecreatedSnapshots(int argc, char** argv) {
         }
     }
 
-    bool metadata_on_super = false;
-    if (argc == 4) {
-        if (std::string(argv[3]) == "-w") {
-            metadata_on_super = true;
-        }
-    }
-
-    MapSnapshots cow(path, metadata_on_super);
+    MapSnapshots cow(path);
     if (!cow.BeginUpdate()) {
         LOG(ERROR) << "BeginUpdate failed";
         return false;
