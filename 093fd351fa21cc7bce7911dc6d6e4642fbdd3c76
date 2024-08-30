@@ -46,6 +46,30 @@
       },
       "revId": "093fd351fa21cc7bce7911dc6d6e4642fbdd3c76",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4c48681_a69305e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-08-30T05:47:05Z",
+      "side": 1,
+      "message": "Just to let you know: I am fine with not doing anything for the bug. The regression is not great.",
+      "parentUuid": "c8c548f8_19b79cb6",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 40
+      },
+      "revId": "093fd351fa21cc7bce7911dc6d6e4642fbdd3c76",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
