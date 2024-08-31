@@ -34,6 +34,24 @@
       "parentUuid": "1ac0d38d_ea089752",
       "revId": "642a98e2a77d3398269d588ca16e99dcdaeb68d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc582711_e34b5e9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2024-08-31T03:09:08Z",
+      "side": 1,
+      "message": "confirmed, landing the revert",
+      "parentUuid": "79801b5a_592899fe",
+      "revId": "642a98e2a77d3398269d588ca16e99dcdaeb68d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
