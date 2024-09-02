@@ -1,0 +1,15 @@
+service system.keymint.rust-trusty.nonsecure \
+  /system_ext/bin/hw/android.hardware.security.keymint-service.rust.trusty.system.nonsecure \
+  --dev ${ro.hardware.trusty_ipc_dev.keymint:-/dev/trusty-ipc-dev0}
+    disabled
+    user nobody
+    group drmrpc
+    # The keymint service is not allowed to restart.
+    # If it crashes, a device restart is required.
+    oneshot
+
+on early-fs && property:ro.hardware.security.keymint.trusty.system=1 && \
+   property:ro.hardware.trusty_vm_cid=* && \
+   property:ro.hardware.security.trusty_vm.system.nonsecure=1
+    setprop ro.hardware.trusty_ipc_dev.keymint VSOCK:${ro.hardware.trusty_vm_cid}:1
+    start system.keymint.rust-trusty.nonsecure
