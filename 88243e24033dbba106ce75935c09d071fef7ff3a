@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6c92854_2e044a59",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-03T08:27:08Z",
+      "side": 1,
+      "message": "Hi David,\n\nCould you please review this cl? It corresponds to our partition plan discussed with the binder team (b/358091359). The KM HAL registration code will remain in `/system_ext`, while the VINTF will be placed in `/vendor` to facilitate vendor enabling through system property (Done in https://r.android.com/c/device/google/cuttlefish/+/3206879/12/shared/config/init.vendor.rc#6)\n\nThank you!",
+      "revId": "88243e24033dbba106ce75935c09d071fef7ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
