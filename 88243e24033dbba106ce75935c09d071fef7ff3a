@@ -16,6 +16,24 @@
       "message": "Hi David,\n\nCould you please review this cl? It corresponds to our partition plan discussed with the binder team (b/358091359). The KM HAL registration code will remain in `/system_ext`, while the VINTF will be placed in `/vendor` to facilitate vendor enabling through system property (Done in https://r.android.com/c/device/google/cuttlefish/+/3206879/12/shared/config/init.vendor.rc#6)\n\nThank you!",
       "revId": "88243e24033dbba106ce75935c09d071fef7ff3a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0254332_826f6239",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-03T08:31:38Z",
+      "side": 1,
+      "message": "Also [1] for your reference. The flow is as following:\n\n1. Vendor sets up the `property:ro.hardware.security.trusty_vm.system` to enable Trusty VM feature. [2]\n2. This triggers non-secure trusty VM on cf and sets `ro.hardware.security.trusty_vm.system.nonsecure` [1]\n3. The non-secure KM HAL only starts when `ro.hardware.security.trusty_vm.system.nonsecure` is `true` (this cl)\n\n[1] https://r.android.com/c/device/google/cuttlefish_prebuilts/+/3198694/7/trusty/trusty_vm_nonsecure.rc\n[2] https://r.android.com/c/device/google/cuttlefish/+/3206879/12/shared/config/init.vendor.rc#6",
+      "parentUuid": "e6c92854_2e044a59",
+      "revId": "88243e24033dbba106ce75935c09d071fef7ff3a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
