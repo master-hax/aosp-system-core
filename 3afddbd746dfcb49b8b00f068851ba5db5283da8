@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "798f1aea_c250422b",
+        "filename": "trusty/keymint/android.hardware.security.keymint-service.rust.trusty.system.nonsecure.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-03T13:57:23Z",
+      "side": 1,
+      "message": "Sure, the KeyMint VM boot sequence is explained here \u003d\u003e http://docs/document/d/1ahSK_FiY6BiLjuuATS43f6QnEYQbFhAsnbMHuTjXdpA?resourcekey\u003d0-5X8UGd6zcFwWbd3wPDMmuw\u0026tab\u003dt.0#heading\u003dh.dnxtcibh0ozi\n\nThe HAL is started in late-fs, at the same stage that starts the early_hal class that includes keystore2 and KM HAL on cf. Basically, there is no change in the boot stage for the KM HAL before or after the migration. I will start the VM prior to the HAL registration.",
+      "parentUuid": "db98bdab_3d02b61d",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 11
+      },
+      "revId": "3afddbd746dfcb49b8b00f068851ba5db5283da8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a16ef1df_0f745665",
         "filename": "trusty/keymint/trusty-keymint.mk",
         "patchSetId": 4
@@ -37,6 +61,24 @@
       "writtenOn": "2024-09-03T09:19:22Z",
       "side": 1,
       "message": "Comment no longer up-to-date.\n\nMore generally, we could do with a comment (or commit message) that explains what the different possibilities are, and roughly how they\u0027re selected between.",
+      "revId": "3afddbd746dfcb49b8b00f068851ba5db5283da8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "115f2889_3a616a6e",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-03T13:57:23Z",
+      "side": 1,
+      "message": "I updated the comment in the makefile to explain how the select works.",
+      "parentUuid": "a16ef1df_0f745665",
       "revId": "3afddbd746dfcb49b8b00f068851ba5db5283da8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
