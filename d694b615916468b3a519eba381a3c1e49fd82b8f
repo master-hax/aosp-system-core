@@ -16,6 +16,24 @@
       "message": "Am I right in thinking that this is going to use a different mechanism to toggle between KeyMint implementations on Cuttlefish than is already present?  (And is that down to a `system_ext` vs apex thing?)",
       "revId": "d694b615916468b3a519eba381a3c1e49fd82b8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a866a91a_3560cc4f",
+        "filename": "trusty/keymint/android.hardware.security.keymint-service.rust.trusty.system.nonsecure.rc",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-04T13:16:31Z",
+      "side": 1,
+      "message": "You are right. Different apexes on cuttlefish can be toggled using `launch_cvd` arguments (aosp/3206879), e.g:\n```\nlaunch_cvd --secure_hals\u003dguest_keymint_trusty_insecure\n```\n\nThis non-secure Keymint HAL is only launched when the keymint vm apex is selected [1].\n\n[1] https://r.android.com/c/device/google/cuttlefish/+/3206879/15/shared/config/init.vendor.rc#18",
+      "parentUuid": "32cbfc69_ba4c2b1e",
+      "revId": "d694b615916468b3a519eba381a3c1e49fd82b8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
