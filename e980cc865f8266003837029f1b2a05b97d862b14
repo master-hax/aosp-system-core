@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1717f58_9de5250f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-04T18:34:21Z",
+      "side": 1,
+      "message": "+jiyong/ccross because something seems more deeply wrong here. in particular \"why were these tests allowed to link against this library in the first place?\".",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "603d2c5a_f2dbd93d",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-04T18:34:21Z",
+      "side": 1,
+      "message": "doesn\u0027t that need to be whole_static_libs to re-export?",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ecc50ff_cb633174",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-04T18:34:21Z",
+      "side": 1,
+      "message": "this doesn\u0027t seem right --- note that the others are _executables_. we shouldn\u0027t be adding random libraries here.",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
