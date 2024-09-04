@@ -68,6 +68,24 @@
       "message": "this doesn\u0027t seem right --- note that the others are _executables_. we shouldn\u0027t be adding random libraries here.",
       "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f378e29_3d958250",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-04T18:41:14Z",
+      "side": 1,
+      "message": "Yeah, this is odd but I didn\u0027t see anywhere else obvious to put it. Since it was coming from `toybox_vendor` before I added it here. Let\u0027s see what the build folks say about the tests being able to link in the first place?",
+      "parentUuid": "2ecc50ff_cb633174",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
