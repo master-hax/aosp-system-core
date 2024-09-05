@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "95e8ea10_a291f9a6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1059977
+      },
+      "writtenOn": "2024-09-05T22:37:32Z",
+      "side": 1,
+      "message": "I agree with bullets #1, #2, and #4. I previously identified these as good opportunities and I was planning on looking into those next.\nRe: #3, epoll_wait time is a significant subset of total time spent here, but there\u0027s plenty of opportunity outside of this.\nI\u0027ll keep you posted on future changes as they\u0027re ready for review.",
+      "parentUuid": "1b456173_fde2aeb3",
+      "range": {
+        "startLine": 14,
+        "startChar": 28,
+        "endLine": 16,
+        "endChar": 28
+      },
+      "revId": "428b30228a970f5d615b4d11bf3ed8874bd89baf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2cb4a7bc_bef18eb0",
         "filename": "libutils/Looper.cpp",
         "patchSetId": 9
