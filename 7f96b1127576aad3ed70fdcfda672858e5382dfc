@@ -34,6 +34,24 @@
       "parentUuid": "7466facc_82598940",
       "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ab11079_bdb3ec97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-05T21:20:12Z",
+      "side": 1,
+      "message": "no, the trampoline that papers over the fact that the types of the pthread_create() and thrd_create() function pointers differ.",
+      "parentUuid": "76902692_8546407f",
+      "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
