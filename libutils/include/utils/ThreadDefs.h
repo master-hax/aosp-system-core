@@ -35,7 +35,7 @@ typedef uint32_t android_thread_id_t;
 typedef void* android_thread_id_t;
 #endif
 
-typedef int (*android_thread_func_t)(void*);
+typedef void (*android_thread_func_t)(void*);
 
 #ifdef __cplusplus
 } // extern "C"
