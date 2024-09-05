@@ -125,35 +125,44 @@ static void Copy(const char* src, const char* dst) {
     PLOG(FATAL) << "hard linking " << src << " to " << dst << " failed";
 }
 
-// Move snapuserd before switching root, so that it is available at the same path
-// after switching root.
-void PrepareSwitchRoot() {
-    static constexpr const auto& snapuserd = "/system/bin/snapuserd";
-    static constexpr const auto& snapuserd_ramdisk = "/system/bin/snapuserd_ramdisk";
-    static constexpr const auto& dst = "/first_stage_ramdisk/system/bin/snapuserd";
+// Copy critical binaries before switching root, so that it is available at the same path after
+// switching root.
+void CopyRamdiskBinaries() {
+    const std::vector<std::pair<const char*, const char*>> kBinaries = {
+            // prefer the generic ramdisk copy of snapuserd, because that's on system side of treble
+            // boundary, and therefore is more likely to be updated along with the Android platform.
+            // The vendor ramdisk copy might be under vendor freeze, or vendor might choose not to
+            // update
+            // it.
+            {"snapuserd_ramdisk", "snapuserd"},
+            {"snapuserd", "snapuserd"},
+            {"e2fsck", "e2fsck"},
+            {"fsck.f2fs", "fsck.f2fs"},
+    };
 
-    if (access(dst, X_OK) == 0) {
-        LOG(INFO) << dst << " already exists and it can be executed";
-        return;
-    }
-    auto dst_dir = android::base::Dirname(dst);
-    std::error_code ec;
-    if (access(dst_dir.c_str(), F_OK) != 0) {
-        if (!fs::create_directories(dst_dir, ec)) {
-            LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
+    auto system_bin = fs::path("/system/bin");
+    auto first_stage_system_bin = fs::path("/first_stage_ramdisk/system/bin");
+
+    for (const auto& pair : kBinaries) {
+        const auto& src = system_bin / pair.first;
+        const auto& dst = first_stage_system_bin / pair.second;
+
+        if (access(dst.c_str(), X_OK) == 0) {
+            LOG(INFO) << dst << " already exists and it can be executed";
+            continue;
         }
-    }
 
-    // prefer the generic ramdisk copy of snapuserd, because that's on system side of treble
-    // boundary, and therefore is more likely to be updated along with the Android platform.
-    // The vendor ramdisk copy might be under vendor freeze, or vendor might choose not to update
-    // it.
-    if (access(snapuserd_ramdisk, F_OK) == 0) {
-        LOG(INFO) << "Using generic ramdisk copy of snapuserd " << snapuserd_ramdisk;
-        Copy(snapuserd_ramdisk, dst);
-    } else if (access(snapuserd, F_OK) == 0) {
-        LOG(INFO) << "Using vendor ramdisk copy of snapuserd " << snapuserd;
-        Copy(snapuserd, dst);
+        auto dst_dir = android::base::Dirname(dst.c_str());
+        std::error_code ec;
+        if (access(dst_dir.c_str(), F_OK) != 0) {
+            if (!fs::create_directories(dst_dir, ec)) {
+                LOG(FATAL) << "Cannot create " << dst_dir << ": " << ec.message();
+            }
+        }
+
+        if (access(src.c_str(), F_OK) == 0) {
+            Copy(src.c_str(), dst.c_str());
+        }
     }
 }
 
@@ -494,7 +503,7 @@ int FirstStageMain(int argc, char** argv) {
 
     if (ForceNormalBoot(cmdline, bootconfig)) {
         mkdir("/first_stage_ramdisk", 0755);
-        PrepareSwitchRoot();
+        CopyRamdiskBinaries();
         // SwitchRoot() must be called with a mount point as the target, so we bind mount the
         // target directory to itself here.
         if (mount("/first_stage_ramdisk", "/first_stage_ramdisk", nullptr, MS_BIND, nullptr) != 0) {
