@@ -132,6 +132,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "57fefef3_b9a3f003",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-05T17:40:38Z",
+      "side": 1,
+      "message": "+krzysio but do we know how the lyric tests end up with that dependency in the first place? (and he\u0027s probably also the person who can make that be static instead.)",
+      "parentUuid": "57a9071c_7f34f4e5",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "603d2c5a_f2dbd93d",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 1
