@@ -497,7 +497,19 @@
   },
   {
    "binding" : "weak",
+   "name" : "_ZN7android2spINS_20SimpleLooperCallbackEEaSEOS2_"
+  },
+  {
+   "binding" : "weak",
+   "name" : "_ZN7android2spINS_6LooperEED2Ev"
+  },
+  {
+   "binding" : "weak",
    "name" : "_ZN7android2spINS_6LooperEEaSEOS2_"
+  },
+  {
+   "binding" : "weak",
+   "name" : "_ZN7android2spINS_6LooperEEaSERKS2_"
   },
   {
    "binding" : "weak",
@@ -559,10 +571,16 @@
    "name" : "_ZN7android6Looper6repollEi"
   },
   {
+   "name" : "_ZN7android6Looper7pollAllEi"
+  },
+  {
    "name" : "_ZN7android6Looper7pollAllEiPiS1_PPv"
   },
   {
    "name" : "_ZN7android6Looper7prepareEi"
+  },
+  {
+   "name" : "_ZN7android6Looper8pollOnceEi"
   },
   {
    "name" : "_ZN7android6Looper8pollOnceEiPiS1_PPv"
@@ -7205,6 +7223,22 @@
   },
   {
    "function_name" : "android::Looper::pollAll",
+   "linker_set_key" : "_ZN7android6Looper7pollAllEi",
+   "parameters" :
+   [
+    {
+     "is_this_ptr" : true,
+     "referenced_type" : "_ZTIPN7android6LooperE"
+    },
+    {
+     "referenced_type" : "_ZTIi"
+    }
+   ],
+   "return_type" : "_ZTIi",
+   "source_file" : "system/core/libutils/include/utils/Looper.h"
+  },
+  {
+   "function_name" : "android::Looper::pollAll",
    "linker_set_key" : "_ZN7android6Looper7pollAllEiPiS1_PPv",
    "parameters" :
    [
@@ -7238,6 +7272,22 @@
     }
    ],
    "return_type" : "_ZTIN7android2spINS_6LooperEEE",
+   "source_file" : "system/core/libutils/include/utils/Looper.h"
+  },
+  {
+   "function_name" : "android::Looper::pollOnce",
+   "linker_set_key" : "_ZN7android6Looper8pollOnceEi",
+   "parameters" :
+   [
+    {
+     "is_this_ptr" : true,
+     "referenced_type" : "_ZTIPN7android6LooperE"
+    },
+    {
+     "referenced_type" : "_ZTIi"
+    }
+   ],
+   "return_type" : "_ZTIi",
    "source_file" : "system/core/libutils/include/utils/Looper.h"
   },
   {
