@@ -60,7 +60,7 @@ using namespace android;
  * We create it "detached", so it cleans up after itself.
  */
 
-typedef void* (*android_pthread_entry)(void*);
+typedef int (*android_pthread_entry)(void*);
 
 #if defined(__ANDROID__)
 struct thread_data_t {
@@ -87,6 +87,20 @@ struct thread_data_t {
     }
 };
 #endif
+
+// Adapted from bionic's implmenetation of trampoline to make C11 thrd_create
+// work with pthread_create.
+struct libutil_thrd_data {
+  android_pthread_entry _Nonnull entry_func;
+  void* _Nullable entry_func_arg;
+};
+
+static inline void* _Nonnull libutil_thrd_trampoline(void* _Nonnull arg) {
+  struct libutil_thrd_data data = *static_cast<struct libutil_thrd_data*>(arg);
+  free(arg);
+  int result = data.entry_func(data.entry_func_arg);
+  return reinterpret_cast<void*>(static_cast<uintptr_t>(result));
+}
 
 void androidSetThreadName(const char* name) {
 #if defined(__linux__)
@@ -145,8 +159,13 @@ int androidCreateRawThreadEtc(android_thread_func_t entryFunction,
 
     errno = 0;
     pthread_t thread;
+
+    struct libutil_thrd_data* pthread_arg = static_cast<libutil_thrd_data*>(malloc(sizeof(libutil_thrd_data)));
+    pthread_arg->entry_func = entryFunction;
+    pthread_arg->entry_func_arg = userData;
+
     int result = pthread_create(&thread, &attr,
-                    (android_pthread_entry)entryFunction, userData);
+                    libutil_thrd_trampoline, pthread_arg);
     pthread_attr_destroy(&attr);
     if (result != 0) {
         ALOGE("androidCreateRawThreadEtc failed (entry=%p, res=%d, %s)\n"
