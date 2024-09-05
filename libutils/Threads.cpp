@@ -60,7 +60,7 @@ using namespace android;
  * We create it "detached", so it cleans up after itself.
  */
 
-typedef void* (*android_pthread_entry)(void*);
+typedef int* (*android_pthread_entry)(void*);
 
 #if defined(__ANDROID__)
 struct thread_data_t {
