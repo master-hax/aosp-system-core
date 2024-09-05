@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "a96ae424_dae39191",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-09-05T00:12:29Z",
+      "side": 1,
+      "message": "libprocessgroup doesn\u0027t provide a stable interface. I recommend the vendor test(s?) to statically link to libprocessgroup.",
+      "range": {
+        "startLine": 10,
+        "startChar": 52,
+        "endLine": 13,
+        "endChar": 50
+      },
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "b1717f58_9de5250f",
