@@ -114,6 +114,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6d83a8b2_b33c8c16",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2024-09-05T17:31:16Z",
+      "side": 1,
+      "message": "Jiyong\u0027s suggestion to make the tests statically link against libprocessgroup is better.",
+      "parentUuid": "57a9071c_7f34f4e5",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "603d2c5a_f2dbd93d",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 1
