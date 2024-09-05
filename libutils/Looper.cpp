@@ -155,6 +155,32 @@ void Looper::scheduleEpollRebuildLocked() {
     }
 }
 
+int Looper::pollOnce(int timeoutMillis) {
+    int result = 0;
+    for (;;) {
+        while (mResponseIndex < mResponses.size()) {
+            const Response& response = mResponses.itemAt(mResponseIndex++);
+            int ident = response.request.ident;
+            if (ident >= 0) {
+#if DEBUG_POLL_AND_WAKE
+                ALOGD("%p ~ pollOnce - returning signalled identifier %d",
+                        this, ident);
+#endif
+                return ident;
+            }
+        }
+
+        if (result != 0) {
+#if DEBUG_POLL_AND_WAKE
+            ALOGD("%p ~ pollOnce - returning result %d", this, result);
+#endif
+            return result;
+        }
+
+        result = pollInner(timeoutMillis);
+    }
+}
+
 int Looper::pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
     int result = 0;
     for (;;) {
@@ -350,6 +376,32 @@ Done: ;
         }
     }
     return result;
+}
+
+int Looper::pollAll(int timeoutMillis) {
+    if (timeoutMillis <= 0) {
+        int result;
+        do {
+            result = pollOnce(timeoutMillis);
+        } while (result == POLL_CALLBACK);
+        return result;
+    } else {
+        nsecs_t endTime = systemTime(SYSTEM_TIME_MONOTONIC)
+                + milliseconds_to_nanoseconds(timeoutMillis);
+
+        for (;;) {
+            int result = pollOnce(timeoutMillis);
+            if (result != POLL_CALLBACK) {
+                return result;
+            }
+
+            nsecs_t now = systemTime(SYSTEM_TIME_MONOTONIC);
+            timeoutMillis = toMillisecondTimeoutDelay(now, endTime);
+            if (timeoutMillis == 0) {
+                return POLL_TIMEOUT;
+            }
+        }
+    }
 }
 
 int Looper::pollAll(int timeoutMillis, int* outFd, int* outEvents, void** outData) {
