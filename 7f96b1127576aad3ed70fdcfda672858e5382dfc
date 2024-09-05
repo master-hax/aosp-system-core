@@ -52,6 +52,24 @@
       "parentUuid": "76902692_8546407f",
       "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbe11234_f96845bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1978766
+      },
+      "writtenOn": "2024-09-05T21:36:10Z",
+      "side": 1,
+      "message": "I see the trampoline is there in thread_data_t::trampoline. Fixed the other typedef.",
+      "parentUuid": "5ab11079_bdb3ec97",
+      "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
