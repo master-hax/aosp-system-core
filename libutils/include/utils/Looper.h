@@ -266,9 +266,7 @@ public:
      * for all file descriptors that were signalled.
      */
     int pollOnce(int timeoutMillis, int* outFd, int* outEvents, void** outData);
-    inline int pollOnce(int timeoutMillis) {
-        return pollOnce(timeoutMillis, nullptr, nullptr, nullptr);
-    }
+    int pollOnce(int timeoutMillis);
 
     /**
      * Like pollOnce(), but performs all pending callbacks until all
@@ -276,9 +274,7 @@ public:
      * This function will never return POLL_CALLBACK.
      */
     int pollAll(int timeoutMillis, int* outFd, int* outEvents, void** outData);
-    inline int pollAll(int timeoutMillis) {
-        return pollAll(timeoutMillis, nullptr, nullptr, nullptr);
-    }
+    int pollAll(int timeoutMillis);
 
     /**
      * Wakes the poll asynchronously.
