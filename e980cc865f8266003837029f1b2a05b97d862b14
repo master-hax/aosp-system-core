@@ -150,6 +150,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6bfa002e_a418256c",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-05T19:11:36Z",
+      "side": 1,
+      "message": "The use of the library by `liblyric.fabric` is pretty clear, but that doesn\u0027t look like test code so I don\u0027t think we\u0027d want to make the dependency static for it:\nhttps://source.corp.google.com/search?q\u003dSet(Task%7CProcess)Profile\u0026ss\u003dh%2Fgoogleplex-android%2Fplatform%2Fsuperproject%2Fmain%2F%2B%2Frefs%2Fheads%2Fmain:vendor%2Fgoogle%2Fservices%2FLyricCameraHAL%2F",
+      "parentUuid": "57fefef3_b9a3f003",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "603d2c5a_f2dbd93d",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 1
