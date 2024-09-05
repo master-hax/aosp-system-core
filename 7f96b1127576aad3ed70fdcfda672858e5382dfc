@@ -70,6 +70,24 @@
       "parentUuid": "5ab11079_bdb3ec97",
       "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3253f13_fddd5b24",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1978766
+      },
+      "writtenOn": "2024-09-05T22:56:56Z",
+      "side": 1,
+      "message": "^ nvm. found the patch that implemented c11 version aosp/948889",
+      "parentUuid": "dbe11234_f96845bc",
+      "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
