@@ -168,6 +168,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a734ad0f_e336c384",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-05T20:31:18Z",
+      "side": 1,
+      "message": "I just checked, and the tests pass if I don\u0027t include a vendor libprocessgroup and change the test defaults to remove the shared dependency on libprocessgroup like below. So that must mean the actual dependency is already linked statically at the point of use and this shared libprocessgroup dependency is tacked on unnecessarily afterwards specifically for the test.\n```\n@@ -526,7 +526,6 @@ cc_defaults {\n     name: \"lyric_cc_test_defaults\",\n     defaults: [\"lyric_cc_library_defaults\"],\n     shared_libs: [\n-        \"libprocessgroup\",\n\n```",
+      "parentUuid": "6bfa002e_a418256c",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "603d2c5a_f2dbd93d",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 1
