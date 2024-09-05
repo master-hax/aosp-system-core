@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7466facc_82598940",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-05T21:15:36Z",
+      "side": 1,
+      "message": "it\u0027s the opposite, no? this typedef is right, and we need a trampoline in the implementation, similar to the one in bionic\u0027s C11 \u003cthreads.h\u003e?",
+      "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
