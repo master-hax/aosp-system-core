@@ -90,13 +90,12 @@
   {
    "alignment" : 1,
    "is_integral" : true,
-   "is_unsigned" : true,
    "linker_set_key" : "_ZTIc",
    "name" : "char",
    "size" : 1
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "linker_set_key" : "_ZTId",
    "name" : "double",
    "size" : 8
@@ -165,14 +164,14 @@
    "name" : "void"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_integral" : true,
    "linker_set_key" : "_ZTIx",
    "name" : "long long",
    "size" : 8
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_integral" : true,
    "is_unsigned" : true,
    "linker_set_key" : "_ZTIy",
@@ -709,7 +708,7 @@
    "name" : "_ZN7android7String812unlockBufferEv"
   },
   {
-   "name" : "_ZN7android7String813appendFormatVEPKcSt9__va_list"
+   "name" : "_ZN7android7String813appendFormatVEPKcPc"
   },
   {
    "name" : "_ZN7android7String85clearEv"
@@ -742,7 +741,7 @@
    "name" : "_ZN7android7String86formatEPKcz"
   },
   {
-   "name" : "_ZN7android7String87formatVEPKcSt9__va_list"
+   "name" : "_ZN7android7String87formatVEPKcPc"
   },
   {
    "name" : "_ZN7android7String87toLowerEv"
@@ -2410,7 +2409,7 @@
    ],
    "linker_set_key" : "_ZTIN7android10VectorImpl17$HAS_TRIVIAL_COPYE",
    "name" : "android::VectorImpl::(unnamed)",
-   "self_type" : "_ZTIN7android10VectorImpl17$HAS_TRIVIAL_COPYE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android10VectorImpl17$HAS_TRIVIAL_COPYE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h",
    "underlying_type" : "_ZTIj"
@@ -2638,7 +2637,7 @@
    ],
    "linker_set_key" : "_ZTIN7android15$ALREADY_EXISTSE",
    "name" : "android::(unnamed)",
-   "self_type" : "_ZTIN7android15$ALREADY_EXISTSE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/Errors.sdump",
+   "self_type" : "_ZTIN7android15$ALREADY_EXISTSE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/Errors.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/Errors.h",
    "underlying_type" : "_ZTIi"
@@ -2773,7 +2772,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIbE6$valueE",
    "name" : "android::trait_trivial_copy<bool>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2804,7 +2803,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIcE6$valueE",
    "name" : "android::trait_trivial_copy<char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2835,7 +2834,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIdE6$valueE",
    "name" : "android::trait_trivial_copy<double>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2866,7 +2865,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIfE6$valueE",
    "name" : "android::trait_trivial_copy<float>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2897,7 +2896,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIhE6$valueE",
    "name" : "android::trait_trivial_copy<unsigned char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2928,7 +2927,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIiE6$valueE",
    "name" : "android::trait_trivial_copy<int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2959,7 +2958,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIjE6$valueE",
    "name" : "android::trait_trivial_copy<unsigned int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -2990,7 +2989,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIlE6$valueE",
    "name" : "android::trait_trivial_copy<long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3021,7 +3020,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyImE6$valueE",
    "name" : "android::trait_trivial_copy<unsigned long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3052,7 +3051,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIsE6$valueE",
    "name" : "android::trait_trivial_copy<short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3083,7 +3082,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyItE6$valueE",
    "name" : "android::trait_trivial_copy<unsigned short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3114,7 +3113,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIvE6$valueE",
    "name" : "android::trait_trivial_copy<void>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3145,7 +3144,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIxE6$valueE",
    "name" : "android::trait_trivial_copy<long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3176,7 +3175,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIyE6$valueE",
    "name" : "android::trait_trivial_copy<unsigned long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3252,7 +3251,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIbE6$valueE",
    "name" : "android::trait_trivial_ctor<bool>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3283,7 +3282,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIcE6$valueE",
    "name" : "android::trait_trivial_ctor<char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3314,7 +3313,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIdE6$valueE",
    "name" : "android::trait_trivial_ctor<double>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3345,7 +3344,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIfE6$valueE",
    "name" : "android::trait_trivial_ctor<float>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3376,7 +3375,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIhE6$valueE",
    "name" : "android::trait_trivial_ctor<unsigned char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3407,7 +3406,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIiE6$valueE",
    "name" : "android::trait_trivial_ctor<int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3438,7 +3437,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIjE6$valueE",
    "name" : "android::trait_trivial_ctor<unsigned int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3469,7 +3468,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIlE6$valueE",
    "name" : "android::trait_trivial_ctor<long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3500,7 +3499,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorImE6$valueE",
    "name" : "android::trait_trivial_ctor<unsigned long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3531,7 +3530,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIsE6$valueE",
    "name" : "android::trait_trivial_ctor<short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3562,7 +3561,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorItE6$valueE",
    "name" : "android::trait_trivial_ctor<unsigned short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3593,7 +3592,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIvE6$valueE",
    "name" : "android::trait_trivial_ctor<void>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3624,7 +3623,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIxE6$valueE",
    "name" : "android::trait_trivial_ctor<long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3655,7 +3654,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIyE6$valueE",
    "name" : "android::trait_trivial_ctor<unsigned long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3731,7 +3730,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIbE6$valueE",
    "name" : "android::trait_trivial_dtor<bool>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3762,7 +3761,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIcE6$valueE",
    "name" : "android::trait_trivial_dtor<char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3793,7 +3792,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIdE6$valueE",
    "name" : "android::trait_trivial_dtor<double>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3824,7 +3823,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIfE6$valueE",
    "name" : "android::trait_trivial_dtor<float>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3855,7 +3854,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIhE6$valueE",
    "name" : "android::trait_trivial_dtor<unsigned char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3886,7 +3885,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIiE6$valueE",
    "name" : "android::trait_trivial_dtor<int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3917,7 +3916,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIjE6$valueE",
    "name" : "android::trait_trivial_dtor<unsigned int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3948,7 +3947,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIlE6$valueE",
    "name" : "android::trait_trivial_dtor<long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -3979,7 +3978,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorImE6$valueE",
    "name" : "android::trait_trivial_dtor<unsigned long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4010,7 +4009,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIsE6$valueE",
    "name" : "android::trait_trivial_dtor<short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4041,7 +4040,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorItE6$valueE",
    "name" : "android::trait_trivial_dtor<unsigned short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4072,7 +4071,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIvE6$valueE",
    "name" : "android::trait_trivial_dtor<void>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4103,7 +4102,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIxE6$valueE",
    "name" : "android::trait_trivial_dtor<long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4134,7 +4133,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIyE6$valueE",
    "name" : "android::trait_trivial_dtor<unsigned long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4210,7 +4209,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE",
    "name" : "android::trait_trivial_move<android::String8>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h",
    "underlying_type" : "_ZTIj"
@@ -4256,7 +4255,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIbE6$valueE",
    "name" : "android::trait_trivial_move<bool>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIbE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4287,7 +4286,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIcE6$valueE",
    "name" : "android::trait_trivial_move<char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIcE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4318,7 +4317,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIdE6$valueE",
    "name" : "android::trait_trivial_move<double>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIdE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4349,7 +4348,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIfE6$valueE",
    "name" : "android::trait_trivial_move<float>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIfE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4380,7 +4379,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIhE6$valueE",
    "name" : "android::trait_trivial_move<unsigned char>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIhE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4411,7 +4410,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIiE6$valueE",
    "name" : "android::trait_trivial_move<int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIiE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4442,7 +4441,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIjE6$valueE",
    "name" : "android::trait_trivial_move<unsigned int>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIjE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4473,7 +4472,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIlE6$valueE",
    "name" : "android::trait_trivial_move<long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIlE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4504,7 +4503,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveImE6$valueE",
    "name" : "android::trait_trivial_move<unsigned long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveImE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4535,7 +4534,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIsE6$valueE",
    "name" : "android::trait_trivial_move<short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIsE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4566,7 +4565,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveItE6$valueE",
    "name" : "android::trait_trivial_move<unsigned short>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveItE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4597,7 +4596,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIvE6$valueE",
    "name" : "android::trait_trivial_move<void>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIvE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4628,7 +4627,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIxE6$valueE",
    "name" : "android::trait_trivial_move<long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIxE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4659,7 +4658,7 @@
    ],
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIyE6$valueE",
    "name" : "android::trait_trivial_move<unsigned long long>::(unnamed)",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIyE6$valueE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "underlying_type" : "_ZTIj"
@@ -4927,7 +4926,7 @@
    ],
    "linker_set_key" : "_ZTIN7android7RefBase17$FIRST_INC_STRONGE",
    "name" : "android::RefBase::(unnamed)",
-   "self_type" : "_ZTIN7android7RefBase17$FIRST_INC_STRONGE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android7RefBase17$FIRST_INC_STRONGE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h",
    "underlying_type" : "_ZTIj"
@@ -4976,7 +4975,7 @@
    ],
    "linker_set_key" : "_ZTIN7android7RefBase21$OBJECT_LIFETIME_MASKE",
    "name" : "android::RefBase::(unnamed)",
-   "self_type" : "_ZTIN7android7RefBase21$OBJECT_LIFETIME_MASKE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android7RefBase21$OBJECT_LIFETIME_MASKE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h",
    "underlying_type" : "_ZTIj"
@@ -7410,7 +7409,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7439,7 +7438,7 @@
    "parameters" :
    [
     {
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7458,7 +7457,7 @@
    "parameters" :
    [
     {
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7477,7 +7476,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7493,7 +7492,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7509,7 +7508,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7525,7 +7524,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7541,7 +7540,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7557,7 +7556,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIb"
@@ -7577,7 +7576,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7594,7 +7593,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -7611,7 +7610,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIi"
@@ -7628,7 +7627,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIj"
@@ -7648,7 +7647,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7662,7 +7661,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7676,7 +7675,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7690,7 +7689,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7704,7 +7703,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7717,7 +7716,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIj"
@@ -7734,7 +7733,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7753,7 +7752,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7769,7 +7768,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIj"
@@ -7785,7 +7784,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7793,18 +7792,18 @@
   },
   {
    "function_name" : "android::String8::appendFormatV",
-   "linker_set_key" : "_ZN7android7String813appendFormatVEPKcSt9__va_list",
+   "linker_set_key" : "_ZN7android7String813appendFormatVEPKcPc",
    "parameters" :
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
     },
     {
-     "referenced_type" : "_ZTISt9__va_list"
+     "referenced_type" : "_ZTIPc"
     }
    ],
    "return_type" : "_ZTIi",
@@ -7817,7 +7816,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7830,7 +7829,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDi"
@@ -7849,7 +7848,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDs"
@@ -7868,7 +7867,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7884,7 +7883,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7903,10 +7902,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -7919,7 +7918,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7935,7 +7934,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -7954,10 +7953,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIi",
@@ -7972,22 +7971,22 @@
      "referenced_type" : "_ZTIPKc"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
   {
    "function_name" : "android::String8::formatV",
-   "linker_set_key" : "_ZN7android7String87formatVEPKcSt9__va_list",
+   "linker_set_key" : "_ZN7android7String87formatVEPKcPc",
    "parameters" :
    [
     {
      "referenced_type" : "_ZTIPKc"
     },
     {
-     "referenced_type" : "_ZTISt9__va_list"
+     "referenced_type" : "_ZTIPc"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
   {
@@ -7997,7 +7996,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8010,7 +8009,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8026,7 +8025,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDi"
@@ -8042,7 +8041,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDi"
@@ -8061,7 +8060,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDs"
@@ -8077,7 +8076,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDs"
@@ -8096,7 +8095,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8112,7 +8111,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8131,7 +8130,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIRKN7android8String16E"
@@ -8147,10 +8146,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8163,7 +8162,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8176,7 +8175,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDi"
@@ -8192,7 +8191,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDi"
@@ -8211,7 +8210,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDs"
@@ -8227,7 +8226,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKDs"
@@ -8246,7 +8245,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8262,7 +8261,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -8281,7 +8280,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIRKN7android8String16E"
@@ -8297,10 +8296,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8313,7 +8312,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8326,7 +8325,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8339,7 +8338,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8714,7 +8713,7 @@
      "referenced_type" : "_ZTIPN7android8String16E"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -8868,7 +8867,7 @@
      "referenced_type" : "_ZTIPN7android8String16E"
     },
     {
-     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIv",
@@ -9280,7 +9279,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIj"
@@ -9296,7 +9295,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIj",
@@ -9310,7 +9309,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIj",
@@ -9851,13 +9850,13 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
     }
    ],
-   "return_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
   {
@@ -9867,10 +9866,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
-   "return_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
   {
@@ -9896,7 +9895,7 @@
      "referenced_type" : "_ZTIPKN7android7RefBase12weakref_typeE"
     }
    ],
-   "return_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
   {
@@ -9919,7 +9918,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -9935,7 +9934,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIi",
@@ -9948,7 +9947,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -9964,7 +9963,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -9980,7 +9979,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKv"
@@ -9997,10 +9996,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
   {
@@ -10011,10 +10010,10 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
-   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "return_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
   {
@@ -10024,7 +10023,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     },
     {
      "referenced_type" : "_ZTIPKc"
@@ -10044,7 +10043,7 @@
    [
     {
      "is_this_ptr" : true,
-     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "return_type" : "_ZTIj",
@@ -10651,7 +10650,7 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIRKN7android10VectorImplE",
    "name" : "const android::VectorImpl &",
-   "referenced_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -10771,8 +10770,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIRKN7android7String8E",
    "name" : "const android::String8 &",
-   "referenced_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIRKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -10884,7 +10883,7 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIRN7android10VectorImplE",
    "name" : "android::VectorImpl &",
-   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -10892,7 +10891,7 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIRN7android16SortedVectorImplE",
    "name" : "android::SortedVectorImpl &",
-   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -10996,8 +10995,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIRN7android7String8E",
    "name" : "android::String8 &",
-   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIRN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIRN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -11176,8 +11175,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPKN7android10VectorImplE",
    "name" : "const android::VectorImpl *",
-   "referenced_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -11377,8 +11376,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPKN7android7RefBaseE",
    "name" : "const android::RefBase *",
-   "referenced_type" : "_ZTIKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -11394,8 +11393,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPKN7android7String8E",
    "name" : "const android::String8 *",
-   "referenced_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -11467,7 +11466,7 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android10VectorImplE",
    "name" : "android::VectorImpl *",
-   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -11547,8 +11546,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android16ReferenceRenamerE",
    "name" : "android::ReferenceRenamer *",
-   "referenced_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -11556,7 +11555,7 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android16SortedVectorImplE",
    "name" : "android::SortedVectorImpl *",
-   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -11580,8 +11579,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android19VirtualLightRefBaseE",
    "name" : "android::VirtualLightRefBase *",
-   "referenced_type" : "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/LightRefBase.h"
   },
@@ -11829,8 +11828,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android7RefBase12weakref_typeE",
    "name" : "android::RefBase::weakref_type *",
-   "referenced_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -11846,8 +11845,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android7RefBaseE",
    "name" : "android::RefBase *",
-   "referenced_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -11863,8 +11862,8 @@
    "alignment" : 4,
    "linker_set_key" : "_ZTIPN7android7String8E",
    "name" : "android::String8 *",
-   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIPN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -12025,8 +12024,8 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android10VectorImplE",
    "name" : "const android::VectorImpl",
-   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIKN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 20,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -12062,7 +12061,7 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android16ReferenceRenamerE",
    "name" : "const android::ReferenceRenamer",
-   "referenced_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -12071,7 +12070,7 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android16SortedVectorImplE",
    "name" : "const android::SortedVectorImpl",
-   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 20,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h"
   },
@@ -12166,7 +12165,7 @@
    "source_file" : "system/libbase/include/android-base/unique_fd.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android6Looper15MessageEnvelopeE",
    "name" : "const android::Looper::MessageEnvelope",
@@ -12184,7 +12183,7 @@
    "source_file" : "system/core/libutils/include/utils/Looper.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android6Looper8ResponseE",
    "name" : "const android::Looper::Response",
@@ -12193,12 +12192,12 @@
    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android6LooperE",
    "name" : "const android::Looper",
    "referenced_type" : "_ZTIN7android6LooperE",
-   "size" : 136,
+   "size" : 132,
    "source_file" : "system/core/libutils/include/utils/Looper.h"
   },
   {
@@ -12247,12 +12246,12 @@
    "source_file" : "system/core/libutils/binder/include/utils/Vector.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android7FileMapE",
    "name" : "const android::FileMap",
    "referenced_type" : "_ZTIN7android7FileMapE",
-   "size" : 32,
+   "size" : 28,
    "source_file" : "system/core/libutils/include/utils/FileMap.h"
   },
   {
@@ -12269,7 +12268,7 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android7RefBase12weakref_typeE",
    "name" : "const android::RefBase::weakref_type",
-   "referenced_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -12278,8 +12277,8 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android7RefBaseE",
    "name" : "const android::RefBase",
-   "referenced_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIKN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 8,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -12297,8 +12296,8 @@
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android7String8E",
    "name" : "const android::String8",
-   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
-   "self_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "referenced_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIKN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -12330,7 +12329,7 @@
    "source_file" : "system/core/libutils/binder/include/utils/String16.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKN7android9StopWatchE",
    "name" : "const android::StopWatch",
@@ -12384,7 +12383,7 @@
    "source_file" : "system/core/libutils/include/utils/FileMap.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKd",
    "name" : "const double",
@@ -12454,7 +12453,7 @@
    "source_file" : "system/core/libutils/include/utils/LightRefBase.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKx",
    "name" : "const long long",
@@ -12463,7 +12462,7 @@
    "source_file" : "system/core/libutils/include/utils/TypeHelpers.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "is_const" : true,
    "linker_set_key" : "_ZTIKy",
    "name" : "const unsigned long long",
@@ -13029,7 +13028,7 @@
    "linker_set_key" : "_ZTIN7android10VectorImplE",
    "name" : "android::VectorImpl",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 20,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h",
    "vtable_components" :
@@ -13076,7 +13075,7 @@
    ]
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "fields" :
    [
     {
@@ -13144,12 +13143,12 @@
    "linker_set_key" : "_ZTIN7android12LightRefBaseINS_19VirtualLightRefBaseEEE",
    "name" : "android::LightRefBase<android::VirtualLightRefBase>",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android12LightRefBaseINS_19VirtualLightRefBaseEEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android12LightRefBaseINS_19VirtualLightRefBaseEEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/LightRefBase.h",
    "template_args" :
    [
-    "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+    "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
    ]
   },
   {
@@ -13450,7 +13449,7 @@
    "linker_set_key" : "_ZTIN7android14ReferenceMoverE",
    "name" : "android::ReferenceMover",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android14ReferenceMoverE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android14ReferenceMoverE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -13557,7 +13556,7 @@
    "linker_set_key" : "_ZTIN7android16ReferenceRenamerE",
    "name" : "android::ReferenceRenamer",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android16ReferenceRenamerE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h",
    "vtable_components" :
@@ -13640,13 +13639,13 @@
    "base_specifiers" :
    [
     {
-     "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "linker_set_key" : "_ZTIN7android16SortedVectorImplE",
    "name" : "android::SortedVectorImpl",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android16SortedVectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 20,
    "source_file" : "system/core/libutils/binder/include/utils/VectorImpl.h",
    "vtable_components" :
@@ -13887,7 +13886,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIbEE",
    "name" : "android::trait_trivial_copy<bool>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -13910,7 +13909,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIcEE",
    "name" : "android::trait_trivial_copy<char>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -13933,7 +13932,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIdEE",
    "name" : "android::trait_trivial_copy<double>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -13956,7 +13955,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIfEE",
    "name" : "android::trait_trivial_copy<float>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -13979,7 +13978,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIhEE",
    "name" : "android::trait_trivial_copy<unsigned char>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14002,7 +14001,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIiEE",
    "name" : "android::trait_trivial_copy<int>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14025,7 +14024,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIjEE",
    "name" : "android::trait_trivial_copy<unsigned int>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14048,7 +14047,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIlEE",
    "name" : "android::trait_trivial_copy<long>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14071,7 +14070,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyImEE",
    "name" : "android::trait_trivial_copy<unsigned long>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14094,7 +14093,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIsEE",
    "name" : "android::trait_trivial_copy<short>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14117,7 +14116,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyItEE",
    "name" : "android::trait_trivial_copy<unsigned short>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14140,7 +14139,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIvEE",
    "name" : "android::trait_trivial_copy<void>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14163,7 +14162,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIxEE",
    "name" : "android::trait_trivial_copy<long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14186,7 +14185,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_copyIyEE",
    "name" : "android::trait_trivial_copy<unsigned long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_copyIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_copyIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14242,7 +14241,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIbEE",
    "name" : "android::trait_trivial_ctor<bool>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14265,7 +14264,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIcEE",
    "name" : "android::trait_trivial_ctor<char>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14288,7 +14287,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIdEE",
    "name" : "android::trait_trivial_ctor<double>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14311,7 +14310,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIfEE",
    "name" : "android::trait_trivial_ctor<float>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14334,7 +14333,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIhEE",
    "name" : "android::trait_trivial_ctor<unsigned char>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14357,7 +14356,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIiEE",
    "name" : "android::trait_trivial_ctor<int>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14380,7 +14379,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIjEE",
    "name" : "android::trait_trivial_ctor<unsigned int>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14403,7 +14402,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIlEE",
    "name" : "android::trait_trivial_ctor<long>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14426,7 +14425,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorImEE",
    "name" : "android::trait_trivial_ctor<unsigned long>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14449,7 +14448,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIsEE",
    "name" : "android::trait_trivial_ctor<short>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14472,7 +14471,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorItEE",
    "name" : "android::trait_trivial_ctor<unsigned short>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14495,7 +14494,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIvEE",
    "name" : "android::trait_trivial_ctor<void>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14518,7 +14517,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIxEE",
    "name" : "android::trait_trivial_ctor<long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14541,7 +14540,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_ctorIyEE",
    "name" : "android::trait_trivial_ctor<unsigned long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_ctorIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_ctorIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14597,7 +14596,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIbEE",
    "name" : "android::trait_trivial_dtor<bool>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14620,7 +14619,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIcEE",
    "name" : "android::trait_trivial_dtor<char>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14643,7 +14642,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIdEE",
    "name" : "android::trait_trivial_dtor<double>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14666,7 +14665,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIfEE",
    "name" : "android::trait_trivial_dtor<float>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14689,7 +14688,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIhEE",
    "name" : "android::trait_trivial_dtor<unsigned char>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14712,7 +14711,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIiEE",
    "name" : "android::trait_trivial_dtor<int>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14735,7 +14734,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIjEE",
    "name" : "android::trait_trivial_dtor<unsigned int>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14758,7 +14757,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIlEE",
    "name" : "android::trait_trivial_dtor<long>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14781,7 +14780,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorImEE",
    "name" : "android::trait_trivial_dtor<unsigned long>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14804,7 +14803,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIsEE",
    "name" : "android::trait_trivial_dtor<short>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14827,7 +14826,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorItEE",
    "name" : "android::trait_trivial_dtor<unsigned short>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14850,7 +14849,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIvEE",
    "name" : "android::trait_trivial_dtor<void>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14873,7 +14872,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIxEE",
    "name" : "android::trait_trivial_dtor<long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14896,7 +14895,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_dtorIyEE",
    "name" : "android::trait_trivial_dtor<unsigned long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_dtorIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_dtorIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -14952,12 +14951,12 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE",
    "name" : "android::trait_trivial_move<android::String8>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveINS_7String8EEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h",
    "template_args" :
    [
-    "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+    "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
    ]
   },
   {
@@ -14986,7 +14985,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIbEE",
    "name" : "android::trait_trivial_move<bool>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIbEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15009,7 +15008,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIcEE",
    "name" : "android::trait_trivial_move<char>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIcEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15032,7 +15031,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIdEE",
    "name" : "android::trait_trivial_move<double>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIdEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15055,7 +15054,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIfEE",
    "name" : "android::trait_trivial_move<float>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIfEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15078,7 +15077,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIhEE",
    "name" : "android::trait_trivial_move<unsigned char>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIhEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15101,7 +15100,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIiEE",
    "name" : "android::trait_trivial_move<int>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIiEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15124,7 +15123,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIjEE",
    "name" : "android::trait_trivial_move<unsigned int>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIjEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15147,7 +15146,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIlEE",
    "name" : "android::trait_trivial_move<long>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIlEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15170,7 +15169,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveImEE",
    "name" : "android::trait_trivial_move<unsigned long>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveImEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15193,7 +15192,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIsEE",
    "name" : "android::trait_trivial_move<short>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIsEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15216,7 +15215,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveItEE",
    "name" : "android::trait_trivial_move<unsigned short>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveItEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15239,7 +15238,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIvEE",
    "name" : "android::trait_trivial_move<void>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIvEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15262,7 +15261,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIxEE",
    "name" : "android::trait_trivial_move<long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIxEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15285,7 +15284,7 @@
    "alignment" : 1,
    "linker_set_key" : "_ZTIN7android18trait_trivial_moveIyEE",
    "name" : "android::trait_trivial_move<unsigned long long>",
-   "self_type" : "_ZTIN7android18trait_trivial_moveIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android18trait_trivial_moveIyEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/TypeHelpers.h",
    "template_args" :
@@ -15330,13 +15329,13 @@
    "base_specifiers" :
    [
     {
-     "referenced_type" : "_ZTIN7android12LightRefBaseINS_19VirtualLightRefBaseEEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIN7android12LightRefBaseINS_19VirtualLightRefBaseEEE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "linker_set_key" : "_ZTIN7android19VirtualLightRefBaseE",
    "name" : "android::VirtualLightRefBase",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android19VirtualLightRefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 8,
    "source_file" : "system/core/libutils/binder/include/utils/LightRefBase.h",
    "vtable_components" :
@@ -15698,7 +15697,7 @@
   },
   {
    "access" : "private",
-   "alignment" : 8,
+   "alignment" : 4,
    "fields" :
    [
     {
@@ -15758,7 +15757,7 @@
   },
   {
    "access" : "private",
-   "alignment" : 8,
+   "alignment" : 4,
    "fields" :
    [
     {
@@ -15782,7 +15781,7 @@
    "source_file" : "system/core/libutils/include/utils/Looper.h"
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "base_specifiers" :
    [
     {
@@ -15854,32 +15853,32 @@
     {
      "access" : "private",
      "field_name" : "mNextRequestSeq",
-     "field_offset" : 768,
+     "field_offset" : 736,
      "referenced_type" : "_ZTIy"
     },
     {
      "access" : "private",
      "field_name" : "mResponses",
-     "field_offset" : 832,
+     "field_offset" : 800,
      "referenced_type" : "_ZTIN7android6VectorINS_6Looper8ResponseEEE"
     },
     {
      "access" : "private",
      "field_name" : "mResponseIndex",
-     "field_offset" : 992,
+     "field_offset" : 960,
      "referenced_type" : "_ZTIj"
     },
     {
      "access" : "private",
      "field_name" : "mNextMessageUptime",
-     "field_offset" : 1024,
+     "field_offset" : 992,
      "referenced_type" : "_ZTIx"
     }
    ],
    "linker_set_key" : "_ZTIN7android6LooperE",
    "name" : "android::Looper",
    "record_kind" : "class",
-   "size" : 136,
+   "size" : 132,
    "source_file" : "system/core/libutils/include/utils/Looper.h",
    "vtable_components" :
    [
@@ -16282,7 +16281,7 @@
    [
     {
      "access" : "private",
-     "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+     "referenced_type" : "_ZTIN7android10VectorImplE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
     }
    ],
    "linker_set_key" : "_ZTIN7android6VectorINS_7String8EEE",
@@ -16292,7 +16291,7 @@
    "source_file" : "system/core/libutils/binder/include/utils/Vector.h",
    "template_args" :
    [
-    "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
+    "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump"
    ],
    "vtable_components" :
    [
@@ -16365,7 +16364,7 @@
    ]
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "fields" :
    [
     {
@@ -16388,26 +16387,26 @@
     {
      "access" : "private",
      "field_name" : "mDataOffset",
-     "field_offset" : 128,
+     "field_offset" : 96,
      "referenced_type" : "_ZTIx"
     },
     {
      "access" : "private",
      "field_name" : "mDataPtr",
-     "field_offset" : 192,
+     "field_offset" : 160,
      "referenced_type" : "_ZTIPv"
     },
     {
      "access" : "private",
      "field_name" : "mDataLength",
-     "field_offset" : 224,
+     "field_offset" : 192,
      "referenced_type" : "_ZTIj"
     }
    ],
    "linker_set_key" : "_ZTIN7android7FileMapE",
    "name" : "android::FileMap",
    "record_kind" : "class",
-   "size" : 32,
+   "size" : 28,
    "source_file" : "system/core/libutils/include/utils/FileMap.h"
   },
   {
@@ -16470,7 +16469,7 @@
    "linker_set_key" : "_ZTIN7android7RefBase12weakref_typeE",
    "name" : "android::RefBase::weakref_type",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android7RefBase12weakref_typeE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 1,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h"
   },
@@ -16535,7 +16534,7 @@
    "linker_set_key" : "_ZTIN7android7RefBaseE",
    "name" : "android::RefBase",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android7RefBaseE#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 8,
    "source_file" : "system/core/libutils/binder/include/utils/RefBase.h",
    "vtable_components" :
@@ -16598,7 +16597,7 @@
    "linker_set_key" : "_ZTIN7android7String8E",
    "name" : "android::String8",
    "record_kind" : "class",
-   "self_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_arm_armv8-a_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
+   "self_type" : "_ZTIN7android7String8E#ODR:out/soong/.intermediates/system/core/libutils/binder/libutils_binder/android_vendor_x86_x86_64_static_afdo-libutils/obj/system/core/libutils/binder/RefBase.sdump",
    "size" : 4,
    "source_file" : "system/core/libutils/binder/include/utils/String8.h"
   },
@@ -16719,7 +16718,7 @@
    ]
   },
   {
-   "alignment" : 8,
+   "alignment" : 4,
    "fields" :
    [
     {
