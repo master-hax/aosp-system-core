@@ -16,6 +16,24 @@
       "message": "it\u0027s the opposite, no? this typedef is right, and we need a trampoline in the implementation, similar to the one in bionic\u0027s C11 \u003cthreads.h\u003e?",
       "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76902692_8546407f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1978766
+      },
+      "writtenOn": "2024-09-05T21:18:16Z",
+      "side": 1,
+      "message": "this one ? `typedef int (*thrd_start_t)(void* _Nullable)`. I was looking at https://man7.org/linux/man-pages/man3/pthread_create.3.html for reference.",
+      "parentUuid": "7466facc_82598940",
+      "revId": "7f96b1127576aad3ed70fdcfda672858e5382dfc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
