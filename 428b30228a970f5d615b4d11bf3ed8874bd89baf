@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1037b16d_466d9119",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-05T21:57:41Z",
+      "side": 1,
+      "message": "Do you have data if this change is a 0.01% or a 0.1% or similar impact? If we have the right PGO data here, I wouldn\u0027t expect a difference.",
+      "range": {
+        "startLine": 14,
+        "startChar": 28,
+        "endLine": 16,
+        "endChar": 28
+      },
+      "revId": "428b30228a970f5d615b4d11bf3ed8874bd89baf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
