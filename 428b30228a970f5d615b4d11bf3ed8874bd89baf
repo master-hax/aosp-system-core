@@ -46,6 +46,53 @@
       },
       "revId": "428b30228a970f5d615b4d11bf3ed8874bd89baf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b456173_fde2aeb3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-05T22:33:29Z",
+      "side": 1,
+      "message": "Please share data for this change if you think it\u0027s worth it, as it would be surprising if it really does help, we would learn something, and above all else, it\u0027s adding technical debt. If it was reducing code, I\u0027d approve it in a heart beat.\n\nI would think the cost is strongly dominated here by pollInner. Instead of doing this change (which I think won\u0027t be measurable, and adds more code here, which there is already too much):\n- avoid mResponses.clear() + mResponses.push in pollInner (we don\u0027t need so many allocations)\n- look at mLock.lock() in pollInner. Note, this is locked and unlocked many times in the function, especially to prune sequence numbers, which is really. unnecessary.\n- measure cost of epoll_wait there (the cost may be dominated by these syscalls)\n- avoid O(n) (I think) \u0027mMessageEnvelopes.removeAt(0);\u0027 call, which is silly\n\nThis could improve performance much more without duplicating code.",
+      "parentUuid": "24cb52be_53c06e20",
+      "range": {
+        "startLine": 14,
+        "startChar": 28,
+        "endLine": 16,
+        "endChar": 28
+      },
+      "revId": "428b30228a970f5d615b4d11bf3ed8874bd89baf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2cb4a7bc_bef18eb0",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-05T22:33:29Z",
+      "side": 1,
+      "message": "This \u0027\u003d\u003d 0\u0027 case appears is also weird, since the default value of \u0027result\u0027 is ambiguous with response.request.ident.",
+      "range": {
+        "startLine": 164,
+        "startChar": 23,
+        "endLine": 164,
+        "endChar": 26
+      },
+      "revId": "428b30228a970f5d615b4d11bf3ed8874bd89baf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
