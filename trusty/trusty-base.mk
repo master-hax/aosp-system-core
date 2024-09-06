@@ -28,6 +28,8 @@
 # - Rust implementation:   export TRUSTY_KEYMINT_IMPL=rust
 # - C++ implementation:    (any other value of TRUSTY_KEYMINT_IMPL)
 
+# TOPIC TEST
+
 ifeq ($(TRUSTY_KEYMINT_IMPL),rust)
     LOCAL_KEYMINT_PRODUCT_PACKAGE := android.hardware.security.keymint-service.rust.trusty
 else
