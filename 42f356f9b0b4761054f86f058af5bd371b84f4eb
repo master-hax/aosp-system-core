@@ -16,6 +16,24 @@
       "message": "go/abtd/run/L55900030006262680/\n\nLet\u0027s see if the cl can cause boot flake.",
       "revId": "42f356f9b0b4761054f86f058af5bd371b84f4eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c237859d_3c510a57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-09-06T03:04:07Z",
+      "side": 1,
+      "message": "```\nNo available build to pick for required target aosp_cf_arm64_only_phone_hwasan-trunk_staging-userdebug\n```",
+      "parentUuid": "b65e4233_dd6695a3",
+      "revId": "42f356f9b0b4761054f86f058af5bd371b84f4eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
