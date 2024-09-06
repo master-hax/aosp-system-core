@@ -22,6 +22,8 @@
 # For gatekeeper, we include the generic -service and -impl to use legacy
 # HAL loading of gatekeeper.trusty.
 
+# TOPIC TEST
+
 $(call inherit-product, system/core/trusty/keymint/trusty-keymint.mk)
 
 ifeq ($(SECRETKEEPER_ENABLED),true)
