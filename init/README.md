@@ -788,6 +788,8 @@ provides the `aidl_lazy_test_1` interface.
   If the file does not exist, it will be created. If it does exist,
   it will be truncated. Properties are expanded within _content_.
 
+`swapoff <path>`
+> Stops swapping to the file or block device specified by path.
 
 Imports
 -------

@@ -36,6 +36,7 @@
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/swap.h>
 #include <sys/syscall.h>
 #include <sys/system_properties.h>
 #include <sys/time.h>
@@ -1316,6 +1317,13 @@ static Result<void> do_enter_default_mount_ns(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> do_swapoff(const BuiltinArguments& args) {
+    if (!swapoff(args[1].c_str())) {
+        return ErrnoError() << "swapoff() failed";
+    }
+    return {};
+}
+
 // Builtin-function-map start
 const BuiltinFunctionMap& GetBuiltinFunctionMap() {
     constexpr std::size_t kMax = std::numeric_limits<std::size_t>::max();
@@ -1380,6 +1388,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
         {"write",                   {2,     2,    {true,   do_write}}},
+        {"swapoff",                 {1,     1,    {false,  do_swapoff}}},
     };
     // clang-format on
     return builtin_functions;
