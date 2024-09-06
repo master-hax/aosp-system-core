@@ -1,0 +1,25 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+aidl_interface {
+    name: "android.trusty.test.commservice",
+    srcs: ["android/trusty/test/commservice/**/*.aidl"],
+    unstable: true,
+    proprietary: true,
+    flags: [
+        "-Werror",
+        "-Wno-mixed-oneway",
+    ],
+    backend: {
+        java: {
+            enabled: false,
+        },
+        cpp: {
+            enabled: true,
+        },
+        rust: {
+            enabled: true,
+        },
+    },
+}
