@@ -1,0 +1,19 @@
+// Copyright 2024 Google LLC. This file and proprietary
+// source code may only be used and distributed under the Widevine
+// License Agreement.
+
+cc_binary {
+    name: "trusty_rpc_test",
+    proprietary: true,
+    srcs: ["test.cpp"],
+
+    shared_libs: [
+        "libbase",
+        "libtrusty",
+        "liblog",
+        "libbinder",
+        "libbinder_trusty",
+        "libutils",
+        "android.trusty.test.commservice-cpp",
+    ],
+}
