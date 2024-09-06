@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cfcb827_a9fa10b0",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-06T22:06:42Z",
+      "side": 1,
+      "message": "probably s/thrd/pthread/ here and elsewhere? (especially since i hear that abbreviations really wind that appujee guy up :-) )",
+      "range": {
+        "startLine": 93,
+        "startChar": 15,
+        "endLine": 93,
+        "endChar": 19
+      },
+      "revId": "1875b50901869b914447add61886e591307ab6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "898248c8_4112c1e7",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-06T22:06:42Z",
+      "side": 1,
+      "message": "no need to care about inline here",
+      "range": {
+        "startLine": 98,
+        "startChar": 7,
+        "endLine": 98,
+        "endChar": 13
+      },
+      "revId": "1875b50901869b914447add61886e591307ab6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32d4b781_6efd9e06",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-06T22:06:42Z",
+      "side": 1,
+      "message": "no need for `struct` in c++",
+      "range": {
+        "startLine": 99,
+        "startChar": 2,
+        "endLine": 99,
+        "endChar": 8
+      },
+      "revId": "1875b50901869b914447add61886e591307ab6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60b91959_a424bbe6",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-06T22:06:42Z",
+      "side": 1,
+      "message": "just use `new` in c++? (and change the free() above to `delete` if you do.)",
+      "revId": "1875b50901869b914447add61886e591307ab6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
