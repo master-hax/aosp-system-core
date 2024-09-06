@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb3ad5aa_f65ffe55",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1391,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-06T12:52:31Z",
+      "side": 1,
+      "message": "sort it next to swapon_all in all these files, to make it a bit more convincing that it should be a builtin rather than just calling out to the toybox swapoff with one of the exec builtins...",
+      "revId": "8f2f9ec42b03727a09b3555e307b8967213d00a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
