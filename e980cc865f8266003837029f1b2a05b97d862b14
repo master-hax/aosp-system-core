@@ -204,6 +204,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "95f2d1ba_a7427e79",
+        "filename": "libprocessgroup/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-06T16:30:58Z",
+      "side": 1,
+      "message": "Well what I said it true for my local `aosp_cf_x86_64_phone` build, but not for builds which actually include LyricCameraHAL for the device. (ag/29191003) So shared to static for libprocessgroup it will have to be.",
+      "parentUuid": "3a1bcfb5_fcc366b3",
+      "revId": "e980cc865f8266003837029f1b2a05b97d862b14",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "603d2c5a_f2dbd93d",
         "filename": "libprocessgroup/Android.bp",
         "patchSetId": 1
