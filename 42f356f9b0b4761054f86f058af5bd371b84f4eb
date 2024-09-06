@@ -34,6 +34,24 @@
       "parentUuid": "b65e4233_dd6695a3",
       "revId": "42f356f9b0b4761054f86f058af5bd371b84f4eb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "976bcd46_b9f53253",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1088076
+      },
+      "writtenOn": "2024-09-06T05:15:45Z",
+      "side": 1,
+      "message": "ab/P80471458\n\nbuild failed, let me retry.\ngo/abtd/run/L28200030006314671",
+      "parentUuid": "c237859d_3c510a57",
+      "revId": "42f356f9b0b4761054f86f058af5bd371b84f4eb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
