@@ -144,6 +144,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "26c67c0d_a9c5e5fe",
+        "filename": "libutils/Threads.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-09T12:34:43Z",
+      "side": 1,
+      "message": "yeah, that should be fine too ... iirc my thinking was just to avoid any \"this isn\u0027t in my code\" allocations/deallocations _after_ the user code is called: hide whatever i\u0027m doing behind the scenes in the gap _before_ they\u0027re running. but i didn\u0027t have any specific use/user in mind.",
+      "parentUuid": "175a0666_35b9449a",
+      "range": {
+        "startLine": 99,
+        "startChar": 2,
+        "endLine": 99,
+        "endChar": 8
+      },
+      "revId": "1875b50901869b914447add61886e591307ab6c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "60b91959_a424bbe6",
         "filename": "libutils/Threads.cpp",
         "patchSetId": 7
