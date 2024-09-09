@@ -177,9 +177,9 @@ genrule {
 prebuilt_root {
     name: "init.environ.rc-soong",
     src: ":init.environ.rc.gen",
-    filename: "init.environ.rc",
+    filename: "init.environ.rc-test",
     install_in_root: true,
-    no_full_install: true,
+    //no_full_install: true,
     required: select((soong_config_variable("ANDROID", "ASAN_ENABLED"), soong_config_variable("ANDROID", "SANITIZE_TARGET_SYSTEM_ENABLED")), {
         (true, true): [
             "asan.options",
