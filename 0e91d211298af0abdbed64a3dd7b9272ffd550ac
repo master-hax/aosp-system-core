@@ -16,6 +16,24 @@
       "message": "the name of the property(s) has changed since this was written",
       "revId": "0e91d211298af0abdbed64a3dd7b9272ffd550ac",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "79da12e7_65703aab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-09-10T04:00:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7454faf2_b4219151",
+      "revId": "0e91d211298af0abdbed64a3dd7b9272ffd550ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
