@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb201682_7884188c",
+        "filename": "init/first_stage_mount.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1432579
+      },
+      "writtenOn": "2024-09-10T16:03:07Z",
+      "side": 1,
+      "message": "nit: IsRequestingMicrodroidVendorPartition",
+      "range": {
+        "startLine": 160,
+        "startChar": 12,
+        "endLine": 160,
+        "endChar": 39
+      },
+      "revId": "5aa2baacd4c001f50a94a7b19ed27077b88f9eb3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
