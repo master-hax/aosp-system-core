@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7454faf2_b4219151",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-09-10T02:27:28Z",
+      "side": 1,
+      "message": "the name of the property(s) has changed since this was written",
+      "revId": "0e91d211298af0abdbed64a3dd7b9272ffd550ac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
