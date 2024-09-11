@@ -33,6 +33,24 @@
       "message": "what does libcutils need from here? i thought the forwarding header system/core/libcutils/include/cutils/sched_policy.h was all that libcutils \"uses\"?",
       "revId": "df2717a7f294361d2d89a35fc6c2c95f3743e32e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fcd4975_98375066",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 18
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-11T16:54:34Z",
+      "side": 1,
+      "message": "`ReadDescriptors`. Users still need `libprocessgroup_util` if they call the functions, which libcutils is pretending to implement via the forwarded header. The sched policy calls in sched_policy.h work down to a `CgroupMap::GetInstance` call:\n\n```\nCgroupMap::GetInstance\n  CgroupMap::LoadRcFile\n    ACgroupFile_getVersion\n      GetInstance\n        LoadDescriptors\n          ReadDescriptors\n\nSetTaskProfiles\n  TaskProfiles::GetInstance\n    TaskProfiles::TaskProfiles\n      CgroupMap::GetInstance (see above)\n```",
+      "parentUuid": "982628d1_dfcf6f76",
+      "revId": "df2717a7f294361d2d89a35fc6c2c95f3743e32e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
