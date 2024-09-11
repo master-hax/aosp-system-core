@@ -16,6 +16,23 @@
       "message": "ENH for dependency changes",
       "revId": "df2717a7f294361d2d89a35fc6c2c95f3743e32e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "982628d1_dfcf6f76",
+        "filename": "libcutils/Android.bp",
+        "patchSetId": 18
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-11T15:08:58Z",
+      "side": 1,
+      "message": "what does libcutils need from here? i thought the forwarding header system/core/libcutils/include/cutils/sched_policy.h was all that libcutils \"uses\"?",
+      "revId": "df2717a7f294361d2d89a35fc6c2c95f3743e32e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
