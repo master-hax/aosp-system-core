@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ffbb091_cff3e284",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-09-11T16:21:53Z",
+      "side": 1,
+      "message": "Would it be better to check if the exec bit is not set instead? I don\u0027t think I\u0027ve ever seen this happen in a non-read-write map, but I don\u0027t know if it couldn\u0027t happen either.",
+      "range": {
+        "startLine": 360,
+        "startChar": 38,
+        "endLine": 360,
+        "endChar": 55
+      },
+      "revId": "10bb4576ad8a45ecba8484a2deccdf07e432c483",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
