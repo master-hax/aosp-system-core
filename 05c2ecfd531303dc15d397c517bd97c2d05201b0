@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "74046425_f88f9ea1",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test_util.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-12T13:26:53Z",
+      "side": 1,
+      "message": "there\u0027s a Trim() in \u003candroid-base/strings.h\u003e...",
+      "revId": "05c2ecfd531303dc15d397c517bd97c2d05201b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
