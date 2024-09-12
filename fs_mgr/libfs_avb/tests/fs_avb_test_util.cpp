@@ -19,8 +19,8 @@
 #include <stdlib.h>
 
 #include <android-base/file.h>
+#include <android-base/stringprintf.h>
 #include <base/files/file_util.h>
-#include <base/strings/string_util.h>
 
 namespace fs_avb_host_test {
 
@@ -64,9 +64,7 @@ std::string BaseFsAvbTest::CalcVBMetaDigest(const std::string& file_name,
     std::string vbmeta_digest_data;
     EXPECT_TRUE(base::ReadFileToString(vbmeta_digest_path, &vbmeta_digest_data));
     // Returns the trimmed digest.
-    std::string trimmed_digest_data;
-    base::TrimString(vbmeta_digest_data, " \t\n", &trimmed_digest_data);
-    return trimmed_digest_data;
+    return TrimString(vbmeta_digest_data);
 }
 
 base::FilePath BaseFsAvbTest::GenerateVBMetaImage(
@@ -91,7 +89,7 @@ base::FilePath BaseFsAvbTest::GenerateVBMetaImage(
     // --chain_partitions
     std::string chain_partition_options;
     for (const auto& partition : chain_partitions) {
-        chain_partition_options += base::StringPrintf(
+        chain_partition_options += android::base::StringPrintf(
                 " --chain_partition %s:%u:%s", partition.partition_name.c_str(),
                 partition.rollback_index_location, partition.key_blob_path.value().c_str());
     }
