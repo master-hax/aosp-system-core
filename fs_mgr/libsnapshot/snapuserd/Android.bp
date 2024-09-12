@@ -250,6 +250,14 @@ cc_test {
     test_suites: [
         "device-tests",
     ],
+    test_options: {
+        test_runner_options: [
+            {
+                name: "force-no-test-error",
+                value: "false",
+            },
+        ],
+    },
 }
 
 // vts tests cannot be host_supported.
@@ -259,6 +267,10 @@ cc_test {
     test_suites: [
         "vts",
     ],
+    test_options: {
+        // VABC mandatory in Android T per VSR.
+        min_shipping_api_level: 32,
+    },
 }
 
 cc_binary_host {
