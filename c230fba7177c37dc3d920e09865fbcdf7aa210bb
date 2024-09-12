@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "404ff299_ca126152",
+        "filename": "libprocessgroup/util/include/processgroup/cgroup_controller.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-09-12T22:40:35Z",
+      "side": 1,
+      "message": "not: .so?",
+      "range": {
+        "startLine": 40,
+        "startChar": 34,
+        "endLine": 40,
+        "endChar": 37
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "3706ffb9_bd967e14",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/util/include/processgroup/cgroup_controller.h",
+              "range": {
+                "startLine": 40,
+                "startChar": 0,
+                "endLine": 41,
+                "endChar": 0
+              },
+              "replacement": "    // and vendor libprocessgroup.so have all been updated to not depend on cgroup.rc.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "c230fba7177c37dc3d920e09865fbcdf7aa210bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
