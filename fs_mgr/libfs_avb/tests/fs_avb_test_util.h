@@ -26,9 +26,9 @@
 #include <string>
 #include <vector>
 
+#include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
 #include <base/files/file_path.h>
-#include <base/strings/stringprintf.h>
 #include <fs_avb/types.h>
 #include <gtest/gtest.h>
 
@@ -37,7 +37,7 @@
 // the command exits normally with exit status |expected_exit_status|.
 #define EXPECT_COMMAND(expected_exit_status, command_format, ...)                   \
     do {                                                                            \
-        int rc = system(base::StringPrintf(command_format, ##__VA_ARGS__).c_str()); \
+        int rc = system(android::base::StringPrintf(command_format, ##__VA_ARGS__).c_str()); \
         EXPECT_TRUE(WIFEXITED(rc));                                                 \
         EXPECT_EQ(WEXITSTATUS(rc), expected_exit_status);                           \
     } while (0);
@@ -61,6 +61,14 @@ struct ChainPartitionConfig {
 
 inline android::base::unique_fd OpenUniqueReadFd(const base::FilePath& file_path) {
     return android::base::unique_fd(open(file_path.value().c_str(), O_RDONLY | O_CLOEXEC));
+}
+
+inline std::string TrimString(const std::string& str) {
+    auto lpos = str.find_first_not_of(" \t\n");
+    if (lpos == std::string::npos) return "";
+    auto rpos = str.find_last_not_of(" \t\n");
+    if (rpos == std::string::npos) return str.substr(lpos);
+    return str.substr(lpos, rpos - lpos + 1);
 }
 
 /* Base-class used for unit test. */
