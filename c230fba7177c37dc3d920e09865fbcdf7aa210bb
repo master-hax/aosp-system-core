@@ -40,6 +40,30 @@
       ],
       "revId": "c230fba7177c37dc3d920e09865fbcdf7aa210bb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e41ec403_c0efb9d0",
+        "filename": "libprocessgroup/util/include/processgroup/cgroup_controller.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-12T22:41:45Z",
+      "side": 1,
+      "message": "Plural, as in any possible vendor libprocessgroup.so version. (There\u0027s only one per vendor image of course.)",
+      "parentUuid": "404ff299_ca126152",
+      "range": {
+        "startLine": 40,
+        "startChar": 34,
+        "endLine": 40,
+        "endChar": 37
+      },
+      "revId": "c230fba7177c37dc3d920e09865fbcdf7aa210bb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
