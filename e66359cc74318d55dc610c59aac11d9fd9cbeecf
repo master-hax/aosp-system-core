@@ -22,6 +22,30 @@
       },
       "revId": "e66359cc74318d55dc610c59aac11d9fd9cbeecf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "054e6e1e_95201213",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad5bc786_231c64d8",
+      "range": {
+        "startLine": 8,
+        "startChar": 61,
+        "endLine": 8,
+        "endChar": 93
+      },
+      "revId": "e66359cc74318d55dc610c59aac11d9fd9cbeecf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

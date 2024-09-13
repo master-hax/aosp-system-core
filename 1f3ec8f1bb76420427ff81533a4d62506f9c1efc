@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d5c92df_7702da7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "Hi Armelle, mostly LGTM. There are just a few things I think we can drop it from this cl to minimize the risk of revert.",
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d385a2de_9e58230b",
+        "filename": "trusty/libtrusty/Android.bp",
+        "patchSetId": 14
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "This isn\u0027t necessary for the current cl, can we move it to a separate cl if it\u0027s needed?",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 30
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ee7797e_5162dbd5",
+        "filename": "trusty/libtrusty/tipc-test/Android.bp",
+        "patchSetId": 14
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "This modification isn\u0027t necessary for this cl and it changes the target directory. It could be risky if any downstream code (e.g., Pixel) relies on the current path. To minimize potential impact, could we separate this change into another cl?",
+      "range": {
+        "startLine": 21,
+        "startChar": 3,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a435f5c_1e31cc16",
+        "filename": "trusty/trusty-storage-cf.mk",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "Why do we need to add new soong namespace for this module?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4ff25bc_ed6a40bc",
+        "filename": "trusty/utils/rpmb_dev/Android.bp",
+        "patchSetId": 14
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "Why does this module need this?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 18
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6630c953_fdbef266",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "I don\u0027t think we need this as we start `rpmb_mock_system` with our own rules defined below.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 14
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c4739ea_be0da83d",
+        "filename": "trusty/utils/trusty-ut-ctrl/Android.bp",
+        "patchSetId": 14
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-13T12:19:49Z",
+      "side": 1,
+      "message": "This isn\u0027t necessary for this cl and also modifies the path, could we separate this change into another cl?",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 30
+      },
+      "revId": "1f3ec8f1bb76420427ff81533a4d62506f9c1efc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
