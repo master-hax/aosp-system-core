@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8853ae2_64b9139d",
+        "filename": "trusty/storage/proxy/Android.bp",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1807569
+      },
+      "writtenOn": "2024-09-16T02:18:45Z",
+      "side": 0,
+      "message": "If `storageproxyd` is no longer under `/vendor/bin`, shouldn\u0027t `rpmb_dev.rc` be updated. I\u0027m asking since I tried booting with this patch applied and cuttlefish didn\u0027t boot because it couldn\u0027t find `/vendor/bin/storageproxyd`. Apologies if this is a dumb question, I\u0027m not following these changes closely.",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "e57d3f2110cf9c68946d344b323246baa3e82bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
