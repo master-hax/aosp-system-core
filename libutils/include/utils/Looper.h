@@ -323,6 +323,11 @@ public:
     int addFd(int fd, int ident, int events, const sp<LooperCallback>& callback, void* data);
 
     /**
+     * May be useful for testing
+     */
+    bool getFdStateDebug();
+
+    /**
      * Removes a previously added file descriptor from the looper.
      *
      * When this method returns, it is safe to close the file descriptor since the looper
