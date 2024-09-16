@@ -496,6 +496,21 @@ int Looper::addFd(int fd, int ident, int events, const sp<LooperCallback>& callb
     return 1;
 }
 
+bool Looper::getFdStateDebug(int fd, int* ident, int* events, sp<LooperCallback>* cb, void** data) {
+    AutoMutex _l(mLock);
+    if (auto seqNumIt = mSequenceNumberByFd.find(fd); seqNumIt != mSequenceNumberByFd.cend()) {
+        if (auto reqIt = mRequests.find(seqNumIt->second); reqIt != mRequests.cend()) {
+            const Request& request = reqIt->second;
+            *ident = request.ident;
+            *events = request.events;
+            *cb = request.callback;
+            *data = request.data;
+            return true;
+        }
+    }
+    return false;
+}
+
 int Looper::removeFd(int fd) {
     AutoMutex _l(mLock);
     const auto& it = mSequenceNumberByFd.find(fd);
