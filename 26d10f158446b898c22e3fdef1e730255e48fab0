@@ -33,6 +33,23 @@
       "message": "Actually Bowgo is the right owner here",
       "revId": "26d10f158446b898c22e3fdef1e730255e48fab0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63cb6f2e_3cdfe14a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-09-16T10:57:26Z",
+      "side": 1,
+      "message": "Thanks for the clean-up!",
+      "revId": "26d10f158446b898c22e3fdef1e730255e48fab0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
