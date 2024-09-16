@@ -22,6 +22,30 @@
       },
       "revId": "e57d3f2110cf9c68946d344b323246baa3e82bea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "084ccb54_d38467d3",
+        "filename": "trusty/storage/proxy/Android.bp",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-16T12:44:41Z",
+      "side": 0,
+      "message": "+1. If no one needs `rpmb_dev` in `/vendor` for now, can we just move it to `/sytem_ext` instead of keeping two versions?",
+      "parentUuid": "f8853ae2_64b9139d",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "e57d3f2110cf9c68946d344b323246baa3e82bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
