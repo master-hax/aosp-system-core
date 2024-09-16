@@ -69,6 +69,24 @@
       "parentUuid": "2fc9271b_a2d0dbbe",
       "revId": "05c2ecfd531303dc15d397c517bd97c2d05201b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "978a7093_8bcfaccb",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test_util.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-09-16T10:58:53Z",
+      "side": 1,
+      "message": "Checking closer, the output of `avbtool calculate_vbmeta_digest ...` only contains \u0027\\n\u0027 without \u0027\\t\u0027 and \u0027\\r\u0027, so it should be safe to use android-base\u0027s Trim().",
+      "parentUuid": "7364d065_14af8a6f",
+      "revId": "05c2ecfd531303dc15d397c517bd97c2d05201b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
