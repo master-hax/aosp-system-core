@@ -1,0 +1,86 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6231f32c_65c98291",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-16T23:58:48Z",
+      "side": 1,
+      "message": "nit: you might allow each of these to be null, so you don\u0027t always have to read all of them\n\n```\nif (ident) *ident \u003d request.ident;\nif (events) *events \u003d request.evets;\n...\n```",
+      "range": {
+        "startLine": 504,
+        "startChar": 8,
+        "endLine": 507,
+        "endChar": 33
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "3eada3c2_fe99077f",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/Looper.cpp",
+              "range": {
+                "startLine": 504,
+                "startChar": 0,
+                "endLine": 508,
+                "endChar": 0
+              },
+              "replacement": "            if (ident) *ident \u003d request.ident;\n            if (events) *events \u003d request.events;\n            if (cb) *cb \u003d request.callback;\n            if (data) *data \u003d request.data;\n"
+            }
+          ]
+        }
+      ],
+      "revId": "a60fbcb6bdbb00621ad33876b46dbe40ed6786ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "883ba8a6_5c6de7d5",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-16T23:58:48Z",
+      "side": 1,
+      "message": "EXPECT_EQ(1, ...",
+      "range": {
+        "startLine": 431,
+        "startChar": 4,
+        "endLine": 431,
+        "endChar": 11
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "909ec9e1_98c006e8",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/Looper_test.cpp",
+              "range": {
+                "startLine": 431,
+                "startChar": 0,
+                "endLine": 432,
+                "endChar": 0
+              },
+              "replacement": "    EXPECT_EQ(1, mLooper-\u003eaddFd(fd, expectedIdent, Looper::EVENT_INPUT, expectedCallback, expectedData));\n"
+            }
+          ]
+        }
+      ],
+      "revId": "a60fbcb6bdbb00621ad33876b46dbe40ed6786ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
