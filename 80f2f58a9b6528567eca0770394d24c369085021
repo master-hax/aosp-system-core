@@ -105,6 +105,41 @@
       "parentUuid": "3a92a503_809c0645",
       "revId": "80f2f58a9b6528567eca0770394d24c369085021",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b61074f7_97be2031",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T20:49:14Z",
+      "side": 1,
+      "message": "ah, brilliant --- i\u0027ll stop trying to convince you of your existing position then :-)",
+      "parentUuid": "829d1e1c_ec416e5a",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5ba4bc9_0d928147",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T20:49:14Z",
+      "side": 1,
+      "message": "(in that case, if we\u0027re not making async any more common than it already is, i don\u0027t care that much. i still think a \"hey, consider upgrading to the way better option that would have helped with this bug you just hit!\" message would make more sense though.)",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
