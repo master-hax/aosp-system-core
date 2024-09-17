@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "989bff01_567aba62",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T20:46:16Z",
+      "side": 1,
+      "message": "\u003e But since memory is shared between threads, \"memory corruption\" is kind of a process property\n\ndefinitely, but viewing this from the usual perspective of \"i have more bugs than i have time to look at them --- which one gets my attention next?\", \"persuade me to not just let _this_ bug go obsolete while i get on with non-async bugs that are going to point me at the actual code _and_ give me a strong hint as to what the logic error is\". _those_ bugs are great. async bugs are basically \"trash\" bugs [unless you have the upgraded-to-sync bug that followed]?",
+      "parentUuid": "52142f76_a616ecbe",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3a92a503_809c0645",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
