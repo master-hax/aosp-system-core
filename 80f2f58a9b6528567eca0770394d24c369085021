@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "52142f76_a616ecbe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-09-17T20:21:57Z",
+      "side": 1,
+      "message": "It is definitely same thread, not same core.\n\nBut since memory is shared between threads, \"memory corruption\" is kind of a process property. It is a lot more likely to be detected on the thread that\u0027s guilty of causing it, of course.",
+      "parentUuid": "26c572a5_e3f572f4",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3a92a503_809c0645",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
