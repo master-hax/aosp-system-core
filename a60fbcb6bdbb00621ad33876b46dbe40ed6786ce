@@ -42,6 +42,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8366d825_0935326e",
+        "filename": "libutils/Looper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 3523080
+      },
+      "writtenOn": "2024-09-17T00:38:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6231f32c_65c98291",
+      "range": {
+        "startLine": 504,
+        "startChar": 8,
+        "endLine": 507,
+        "endChar": 33
+      },
+      "revId": "a60fbcb6bdbb00621ad33876b46dbe40ed6786ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "883ba8a6_5c6de7d5",
@@ -79,6 +103,30 @@
           ]
         }
       ],
+      "revId": "a60fbcb6bdbb00621ad33876b46dbe40ed6786ce",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "da7285aa_1afa9c51",
+        "filename": "libutils/Looper_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 3523080
+      },
+      "writtenOn": "2024-09-17T00:38:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "883ba8a6_5c6de7d5",
+      "range": {
+        "startLine": 431,
+        "startChar": 4,
+        "endLine": 431,
+        "endChar": 11
+      },
       "revId": "a60fbcb6bdbb00621ad33876b46dbe40ed6786ce",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
