@@ -499,8 +499,8 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
 
   print_thread_registers(callback, tombstone, thread, true);
   if (is_async_mte_crash) {
-    CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
-    CBL("      in this process. The stack trace below is the first system call or context");
+    CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred.");
+    CBL("      The stack trace below is the first system call or context");
     CBL("      switch that was executed after the memory corruption happened.");
   }
   print_thread_backtrace(callback, tombstone, thread, true);
