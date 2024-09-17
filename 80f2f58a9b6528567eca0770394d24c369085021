@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26c572a5_e3f572f4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T20:10:06Z",
+      "side": 1,
+      "message": "i think it\u0027s _really_ important specifically with async crashes --- the reason i was reading this carefully was that bug earlier today where i genuinely don\u0027t know what this means in practice. (\"context switch\" kind of implies it should be on the same thread at least, but since i have multiple _cores_ maybe not? executed on _the core that had the fault_ or executed on _any_ core?)",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a92a503_809c0645",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T20:10:06Z",
+      "side": 1,
+      "message": "(more generally, this is one reason why i\u0027m not sure more use of async in eng builds is a good idea --- i feel like it undermines the awesome actionability of asan/hwasan/sync-mte by giving you the kinds of bugs that seem highly unlikely to actually get any traction? \"something went wrong, somewhere before this\" vs \"here\u0027s all the stacks for all the relevant parts of this incident\".)",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
