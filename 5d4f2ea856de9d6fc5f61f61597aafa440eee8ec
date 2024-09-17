@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6fec99ec_9c8e3814",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T15:36:42Z",
+      "side": 1,
+      "message": "give a copy \u0026 pasteable setprop command?",
+      "revId": "5d4f2ea856de9d6fc5f61f61597aafa440eee8ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cacb746_77bac4fb",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-17T15:36:42Z",
+      "side": 1,
+      "message": "do you really want to _suggest_ that people just ignore this quite so up-front? (rather than, say, adding this to the s.a.c page?)",
+      "range": {
+        "startLine": 582,
+        "startChar": 27,
+        "endLine": 584,
+        "endChar": 44
+      },
+      "revId": "5d4f2ea856de9d6fc5f61f61597aafa440eee8ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
