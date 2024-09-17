@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "42f55fb3_2057e933",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-09-17T20:30:03Z",
+      "side": 1,
+      "message": "\u003e But since memory is shared between threads, \"memory corruption\" is kind of a process property. It is a lot more likely to be detected on the thread that\u0027s guilty of causing it, of course.\n\nThis was my thought process too, which is why I choose to delete the language vs having a process vs thread discussion.",
+      "parentUuid": "52142f76_a616ecbe",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3a92a503_809c0645",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -49,6 +67,24 @@
       "writtenOn": "2024-09-17T20:10:06Z",
       "side": 1,
       "message": "(more generally, this is one reason why i\u0027m not sure more use of async in eng builds is a good idea --- i feel like it undermines the awesome actionability of asan/hwasan/sync-mte by giving you the kinds of bugs that seem highly unlikely to actually get any traction? \"something went wrong, somewhere before this\" vs \"here\u0027s all the stacks for all the relevant parts of this incident\".)",
+      "revId": "80f2f58a9b6528567eca0770394d24c369085021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "829d1e1c_ec416e5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-09-17T20:30:03Z",
+      "side": 1,
+      "message": "I share your concerns with async mode.\n\nfor the \"MTE in -eng\" changes, the devices where we plan on supporting it will be in `sync` or `asymm` mode, not `async` mode. See also b/367730185",
+      "parentUuid": "3a92a503_809c0645",
       "revId": "80f2f58a9b6528567eca0770394d24c369085021",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
