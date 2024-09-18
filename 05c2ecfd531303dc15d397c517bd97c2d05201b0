@@ -87,6 +87,24 @@
       "parentUuid": "7364d065_14af8a6f",
       "revId": "05c2ecfd531303dc15d397c517bd97c2d05201b0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5ba7ae8_d470a1eb",
+        "filename": "fs_mgr/libfs_avb/tests/fs_avb_test_util.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1700325
+      },
+      "writtenOn": "2024-09-18T11:15:06Z",
+      "side": 1,
+      "message": "Thanks for clarification. I replace it by android-base Trim().",
+      "parentUuid": "978a7093_8bcfaccb",
+      "revId": "05c2ecfd531303dc15d397c517bd97c2d05201b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
