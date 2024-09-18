@@ -501,9 +501,11 @@ have been omitted.
       reformatted here if it couldn't mount in first-stage init.
    6. `post-fs-data-checkpointed` - Triggered when vold has completed committing a checkpoint
       after an OTA update. Not triggered if checkpointing is not needed or supported.
-   7. `zygote-start` - Start the zygote.
-   8. `early-boot` - After zygote has started.
-   9. `boot` - After `early-boot` actions have completed.
+   7. `load_bpf_programs` - Starts bpfloader (via mainline NetBpfLoad, depends on apex)
+   8. `bpf-progs-loaded` - Starts things that want to start ASAP but need eBPF (incl. netd)
+   9. `zygote-start` - Start the zygote.
+  10. `early-boot` - After zygote has started.
+  11. `boot` - After `early-boot` actions have completed.
 
 Commands
 --------
