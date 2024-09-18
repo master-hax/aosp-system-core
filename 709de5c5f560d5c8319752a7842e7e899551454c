@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5729077e_83b83290",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 18
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T08:15:25Z",
+      "side": 1,
+      "message": "Mostly LGTM, maybe a small adjustment.",
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daebc042_5a0fea88",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T08:15:25Z",
+      "side": 1,
+      "message": "If the goal is simply to start `storageproxyd_system` in the late-fs stage to avoid a race condition, could we remove this enable logic and add a separate entry as below?\n\n```\non late-fs \u0026\u0026 property:trusty_vm_system_nonsecure.ready\u003d1\n    start storageproxyd_system\n```\nThis would improve the readability a bit as `storageproxyd_system` is controlled solely within this script, without involving the `early_hal` class.\n\nIn addition, we could also add `wait /mnt/secure_storage_rpmb_system/persist/RPMB_DATA` before starting `storageproxyd_system` and `rpmb_mock_system`. This would guarantee that the socket file exists before launching these services.\n\n[1] https://chromium.googlesource.com/aosp/platform/system/core/+/HEAD/init/README.md",
+      "range": {
+        "startLine": 48,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 86
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
