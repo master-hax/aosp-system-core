@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "614fb5e8_7a354f29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "Should we hold off on submitting the changelist until we can successfully run this version of KeyMint? Merging it in its current state would mean maintaining three separate KeyMint versions for any future changes, while having no guarantee that this secure system version even functions correctly.",
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6837191d_78c7b18c",
+        "filename": "trusty/keymint/android.hardware.security.keymint-service.rust.trusty.system.rc",
+        "patchSetId": 11
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "Is this property `ro.hardware.trusty_ipc_dev.keymint` defined?",
+      "range": {
+        "startLine": 2,
+        "startChar": 50,
+        "endLine": 2,
+        "endChar": 84
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5ff57e0_a191ed15",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 11
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "This is not up-to-date",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 67
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24c6b1cd_2cdaff1f",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "super-nit: Can we leave this line unchanged for easier git tracking?",
+      "range": {
+        "startLine": 30,
+        "startChar": 30,
+        "endLine": 30,
+        "endChar": 31
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09d917be_bad99966",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 11
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "Maybe we can change this to `else ifeq ($(TRUSTY_SYSTEM_VM),secure)` and raise an error if a user defined something else?",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 33,
+        "endChar": 8
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "975aac9b_3c590ac2",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "Good idea!",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 9
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28e5ee60_35a6672d",
+        "filename": "trusty/keymint/trusty-keymint.mk",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T11:21:26Z",
+      "side": 1,
+      "message": "Why is this needed?",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 30
+      },
+      "revId": "d8ac6643318b009334b297520d7c8c22429894f6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
