@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d319947_7870ce4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-18T19:40:55Z",
+      "side": 1,
+      "message": "I have another question for you:\n\nI don\u0027t want to make netd \u0027reboot_on_failure\u0027 because as a daemon it could fail and restart during serving, but *certain* types of early init failures should just trigger a reboot (for example bpf or dnsresolver init failures, since that comes from the mainline tethering/dnsresolver apexes).  I\u0027m considering getting netd to do \u0027echo b \u003e /proc/sysrq-trigger\u0027 if the init phase fails - thus triggering a reboot and likely mainline module rollback.  Any better ideas?",
+      "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
