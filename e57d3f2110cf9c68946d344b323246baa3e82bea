@@ -46,6 +46,30 @@
       },
       "revId": "e57d3f2110cf9c68946d344b323246baa3e82bea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b239505_f39cd3bd",
+        "filename": "trusty/storage/proxy/Android.bp",
+        "patchSetId": 17
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-09-18T06:10:44Z",
+      "side": 0,
+      "message": "I would like to keep the option open for the arm64 test when SecureStorage is implemented in TZ (vendor) as well as its storageproxyd.",
+      "parentUuid": "084ccb54_d38467d3",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 17
+      },
+      "revId": "e57d3f2110cf9c68946d344b323246baa3e82bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
