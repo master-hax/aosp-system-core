@@ -20,6 +20,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4b55686b_f701d84b",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T09:55:01Z",
+      "side": 1,
+      "message": "nit: This is also not a \"read-only\" property, could we name it to something `trusty_vm_system.storage`?",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 14
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "daebc042_5a0fea88",
         "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
         "patchSetId": 18
@@ -36,6 +59,29 @@
         "startChar": 4,
         "endLine": 50,
         "endChar": 86
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8a0817e_a7abab79",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-18T09:55:01Z",
+      "side": 1,
+      "message": "This line doesn\u0027t work, can we drop it?\n\n```\n[   71.289216] init: Command \u0027chmod 0770 /data/secure_storage_system/persist\u0027 action\u003dro.hardware.trusty_ipc_dev.storage\u003d* \u0026\u0026 trusty_vm_system_nonsecure.ready\u003d1 \u0026\u0026 post-fs-data (/system_ext/etc/init/rpmb_dev.system.rc:61) took 0ms and failed: fchmodat() failed: Operation not supported on transport endpoint\n```",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 50
       },
       "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
