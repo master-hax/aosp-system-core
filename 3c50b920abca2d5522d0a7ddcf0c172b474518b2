@@ -63,6 +63,30 @@
       },
       "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a69b0b0_1da2edd4",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-19T21:11:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a81cacb9_1e220f23",
+      "range": {
+        "startLine": 562,
+        "startChar": 0,
+        "endLine": 563,
+        "endChar": 14
+      },
+      "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
