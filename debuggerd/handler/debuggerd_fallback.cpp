@@ -93,6 +93,38 @@ class ScopedUseFallbackAllocator {
   bool enabled_ = false;
 };
 
+// Mutexes and data needed for locking.
+static std::recursive_mutex crash_mutex;
+static uint32_t crash_lock_count;
+static std::mutex trace_mutex;
+
+static void debuggerd_fallback_disable() {
+  trace_mutex.lock();
+  // Do not increment 'crash_lock_count' since if there is a call to
+  // crash_handler while this is happening, it will cause an abort.
+  crash_mutex.lock();
+}
+
+static void debuggerd_fallback_enable() {
+  trace_mutex.unlock();
+  crash_mutex.unlock();
+}
+
+static void debuggerd_fallback_enable_child() {
+  trace_mutex.unlock();
+  // In the child process, set this value to zero to avoid the case where
+  // a BIONIC_SIGNAL_DEBUGGER is being handled while the fork is occurring.
+  // Worst case, a real crash is happening while the fork occurs and this
+  // clears the count. The parent process will still crash.
+  crash_lock_count = 0;
+  crash_mutex.unlock();
+}
+
+extern "C" void debuggerd_fallback_init() {
+  pthread_atfork(debuggerd_fallback_disable, debuggerd_fallback_enable,
+                 debuggerd_fallback_enable_child);
+}
+
 static void debuggerd_fallback_trace(int output_fd, ucontext_t* ucontext) {
   std::unique_ptr<unwindstack::Regs> regs;
 
@@ -215,7 +247,6 @@ static void trace_handler(siginfo_t* info, ucontext_t* ucontext) {
   }
 
   // Only allow one thread to perform a trace at a time.
-  static std::mutex trace_mutex;
   if (!trace_mutex.try_lock()) {
     async_safe_format_log(ANDROID_LOG_INFO, "libc", "trace lock failed");
     return;
@@ -316,11 +347,8 @@ static void trace_handler(siginfo_t* info, ucontext_t* ucontext) {
 static void crash_handler(siginfo_t* info, ucontext_t* ucontext, void* abort_message) {
   // Only allow one thread to handle a crash at a time (this can happen multiple times without
   // exit, since tombstones can be requested without a real crash happening.)
-  static std::recursive_mutex crash_mutex;
-  static int lock_count;
-
   crash_mutex.lock();
-  if (lock_count++ > 0) {
+  if (crash_lock_count++ > 0) {
     async_safe_format_log(ANDROID_LOG_ERROR, "libc", "recursed signal handler call, aborting");
     signal(SIGABRT, SIG_DFL);
     raise(SIGABRT);
@@ -348,7 +376,7 @@ static void crash_handler(siginfo_t* info, ucontext_t* ucontext, void* abort_mes
     tombstoned_notify_completion(tombstone_socket.get());
   }
 
-  --lock_count;
+  --crash_lock_count;
   crash_mutex.unlock();
 }
 

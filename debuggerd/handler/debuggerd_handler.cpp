@@ -188,12 +188,15 @@ class ErrnoRestorer {
 };
 
 extern "C" void* android_fdsan_get_fd_table();
+extern "C" void debuggerd_fallback_init();
 extern "C" void debuggerd_fallback_handler(siginfo_t*, ucontext_t*, void*);
 
 static debuggerd_callbacks_t g_callbacks;
 
 // Mutex to ensure only one crashing thread dumps itself.
 static pthread_mutex_t crash_mutex = PTHREAD_MUTEX_INITIALIZER;
+// Mutex to ensure only one gwp asan crash is handled at a time.
+static pthread_mutex_t gwp_asan_first_crash_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Don't use async_safe_fatal because it exits via abort, which might put us back into
 // a signal handler.
@@ -806,6 +809,16 @@ static void debuggerd_signal_handler(int signal_number, siginfo_t* info, void* c
   }
 }
 
+static void debuggerd_disable() {
+  pthread_mutex_lock(&crash_mutex);
+  pthread_mutex_lock(&gwp_asan_first_crash_mutex);
+}
+
+static void debuggerd_enable() {
+  pthread_mutex_unlock(&gwp_asan_first_crash_mutex);
+  pthread_mutex_unlock(&crash_mutex);
+}
+
 void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   if (callbacks) {
     g_callbacks = *callbacks;
@@ -829,6 +842,8 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   stack -= 15;
   pseudothread_stack = stack;
 
+  pthread_atfork(debuggerd_disable, debuggerd_enable, debuggerd_enable);
+
   struct sigaction action;
   memset(&action, 0, sizeof(action));
   sigfillset(&action.sa_mask);
@@ -843,6 +858,8 @@ void debuggerd_init(debuggerd_callbacks_t* callbacks) {
   action.sa_flags |= SA_EXPOSE_TAGBITS;
 
   debuggerd_register_handlers(&action);
+
+  debuggerd_fallback_init();
 }
 
 bool debuggerd_handle_gwp_asan_signal(int signal_number, siginfo_t* info, void* context) {
@@ -865,8 +882,7 @@ bool debuggerd_handle_gwp_asan_signal(int signal_number, siginfo_t* info, void* 
   // mitigate against this, only generate a debuggerd crash report for the first
   // GWP-ASan crash encountered. We still need to do the patching up of the
   // allocator though, so do that.
-  static pthread_mutex_t first_crash_mutex = PTHREAD_MUTEX_INITIALIZER;
-  pthread_mutex_lock(&first_crash_mutex);
+  pthread_mutex_lock(&gwp_asan_first_crash_mutex);
   static bool first_crash = true;
 
   if (first_crash) {
@@ -880,7 +896,7 @@ bool debuggerd_handle_gwp_asan_signal(int signal_number, siginfo_t* info, void* 
     gwp_asan_callbacks.debuggerd_gwp_asan_post_crash_report(info->si_addr);
   }
 
-  pthread_mutex_unlock(&first_crash_mutex);
+  pthread_mutex_unlock(&gwp_asan_first_crash_mutex);
   return true;
 }
 
