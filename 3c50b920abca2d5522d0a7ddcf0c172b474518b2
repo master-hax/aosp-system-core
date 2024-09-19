@@ -39,6 +39,30 @@
       },
       "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a81cacb9_1e220f23",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-19T19:05:00Z",
+      "side": 1,
+      "message": "well it works in local testing, cuttlefish and TreeHugger, and I can\u0027t think of any reason it wouldn\u0027t work...\n\nMy understanding is once we run \u0027start netd\u0027 once, even if netd crashes (which can happen in response to system server crashes for example) it\u0027ll get restarted by init...\n\nBy \u0027post-bpf\u0027 do you mean to add a trigger?\n\nie.\ntrigger load_bpf_programs\ntrigger bpf-progs-loaded\n\non bpf-progs-loaded\n  start netd",
+      "parentUuid": "654ef4e0_7959ab62",
+      "range": {
+        "startLine": 562,
+        "startChar": 0,
+        "endLine": 563,
+        "endChar": 14
+      },
+      "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
