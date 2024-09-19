@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7499759c_37cb4129",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-09-19T14:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b55686b_f701d84b",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 14
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "daebc042_5a0fea88",
@@ -64,6 +88,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "260d7da6_d853fdbb",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-09-19T14:12:50Z",
+      "side": 1,
+      "message": "late-fs and waiting for the socket works perfectly fine, thanks for the suggestions!",
+      "parentUuid": "daebc042_5a0fea88",
+      "range": {
+        "startLine": 48,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 86
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8a0817e_a7abab79",
@@ -77,6 +125,30 @@
       "writtenOn": "2024-09-18T09:55:01Z",
       "side": 1,
       "message": "This line doesn\u0027t work, can we drop it?\n\n```\n[   71.289216] init: Command \u0027chmod 0770 /data/secure_storage_system/persist\u0027 action\u003dro.hardware.trusty_ipc_dev.storage\u003d* \u0026\u0026 trusty_vm_system_nonsecure.ready\u003d1 \u0026\u0026 post-fs-data (/system_ext/etc/init/rpmb_dev.system.rc:61) took 0ms and failed: fchmodat() failed: Operation not supported on transport endpoint\n```",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 50
+      },
+      "revId": "709de5c5f560d5c8319752a7842e7e899551454c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f82f093_50e3fe28",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.system.rc",
+        "patchSetId": 18
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-09-19T14:12:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8a0817e_a7abab79",
       "range": {
         "startLine": 61,
         "startChar": 0,
