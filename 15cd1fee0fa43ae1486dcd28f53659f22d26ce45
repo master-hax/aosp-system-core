@@ -16,6 +16,29 @@
       "message": "PTAL thanks.",
       "revId": "15cd1fee0fa43ae1486dcd28f53659f22d26ce45",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a1ecf91_ecc542b0",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 1080813
+      },
+      "writtenOn": "2024-09-20T04:14:49Z",
+      "side": 1,
+      "message": "How about seeding the generator once at L717 above?\n\n  static std::mt19937 gen(std::random_device{}()); // Seed the generator once",
+      "range": {
+        "startLine": 731,
+        "startChar": 7,
+        "endLine": 732,
+        "endChar": 75
+      },
+      "revId": "15cd1fee0fa43ae1486dcd28f53659f22d26ce45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
