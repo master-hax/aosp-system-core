@@ -87,6 +87,30 @@
       },
       "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6a1720d_0a97456e",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-20T03:34:01Z",
+      "side": 1,
+      "message": "Yeah, though, I\u0027m actually kind of shocked that load_bpf_programs uses exec_start. I thought bpfloader should load programs asynchronously, because other programs use a sysprop to wait for them to be loaded. Do we know why that\u0027s blocking the boot? (maybe move to bug?)\n\nAlso, please add trigger to docs here as well?\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md;l\u003d502;drc\u003db9f6c12b4de9afc21ea02c1dc4d4aa404542d48d\n\nThis changes LGTM, hoping Neil can ack though.",
+      "parentUuid": "3a69b0b0_1da2edd4",
+      "range": {
+        "startLine": 562,
+        "startChar": 0,
+        "endLine": 563,
+        "endChar": 14
+      },
+      "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
