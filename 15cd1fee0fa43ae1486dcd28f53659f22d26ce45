@@ -39,6 +39,30 @@
       },
       "revId": "15cd1fee0fa43ae1486dcd28f53659f22d26ce45",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5bf7b09b_7ba9eca5",
+        "filename": "fs_mgr/libfs_avb/tests/avb_util_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 1700325
+      },
+      "writtenOn": "2024-09-20T04:50:16Z",
+      "side": 1,
+      "message": "Done, thanks.",
+      "parentUuid": "2a1ecf91_ecc542b0",
+      "range": {
+        "startLine": 731,
+        "startChar": 7,
+        "endLine": 732,
+        "endChar": 75
+      },
+      "revId": "15cd1fee0fa43ae1486dcd28f53659f22d26ce45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
