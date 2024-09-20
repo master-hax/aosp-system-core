@@ -111,6 +111,30 @@
       },
       "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8a722f37_ba0f8a64",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-20T17:18:20Z",
+      "side": 1,
+      "message": "Doc update done.\n\nBpfloader is synchronous, because we had weird undebuggable failures (like cannot happen failures where \u003c~1% of boots randomly fail) when it was async.  This was especially problematic during OTA updates causing them to (try to) rollback... (sometimes with enough corruption the devices would brick).  These failures appear to have gone away - which seems to correlate with when I made it sync...\n\nI don\u0027t know what the *true* cause was (couldn\u0027t ever replicate it), but I always assumed that at least on some kernels/architectures there was some memory fragmentation/exhaustion issue (likely caused by java/gpu/renderers allocating huge swathes of memory) causing bpf loading to become flaky.\n\nThere definitely *was* a kernel bug - fixed now (though maybe not in all kernels...) - where bpf jit memory allocations on some kernel/arch (for security reasons) had to come from some special (very small) pool of memory (which could also be used for any other purpose... and thus exhausted).\n\nI don\u0027t think it was upstream kernel code, but rather some vendor added security feature.  This would result in even classic bpf (seccomp used by chrome web browser for example) triggering consistent failures once the system was up for long enough.\n\nEven right this moment there\u0027s an active email thread upstream talking about verifying the output of the bpf jit in the arm hypervisor (to prevent write gadgets from scribbling over jit output and loading untrusted code into ring 0)... I think this likely requires all eBPF code to be fully jitted before *any* untrusted code has any chance of running.",
+      "parentUuid": "e6a1720d_0a97456e",
+      "range": {
+        "startLine": 562,
+        "startChar": 0,
+        "endLine": 563,
+        "endChar": 14
+      },
+      "revId": "3c50b920abca2d5522d0a7ddcf0c172b474518b2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
