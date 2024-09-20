@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "137da569_52201dfb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1956343
+      },
+      "writtenOn": "2024-09-20T09:11:51Z",
+      "side": 1,
+      "message": "before test，please \"adb shell setenforce 0\"",
+      "revId": "fb35b8c1508f287509c5486aecd1e505ca9265e6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
