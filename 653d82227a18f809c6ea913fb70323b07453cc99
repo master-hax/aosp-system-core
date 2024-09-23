@@ -22,6 +22,30 @@
       },
       "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ae2ec9a_000b58d6",
+        "filename": "init/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-23T20:52:40Z",
+      "side": 1,
+      "message": "Source http://r.android.com/1345185.\n\nTechnically, this is an ABI to vendor, but no one should rely on it. I actually wouldn\u0027t even document load_bpf_programs, because nothing except bpfloader can load them. No vendor or separate components should have the permission. Everything is delegated to bpfloader.",
+      "parentUuid": "a81a5afb_d1b766f3",
+      "range": {
+        "startLine": 504,
+        "startChar": 7,
+        "endLine": 504,
+        "endChar": 24
+      },
+      "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
