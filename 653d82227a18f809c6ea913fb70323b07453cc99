@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a81a5afb_d1b766f3",
+        "filename": "init/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-09-23T20:49:39Z",
+      "side": 1,
+      "message": "shouldn\u0027t this use hyphens like all the other stages? seems weird to have one odd one out...\n\n(oh, that\u0027s not a regression; the mistake just wasn\u0027t documented before :-( )",
+      "range": {
+        "startLine": 504,
+        "startChar": 7,
+        "endLine": 504,
+        "endChar": 24
+      },
+      "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
