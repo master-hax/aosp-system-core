@@ -118,6 +118,30 @@
       },
       "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5afc1139_6f6e7006",
+        "filename": "init/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-23T21:28:23Z",
+      "side": 1,
+      "message": "https://android-review.googlesource.com/c/platform/packages/modules/Connectivity/+/3277553\nhttps://android-review.googlesource.com/c/platform/system/core/+/3276895",
+      "parentUuid": "e379852e_662389ac",
+      "range": {
+        "startLine": 504,
+        "startChar": 7,
+        "endLine": 504,
+        "endChar": 24
+      },
+      "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
