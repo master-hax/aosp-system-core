@@ -49,6 +49,7 @@
 #include "device_info.h"
 #include "partition_cow_creator.h"
 #include "snapshot_metadata_updater.h"
+#include "snapuserd/user-space-merge/snapuserd_core.h"
 #include "utility.h"
 
 namespace android {
@@ -1147,8 +1148,8 @@ auto SnapshotManager::CheckMergeState(const std::function<bool()>& before_cancel
     return result;
 }
 
-auto SnapshotManager::CheckMergeState(LockedFile* lock,
-                                      const std::function<bool()>& before_cancel) -> MergeResult {
+auto SnapshotManager::CheckMergeState(LockedFile* lock, const std::function<bool()>& before_cancel)
+        -> MergeResult {
     SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
     switch (update_status.state()) {
         case UpdateState::None:
@@ -1713,6 +1714,10 @@ bool SnapshotManager::PerformInitTransition(InitTransition transition,
         if (cow_op_merge_size != 0) {
             snapuserd_argv->emplace_back("-cow_op_merge_size=" + std::to_string(cow_op_merge_size));
         }
+        uint32_t worker_count = GetUpdateWorkerCount(lock.get());
+        if (worker_count != 0) {
+            snapuserd_argv->emplace_back("-num_worker_thread=" + std::to_string(worker_count));
+        }
     }
 
     size_t num_cows = 0;
@@ -2138,6 +2143,11 @@ bool SnapshotManager::UpdateUsesODirect(LockedFile* lock) {
 uint32_t SnapshotManager::GetUpdateCowOpMergeSize(LockedFile* lock) {
     SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
     return update_status.cow_op_merge_size();
+}
+
+uint32_t SnapshotManager::GetUpdateWorkerCount(LockedFile* lock) {
+    SnapshotUpdateStatus update_status = ReadSnapshotUpdateStatus(lock);
+    return update_status.num_worker_threads();
 }
 
 bool SnapshotManager::MarkSnapuserdFromSystem() {
@@ -2929,8 +2939,8 @@ bool SnapshotManager::UnmapAllSnapshots(LockedFile* lock) {
     return true;
 }
 
-auto SnapshotManager::OpenFile(const std::string& file,
-                               int lock_flags) -> std::unique_ptr<LockedFile> {
+auto SnapshotManager::OpenFile(const std::string& file, int lock_flags)
+        -> std::unique_ptr<LockedFile> {
     const auto start = std::chrono::system_clock::now();
     unique_fd fd(open(file.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW));
     if (fd < 0) {
@@ -3102,6 +3112,7 @@ bool SnapshotManager::WriteUpdateState(LockedFile* lock, UpdateState state,
         status.set_legacy_snapuserd(old_status.legacy_snapuserd());
         status.set_o_direct(old_status.o_direct());
         status.set_cow_op_merge_size(old_status.cow_op_merge_size());
+        status.set_num_worker_threads(old_status.num_worker_threads());
     }
     return WriteSnapshotUpdateStatus(lock, status);
 }
@@ -3486,6 +3497,9 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
         }
         status.set_cow_op_merge_size(
                 android::base::GetUintProperty<uint32_t>("ro.virtual_ab.cow_op_merge_size", 0));
+        status.set_num_worker_threads(android::base::GetUintProperty<uint32_t>(
+                "ro.virtual_ab.num_worker_threads", kNumWorkerThreads));
+
     } else if (legacy_compression) {
         LOG(INFO) << "Virtual A/B using legacy snapuserd";
     } else {
@@ -3922,6 +3936,7 @@ bool SnapshotManager::Dump(std::ostream& os) {
     ss << "Using io_uring: " << update_status.io_uring_enabled() << std::endl;
     ss << "Using o_direct: " << update_status.o_direct() << std::endl;
     ss << "Cow op merge size (0 for uncapped): " << update_status.cow_op_merge_size() << std::endl;
+    ss << "Worker thread count: " << update_status.num_worker_threads() << std::endl;
     ss << "Using XOR compression: " << GetXorCompressionEnabledProperty() << std::endl;
     ss << "Current slot: " << device_->GetSlotSuffix() << std::endl;
     ss << "Boot indicator: booting from " << GetCurrentSlot() << " slot" << std::endl;
