@@ -46,6 +46,30 @@
       },
       "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "403273b8_1678ff3d",
+        "filename": "init/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-09-23T21:03:48Z",
+      "side": 1,
+      "message": "https://source.corp.google.com/search?q\u003dload_bpf_programs%20-file:initrc-doc%20-file:kernel.*pass.txt%20-file:kernel.*probe.*.txt\u0026sq\u003drepo:googleplex-android%2Fplatform%2Fsuperproject%2Fmain%20b:main\n\nI\u0027m not sure what you mean by \u0027abi to vendor\u0027 technically, this is only inside of the platform os image - not in vendor, and not even in mainline...\n\nwe could fix it, but we would need to change p/m/C in the same topic\nwhich just didn\u0027t seem worth it...\n\nwe could even just remove this \u0027load_bpf_programs\u0027 trigger, and change this to simply \u0027exec_start bpfloader\u0027 right here...\n\npresumably:\n  on load_bpf_programs \u0026\u0026 property:sys.init.perf_lsm_hooks\u003d1\nwould need to be changed to:\n  on bpf-progs-loaded \u0026\u0026 property:sys.init.perf_lsm_hooks\u003d1\nthen.  Not 100% sure that\u0027s kosher.\n\nWhat do you want me to do?  Just drop this line about load_bpf_programs?",
+      "parentUuid": "2ae2ec9a_000b58d6",
+      "range": {
+        "startLine": 504,
+        "startChar": 7,
+        "endLine": 504,
+        "endChar": 24
+      },
+      "revId": "653d82227a18f809c6ea913fb70323b07453cc99",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
