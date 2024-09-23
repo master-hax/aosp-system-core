@@ -22,6 +22,30 @@
       },
       "revId": "cae421819d14f38b7c69f985b5b0f8c1c3aa5400",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "965d4090_9c34cfa1",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1124,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-09-23T21:33:39Z",
+      "side": 1,
+      "message": "and now we aren\u0027t documenting bpf-progs-loaded?",
+      "parentUuid": "ee45363e_28d98cc4",
+      "range": {
+        "startLine": 1124,
+        "startChar": 0,
+        "endLine": 1124,
+        "endChar": 28
+      },
+      "revId": "cae421819d14f38b7c69f985b5b0f8c1c3aa5400",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
