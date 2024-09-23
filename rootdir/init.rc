@@ -567,8 +567,7 @@ on late-init
     trigger post-fs-data
 
     # Should be before netd, but after apex, properties and logging is available.
-    trigger load_bpf_programs
-    trigger bpf-progs-loaded
+    trigger load-bpf-programs
 
     # Now we can start zygote.
     trigger zygote-start
@@ -1110,6 +1109,10 @@ on post-fs-data
 on property:vold.checkpoint_committed=1
     trigger post-fs-data-checkpointed
 
+on load-bpf-programs
+    exec_start bpfloader
+    trigger bpf-progs-loaded
+
 on bpf-progs-loaded
     start netd
 
@@ -1280,7 +1283,7 @@ on property:net.tcp_def_init_rwnd=*
 # controlling access. On older kernels, the paranoid value is the only means of
 # controlling access. It is normally 3 (allow only root), but the shell user
 # can lower it to 1 (allowing thread-scoped pofiling) via security.perf_harden.
-on load_bpf_programs && property:sys.init.perf_lsm_hooks=1
+on load-bpf-programs && property:sys.init.perf_lsm_hooks=1
     write /proc/sys/kernel/perf_event_paranoid -1
 on property:security.perf_harden=0 && property:sys.init.perf_lsm_hooks=""
     write /proc/sys/kernel/perf_event_paranoid 1
