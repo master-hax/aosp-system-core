@@ -16,6 +16,24 @@
       "message": "does this work?\n\nseeing build failures\n\nhttps://android-review.git.corp.google.com/c/platform/system/core/+/3276895\n\nFAILED: out/soong/.intermediates/system/core/init/init_first_stage.microdroid/android_ramdisk_x86_64_silvermont/obj/system/core/init/first_stage_mount.o\n...age_mount.o.d -o out/soong/.intermediates/system/core/init/init_first_stage.microdroid/android_ramdisk_x86_64_silvermont/obj/system/core/init/first_stage_mount.o system/core/init/first_stage_mount.cpp\nsystem/core/init/first_stage_mount.cpp:160:25: error: no member named \u0027IsEnableTpuAssignableDeviceFlagEnabled\u0027 in namespace \u0027android::virtualization\u0027\n  160 |     if (virtualization::IsEnableTpuAssignableDeviceFlagEnabled()) {\n      |         ~~~~~~~~~~~~~~~~^\n1 error generated.",
       "revId": "9ac82420cb501cc16e4431f3fc767877a9964bd0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "916837b3_705ca24b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1944206
+      },
+      "writtenOn": "2024-09-24T11:51:55Z",
+      "side": 1,
+      "message": "It builds for me locally, and ab/ seems to be ok.  Are you still seeing them? Note the topic this was submitted with in case you need to sync the other directories...",
+      "parentUuid": "2093f5a3_fca6d579",
+      "revId": "9ac82420cb501cc16e4431f3fc767877a9964bd0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
