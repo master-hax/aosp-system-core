@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07033fe0_c7999056",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-09-24T00:22:50Z",
+      "side": 1,
+      "message": "I\u0027ll submit this once the bug in b/368559337 is addressed.",
+      "revId": "a3b9e560bdd6b7676cb41ab0293a777b65754063",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
