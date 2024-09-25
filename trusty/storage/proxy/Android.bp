@@ -18,8 +18,10 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-cc_defaults {
-    name: "storageproxyd.defaults",
+cc_binary {
+    name: "storageproxyd",
+    vendor: true,
+
     srcs: [
         "checkpoint_handling.cpp",
         "ipc.c",
@@ -45,22 +47,14 @@ cc_defaults {
         "libtrustystorageinterface",
         "libtrusty",
     ],
+    target: {
+        vendor: {
+            // vendor variant requires this flag
+            cflags: ["-DVENDOR_FS_READY_PROPERTY"],
+        },
+    },
     cflags: [
         "-Wall",
         "-Werror",
     ],
-}
-
-cc_binary {
-    name: "storageproxyd",
-    defaults: ["storageproxyd.defaults"],
-    vendor: true,
-    // vendor variant requires this flag
-    cflags: ["-DVENDOR_FS_READY_PROPERTY"],
-}
-
-cc_binary {
-    name: "storageproxyd.system",
-    defaults: ["storageproxyd.defaults"],
-    system_ext_specific: true,
 }

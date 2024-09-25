@@ -20,7 +20,6 @@ package {
 
 cc_library_static {
     name: "libtrustystorageinterface",
-    vendor_available: true,
-    system_ext_specific: true,
+    vendor: true,
     export_include_dirs: ["include"],
 }

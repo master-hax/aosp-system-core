@@ -15,8 +15,11 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-cc_defaults {
-    name: "rpmb_dev.cc_defaults",
+cc_binary {
+    name: "rpmb_dev",
+    vendor: true,
+    host_supported: true,
+
     srcs: [
         "rpmb_dev.c",
     ],
@@ -29,23 +32,7 @@ cc_defaults {
         "-Wall",
         "-Werror",
     ],
-}
-
-cc_binary {
-    name: "rpmb_dev",
-    defaults: ["rpmb_dev.cc_defaults"],
-    vendor: true,
-    host_supported: true,
     init_rc: [
         "rpmb_dev.rc",
-    ],
-}
-
-cc_binary {
-    name: "rpmb_dev.system",
-    defaults: ["rpmb_dev.cc_defaults"],
-    system_ext_specific: true,
-    init_rc: [
-        "rpmb_dev.system.rc",
     ],
 }
