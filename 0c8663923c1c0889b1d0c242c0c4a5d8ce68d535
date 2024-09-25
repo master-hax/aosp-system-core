@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47964360_c587bdcc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-09-25T23:17:39Z",
+      "side": 1,
+      "message": "When would two boot devices contain the same named partitions?",
+      "revId": "0c8663923c1c0889b1d0c242c0c4a5d8ce68d535",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
