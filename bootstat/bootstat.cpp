@@ -880,6 +880,15 @@ void addKernelPanicSubReason(const pstoreConsole& console, std::string& ret) {
       {"subsys-restart: Resetting the SoC - adsp crashed.", "adsp"},
       {"subsys-restart: Resetting the SoC - dsps crashed.", "dsps"},
       {"subsys-restart: Resetting the SoC - wcnss crashed.", "wcnss"},
+        {"sysrq triggered crash", "sysrq_triggered_crash"},
+        {"System is deadlocked on memory", "system_is_deadlocked_on_memory"},
+        {"Software Watchdog Timer expired", "software_watchdog_timer_expired"},
+        {"refcount_t: saturated; leaking memory.", "refcount_t"},
+        {"refcount_t: increment on 0; use-after-free", "refcount_t"},
+        {"refcount_t: underflow; use-after-free", "refcount_t"},
+        {"bad mode", "bad_mode"},
+        {"Failed to cause a watchdog bite!", "watchdog"},
+        {"Asynchronous SError Interrupt", "async_serror_interrupt"},
   };
 
   ret = "kernel_panic";
