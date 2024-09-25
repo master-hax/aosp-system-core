@@ -16,6 +16,24 @@
       "message": "is this LLM-generated crap? it doesn\u0027t seem to bear any relation to the actual change?",
       "revId": "0b28c9045a7294374b5a0dc9c7df10723a2c0651",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a1d55b6_47a59aed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 3524514
+      },
+      "writtenOn": "2024-09-25T16:30:46Z",
+      "side": 1,
+      "message": "Sorry about that, updated it with the actual summary. Original summary was not meant to be shared. Sorry about that again.",
+      "parentUuid": "e4a909ef_2d48fef2",
+      "revId": "0b28c9045a7294374b5a0dc9c7df10723a2c0651",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
