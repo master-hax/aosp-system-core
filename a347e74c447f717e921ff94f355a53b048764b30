@@ -16,6 +16,29 @@
       "message": "Upstream from Meta 😊",
       "revId": "a347e74c447f717e921ff94f355a53b048764b30",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67bede5e_aed56923",
+        "filename": "healthd/include_charger/charger/healthd_mode_charger.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-09-26T21:47:28Z",
+      "side": 1,
+      "message": "nit: I would suggest std::optional\u003cint64_t\u003e. But -1 is fine with me",
+      "range": {
+        "startLine": 116,
+        "startChar": 4,
+        "endLine": 116,
+        "endChar": 11
+      },
+      "revId": "a347e74c447f717e921ff94f355a53b048764b30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
