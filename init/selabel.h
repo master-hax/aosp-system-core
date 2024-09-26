@@ -22,7 +22,6 @@
 namespace android {
 namespace init {
 
-void SelabelInitialize();
 bool SelabelLookupFileContext(const std::string& key, int type, std::string* result);
 bool SelabelLookupFileContextBestMatch(const std::string& key,
                                        const std::vector<std::string>& aliases, int type,

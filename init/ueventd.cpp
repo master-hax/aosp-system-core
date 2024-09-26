@@ -347,7 +347,6 @@ int ueventd_main(int argc, char** argv) {
     LOG(INFO) << "ueventd started!";
 
     SelinuxSetupKernelLogging();
-    SelabelInitialize();
 
     std::vector<std::unique_ptr<UeventHandler>> uevent_handlers;
 

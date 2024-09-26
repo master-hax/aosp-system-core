@@ -52,7 +52,6 @@ inline void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
 }
 
 // selabel.h
-inline void SelabelInitialize() {}
 inline bool SelabelLookupFileContext(const std::string&, int, std::string*) {
     return false;
 }
