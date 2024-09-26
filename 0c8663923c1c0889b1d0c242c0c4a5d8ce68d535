@@ -34,6 +34,40 @@
       "parentUuid": "47964360_c587bdcc",
       "revId": "0c8663923c1c0889b1d0c242c0c4a5d8ce68d535",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "64fd0534_9faea9db",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-09-26T15:07:31Z",
+      "side": 1,
+      "message": "Preferred syntax is:\n\n    if (device_handler_-\u003eIsBootDevice(uevent)) {\n        devices-\u003eerase(iter);\n    }",
+      "revId": "0c8663923c1c0889b1d0c242c0c4a5d8ce68d535",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a61718c1_71035d24",
+        "filename": "init/devices.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-09-26T15:07:31Z",
+      "side": 1,
+      "message": "These should be const char* or std::string_view. static constructors are discouraged.",
+      "revId": "0c8663923c1c0889b1d0c242c0c4a5d8ce68d535",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
