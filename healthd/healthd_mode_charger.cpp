@@ -91,6 +91,12 @@ char* locale;
 #define MAX_BATT_LEVEL_WAIT_TIME (5 * MSEC_PER_SEC)
 #define UNPLUGGED_SHUTDOWN_TIME_PROP "ro.product.charger.unplugged_shutdown_time"
 
+// If we have a flaky power supply or cable the charger
+// status may dither causing the screen to stay on indefinitely.
+// Turn the screen off afer this much time, to prevent burn-in
+// until user explicitly presses the power button
+#define MAX_UNINTERRUPTED_DISPLAY_TIME (60 * MSEC_PER_SEC)
+
 #define LAST_KMSG_MAX_SZ (32 * 1024)
 
 #define LOGE(x...) KLOG_ERROR("charger", x);
@@ -304,6 +310,15 @@ void Charger::BlankSecScreen() {
 void Charger::UpdateScreenState(int64_t now) {
     int disp_time;
 
+    if (display_off_time_ms_ > 0 && now > display_off_time_ms_) {
+        if (healthd_draw_ != nullptr && !screen_blanked_) {
+            LOGW("update_screen_state: max timeout reached, blanking screen");
+            healthd_draw_->blank_screen(true, static_cast<int>(drm_));
+            screen_blanked_ = true;
+        }
+        return;
+    }
+
     if (!batt_anim_.run || now < next_screen_transition_) return;
 
     // If battery status is not ready, keep checking in the defined time
@@ -331,6 +346,7 @@ void Charger::UpdateScreenState(int64_t now) {
             BlankSecScreen();
         }
         screen_blanked_ = true;
+        display_off_time_ms_ = -1;
         LOGV("[%" PRId64 "] animation done\n", now);
         if (configuration_->ChargerIsOnline()) {
             RequestEnableSuspend();
@@ -352,6 +368,7 @@ void Charger::UpdateScreenState(int64_t now) {
     if (screen_blanked_) {
         healthd_draw_->blank_screen(false, static_cast<int>(drm_));
         screen_blanked_ = false;
+        display_off_time_ms_ = now + MAX_UNINTERRUPTED_DISPLAY_TIME;
     }
 
     /* animation starting, set up the animation */
@@ -488,6 +505,7 @@ void Charger::ProcessKey(int code, int64_t now) {
 
     if (code == KEY_POWER) {
         if (key->down) {
+            display_off_time_ms_ = now + MAX_UNINTERRUPTED_DISPLAY_TIME;
             int64_t reboot_timeout = key->timestamp + POWER_ON_KEY_TIME;
             if (now >= reboot_timeout) {
                 /* We do not currently support booting from charger mode on
@@ -759,10 +777,12 @@ void Charger::InitHealthdDraw() {
         if (healthd_draw_ == nullptr) return;
 
 #if !defined(__ANDROID_VNDK__)
+        display_off_time_ms_ = now + MAX_UNINTERRUPTED_DISPLAY_TIME;
         if (android::sysprop::ChargerProperties::disable_init_blank().value_or(false)) {
             healthd_draw_->blank_screen(true, static_cast<int>(drm_));
             screen_blanked_ = true;
         }
+        display_off_time_ms_ = -1;
 #endif
     }
 }

@@ -113,6 +113,7 @@ class Charger {
     bool have_battery_state_ = false;
     bool screen_blanked_ = false;
     bool init_screen_ = false;
+    int64_t display_off_time_ms_ = -1;
     int64_t next_screen_transition_ = 0;
     int64_t next_key_check_ = 0;
     int64_t next_pwr_check_ = 0;
