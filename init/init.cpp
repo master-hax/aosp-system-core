@@ -997,7 +997,6 @@ int SecondStageMain(int argc, char** argv) {
     MountExtraFilesystems();
 
     // Now set up SELinux for second stage.
-    SelabelInitialize();
     SelinuxRestoreContext();
 
     Epoll epoll;

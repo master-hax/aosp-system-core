@@ -180,8 +180,6 @@ int SubcontextMain(int argc, char** argv, const BuiltinFunctionMap* function_map
     auto context = std::string(argv[2]);
     auto init_fd = std::atoi(argv[3]);
 
-    SelabelInitialize();
-
     trigger_shutdown = [](const std::string& command) { shutdown_command = command; };
 
     auto subcontext_process = SubcontextProcess(function_map, context, init_fd);
