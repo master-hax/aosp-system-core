@@ -563,6 +563,12 @@ static void StopServices(const std::set<std::string>& services, std::chrono::mil
 // Returns number of violators.
 int StopServicesAndLogViolations(const std::set<std::string>& services,
                                  std::chrono::milliseconds timeout, bool terminate) {
+    // Stop suspend_control and suspend_control_internal first, to avoid the system being suspended
+    // during shutdown.
+    std::set<std::string> suspend_services;
+    suspend_services.insert("suspend_control");
+    suspend_services.insert("suspend_control_internal");
+    StopServices(suspend_services, timeout, terminate);
     StopServices(services, timeout, terminate);
     int still_running = 0;
     for (const auto& s : ServiceList::GetInstance()) {
