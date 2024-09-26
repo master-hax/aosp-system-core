@@ -58,6 +58,7 @@
 #include "action.h"
 #include "action_manager.h"
 #include "builtin_arguments.h"
+#include "hardware_legacy/power.h"
 #include "init.h"
 #include "mount_namespace.h"
 #include "property_service.h"
@@ -534,6 +535,8 @@ static Result<void> KillZramBackingDevice() {
 // function.
 static void StopServices(const std::set<std::string>& services, std::chrono::milliseconds timeout,
                          bool terminate) {
+    // Acquire a partial wake lock to keep the system awake during shutdown.
+    acquire_wake_lock(PARTIAL_WAKE_LOCK, "shutdown_wakelock");
     LOG(INFO) << "Stopping " << services.size() << " services by sending "
               << (terminate ? "SIGTERM" : "SIGKILL");
     std::vector<pid_t> pids;
@@ -557,6 +560,8 @@ static void StopServices(const std::set<std::string>& services, std::chrono::mil
         // Even if we don't to wait for services to stop, we still optimistically reap zombies.
         ReapAnyOutstandingChildren();
     }
+    // At this point, the suspend service has been stopped, so we can release the wake lock.
+    release_wake_lock("shutdown_wakelock");
 }
 
 // Like StopServices, but also logs all the services that failed to stop after the provided timeout.
