@@ -1004,6 +1004,9 @@ on post-fs-data
     exec_start system_aconfigd_mainline_init
     start system_aconfigd_socket_service
 
+    # Start aconfigd socket
+    start aconfigd_service
+
     # Create directories for boot animation.
     mkdir /data/misc/bootanim 0755 system system
 
