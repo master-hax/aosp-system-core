@@ -44,3 +44,10 @@ cc_binary {
     defaults: ["trusty-ut-ctrl.defaults"],
     system_ext_specific: true,
 }
+
+sh_test {
+    name: "trusty-ut-ctrl.sh",
+    src: "trusty-ut-ctrl.sh",
+    filename_from_src: true,
+    compile_multilib: "both",
+}
