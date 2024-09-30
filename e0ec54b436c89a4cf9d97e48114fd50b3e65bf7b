@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c642df6_08ee9b0e",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2024-09-30T18:51:07Z",
+      "side": 0,
+      "message": "technically if a vendor enabled cpu cgroup, this might change behavior, but I have no objection. actually vendor can override taskprofile including cpuset as well. if this API is still in use, we may need a way to cache taskprofile, a dummy controller for reliably/explicitly storing per-task info or some new off-tree addition. oterwise, we should think about deprecate this API, but the probably still exists, how we can get the taskprofile(s) of a particular task after it was set?",
+      "range": {
+        "startLine": 206,
+        "startChar": 11,
+        "endLine": 206,
+        "endChar": 52
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "662b1d89_cb9b3d06",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/sched_policy.cpp",
+              "range": {
+                "startLine": 206,
+                "startChar": 0,
+                "endLine": 206,
+                "endChar": 0
+              },
+              "replacement": "    if (cpuctl_enabled()) {\n        return SetTaskProfiles(GetThreadId(), {\"SCHED_SP_DEFAULT\"}, true) ? 0 : -1;\n    }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "e0ec54b436c89a4cf9d97e48114fd50b3e65bf7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
