@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57450c7b_17874c57",
+        "filename": "trusty/utils/trusty-ut-ctrl/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-09-30T13:37:10Z",
+      "side": 1,
+      "message": "Does this test target have some other dependencies? It doesn\u0027t run for me.\n\n```\nRunning Tests...\n\nx86_64 trusty-ut-ctrl.sh\n------------------------\ntrusty-ut-ctrl.sh (1 Test)\n[1/1] trusty-ut-ctrl.sh#trusty-ut-ctrl.sh: FAILED (459ms)\n\nSTACKTRACE:\n./trusty-ut-ctrl.sh: line 17: getprop: command not found\n./trusty-ut-ctrl.sh: line 17: /system_ext/bin/trusty-ut-ctrl.system: No such file or directory\n```",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 30
+      },
+      "revId": "3af945f8f6c4fc6301ef8ebbcba3864a4ec0fc66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
