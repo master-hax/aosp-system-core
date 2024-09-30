@@ -40,6 +40,30 @@
       ],
       "revId": "e0ec54b436c89a4cf9d97e48114fd50b3e65bf7b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2effeb2_ede529df",
+        "filename": "libprocessgroup/sched_policy.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-09-30T19:35:40Z",
+      "side": 0,
+      "message": "Yeah, but only if they also messed with these upstream task profiles or also disabled cpuset, at which point they\u0027re pretty off-script anyway.\n\n\u003e how we can get the taskprofile(s) of a particular task after it was set?\n\nThere is really no way to do this properly right now. (I have been asked to look into adding it, but it\u0027s not clear to me how it would be useful, except to save and then later restore state.) There is not a 1:1 mapping between controller settings and a task profile.\nThe best thing we have right now is a per-controller get/set like this which gives you partial information, but not the full task profile. (just read the directory off of the cpu/cpuset controller and try to map it to a set of known names. Kinda weak, but I guess it\u0027s been good enough so far.)",
+      "parentUuid": "2c642df6_08ee9b0e",
+      "range": {
+        "startLine": 206,
+        "startChar": 11,
+        "endLine": 206,
+        "endChar": 52
+      },
+      "revId": "e0ec54b436c89a4cf9d97e48114fd50b3e65bf7b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
