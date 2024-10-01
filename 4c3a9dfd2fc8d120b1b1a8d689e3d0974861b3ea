@@ -70,6 +70,24 @@
       "parentUuid": "06d7364a_d34c8da1",
       "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebc69fd8_214a0ba4",
+        "filename": "debuggerd/proto/tombstone.proto",
+        "patchSetId": 13
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-01T23:20:27Z",
+      "side": 1,
+      "message": "You are going to need to create a new commit for this because it\u0027s all confused thinking this has been merged. The easiest way is to delete the Change-Id line and let it create a new Change-Id. You can put the same people on the reviewers line.",
+      "parentUuid": "c486042b_0d791540",
+      "revId": "4c3a9dfd2fc8d120b1b1a8d689e3d0974861b3ea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
