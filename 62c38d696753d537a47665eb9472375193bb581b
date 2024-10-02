@@ -74,6 +74,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3f7e0639_ecac6077",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-10-02T03:41:43Z",
+      "side": 1,
+      "message": "Right; that is ok. We still fallback to setting to 1 which covers for all the other cases.\n\nThis matters most primarily after OTA reboot once sepolicy is loaded.",
+      "parentUuid": "1e4bdb77_2bcc5533",
+      "revId": "62c38d696753d537a47665eb9472375193bb581b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "969c4c77_4e26c71e",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 3
