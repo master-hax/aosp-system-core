@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b5be8cc6_3ee5997a",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-10-02T03:25:37Z",
+      "side": 1,
+      "message": "These worker threads are not for verification purpose. These threads serve I/O request from dm-user.",
+      "revId": "62c38d696753d537a47665eb9472375193bb581b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "969c4c77_4e26c71e",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 3
