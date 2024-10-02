@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "80e1a44c_f5dc3b72",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-02T03:28:48Z",
+      "side": 1,
+      "message": "so these have to be available for 1st, and 3rd snapuserd instance?",
+      "parentUuid": "b5be8cc6_3ee5997a",
+      "revId": "62c38d696753d537a47665eb9472375193bb581b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "969c4c77_4e26c71e",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 3
