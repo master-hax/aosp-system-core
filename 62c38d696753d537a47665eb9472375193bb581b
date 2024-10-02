@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1e4bdb77_2bcc5533",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-02T03:35:39Z",
+      "side": 1,
+      "message": "ack. \n\nl:129 in snapuserd_server.cpp is the one adding handler for init though I believe. Currently I just have std::nullopt passed.",
+      "parentUuid": "d558d235_45568c06",
+      "revId": "62c38d696753d537a47665eb9472375193bb581b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "969c4c77_4e26c71e",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 3
