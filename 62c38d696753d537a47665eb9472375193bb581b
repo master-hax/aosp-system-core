@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d558d235_45568c06",
+        "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-10-02T03:30:41Z",
+      "side": 1,
+      "message": "Since you are storing this in /metadata, they are available in first stage init and post selinux policy.\n\nYou just have to reword the description here and in the proto file",
+      "parentUuid": "80e1a44c_f5dc3b72",
+      "revId": "62c38d696753d537a47665eb9472375193bb581b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "969c4c77_4e26c71e",
         "filename": "fs_mgr/libsnapshot/snapuserd/snapuserd_daemon.cpp",
         "patchSetId": 3
