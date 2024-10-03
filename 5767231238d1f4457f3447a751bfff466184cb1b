@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50dae6f6_15ccea40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-03T21:01:24Z",
+      "side": 1,
+      "message": "please modify fastboot-info.txt to not flash system if you need custom flashing logic",
+      "revId": "5767231238d1f4457f3447a751bfff466184cb1b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
