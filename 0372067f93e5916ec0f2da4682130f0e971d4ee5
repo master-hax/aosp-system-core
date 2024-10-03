@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "69d9491e_e01ffdc4",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-10-03T18:10:13Z",
+      "side": 1,
+      "message": "rx_buf_len is at least 1 before we get here. If it is 0 after the decrement that is fine. (DEBUG_ASSERT is an specific lk macro)",
+      "parentUuid": "ff47a6cf_ec4534d1",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68c4f99a_8bf0093d",
         "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2024-10-03T02:43:29Z",
       "side": 1,
       "message": "check or at least DEBUG_ASSERT that rx_buf_len\u003emsg_len",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f37037e7_a3fec1e0",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-10-03T18:10:13Z",
+      "side": 1,
+      "message": "rx_buf_len \u003d\u003d msg_len is a common case that is fine. rx_buf_len \u003c msg_len is not possible since get_msg_len can only shrink the value passed in",
+      "parentUuid": "68c4f99a_8bf0093d",
       "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
