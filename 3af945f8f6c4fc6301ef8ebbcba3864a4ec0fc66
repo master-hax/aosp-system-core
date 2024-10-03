@@ -22,6 +22,30 @@
       },
       "revId": "3af945f8f6c4fc6301ef8ebbcba3864a4ec0fc66",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b879629_011048f7",
+        "filename": "trusty/utils/trusty-ut-ctrl/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-10-03T08:23:57Z",
+      "side": 1,
+      "message": "it needs to run as root",
+      "parentUuid": "57450c7b_17874c57",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 30
+      },
+      "revId": "3af945f8f6c4fc6301ef8ebbcba3864a4ec0fc66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
