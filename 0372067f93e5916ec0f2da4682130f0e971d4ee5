@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff47a6cf_ec4534d1",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-10-03T02:43:29Z",
+      "side": 1,
+      "message": "don\u0027t you want to check that rx_buf_len \u003e 0 (or at least DEBUG_ASSERT)",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68c4f99a_8bf0093d",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-10-03T02:43:29Z",
+      "side": 1,
+      "message": "check or at least DEBUG_ASSERT that rx_buf_len\u003emsg_len",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
