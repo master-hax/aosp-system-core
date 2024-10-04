@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c4e81d5_8985f4dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2031040
+      },
+      "writtenOn": "2024-10-04T06:24:14Z",
+      "side": 1,
+      "message": "Apologize for boot breakage, will fix the original patch and submit CL once again (after making sure gcar emulator works).",
+      "revId": "8d71220df28851a7dce351f86601958fdbc3e5ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
