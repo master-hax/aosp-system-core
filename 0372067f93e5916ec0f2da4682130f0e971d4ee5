@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "04ffcf60_f3bb5edd",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-10-05T00:17:17Z",
+      "side": 1,
+      "message": "There is no need to check for this since it cannot happen. I can add an assets, but this file does not use asserts at the moment.",
+      "parentUuid": "676f241f_7f5941eb",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68c4f99a_8bf0093d",
         "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
         "patchSetId": 1
@@ -103,6 +121,24 @@
       "side": 1,
       "message": "check for rx_buf_len\u003e\u003dmsg_len, isn\u0027t ASSERT the equivalent of the lk DEBUG_ASSERT in Android?",
       "parentUuid": "f37037e7_a3fec1e0",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32761b51_63c4dd96",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-10-05T00:17:17Z",
+      "side": 1,
+      "message": "Not as far as I know. There is assert in the std c library though, which we could include here.",
+      "parentUuid": "dfcbcd41_a2d81ee0",
       "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
