@@ -72,6 +72,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d960b9b1_462a6975",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-10-05T00:17:57Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "04ffcf60_f3bb5edd",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68c4f99a_8bf0093d",
@@ -139,6 +157,24 @@
       "side": 1,
       "message": "Not as far as I know. There is assert in the std c library though, which we could include here.",
       "parentUuid": "dfcbcd41_a2d81ee0",
+      "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "334745ab_4ed326d0",
+        "filename": "trusty/utils/trusty-ut-ctrl/ut-ctrl.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-10-05T00:17:57Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "32761b51_63c4dd96",
       "revId": "0372067f93e5916ec0f2da4682130f0e971d4ee5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
