@@ -27,6 +27,12 @@
 
 #if defined(__ANDROID_VNDK__)
 
+// Some old modules manually define __ANDROID_VNDK__ without __ANDROID_VENDOR_API__. Assume they
+// don't require new APIs by setting __ANDROID_VENDOR_API__ to 0.
+#if !defined(__ANDROID_VENDOR_API__)
+#define __ANDROID_VENDOR_API__ 0
+#endif
+
 // Use this macro as an `if` statement to call an API that are available to both NDK and LLNDK.
 // This returns true for the vendor modules if the vendor_api_level is less than or equal to the
 // ro.board.api_level.
