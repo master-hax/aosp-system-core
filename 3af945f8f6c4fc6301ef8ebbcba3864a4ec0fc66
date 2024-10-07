@@ -46,6 +46,30 @@
       },
       "revId": "3af945f8f6c4fc6301ef8ebbcba3864a4ec0fc66",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2b07ef9b_076840c9",
+        "filename": "trusty/utils/trusty-ut-ctrl/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-10-07T12:00:30Z",
+      "side": 1,
+      "message": "Running as root doesn\u0027t resolve the issue; we likely need the new parser you added as well. Since this target currently can\u0027t be executed using `atest` with the default test configuration (it doesn\u0027t justify to be an `sh_test` target in that sense), could we inline the script in both cls (aosp/3270648 and aosp/3275254) as it contains only one line?",
+      "parentUuid": "8b879629_011048f7",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 30
+      },
+      "revId": "3af945f8f6c4fc6301ef8ebbcba3864a4ec0fc66",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
