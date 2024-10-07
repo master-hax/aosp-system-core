@@ -70,6 +70,30 @@
       },
       "revId": "c52b5fdaf5d690842ad8a818d6b02fa6cf94b28b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb7efb76_23ecb41a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-10-07T08:01:08Z",
+      "side": 1,
+      "message": "I replaced the flag with `__ANDROID_VENDOR_API__` instead of assigning a random value to the cc_test modules.",
+      "parentUuid": "cb3e6bd8_eca6a02d",
+      "range": {
+        "startLine": 10,
+        "startChar": 56,
+        "endLine": 11,
+        "endChar": 7
+      },
+      "revId": "c52b5fdaf5d690842ad8a818d6b02fa6cf94b28b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
