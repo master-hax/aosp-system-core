@@ -22,6 +22,30 @@
       },
       "revId": "c52b5fdaf5d690842ad8a818d6b02fa6cf94b28b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deaabaa8_b7f10d01",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-10-07T01:07:37Z",
+      "side": 1,
+      "message": "`cc_test` and `cc_fuzz` define `__ANDROID_VNDK__` to read LLNDK symbols: https://cs.android.com/search?q\u003df:Android.bp%20__ANDROID_VNDK__\u0026sq\u003d\u0026ss\u003dandroid",
+      "parentUuid": "a4786ec4_1bbbb43a",
+      "range": {
+        "startLine": 10,
+        "startChar": 56,
+        "endLine": 11,
+        "endChar": 7
+      },
+      "revId": "c52b5fdaf5d690842ad8a818d6b02fa6cf94b28b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
