@@ -189,6 +189,22 @@ class WriteFileAction : public ProfileAction {
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, const std::string& value) const;
 };
 
+// Set scheduler policy action
+class SetSchedulerPolicyAction : public ProfileAction {
+  public:
+    SetSchedulerPolicyAction(int policy, unsigned int priority)
+        : policy_(policy), priority_(priority) {}
+
+    const char* Name() const override { return "SetSchedulerPolicy"; }
+    bool ExecuteForTask(pid_t tid) const override;
+
+    static bool toPriority(int policy, int virtual_priority, int* priority_out);
+
+  private:
+    int policy_;
+    int priority_;
+};
+
 class TaskProfile {
   public:
     TaskProfile(const std::string& name) : name_(name), res_cached_(false) {}
