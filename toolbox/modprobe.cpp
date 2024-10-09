@@ -29,6 +29,7 @@
 
 #include <sys/utsname.h>
 
+#include <filesystem>
 namespace {
 
 enum modprobe_mode {
@@ -231,23 +232,39 @@ extern "C" int modprobe_main(int argc, char** argv) {
     }
 
     if (mod_dirs.empty()) {
-        static constexpr auto LIB_MODULES_PREFIX = "/lib/modules/";
-        dirent** kernel_dirs = NULL;
+        dirent** kernel_dirs;
+        const std::vector<std::filesystem::path> module_paths = {
+                std::filesystem::path("/lib/modules/"), std::filesystem::path("/odm/lib/modules/"),
+                std::filesystem::path("/vendor/lib/modules/"),
+                std::filesystem::path("/system/lib/modules/")};
+        int n;
 
-        int n = scandir(LIB_MODULES_PREFIX, &kernel_dirs, KernelVersionNameFilter, NULL);
-        if (n == -1) {
-            PLOG(ERROR) << "Failed to scan dir " << LIB_MODULES_PREFIX;
-            return EXIT_FAILURE;
-        } else if (n > 0) {
-            while (n--) {
-                mod_dirs.emplace_back(LIB_MODULES_PREFIX + std::string(kernel_dirs[n]->d_name));
+        // Look through all paths and check whether there are any modules. Modules might be found
+        // under different structures:
+        // - under directory named with the kernel version, i.e. major.minor...
+        // - under the directory named with `uname -a`
+        // - flat kernel module structure, i.e. directly under /vendor/lib/modules
+        for (const auto& path_entry : module_paths) {
+            kernel_dirs = NULL;
+            n = scandir(path_entry.c_str(), &kernel_dirs, KernelVersionNameFilter, NULL);
+            if (n > 0) {
+                while (n--) {
+                    mod_dirs.emplace_back(path_entry / kernel_dirs[n]->d_name);
+                }
+            } else if (n == 0) {
+                // The path exists but there was no match by kernel version. Add the path
+                // to be searched furtherly for modules which might be directly inside the path.
+                mod_dirs.emplace_back(path_entry);
+            }
+            if (kernel_dirs) {
+                free(kernel_dirs);
             }
         }
-        free(kernel_dirs);
 
-        if (mod_dirs.empty() || getpagesize() == 4096) {
-            // Allow modules to be directly inside /lib/modules
-            mod_dirs.emplace_back(LIB_MODULES_PREFIX);
+        // In case all known paths do not exist, return an error
+        if (mod_dirs.empty()) {
+            PLOG(ERROR) << "Failed to scan module dirs";
+            return EXIT_FAILURE;
         }
     }
 
