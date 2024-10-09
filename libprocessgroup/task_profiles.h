@@ -77,7 +77,7 @@ class ProfileAction {
 
     // Default implementations will fail
     virtual bool ExecuteForProcess(uid_t, pid_t) const { return false; }
-    virtual bool ExecuteForTask(int) const { return false; }
+    virtual bool ExecuteForTask(int) const { return false; } // TODO pid_t
     virtual bool ExecuteForUID(uid_t) const { return false; }
 
     virtual void EnableResourceCaching(ResourceCacheType) {}
@@ -187,6 +187,22 @@ class WriteFileAction : public ProfileAction {
     bool WriteValueToFile(const std::string& value, ResourceCacheType cache_type, uid_t uid,
                           pid_t pid, bool logfailures) const;
     CacheUseResult UseCachedFd(ResourceCacheType cache_type, const std::string& value) const;
+};
+
+// Set scheduler policy action
+class SetSchedulerPolicyAction : public ProfileAction {
+  public:
+    SetSchedulerPolicyAction(int policy, unsigned int priority)
+        : policy_(policy), priority_(priority) {}
+
+    const char* Name() const override { return "SetSchedulerPolicy"; }
+    bool ExecuteForTask(pid_t tid) const override;
+
+    static bool toPriority(int policy, int virtual_priority, int* priority_out);
+
+  private:
+    int policy_;
+    int priority_;
 };
 
 class TaskProfile {
