@@ -27,8 +27,8 @@
 #include <android-base/stringprintf.h>
 #include <modprobe/modprobe.h>
 
+#include <sys/stat.h>
 #include <sys/utsname.h>
-
 namespace {
 
 enum modprobe_mode {
@@ -233,17 +233,33 @@ extern "C" int modprobe_main(int argc, char** argv) {
     if (mod_dirs.empty()) {
         static constexpr auto LIB_MODULES_PREFIX = "/lib/modules/";
         dirent** kernel_dirs = NULL;
+        const std::vector<std::string> module_paths = {std::string("/odm") + LIB_MODULES_PREFIX,
+                                                       std::string("/vendor") + LIB_MODULES_PREFIX,
+                                                       std::string("/system") + LIB_MODULES_PREFIX};
+        struct stat stat_buf;
 
         int n = scandir(LIB_MODULES_PREFIX, &kernel_dirs, KernelVersionNameFilter, NULL);
-        if (n == -1) {
-            PLOG(ERROR) << "Failed to scan dir " << LIB_MODULES_PREFIX;
-            return EXIT_FAILURE;
-        } else if (n > 0) {
+        if (n > 0) {
             while (n--) {
                 mod_dirs.emplace_back(LIB_MODULES_PREFIX + std::string(kernel_dirs[n]->d_name));
             }
         }
         free(kernel_dirs);
+
+        // Kernel modules might be also in other paths if DLKM partitions are enabled.
+        // Check their existence and add to lookup path
+        for (auto path_entry : module_paths) {
+            stat(path_entry.c_str(), &stat_buf);
+            if (S_ISDIR(stat_buf.st_mode)) {
+                mod_dirs.emplace_back(path_entry);
+            }
+        }
+
+        // In case all known paths do not exist, return an error
+        if (n < 0 && mod_dirs.empty()) {
+            PLOG(ERROR) << "Failed to scan module dirs";
+            return EXIT_FAILURE;
+        }
 
         if (mod_dirs.empty() || getpagesize() == 4096) {
             // Allow modules to be directly inside /lib/modules
