@@ -17,11 +17,15 @@
 //#define LOG_NDEBUG 0
 #define LOG_TAG "libprocessgroup"
 
+#include <task_profiles.h>
+
+#include <map>
+#include <string>
+
 #include <dirent.h>
 #include <fcntl.h>
+#include <sched.h>
 #include <unistd.h>
-#include <task_profiles.h>
-#include <string>
 
 #include <android-base/file.h>
 #include <android-base/logging.h>
@@ -30,12 +34,12 @@
 #include <android-base/strings.h>
 #include <android-base/threads.h>
 
+#include <build_flags.h>
+
 #include <cutils/android_filesystem_config.h>
 
 #include <json/reader.h>
 #include <json/value.h>
-
-#include <build_flags.h>
 
 using android::base::GetThreadId;
 using android::base::GetUintProperty;
@@ -649,6 +653,46 @@ bool WriteFileAction::IsValidForTask(int) const {
     return access(task_path_.c_str(), W_OK) == 0;
 }
 
+bool SetSchedulerPolicyAction::toPriority(int policy, int virtual_priority, int* priority_out) {
+    constexpr int VIRTUAL_PRIORITY_MIN = 1;
+    constexpr int VIRTUAL_PRIORITY_MAX = 99;
+
+    if (virtual_priority < VIRTUAL_PRIORITY_MIN || virtual_priority > VIRTUAL_PRIORITY_MAX) {
+        LOG(WARNING) << "SetSchedulerPolicy: invalid priority (" << virtual_priority
+                     << ") for policy (" << policy << ")";
+        return false;
+    }
+
+    const int min = sched_get_priority_min(policy);
+    if (min == -1) {
+        PLOG(ERROR) << "SetSchedulerPolicy: Cannot get min sched priority for policy " << policy;
+        return false;
+    }
+
+    const int max = sched_get_priority_max(policy);
+    if (max == -1) {
+        PLOG(ERROR) << "SetSchedulerPolicy: Cannot get max sched priority for policy " << policy;
+        return false;
+    }
+
+    *priority_out = min + (virtual_priority - VIRTUAL_PRIORITY_MIN) * (max - min) /
+        (VIRTUAL_PRIORITY_MAX - VIRTUAL_PRIORITY_MIN);
+
+    return true;
+}
+
+bool SetSchedulerPolicyAction::ExecuteForTask(pid_t tid) const {
+    struct sched_param param = {};
+    param.sched_priority = priority_;
+    if (sched_setscheduler(tid, policy_, &param) == -1) {
+        PLOG(WARNING) << "Failed to apply scheduler policy (" << policy_ << ") with priority ("
+                      << priority_ << ")";
+        return false;
+    }
+
+    return true;
+}
+
 bool ApplyProfileAction::ExecuteForProcess(uid_t uid, pid_t pid) const {
     for (const auto& profile : profiles_) {
         profile->ExecuteForProcess(uid, pid);
@@ -936,6 +980,44 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                     LOG(WARNING) << "WriteFile: invalid parameter: "
                                  << "empty value";
                 }
+            } else if (action_name == "SetSchedulerPolicy") {
+                const std::map<std::string, int> POLICY_MAP = {
+                    {"SCHED_OTHER", SCHED_OTHER},
+                    {"SCHED_BATCH", SCHED_BATCH},
+                    {"SCHED_IDLE", SCHED_IDLE},
+                    {"SCHED_FIFO", SCHED_FIFO},
+                    {"SCHED_RR", SCHED_RR},
+                };
+                const std::string policy_str = params_val["Policy"].asString();
+
+                const auto it = POLICY_MAP.find(policy_str);
+                if (it == POLICY_MAP.end()) {
+                    LOG(WARNING) << "SetSchedulerPolicy: invalid policy " << policy_str;
+                    continue;
+                }
+
+                const int policy = it->second;
+
+                int priority;
+                if (policy == SCHED_OTHER || policy == SCHED_BATCH || policy == SCHED_IDLE) {
+                    priority = 0;
+
+                    if (params_val.isMember("Priority")) {
+                        LOG(WARNING) << "SetSchedulerPolicy: Normal policies do not have priority "
+                                     << "values.";
+                    }
+                } else {
+                    // This is a "virtual priority" as described by `man 2 sched_get_priority_min`
+                    // that will be mapped onto the following range for the provided policy:
+                    // [sched_get_priority_min(), sched_get_priority_max()]
+                    const int virtual_priority = params_val["Priority"].asInt();
+
+                    if (!SetSchedulerPolicyAction::toPriority(policy, virtual_priority,
+                                                              &priority)) {
+                        continue;
+                    }
+                }
+                profile->Add(std::make_unique<SetSchedulerPolicyAction>(policy, priority));
             } else {
                 LOG(WARNING) << "Unknown profile action: " << action_name;
             }
