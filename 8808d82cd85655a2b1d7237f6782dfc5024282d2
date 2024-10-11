@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9e2db51_f8231518",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2024-10-11T17:21:44Z",
+      "side": 1,
+      "message": "to we need the extra syscalls",
+      "range": {
+        "startLine": 656,
+        "startChar": 31,
+        "endLine": 656,
+        "endChar": 41
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "ff3b412b_b5c2cf08",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/task_profiles.cpp",
+              "range": {
+                "startLine": 656,
+                "startChar": 0,
+                "endLine": 657,
+                "endChar": 0
+              },
+              "replacement": "bool SetSchedulerPolicyAction::toPriority(int policy, int virtual_priority, int* priority) {\n"
+            },
+            {
+              "path": "libprocessgroup/task_profiles.cpp",
+              "range": {
+                "startLine": 678,
+                "startChar": 0,
+                "endLine": 679,
+                "endChar": 0
+              },
+              "replacement": "    *priority \u003d min + (virtual_priority - VIRTUAL_PRIORITY_MIN) * (max - min) /\n"
+            }
+          ]
+        }
+      ],
+      "revId": "8808d82cd85655a2b1d7237f6782dfc5024282d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "321e40d9_985749cd",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2024-10-11T17:21:44Z",
+      "side": 1,
+      "message": "Can we use prio to set prio for SCHED_OTHER and SCHED_BATCH also?\n\nwe can call setpriority()\n\nbtw, we can save all these with sched_attr: see b/183240349",
+      "range": {
+        "startLine": 1005,
+        "startChar": 20,
+        "endLine": 1008,
+        "endChar": 21
+      },
+      "revId": "8808d82cd85655a2b1d7237f6782dfc5024282d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
