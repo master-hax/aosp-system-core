@@ -52,6 +52,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3474b4d4_543ac90d",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-11T20:49:58Z",
+      "side": 1,
+      "message": "To be fully POSIX compliant yes. But this only runs once when the JSON is loaded, not every time the profile is applied, so I think it\u0027s worth calling them here.",
+      "parentUuid": "e9e2db51_f8231518",
+      "range": {
+        "startLine": 656,
+        "startChar": 31,
+        "endLine": 656,
+        "endChar": 41
+      },
+      "revId": "8808d82cd85655a2b1d7237f6782dfc5024282d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "321e40d9_985749cd",
@@ -65,6 +89,30 @@
       "writtenOn": "2024-10-11T17:21:44Z",
       "side": 1,
       "message": "Can we use prio to set prio for SCHED_OTHER and SCHED_BATCH also?\n\nwe can call setpriority()\n\nbtw, we can save all these with sched_attr: see b/183240349",
+      "range": {
+        "startLine": 1005,
+        "startChar": 20,
+        "endLine": 1008,
+        "endChar": 21
+      },
+      "revId": "8808d82cd85655a2b1d7237f6782dfc5024282d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c91b952d_fec16257",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-11T20:49:58Z",
+      "side": 1,
+      "message": "Sure I can add that.",
+      "parentUuid": "321e40d9_985749cd",
       "range": {
         "startLine": 1005,
         "startChar": 20,
