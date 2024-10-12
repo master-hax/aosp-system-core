@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f9c168e_825e7ef6",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 9
+      },
+      "lineNbr": 909,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-10-12T00:02:19Z",
+      "side": 1,
+      "message": "is it possible to delete this now instead?",
+      "range": {
+        "startLine": 907,
+        "startChar": 0,
+        "endLine": 909,
+        "endChar": 58
+      },
+      "revId": "58dc33cf11c8d765ab83f120c95a83c10ff06183",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
