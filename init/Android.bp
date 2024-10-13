@@ -220,6 +220,7 @@ cc_defaults {
     ],
     whole_static_libs: [
         "libcap",
+        "libexthandler",
     ],
     header_libs: ["bootimg_headers"],
     proto: {
@@ -391,6 +392,7 @@ init_first_stage_cc_defaults {
         "update_metadata-protos",
         "libprocinfo",
         "libbootloader_message",
+        "libexthandler",
     ],
 
     static_executable: true,
