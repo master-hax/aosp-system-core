@@ -528,7 +528,7 @@ char16_t* utf8_to_utf16_no_null_terminator(
                     // Ooops.... not enough room for this surrogate pair.
                     return out;
                 }
-                *out++ = (char16_t)(((w - 0x10000) >> 10) + 0xd800);
+                *out++ = (char16_t)((((w - 0x10000) >> 10) & 0x3ff) + 0xd800);
                 *out++ = (char16_t)(((w - 0x10000) & 0x3ff) + 0xdc00);
             }
             continue;

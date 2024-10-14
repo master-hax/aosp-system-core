@@ -155,6 +155,28 @@ TEST_F(UnicodeTest, UTF8toUTF16Invalid) {
     });
 }
 
+TEST_F(UnicodeTest, UTF8toUTF16UCS2) {
+    TestUTF8toUTF16({
+        0x4e, 0x2d              // U+4E2D, treated as 2 single ASCII (< 0xf8)
+        0x56, 0xfd              // U+56FD, treated as 1 single ASCII 0x56 and a 4-byte UTF8
+        0x79, 0xfb              // U+79FB, treated as trailing bytes with 0xfd
+        0x52, 0xa8              // U+52A8, 0x52 is treated as trailing bytes,
+                                // 0xa8 is treated as 1 single ASCII (< 0xf8)
+    }, {
+        0x004e                  // U+004E, 1 UTF-16 character (2 bytes)
+        0x002d                  // U+002D, 1 UTF-16 character (2 bytes)
+        0x0056                  // U+0056, 1 UTF-16 character (2 bytes)
+
+        0xd9a7,                 // invalid leading byte (b'1111xxxx') is treated
+                                // as 4-byte UTF8 sequence (0xfd, 0x79, 0xfb, 0x52),
+                                // ensure UTF-16 high surrogate is 0xD800,
+                                // wont affected by high 10 code point value overflow.
+        0xded2,                 // 4-byte UTF-16 sequence, with surrogate 0xDC00
+
+        0x00a8                  // U+00A8, 1 UTF-16 character (2 bytes)
+    });
+}
+
 TEST_F(UnicodeTest, UTF16toUTF8ZeroLength) {
     // TODO: The current behavior of utf16_to_utf8_length() is that
     // it returns -1 if the input is a zero length UTF16 string.
