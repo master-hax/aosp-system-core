@@ -182,6 +182,30 @@
       },
       "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fe46a36_24ac104c",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 924,
+      "author": {
+        "id": 2059627
+      },
+      "writtenOn": "2024-10-14T09:23:05Z",
+      "side": 1,
+      "message": "No, old shutdown files does not have to change permissions",
+      "parentUuid": "61e7fb9a_4e30f4cd",
+      "range": {
+        "startLine": 924,
+        "startChar": 0,
+        "endLine": 924,
+        "endChar": 48
+      },
+      "revId": "c3da6a8b781a33f4f2aa3aaf6d28ac4aff81393e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

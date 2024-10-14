@@ -22,6 +22,30 @@
       },
       "revId": "58dc33cf11c8d765ab83f120c95a83c10ff06183",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ed9f93d_d2976425",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 9
+      },
+      "lineNbr": 909,
+      "author": {
+        "id": 2059627
+      },
+      "writtenOn": "2024-10-14T09:23:05Z",
+      "side": 1,
+      "message": "No, for upgrading device this permission still has to be changed here.\nIt can be deleted when there are no upgrading device left with \u0027wrong\u0027 permission.",
+      "parentUuid": "7f9c168e_825e7ef6",
+      "range": {
+        "startLine": 907,
+        "startChar": 0,
+        "endLine": 909,
+        "endChar": 58
+      },
+      "revId": "58dc33cf11c8d765ab83f120c95a83c10ff06183",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
