@@ -16,6 +16,29 @@
       "message": "This is a follow-up for aosp/3007926, removing hard-coded 35.",
       "revId": "29d4ae8378eb113ea9729de870eedf580e747a03",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb679b55_e9579b05",
+        "filename": "init/apex_init_util.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-15T06:01:18Z",
+      "side": 1,
+      "message": "__ANDROID_API_FUTURE__ here might be a safer option.",
+      "range": {
+        "startLine": 109,
+        "startChar": 65,
+        "endLine": 109,
+        "endChar": 72
+      },
+      "revId": "29d4ae8378eb113ea9729de870eedf580e747a03",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
