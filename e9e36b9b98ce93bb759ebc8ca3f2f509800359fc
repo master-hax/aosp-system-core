@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ce1136d_9bf2a077",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1970881
+      },
+      "writtenOn": "2024-10-15T16:44:07Z",
+      "side": 1,
+      "message": "backporting to android-12",
+      "revId": "e9e36b9b98ce93bb759ebc8ca3f2f509800359fc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
