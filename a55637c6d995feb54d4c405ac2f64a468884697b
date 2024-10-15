@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a0c0c1b_3910410a",
+        "filename": "libutils/binder/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-15T18:09:47Z",
+      "side": 1,
+      "message": "this isn\u0027t true, right? this is just U+004e followed by U+002d?",
+      "range": {
+        "startLine": 160,
+        "startChar": 35,
+        "endLine": 160,
+        "endChar": 41
+      },
+      "revId": "a55637c6d995feb54d4c405ac2f64a468884697b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
