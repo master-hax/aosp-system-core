@@ -633,18 +633,18 @@ void DeviceHandler::ColdbootDone() {
 
 DeviceHandler::DeviceHandler(std::vector<Permissions> dev_permissions,
                              std::vector<SysfsPermissions> sysfs_permissions,
-                             std::vector<Subsystem> subsystems, std::set<std::string> boot_devices,
-                             bool skip_restorecon)
+                             std::vector<Subsystem> subsystems, bool skip_restorecon)
     : dev_permissions_(std::move(dev_permissions)),
       sysfs_permissions_(std::move(sysfs_permissions)),
       subsystems_(std::move(subsystems)),
-      boot_devices_(std::move(boot_devices)),
       skip_restorecon_(skip_restorecon),
-      sysfs_mount_point_("/sys") {}
+      sysfs_mount_point_("/sys") {
+    boot_devices_ = android::fs_mgr::GetBootDevices();
+}
 
 DeviceHandler::DeviceHandler()
     : DeviceHandler(std::vector<Permissions>{}, std::vector<SysfsPermissions>{},
-                    std::vector<Subsystem>{}, std::set<std::string>{}, false) {}
+                    std::vector<Subsystem>{}, false) {}
 
 }  // namespace init
 }  // namespace android

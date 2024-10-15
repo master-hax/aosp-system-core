@@ -122,8 +122,8 @@ class DeviceHandler : public UeventHandler {
 
     DeviceHandler();
     DeviceHandler(std::vector<Permissions> dev_permissions,
-                  std::vector<SysfsPermissions> sysfs_permissions, std::vector<Subsystem> subsystems,
-                  std::set<std::string> boot_devices, bool skip_restorecon);
+                  std::vector<SysfsPermissions> sysfs_permissions,
+                  std::vector<Subsystem> subsystems, bool skip_restorecon);
     virtual ~DeviceHandler() = default;
 
     void HandleUevent(const Uevent& uevent) override;

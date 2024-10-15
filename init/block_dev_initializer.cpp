@@ -30,10 +30,9 @@ using android::base::Timer;
 using namespace std::chrono_literals;
 
 BlockDevInitializer::BlockDevInitializer() : uevent_listener_(16 * 1024 * 1024) {
-    auto boot_devices = android::fs_mgr::GetBootDevices();
-    device_handler_ = std::make_unique<DeviceHandler>(
-            std::vector<Permissions>{}, std::vector<SysfsPermissions>{}, std::vector<Subsystem>{},
-            std::move(boot_devices), false);
+    device_handler_ = std::make_unique<DeviceHandler>(std::vector<Permissions>{},
+                                                      std::vector<SysfsPermissions>{},
+                                                      std::vector<Subsystem>{}, false);
 }
 
 bool BlockDevInitializer::InitDeviceMapper() {
