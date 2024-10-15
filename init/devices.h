@@ -136,6 +136,8 @@ class DeviceHandler : public UeventHandler {
 
   private:
     void ColdbootDone() override;
+    std::string GetBlockDeviceString(std::string uevent_path, std::string* type,
+                                     bool* is_boot_device) const;
     bool FindPlatformDevice(std::string path, std::string* platform_device_path) const;
     std::tuple<mode_t, uid_t, gid_t> GetDevicePermissions(
         const std::string& path, const std::vector<std::string>& links) const;
