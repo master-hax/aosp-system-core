@@ -353,10 +353,10 @@ int ueventd_main(int argc, char** argv) {
 
     auto ueventd_configuration = GetConfiguration();
 
-    uevent_handlers.emplace_back(std::make_unique<DeviceHandler>(
-            std::move(ueventd_configuration.dev_permissions),
-            std::move(ueventd_configuration.sysfs_permissions),
-            std::move(ueventd_configuration.subsystems), android::fs_mgr::GetBootDevices(), true));
+    uevent_handlers.emplace_back(
+            std::make_unique<DeviceHandler>(std::move(ueventd_configuration.dev_permissions),
+                                            std::move(ueventd_configuration.sysfs_permissions),
+                                            std::move(ueventd_configuration.subsystems), true));
     uevent_handlers.emplace_back(std::make_unique<FirmwareHandler>(
             std::move(ueventd_configuration.firmware_directories),
             std::move(ueventd_configuration.external_firmware_handlers)));
