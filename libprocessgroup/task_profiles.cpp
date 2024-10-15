@@ -1012,7 +1012,7 @@ bool TaskProfiles::Load(const CgroupMap& cg_map, const std::string& file_name) {
                     // This is a "virtual priority" as described by `man 2 sched_get_priority_min`
                     // that will be mapped onto the following range for the provided policy:
                     // [sched_get_priority_min(), sched_get_priority_max()]
-                    const int virtual_priority = params_val["Priority"].asInt();
+                    const int virtual_priority = std::stoi(params_val["Priority"].asString());
 
                     int priority;
                     if (SetSchedulerPolicyAction::toPriority(policy, virtual_priority, priority)) {
