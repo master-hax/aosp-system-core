@@ -391,10 +391,11 @@ bool MakeScratchFilesystem(const std::string& scratch_device) {
         command += std::to_string(getpagesize());
         command = kMkF2fs + " -b "s;
         command += std::to_string(getpagesize());
-        command += " -f -d1 -l" + android::base::Basename(kScratchMountPoint);
+        command += " -f -d1 -t 0 -l" + android::base::Basename(kScratchMountPoint);
     } else if (!access(kMkExt4, X_OK) && fs_mgr_filesystem_available("ext4")) {
         fs_type = "ext4";
-        command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -M "s + kScratchMountPoint;
+        command = kMkExt4 + " -F -b 4096 -t ext4 -m 0 -O has_journal -E nodiscard -M "s +
+                  kScratchMountPoint;
     } else {
         LERROR << "No supported mkfs command or filesystem driver available, supported filesystems "
                   "are: f2fs, ext4";
@@ -403,8 +404,8 @@ bool MakeScratchFilesystem(const std::string& scratch_device) {
     command += " " + scratch_device + " >/dev/null 2>/dev/null </dev/null";
     fs_mgr_set_blk_ro(scratch_device, false);
     auto ret = system(command.c_str());
+    LINFO << "make " << fs_type << " filesystem on " << scratch_device << " return=" << ret;
     if (ret) {
-        LERROR << "make " << fs_type << " filesystem on " << scratch_device << " return=" << ret;
         return false;
     }
     return true;
