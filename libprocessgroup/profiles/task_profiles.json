@@ -203,6 +203,27 @@
       ]
     },
     {
+      "Name": "LowLatencyInput",
+      "Actions": [
+        {
+          "Name": "JoinCgroup",
+          "Params":
+          {
+            "Controller": "cpu",
+            "Path": "foreground"
+          }
+        },
+        {
+          "Name": "SetSchedulerPolicy",
+          "Params":
+          {
+            "Policy": "SCHED_FIFO",
+            "Priority": 98
+          }
+        }
+      ]
+    },
+    {
       "Name": "CameraServicePerformance",
       "Actions": [
         {
@@ -731,7 +752,7 @@
     },
     {
       "Name": "InputPolicy",
-      "Profiles": [ "MaxPerformance", "ProcessCapacityMax", "TimerSlackNormal" ]
+      "Profiles": [ "LowLatencyInput", "ProcessCapacityMax", "TimerSlackNormal" ]
     }
   ]
 }
