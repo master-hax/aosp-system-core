@@ -16,6 +16,24 @@
       "message": "Patch set 7 has some trivial changes. Will submit EoD today if no objections.",
       "revId": "3984611601e9cc8c41b996e8e6dc543b383e0922",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5f487ef_0a868c27",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-15T00:01:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81e016af_6889df56",
+      "revId": "3984611601e9cc8c41b996e8e6dc543b383e0922",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
