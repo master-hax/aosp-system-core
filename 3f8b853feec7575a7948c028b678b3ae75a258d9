@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ab1a4eb_f6bca47f",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-15T21:02:09Z",
+      "side": 1,
+      "message": "`MaxPerformance` used `top-app` but you\u0027ve changed it to `foreground` here, so that could be a regression for existing `InputPolicy` users. I would suggest keeping `MaxPerformance` profile (or even possibly change to `RealtimePerformance`?) and add an additional profile for the FIFO 98 settings that you want (\"RealTimeInputScheduling\" or something like that).",
+      "revId": "3f8b853feec7575a7948c028b678b3ae75a258d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
