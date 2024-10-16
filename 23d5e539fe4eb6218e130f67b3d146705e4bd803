@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "255ac6c7_76f4e0a8",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-16T12:56:36Z",
+      "side": 1,
+      "message": "That\u0027s correct that vendor, system, odm paths are optional and the scandir checks whether it exists. If any path is not present it won\u0027t be added for further search. Regarding /product - it is also optional as you said, but AFAIK it doesn\u0027t contain any kernel modules from the definition.",
+      "parentUuid": "c21e640d_5614a3c3",
+      "range": {
+        "startLine": 235,
+        "startChar": 8,
+        "endLine": 237,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b81b3a33_59751a36",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 4
@@ -49,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "45b60fc5_cf259741",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-16T12:56:36Z",
+      "side": 1,
+      "message": "Thanks! I changed the bare strings to the std::filesystem::path prior to your suggestion.",
+      "parentUuid": "b81b3a33_59751a36",
+      "range": {
+        "startLine": 249,
+        "startChar": 42,
+        "endLine": 249,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5563c1d8_5fdb4a3a",
         "filename": "toolbox/modprobe.cpp",
         "patchSetId": 4
@@ -60,6 +108,30 @@
       "writtenOn": "2024-10-16T11:01:56Z",
       "side": 1,
       "message": "What about `n \u003c 0` ? This will cause second free on the previous pointer. Set it to `NULL` after each free just for safety.",
+      "range": {
+        "startLine": 256,
+        "startChar": 12,
+        "endLine": 256,
+        "endChar": 30
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b29a4201_ddf23311",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-16T12:56:36Z",
+      "side": 1,
+      "message": "Ah, that\u0027s right - good catch. I uploaded a new patchset which fixes this case. Thanks.",
+      "parentUuid": "5563c1d8_5fdb4a3a",
       "range": {
         "startLine": 256,
         "startChar": 12,
