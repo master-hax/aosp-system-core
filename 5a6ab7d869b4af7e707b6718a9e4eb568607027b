@@ -40,6 +40,30 @@
       ],
       "revId": "5a6ab7d869b4af7e707b6718a9e4eb568607027b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0eb5df8_7bcadc55",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-16T10:32:16Z",
+      "side": 0,
+      "message": "In my opinion we don\u0027t need it anymore. It\u0027s purpose was to search for modules in case they were placed directly under the \u0027lib/modules\u0027 directory, as the comment suggests. With this patch - it is even more relaxed condition, i.e. if any of the module directories is present (vendor,system,odm,lib) we will add it to be searched. After the if clause there might be two scenarios:\n- we found some modules, either matching the filter defined in KernelVersionFilter or placed as a flat structure - then we can move on\n- no paths that might contain modules do exist and thus there is an error",
+      "parentUuid": "9d5f2653_14e7ce82",
+      "range": {
+        "startLine": 248,
+        "startChar": 32,
+        "endLine": 248,
+        "endChar": 53
+      },
+      "revId": "5a6ab7d869b4af7e707b6718a9e4eb568607027b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
