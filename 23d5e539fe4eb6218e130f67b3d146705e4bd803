@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c21e640d_5614a3c3",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 3438682
+      },
+      "writtenOn": "2024-10-16T11:01:56Z",
+      "side": 1,
+      "message": "isn\u0027t the `/product` missing here?\nAlso `/odm` is not guaranteed to exist. It can be in `/system/odm`. Same for `/vendor` and `/product`. [source](https://cs.android.com/android/platform/superproject/main/+/main:system/sepolicy/tests/policy.py;l\u003d34;drc\u003d3a9d91ce68891e6914a3edceb5a6e79ccaeaa2d3)\n\n`/vendor`, `/product` and `/odm` are not required so devices can have these directories in `/system` only. Many boards just symlink these directories, but it\u0027s not a rule.\n\nBUT if `/vendor` etc. exist then `/system/vendor` is just a symlink to them.",
+      "range": {
+        "startLine": 235,
+        "startChar": 8,
+        "endLine": 237,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b81b3a33_59751a36",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 3438682
+      },
+      "writtenOn": "2024-10-16T11:01:56Z",
+      "side": 1,
+      "message": "This is not safe. You can use `std::fs::path` to safely handle paths. It was introduced in C++17 which is the default Android standard anyway.",
+      "range": {
+        "startLine": 249,
+        "startChar": 42,
+        "endLine": 249,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5563c1d8_5fdb4a3a",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 3438682
+      },
+      "writtenOn": "2024-10-16T11:01:56Z",
+      "side": 1,
+      "message": "What about `n \u003c 0` ? This will cause second free on the previous pointer. Set it to `NULL` after each free just for safety.",
+      "range": {
+        "startLine": 256,
+        "startChar": 12,
+        "endLine": 256,
+        "endChar": 30
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
