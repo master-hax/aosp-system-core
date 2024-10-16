@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "872c0254_a46268d0",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-16T00:50:36Z",
+      "side": 1,
+      "message": "The parser is expecting an int, so I don\u0027t think the device will boot with this.",
+      "range": {
+        "startLine": 213,
+        "startChar": 24,
+        "endLine": 213,
+        "endChar": 28
+      },
+      "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
