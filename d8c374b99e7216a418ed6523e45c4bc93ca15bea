@@ -46,6 +46,30 @@
       },
       "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2bd46327_3c37eb31",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2024-10-16T01:58:47Z",
+      "side": 1,
+      "message": "confirmed that the device doesn\u0027t boot with quotes, so will need to investigate the test errors instead (test passed when it was changed to string locally).",
+      "parentUuid": "79cfa726_a5c894db",
+      "range": {
+        "startLine": 213,
+        "startChar": 24,
+        "endLine": 213,
+        "endChar": 28
+      },
+      "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
