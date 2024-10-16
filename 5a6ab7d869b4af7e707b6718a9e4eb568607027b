@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d5f2653_14e7ce82",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 2018217
+      },
+      "writtenOn": "2024-10-16T10:10:12Z",
+      "side": 0,
+      "message": "should we keep this condition?",
+      "range": {
+        "startLine": 248,
+        "startChar": 32,
+        "endLine": 248,
+        "endChar": 53
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "4bc6c2d7_423d07f4",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "toolbox/modprobe.cpp",
+              "range": {
+                "startLine": 248,
+                "startChar": 0,
+                "endLine": 249,
+                "endChar": 0
+              },
+              "replacement": "                while (n-- \u003e 0) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "5a6ab7d869b4af7e707b6718a9e4eb568607027b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
