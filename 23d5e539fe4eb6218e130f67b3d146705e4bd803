@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "109fb386_4956d6ca",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-17T07:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "255ac6c7_76f4e0a8",
+      "range": {
+        "startLine": 235,
+        "startChar": 8,
+        "endLine": 237,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b81b3a33_59751a36",
@@ -95,6 +119,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e30f2c36_a9fafbd3",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-17T07:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45b60fc5_cf259741",
+      "range": {
+        "startLine": 249,
+        "startChar": 42,
+        "endLine": 249,
+        "endChar": 90
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5563c1d8_5fdb4a3a",
@@ -132,6 +180,30 @@
       "side": 1,
       "message": "Ah, that\u0027s right - good catch. I uploaded a new patchset which fixes this case. Thanks.",
       "parentUuid": "5563c1d8_5fdb4a3a",
+      "range": {
+        "startLine": 256,
+        "startChar": 12,
+        "endLine": 256,
+        "endChar": 30
+      },
+      "revId": "23d5e539fe4eb6218e130f67b3d146705e4bd803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0dbb72be_14bb7224",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-10-17T07:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b29a4201_ddf23311",
       "range": {
         "startLine": 256,
         "startChar": 12,
