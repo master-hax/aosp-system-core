@@ -448,6 +448,19 @@ static std::string oct_encode(const std::string& data) {
   return oct_encoded;
 }
 
+static bool has_any_allocation_deallocation_stacks(const Tombstone& tombstone) {
+  for (const Cause& cause : tombstone.causes()) {
+    if (cause.has_memory_error() && cause.memory_error().has_heap()) {
+      const HeapObject& heap_object = cause.memory_error().heap();
+      if (heap_object.deallocation_backtrace_size() != 0 ||
+          heap_object.allocation_backtrace_size() != 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
                               const Thread& thread) {
   print_thread_header(callback, tombstone, thread, true);
@@ -498,10 +511,19 @@ static void print_main_thread(CallbackType callback, const Tombstone& tombstone,
   }
 
   print_thread_registers(callback, tombstone, thread, true);
-  if (is_async_mte_crash) {
-    CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
-    CBL("      in this process. The stack trace below is the first system call or context");
-    CBL("      switch that was executed after the memory corruption happened.");
+  if (is_mte_crash) {
+    bool is_async_mte_requested = thread.tagged_addr_ctrl() & PR_MTE_TCF_ASYNC;
+    if (is_async_mte_crash) {
+      CBL("Note: This crash is a delayed async MTE crash. Memory corruption has occurred");
+      CBL("      in this process. The stack trace below is the first system call or context");
+      CBL("      switch that was executed after the memory corruption happened.");
+    }
+    if (!is_async_mte_crash && is_async_mte_requested &&
+        !has_any_allocation_deallocation_stacks(tombstone)) {
+      CBL("Note: This is a sync (precise) MTE crash in an async MTE binary. You may get");
+      CBL("      additional diagnostic information by running");
+      CBL("      setprop arm64.memtag.track_allocation_stacks 1");
+    }
   }
   print_thread_backtrace(callback, tombstone, thread, true);
 
