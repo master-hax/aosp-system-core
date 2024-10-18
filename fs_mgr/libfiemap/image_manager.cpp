@@ -522,6 +522,7 @@ bool ImageManager::MapImageDevice(const std::string& name,
     }
 
     auto image_header = GetImageHeaderPath(name);
+    bool is_loop = false;
 
 #ifndef __ANDROID_RAMDISK__
     // If there is a device-mapper node wrapping the block device, then we're
@@ -547,8 +548,11 @@ bool ImageManager::MapImageDevice(const std::string& name,
         if (!MapWithDmLinear(*partition_opener_.get(), name, timeout_ms, path)) {
             return false;
         }
-    } else if (!MapWithLoopDevice(name, timeout_ms, path)) {
-        return false;
+    } else {
+        if (!MapWithLoopDevice(name, timeout_ms, path)) {
+            return false;
+        }
+        is_loop = true;
     }
 #else
     // In recovery, we can *only* use device-mapper, since partitions aren't
@@ -563,6 +567,9 @@ bool ImageManager::MapImageDevice(const std::string& name,
     if (!android::base::SetProperty(prop_name, *path)) {
         UnmapImageDevice(name, true);
         return false;
+    }
+    if (is_loop) {
+        android::base::SetProperty(prop_name + ".loop", "1");
     }
     return true;
 }
