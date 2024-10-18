@@ -951,8 +951,8 @@ bool MakeScratchFilesystem(const std::string& scratch_device) {
     command += " " + scratch_device + " >/dev/null 2>/dev/null </dev/null";
     fs_mgr_set_blk_ro(scratch_device, false);
     auto ret = system(command.c_str());
+    LINFO << "make " << fs_type << " filesystem on " << scratch_device << " return=" << ret;
     if (ret) {
-        LERROR << "make " << fs_type << " filesystem on " << scratch_device << " return=" << ret;
         return false;
     }
     return true;
@@ -1187,6 +1187,18 @@ bool fs_mgr_overlayfs_setup_scratch(const Fstab& fstab) {
         return false;
     }
 
+    // HACK If we just created and mapped the image with loopdev, DO NOT attempt to create
+    // filesystem on the loop device, else we risk modifying the allocated file block extents which
+    // breaks the contract between ImageManager.
+    // Only after the device is rebooted and the image is mapped with device-mapper, we create the
+    // filesystem.
+    bool mapped_with_loop = android::base::GetProperty("gsid.mapped_image.scratch.loop", "") == "1";
+    if (mapped_with_loop) {
+        LOG(INFO) << "scratch device is mapped with loopdev, defer filesystem creation until next "
+                     "reboot when the scratch device is mapped with device-mapper";
+        return true;
+    }
+
     // If the partition exists, assume first that it can be mounted.
     if (partition_exists) {
         if (MountScratch(scratch_device)) {
@@ -1397,6 +1409,12 @@ bool fs_mgr_overlayfs_setup(const Fstab& fstab, const char* mount_point, bool* w
         if (overlay_mount_point == kScratchMountPoint) {
             if (!fs_mgr_overlayfs_setup_scratch(fstab)) {
                 continue;
+            }
+            bool mapped_with_loop =
+                    android::base::GetProperty("gsid.mapped_image.scratch.loop", "") == "1";
+            if (mapped_with_loop) {
+                *want_reboot = true;
+                return true;
             }
         } else {
             if (GetEntryForMountPoint(&fstab, overlay_mount_point) == nullptr) {
