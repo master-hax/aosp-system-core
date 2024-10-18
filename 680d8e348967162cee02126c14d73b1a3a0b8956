@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9d7b116_8dbfcb7c",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1463,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-18T22:34:28Z",
+      "side": 1,
+      "message": "Was there an active bug here?",
+      "revId": "680d8e348967162cee02126c14d73b1a3a0b8956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71b66b74_dc54ef5a",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1670,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-18T22:34:28Z",
+      "side": 1,
+      "message": "nit, you can pare down the test a bit by removing the stuff that\u0027s already covered by other tests (like this line)",
+      "revId": "680d8e348967162cee02126c14d73b1a3a0b8956",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
