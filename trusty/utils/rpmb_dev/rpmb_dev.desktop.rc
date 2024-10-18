@@ -1,0 +1,29 @@
+# RPMB Mock
+on post-fs
+
+on post-fs-data && property:ro.hardware.trusty_vm_cid=*
+    setprop ro.hardware.trusty_ipc_dev VSOCK:${ro.hardware.trusty_vm_cid}:0
+    mkdir /data/vendor/ss 0770 root system
+    exec_start rpmb_mock_init_desktop
+    start rpmb_mock_desktop
+    restart storageproxyd
+
+service storageproxyd /vendor/bin/storageproxyd -d ${ro.hardware.trusty_ipc_dev:-/dev/trusty-ipc-dev0} \
+	-r /dev/socket/rpmb_mock_desktop -p /data/vendor/ss -t sock
+    disabled
+    user system
+    group system
+
+service rpmb_mock_init_desktop /vendor/bin/rpmb_dev.desktop --dev /data/vendor/ss/RPMB_DATA --init --size 2048
+    disabled
+    user system
+    group system
+    oneshot
+
+service rpmb_mock_desktop /vendor/bin/rpmb_dev.desktop --dev /data/vendor/ss/RPMB_DATA --sock rpmb_mock_desktop
+    class main
+    disabled
+    user system
+    group system
+    socket rpmb_mock_desktop stream 660 system system
+

@@ -49,3 +49,12 @@ cc_binary {
         "rpmb_dev.system.rc",
     ],
 }
+
+cc_binary {
+    name: "rpmb_dev.desktop",
+    defaults: ["rpmb_dev.cc_defaults"],
+    vendor: true,
+    init_rc: [
+        "rpmb_dev.desktop.rc",
+    ],
+}
