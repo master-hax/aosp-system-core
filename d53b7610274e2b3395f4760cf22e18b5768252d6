@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23a37fe0_8b616bbb",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-10-18T21:16:27Z",
+      "side": 1,
+      "message": "Do you need all of these? I don\u0027t see them being used.",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 0
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56c7f5bb_82132356",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-10-18T21:16:27Z",
+      "side": 1,
+      "message": "Could you just use android::base::Join() here instead of open coding it?",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 0
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c5d6185_4cd192dc",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-10-18T21:16:27Z",
+      "side": 1,
+      "message": "Can this be a DEBUG log instead? I think the INFO log below that includes the module name and parameters should be enough.",
+      "range": {
+        "startLine": 253,
+        "startChar": 8,
+        "endLine": 253,
+        "endChar": 12
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
