@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9fb94cdb_59c6736f",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-18T19:29:03Z",
+      "side": 1,
+      "message": "This changes which process the setenv() occurs in. maybe pass an std::unordered_map\u003cstd::string, std::string\u003e to RunExternalHandler?",
+      "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dab4d787_87602f65",
+        "filename": "libexthandler/include/libexthandler/libexthandler.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-18T19:29:03Z",
+      "side": 1,
+      "message": "Avoid \"using\" in a header like this without an enclosing namespace.",
+      "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
