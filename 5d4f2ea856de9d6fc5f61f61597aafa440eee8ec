@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "daa53df9_6738ca6c",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-10-18T22:19:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fec99ec_9c8e3814",
+      "revId": "5d4f2ea856de9d6fc5f61f61597aafa440eee8ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3cacb746_77bac4fb",
@@ -79,6 +97,30 @@
       "side": 1,
       "message": "(see my comment on the other patch about my more general doubts about _async_ mte in particular. but that makes me think we should probably spend at least as many words on how to switch to _sync_ [or asym] mte as on how to just opt out. teaching people that \"mte is noise you can just ignore\" seems like an unhelpful direction, and i don\u0027t really know why anyone would ever had async on _except_ if you\u0027re using it statistically in the field with the intention of upgrading the crasher to sync/asym to try to get something actually actionable. realistically, \"who do we think is actually going to fix a bug based on an _async_ mte crash?\".)",
       "parentUuid": "9b6a4891_c2224723",
+      "range": {
+        "startLine": 582,
+        "startChar": 27,
+        "endLine": 584,
+        "endChar": 44
+      },
+      "revId": "5d4f2ea856de9d6fc5f61f61597aafa440eee8ec",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "91369359_80928516",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 584,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-10-18T22:19:50Z",
+      "side": 1,
+      "message": "The more I think about it, the more I dislike treating MTE bugs different than we\u0027d treat any other crashing bugs. I\u0027ve deleted this entire section. As enh points out, there\u0027s no need to call it out here.\n\nI agree with you on the *async* crashes, and hopefully we can move to *asymm* or *sync* ASAP.",
+      "parentUuid": "7d0fd662_6976c75d",
       "range": {
         "startLine": 582,
         "startChar": 27,

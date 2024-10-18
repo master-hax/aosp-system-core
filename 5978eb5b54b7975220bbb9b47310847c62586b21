@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93e126c0_668dac51",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-10-18T22:19:50Z",
+      "side": 1,
+      "message": "Sorry for the delay in getting back to this patch.\n\nI\u0027ve removed this patch from the other patches associated with enabling MTE in eng mode. I think it has value independent of those other patches. Patchset 2 addresses all the comments. PTAL.",
+      "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
