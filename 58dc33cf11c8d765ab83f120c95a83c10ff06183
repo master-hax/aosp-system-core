@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac2afb17_7ac64ae0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1659539
+      },
+      "writtenOn": "2024-10-21T10:52:55Z",
+      "side": 1,
+      "message": "Hi, sorry but I won\u0027t have ownership of this module. Please refer to @santoscordon@google.com for owner\u0027s approval for the three changes.",
+      "parentUuid": "89994c01_5eca9efb",
+      "revId": "58dc33cf11c8d765ab83f120c95a83c10ff06183",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7f9c168e_825e7ef6",
