@@ -16,6 +16,29 @@
       "message": "Sorry for the delay in getting back to this patch.\n\nI\u0027ve removed this patch from the other patches associated with enabling MTE in eng mode. I think it has value independent of those other patches. Patchset 2 addresses all the comments. PTAL.",
       "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04509764_513f3d41",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-21T21:36:33Z",
+      "side": 1,
+      "message": "\"can\"? or do you genuinely mean \"may\"? (if so, say when/link to some docs explaining?)",
+      "range": {
+        "startLine": 523,
+        "startChar": 80,
+        "endLine": 523,
+        "endChar": 83
+      },
+      "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
