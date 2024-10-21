@@ -52,6 +52,24 @@
       "parentUuid": "ac5a7022_d6a6fb05",
       "revId": "2b9da060ae0bad6e75e50422835ec948ed783d3e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c04b760_75d0da59",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-10-21T20:05:43Z",
+      "side": 1,
+      "message": "Ping. That CL landed already, so it should be easier to test this CL now. I also rebased this CL.",
+      "parentUuid": "5eac9f73_6f7027d6",
+      "revId": "2b9da060ae0bad6e75e50422835ec948ed783d3e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
