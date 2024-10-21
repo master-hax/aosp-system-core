@@ -39,6 +39,30 @@
       },
       "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb986129_67f5240b",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-10-21T22:10:45Z",
+      "side": 1,
+      "message": "I think it is actually \"may\". Diagnostic is best effort, old stack traces can be evicted, and ex. for a wild pointer dereference no stack trace is possible.",
+      "parentUuid": "04509764_513f3d41",
+      "range": {
+        "startLine": 523,
+        "startChar": 80,
+        "endLine": 523,
+        "endChar": 83
+      },
+      "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
