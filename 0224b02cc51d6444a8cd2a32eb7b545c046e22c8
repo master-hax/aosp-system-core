@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb248985_7cf51643",
+        "filename": "libutils/binder/RefBase.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 790,
+      "author": {
+        "id": 1040213
+      },
+      "writtenOn": "2024-10-21T23:15:39Z",
+      "side": 1,
+      "message": "nit: better to be more explicit? \"... this leaks mRefs (weakref_impl).\"",
+      "range": {
+        "startLine": 790,
+        "startChar": 65,
+        "endLine": 790,
+        "endChar": 71
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "8b138e5e_aae96d86",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libutils/binder/RefBase.cpp",
+              "range": {
+                "startLine": 790,
+                "startChar": 0,
+                "endLine": 791,
+                "endChar": 0
+              },
+              "replacement": "                  \"object. Note - if weak count is 0, this leaks mRefs (weakref_impl).\",\n"
+            }
+          ]
+        }
+      ],
+      "revId": "0224b02cc51d6444a8cd2a32eb7b545c046e22c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
