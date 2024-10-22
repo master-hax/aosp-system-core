@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0d1c816_a112f1f0",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T20:33:11Z",
+      "side": 1,
+      "message": "Indeed -sorry those are leftovers from my previous internal version",
+      "parentUuid": "73249c59_2dad9fac",
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4d7ef265_e12c3a58",
@@ -41,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "016a40eb_fca35c9e",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T20:33:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d7ef265_e12c3a58",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 212,
+        "endChar": 36
+      },
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84bf23b8_befa6f34",
@@ -54,6 +96,30 @@
       "writtenOn": "2024-10-22T11:45:47Z",
       "side": 1,
       "message": "I think we don\u0027t have spaces in path names? (at least for firmware paths)",
+      "range": {
+        "startLine": 235,
+        "startChar": 0,
+        "endLine": 237,
+        "endChar": 43
+      },
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c40fbfa_702770bc",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T20:33:11Z",
+      "side": 1,
+      "message": "It is about arguments appended after handler path - I\u0027ve updated the name to reflect it.",
+      "parentUuid": "84bf23b8_befa6f34",
       "range": {
         "startLine": 235,
         "startChar": 0,
