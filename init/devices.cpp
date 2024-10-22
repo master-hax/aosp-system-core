@@ -193,7 +193,22 @@ std::string DeviceHandler::GetBlockDeviceString(std::string uevent_path, std::st
     std::string device;
     std::string detected_type;
 
-    if (FindPlatformDevice(uevent_path, &device)) {
+    if (!boot_part_uuid_.empty()) {
+        // Use the more specific "MMC" or "SCSI" match if a partition UUID was
+        // passed. Old bootloaders that aren't passing the partition UUID
+        // instead pass the path to the closest "platform" device. It would
+        // break them if we chose this deeper (more specific) path.
+        //
+        // When we have a UUID we _want_ the more specific path since it can
+        // handle, for instance, differentiating two USB disks that are on
+        // the same USB controller. Using the closest platform device would
+        // classify them both the same by using the path to the USB controller.
+        if (FindMmcDevice(uevent_path, &device)) {
+            detected_type = "mmc";
+        } else if (FindScsiDevice(uevent_path, &device)) {
+            detected_type = "scsi";
+        }
+    } else if (FindPlatformDevice(uevent_path, &device)) {
         detected_type = "platform";
     } else if (FindPciDevicePrefix(uevent_path, &device)) {
         detected_type = "pci";
@@ -205,6 +220,17 @@ std::string DeviceHandler::GetBlockDeviceString(std::string uevent_path, std::st
 
     if (is_boot_device) {
         *is_boot_device = boot_devices_.find(device) != boot_devices_.end();
+
+        // This can only happen if someone passed _both_ `bootdevices` and
+        // `boot_part_uuid`, then we _didn't_ find the `boot_part_uuid` but we
+        // _did_ find the device in `bootdevices`. This isn't allowed. If the
+        // bootloader passed `boot_part_uuid` it is mandatory that we find
+        // the partition that it's looking for.
+        if (!found_boot_part_uuid_ && !boot_part_uuid_.empty() && *is_boot_device) {
+            LOG(WARNING) << __PRETTY_FUNCTION__ << ": ignore boot device '" << device
+                         << "' since kernel boot partition wasn't found.";
+            *is_boot_device = false;
+        }
     }
 
     if (type) {
@@ -302,6 +328,22 @@ bool DeviceHandler::FindPlatformDevice(std::string path, std::string* platform_d
     };
 
     return FindSubsystemDevice(path, platform_device_path, subsystem_paths);
+}
+
+bool DeviceHandler::FindMmcDevice(std::string path, std::string* mmc_device_path) const {
+    std::set<std::string> subsystem_paths = {
+            sysfs_mount_point_ + "/bus/mmc",
+    };
+
+    return FindSubsystemDevice(path, mmc_device_path, subsystem_paths);
+}
+
+bool DeviceHandler::FindScsiDevice(std::string path, std::string* scsi_device_path) const {
+    std::set<std::string> subsystem_paths = {
+            sysfs_mount_point_ + "/bus/scsi",
+    };
+
+    return FindSubsystemDevice(path, scsi_device_path, subsystem_paths);
 }
 
 void DeviceHandler::FixupSysPermissions(const std::string& upath,
@@ -583,6 +625,91 @@ void DeviceHandler::HandleAshmemUevent(const Uevent& uevent) {
     }
 }
 
+// Check Uevents looking for the kernel's boot partition UUID
+//
+// When we can stop checking uevents (either because we're done or because
+// we weren't looking for the kernel's boot partition UUID) then return
+// true. Return false if we're not done yet.
+bool DeviceHandler::CheckUeventForBootPartUuid(const Uevent& uevent) {
+    // If we aren't using boot_part_uuid then we're done.
+    if (boot_part_uuid_.empty()) {
+        return true;
+    }
+
+    // Finding the boot partition is a one-time thing that we do at init
+    // time, not steady state. This is because the boot partition isn't
+    // allowed to go away or change. Once we found the boot partition we don't
+    // expect to run again.
+    if (found_boot_part_uuid_) {
+        LOG(WARNING) << __PRETTY_FUNCTION__
+                     << " shouldn't run after kernel boot partition is found";
+        return true;
+    }
+
+    // We only need to look at newly-added block devices. Note that if someone
+    // is replaying events all existing devices will get "add"ed.
+    if (uevent.subsystem != "block" || uevent.action != "add") {
+        return false;
+    }
+
+    // If it's not the partition we care about then move on.
+    if (uevent.partition_uuid != boot_part_uuid_) {
+        return false;
+    }
+
+    auto device = GetBlockDeviceString(uevent.path, NULL, NULL);
+
+    if (boot_devices_.size()) {
+        // If both a boot partition UUID and a list of boot devices are
+        // specified then we enforce that at least one of the devices
+        // in the list of boot devices is the prefix of the found device.
+        //
+        // In other words, if the device string is:
+        //   soc@0/a6f8800.usb/a600000.usb/xhci-hcd.11.auto/usb2/2-1/2-1.3/ \
+	//     2-1.3.2/2-1.3.2:1.0/host0/target0:0:0/0:0:0:0
+        // ...and the list of boot devices is:
+        //   soc@0/8804000.mmc, soc@0/a6f8800.usb/a600000.usb
+        //
+        // ...then that works because "soc@0/a6f8800.usb/a600000.usb" is a
+        // prefix of "soc@0/a6f8800.usb/a600000.usb/ ... /0:0:0:0".
+        //
+        // NOTE: This extra checking isn't really necessary for security since
+        // we should be using verity to make sure that the root filesystem
+        // is authentic and hasn't been tampered with. It also isn't really
+        // necessary for normal usage since different disks aren't supposed to
+        // have the same UUID anyway. That means it's fine if you're using
+        // UUID matching to leave the boot devices list blank. This extra
+        // validation is basically just extra pananoia and might be removed
+        // in the future. We'll log a warning for now.
+
+        LOG(WARNING) << "Specifying both bootdevices and boot_part_uuid is not suggested";
+        for (std::string const& check_device : boot_devices_) {
+            if (device.compare(0, check_device.size(), check_device) == 0) {
+                found_boot_part_uuid_ = true;
+                LOG(INFO) << "Boot device " << device << " found via partition" << " UUID matched "
+                          << check_device;
+                break;
+            }
+        }
+        if (!found_boot_part_uuid_) {
+            LOG(WARNING) << "Ignoring matching boot partition UUID '" << device
+                         << "' because it's not in boot_devices";
+        }
+    } else {
+        LOG(INFO) << "Boot device " << device << " found via partition UUID";
+        found_boot_part_uuid_ = true;
+    }
+
+    if (found_boot_part_uuid_) {
+        boot_devices_.clear();
+        boot_devices_.insert(device);
+
+        return true;
+    }
+
+    return false;
+}
+
 void DeviceHandler::HandleUevent(const Uevent& uevent) {
     if (uevent.action == "add" || uevent.action == "change" || uevent.action == "bind" ||
         uevent.action == "online") {
@@ -651,6 +778,7 @@ DeviceHandler::DeviceHandler(std::vector<Permissions> dev_permissions,
       skip_restorecon_(skip_restorecon),
       sysfs_mount_point_("/sys") {
     boot_devices_ = android::fs_mgr::GetBootDevices();
+    boot_part_uuid_ = android::fs_mgr::GetBootPartUuid();
 }
 
 DeviceHandler::DeviceHandler()
