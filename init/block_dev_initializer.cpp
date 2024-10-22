@@ -107,6 +107,39 @@ ListenerAction BlockDevInitializer::HandleUevent(const Uevent& uevent,
 }
 
 bool BlockDevInitializer::InitDevices(std::set<std::string> devices) {
+    bool uuid_check_done;
+
+    auto boot_part_callback = [&, this](const Uevent& uevent) -> ListenerAction {
+        uuid_check_done = device_handler_->CheckUeventForBootPartUuid(uevent);
+        return uuid_check_done ? ListenerAction::kStop : ListenerAction::kContinue;
+    };
+
+    // Re-run already arrived uevents looking for the boot partition UUID.
+    // NOTE: If we're not using the boot partition UUID to find the boot
+    // device then the first uevent we analyze will cause us to stop looking
+    // and set `uuid_check_done`.
+    uevent_listener_.RegenerateUevents(boot_part_callback);
+
+    // If we haven't found it yet, poll for uevents for longer
+    if (!uuid_check_done) {
+        Timer t;
+        uevent_listener_.Poll(boot_part_callback, 10s);
+        LOG(INFO) << "Wait for boot partition returned after " << t;
+    }
+
+    // Give a nicer error message if we were expecting to find the kernel boot
+    // partition but didn't. Later code would check too but the message there
+    // is a bit further from the root cause of the problem.
+    if (!uuid_check_done) {
+        LOG(ERROR) << __PRETTY_FUNCTION__ << ": boot partition not found after polling timeout.";
+        return false;
+    }
+
+    // At this point we either found the boot partition UUID and used that to
+    // set the boot device or we weren't using the boot partition UUID and
+    // we'll rely on the bootloader having set the boot device. Now wait for
+    // all the partitions on the boot device to show up.
+
     auto uevent_callback = [&, this](const Uevent& uevent) -> ListenerAction {
         return HandleUevent(uevent, &devices);
     };
