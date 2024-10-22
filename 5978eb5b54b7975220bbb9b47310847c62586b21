@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e32e1d2f_de6fc1e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-10-22T20:56:10Z",
+      "side": 1,
+      "message": "After further investigation, this patch depends on another unsubmitted patch. I wasn\u0027t aware of this when I initially uploaded this change. Deferring this change until the other patch is ready for review.",
+      "revId": "5978eb5b54b7975220bbb9b47310847c62586b21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "04509764_513f3d41",
