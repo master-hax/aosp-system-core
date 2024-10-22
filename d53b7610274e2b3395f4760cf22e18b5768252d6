@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac811d68_bb7bf64d",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:30:18Z",
+      "side": 1,
+      "message": "Sorry for that - it was a leftover from previous internal version of this patch where external handler was part of this change - it is not needed now. Removed",
+      "parentUuid": "23a37fe0_8b616bbb",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 0
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "56c7f5bb_82132356",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "602552e9_cf7f0227",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:30:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56c7f5bb_82132356",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 0
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c5d6185_4cd192dc",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-10-18T21:16:27Z",
       "side": 1,
       "message": "Can this be a DEBUG log instead? I think the INFO log below that includes the module name and parameters should be enough.",
+      "range": {
+        "startLine": 253,
+        "startChar": 8,
+        "endLine": 253,
+        "endChar": 12
+      },
+      "revId": "d53b7610274e2b3395f4760cf22e18b5768252d6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04c8f237_fec180f8",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:30:18Z",
+      "side": 1,
+      "message": "Good point",
+      "parentUuid": "1c5d6185_4cd192dc",
       "range": {
         "startLine": 253,
         "startChar": 8,
