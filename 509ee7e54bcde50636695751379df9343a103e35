@@ -47,6 +47,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea0d99f6_37e9ba88",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-22T21:48:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "63e99b6e_1bbac98e",
+      "range": {
+        "startLine": 6,
+        "startChar": 4,
+        "endLine": 6,
+        "endChar": 32
+      },
+      "revId": "509ee7e54bcde50636695751379df9343a103e35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8603d1c_2f424df1",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-22T21:48:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "261fc712_45881403",
+      "range": {
+        "startLine": 6,
+        "startChar": 32,
+        "endLine": 6,
+        "endChar": 33
+      },
+      "revId": "509ee7e54bcde50636695751379df9343a103e35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5be0ff2c_0259beed",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-10-18T18:00:48Z",
       "side": 1,
       "message": "I really think we should parameterize this, but maybe it can wait until after the AVF CLs.",
+      "range": {
+        "startLine": 12,
+        "startChar": 51,
+        "endLine": 12,
+        "endChar": 63
+      },
+      "revId": "509ee7e54bcde50636695751379df9343a103e35",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d771ca80_f3664d02",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-22T21:48:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "5be0ff2c_0259beed",
       "range": {
         "startLine": 12,
         "startChar": 51,
