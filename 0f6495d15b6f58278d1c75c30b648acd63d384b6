@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73249c59_2dad9fac",
+        "filename": "libmodprobe/include/modprobe/modprobe.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-22T11:45:47Z",
+      "side": 1,
+      "message": "Result doesn\u0027t seem to be used in this header?",
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d7ef265_e12c3a58",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-22T11:45:47Z",
+      "side": 1,
+      "message": "it would be greater if args doesn\u0027t contain the already parsed token (dyn_options).",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 212,
+        "endChar": 36
+      },
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84bf23b8_befa6f34",
+        "filename": "libmodprobe/libmodprobe.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-22T11:45:47Z",
+      "side": 1,
+      "message": "I think we don\u0027t have spaces in path names? (at least for firmware paths)",
+      "range": {
+        "startLine": 235,
+        "startChar": 0,
+        "endLine": 237,
+        "endChar": 43
+      },
+      "revId": "0f6495d15b6f58278d1c75c30b648acd63d384b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
