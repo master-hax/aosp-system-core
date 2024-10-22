@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9bcf6bbd_f393b53e",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1942645
+      },
+      "writtenOn": "2024-10-22T23:12:22Z",
+      "side": 1,
+      "message": "Is there a reason you do not need the persist data partition?",
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55e77d0f_d84f5546",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1942645
+      },
+      "writtenOn": "2024-10-22T23:12:22Z",
+      "side": 1,
+      "message": "Why do you have this empty hook?",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 10
+      },
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e05dcce8_b54d318f",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1942645
+      },
+      "writtenOn": "2024-10-22T23:12:22Z",
+      "side": 1,
+      "message": "It would be good to also parametrize the port as well (the value might change from 0 in the future).",
+      "range": {
+        "startLine": 5,
+        "startChar": 74,
+        "endLine": 5,
+        "endChar": 75
+      },
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
