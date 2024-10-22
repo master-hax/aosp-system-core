@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "161879d4_e6996e04",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:26:42Z",
+      "side": 1,
+      "message": "sure - updated the commit log a bit but in general the other use case is the next patch in this patch-set: aosp/3307196",
+      "parentUuid": "b6d408ed_b26a62a4",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 47
+      },
+      "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9fb94cdb_59c6736f",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "65cafcba_c08e835a",
+        "filename": "init/firmware_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:26:42Z",
+      "side": 1,
+      "message": "Thanks for suggestion - done.",
+      "parentUuid": "9fb94cdb_59c6736f",
+      "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dab4d787_87602f65",
@@ -54,6 +96,24 @@
       "writtenOn": "2024-10-18T19:29:03Z",
       "side": 1,
       "message": "Avoid \"using\" in a header like this without an enclosing namespace.",
+      "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53ac8af0_e60620ea",
+        "filename": "libexthandler/include/libexthandler/libexthandler.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-22T11:26:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab4d787_87602f65",
       "revId": "ff35258ec67f22471097152250dc3c8c1b714c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
