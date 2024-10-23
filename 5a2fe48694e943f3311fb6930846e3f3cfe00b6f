@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a97994a_6538f10f",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1299283
+      },
+      "writtenOn": "2024-10-23T13:56:13Z",
+      "side": 1,
+      "message": "We don\u0027t have `/vendor/persist` yet.\n\nWe might add it at some point, but rpmb_dev is a placeholder for us.",
+      "parentUuid": "9bcf6bbd_f393b53e",
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "55e77d0f_d84f5546",
         "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
         "patchSetId": 3
