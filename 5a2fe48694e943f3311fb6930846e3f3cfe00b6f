@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "181e8886_bdd1512c",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-23T04:22:11Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "55e77d0f_d84f5546",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 10
+      },
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e05dcce8_b54d318f",
@@ -54,6 +78,30 @@
       "writtenOn": "2024-10-22T23:12:22Z",
       "side": 1,
       "message": "It would be good to also parametrize the port as well (the value might change from 0 in the future).",
+      "range": {
+        "startLine": 5,
+        "startChar": 74,
+        "endLine": 5,
+        "endChar": 75
+      },
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b768c2bb_1ba81090",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-23T04:22:11Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e05dcce8_b54d318f",
       "range": {
         "startLine": 5,
         "startChar": 74,
