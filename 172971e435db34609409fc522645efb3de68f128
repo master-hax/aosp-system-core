@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52d954da_6c077920",
+        "filename": "trusty/utils/rpmb_dev/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000205
+      },
+      "writtenOn": "2024-10-23T18:59:00Z",
+      "side": 1,
+      "message": "I don\u0027t think you need this. The separate rpmb_dev and rpmb_dev.system cc_binary are needed since vendor_available is supported for cc_binary. rpmb_dev.desktop here is another copy of rpmb_dev.",
+      "revId": "172971e435db34609409fc522645efb3de68f128",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
