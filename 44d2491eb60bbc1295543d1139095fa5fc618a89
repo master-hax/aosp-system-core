@@ -16,6 +16,23 @@
       "message": "Hi Elliott, could you please take a look since Code-owners review is missing and you seemed to be the only one for some of the files. Thank you in advance.",
       "revId": "44d2491eb60bbc1295543d1139095fa5fc618a89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38fa32da_b94552c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-23T13:40:58Z",
+      "side": 1,
+      "message": "yeah, i\u0027m not approving new library additions to system/core/ --- we\u0027re trying to prevent a return to it being a general dumping ground.",
+      "revId": "44d2491eb60bbc1295543d1139095fa5fc618a89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
