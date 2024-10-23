@@ -59,8 +59,7 @@ namespace fastboot {
 
 /*************************** PUBLIC *******************************/
 FastBootDriver::FastBootDriver(std::unique_ptr<Transport> transport,
-                               DriverCallbacks driver_callbacks,
-                               bool no_checks)
+                               DriverCallbacks driver_callbacks, bool no_checks)
     : transport_(std::move(transport)),
       prolog_(std::move(driver_callbacks.prolog)),
       epilog_(std::move(driver_callbacks.epilog)),
@@ -68,8 +67,7 @@ FastBootDriver::FastBootDriver(std::unique_ptr<Transport> transport,
       text_(std::move(driver_callbacks.text)),
       disable_checks_(no_checks) {}
 
-FastBootDriver::~FastBootDriver() {
-}
+FastBootDriver::~FastBootDriver() {}
 
 RetCode FastBootDriver::Boot(std::string* response, std::vector<std::string>* info) {
     return RawCommand(FB_CMD_BOOT, "Booting", response, info);
@@ -569,7 +567,9 @@ RetCode FastBootDriver::SendBuffer(const void* buf, size_t size) {
     ssize_t tmp = transport_->Write(buf, size);
 
     if (tmp < 0) {
-        error_ = ErrnoStr("Write to device failed in SendBuffer()");
+        std::string error_msg =
+                "Write to device of size: " + std::to_string(size) + " failed in SendBuffer()";
+        error_ = ErrnoStr(error_msg);
         return IO_ERROR;
     } else if (static_cast<size_t>(tmp) != size) {
         error_ = android::base::StringPrintf("Failed to write all %zu bytes", size);
