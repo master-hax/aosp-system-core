@@ -16,6 +16,47 @@
       "message": "I think the actual error logs need to come form the transport implementations themselves. The only other information we can really log here is the write size",
       "revId": "351bad5101b1881bbaa44595fda6544309595f1c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b812d262_3f296a6d",
+        "filename": "fastboot/fastboot_driver.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 1710792
+      },
+      "writtenOn": "2024-10-23T20:33:13Z",
+      "side": 1,
+      "message": "we should add error message in Transport::Write",
+      "range": {
+        "startLine": 567,
+        "startChar": 30,
+        "endLine": 567,
+        "endChar": 35
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "e2479e8b_b839e947",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fastboot/fastboot_driver.cpp",
+              "range": {
+                "startLine": 567,
+                "startChar": 0,
+                "endLine": 568,
+                "endChar": 0
+              },
+              "replacement": "    ssize_t tmp \u003d transport_-\u003eWrite(buf, size, 0);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "351bad5101b1881bbaa44595fda6544309595f1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
