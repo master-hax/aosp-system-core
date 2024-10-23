@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4dc863a2_269041ec",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.desktop.rc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-10-23T15:53:35Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1a97994a_6538f10f",
+      "revId": "5a2fe48694e943f3311fb6930846e3f3cfe00b6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "55e77d0f_d84f5546",
