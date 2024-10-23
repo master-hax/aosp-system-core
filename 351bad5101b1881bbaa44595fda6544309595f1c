@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff747e5d_0268bcf6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-23T20:00:20Z",
+      "side": 1,
+      "message": "I think the actual error logs need to come form the transport implementations themselves. The only other information we can really log here is the write size",
+      "revId": "351bad5101b1881bbaa44595fda6544309595f1c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
