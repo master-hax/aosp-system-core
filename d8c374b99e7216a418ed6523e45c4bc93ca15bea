@@ -94,6 +94,30 @@
       },
       "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b01e0750_12c92a1f",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-23T22:19:33Z",
+      "side": 1,
+      "message": "Sorry this is taking so long. Went down some rabbit holes at first, but now I\u0027m getting an error that makes me think the use of the Any type just isn\u0027t supported by the libraries used for this host test.\n\n```\n21:59:24 local_atest: TaskProfiles/TaskProfilesTest#AttributeRequiredFields/0: FAILURE (0ms)\n  stack\u003d\n    system/extras/libjsonpb/verify/include/jsonpb/json_schema_test.h:87: Failure\n    Value of: res.ok()\n      Actual: false\n    Expected: true\n    Invalid format of file /usr/local/google/home/tjmercier/Code/aosp-main-with-phones/out/host/linux-x86/testcases/libprocessgroup_proto_test/x86_64/task_profiles.json: (profiles[39].actions[0].params[1].value): invalid value \"system\" for type type.googleapis.com/google.protobuf.Any\n```\n\nSo I guess the plan will be to change the task_profiles.json format for Priority and Nice to be string values instead of ints, and do the conversion manually in the parsing code which is unfortunate.",
+      "parentUuid": "458540eb_c3e5fee8",
+      "range": {
+        "startLine": 213,
+        "startChar": 24,
+        "endLine": 213,
+        "endChar": 28
+      },
+      "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
