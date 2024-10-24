@@ -34,6 +34,24 @@
       "parentUuid": "3c18dc4d_1936b477",
       "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b6e5948_8e1d19a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2031040
+      },
+      "writtenOn": "2024-10-24T08:37:47Z",
+      "side": 1,
+      "message": "Submmited Revert^2 of the original patch at aosp/3314844.",
+      "parentUuid": "9a83572e_99e33a72",
+      "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
