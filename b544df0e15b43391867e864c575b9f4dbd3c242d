@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ed49d46_022a08a0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-24T22:22:19Z",
+      "side": 1,
+      "message": "I\u0027m not very familiar with what the DTB partition does so will leave it to David for +2",
+      "revId": "b544df0e15b43391867e864c575b9f4dbd3c242d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
