@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4f2557f_1575c350",
+        "filename": "fs_mgr/fs_mgr_format.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-24T23:01:42Z",
+      "side": 1,
+      "message": "This should be size_t",
+      "revId": "f92429cc963a5d3121bb443c1bca7f97a393e9ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "938067fe_026f8a79",
+        "filename": "fs_mgr/libfstab/include/fstab/fstab.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-10-24T23:01:42Z",
+      "side": 1,
+      "message": "not bool? my preference would be to store user_devices as std::pair\u003cstd::string, bool\u003e or a separate struct. but I don\u0027t know if that makes communication with vdc more difficult.",
+      "revId": "f92429cc963a5d3121bb443c1bca7f97a393e9ab",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
