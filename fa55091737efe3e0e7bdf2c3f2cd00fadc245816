@@ -16,6 +16,24 @@
       "message": "I know that this got reverted in main but in the branch I\u0027ve been working on it was re-picked. Any idea what the plan is here? I\u0027ve got a pile of other patches atop it...",
       "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a83572e_99e33a72",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2031040
+      },
+      "writtenOn": "2024-10-24T07:20:48Z",
+      "side": 1,
+      "message": "The revert happened due to emulator-based issue, which is fixed now (patch that bumps QEMU prebuilts landed yesterday: aosp/3315253, where fix is in aosp/3160116).\n\nThis CL then probably shall be a reland of aosp/3281975 (to keep a history of a submit/revert of this patch) + ChangeId shall be the same as in aosp/3281975.",
+      "parentUuid": "3c18dc4d_1936b477",
+      "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
