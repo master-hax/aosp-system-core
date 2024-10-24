@@ -118,6 +118,30 @@
       },
       "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c61762c_2e439b75",
+        "filename": "libprocessgroup/profiles/task_profiles.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2024-10-24T00:16:02Z",
+      "side": 1,
+      "message": "Same, I\u0027ve been trying locally to switch to google.protobuf.Any, and got the same errors that you showed. Was a bit stumped. Sg, I can try to just doing the string approach + convert to int afterwards, for specific fields.",
+      "parentUuid": "b01e0750_12c92a1f",
+      "range": {
+        "startLine": 213,
+        "startChar": 24,
+        "endLine": 213,
+        "endChar": 28
+      },
+      "revId": "d8c374b99e7216a418ed6523e45c4bc93ca15bea",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
