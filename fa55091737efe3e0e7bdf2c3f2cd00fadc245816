@@ -52,6 +52,24 @@
       "parentUuid": "9a83572e_99e33a72",
       "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f381a960_39013041",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-24T17:28:12Z",
+      "side": 1,
+      "message": "Sounds perfect. I\u0027ll rebase the rest of the series on that one when it lands.",
+      "parentUuid": "6b6e5948_8e1d19a1",
+      "revId": "fa55091737efe3e0e7bdf2c3f2cd00fadc245816",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
