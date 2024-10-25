@@ -22,6 +22,30 @@
       },
       "revId": "ec0f7774c659d204cfd36b0407dbf7f6dc5be762",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92836682_753c58a8",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2216,
+      "author": {
+        "id": 1229339
+      },
+      "writtenOn": "2024-10-25T19:12:53Z",
+      "side": 1,
+      "message": "The `path + \"/\"` below needs a std::string, but the check could be rewritten to work with a `const char*`.\n\n(I wonder if a vector of `std::string_view` would make sense.)",
+      "parentUuid": "a009863e_d01a9222",
+      "range": {
+        "startLine": 2216,
+        "startChar": 29,
+        "endLine": 2216,
+        "endChar": 40
+      },
+      "revId": "ec0f7774c659d204cfd36b0407dbf7f6dc5be762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
