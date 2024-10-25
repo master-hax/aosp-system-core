@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a009863e_d01a9222",
+        "filename": "fs_mgr/fs_mgr.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2216,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-25T14:18:16Z",
+      "side": 1,
+      "message": "should these have just been `const char*` all along? there\u0027s no need for strings at all?",
+      "range": {
+        "startLine": 2216,
+        "startChar": 29,
+        "endLine": 2216,
+        "endChar": 40
+      },
+      "revId": "ec0f7774c659d204cfd36b0407dbf7f6dc5be762",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
