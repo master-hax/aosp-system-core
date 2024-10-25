@@ -69,6 +69,24 @@
       "parentUuid": "5e378622_b2743a7f",
       "revId": "44d2491eb60bbc1295543d1139095fa5fc618a89",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "515c4c96_73a79261",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3484945
+      },
+      "writtenOn": "2024-10-25T09:53:57Z",
+      "side": 1,
+      "message": "Ok, I\u0027ve got your point: since it will be used only for firmware_handler and libmodprobe for now it can be part of libmodprobe since init/Android.bp already depends on it. It will work as long as any other component in  sys/core will not need to use it, which is currently fulfilled. Thanks. I\u0027ve moved it to libmodprobe as suggested.",
+      "parentUuid": "646648e9_ecfcf1f7",
+      "revId": "44d2491eb60bbc1295543d1139095fa5fc618a89",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
