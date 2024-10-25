@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed3107cc_5461440c",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1015,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2024-10-25T01:29:03Z",
+      "side": 1,
+      "message": "I think using `std::stoi` is acceptable here because we want the code to abort if the value is invalid (existing behaviour).",
+      "range": {
+        "startLine": 1015,
+        "startChar": 49,
+        "endLine": 1015,
+        "endChar": 59
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "2c1ad90d_f5eaeb6b",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/task_profiles.cpp",
+              "range": {
+                "startLine": 1015,
+                "startChar": 0,
+                "endLine": 1015,
+                "endChar": 0
+              },
+              "replacement": "                    //\n                    // We use `std::stoi` here because we want the code to abort if the value is\n                    // invalid (existing behaviour).\n"
+            }
+          ]
+        }
+      ],
+      "revId": "0d946bfc0f82a6f2233c9bb0d5a2f4681a61c2e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
