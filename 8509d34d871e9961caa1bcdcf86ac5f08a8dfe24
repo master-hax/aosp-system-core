@@ -1,6 +1,29 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "79eec0d3_1d946b35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-26T01:40:59Z",
+      "side": 1,
+      "message": "i agree with this",
+      "range": {
+        "startLine": 57,
+        "startChar": 13,
+        "endLine": 57,
+        "endChar": 50
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "8a4293fd_71413597",
@@ -14,6 +37,69 @@
       "writtenOn": "2024-10-25T20:31:10Z",
       "side": 1,
       "message": "I\u0027ve done basic testing of this series and I feel it\u0027s in reasonable shape. I\u0027ll want to do a little more testing before I submit but before I did too much I wanted to check: Does this overall idea look good to folks? Anything I need to obviously change?\n\nI\u0027m fairly convinced that we should move to UUID-based bootdevice identification across the board even if it\u0027s really only a huge problem for USB devices today. \n\nI\u0027d especially love some feedback about what people think we should do if the bootloader provides both the old-style bootdevices and the new boot_part_uuid. Right now in this case the code throws a warning and then makes sure boot devices match both. That sounds like a nice \"extra secure\" feature but I don\u0027t think we really need it as talked about in the code. The sysfs paths are also a tad bit fragile across kernel uprevs and we can get away from that fragility by just moving everyone to UUID.\n\nHappy to meet if folks would rather talk over VC.",
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0185cf4f_7e2a5bb0",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-26T01:40:59Z",
+      "side": 1,
+      "message": "Thanks for mentioning this. So this means there will be no boot-time regression to the legacy path, right? (except for the regen of \"one\" uevent)\n\nBut then why don\u0027t we skip all additions in this function when the legacy path is taken?",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 33
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7de29449_17dfaedd",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-26T01:40:59Z",
+      "side": 1,
+      "message": "What if we remove this condition? Associating this and mmc/scsi is not understandable intuitively.",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 35
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cedd2175_361a33ae",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-10-26T01:40:59Z",
+      "side": 1,
+      "message": "nit: format error",
       "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
