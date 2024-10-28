@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "f1c10073_04cb4894",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-28T16:03:15Z",
+      "side": 1,
+      "message": "OK, cool. Given your agreement, I think I\u0027ll change the code to _not_ try to do validation in this case since that feels like it\u0027s asking someone to specify both. I\u0027ll change it so that it just spits out a warning and uses the UUID.",
+      "parentUuid": "79eec0d3_1d946b35",
+      "range": {
+        "startLine": 57,
+        "startChar": 13,
+        "endLine": 57,
+        "endChar": 50
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "8a4293fd_71413597",
@@ -41,6 +65,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "55f73a8f_aeea5362",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-28T16:03:15Z",
+      "side": 1,
+      "message": "Thanks for the review. Sounds like you\u0027re OK with the overall idea here. I\u0027ll do more testing and cleanup and upload a new version in the next few days (my schedule is a bit packed so I\u0027ll be a bit slower than normal).\n\nIf anyone else has any thoughts feel free to add them. Thanks!",
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0185cf4f_7e2a5bb0",
@@ -54,6 +95,30 @@
       "writtenOn": "2024-10-26T01:40:59Z",
       "side": 1,
       "message": "Thanks for mentioning this. So this means there will be no boot-time regression to the legacy path, right? (except for the regen of \"one\" uevent)\n\nBut then why don\u0027t we skip all additions in this function when the legacy path is taken?",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 33
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38241366_46fc9054",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-28T16:03:15Z",
+      "side": 1,
+      "message": "We can if you want. It just means an extra \"boolean\" method we need to add to `device_handler_` to have it know to skip all this. I debated doing that and decided it felt unnecessary but I really could go either way.\n\nI\u0027ll add the check in the next version.",
+      "parentUuid": "0185cf4f_7e2a5bb0",
       "range": {
         "startLine": 118,
         "startChar": 0,
@@ -87,6 +152,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "24754276_f21d732b",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-28T16:03:15Z",
+      "side": 1,
+      "message": "I believe that will break all existing users because of what I say in the comment below. Specifically the old `bootdevices` that bootloaders are passing is the exact path to the nearest \"platform\" parent. If we change it to look for mmc/scsi parents then the path will be deeper.\n\nI\u0027m happy to talk about how to make this clearer or brainstorm other ideas, but we can\u0027t just remove the condition...",
+      "parentUuid": "7de29449_17dfaedd",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 35
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cedd2175_361a33ae",
@@ -100,6 +189,24 @@
       "writtenOn": "2024-10-26T01:40:59Z",
       "side": 1,
       "message": "nit: format error",
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7f72691_17796758",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-10-28T16:03:15Z",
+      "side": 1,
+      "message": "Ah, the \"tab\" at the start. Oops! I\u0027m not sure how I missed that but I\u0027ll fix it up when I re-upload.",
+      "parentUuid": "cedd2175_361a33ae",
       "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
