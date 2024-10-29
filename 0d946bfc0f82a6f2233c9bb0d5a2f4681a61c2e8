@@ -40,6 +40,30 @@
       ],
       "revId": "0d946bfc0f82a6f2233c9bb0d5a2f4681a61c2e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fae75d79_ee363379",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1015,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-10-29T19:39:22Z",
+      "side": 1,
+      "message": "Let\u0027s use `std::strtoul` like for `slack` above for consistency and to silence this.",
+      "parentUuid": "ed3107cc_5461440c",
+      "range": {
+        "startLine": 1015,
+        "startChar": 49,
+        "endLine": 1015,
+        "endChar": 59
+      },
+      "revId": "0d946bfc0f82a6f2233c9bb0d5a2f4681a61c2e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
