@@ -16,6 +16,70 @@
       "message": "Gentle ping for review.",
       "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90648402_6d82c750",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 3438682
+      },
+      "writtenOn": "2024-10-29T13:23:00Z",
+      "side": 1,
+      "message": "What\u0027s the point of using `std::fs:path` when they are immediately converted to the `std::string`? I think this should be a vector, or even better, `std::array` of `std::fs:path`. Then you can use `std::fs::path::/` operator like that:\n```C\nmod_dirs.emplace_back(path_entry / kernel_dirs[n]-\u003ed_name);\n```",
+      "range": {
+        "startLine": 236,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 63
+      },
+      "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8ecbba7_9245eb5d",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 3438682
+      },
+      "writtenOn": "2024-10-29T13:23:00Z",
+      "side": 1,
+      "message": "How about const ref?",
+      "range": {
+        "startLine": 247,
+        "startChar": 13,
+        "endLine": 247,
+        "endChar": 28
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "b4a3df14_55fa5fa9",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "toolbox/modprobe.cpp",
+              "range": {
+                "startLine": 247,
+                "startChar": 0,
+                "endLine": 248,
+                "endChar": 0
+              },
+              "replacement": "        for (const auto\u0026 path_entry : module_paths) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
