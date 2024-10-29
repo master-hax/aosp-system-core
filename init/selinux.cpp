@@ -92,6 +92,7 @@ namespace init {
 
 namespace {
 
+/*
 enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
 
 EnforcingStatus StatusFromProperty() {
@@ -104,12 +105,10 @@ EnforcingStatus StatusFromProperty() {
     }
     return SELINUX_ENFORCING;
 }
+*/
 
 bool IsEnforcing() {
-    if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromProperty() == SELINUX_ENFORCING;
-    }
-    return true;
+    return false;
 }
 
 bool ReadFirstLine(const char* file, std::string* line) {
