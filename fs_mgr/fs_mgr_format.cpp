@@ -32,7 +32,6 @@
 #include <selinux/android.h>
 #include <selinux/label.h>
 #include <selinux/selinux.h>
-#include <filesystem>
 #include <string>
 
 #include "fs_mgr_priv.h"
@@ -127,8 +126,7 @@ static int format_ext4(const std::string& fs_blkdev, const std::string& fs_mnt_p
 
 static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs_projid,
                        bool needs_casefold, bool fs_compress, bool is_zoned,
-                       const std::vector<std::string>& user_devices,
-                       const std::vector<int>& device_aliased) {
+                       const std::vector<std::string>& user_devices) {
     if (!dev_sz) {
         int rc = get_dev_sz(fs_blkdev, &dev_sz);
         if (rc) {
@@ -166,15 +164,9 @@ static int format_f2fs(const std::string& fs_blkdev, uint64_t dev_sz, bool needs
     if (is_zoned) {
         args.push_back("-m");
     }
-    for (size_t i = 0; i < user_devices.size(); i++) {
-        std::string device_name = user_devices[i];
-
+    for (auto& device : user_devices) {
         args.push_back("-c");
-        if (device_aliased[i]) {
-            std::filesystem::path path = device_name;
-            device_name += "@" + path.filename().string();
-        }
-        args.push_back(device_name.c_str());
+        args.push_back(device.c_str());
     }
 
     if (user_devices.empty()) {
@@ -199,7 +191,7 @@ int fs_mgr_do_format(const FstabEntry& entry) {
     if (entry.fs_type == "f2fs") {
         return format_f2fs(entry.blk_device, entry.length, needs_projid, needs_casefold,
                            entry.fs_mgr_flags.fs_compress, entry.fs_mgr_flags.is_zoned,
-                           entry.user_devices, entry.device_aliased);
+                           entry.user_devices);
     } else if (entry.fs_type == "ext4") {
         return format_ext4(entry.blk_device, entry.mount_point, needs_projid,
                            entry.fs_mgr_flags.ext_meta_csum);
