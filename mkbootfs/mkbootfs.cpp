@@ -1,4 +1,5 @@
 
+#include <android-base/file.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <err.h>
@@ -13,6 +14,7 @@
 #include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string>
 
 #include <linux/kdev_t.h>
 
@@ -212,20 +214,12 @@ static void _archive(char *in, char *out, int ilen, int olen)
     if(lstat(in, &s)) err(1, "could not stat '%s'", in);
 
     if(S_ISREG(s.st_mode)){
-        int fd = open(in, O_RDONLY);
-        if(fd < 0) err(1, "cannot open '%s' for read", in);
-
-        char* tmp = (char*) malloc(s.st_size);
-        if(tmp == 0) errx(1, "cannot allocate %zd bytes", s.st_size);
-
-        if(read(fd, tmp, s.st_size) != s.st_size) {
-            err(1, "cannot read %zd bytes", s.st_size);
+        std::string content;
+        if (!android::base::ReadFileToString(in, &content)) {
+            err(1, "cannot read '%s'", in);
         }
 
-        _eject(&s, out, olen, tmp, s.st_size);
-
-        free(tmp);
-        close(fd);
+        _eject(&s, out, olen, (char*)content.c_str(), content.size());
     } else if(S_ISDIR(s.st_mode)) {
         _eject(&s, out, olen, 0, 0);
         _archive_dir(in, out, ilen, olen);
