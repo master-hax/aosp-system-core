@@ -16,6 +16,24 @@
       "message": "use fopen() and fread() instead?\n\n(normally i\u0027d say \"this should just use android::base::ReadFileToString()\", but i assume converting this file to C++ would be a PITA...)",
       "revId": "677594e44b804401d72cba916d9e89494fcabe2d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d63e26a_68e24c65",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-29T22:14:27Z",
+      "side": 1,
+      "message": "actually, it\u0027s not particularly hard: https://android-review.git.corp.google.com/c/platform/system/core/+/3323749\n\ngiven that, you can replace all this code with just a call to android::base::ReadFileToString()...",
+      "parentUuid": "c3efb3b3_ef8b962b",
+      "revId": "677594e44b804401d72cba916d9e89494fcabe2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
