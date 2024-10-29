@@ -325,6 +325,7 @@ cc_library_static {
         },
     },
     apex_available: [
+        "//apex_available:platform",
         "com.android.runtime",
     ],
 }
@@ -340,6 +341,10 @@ cc_binary {
         "libprotobuf-cpp-lite",
         "libtombstone_proto",
         "libunwindstack",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.runtime",
     ],
 }
 
