@@ -217,8 +217,20 @@ static void _archive(char *in, char *out, int ilen, int olen)
         char* tmp = (char*) malloc(s.st_size);
         if(tmp == 0) errx(1, "cannot allocate %zd bytes", s.st_size);
 
-        if(read(fd, tmp, s.st_size) != s.st_size) {
-            err(1, "cannot read %zd bytes", s.st_size);
+        ssize_t bytes_read;
+        size_t total_bytes_read = 0;
+
+        while (total_bytes_read < s.st_size) {
+            bytes_read = read(fd, tmp + total_bytes_read, s.st_size - total_bytes_read);
+            if (bytes_read <= 0) {
+                // Handle error: either an actual error occurred or EOF was reached
+                if (bytes_read == 0) {
+                    err(1, "unexpected EOF while reading file");
+                } else {
+                    err(1, "error reading file");
+                }
+            }
+            total_bytes_read += bytes_read;
         }
 
         _eject(&s, out, olen, tmp, s.st_size);
