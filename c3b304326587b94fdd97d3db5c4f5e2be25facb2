@@ -16,6 +16,23 @@
       "message": "Can we make a scripts or tests directory to put this in?",
       "revId": "c3b304326587b94fdd97d3db5c4f5e2be25facb2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57a66aed_0e0183dc",
+        "filename": "fs_mgr/libsnapshot/apply-update.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-10-29T18:08:53Z",
+      "side": 1,
+      "message": "what about static partitions besides bootloader and radio? do we support flashing them here ?",
+      "revId": "c3b304326587b94fdd97d3db5c4f5e2be25facb2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
