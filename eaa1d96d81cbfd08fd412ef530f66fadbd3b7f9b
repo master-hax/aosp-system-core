@@ -129,6 +129,30 @@
       },
       "revId": "eaa1d96d81cbfd08fd412ef530f66fadbd3b7f9b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcd433e2_7b54d62b",
+        "filename": "mkbootfs/mkbootfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-30T15:58:56Z",
+      "side": 1,
+      "message": "that website\u0027s terrible ... you usually want to look at https://en.cppreference.com/w/cpp/string/basic_string/data instead; it\u0027s typically much more complete and correct.\n\n(and even when it\u0027s not, it\u0027s a wiki so you have no-one to blame but yourself :-) )",
+      "parentUuid": "609e2eed_dc53ae9c",
+      "range": {
+        "startLine": 222,
+        "startChar": 30,
+        "endLine": 222,
+        "endChar": 52
+      },
+      "revId": "eaa1d96d81cbfd08fd412ef530f66fadbd3b7f9b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
