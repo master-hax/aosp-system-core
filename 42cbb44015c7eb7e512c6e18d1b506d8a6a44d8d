@@ -34,6 +34,24 @@
       "parentUuid": "c5a15747_22c9cbde",
       "revId": "42cbb44015c7eb7e512c6e18d1b506d8a6a44d8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29be7aac_1c5a4820",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-30T18:03:38Z",
+      "side": 1,
+      "message": "talking to the team, it sounds like this is \"WAI\" --- treehugger doesn\u0027t guarantee it\u0027s building against ToT, so the last good build just wasn\u0027t new enough. \"try again until it goes away\".",
+      "parentUuid": "f74b8f0f_22dc8ffe",
+      "revId": "42cbb44015c7eb7e512c6e18d1b506d8a6a44d8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
