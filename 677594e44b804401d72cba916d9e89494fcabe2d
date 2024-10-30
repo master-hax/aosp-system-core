@@ -52,6 +52,24 @@
       "parentUuid": "1d63e26a_68e24c65",
       "revId": "677594e44b804401d72cba916d9e89494fcabe2d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a479eb0_bdf57b3b",
+        "filename": "mkbootfs/mkbootfs.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1998840
+      },
+      "writtenOn": "2024-10-30T15:25:14Z",
+      "side": 1,
+      "message": "Done, thanks for that!",
+      "parentUuid": "c69f223b_fb164ca7",
+      "revId": "677594e44b804401d72cba916d9e89494fcabe2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
