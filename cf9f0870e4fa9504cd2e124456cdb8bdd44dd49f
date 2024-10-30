@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28f9b775_812ad75c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-30T22:14:31Z",
+      "side": 1,
+      "message": "I\u0027m still not sure how useful this would be on device today, However, I can definitely see this working in the future on different types of devices.",
+      "revId": "cf9f0870e4fa9504cd2e124456cdb8bdd44dd49f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
