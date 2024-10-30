@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "35aa47a4_b3ba1c96",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_proto_to_text.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-10-30T21:46:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "05f742af_e727d5a8",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c180478_a5c9b0d3",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d110c794_06cba5ec",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-10-30T21:46:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c180478_a5c9b0d3",
+      "range": {
+        "startLine": 93,
+        "startChar": 30,
+        "endLine": 93,
+        "endChar": 56
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "79a32d7f_4c0a4e5c",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-10-30T17:41:47Z",
       "side": 1,
       "message": "We\u0027ve been updating our host headers to add these defines so that we don\u0027t have to have all of these headers all stored here. Would that be worth doing?",
+      "range": {
+        "startLine": 27,
+        "startChar": 8,
+        "endLine": 27,
+        "endChar": 24
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac4bf274_68da68e8",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-10-30T21:46:33Z",
+      "side": 1,
+      "message": "I think we will need these defines here for targeting Mac/Windows.",
+      "parentUuid": "79a32d7f_4c0a4e5c",
       "range": {
         "startLine": 27,
         "startChar": 8,
