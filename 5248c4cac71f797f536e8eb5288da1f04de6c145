@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05f742af_e727d5a8",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/tombstone_proto_to_text.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-30T17:41:47Z",
+      "side": 1,
+      "message": "Change to #pragma once\n\nWe haven\u0027t modified all headers files in one change, but all new or modified headers use this new pattern.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c180478_a5c9b0d3",
+        "filename": "debuggerd/libdebuggerd/tombstone_proto_to_text.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-30T17:41:47Z",
+      "side": 1,
+      "message": "I think it might be better to pass in the arch only since that\u0027s the only thing used in this function. It makes it easier to understand at the call sites what the function is probably doing, at least in my view.",
+      "range": {
+        "startLine": 93,
+        "startChar": 30,
+        "endLine": 93,
+        "endChar": 56
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "79a32d7f_4c0a4e5c",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-30T17:41:47Z",
+      "side": 1,
+      "message": "We\u0027ve been updating our host headers to add these defines so that we don\u0027t have to have all of these headers all stored here. Would that be worth doing?",
+      "range": {
+        "startLine": 27,
+        "startChar": 8,
+        "endLine": 27,
+        "endChar": 24
+      },
+      "revId": "5248c4cac71f797f536e8eb5288da1f04de6c145",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
