@@ -16,6 +16,24 @@
       "message": "I\u0027m still not sure how useful this would be on device today, However, I can definitely see this working in the future on different types of devices.",
       "revId": "cf9f0870e4fa9504cd2e124456cdb8bdd44dd49f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0deef387_376a8efa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1067098
+      },
+      "writtenOn": "2024-10-30T22:22:57Z",
+      "side": 1,
+      "message": "(As a a reminder, the intent is to run the symbolization on the host.)",
+      "parentUuid": "28f9b775_812ad75c",
+      "revId": "cf9f0870e4fa9504cd2e124456cdb8bdd44dd49f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
