@@ -81,6 +81,30 @@
       },
       "revId": "eaa1d96d81cbfd08fd412ef530f66fadbd3b7f9b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21e4d438_2bfa6f75",
+        "filename": "mkbootfs/mkbootfs.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-30T15:51:05Z",
+      "side": 1,
+      "message": "\u003e Done. data() also returns a (char*) so we will have to cast regardless.\n\nwhy would you have a cast from `char*` to `char*`?",
+      "parentUuid": "2c7a9823_31b328c3",
+      "range": {
+        "startLine": 222,
+        "startChar": 30,
+        "endLine": 222,
+        "endChar": 52
+      },
+      "revId": "eaa1d96d81cbfd08fd412ef530f66fadbd3b7f9b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

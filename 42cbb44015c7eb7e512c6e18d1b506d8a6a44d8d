@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5a15747_22c9cbde",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-10-30T15:51:05Z",
+      "side": 1,
+      "message": "(the build error from libc++ hasn\u0027t gone away, so i\u0027ll ask on my team\u0027s chat, since we\u0027re the ones who own libc++ and i\u0027ve never seen that error before...)",
+      "revId": "42cbb44015c7eb7e512c6e18d1b506d8a6a44d8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
