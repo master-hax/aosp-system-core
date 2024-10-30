@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c9cd5b2_819e1cd2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-10-30T17:44:36Z",
+      "side": 1,
+      "message": "I guess we are the de facto owners of this directory.",
+      "revId": "9081b85a1d36b563dbd864fec5ace67e59fa9c54",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
