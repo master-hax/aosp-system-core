@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2470dd3_2978efac",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2024-10-30T00:17:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f906844b_bc1de831",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 13
+      },
+      "revId": "0de7c94b7175b9e73ba6982d17907d1f56cd613e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1b537d37_fe0637f5",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-10-29T21:56:51Z",
       "side": 1,
       "message": "Think we need it here too, but this is signed.",
+      "range": {
+        "startLine": 1005,
+        "startChar": 60,
+        "endLine": 1005,
+        "endChar": 68
+      },
+      "revId": "0de7c94b7175b9e73ba6982d17907d1f56cd613e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44e21fc3_93dbbb85",
+        "filename": "libprocessgroup/task_profiles.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1005,
+      "author": {
+        "id": 1149384
+      },
+      "writtenOn": "2024-10-30T00:17:21Z",
+      "side": 1,
+      "message": "changed the function to `readLong` instead and added a sign check.",
+      "parentUuid": "1b537d37_fe0637f5",
       "range": {
         "startLine": 1005,
         "startChar": 60,
