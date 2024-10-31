@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "43efe709_dff47ee6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-10-31T17:01:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0db3f569_4f58cbb5",
+      "revId": "c3b304326587b94fdd97d3db5c4f5e2be25facb2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57a66aed_0e0183dc",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-10-29T18:08:53Z",
       "side": 1,
       "message": "what about static partitions besides bootloader and radio? do we support flashing them here ?",
+      "revId": "c3b304326587b94fdd97d3db5c4f5e2be25facb2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7825579e_86811837",
+        "filename": "fs_mgr/libsnapshot/apply-update.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-10-31T17:01:57Z",
+      "side": 1,
+      "message": "Yes..\n\n`fastboot flashall --exclude-dynamic-partitions --disable-super-optimization`\n\nThanks to zhengdaniel@ for adding that command",
+      "parentUuid": "57a66aed_0e0183dc",
       "revId": "c3b304326587b94fdd97d3db5c4f5e2be25facb2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
