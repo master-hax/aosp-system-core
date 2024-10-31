@@ -16,6 +16,29 @@
       "message": "Hi Jaewan, PTAL",
       "revId": "5d5c732a3b374c7992dfa79b6d62ea9f95119a0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6cf96e49_e58d2171",
+        "filename": "trusty/keymint/android.hardware.security.keymint-service.rust.trusty.system.nonsecure.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1019013
+      },
+      "writtenOn": "2024-10-31T01:59:46Z",
+      "side": 1,
+      "message": "what exactly the relationship between keymint and security VM?\n\nI thought that security VM is wider term that including keymint, secretkeeper, ... Am I correct? If so, can we kil `ro.hardware.security.keymint.trusty.system` (perhapse rename it to `ro.hardware.security.trusty.system` as well?",
+      "range": {
+        "startLine": 15,
+        "startChar": 19,
+        "endLine": 15,
+        "endChar": 30
+      },
+      "revId": "5d5c732a3b374c7992dfa79b6d62ea9f95119a0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
