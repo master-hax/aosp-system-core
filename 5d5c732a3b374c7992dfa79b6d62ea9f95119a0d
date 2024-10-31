@@ -39,6 +39,30 @@
       },
       "revId": "5d5c732a3b374c7992dfa79b6d62ea9f95119a0d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d89e7338_1263197f",
+        "filename": "trusty/keymint/android.hardware.security.keymint-service.rust.trusty.system.nonsecure.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-10-31T06:01:31Z",
+      "side": 1,
+      "message": "\u003e what exactly the relationship between keymint and security VM?\n\nSecurity VM is the VM that will serve both KeyMint and GateKeeper. SecretKeeper is not relevant to it. We\u0027ve already used this term in different presentations (See [ Android W plan](https://docs.google.com/presentation/d/1buaPl-PpI54tlcCoAnnW_o1q6Akjy9gm4p821GPBxyE/edit?usp\u003dsharing\u0026resourcekey\u003d0-zG2Ityza0vG-wKD2bmJ-7g) Page 5).\n\n\u003e can we kil `ro.hardware.security.keymint.trusty.system`?\n\nI don\u0027t think we can. Unlike the properties changed in this cl, which are system internal, this one is the one we expose to vendors to let them enable KM in system (See go/android-w-avf-trusty-vms \u003e Deployment). Since this VM serves both KM and GK, partners might only want to enable GK, then they could specify `ro.hardware.security.gatekeeper.trusty.system` or something similar.",
+      "parentUuid": "6cf96e49_e58d2171",
+      "range": {
+        "startLine": 15,
+        "startChar": 19,
+        "endLine": 15,
+        "endChar": 30
+      },
+      "revId": "5d5c732a3b374c7992dfa79b6d62ea9f95119a0d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
