@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ab58469_cf380796",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3709726
+      },
+      "writtenOn": "2024-11-01T03:06:47Z",
+      "side": 1,
+      "message": "Plese bypass my phone",
+      "revId": "97b5fa8a885a1daf28db1a446e6081cecb543a98",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
