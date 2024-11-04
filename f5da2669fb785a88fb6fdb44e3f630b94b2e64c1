@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf705932_177212d9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-11-04T03:34:02Z",
+      "side": 1,
+      "message": "can we also move sepolicy changes from device/google/cuttlefish to system/sepolicy?",
+      "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
