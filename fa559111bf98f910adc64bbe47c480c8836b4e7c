@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba6e5d5d_7b14db35",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-11-04T10:13:05Z",
+      "side": 1,
+      "message": "Ah, I missed that the vector was typed with std::string instead of std::fs::path. That was leftovers after I refactored the code. I changed that. Thanks for pointing this out.",
+      "parentUuid": "90648402_6d82c750",
+      "range": {
+        "startLine": 236,
+        "startChar": 8,
+        "endLine": 239,
+        "endChar": 63
+      },
+      "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c8ecbba7_9245eb5d",
@@ -78,6 +102,30 @@
           ]
         }
       ],
+      "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "686bee00_98861e8e",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-11-04T10:13:05Z",
+      "side": 1,
+      "message": "Fixed. Thanks!",
+      "parentUuid": "c8ecbba7_9245eb5d",
+      "range": {
+        "startLine": 247,
+        "startChar": 13,
+        "endLine": 247,
+        "endChar": 28
+      },
       "revId": "fa559111bf98f910adc64bbe47c480c8836b4e7c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
