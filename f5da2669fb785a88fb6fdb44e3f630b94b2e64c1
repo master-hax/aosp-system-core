@@ -34,6 +34,75 @@
       "parentUuid": "cf705932_177212d9",
       "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3573f56d_1d00be2d",
+        "filename": "trusty/guest/services/trusty_security_vm_launcher/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-11-04T07:56:39Z",
+      "side": 1,
+      "message": "nit: This can be dropped to facilitate the reuse in Widevine VM. Anyway this file is only included when the feature flag is on at a higher level.",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 10,
+        "endChar": 7
+      },
+      "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ee06bad_380c4316",
+        "filename": "trusty/guest/services/trusty_security_vm_launcher/early_vms.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-11-04T07:56:39Z",
+      "side": 1,
+      "message": "Could we move this file to packages/modules/Virtualization/guest/trusty/common/ [1]?\n\nThe Widevine VM also intends to reuse this file in the future, and packages/modules/Virtualization/guest/trusty is the directory where we plan to regroup all the Trusty VM code (discussed in http://b/369744744#comment14).\n\n[1] https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Virtualization/guest/trusty",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5586cea4_902735c8",
+        "filename": "trusty/guest/services/trusty_security_vm_launcher/trusty_security_vm_launcher.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-11-04T07:56:39Z",
+      "side": 1,
+      "message": "Could we keep this file in Cuttlefish, as it is specific to that environment? It launches the VM in non-protected mode and notifies the non-secure system property.\nI’m not sure if this file can be reused on a prod device.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
