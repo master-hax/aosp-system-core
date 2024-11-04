@@ -16,6 +16,24 @@
       "message": "can we also move sepolicy changes from device/google/cuttlefish to system/sepolicy?",
       "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8828afdb_4d9973a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3460192
+      },
+      "writtenOn": "2024-11-04T07:03:09Z",
+      "side": 1,
+      "message": "Added this https://android-review.git.corp.google.com/c/platform/system/sepolicy/+/3329239 to also move sepolicy.",
+      "parentUuid": "cf705932_177212d9",
+      "revId": "f5da2669fb785a88fb6fdb44e3f630b94b2e64c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
