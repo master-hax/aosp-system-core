@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73269c35_cb2b917c",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-11-04T20:48:38Z",
+      "side": 1,
+      "message": "I don\u0027t think this covers the case where you have 4k page size modules directly under `/lib/modules` and 16k page size modules under `/lib/modules/major.minor-16k`. For that case `n \u003e 0` and therefore you wouldn\u0027t call `mod_dirs.emplace_back(path_entry)`.",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
