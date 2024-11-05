@@ -46,6 +46,30 @@
       },
       "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83bd76c0_9388b1d2",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-11-05T23:41:37Z",
+      "side": 1,
+      "message": "Right, but you don\u0027t handle the case where a device has both. When the for-loop iterates over `/lib/modules`, `scandir()` will return 1 for the directory `major.minor-16k` and we will add `/lib/modules/major.minor-16k` to `mod_dirs` and then continue to the next set of `module_paths`. That means the directory `/lib/modules` won\u0027t be added to `mod_dirs` and we will fail to boot when the page size is 4k.\n\nWe handled this before with the check where `mod_dirs` contains only the 16k page directory and not `/lib/modules` itself:\n```\nif (mod_dirs.empty() || getpagesize() \u003d\u003d 4096) {\n  mod_dirs.emplace_back(LIB_MODULES_PREFIX);\n}\n```",
+      "parentUuid": "36ed2103_c5bad740",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
