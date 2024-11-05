@@ -220,7 +220,10 @@ cc_defaults {
     whole_static_libs: [
         "libcap",
     ],
-    header_libs: ["bootimg_headers"],
+    header_libs: [
+        "bootimg_headers",
+        "libxsdc-utils",
+    ],
     proto: {
         type: "lite",
         export_proto_headers: true,
