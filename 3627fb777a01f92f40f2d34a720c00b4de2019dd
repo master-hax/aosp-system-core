@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "500e4cad_c5e6b1a6",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1146974
+      },
+      "writtenOn": "2024-11-05T23:01:31Z",
+      "side": 1,
+      "message": "Why can\u0027t we do this now?",
+      "range": {
+        "startLine": 18,
+        "startChar": 21,
+        "endLine": 18,
+        "endChar": 64
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "9839e4b3_3cb5ddc3",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+              "range": {
+                "startLine": 18,
+                "startChar": 0,
+                "endLine": 19,
+                "endChar": 0
+              },
+              "replacement": "// TODO(b/362658565) remove this, or remove the second parameter.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "3627fb777a01f92f40f2d34a720c00b4de2019dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
