@@ -22,6 +22,30 @@
       },
       "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36ed2103_c5bad740",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-11-05T12:20:31Z",
+      "side": 1,
+      "message": "To my understanding, as for the second case:\n- /lib/modules/major.minor-16k - this case would fall into the first path of the if clause, i.e. `n \u003e 0` which is preserved from the original solution. In case the path matches the `KernelVersionNameFilter` it would be added.\n\n- as for the second case - modules directly stored under `/lib/modules` - if this directory exists it would be added to the path anyway - please note that in this case, the scandir function returns `0` - directory exists but no matching entries were found. To summarize, if the `/lib/modules` directory exists it would be added anyway, no matter the page size. I guess that there would be no point in adding the path if it doesn\u0027t exist, even when the page size equals 4096.\n\nI might be missing something in my understanding though. Could you please look at this again?\nThanks!",
+      "parentUuid": "73269c35_cb2b917c",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
