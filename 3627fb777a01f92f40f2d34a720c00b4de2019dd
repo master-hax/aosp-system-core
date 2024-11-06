@@ -40,6 +40,30 @@
       ],
       "revId": "3627fb777a01f92f40f2d34a720c00b4de2019dd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1127d01_533956e0",
+        "filename": "libvendorsupport/include_llndk/android/llndk-versioning.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-06T01:31:00Z",
+      "side": 1,
+      "message": "API_LEVEL_AT_LEAST is used by libbinder_ndk and because it has device/host/trusty variants, it\u0027s not easy to clean them up for now without a good understanding. I\u0027d rather ask the team.",
+      "parentUuid": "500e4cad_c5e6b1a6",
+      "range": {
+        "startLine": 18,
+        "startChar": 21,
+        "endLine": 18,
+        "endChar": 64
+      },
+      "revId": "3627fb777a01f92f40f2d34a720c00b4de2019dd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
