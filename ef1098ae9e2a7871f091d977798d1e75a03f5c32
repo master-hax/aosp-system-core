@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4845fd5c_d65cc09b",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-06T04:17:29Z",
+      "side": 1,
+      "message": "Can subsystem_paths be by-ref here?",
+      "revId": "ef1098ae9e2a7871f091d977798d1e75a03f5c32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
