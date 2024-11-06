@@ -190,6 +190,22 @@ bool GetVendorMappingVersion(std::string* plat_vers) {
     return true;
 }
 
+int GetVendorGenfsVersion() {
+    std::string line;
+    if (!ReadFirstLine("/vendor/etc/selinux/genfs_labels_version.txt", &line)) {
+        PLOG(ERROR) << "Failed to read /vendor/etc/selinux/genfs_labels_version.txt; assuming it's "
+                       "202404";
+        return 202404;
+    }
+    int version;
+    if (!ParseInt(line, &version)) {
+        PLOG(ERROR) << "Failed to parse the genfs labels version " << line
+                    << "; assuming it's 202404";
+        return 202404;
+    }
+    return version;
+}
+
 constexpr const char plat_policy_cil_file[] = "/system/etc/selinux/plat_sepolicy.cil";
 
 bool IsSplitPolicyDevice() {
@@ -324,6 +340,14 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     }
     const std::string version_as_string = std::to_string(SEPOLICY_VERSION);
 
+    std::vector<std::string> genfs_cil_files;
+
+    std::string genfs_202504_cil_file("/system/etc/selinux/plat_sepolicy_genfs_202504.cil");
+    int vendor_genfs_version = GetVendorGenfsVersion();
+    if (access(genfs_202504_cil_file.c_str(), F_OK) == 0 && vendor_genfs_version >= 202504) {
+        genfs_cil_files.push_back(std::move(genfs_202504_cil_file));
+    }
+
     // clang-format off
     std::vector<const char*> compile_args {
         "/system/bin/secilc",
@@ -363,6 +387,9 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     }
     if (!odm_policy_cil_file.empty()) {
         compile_args.push_back(odm_policy_cil_file.c_str());
+    }
+    for (const std::string& genfs_cil_file : genfs_cil_files) {
+        compile_args.push_back(genfs_cil_file.c_str());
     }
     compile_args.push_back(nullptr);
 
