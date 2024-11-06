@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3f1dc45f_2eb223af",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2052709
+      },
+      "writtenOn": "2024-11-06T13:13:22Z",
+      "side": 1,
+      "message": "Looking at the documentation it\u0027s hard to say that `androidboot.boot_devices` **must** point to the devices which include **all** of the partitions (not only `super`). It\u0027s unclear in my opinion. I mean, we should avoid calling it improper behavior.\n\nThat being said, I think your solution is OK to apply our solution only for \"new\" devices.",
+      "revId": "88415d2f69be149003fb2a7f1345b4eb842bb4c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3091417_cb5bd66d",
         "filename": "init/block_dev_initializer.cpp",
         "patchSetId": 1
