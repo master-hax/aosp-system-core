@@ -17,9 +17,26 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-prebuilt_etc {
+soong_config_module_type {
+    name: "prebuilt_etc_with_config",
+    module_type: "prebuilt_etc",
+    config_namespace: "libprocessgroup",
+    bool_variables: [
+        "memcgv2",
+    ],
+    properties: [
+        "src",
+    ],
+}
+
+prebuilt_etc_with_config {
     name: "cgroups.json",
     src: "cgroups.json",
+    soong_config_variables: {
+        memcgv2: {
+            src: "cgroups_memcgv2.json",
+        }
+    },
 }
 
 prebuilt_etc {
