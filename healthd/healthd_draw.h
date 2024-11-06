@@ -89,4 +89,4 @@ class HealthdDraw {
   HealthdDraw(animation* anim);
 };
 
-#endif  // HEALTHD_DRAW_H
+#endif  
