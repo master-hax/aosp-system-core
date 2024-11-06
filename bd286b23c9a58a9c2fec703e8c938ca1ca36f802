@@ -1,0 +1,65 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55e34fd9_46024539",
+        "filename": "init/selinux.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1120458
+      },
+      "writtenOn": "2024-11-06T10:24:37Z",
+      "side": 1,
+      "message": "it would be a lot to customize init for every file contexts file we will add in the each release. Will you be able to combine these so we will only have one file here per release?",
+      "range": {
+        "startLine": 381,
+        "startChar": 4,
+        "endLine": 383,
+        "endChar": 5
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "5491e66a_6e44bca7",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/selinux.cpp",
+              "range": {
+                "startLine": 192,
+                "startChar": 0,
+                "endLine": 201,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "init/selinux.cpp",
+              "range": {
+                "startLine": 336,
+                "startChar": 0,
+                "endLine": 338,
+                "endChar": 0
+              },
+              "replacement": "    std::string aosp_sysfs_udc_cil_file(\"/system/etc/selinux/aosp_sysfs_udc.cil\");\n    if (access(aosp_sysfs_udc_cil_file.c_str(), F_OK) \u003d\u003d -1) {\n"
+            },
+            {
+              "path": "init/selinux.cpp",
+              "range": {
+                "startLine": 339,
+                "startChar": 0,
+                "endLine": 339,
+                "endChar": 0
+              },
+              "replacement": "    } else {\n        std::string line;\n        if (!ReadFirstLine(aosp_sysfs_udc_cil_file.c_str(), \u0026line)) {\n            PLOG(ERROR) \u003c\u003c \"Failed to read \" \u003c\u003c aosp_sysfs_udc_cil_file;\n            aosp_sysfs_udc_cil_file.clear();\n        } else if (line !\u003d \"true\") {\n            aosp_sysfs_udc_cil_file.clear();\n        }\n"
+            }
+          ]
+        }
+      ],
+      "revId": "bd286b23c9a58a9c2fec703e8c938ca1ca36f802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
