@@ -190,6 +190,15 @@ bool GetVendorMappingVersion(std::string* plat_vers) {
     return true;
 }
 
+bool IsAospSysfsUdc() {
+    std::string line;
+    if (!ReadFirstLine("/vendor/etc/selinux/aosp_sysfs_udc.txt", &line)) {
+        PLOG(ERROR) << "Failed to read /vendor/etc/selinux/aosp_sysfs_udc.txt; assuming it's false";
+        return false;
+    }
+    return line == "true";
+}
+
 constexpr const char plat_policy_cil_file[] = "/system/etc/selinux/plat_sepolicy.cil";
 
 bool IsSplitPolicyDevice() {
@@ -324,6 +333,11 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     }
     const std::string version_as_string = std::to_string(SEPOLICY_VERSION);
 
+    std::string aosp_sysfs_udc_cil_file("/system/etc/selinux/plat_sepolicy_sysfs_udc.cil");
+    if (access(aosp_sysfs_udc_cil_file.c_str(), F_OK) == -1 || !IsAospSysfsUdc()) {
+        aosp_sysfs_udc_cil_file.clear();
+    }
+
     // clang-format off
     std::vector<const char*> compile_args {
         "/system/bin/secilc",
@@ -363,6 +377,9 @@ bool OpenSplitPolicy(PolicyFile* policy_file) {
     }
     if (!odm_policy_cil_file.empty()) {
         compile_args.push_back(odm_policy_cil_file.c_str());
+    }
+    if (!aosp_sysfs_udc_cil_file.empty()) {
+        compile_args.push_back(aosp_sysfs_udc_cil_file.c_str());
     }
     compile_args.push_back(nullptr);
 
