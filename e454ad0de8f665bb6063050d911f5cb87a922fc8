@@ -1,0 +1,45 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "589dec88_685258d2",
+        "filename": "init/devices.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T21:02:08Z",
+      "side": 1,
+      "message": "This is wrong. I\u0027ll fix. Not sure how I messed that up. 😞",
+      "range": {
+        "startLine": 208,
+        "startChar": 20,
+        "endLine": 208,
+        "endChar": 25
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "2b861351_8f3d6e93",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/devices.cpp",
+              "range": {
+                "startLine": 208,
+                "startChar": 0,
+                "endLine": 209,
+                "endChar": 0
+              },
+              "replacement": "        info.type \u003d \"vbd\";\n"
+            }
+          ]
+        }
+      ],
+      "revId": "e454ad0de8f665bb6063050d911f5cb87a922fc8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
