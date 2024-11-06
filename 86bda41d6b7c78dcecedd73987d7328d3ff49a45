@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "127a5b6a_bcaa37c7",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-06T03:32:53Z",
+      "side": 1,
+      "message": "nit: why is this passed by value?",
+      "range": {
+        "startLine": 191,
+        "startChar": 48,
+        "endLine": 191,
+        "endChar": 59
+      },
+      "revId": "86bda41d6b7c78dcecedd73987d7328d3ff49a45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dea9b738_e7589bed",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-06T03:32:53Z",
+      "side": 1,
+      "message": "can these be returned as part of the return value? ... by defining a local struct?",
+      "range": {
+        "startLine": 191,
+        "startChar": 73,
+        "endLine": 192,
+        "endChar": 68
+      },
+      "revId": "86bda41d6b7c78dcecedd73987d7328d3ff49a45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
