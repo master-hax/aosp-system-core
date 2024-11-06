@@ -50,6 +50,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d1429e07_46befdc8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T00:02:08Z",
+      "side": 1,
+      "message": "I\u0027ve updated the comments here and indicated that we\u0027ll just use `boot_part_uuid` here and explained why. Please take a look. Thanks!",
+      "parentUuid": "f1c10073_04cb4894",
+      "range": {
+        "startLine": 57,
+        "startChar": 13,
+        "endLine": 57,
+        "endChar": 50
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "8a4293fd_71413597",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 3
@@ -212,6 +236,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c852f8c6_7339b7bd",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T00:02:08Z",
+      "side": 1,
+      "message": "\u003e Acknowledged. I actually don\u0027t have a strong preference. I basically wanted to know why though.\n\nOK, I\u0027ll leave it how it is then and try to add more clarifying comments. If you can think of a way to say it better or you change your mind and want a boolean then let me know! :-)\n\n---\n\n\u003e InitDevices() gets called multiple times, right? Will this shortcut on subsequent calls, when using uuids?\n\nOn the normal boot I\u0027ve been testing I\u0027m not seeing it called more than once, but indeed searching the code I see different places it\u0027s called which seem to be for some cases.\n\nI\u0027m going to move this to its own function and then make sure it\u0027s called once.",
+      "parentUuid": "74bd4884_75c9fd66",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 33
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7de29449_17dfaedd",
@@ -259,6 +307,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8aa2fa2a_64c1a70e",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T00:02:08Z",
+      "side": 1,
+      "message": "I\u0027ve tweaked the wording of the comment slightly so hopefully the next person that reads it won\u0027t be confused. If you have any suggestions to make it better please shout! :-)",
+      "parentUuid": "24754276_f21d732b",
+      "range": {
+        "startLine": 196,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 35
+      },
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "de4fb3c6_51757cef",
@@ -272,6 +344,24 @@
       "writtenOn": "2024-10-29T15:52:15Z",
       "side": 1,
       "message": "nit: s/NULL/nullptr",
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ace1f630_a90019b4",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T00:02:08Z",
+      "side": 1,
+      "message": "Thanks for spotting! I spend 99% of my time coding in C, so if you see me do anything else wrong like this please let me know.",
+      "parentUuid": "de4fb3c6_51757cef",
       "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -307,6 +397,24 @@
       "side": 1,
       "message": "Ah, the \"tab\" at the start. Oops! I\u0027m not sure how I missed that but I\u0027ll fix it up when I re-upload.",
       "parentUuid": "cedd2175_361a33ae",
+      "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05aae6d9_438816d9",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T00:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7f72691_17796758",
       "revId": "8509d34d871e9961caa1bcdcf86ac5f08a8dfe24",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
