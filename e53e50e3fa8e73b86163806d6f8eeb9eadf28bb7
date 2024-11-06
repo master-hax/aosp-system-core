@@ -16,6 +16,24 @@
       "message": "It looks like any kernel without this change is EOL\u0027d?",
       "revId": "e53e50e3fa8e73b86163806d6f8eeb9eadf28bb7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b66018e1_46239e9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T15:27:02Z",
+      "side": 1,
+      "message": "\u003e It looks like any kernel without this change is EOL\u0027d?\n\nI\u0027m not sure I understand the comment. The kernel change is very recently landed and I\u0027ve posted the pick for the Android kernel at: https://r.android.com/3336777. It would be pretty easy to backport that to older kernels. In fact, if you follow the link to the mailing list post you can find my \"after the cut\" info on the patch points to a previous version of the patch posted on 2017. :-)\n\nHowever, we only we only need kernels with this change on products that are using `boot_part_uuid`. If people keep using the old `boot_devices` that will still work.",
+      "parentUuid": "9fd06913_c6b47d29",
+      "revId": "e53e50e3fa8e73b86163806d6f8eeb9eadf28bb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
