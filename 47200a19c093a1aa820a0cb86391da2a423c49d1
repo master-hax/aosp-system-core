@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f234a998_cd63f813",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-06T03:40:59Z",
+      "side": 1,
+      "message": "We have ConsumePrefix which looks more convenient and readable.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:system/libbase/include/android-base/strings.h;drc\u003dca4910117fff436a6dd341919bd232998c64e59c;l\u003d190",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 273,
+        "endChar": 79
+      },
+      "revId": "47200a19c093a1aa820a0cb86391da2a423c49d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
