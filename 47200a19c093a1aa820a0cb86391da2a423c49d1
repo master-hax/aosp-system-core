@@ -22,6 +22,30 @@
       },
       "revId": "47200a19c093a1aa820a0cb86391da2a423c49d1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "369509f8_ef4ab48f",
+        "filename": "init/devices.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T20:29:04Z",
+      "side": 1,
+      "message": "\u003e We have ConsumePrefix which looks more convenient and readable.\n\nSure. This was pre-existing code that I just moved so I made this in its own change before all the rest of my changes.",
+      "parentUuid": "f234a998_cd63f813",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 273,
+        "endChar": 79
+      },
+      "revId": "47200a19c093a1aa820a0cb86391da2a423c49d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
