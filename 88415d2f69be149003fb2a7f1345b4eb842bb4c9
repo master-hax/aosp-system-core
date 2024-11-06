@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "36e7a051_fdedff2d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T20:30:31Z",
+      "side": 1,
+      "message": "Sure. I\u0027ll reword it a little to make it sound less like older products are violating a spec.",
+      "parentUuid": "3f1dc45f_2eb223af",
+      "revId": "88415d2f69be149003fb2a7f1345b4eb842bb4c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3091417_cb5bd66d",
@@ -55,6 +73,30 @@
       "side": 1,
       "message": "We only create named partitions for the boot device, so I think this is fine.",
       "parentUuid": "a3091417_cb5bd66d",
+      "range": {
+        "startLine": 162,
+        "startChar": 23,
+        "endLine": 162,
+        "endChar": 82
+      },
+      "revId": "88415d2f69be149003fb2a7f1345b4eb842bb4c9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fc5f3dc_84871a77",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-06T20:30:31Z",
+      "side": 1,
+      "message": "OK, great. Thanks for confirming! :-)",
+      "parentUuid": "b9895249_da0cbdf5",
       "range": {
         "startLine": 162,
         "startChar": 23,
