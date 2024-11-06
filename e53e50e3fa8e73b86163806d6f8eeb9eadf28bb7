@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fd06913_c6b47d29",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-06T04:10:43Z",
+      "side": 1,
+      "message": "It looks like any kernel without this change is EOL\u0027d?",
+      "revId": "e53e50e3fa8e73b86163806d6f8eeb9eadf28bb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
