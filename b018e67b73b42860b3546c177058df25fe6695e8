@@ -70,6 +70,30 @@
       },
       "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84177e62_1a98613a",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 2055842
+      },
+      "writtenOn": "2024-11-06T06:47:22Z",
+      "side": 1,
+      "message": "Ah, now I get it. Indeed, I missed this case. Thanks for the detailed explanation! I uploaded a new patchset that should fix this case. Now, the root directory is implicitly added to the search path if it exists, even when there were some matches for `major.minor`. There might arise a question whether it would be harmful to add `/lib/modules` unconditionally, no matter of the page size? WDYT? In that case the logic is simplified a little bit.",
+      "parentUuid": "83bd76c0_9388b1d2",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
