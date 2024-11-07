@@ -94,6 +94,30 @@
       },
       "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "29474922_4c2e1c49",
+        "filename": "toolbox/modprobe.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-11-07T17:58:26Z",
+      "side": 1,
+      "message": "I had to think about this to remember why we have the `getpagesize() \u003d\u003d 4096` check. Basically, in `KernelVersionNameFilter()` we check the major and minor kernel version as well as the page size (by calling `ModDirMatchesKernelPageSize()`) to find the correct kernel modules to load. To support backwards compatibility, we assume that if there are multiple set of kernel modules (size of mod_dirs is \u003e 0), then the modules directly under `/lib/modules` are for the 4k page size kernel. Since the 4k and 16k modules have different kernel ABIs, we have to pick one or the other which means we either need to add `/lib/modules` OR `/lib/modules/major.minor_16k` to `mod_dirs` -- not both. If you add both then we could pick the wrong one and the device will fail to boot.\n\nSince you\u0027re adding support for more module paths, you probably need to update the logic to be:\n\n```\nif (n \u003d\u003d 0 || getpagesize() \u003d\u003d 4096) {\n  mod_dirs.emplace_back(path_entry);\n}\n```",
+      "parentUuid": "84177e62_1a98613a",
+      "range": {
+        "startLine": 254,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "b018e67b73b42860b3546c177058df25fe6695e8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
