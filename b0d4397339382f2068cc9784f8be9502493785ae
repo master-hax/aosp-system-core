@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db0ffff1_a2422d68",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-11-07T18:03:57Z",
+      "side": 1,
+      "message": "I don\u0027t think this is true and you probably don\u0027t need this change at all. You can pass in the the modules path you want modprobe to search under using the `--dirname|-d` option. For example, to load modules from `/system/lib/modules`, run this command:\n\n```\nmodprobe -a -d /system/lib/modules --all\u003d/system/lib/modules/modules.load\n```\n\nYou can also refer to how Pixel does this in their `insmod.sh` script -- https://android.googlesource.com/device/google/gs-common/+/refs/heads/main/insmod/4k/insmod.sh",
+      "range": {
+        "startLine": 11,
+        "startChar": 67,
+        "endLine": 12,
+        "endChar": 62
+      },
+      "revId": "b0d4397339382f2068cc9784f8be9502493785ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
