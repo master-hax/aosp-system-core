@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f94d7b7_8c3ba759",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-08T17:28:12Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this all be handled within aconfigd\u0027s own init.rc file?",
+      "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
