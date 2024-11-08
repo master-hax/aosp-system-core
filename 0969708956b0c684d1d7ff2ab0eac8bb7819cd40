@@ -1,0 +1,231 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c842677_830694ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "Thanks so much for moving this forward! I couldn\u0027t review the all code yet, but here\u0027s my first comments.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbea3f53_76f753c9",
+        "filename": "libprefetch/prefetch/Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "How about commenting on a TODO that we wanted to turn the unit tests into `rust_test` but couldn\u0027t now with a buganizer link?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d7f83c4_0d1ef06e",
+        "filename": "libprefetch/prefetch/src/args.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "What would be the background of maintaining both clap and argh?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3056877d_796bc2de",
+        "filename": "libprefetch/prefetch/src/args.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "typo: \n```suggestion\n/// Returns `PathBuf` if the given path at `value` exists.\n```",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d67ea36_88e180c5",
+        "filename": "libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "discussion: do we want an option to run a record until we kill it via a signal as `ureadaehad` does? I think we want to run the record exactly until boot_completed ideally. Or maybe we can just add such an option later.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "edca6066_a617b3ee",
+        "filename": "libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "I think we dropped \"fs\" from the prefetch\u0027s implementation unlike ureadahead",
+      "range": {
+        "startLine": 85,
+        "startChar": 16,
+        "endLine": 85,
+        "endChar": 30
+      },
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d0e5f12_ccd95415",
+        "filename": "libprefetch/prefetch/src/error.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "Perhaps, is `Setup` the intended name? Or if the intention is hide irrelevant errors from the caller, we can update the comment or return `anyhow::Error` instead.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "618674b8_881a82e9",
+        "filename": "libprefetch/prefetch/src/format.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "It seems we coalesce records only when adjacent records can be merged instead of merging all adjacent offsets in the same file. Is it intended?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccb47a7c_7364fc14",
+        "filename": "libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "Could this change slow down boot time when recording? Would it be better to increase the CPU buffer size instead?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fed72d0_308077bd",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "It doesn\u0027t seem we need the returned `Dbg` anywhere. Can we simplify it by making `replay_log` use the format of `\"{thd_id} {msg} end\"` and calling `replay_log` directly?.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b12f6c8_0e77d92c",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "I think safety should be about the validity of the given buffer.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad251598_a003f81b",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "question: `pread` will read the recorded range + kernel\u0027s read_ahead range (up to 128kb by default). So, it consumes more memory. Are we aware of that? Anyway this is a good start, though.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f2179b1_93079f10",
+        "filename": "libprefetch/prefetch/src/tracer/mem.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-08T08:52:29Z",
+      "side": 1,
+      "message": "`/data` also can be ext4. Or, should we exclude based on paths instead?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
