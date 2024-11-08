@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1a1c740_94aa4b01",
+        "filename": "init/devices.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2024-11-08T15:56:57Z",
+      "side": 1,
+      "message": "Naive drive-by: It doesn\u0027t look like either of these two new methods are modifying `path` before passing it along to another function.  Should we take `path` by const reference for these, i.e. `const std::string\u0026 path`, to remove a string copy?",
+      "range": {
+        "startLine": 151,
+        "startChar": 1,
+        "endLine": 153,
+        "endChar": 0
+      },
+      "revId": "e9de3100619c37107c112ecc88e50cfbb210d803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
