@@ -22,6 +22,30 @@
       },
       "revId": "e9de3100619c37107c112ecc88e50cfbb210d803",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49347f4b_74d7ca81",
+        "filename": "init/devices.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1004907
+      },
+      "writtenOn": "2024-11-08T23:49:20Z",
+      "side": 1,
+      "message": "https://r.android.com/3342430",
+      "parentUuid": "c1a1c740_94aa4b01",
+      "range": {
+        "startLine": 151,
+        "startChar": 1,
+        "endLine": 153,
+        "endChar": 0
+      },
+      "revId": "e9de3100619c37107c112ecc88e50cfbb210d803",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
