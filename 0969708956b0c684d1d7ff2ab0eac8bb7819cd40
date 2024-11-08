@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ddb2e68f_33542b1e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-08T13:51:46Z",
+      "side": 1,
+      "message": "there\u0027s a blanket \"no\" to dumping new projects in system/core/ --- either put this next to existing code it belongs with, or request the creation of a new system/libprefetch/ git project.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dbea3f53_76f753c9",
         "filename": "libprefetch/prefetch/Android.bp",
         "patchSetId": 5
