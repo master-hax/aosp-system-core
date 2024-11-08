@@ -26,6 +26,8 @@
 #include "unwindstack/Memory.h"
 
 #include <android-base/test_utils.h>
+#include <procinfo/process_map.h>
+
 #include "gtest/gtest.h"
 
 #include "libdebuggerd/tombstone.h"
@@ -80,6 +82,46 @@ TEST(MteStackHistoryUnwindTest, TestOne) {
   EXPECT_EQ(e.addr().file_name(), "/apex/com.android.runtime/lib64/bionic/libc.so");
   EXPECT_EQ(e.fp(), 1ULL);
   EXPECT_EQ(e.tag(), 1ULL);
+}
+
+TEST_P(MteStackHistoryTest, TestSize) {
+  int size_cls = GetParam();
+  size_t size = stack_mte_ringbuffer_size(size_cls);
+  void* data = stack_mte_ringbuffer_allocate(size_cls, nullptr);
+  ScopedUnmap s{data, size};
+  EXPECT_EQ(stack_mte_ringbuffer_size_from_pointer(reinterpret_cast<uintptr_t>(data)), size);
+  bool found = false;
+  android::procinfo::ReadMapFile(
+      "/proc/self/maps", [&found, size, data](const android::procinfo::MapInfo& info) {
+        auto data_int = reinterpret_cast<uint64_t>(data) & ((1ULL << 56ULL) - 1ULL);
+        if (info.start <= data_int && data_int < info.end) {
+          EXPECT_EQ(info.end - info.start, size);
+          found = true;
+        }
+      });
+  EXPECT_TRUE(found);
+}
+
+static bool IsMapped(void* data) {
+  bool found = false;
+  android::procinfo::ReadMapFile(
+      "/proc/self/maps", [&found, data](const android::procinfo::MapInfo& info) {
+        auto data_int = reinterpret_cast<uint64_t>(data) & ((1ULL << 56ULL) - 1ULL);
+        if (info.start <= data_int && data_int < info.end) {
+          found = true;
+        }
+      });
+  return found;
+}
+
+TEST_P(MteStackHistoryTest, TestFree) {
+  int size_cls = GetParam();
+  size_t size = stack_mte_ringbuffer_size(size_cls);
+  void* data = stack_mte_ringbuffer_allocate(size_cls, nullptr);
+  EXPECT_EQ(stack_mte_ringbuffer_size_from_pointer(reinterpret_cast<uintptr_t>(data)), size);
+  EXPECT_TRUE(IsMapped(data));
+  stack_mte_free_ringbuffer(reinterpret_cast<uintptr_t>(data));
+  EXPECT_FALSE(IsMapped(data));
 }
 
 TEST_P(MteStackHistoryTest, TestEmpty) {
