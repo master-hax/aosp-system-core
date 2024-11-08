@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "237f98e7_2a67d270",
+        "filename": "init/devices.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2024-11-08T15:54:12Z",
+      "side": 1,
+      "message": "Naive drive-by: Now that `FindPlatformDevice` isn\u0027t modifying the `path` argument, and is just passing it on to `FindSubsystemDevice`, do we want to take this argument by const reference, i.e. `const std::string\u0026 path`?  That should avoid an unnecessary string copy.",
+      "revId": "6519e6d67f68e846c0516e40bd2529330ce60468",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
