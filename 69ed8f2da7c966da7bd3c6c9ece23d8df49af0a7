@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "243767e8_45e8ed2b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-11-08T12:37:47Z",
+      "side": 1,
+      "message": "Hi Jaewan, PTAL",
+      "revId": "69ed8f2da7c966da7bd3c6c9ece23d8df49af0a7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
