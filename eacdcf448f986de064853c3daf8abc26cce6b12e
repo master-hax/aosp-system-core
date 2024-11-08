@@ -52,6 +52,24 @@
       "parentUuid": "bad8820f_97468154",
       "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58fda57b_221839eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-11-08T19:34:59Z",
+      "side": 1,
+      "message": "We currently create /meatdata/aconfig dirs after `restorecon_recursive /metadata`. If we move our logic into `aconfigd.rc` based on the trigger, is there a guarantee which one happens first?",
+      "parentUuid": "19c6dfb4_b68b8596",
+      "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
