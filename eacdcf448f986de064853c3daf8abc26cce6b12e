@@ -16,6 +16,24 @@
       "message": "Shouldn\u0027t this all be handled within aconfigd\u0027s own init.rc file?",
       "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bad8820f_97468154",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-08T19:24:46Z",
+      "side": 1,
+      "message": "It looks to me like these trigger-based rules can all go in aconfigd.rc. e.g. that\u0027s what\u0027s done here: https://cs.android.com/android/platform/superproject/main/+/main:system/core/bootstat/bootstat.rc",
+      "parentUuid": "0f94d7b7_8c3ba759",
+      "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
