@@ -73,6 +73,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1ab524da_2e543afc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-08T17:39:33Z",
+      "side": 1,
+      "message": "Does this CL make that I can do this in init.rc?\n\n\"mkdir /data/vendor/intelligence 0770 intelligence intelligence\"",
+      "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d2f2b37c_ffad59b4",
         "filename": "libcutils/include/private/android_filesystem_config.h",
         "patchSetId": 1
