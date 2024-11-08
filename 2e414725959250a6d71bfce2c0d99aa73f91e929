@@ -69,6 +69,29 @@
       "parentUuid": "d1aa2c5f_68b08684",
       "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2f2b37c_ffad59b4",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-08T17:26:26Z",
+      "side": 1,
+      "message": "do we have a better description of this? \"intelligence\" is pretty vague, and hard for someone to search for...\n\nthe commit message implies that IntelligenceService might be the thing people need to search for? use that instead?\n\n(it\u0027s fine to keep the AID_ name short, though there is some precedent for having SERVICE in the name, it\u0027s pretty inconsistent.)",
+      "range": {
+        "startLine": 146,
+        "startChar": 58,
+        "endLine": 146,
+        "endChar": 70
+      },
+      "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
