@@ -1,0 +1,59 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9787d4ed_5f278917",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-11-08T23:52:32Z",
+      "side": 1,
+      "message": "this feels a little dodgy - something else can map new memory in the free space. Ex. some stray malloc call in IsMapped or in EXPECT_FALSE.\n\nMaybe run allocate/free a bunch of times and check that the number of mappings with this particular name pattern did not change much?",
+      "fixSuggestions": [
+        {
+          "fixId": "94d1482e_2c3d3d6d",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+              "range": {
+                "startLine": 105,
+                "startChar": 0,
+                "endLine": 107,
+                "endChar": 0
+              },
+              "replacement": "static bool IsMapped(void* data, bool\u0026 found) {\n  found \u003d false;\n"
+            },
+            {
+              "path": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+              "range": {
+                "startLine": 122,
+                "startChar": 0,
+                "endLine": 123,
+                "endChar": 0
+              },
+              "replacement": "  bool found \u003d false;\n  EXPECT_TRUE(IsMapped(data, found));\n  EXPECT_TRUE(found);\n"
+            },
+            {
+              "path": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+              "range": {
+                "startLine": 124,
+                "startChar": 0,
+                "endLine": 125,
+                "endChar": 0
+              },
+              "replacement": "  EXPECT_TRUE(IsMapped(data, found));\n  EXPECT_FALSE(found);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "88ebe0ef1192958702250271c273d773969e16ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
