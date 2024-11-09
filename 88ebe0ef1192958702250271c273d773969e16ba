@@ -54,6 +54,24 @@
       ],
       "revId": "88ebe0ef1192958702250271c273d773969e16ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16a54a50_d6041028",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-09T00:00:02Z",
+      "side": 1,
+      "message": "How about this?",
+      "parentUuid": "9787d4ed_5f278917",
+      "revId": "88ebe0ef1192958702250271c273d773969e16ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
