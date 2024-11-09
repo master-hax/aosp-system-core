@@ -39,7 +39,7 @@ java_test_host {
         "src/**/PermissiveMteTest.java",
         ":libtombstone_proto-src",
     ],
-    device_first_data: [":mte_crash"],
+    data: [":mte_crash"],
     test_config: "AndroidTest.xml",
     test_suites: ["general-tests"],
 }
