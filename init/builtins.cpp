@@ -525,10 +525,21 @@ static Result<void> do_mount(const BuiltinArguments& args) {
             return ErrnoError() << "loop_control.Attach " << file_path << " failed";
         }
 
+        auto mount_prop = args[3];
+        std::replace(mount_prop.begin(), mount_prop.end(), '/', '.');
+        // Do not set dev.mnt.blk, since mount_handler will override to null
+        // dev.mnt.blk.mount_point = ""
+        // dev.mnt.dev.mount_point = loopN
+        // dev.mnt.rootdisk.mount_point = loopback_file_path
+        auto dev_mount_prop = "dev.mnt.dev" + mount_prop;
+        auto rootdisk_mount_prop = "dev.mnt.rootdisk" + mount_prop;
+        SetProperty(rootdisk_mount_prop, file_path);
         if (mount(loop_device.c_str(), target, system, flags, options) < 0) {
             loop_control.Detach(loop_device);
+            SetProperty(dev_mount_prop, "");
             return ErrnoError() << "mount() failed";
         }
+        SetProperty(dev_mount_prop, Basename(loop_device));
     } else {
         if (wait)
             wait_for_file(source, kCommandRetryTimeout);
