@@ -22,6 +22,30 @@
       },
       "revId": "a55637c6d995feb54d4c405ac2f64a468884697b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1d90751_444c58e2",
+        "filename": "libutils/binder/Unicode_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1042493
+      },
+      "writtenOn": "2024-11-09T05:50:33Z",
+      "side": 1,
+      "message": "actually U+4E2D is a Chinese character `中`, the U+4E2D,U+56FD,U+79FB,U+52A8 stands for `中国移动` in UCS-2 format.\nthe Radio HAL may pass this inlegal UCS-2 bytes to Java layer by mistake",
+      "parentUuid": "5a0c0c1b_3910410a",
+      "range": {
+        "startLine": 160,
+        "startChar": 35,
+        "endLine": 160,
+        "endChar": 41
+      },
+      "revId": "a55637c6d995feb54d4c405ac2f64a468884697b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
