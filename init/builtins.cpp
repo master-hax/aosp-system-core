@@ -876,6 +876,25 @@ static Result<void> do_write(const BuiltinArguments& args) {
     return {};
 }
 
+static Result<void> do_write_zeroes(const BuiltinArguments& args) {
+    int bytes = 0;
+    android::base::ParseInt(args[2], &bytes);
+
+    auto buffer = std::unique_ptr<void, decltype(&free)>(calloc(1, bytes), free);
+    if (buffer == nullptr) return ErrnoError() << "memory allocation failed";
+
+    unique_fd fd(TEMP_FAILURE_RETRY(open(args[1].c_str(), O_RDWR)));
+    if (fd < 0) return ErrnoError() << "opening file failed";
+
+    off64_t offset = lseek64(fd.get(), 0, SEEK_SET);
+    if (offset < 0) return ErrnoError() << "lseek failed";
+
+    if (!::android::base::WriteFully(fd.get(), buffer.get(), bytes)) {
+        return Error() << "Unable to write to file : " << args[1];
+    }
+    return {};
+}
+
 static Result<void> readahead_file(const std::string& filename, bool fully) {
     android::base::unique_fd fd(TEMP_FAILURE_RETRY(open(filename.c_str(), O_RDONLY | O_CLOEXEC)));
     if (fd == -1) {
@@ -1353,6 +1372,7 @@ const BuiltinFunctionMap& GetBuiltinFunctionMap() {
         {"wait",                    {1,     2,    {true,   do_wait}}},
         {"wait_for_prop",           {2,     2,    {false,  do_wait_for_prop}}},
         {"write",                   {2,     2,    {true,   do_write}}},
+        {"write_zeroes",            {2,     2,    {true,   do_write_zeroes}}},
     };
     // clang-format on
     return builtin_functions;
