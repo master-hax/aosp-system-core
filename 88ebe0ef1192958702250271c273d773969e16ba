@@ -72,6 +72,24 @@
       "parentUuid": "9787d4ed_5f278917",
       "revId": "88ebe0ef1192958702250271c273d773969e16ba",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89809c9e_9f0ba0b0",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-11-11T21:31:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "16a54a50_d6041028",
+      "revId": "88ebe0ef1192958702250271c273d773969e16ba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

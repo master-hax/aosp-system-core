@@ -1,0 +1,56 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7df4d18_ee541e4d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-11-11T21:31:52Z",
+      "side": 1,
+      "message": "Overall, I do not mind, but these tests feel a little too low-level. Ex. they do not capture the logic in the caller(s) of these functions. Feels like a very fancy way to verify a bunch of arithmetic expressions.\n\nA more end-to-end way that spawns some threads with stack MTE and counts the allocations would be better (and needed any way).",
+      "revId": "b22c48bfc1b0c119b6624ea2dfc24a7eec598158",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec682b2d_54d086dd",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1005967
+      },
+      "writtenOn": "2024-11-11T21:31:52Z",
+      "side": 1,
+      "message": "Can\u0027t you simply test this by comparing before-\u003eend - before-\u003estart with size?",
+      "fixSuggestions": [
+        {
+          "fixId": "10c83344_62c21214",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+              "range": {
+                "startLine": 117,
+                "startChar": 0,
+                "endLine": 120,
+                "endChar": 0
+              },
+              "replacement": "  EXPECT_EQ(before-\u003eend - before-\u003estart, size);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "b22c48bfc1b0c119b6624ea2dfc24a7eec598158",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
