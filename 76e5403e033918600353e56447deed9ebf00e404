@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e13a49d2_3870ccc7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-11-11T09:51:59Z",
+      "side": 1,
+      "message": "I think this would also fix:\n```\nBug: 378384123\n```",
+      "revId": "76e5403e033918600353e56447deed9ebf00e404",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "6e394859_cf3ab848",
         "filename": "trusty/keymaster/keymint/android.hardware.hardware_keystore_V3.xml",
         "patchSetId": 1
