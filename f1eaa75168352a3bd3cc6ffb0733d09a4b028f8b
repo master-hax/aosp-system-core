@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98997e52_54ac85eb",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-11T18:01:51Z",
+      "side": 1,
+      "message": "Are these being moved later?",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
