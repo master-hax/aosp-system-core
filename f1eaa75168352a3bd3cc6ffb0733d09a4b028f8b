@@ -118,6 +118,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b0e3706_48850a3b",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-11-11T20:06:25Z",
+      "side": 1,
+      "message": "the `exec_start` we use to start `aconfigd-mainline-init` and `system_aconfigd_mainline_init` is blocking until it returns. That is how we ensure no other process can start before this is done.",
+      "parentUuid": "76bc6981_fa2393e2",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
