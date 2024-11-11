@@ -70,6 +70,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2cea877_52d78cc3",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-11-11T19:59:52Z",
+      "side": 1,
+      "message": "Yes, we want aconfigd process for config infra mainline module be the first process to start among all mainline module processes. The reason is that aconfigd really should be thought of as a form mainline module preparation (get the flags that these process need ready).",
+      "parentUuid": "482bf241_02779392",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
