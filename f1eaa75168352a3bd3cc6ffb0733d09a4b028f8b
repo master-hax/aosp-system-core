@@ -22,6 +22,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "beab5b86_8f9ba8d8",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-11-11T19:32:14Z",
+      "side": 1,
+      "message": "These are tricky to move. I\u0027m still contemplating strategies to do that. They are tricky because:\n\n(1) we want the mainline init to happen right after perform_apex_config, before any mainline process can start. Note that in the rootdir init.rc there is `derive_sdk` right after mainline init. We definitely want aconfigd mainline init to happen before that.\n\n(2) We also want the socket service to start after both aconfigd platform init (already moved to aconfigd.rc) and aconfigd mainline init. This we can probably achieve by having socket service process triggered by a sys prop change that is made by aconfigd mainline init. \n\nJust want to find a good strategy to do (1) before working on (2).\n\nAny suggestions?\n\nBest!",
+      "parentUuid": "98997e52_54ac85eb",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
