@@ -128,6 +128,57 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b8ab4598_8186081c",
+        "filename": "libprefetch/prefetch/src/c_exports.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "This functions has safety requirements on `arg_value`, so needs to either be unsafe (and document its requirements) or be made safe by taking a safe wrapper type instead.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f9cf84c_182e08ed",
+        "filename": "libprefetch/prefetch/src/c_exports.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "No it\u0027s not. `arg_value` could be an invalid pointer. And if it were safe, the safety comment needs to explain why.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11611d1c_79633173",
+        "filename": "libprefetch/prefetch/src/c_exports.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "Again, no it\u0027s not.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8d0e5f12_ccd95415",
         "filename": "libprefetch/prefetch/src/error.rs",
         "patchSetId": 5
@@ -196,6 +247,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f97740a3_32c5a802",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "These two variables are never used.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1b12f6c8_0e77d92c",
         "filename": "libprefetch/prefetch/src/replay.rs",
         "patchSetId": 5
@@ -207,6 +275,24 @@
       "writtenOn": "2024-11-08T08:52:29Z",
       "side": 1,
       "message": "I think safety should be about the validity of the given buffer.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecf28dca_b7740154",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "From what I can see there are three safety requirements you need to guarantee for `pread`:\n\n1. The file descriptor must be valid and remain so for the duration of the call. This is guaranteed because it comes from an owned `File`. Because the `File` is wrapped in an `Arc` it is possible that some other thread is accessing it at the same time, but I don\u0027t think this is an issue for safety.\n2. The buffer pointer must be to a valid allocation with exclusive access for the duration of the call. This is guaranteed by the fact it comes from a mutable slice reference.\n3. The count (i.e. `read_size`) must not exceed the length of the buffer. You are not currently checking this, please do or there could be a buffer overflow.\n\nThis unsafe block is also unnecessarily large, please make it as small as possible.",
+      "parentUuid": "1b12f6c8_0e77d92c",
       "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -230,6 +316,57 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "99604a53_1dae954d",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "Each time through the loop this reads into the same buffer, so the caller will only see the last part that was read. Is that intentional?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "072ba6a0_3a1770b0",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "Could this be a while loop condition?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "597f04e6_c4511d5a",
+        "filename": "libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "And `buf` is long enough.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2f2179b1_93079f10",
         "filename": "libprefetch/prefetch/src/tracer/mem.rs",
         "patchSetId": 5
@@ -241,6 +378,57 @@
       "writtenOn": "2024-11-08T08:52:29Z",
       "side": 1,
       "message": "`/data` also can be ext4. Or, should we exclude based on paths instead?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "878975aa_d704d9a3",
+        "filename": "libprefetch/prefetch/src/tracer/mod.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "This unsafe block has nothing to do with files, it is just allocating memory. Check the documented safety requirements for `Layout::from_size_align` and `slice::from_raw_parts_mut` and explain how you are fulfilling them. Also consider moving this to a separate helper function.",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a134e037_a180f4a8",
+        "filename": "libprefetch/prefetch/src/tracer/mod.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "You never deallocate this buffer, so it is leaked. Is that intentional?",
+      "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c78d4494_b3bdafb9",
+        "filename": "libprefetch/prefetch/src/tracer/mod.rs",
+        "patchSetId": 5
+      },
+      "lineNbr": 861,
+      "author": {
+        "id": 1380243
+      },
+      "writtenOn": "2024-11-11T11:05:47Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need unsafe code here, doesn\u0027t `pipe()` return a pair of `OwnedFd`s? They can be converted safely to `File`s with `File::from`.",
       "revId": "0969708956b0c684d1d7ff2ab0eac8bb7819cd40",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
