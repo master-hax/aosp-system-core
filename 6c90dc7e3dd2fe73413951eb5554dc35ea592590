@@ -16,6 +16,74 @@
       "message": "Help",
       "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d794586b_257c9664",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-11T20:27:28Z",
+      "side": 1,
+      "message": "renamed as ro.hardware.security.trusty_vm.test",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63305aa3_6fdf20d4",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-11T20:27:28Z",
+      "side": 1,
+      "message": "remove this check",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db916d99_19488feb",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-11T20:27:28Z",
+      "side": 1,
+      "message": "use this property instead property:ro.boot.vendor.apex.com.android.hardware.keymint\u003d\\\ncom.android.hardware.keymint.rust_cf_guest_trusty_nonsecure",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3a639e9_80df8370",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-11T20:27:28Z",
+      "side": 1,
+      "message": "setprop storageproxyd_wv_system.trusty_ipc_dev VSOCK:2:3333",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
