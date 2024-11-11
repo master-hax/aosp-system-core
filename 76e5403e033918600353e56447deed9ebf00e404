@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e394859_cf3ab848",
+        "filename": "trusty/keymaster/keymint/android.hardware.hardware_keystore_V3.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-11-11T09:21:17Z",
+      "side": 1,
+      "message": "Would it work to have this file live in `hardware/interfaces/security/keymint/aidl/default/android.hardware.hardware_keystore_V3.xml` in case other places want to use it?",
+      "revId": "76e5403e033918600353e56447deed9ebf00e404",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
