@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "582700a4_5d5207d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-11T22:04:01Z",
+      "side": 1,
+      "message": "Right, this is meant as a fancy way to verify the low-level arithmetic calculations. As you noted in the bug that we may be making a mistake there, it is good to verify we don\u0027t on the low level. That doesn\u0027t mean that a higher-level test also wouldn\u0027t be useful.",
+      "parentUuid": "d7df4d18_ee541e4d",
+      "revId": "b22c48bfc1b0c119b6624ea2dfc24a7eec598158",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ec682b2d_54d086dd",
@@ -49,6 +67,24 @@
           ]
         }
       ],
+      "revId": "b22c48bfc1b0c119b6624ea2dfc24a7eec598158",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "188b3395_fc088d7e",
+        "filename": "debuggerd/libdebuggerd/test/mte_stack_record_test.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-11T22:04:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec682b2d_54d086dd",
       "revId": "b22c48bfc1b0c119b6624ea2dfc24a7eec598158",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
