@@ -70,6 +70,24 @@
       "parentUuid": "19c6dfb4_b68b8596",
       "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "322e9bdb_f4dd20de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-11T09:32:50Z",
+      "side": 1,
+      "message": "The actions in a trigger for this init.rc (/system/etc/hw/init.rc) are guaranteed to be executed first. https://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md\n\nI\u0027m fine with you doing it in a follow up CL. Please keep my trust issues in mind and do it promptly 😊",
+      "parentUuid": "58fda57b_221839eb",
+      "revId": "eacdcf448f986de064853c3daf8abc26cce6b12e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
