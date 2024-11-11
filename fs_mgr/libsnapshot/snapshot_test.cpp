@@ -1878,6 +1878,44 @@ TEST_F(SnapshotUpdateTest, TestRollback) {
     }
 }
 
+// Test if prefetch record is required
+TEST_F(SnapshotUpdateTest, TestPrefetchRecord) {
+    if (!snapuserd_required_) {
+        GTEST_SKIP() << "snapuserd-only test";
+    }
+    // Execute the update.
+    ASSERT_TRUE(sm->BeginUpdate());
+    ASSERT_TRUE(sm->UnmapUpdateSnapshot("sys_b"));
+    AddOperationForPartitions();
+    ASSERT_TRUE(sm->CreateUpdateSnapshots(manifest_));
+    ASSERT_TRUE(WriteSnapshots());
+    ASSERT_TRUE(sm->FinishedSnapshotWrites(false));
+
+    // Simulate shutting down the device.
+    ASSERT_TRUE(UnmapAll());
+
+    // After reboot, init does first stage mount - Slots are switched.
+    auto init = NewManagerForFirstStageMount("_b");
+    ASSERT_NE(init, nullptr);
+    ASSERT_TRUE(init->NeedSnapshotsInFirstStageMount());
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
+
+    // Verify that the partitions are mounted off snapshots which initiates
+    // record
+    ASSERT_TRUE(init->IsPrefetchRecordRequired());
+
+    // Simulate shutting down the device again.
+    ASSERT_TRUE(UnmapAll());
+    // Initiate rollback
+    init = NewManagerForFirstStageMount("_a");
+    ASSERT_NE(init, nullptr);
+    ASSERT_FALSE(init->NeedSnapshotsInFirstStageMount());
+    ASSERT_TRUE(init->CreateLogicalAndSnapshotPartitions("super", snapshot_timeout_));
+
+    // Verify if rollback indicator is set which which initiates record
+    ASSERT_TRUE(init->IsPrefetchRecordRequired());
+}
+
 // Test that if an update is applied but not booted into, it can be canceled.
 TEST_F(SnapshotUpdateTest, CancelAfterApply) {
     ASSERT_TRUE(sm->BeginUpdate());
