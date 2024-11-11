@@ -46,6 +46,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "482bf241_02779392",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-11T19:34:57Z",
+      "side": 1,
+      "message": "Yeah, it sounds like a sys prop is the way to go.\n\nFor #1, I\"m a bit confused as to what you mean. You want a mainline module to start before mainline processes are allowed to start?",
+      "parentUuid": "beab5b86_8f9ba8d8",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
