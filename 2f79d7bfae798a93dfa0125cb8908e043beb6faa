@@ -16,6 +16,24 @@
       "message": "Please add in the commit message an example value for each new property.",
       "revId": "2f79d7bfae798a93dfa0125cb8908e043beb6faa",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f386741c_ab39894d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-11T19:25:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79fa521d_af2fad56",
+      "revId": "2f79d7bfae798a93dfa0125cb8908e043beb6faa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
