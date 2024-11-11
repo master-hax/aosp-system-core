@@ -503,18 +503,18 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
         // Load independent modules in parallel
         auto thread_function = [&] {
             std::unique_lock lk(vector_lock);
-            while (!mods_path_to_load.empty()) {
-                auto ret_load = true;
-                auto mod_to_load = std::move(mods_path_to_load.back());
-                mods_path_to_load.pop_back();
 
+            if (mods_path_to_load.empty()){
                 lk.unlock();
-                ret_load &= LoadWithAliases(mod_to_load, true);
-                lk.lock();
-                if (!ret_load) {
-                    ret &= ret_load;
-                }
+                return;
             }
+
+            auto mod_to_load = std::move(mods_path_to_load.back());
+            mods_path_to_load.pop_back();
+
+            lk.unlock();
+            LoadWithAliases(mod_to_load, true);
+            lk.lock();
         };
 
         std::generate_n(std::back_inserter(threads), num_threads,
