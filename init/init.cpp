@@ -886,6 +886,34 @@ void SendLoadPersistentPropertiesMessage() {
     }
 }
 
+static Result<void> TriggerPrefetch(const BuiltinArguments& args) {
+    if (!android::base::GetBoolProperty("ro.prefetch_boot.enabled", false)) {
+        return;
+    }
+
+    auto sm = snapshot::SnapshotManager::New();
+    std::string service_name;
+    if (sm->IsPrefetchRecordRequired()) {
+        service_name = "prefetch_record";
+    } else {
+        service_name = "prefetch_replay";
+    }
+
+    auto svc = ServiceList::GetInstance().FindService(service_name);
+    if (!svc) {
+        LOG(ERROR) << "Failed to find: " << service_name << " service entry";
+        return {};
+    }
+
+    if (auto result = svc->Start(); !result.ok()) {
+        LOG(ERROR) << "Could not start service: " << service_name << " error: " << result.error();
+    } else {
+        LOG(INFO) << "Started prefetch service: " << service_name;
+    }
+
+    return {};
+}
+
 static Result<void> ConnectEarlyStageSnapuserdAction(const BuiltinArguments& args) {
     auto pid = GetSnapuserdFirstStagePid();
     if (!pid) {
@@ -1060,6 +1088,7 @@ int SecondStageMain(int argc, char** argv) {
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
     am.QueueEventTrigger("early-init");
+    am.QueueBuiltinAction(TriggerPrefetch, "TriggerPrefetch");
     am.QueueBuiltinAction(ConnectEarlyStageSnapuserdAction, "ConnectEarlyStageSnapuserd");
 
     // Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...

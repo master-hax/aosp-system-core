@@ -407,6 +407,11 @@ class SnapshotManager final : public ISnapshotManager {
     // init will avoid killing processes
     bool IsUserspaceSnapshotUpdateInProgress();
 
+    // Prefetch record is required when dynamic partitions are updated which is
+    // primarily done during OTA. This checks if prefetch record has to be
+    // initiated by init.
+    bool IsPrefetchRecordRequired();
+
     enum class SnapshotDriver {
         DM_SNAPSHOT,
         DM_USER,

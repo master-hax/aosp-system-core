@@ -4728,5 +4728,30 @@ void SnapshotManager::SetReadAheadSize(const std::string& entry_block_device, of
     android::base::WriteStringToFile(size, sys_ra.c_str());
 }
 
+bool SnapshotManager::IsPrefetchRecordRequired() {
+    if (device_->IsRecovery()) {
+        // No prefetch record in recovery
+        return false;
+    }
+
+    /*
+     * Prefetch record is invoked during two instances:
+     *
+     * 1: Post reboot after an OTA. This is when dynamic partitions
+     *    are updated and hence the recording phase is initiated to
+     *    capture the I/O pattern.
+     *
+     * 2: If the device rolls back due to failed OTA, we would have
+     *    to trigger the recording again given the device is now rolled
+     *    back to previous build.
+     */
+    auto slot = GetCurrentSlot();
+    if ((slot == Slot::Target) || (access(GetRollbackIndicatorPath().c_str(), F_OK) == 0)) {
+        return true;
+    }
+
+    return false;
+}
+
 }  // namespace snapshot
 }  // namespace android
