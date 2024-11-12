@@ -142,6 +142,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd68ab18_d7dcfeaf",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-12T10:15:34Z",
+      "side": 1,
+      "message": "What prevents other Mainline modules from being exec\u0027ed before yours? Couldn\u0027t someone add an exec_start above yours in this file? What prevents that? It sounds to me like you\u0027re relying on your change not being invalided by another change, but nothing actually prevents that from happening.",
+      "parentUuid": "9b0e3706_48850a3b",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
