@@ -142,6 +142,24 @@
       "parentUuid": "60991ea8_47510f79",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "393520bf_d91be7d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1291338
+      },
+      "writtenOn": "2024-11-12T04:01:51Z",
+      "side": 1,
+      "message": "\u003e inseob@ added that rule. Is it possible to allow it?\n\nIt\u0027s not me, it was @jeffv@google.com aosp/711247",
+      "parentUuid": "73d223e4_18424b51",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
