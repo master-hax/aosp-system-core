@@ -52,6 +52,24 @@
       "parentUuid": "7a8e4ada_457752c3",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96dde0da_b97e6730",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-12T01:37:14Z",
+      "side": 1,
+      "message": "I guess that comes from:\n\n```\n# init should never execute a program without changing to another domain.\nneverallow vendor_init { file_type fs_type }:file execute_no_trans;\n```",
+      "parentUuid": "f71be368_2c9c1e8f",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
