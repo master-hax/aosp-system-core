@@ -27,7 +27,9 @@
     },
     {
       "name": "cow_api_test"
-    },
+    }
+  ],
+  "presubmit-large": [
     {
       "name": "snapuserd_test"
     }
@@ -44,9 +46,6 @@
     },
     {
       "name": "vab_legacy_tests"
-    },
-    {
-      "name": "snapuserd_test"
     }
   ]
 }
