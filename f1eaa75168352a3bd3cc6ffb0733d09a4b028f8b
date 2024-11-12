@@ -166,6 +166,30 @@
       },
       "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9241655b_264c54e1",
+        "filename": "rootdir/init.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1882770
+      },
+      "writtenOn": "2024-11-12T14:26:47Z",
+      "side": 1,
+      "message": "A good point. I think the consequence of some process from mainline starts before aconfigd would be that the processes would not get the actual flag values. This can be discovered at run time. But it is not ideal. Prior to aconfigd, derive_sdk wants to be the very first process. I wonder how they ensure that. We do negotiated with sdk extension team to get that spot. \n\nDo you have any recommended ways to ensure that?",
+      "parentUuid": "bd68ab18_d7dcfeaf",
+      "range": {
+        "startLine": 998,
+        "startChar": 0,
+        "endLine": 1007,
+        "endChar": 18
+      },
+      "revId": "f1eaa75168352a3bd3cc6ffb0733d09a4b028f8b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
