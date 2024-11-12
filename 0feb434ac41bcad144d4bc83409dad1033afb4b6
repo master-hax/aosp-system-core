@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b0a7f318_e38e9fc3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T10:32:11Z",
+      "side": 1,
+      "message": "by the way, could you explain the need for this sysprops?\n\nthe same information is already available in /proc and /sys.\n\n`/proc/mounts` shows the block device for a mount point.\n\n`/sys/block/loopN/loop/backing_file` shows the backing file for a loop device.",
+      "revId": "0feb434ac41bcad144d4bc83409dad1033afb4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c918d260_f7f439ad",
         "filename": "init/builtins.cpp",
         "patchSetId": 2
