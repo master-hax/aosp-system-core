@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c918d260_f7f439ad",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T01:20:00Z",
+      "side": 1,
+      "message": "doesn\u0027t this mutate what\u0027s pointed by `target` as well?",
+      "range": {
+        "startLine": 529,
+        "startChar": 8,
+        "endLine": 529,
+        "endChar": 20
+      },
+      "revId": "0feb434ac41bcad144d4bc83409dad1033afb4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
