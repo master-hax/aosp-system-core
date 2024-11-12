@@ -16,6 +16,24 @@
       "message": "Jiyong, my suggestion here was to \"exec dd\", but it looks like vendor_init can\u0027t do that. Do you have any suggestions?",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a8e4ada_457752c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T01:22:52Z",
+      "side": 1,
+      "message": "I think vendor_init could use `/vendor/bin/dd` instead.",
+      "parentUuid": "db81c0cd_ebd0139e",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
