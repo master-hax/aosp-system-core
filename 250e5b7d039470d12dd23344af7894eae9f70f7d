@@ -124,6 +124,24 @@
       "parentUuid": "86f0f0f1_ee542a2a",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73d223e4_18424b51",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T03:46:54Z",
+      "side": 1,
+      "message": "I\u0027m not sure if it was inseob@ who added that neverallow rule. I think the line was last modified as part of the major re-structuring of the *.te files done by him.\n\nAnd, I don\u0027t think we would want to relax the neverallow rule. @jeffv@google.com can chime in here.\n\nFor the error you got, it looks like we need a corresponding domain trans rule.\n\n```\ndomain_trans(vendor_init, vendor_toolbox_exec, vendor_toolbox)\n```\n\nor \n```\ndomain_auto_trans(vendor_init, vendor_toolbox_exec, vendor_toolbox)\n\n// in this case you can omit the `u:r:vendor_toolbox:s0` part.\n```\n\nI personally don\u0027t see a problem with allowing vendor_toolbox to vendor_init, but Jeff, please shout out if this looks problematic to you.",
+      "parentUuid": "60991ea8_47510f79",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
