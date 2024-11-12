@@ -34,6 +34,24 @@
       "parentUuid": "4b02dc85_f66617be",
       "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24fcadb5_a013ed9c",
+        "filename": "fs_mgr/TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-12T18:55:37Z",
+      "side": 0,
+      "message": "but the failures in the bug report were part of kernel presubmit which had a timeout of 1 minute by default. Are you saying the increased timeout here will be used in kernel-presubmit ?",
+      "parentUuid": "f3d6706b_147774c4",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
