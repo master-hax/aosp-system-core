@@ -106,6 +106,24 @@
       "parentUuid": "9ca59a07_f31292f0",
       "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "668cb35f_709b853c",
+        "filename": "fs_mgr/TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1123518
+      },
+      "writtenOn": "2024-11-12T23:09:16Z",
+      "side": 0,
+      "message": "It\u0027s not. It\u0027s tested in test_mapping/presubmit-large-avd in \"Checks\" tab with result at https://android-build.corp.google.com/test_investigate/invocation/I49400010334973318/test/TR24329512803939303/?blocking\u003dall\u0026status\u003dnone",
+      "parentUuid": "f97c5046_288aa9fc",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
