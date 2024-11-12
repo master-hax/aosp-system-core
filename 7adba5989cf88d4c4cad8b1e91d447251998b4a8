@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b02dc85_f66617be",
+        "filename": "fs_mgr/TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-12T18:22:47Z",
+      "side": 0,
+      "message": "Betty - Please confirm if these tests will still run as part of kernel-presubmit ? I couldn\u0027t find anything related to `kernel-presubmit-large` group. Would this change still enforce presubmit testing ?",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
