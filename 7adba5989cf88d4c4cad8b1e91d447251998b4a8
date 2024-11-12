@@ -52,6 +52,24 @@
       "parentUuid": "f3d6706b_147774c4",
       "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e9e1e05_60adb093",
+        "filename": "fs_mgr/TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1123518
+      },
+      "writtenOn": "2024-11-12T19:03:52Z",
+      "side": 0,
+      "message": "Kalesh presubmit failure https://android-review.git.corp.google.com/c/kernel/common/+/3345408?tab\u003dchecks mentioned in https://b.corp.google.com/issues/338329603#comment29 shows the failure only in v2/android-gki/main_aosp_cf_x86_64_test_mapping_presubmit (presubmit group), not in v2/android-gki/main_aosp_cf_x86_64_test_mapping_kernel_presubmit (kernel-presubmit group). The dashboard https://data.corp.google.com/sites/android-nextgen-testing/test_history_search/?f\u003dtest_name:re:(null)\u0026f\u003dmodule:eq:snapuserd_test also shows *test_mapping_kernel_presubmit runs this test module successfully",
+      "parentUuid": "24fcadb5_a013ed9c",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
