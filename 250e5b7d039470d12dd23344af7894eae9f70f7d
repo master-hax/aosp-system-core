@@ -70,6 +70,24 @@
       "parentUuid": "f71be368_2c9c1e8f",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40babed0_e93f81a2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T01:44:00Z",
+      "side": 1,
+      "message": "I see. I think you are hit by this neverallow rule [1]. Not sure why we can\u0027t add vendor_toolbox there.\n\nOr you could execute `/vendor/bin/dd` with an explicit domain transition. ex:\n\n```\nexec u:r:vendor_toolbox:s0 -- /vendor/bin/dd arg1 arg2 \n```\n\n[1] https://cs.android.com/android/platform/superproject/main/+/main:system/sepolicy/private/vendor_init.te;drc\u003d2f31d932c267f2060a331490781aebc0154e67f0;l\u003d354",
+      "parentUuid": "f71be368_2c9c1e8f",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
