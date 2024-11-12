@@ -160,6 +160,24 @@
       "parentUuid": "73d223e4_18424b51",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41959a1c_8162b6fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-12T04:22:14Z",
+      "side": 1,
+      "message": "domain_trans(vendor_init, vendor_toolbox_exec, vendor_toolbox)\n-\u003e there\u0027s no vendor_toolbox domain. did you suggest creating another domain?",
+      "parentUuid": "393520bf_d91be7d7",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
