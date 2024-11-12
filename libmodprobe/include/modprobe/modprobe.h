@@ -30,7 +30,7 @@ class Modprobe {
     Modprobe(const std::vector<std::string>&, const std::string load_file = "modules.load",
              bool use_blocklist = true);
 
-    bool LoadModulesParallel(int num_threads);
+    bool LoadModulesParallel(int num_threads, bool loop);
     bool LoadListedModules(bool strict = true);
     bool LoadWithAliases(const std::string& module_name, bool strict,
                          const std::string& parameters = "");
