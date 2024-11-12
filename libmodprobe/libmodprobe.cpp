@@ -445,7 +445,7 @@ bool Modprobe::IsBlocklisted(const std::string& module_name) {
 // repeat these steps until all modules are loaded.
 // Discard all blocklist.
 // Softdeps are taken care in InsmodWithDeps().
-bool Modprobe::LoadModulesParallel(int num_threads) {
+bool Modprobe::LoadModulesParallel(int num_threads, bool loop) {
     bool ret = true;
     std::unordered_map<std::string, std::vector<std::string>> mod_with_deps;
 
@@ -502,8 +502,14 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
 
         // Load independent modules in parallel
         auto thread_function = [&] {
-            std::unique_lock lk(vector_lock);
-            while (!mods_path_to_load.empty()) {
+            do {
+                std::unique_lock lk(vector_lock);
+
+                if (mods_path_to_load.empty()) {
+                    lk.unlock();
+                    return;
+                }
+
                 auto ret_load = true;
                 auto mod_to_load = std::move(mods_path_to_load.back());
                 mods_path_to_load.pop_back();
@@ -514,7 +520,7 @@ bool Modprobe::LoadModulesParallel(int num_threads) {
                 if (!ret_load) {
                     ret &= ret_load;
                 }
-            }
+            } while(loop);
         };
 
         std::generate_n(std::back_inserter(threads), num_threads,
