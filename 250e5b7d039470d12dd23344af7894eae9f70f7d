@@ -232,6 +232,24 @@
       "parentUuid": "f15e8523_2bc15b4d",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "262bdc50_00824fb0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-12T13:36:18Z",
+      "side": 1,
+      "message": "what does selinux do with symlinks? (given that dd is a symlink to toybox.)",
+      "parentUuid": "da00b43d_ac4134eb",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
