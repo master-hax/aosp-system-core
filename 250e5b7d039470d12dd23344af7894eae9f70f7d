@@ -178,6 +178,24 @@
       "parentUuid": "393520bf_d91be7d7",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea10e5a3_ae362fde",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T04:57:16Z",
+      "side": 1,
+      "message": "oh no, I didn\u0027t notice that. we do have vendor_toolbox_exec but not vendor_toolbox. sorry for causing you confusion. \n\n\u003e did you suggest creating another domain?\n\nI think I am. I was just following the same pattern as `toolbox.te`. But let\u0027s wait for Jeff before going too far.",
+      "parentUuid": "41959a1c_8162b6fc",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
