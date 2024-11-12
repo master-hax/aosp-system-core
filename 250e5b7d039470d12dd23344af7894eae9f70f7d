@@ -88,6 +88,24 @@
       "parentUuid": "f71be368_2c9c1e8f",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86f0f0f1_ee542a2a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-12T03:04:47Z",
+      "side": 1,
+      "message": "When I tried second option, I got an error:\n\ninit: cannot setexeccon(\u0027u:r:vendor_toolbox:s0\u0027) for exec 18 ....",
+      "parentUuid": "40babed0_e93f81a2",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
