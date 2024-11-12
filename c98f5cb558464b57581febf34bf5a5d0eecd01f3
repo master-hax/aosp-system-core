@@ -34,6 +34,24 @@
       "parentUuid": "b2be2dd3_6e66c3cd",
       "revId": "c98f5cb558464b57581febf34bf5a5d0eecd01f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2c59789_936bbe74",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4731,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-12T04:01:58Z",
+      "side": 1,
+      "message": "I agree they\u0027re not really important use cases. It\u0027s just a side benefit of having the mechanism self-contained.",
+      "parentUuid": "c7ad0356_29c3aa04",
+      "revId": "c98f5cb558464b57581febf34bf5a5d0eecd01f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
