@@ -250,6 +250,24 @@
       "parentUuid": "da00b43d_ac4134eb",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43c24ab0_5312373b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-12T13:41:26Z",
+      "side": 1,
+      "message": "\u003e what does selinux do with symlinks? (given that dd is a symlink to toybox.)\n\nUnfortunately domain transitions cannot be done from symlinks. Essentially, we can allow the symlink to be followed or not.",
+      "parentUuid": "262bdc50_00824fb0",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
