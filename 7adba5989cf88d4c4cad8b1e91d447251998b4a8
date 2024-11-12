@@ -88,6 +88,24 @@
       "parentUuid": "3e9e1e05_60adb093",
       "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f97c5046_288aa9fc",
+        "filename": "fs_mgr/TEST_MAPPING",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-12T22:59:21Z",
+      "side": 0,
+      "message": "Looks like presubmit-large option is locked out and cannot be used for new tests - I see failures in tradefed..",
+      "parentUuid": "9ca59a07_f31292f0",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
