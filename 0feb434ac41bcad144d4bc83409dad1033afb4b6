@@ -46,6 +46,30 @@
       },
       "revId": "0feb434ac41bcad144d4bc83409dad1033afb4b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6cf2c87_303c092d",
+        "filename": "init/builtins.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-11-12T01:36:15Z",
+      "side": 1,
+      "message": "ack. I found that mount_prop is of type `std::string` not `std::string\u0026` which means the string is copied.\n\n(fyi: when with `std::string\u0026 mount_prop \u003d args[3]` the `target` was mutated)",
+      "parentUuid": "9a56edb8_d3de0f05",
+      "range": {
+        "startLine": 529,
+        "startChar": 8,
+        "endLine": 529,
+        "endChar": 20
+      },
+      "revId": "0feb434ac41bcad144d4bc83409dad1033afb4b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
