@@ -34,6 +34,24 @@
       "parentUuid": "db81c0cd_ebd0139e",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f71be368_2c9c1e8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-12T01:29:07Z",
+      "side": 1,
+      "message": "When I tested eariler, either /vendor/bin/dd or /system/bin/dd works. IIRC, the problem was selinux disallowed vendor_init for vendor_toolbox_exec:file { execute_no_trans }.",
+      "parentUuid": "7a8e4ada_457752c3",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
