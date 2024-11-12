@@ -16,6 +16,24 @@
       "message": "Can we tie the prefetch record to the build fingerprint instead? It feels a little strange here to bake knowledge of this component into libsnapshot when it seems like it could be self contained. Self containment would also mean it works in the face of adb sideload/flashing.",
       "revId": "c98f5cb558464b57581febf34bf5a5d0eecd01f3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7ad0356_29c3aa04",
+        "filename": "fs_mgr/libsnapshot/snapshot.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4731,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-12T03:59:44Z",
+      "side": 1,
+      "message": "Flashing is a one off scenario primarily used in development or in lab. Its never used in -user builds. The only update mechanism which updates the partitions are through OTA.\n\nI didn\u0027t support sideload yet as the flow hasn\u0027t been well tested yet. We will revisit it once we know that the recorded I/O pattern during sideload update is ok.\n\nIf we need to support this per flashing then we need to kick off record after data wipe. However, capturing I/O pattern post data wipe isn\u0027t great as we seen a ton of service initialization and setup post data wipe which isn\u0027t done on subsequent reboots. Hence, the captured traces will infact end up hurting boot as the I/O pattern has changed on subsequent boot.",
+      "parentUuid": "b2be2dd3_6e66c3cd",
+      "revId": "c98f5cb558464b57581febf34bf5a5d0eecd01f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
