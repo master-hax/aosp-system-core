@@ -214,6 +214,24 @@
       "parentUuid": "ea10e5a3_ae362fde",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da00b43d_ac4134eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-12T07:59:18Z",
+      "side": 1,
+      "message": "Background context: the reason why the neverallow rule exists is because without it, partners run everything in init\u0027s/vendor_init\u0027s context, and we end up with a system where everything is massively overprivileged privileged.\n\nI\u0027d prefer to not create a catchall vendor_toolbox domain.\n\nCan we instead create a \"dd\" selinux context, add \"domain_trans(vendor_init, vendor_toolbox_exec, dd) into vendor_init.te, then set the [seclabel on the exec statement in the init.rc file](https://cs.android.com/android/platform/superproject/main/+/main:system/core/init/README.md;l\u003d567?q\u003dsystem%2Fcore%2Finit%2Fread) ?",
+      "parentUuid": "f15e8523_2bc15b4d",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
