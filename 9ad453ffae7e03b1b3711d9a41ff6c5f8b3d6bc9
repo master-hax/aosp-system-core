@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d9b01ef_498aee14",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-11-13T02:01:35Z",
+      "side": 1,
+      "message": "How do you know? They haven\u0027t commented on b/377739155.",
+      "range": {
+        "startLine": 11,
+        "startChar": 79,
+        "endLine": 11,
+        "endChar": 108
+      },
+      "revId": "9ad453ffae7e03b1b3711d9a41ff6c5f8b3d6bc9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
