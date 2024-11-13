@@ -286,6 +286,24 @@
       "parentUuid": "43c24ab0_5312373b",
       "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd875dc7_24dad150",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1176763
+      },
+      "writtenOn": "2024-11-13T03:46:35Z",
+      "side": 1,
+      "message": "Thanks. Let me drop this proposal as I found a vendor side path to do this.",
+      "parentUuid": "f27024df_4028ebc3",
+      "revId": "250e5b7d039470d12dd23344af7894eae9f70f7d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
