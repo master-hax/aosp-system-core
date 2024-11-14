@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "beef1b4b_57ccc8d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-14T18:26:23Z",
+      "side": 1,
+      "message": "I had a chat with David offline - instead of creating dependency with libsnapshot and init: we can self-contain both the trigger and replay withing the prefetch subsystem. I have the prototype ready and will upload that CL separately. \n\nI will drop this CL.",
+      "revId": "c98f5cb558464b57581febf34bf5a5d0eecd01f3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b2be2dd3_6e66c3cd",
