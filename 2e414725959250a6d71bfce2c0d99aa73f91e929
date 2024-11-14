@@ -245,6 +245,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "26d04fb4_8fbf2237",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1561214
+      },
+      "writtenOn": "2024-11-14T22:39:45Z",
+      "side": 1,
+      "message": "Chatting with @patb@google.com as well as @schfan@google.com offline about the ways to assign an auxiliary group to an app. Seems this is the only approach available today.\n\nIf there\u0027s other means to do that, would you please share it here. Thanks!",
+      "parentUuid": "1ad9a4af_fb742292",
+      "range": {
+        "startLine": 31,
+        "startChar": 3,
+        "endLine": 34,
+        "endChar": 65
+      },
+      "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d2f2b37c_ffad59b4",
         "filename": "libcutils/include/private/android_filesystem_config.h",
         "patchSetId": 1
