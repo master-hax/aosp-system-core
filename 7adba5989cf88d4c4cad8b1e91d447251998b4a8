@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa1e2872_02815cb4",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_transitions.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1954115
+      },
+      "writtenOn": "2024-11-14T19:28:04Z",
+      "side": 0,
+      "message": "Seeing that this maybe useful in actual MERGE_FAILED scenario, do we have any other indication? If this is the only way we get into logs that merge has failed, even though ugly, its better to log it with level ERROR just for MERGE_FAILED case.",
+      "revId": "7adba5989cf88d4c4cad8b1e91d447251998b4a8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
