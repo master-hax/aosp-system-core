@@ -267,6 +267,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef5be1af_2af487d7",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1561214
+      },
+      "writtenOn": "2024-11-14T22:44:44Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "26d04fb4_8fbf2237",
+      "range": {
+        "startLine": 31,
+        "startChar": 3,
+        "endLine": 34,
+        "endChar": 65
+      },
+      "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d2f2b37c_ffad59b4",
@@ -304,6 +328,30 @@
       "side": 1,
       "message": "Jing, could you please address this comment? It\u0027d be great for the follow-up changes, if we have fixed this first.",
       "parentUuid": "d2f2b37c_ffad59b4",
+      "range": {
+        "startLine": 146,
+        "startChar": 58,
+        "endLine": 146,
+        "endChar": 70
+      },
+      "revId": "2e414725959250a6d71bfce2c0d99aa73f91e929",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "593fbeb1_4033ee6c",
+        "filename": "libcutils/include/private/android_filesystem_config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1561214
+      },
+      "writtenOn": "2024-11-14T22:44:44Z",
+      "side": 1,
+      "message": "As discussed offline, we\u0027d like to keep this vague at this moment as the use of this will be confidential unless its launches.",
+      "parentUuid": "4a6d0183_187e19cb",
       "range": {
         "startLine": 146,
         "startChar": 58,
