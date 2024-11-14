@@ -43,6 +43,7 @@
 #include "host_init_stubs.h"
 #endif
 
+using android::base::EqualsIgnoreCase;
 using android::base::GetExecutablePath;
 using android::base::GetProperty;
 using android::base::Join;
@@ -263,6 +264,15 @@ bool Subcontext::PathMatchesSubcontext(const std::string& path) const {
     return false;
 }
 
+bool Subcontext::PartitionMatchesSubcontext(const std::string& partition) const {
+    for (const auto& supported_partition : partitions_) {
+        if (EqualsIgnoreCase(partition, supported_partition)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Subcontext::SetApexList(std::vector<std::string>&& apex_list) {
     apex_list_ = std::move(apex_list);
 }
@@ -352,12 +362,14 @@ void InitializeSubcontext() {
     }
 
     if (SelinuxGetVendorAndroidVersion() >= __ANDROID_API_P__) {
-        subcontext.reset(
-                new Subcontext(std::vector<std::string>{"/vendor", "/odm"}, kVendorContext));
+        subcontext.reset(new Subcontext(std::vector<std::string>{"/vendor", "/odm"},
+                                        std::vector<std::string>{"VENDOR", "ODM"}, kVendorContext));
     }
 }
-void InitializeHostSubcontext(std::vector<std::string> vendor_prefixes) {
-    subcontext.reset(new Subcontext(vendor_prefixes, kVendorContext, /*host=*/true));
+void InitializeHostSubcontext(std::vector<std::string> vendor_prefixes,
+                              std::vector<std::string> vendor_partitions) {
+    subcontext.reset(
+            new Subcontext(vendor_prefixes, vendor_partitions, kVendorContext, /*host=*/true));
 }
 
 Subcontext* GetSubcontext() {
