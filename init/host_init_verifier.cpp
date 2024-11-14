@@ -284,12 +284,13 @@ int main(int argc, char** argv) {
 
     if (!partition_map.empty()) {
         std::vector<std::string> vendor_prefixes;
-        for (const auto& partition : {"vendor", "odm"}) {
+        const auto partitions = std::vector<std::string>{"vendor", "odm"};
+        for (const auto& partition : partitions) {
             if (partition_map.find(partition) != partition_map.end()) {
                 vendor_prefixes.push_back(partition_map.at(partition));
             }
         }
-        InitializeHostSubcontext(vendor_prefixes);
+        InitializeHostSubcontext(vendor_prefixes, partitions);
     }
 
     const BuiltinFunctionMap& function_map = GetBuiltinFunctionMap();
