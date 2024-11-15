@@ -124,6 +124,24 @@
       "parentUuid": "5967898c_5524b9aa",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5370b51_55342bac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-15T19:02:40Z",
+      "side": 1,
+      "message": "FWIW my oct encoding function is here: https://cs.android.com/android/platform/superproject/main/+/main:system/core/debuggerd/libdebuggerd/tombstone_proto_to_text.cpp;l\u003d421?q\u003doct_encode\u0026sq\u003d\u0026ss\u003dandroid%2Fplatform%2Fsuperproject%2Fmain",
+      "parentUuid": "63d2e960_a2af8bb2",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
