@@ -34,6 +34,7 @@
 #include <sys/sysinfo.h>
 #include <time.h>
 
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <set>
@@ -771,7 +772,13 @@ static void dump_log_file(Tombstone* tombstone, const char* logger, pid_t pid) {
       log_msg->set_tid(log_entry.entry.tid);
       log_msg->set_priority(prio);
       log_msg->set_tag(tag);
-      log_msg->set_message(msg);
+      // Remove non-UTF8 characters from the message since the message type
+      // does not allow them.
+      std::string sanitized_msg(msg);
+      sanitized_msg.erase(std::remove_if(sanitized_msg.begin(), sanitized_msg.end(),
+                                         [](unsigned char c) { return c & 0x80; }),
+                          sanitized_msg.end());
+      log_msg->set_message(sanitized_msg);
     } while ((msg = nl));
   }
   android_logger_list_free(logger_list);

@@ -3302,3 +3302,22 @@ TEST_F(CrasherTest, log_with_newline) {
   ASSERT_MATCH(result, ":\\s*This line has a newline.");
   ASSERT_MATCH(result, ":\\s*This is on the next line.");
 }
+
+TEST_F(CrasherTest, log_with_non_utf8) {
+  StartProcess([]() {
+    LOG(INFO) << "Invalid UTF-8: \xA0\xB0\xC0\xD0 and some other data.";
+    abort();
+  });
+
+  unique_fd output_fd;
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  int intercept_result;
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, ":\\s*Invalid UTF-8:  and some other data.");
+}
