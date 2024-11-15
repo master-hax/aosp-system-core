@@ -142,6 +142,24 @@
       "parentUuid": "63d2e960_a2af8bb2",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "323e24f8_8636ff0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-11-15T22:46:02Z",
+      "side": 1,
+      "message": "Okay, this was a pain but I used the oct_encode function. I also added it to the abort message. I don\u0027t want to change the fields to bytes because who knows who depends on it as a string by now.\n\nIt took a bit because I was trying to find a programmatic way to read in the generated tombstone but that\u0027s not super easy, so I\u0027m only making sure that the data is encoded in the unit test.",
+      "parentUuid": "c5370b51_55342bac",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
