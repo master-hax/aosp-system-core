@@ -16,6 +16,23 @@
       "message": "I have only compile-tested this. Hoping that Konrad can confirm it works and then it can go for review. :-)",
       "revId": "dd8edea8593f81f0abc0080d6aa503f6ffaa064d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d638d12_849a5437",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2031040
+      },
+      "writtenOn": "2024-11-15T14:50:00Z",
+      "side": 1,
+      "message": "Tested on physical DUT with NVMe, LGTM.",
+      "revId": "dd8edea8593f81f0abc0080d6aa503f6ffaa064d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
