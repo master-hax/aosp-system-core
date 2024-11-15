@@ -33,10 +33,9 @@ on boot && \
 
 # RPMB Mock
 on early-boot && \
-    property:ro.hardware.security.trusty.widevine_vm.system=1 && \
-    property:trusty.widevine_vm.vm_cid=* && \
-    property:ro.boot.vendor.apex.com.android.services.widevine=\
-com.android.services.widevine.cf_guest_trusty_nonsecure
+    property:ro.hardware.security.trusty_vm.test=1 && \
+    property:ro.boot.vendor.apex.com.android.hardware.keymint=\
+com.android.hardware.keymint.rust_cf_guest_trusty_nonsecure
     # Create a persistent location for the RPMB data
     # (work around lack of RPMb block device on CF).
     # file contexts secure_storage_rpmb_system_file
@@ -57,6 +56,6 @@ com.android.services.widevine.cf_guest_trusty_nonsecure
     symlink /mnt/secure_storage_persist_wv_system/persist \
             /data/secure_storage_wv_system/persist
     chown root system /data/secure_storage_wv_system/persist
-    setprop storageproxyd_wv_system.trusty_ipc_dev VSOCK:${trusty.widevine_vm.vm_cid}:1
+    setprop storageproxyd_wv_system.trusty_ipc_dev VSOCK:2:3333
     exec_start rpmb_mock_init_wv_system
     start rpmb_mock_wv_system
