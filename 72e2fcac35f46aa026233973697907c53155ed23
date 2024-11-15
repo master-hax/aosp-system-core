@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "245be0ec_b7ba070e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-15T16:22:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39570c89_2f275ac5",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 12
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "840ce9e2_a993e4bb",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-11-15T02:21:50Z",
       "side": 1,
       "message": "Probably, this caused `IgnoreCase` below. Let\u0027s pass them in capitals.",
+      "range": {
+        "startLine": 293,
+        "startChar": 50,
+        "endLine": 293,
+        "endChar": 60
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "127de530_88ba9b2c",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-15T16:22:57Z",
+      "side": 1,
+      "message": "Actually I\u0027m removing this after your [comment](https://android-review.git.corp.google.com/c/platform/system/apex/+/3349388/comment/a1294905_a1a18b12/) in the other CL. All the host prefixes don\u0027t start with \"/apex/\" (here the path starts with ${PRODUCT_OUT}) so they won\u0027t be checked against vendor apexes. So there is no need to initialize vendor apexes for host.",
+      "parentUuid": "840ce9e2_a993e4bb",
       "range": {
         "startLine": 293,
         "startChar": 50,
@@ -88,6 +136,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "05898b9b_1c3a41f3",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-15T16:22:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2db46a0d_e3d734d6",
+      "range": {
+        "startLine": 269,
+        "startChar": 12,
+        "endLine": 269,
+        "endChar": 28
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5b402abe_d56deb91",
@@ -131,6 +203,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0d8c453a_b53f661b",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-15T16:22:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b402abe_d56deb91",
+      "range": {
+        "startLine": 368,
+        "startChar": 0,
+        "endLine": 368,
+        "endChar": 1
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "a87df007_fb761ffd",
         "filename": "init/subcontext.h",
         "patchSetId": 2
@@ -142,6 +238,30 @@
       "writtenOn": "2024-11-15T02:21:50Z",
       "side": 1,
       "message": "lgtm, but not sure if map\u003c\u003e or vendor\u003cpair\u003c\u003e\u003e would read better ;-)",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 41
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36e7b5a0_0505bb7d",
+        "filename": "init/subcontext.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-15T16:22:57Z",
+      "side": 1,
+      "message": "I\u0027m not making the change if the other comment about not populating partitions for host is acked. Because then in the host case path_prefixes_ is always populated while partitions_ is empty in host case. Then it\u0027s weird to put them together",
+      "parentUuid": "a87df007_fb761ffd",
       "range": {
         "startLine": 63,
         "startChar": 0,
