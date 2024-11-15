@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f4b713d_b3bffec8",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-15T21:08:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d794586b_257c9664",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "63305aa3_6fdf20d4",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-11-11T20:27:28Z",
       "side": 1,
       "message": "remove this check",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c3269b4_39afa3a2",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-15T21:08:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "63305aa3_6fdf20d4",
       "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -69,6 +105,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f454c2da_7849a48d",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-15T21:08:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db916d99_19488feb",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b3a639e9_80df8370",
@@ -82,6 +136,24 @@
       "writtenOn": "2024-11-11T20:27:28Z",
       "side": 1,
       "message": "setprop storageproxyd_wv_system.trusty_ipc_dev VSOCK:2:3333",
+      "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1035d9f5_9ba455fd",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.wv.system.rc",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-15T21:08:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3a639e9_80df8370",
       "revId": "6c90dc7e3dd2fe73413951eb5554dc35ea592590",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
