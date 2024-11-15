@@ -106,6 +106,24 @@
       "parentUuid": "d8f041b6_60faf191",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63d2e960_a2af8bb2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-15T19:01:22Z",
+      "side": 1,
+      "message": "https://protobuf.dev/programming-guides/encoding/#length-types:\n\n\"bytes fields are encoded in the same way.\"",
+      "parentUuid": "5967898c_5524b9aa",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
