@@ -52,6 +52,24 @@
       "parentUuid": "2c620927_cafd67cc",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8f041b6_60faf191",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-11-15T18:55:49Z",
+      "side": 1,
+      "message": "Unfortunately, I did originally have a plan to change the field to bytes, but you can\u0027t really change the field type of a proto, as far as I know. So I tried to add a new field that was bytes but that requires so many internal tools to change that I decided it wasn\u0027t worth it. Thus, this smaller change that sanitizes the output on the way in.",
+      "parentUuid": "2c620927_cafd67cc",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
