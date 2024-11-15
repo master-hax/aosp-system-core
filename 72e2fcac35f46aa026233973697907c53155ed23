@@ -1,0 +1,155 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39570c89_2f275ac5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-15T02:21:50Z",
+      "side": 1,
+      "message": "please check bug number",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 12
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "840ce9e2_a993e4bb",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-15T02:21:50Z",
+      "side": 1,
+      "message": "Probably, this caused `IgnoreCase` below. Let\u0027s pass them in capitals.",
+      "range": {
+        "startLine": 293,
+        "startChar": 50,
+        "endLine": 293,
+        "endChar": 60
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2db46a0d_e3d734d6",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-15T02:21:50Z",
+      "side": 1,
+      "message": "let\u0027s use `\u003d\u003d` here. In `init`, we\u0027d better stick to UPPERCASE or lowercase, not both. Then, we can simply check with `find`.",
+      "range": {
+        "startLine": 269,
+        "startChar": 12,
+        "endLine": 269,
+        "endChar": 28
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "07232378_2b2ec00a",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/subcontext.cpp",
+              "range": {
+                "startLine": 269,
+                "startChar": 0,
+                "endLine": 270,
+                "endChar": 0
+              },
+              "replacement": "        if (partition \u003d\u003d supported_partition) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b402abe_d56deb91",
+        "filename": "init/subcontext.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-15T02:21:50Z",
+      "side": 1,
+      "message": "nit: please add a blank line between functions.",
+      "range": {
+        "startLine": 368,
+        "startChar": 0,
+        "endLine": 368,
+        "endChar": 1
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "a9a03a25_fd16c836",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/subcontext.cpp",
+              "range": {
+                "startLine": 369,
+                "startChar": 0,
+                "endLine": 369,
+                "endChar": 0
+              },
+              "replacement": "\n"
+            }
+          ]
+        }
+      ],
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a87df007_fb761ffd",
+        "filename": "init/subcontext.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1415877
+      },
+      "writtenOn": "2024-11-15T02:21:50Z",
+      "side": 1,
+      "message": "lgtm, but not sure if map\u003c\u003e or vendor\u003cpair\u003c\u003e\u003e would read better ;-)",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 41
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
