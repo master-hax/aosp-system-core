@@ -70,6 +70,24 @@
       "parentUuid": "2c620927_cafd67cc",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53068139_3223839f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-15T18:58:03Z",
+      "side": 1,
+      "message": "That is true, but not universally. You can change some types if they have compatible wire encoding (which I think includes string and byte), but only change the behaviour of the encoding / decoding library. Of course you will break the clients that depend on the type, but you will not break decoding of old messages.",
+      "parentUuid": "d8f041b6_60faf191",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
