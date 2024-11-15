@@ -34,6 +34,24 @@
       "parentUuid": "5bde34d6_523f8d5a",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73d04d61_006ca1bd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-15T18:55:06Z",
+      "side": 1,
+      "message": "ah, but this is stored as guaranteed-valid-utf8-string? (why does such a type even exist?! especially if you\u0027re not going to check!)\n\ncan cferris at least reuse the escaping code? iirc you did proper escaping right? i just can\u0027t remember enough to _find_ the damn thing...",
+      "parentUuid": "2c620927_cafd67cc",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
