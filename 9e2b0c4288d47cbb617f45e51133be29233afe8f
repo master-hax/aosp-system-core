@@ -16,6 +16,24 @@
       "message": "(didn\u0027t fmayer already add some bad utf8 sequence cleanup somewhere, for the crash detail api?)",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c620927_cafd67cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1268571
+      },
+      "writtenOn": "2024-11-15T18:52:02Z",
+      "side": 1,
+      "message": "No, we did a non-ASCII cleanup for the printing, and store the data as `bytes`, which makes this the client\u0027s problem to decode, and they can decide how to decode it.",
+      "parentUuid": "5bde34d6_523f8d5a",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
