@@ -88,6 +88,24 @@
       "parentUuid": "d8f041b6_60faf191",
       "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5967898c_5524b9aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-15T18:58:45Z",
+      "side": 1,
+      "message": "yeah, i assumed as much and that part sgtm ... i\u0027d just prefer to _escape_ rather than _strip_, on the assumption that there might sometimes be a clue in the invalid utf8 bytes.\n\nand i _think_ that\u0027s what we have for the \"crash detail\" stuff already?",
+      "parentUuid": "d8f041b6_60faf191",
+      "revId": "9e2b0c4288d47cbb617f45e51133be29233afe8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
