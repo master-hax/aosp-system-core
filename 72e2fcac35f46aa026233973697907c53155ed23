@@ -95,6 +95,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "168148fe_d2acc64a",
+        "filename": "init/host_init_verifier.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 3096390
+      },
+      "writtenOn": "2024-11-16T11:40:53Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "127de530_88ba9b2c",
+      "range": {
+        "startLine": 293,
+        "startChar": 50,
+        "endLine": 293,
+        "endChar": 60
+      },
+      "revId": "72e2fcac35f46aa026233973697907c53155ed23",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2db46a0d_e3d734d6",
