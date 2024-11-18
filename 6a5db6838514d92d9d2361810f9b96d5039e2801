@@ -16,6 +16,24 @@
       "message": "what does the decoding that makes this match the octal-escaped text?",
       "revId": "6a5db6838514d92d9d2361810f9b96d5039e2801",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc7460cb_cd7d6a15",
+        "filename": "debuggerd/debuggerd_test.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3322,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-11-18T21:08:05Z",
+      "side": 1,
+      "message": "It\u0027s an escape sequence kind of like what we do to add colors to a string. Both more and less understand and display the original non-ascii value when this is used. It actually fooled me because when I ran it through less, it looked like the escaping had not worked.",
+      "parentUuid": "92f2d3e0_7a597918",
+      "revId": "6a5db6838514d92d9d2361810f9b96d5039e2801",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
