@@ -185,6 +185,30 @@
       },
       "revId": "6e22899f50fdcd7eb4b4b283ef3d3658b3358d44",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ae90fe5_b5fda715",
+        "filename": "init/devices.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1102554
+      },
+      "writtenOn": "2024-11-18T15:21:11Z",
+      "side": 1,
+      "message": "this is just going to be removed, as mentioned in another comment",
+      "parentUuid": "2b8c5c90_e2d2cd27",
+      "range": {
+        "startLine": 172,
+        "startChar": 25,
+        "endLine": 172,
+        "endChar": 37
+      },
+      "revId": "6e22899f50fdcd7eb4b4b283ef3d3658b3358d44",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
