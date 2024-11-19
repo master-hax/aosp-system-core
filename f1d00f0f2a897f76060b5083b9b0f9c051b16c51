@@ -33,6 +33,23 @@
       "message": "+enh\n\nFor what its worth, it was already exported here: http://cs/h/googleplex-android/platform/system/core/+/a325412703780b472edf7ef43d65efa0d26519b8:libcutils/Android.bp and included in the BPF soong module path here: https://cs/h/googleplex-android/platform/superproject/main/+/main:build/soong/bpf/bpf.go;drc\u003dfa6e0fdf2fb3b15efceee6261caf69551b01be45;l\u003d169",
       "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ece356aa_3919fe81",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-19T13:23:27Z",
+      "side": 1,
+      "message": "do you actually need a new abi, or can you just use the existing libc passwd functions to query at runtime?",
+      "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
