@@ -109,6 +109,7 @@ FastbootDevice::FastbootDevice()
               {FB_CMD_GSI, GsiHandler},
               {FB_CMD_SNAPSHOT_UPDATE, SnapshotUpdateHandler},
               {FB_CMD_FETCH, FetchHandler},
+              {FB_CMD_FLASHING, OemCmdHandler},
       }),
       boot_control_hal_(BootControlClient::WaitForService()),
       health_hal_(get_health_service()),
@@ -227,6 +228,9 @@ void FastbootDevice::ExecuteCommands() {
         if (android::base::StartsWith(command, "oem ")) {
             args = {command};
             cmd_name = FB_CMD_OEM;
+        } else if (android::base::StartsWith(command, "flashing ")) {
+            args = {command};
+            cmd_name = FB_CMD_FLASHING;
         } else {
             args = android::base::Split(command, ":");
             cmd_name = args[0];
