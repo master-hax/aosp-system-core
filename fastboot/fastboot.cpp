@@ -2541,13 +2541,13 @@ int FastBootTool::Main(int argc, char* argv[]) {
             fb->Upload(filename);
         } else if (command == FB_CMD_OEM) {
             do_oem_command(FB_CMD_OEM, &args);
-        } else if (command == "flashing") {
+        } else if (command == FB_CMD_FLASHING) {
             if (args.empty()) {
                 syntax_error("missing 'flashing' command");
             } else if (args.size() == 1 &&
                        (args[0] == "unlock" || args[0] == "lock" || args[0] == "unlock_critical" ||
                         args[0] == "lock_critical" || args[0] == "get_unlock_ability")) {
-                do_oem_command("flashing", &args);
+                do_oem_command(FB_CMD_FLASHING, &args);
             } else {
                 syntax_error("unknown 'flashing' command %s", args[0].c_str());
             }
