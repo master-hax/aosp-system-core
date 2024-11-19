@@ -75,6 +75,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2451263_7d0e9a52",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Changed it to return error.",
+      "parentUuid": "634d471b_c0e82f4f",
+      "range": {
+        "startLine": 69,
+        "startChar": 43,
+        "endLine": 69,
+        "endChar": 62
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c611afd5_28a23ae1",
@@ -88,6 +112,30 @@
       "writtenOn": "2024-11-19T19:08:44Z",
       "side": 1,
       "message": "This is not actually necessary to write here — checking the return value happens _after_ you make the call, so you have already released the dragons, so to speak 😊",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 38
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "791b9017_e7a6d70c",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c611afd5_28a23ae1",
       "range": {
         "startLine": 79,
         "startChar": 8,
@@ -115,6 +163,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7882f5bd_3352f5d7",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Yes. You are right. I have changed the comments. offset \u003d 0 should be ok.",
+      "parentUuid": "d26432ee_3d79703e",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b1acdafd_61dbf8c0",
@@ -128,6 +194,30 @@
       "writtenOn": "2024-11-19T19:08:44Z",
       "side": 1,
       "message": "I feel like a word is missing here? 😊 What is it holding?",
+      "range": {
+        "startLine": 536,
+        "startChar": 62,
+        "endLine": 536,
+        "endChar": 83
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6149c10_81ed814f",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b1acdafd_61dbf8c0",
       "range": {
         "startLine": 536,
         "startChar": 62,
@@ -155,6 +245,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8265675f_cddb6141",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad21a4f6_66d61f02",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f8b1c631_32cd2351",
@@ -172,6 +280,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1be4c66f_ed22fdc9",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Addded comment. thanks.",
+      "parentUuid": "f8b1c631_32cd2351",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94147f97_e59d2106",
@@ -185,6 +311,30 @@
       "writtenOn": "2024-11-19T19:08:44Z",
       "side": 1,
       "message": "Comparing to https://man7.org/linux/man-pages/man3/munmap.3p.html, I think you can drop these pre-conditions.",
+      "range": {
+        "startLine": 587,
+        "startChar": 12,
+        "endLine": 589,
+        "endChar": 56
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c078856_ca3a5652",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T20:57:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94147f97_e59d2106",
       "range": {
         "startLine": 587,
         "startChar": 12,
