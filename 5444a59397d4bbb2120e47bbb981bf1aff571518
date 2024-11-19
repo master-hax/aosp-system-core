@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a75d5eb0_2d4417b3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T17:55:05Z",
+      "side": 1,
+      "message": "This is the approved patchset 8 from: https://r.android.com/3344265\n\nNo change has been done. The location of this library is just moved from system/extras to system/core/init.",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
