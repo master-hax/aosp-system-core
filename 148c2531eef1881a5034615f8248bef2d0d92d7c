@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c48ba42_0a6bce88",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003247
+      },
+      "writtenOn": "2024-11-19T19:15:31Z",
+      "side": 1,
+      "message": "something is causing b/379796721\n\nCANNOT LINK EXECUTABLE \"/data/local/tmp/netd_updatable_unit_test\": cannot locate symbol \"_Z23CgroupGetControllerPathRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEPS5_\" referenced by \"/data/local/tmp/netd_updatable_unit_test\"...",
+      "revId": "148c2531eef1881a5034615f8248bef2d0d92d7c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
