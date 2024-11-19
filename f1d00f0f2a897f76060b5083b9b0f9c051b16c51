@@ -104,6 +104,24 @@
       "parentUuid": "99287ba9_6390a6c8",
       "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "808eec97_a78692a0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1981633
+      },
+      "writtenOn": "2024-11-19T16:37:23Z",
+      "side": 1,
+      "message": "Currently, they end up in the bpf .elf file which is then parsed in the loader on boot.\n\nWith the transition to using libbpf, we currently do not have the mechanism to modify the libbpf .elf file/ access it on boot. For the limited use case in the short term we will be including the AID_ROOT/AID_SYSTEM/AID_GRAPHICS in a file descriptor struct in the loader (hence the need for this change). This is a short term stopgap until we can work with upstream to store the necessary metadata in the libbpf .elf file.",
+      "parentUuid": "04632ae5_51bb570e",
+      "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
