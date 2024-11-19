@@ -33,6 +33,166 @@
       "message": "qwandor@ from Android security has already reviewed with respect to android-rust-unsafe review. Thanks.",
       "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6c7e963_7ade68c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "I skimmed the first part of the change and wanted to send off my comments now. Basically, I think many comments can be simplified by referring strictly to what the man pages say.",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "634d471b_c0e82f4f",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "Not that it\u0027s my business, but have you considered a) returning an error or b) making the type the right type for the call into `pread` below?",
+      "range": {
+        "startLine": 69,
+        "startChar": 43,
+        "endLine": 69,
+        "endChar": 62
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c611afd5_28a23ae1",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "This is not actually necessary to write here — checking the return value happens _after_ you make the call, so you have already released the dragons, so to speak 😊",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 38
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d26432ee_3d79703e",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "I compared this to https://man7.org/linux/man-pages/man2/mmap.2.html and I don\u0027t actually see \"the file is known to exist and opened\" being a prerequisite.\n\nInfact, it says `mmap` will return `EACCES` if\n\n\u003e A file descriptor refers to a non-regular file. Or a file mapping was requested, but _fd_ is not open for reading.  Or `MAP_SHARED` was requested and `PROT_WRITE` is set, but _fd_ is not open in read/write (`O_RDWR`) mode. Or `PROT_WRITE` is set, but the file is append-only.\n\nIn other words, I believe the Kernel will tell you clearly if you pass in an invalid file descriptor.\n\nThe only requirement seems to be that the length is non-zero (done) and that the offset is a multiple of the page size — which I\u0027m in doubt about: the offset is `0`, which I guess is a multiple of all page sizes?",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1acdafd_61dbf8c0",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "I feel like a word is missing here? 😊 What is it holding?",
+      "range": {
+        "startLine": 536,
+        "startChar": 62,
+        "endLine": 536,
+        "endChar": 83
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad21a4f6_66d61f02",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "Please drop this, it\u0027s not part of the pre-conditions.",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8b1c631_32cd2351",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "This is probably also not a precondition for `libc::mincore`. Reading https://man7.org/linux/man-pages/man2/mincore.2.html, I see that you instead should argue about the `vec` array being sufficiently large. I guess that\u0027s what the comment about it for.",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94147f97_e59d2106",
+        "filename": "init/libprefetch/prefetch/src/replay.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1943701
+      },
+      "writtenOn": "2024-11-19T19:08:44Z",
+      "side": 1,
+      "message": "Comparing to https://man7.org/linux/man-pages/man3/munmap.3p.html, I think you can drop these pre-conditions.",
+      "range": {
+        "startLine": 587,
+        "startChar": 12,
+        "endLine": 589,
+        "endChar": 56
+      },
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
