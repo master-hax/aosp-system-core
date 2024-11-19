@@ -50,6 +50,24 @@
       "message": "do you actually need a new abi, or can you just use the existing libc passwd functions to query at runtime?",
       "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11715467_63bbc30b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1981633
+      },
+      "writtenOn": "2024-11-19T16:12:58Z",
+      "side": 1,
+      "message": "It is already used in all bpf programs, we are simply prividing rust bindings for it: https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:packages/modules/Connectivity/bpf/headers/include/bpf_map_def.h;drc\u003dd602835b4f24e93dfbbc8314fc14241ee9b4fd23;l\u003d26",
+      "parentUuid": "ece356aa_3919fe81",
+      "revId": "f1d00f0f2a897f76060b5083b9b0f9c051b16c51",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
