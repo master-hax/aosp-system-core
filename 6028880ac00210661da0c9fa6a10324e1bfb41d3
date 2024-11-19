@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c9bad63_7aa76389",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-19T18:28:32Z",
+      "side": 1,
+      "message": "These tests are still run as part of kernel-presubmit.",
+      "revId": "6028880ac00210661da0c9fa6a10324e1bfb41d3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
