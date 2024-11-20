@@ -34,6 +34,24 @@
       "parentUuid": "f9d155ae_7712807c",
       "revId": "6105d9dc8aeec5ef54092854121cd6ff5859f3a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fee94b0_0a33a9c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-11-20T17:09:37Z",
+      "side": 1,
+      "message": "Gabriel, would you mind filing a bug for this? I would also like to see this added, but I don\u0027t think it should be blocking for this CL since (1) we don\u0027t require it for sockets - unlike services -  and (2) this isn\u0027t new attack surface, but rather is moving existing code into a mainline module.",
+      "parentUuid": "68d37308_63bf74a6",
+      "revId": "6105d9dc8aeec5ef54092854121cd6ff5859f3a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
