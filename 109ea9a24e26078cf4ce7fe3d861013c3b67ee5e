@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7631f952_c1025505",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-20T20:44:01Z",
+      "side": 1,
+      "message": "We\u0027re now at 8 indent levels in some parts of this function. Can it be factored out into a helper?\n\nOr, do something like this:\n\n```\nstd::optional\u003cstd::lock_guard\u003cstd::mutex\u003e\u003e buffer_lock;\n\nbuffer_lock.emplace(snapuserd_-\u003eGetBufferLock());\n\n... code ... \n\nbuffer_lock \u003d {};\n```",
+      "revId": "109ea9a24e26078cf4ce7fe3d861013c3b67ee5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40f63dc6_a6a125f1",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-20T20:44:01Z",
+      "side": 1,
+      "message": "Are braces needed here? The lock is scoped outside them.",
+      "revId": "109ea9a24e26078cf4ce7fe3d861013c3b67ee5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
