@@ -3,6 +3,51 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "612d94eb_93c1e500",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-11-20T20:49:16Z",
+      "side": 1,
+      "message": "should this be inside the scoped braces?",
+      "fixSuggestions": [
+        {
+          "fixId": "eca0ccaa_83823f61",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+              "range": {
+                "startLine": 235,
+                "startChar": 0,
+                "endLine": 236,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
+              "range": {
+                "startLine": 237,
+                "startChar": 0,
+                "endLine": 237,
+                "endChar": 0
+              },
+              "replacement": "            std::lock_guard\u003cstd::mutex\u003e buffer_lock(snapuserd_-\u003eGetBufferLock());\n"
+            }
+          ]
+        }
+      ],
+      "revId": "109ea9a24e26078cf4ce7fe3d861013c3b67ee5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7631f952_c1025505",
         "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/merge_worker.cpp",
         "patchSetId": 2
