@@ -78,6 +78,23 @@
       "message": "Are braces needed here? The lock is scoped outside them.",
       "revId": "109ea9a24e26078cf4ce7fe3d861013c3b67ee5e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "331ac3c4_3df3ce81",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-20T20:49:51Z",
+      "side": 1,
+      "message": "Same here, the lock outlives the call to ReadAheadIOCompleted",
+      "revId": "109ea9a24e26078cf4ce7fe3d861013c3b67ee5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
