@@ -38,6 +38,8 @@ use log::LevelFilter;
 pub use args::args_from_env;
 use args::OutputFormat;
 pub use args::ReplayArgs;
+#[cfg(target_os = "android")]
+pub use args::StartArgs;
 pub use args::{DumpArgs, MainArgs, RecordArgs, SubCommands};
 pub use error::Error;
 pub use format::FileId;
@@ -51,21 +53,115 @@ pub use replay::Replay;
 pub use tracer::nanoseconds_since_boot;
 
 #[cfg(target_os = "android")]
-use rustutils::system_properties;
-#[cfg(target_os = "android")]
 use rustutils::system_properties::error::PropertyWatcherError;
 #[cfg(target_os = "android")]
 use rustutils::system_properties::PropertyWatcher;
 
 #[cfg(target_os = "android")]
-fn wait_for_property_true(property_name: &str) -> Result<(), PropertyWatcherError> {
+const PREFETCH_RECORD_PROPERTY: &str = "prefetch_boot.record";
+#[cfg(target_os = "android")]
+const PREFETCH_REPLAY_PROPERTY: &str = "prefetch_boot.replay";
+#[cfg(target_os = "android")]
+const PREFETCH_RECORD_PROPERTY_STOP: &str = "prefetch_boot.record_stop";
+// Default record timeout if "prefetch_boot.record_stop" is not set
+#[cfg(target_os = "android")]
+const DEFAULT_RECORD_TIMEOUT: Duration = Duration::from_secs(10);
+
+#[cfg(target_os = "android")]
+fn wait_for_property_true(
+    property_name: &str,
+    timeout: Option<Duration>,
+) -> Result<(), PropertyWatcherError> {
     let mut prop = PropertyWatcher::new(property_name)?;
-    loop {
-        prop.wait(None)?;
-        if system_properties::read_bool(property_name, false)? {
-            break;
+    prop.wait_for_value("true", timeout)?;
+    Ok(())
+}
+
+#[cfg(target_os = "android")]
+fn start_prefetch_service(property_name: &str) -> Result<(), Error> {
+    match rustutils::system_properties::write(property_name, "true") {
+        Ok(_) => {}
+        Err(_) => {
+            return Err(Error::Custom { error: "Failed to start prefetch service".to_string() });
         }
     }
+    Ok(())
+}
+
+/// Start prefetch services
+#[cfg(target_os = "android")]
+pub fn start_prefetch(args: &StartArgs) -> Result<(), Error> {
+    // 1: Check the presence of the file 'prefetch_ready'. If it doesn't
+    // exist then the device is booting for the first time after wipe.
+    // Thus, we would just create the file and exit as we do not want
+    // to initiate the record after data wipe primiarly because boot
+    // after data wipe is long and the I/O pattern during first boot may not actually match
+    // with subsequent boot.
+    //
+    // 2: If the file 'prefetch_ready' is present:
+    //
+    //   a: Compare the build-finger-print of the device with the one record format
+    //   is associated with by reading the file 'build_finger_print'. If they match,
+    //   start the prefetch_replay.
+    //
+    //   b: If they don't match, then the device was updated through OTA. Hence, start
+    //   a fresh record and delete the build-finger-print file. This should also cover
+    //   the case of device rollback.
+    //
+    //   c: If the build-finger-print file doesn't exist, then just restart the record
+    //   from scratch.
+    if !args.path.exists() {
+        match File::create(args.path.clone()) {
+            Ok(_) => {}
+            Err(_) => {
+                return Err(Error::Custom { error: "File Creation failed".to_string() });
+            }
+        }
+        return Ok(());
+    }
+
+    if args.build_fingerprint_path.exists() {
+        let device_build_fingerprint = rustutils::system_properties::read("ro.build.fingerprint")
+            .map_err(|e| Error::Custom {
+            error: format!("Failed to read ro.build.fingerprint: {}", e),
+        })?;
+        let pack_build_fingerprint = std::fs::read_to_string(&args.build_fingerprint_path)?;
+        if pack_build_fingerprint.trim() == device_build_fingerprint.as_deref().unwrap_or_default()
+        {
+            info!("Start replay");
+            start_prefetch_service(PREFETCH_REPLAY_PROPERTY)?;
+        } else {
+            info!("Start record");
+            std::fs::remove_file(&args.build_fingerprint_path)?;
+            start_prefetch_service(PREFETCH_RECORD_PROPERTY)?;
+        }
+    } else {
+        info!("Start record");
+        start_prefetch_service(PREFETCH_RECORD_PROPERTY)?;
+    }
+    Ok(())
+}
+
+/// Write build finger print of of the device to associate record format
+#[cfg(target_os = "android")]
+fn write_build_fingerprint(args: &RecordArgs) -> Result<(), Error> {
+    let mut build_fingerprint_file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&args.build_fingerprint_path)
+        .map_err(|source| Error::Create {
+            source,
+            path: args.build_fingerprint_path.to_str().unwrap().to_owned(),
+        })?;
+
+    let device_build_fingerprint =
+        rustutils::system_properties::read("ro.build.fingerprint").unwrap_or_default();
+    let device_build_fingerprint = device_build_fingerprint.unwrap_or_default();
+
+    build_fingerprint_file.write_all(device_build_fingerprint.as_bytes())?;
+    build_fingerprint_file.sync_all()?;
+
     Ok(())
 }
 
@@ -85,9 +181,14 @@ pub fn record(args: &RecordArgs) -> Result<(), Error> {
             thread::sleep(duration);
         } else {
             #[cfg(target_os = "android")]
-            wait_for_property_true("sys.boot_completed").unwrap_or_else(|e| {
+            wait_for_property_true("sys.boot_completed", None).unwrap_or_else(|e| {
                 warn!("failed to wait for sys.boot_completed with error: {}", e)
             });
+            #[cfg(target_os = "android")]
+            wait_for_property_true(PREFETCH_RECORD_PROPERTY_STOP, Some(DEFAULT_RECORD_TIMEOUT))
+                .unwrap_or_else(|e| {
+                    warn!("failed to wait for {} with error: {}", PREFETCH_RECORD_PROPERTY_STOP, e)
+                });
         }
 
         // We want to unwrap here on failure to send this signal. Otherwise
@@ -107,9 +208,16 @@ pub fn record(args: &RecordArgs) -> Result<(), Error> {
     std::fs::set_permissions(&args.path, std::fs::Permissions::from_mode(0o644))
         .map_err(|source| Error::Create { source, path: args.path.to_str().unwrap().to_owned() })?;
 
+    // Write the record file
     out_file
         .write_all(&rf.add_checksum_and_serialize()?)
         .map_err(|source| Error::Write { path: args.path.to_str().unwrap().to_owned(), source })?;
+    out_file.sync_all()?;
+
+    // Write build-finger-print file
+    #[cfg(target_os = "android")]
+    write_build_fingerprint(args)?;
+
     Ok(())
 }
 
