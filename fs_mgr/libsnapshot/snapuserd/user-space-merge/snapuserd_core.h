@@ -216,6 +216,8 @@ class SnapshotHandler : public std::enable_shared_from_this<SnapshotHandler> {
     std::mutex lock_;
     std::condition_variable cv;
 
+    std::mutex buffer_lock_;
+
     void* mapped_addr_;
     size_t total_mapped_addr_length_;
 

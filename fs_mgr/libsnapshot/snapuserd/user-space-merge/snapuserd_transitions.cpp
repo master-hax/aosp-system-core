@@ -214,6 +214,10 @@ bool SnapshotHandler::WaitForMergeBegin() {
         SNAP_LOG(ERROR) << "WaitForMergeBegin failed with state: " << io_state_;
         return false;
     }
+
+    // Lock the buffer used during the process of snapshot-merge. RA thread
+    // cannot touch this buffer until the merge thread explicitly renounces it.
+    buffer_lock_.lock();
     return true;
 }
 
@@ -254,6 +258,8 @@ bool SnapshotHandler::ReadAheadIOCompleted(bool sync) {
     }
 
     cv.notify_all();
+    // Snapshot-merge can safely use the buffer
+    buffer_lock_.unlock();
     return true;
 }
 
@@ -281,6 +287,10 @@ bool SnapshotHandler::WaitForMergeReady() {
             }
             return false;
         }
+
+        // Request lock here as the buffer content will be modified
+        // This ensure that the buffer is not in the process of snapshot-merge
+        buffer_lock_.lock();
         return true;
     }
 }
@@ -297,6 +307,8 @@ void SnapshotHandler::NotifyRAForMergeReady() {
     }
 
     cv.notify_all();
+    // Snapshot-merge thread is done using the buffer.
+    buffer_lock_.unlock();
 }
 
 // The following transitions are mostly in the failure paths
