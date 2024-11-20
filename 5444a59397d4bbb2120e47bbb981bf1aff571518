@@ -52,6 +52,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb5a7f81_72985ea0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-20T05:01:42Z",
+      "side": 1,
+      "message": "Hi Martin,\n\nI am going to submit this CL given this has been reviewed by Android security from rust-unsafe perspective - Please see the same CL here and +1 from qwandor (https://r.android.com/3344265).\n\nThat said, please feel free to review. I will be happy to address the comments / suggestions as a follow up CL. Thanks.",
+      "parentUuid": "f6c7e963_7ade68c9",
+      "revId": "5444a59397d4bbb2120e47bbb981bf1aff571518",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "634d471b_c0e82f4f",
