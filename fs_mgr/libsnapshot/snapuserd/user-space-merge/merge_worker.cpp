@@ -232,156 +232,162 @@ bool MergeWorker::MergeOrderedOpsAsync() {
             SNAP_LOG(ERROR) << "Failed waiting for merge to begin";
             return false;
         }
+        std::lock_guard<std::mutex> buffer_lock(snapuserd_->GetBufferLock());
+        {
+            snapuserd_->SetMergeInProgress(ra_block_index_);
 
-        snapuserd_->SetMergeInProgress(ra_block_index_);
+            loff_t offset = 0;
+            int num_ops = snapuserd_->GetTotalBlocksToMerge();
 
-        loff_t offset = 0;
-        int num_ops = snapuserd_->GetTotalBlocksToMerge();
+            int pending_sqe = queue_depth_;
+            int pending_ios_to_submit = 0;
+            bool flush_required = false;
+            blocks_merged_in_group_ = 0;
 
-        int pending_sqe = queue_depth_;
-        int pending_ios_to_submit = 0;
-        bool flush_required = false;
-        blocks_merged_in_group_ = 0;
+            SNAP_LOG(DEBUG) << "Merging copy-ops of size: " << num_ops;
+            while (num_ops) {
+                uint64_t source_offset;
 
-        SNAP_LOG(DEBUG) << "Merging copy-ops of size: " << num_ops;
-        while (num_ops) {
-            uint64_t source_offset;
+                int linear_blocks = PrepareMerge(&source_offset, &num_ops);
 
-            int linear_blocks = PrepareMerge(&source_offset, &num_ops);
+                if (linear_blocks != 0) {
+                    size_t io_size = (linear_blocks * BLOCK_SZ);
 
-            if (linear_blocks != 0) {
-                size_t io_size = (linear_blocks * BLOCK_SZ);
+                    // Get an SQE entry from the ring and populate the I/O variables
+                    struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
+                    if (!sqe) {
+                        SNAP_PLOG(ERROR) << "io_uring_get_sqe failed during merge-ordered ops";
+                        return false;
+                    }
 
-                // Get an SQE entry from the ring and populate the I/O variables
-                struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
-                if (!sqe) {
-                    SNAP_PLOG(ERROR) << "io_uring_get_sqe failed during merge-ordered ops";
-                    return false;
+                    io_uring_prep_write(sqe, base_path_merge_fd_.get(),
+                                        (char*)read_ahead_buffer + offset, io_size, source_offset);
+
+                    offset += io_size;
+                    num_ops -= linear_blocks;
+                    blocks_merged_in_group_ += linear_blocks;
+
+                    pending_sqe -= 1;
+                    pending_ios_to_submit += 1;
+                    // These flags are important - We need to make sure that the
+                    // blocks are linked and are written in the same order as
+                    // populated. This is because of overlapping block writes.
+                    //
+                    // If there are no dependency, we can optimize this further by
+                    // allowing parallel writes; but for now, just link all the SQ
+                    // entries.
+                    sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
                 }
 
-                io_uring_prep_write(sqe, base_path_merge_fd_.get(),
-                                    (char*)read_ahead_buffer + offset, io_size, source_offset);
-
-                offset += io_size;
-                num_ops -= linear_blocks;
-                blocks_merged_in_group_ += linear_blocks;
-
-                pending_sqe -= 1;
-                pending_ios_to_submit += 1;
-                // These flags are important - We need to make sure that the
-                // blocks are linked and are written in the same order as
-                // populated. This is because of overlapping block writes.
-                //
-                // If there are no dependency, we can optimize this further by
-                // allowing parallel writes; but for now, just link all the SQ
-                // entries.
-                sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
-            }
-
-            // Ring is full or no more COW ops to be merged in this batch
-            if (pending_sqe == 0 || num_ops == 0 || (linear_blocks == 0 && pending_ios_to_submit)) {
-                // If this is a last set of COW ops to be merged in this batch, we need
-                // to sync the merged data. We will try to grab an SQE entry
-                // and set the FSYNC command; additionally, make sure that
-                // the fsync is done after all the I/O operations queued
-                // in the ring is completed by setting IOSQE_IO_DRAIN.
-                //
-                // If there is no space in the ring, we will flush it later
-                // by explicitly calling fsync() system call.
-                if (num_ops == 0 || (linear_blocks == 0 && pending_ios_to_submit)) {
-                    if (pending_sqe != 0) {
-                        struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
-                        if (!sqe) {
-                            // very unlikely but let's continue and not fail the
-                            // merge - we will flush it later
-                            SNAP_PLOG(ERROR) << "io_uring_get_sqe failed during merge-ordered ops";
-                            flush_required = true;
+                // Ring is full or no more COW ops to be merged in this batch
+                if (pending_sqe == 0 || num_ops == 0 ||
+                    (linear_blocks == 0 && pending_ios_to_submit)) {
+                    // If this is a last set of COW ops to be merged in this batch, we need
+                    // to sync the merged data. We will try to grab an SQE entry
+                    // and set the FSYNC command; additionally, make sure that
+                    // the fsync is done after all the I/O operations queued
+                    // in the ring is completed by setting IOSQE_IO_DRAIN.
+                    //
+                    // If there is no space in the ring, we will flush it later
+                    // by explicitly calling fsync() system call.
+                    if (num_ops == 0 || (linear_blocks == 0 && pending_ios_to_submit)) {
+                        if (pending_sqe != 0) {
+                            struct io_uring_sqe* sqe = io_uring_get_sqe(ring_.get());
+                            if (!sqe) {
+                                // very unlikely but let's continue and not fail the
+                                // merge - we will flush it later
+                                SNAP_PLOG(ERROR)
+                                        << "io_uring_get_sqe failed during merge-ordered ops";
+                                flush_required = true;
+                            } else {
+                                io_uring_prep_fsync(sqe, base_path_merge_fd_.get(), 0);
+                                // Drain the queue before fsync
+                                io_uring_sqe_set_flags(sqe, IOSQE_IO_DRAIN);
+                                pending_sqe -= 1;
+                                flush_required = false;
+                                pending_ios_to_submit += 1;
+                                sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
+                            }
                         } else {
-                            io_uring_prep_fsync(sqe, base_path_merge_fd_.get(), 0);
-                            // Drain the queue before fsync
-                            io_uring_sqe_set_flags(sqe, IOSQE_IO_DRAIN);
-                            pending_sqe -= 1;
-                            flush_required = false;
-                            pending_ios_to_submit += 1;
-                            sqe->flags |= (IOSQE_IO_LINK | IOSQE_ASYNC);
+                            flush_required = true;
                         }
-                    } else {
-                        flush_required = true;
-                    }
-                }
-
-                // Submit the IO for all the COW ops in a single syscall
-                int ret = io_uring_submit(ring_.get());
-                if (ret != pending_ios_to_submit) {
-                    SNAP_PLOG(ERROR)
-                            << "io_uring_submit failed for read-ahead: "
-                            << " io submit: " << ret << " expected: " << pending_ios_to_submit;
-                    return false;
-                }
-
-                int pending_ios_to_complete = pending_ios_to_submit;
-                pending_ios_to_submit = 0;
-
-                bool status = true;
-
-                // Reap I/O completions
-                while (pending_ios_to_complete) {
-                    struct io_uring_cqe* cqe;
-
-                    // io_uring_wait_cqe can potentially return -EAGAIN or -EINTR;
-                    // these error codes are not truly I/O errors; we can retry them
-                    // by re-populating the SQE entries and submitting the I/O
-                    // request back. However, we don't do that now; instead we
-                    // will fallback to synchronous I/O.
-                    ret = io_uring_wait_cqe(ring_.get(), &cqe);
-                    if (ret) {
-                        SNAP_LOG(ERROR) << "Merge: io_uring_wait_cqe failed: " << strerror(-ret);
-                        status = false;
-                        break;
                     }
 
-                    if (cqe->res < 0) {
-                        SNAP_LOG(ERROR) << "Merge: io_uring_wait_cqe failed with res: " << cqe->res;
-                        status = false;
-                        break;
+                    // Submit the IO for all the COW ops in a single syscall
+                    int ret = io_uring_submit(ring_.get());
+                    if (ret != pending_ios_to_submit) {
+                        SNAP_PLOG(ERROR)
+                                << "io_uring_submit failed for read-ahead: " << " io submit: "
+                                << ret << " expected: " << pending_ios_to_submit;
+                        return false;
                     }
 
-                    io_uring_cqe_seen(ring_.get(), cqe);
-                    pending_ios_to_complete -= 1;
+                    int pending_ios_to_complete = pending_ios_to_submit;
+                    pending_ios_to_submit = 0;
+
+                    bool status = true;
+
+                    // Reap I/O completions
+                    while (pending_ios_to_complete) {
+                        struct io_uring_cqe* cqe;
+
+                        // io_uring_wait_cqe can potentially return -EAGAIN or -EINTR;
+                        // these error codes are not truly I/O errors; we can retry them
+                        // by re-populating the SQE entries and submitting the I/O
+                        // request back. However, we don't do that now; instead we
+                        // will fallback to synchronous I/O.
+                        ret = io_uring_wait_cqe(ring_.get(), &cqe);
+                        if (ret) {
+                            SNAP_LOG(ERROR)
+                                    << "Merge: io_uring_wait_cqe failed: " << strerror(-ret);
+                            status = false;
+                            break;
+                        }
+
+                        if (cqe->res < 0) {
+                            SNAP_LOG(ERROR)
+                                    << "Merge: io_uring_wait_cqe failed with res: " << cqe->res;
+                            status = false;
+                            break;
+                        }
+
+                        io_uring_cqe_seen(ring_.get(), cqe);
+                        pending_ios_to_complete -= 1;
+                    }
+
+                    if (!status) {
+                        return false;
+                    }
+
+                    pending_sqe = queue_depth_;
                 }
 
-                if (!status) {
-                    return false;
+                if (linear_blocks == 0) {
+                    break;
                 }
-
-                pending_sqe = queue_depth_;
             }
 
-            if (linear_blocks == 0) {
-                break;
+            // Verify all ops are merged
+            CHECK(num_ops == 0);
+
+            // Flush the data
+            if (flush_required && (fsync(base_path_merge_fd_.get()) < 0)) {
+                SNAP_LOG(ERROR) << " Failed to fsync merged data";
+                return false;
             }
-        }
 
-        // Verify all ops are merged
-        CHECK(num_ops == 0);
+            // Merge is done and data is on disk. Update the COW Header about
+            // the merge completion
+            if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
+                SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
+                return false;
+            }
 
-        // Flush the data
-        if (flush_required && (fsync(base_path_merge_fd_.get()) < 0)) {
-            SNAP_LOG(ERROR) << " Failed to fsync merged data";
-            return false;
-        }
+            SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
 
-        // Merge is done and data is on disk. Update the COW Header about
-        // the merge completion
-        if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
-            SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
-            return false;
-        }
-
-        SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
-
-        // Mark the block as merge complete
-        snapuserd_->SetMergeCompleted(ra_block_index_);
+            // Mark the block as merge complete
+            snapuserd_->SetMergeCompleted(ra_block_index_);
+        }  // End of buffer lock
 
         // Notify RA thread that the merge thread is ready to merge the next
         // window
@@ -415,58 +421,61 @@ bool MergeWorker::MergeOrderedOps() {
             return false;
         }
 
-        snapuserd_->SetMergeInProgress(ra_block_index_);
+        std::lock_guard<std::mutex> buffer_lock(snapuserd_->GetBufferLock());
+        {
+            snapuserd_->SetMergeInProgress(ra_block_index_);
 
-        loff_t offset = 0;
-        int num_ops = snapuserd_->GetTotalBlocksToMerge();
-        SNAP_LOG(DEBUG) << "Merging copy-ops of size: " << num_ops;
-        while (num_ops) {
-            uint64_t source_offset;
+            loff_t offset = 0;
+            int num_ops = snapuserd_->GetTotalBlocksToMerge();
+            SNAP_LOG(DEBUG) << "Merging copy-ops of size: " << num_ops;
+            while (num_ops) {
+                uint64_t source_offset;
 
-            int linear_blocks = PrepareMerge(&source_offset, &num_ops);
-            if (linear_blocks == 0) {
-                break;
+                int linear_blocks = PrepareMerge(&source_offset, &num_ops);
+                if (linear_blocks == 0) {
+                    break;
+                }
+
+                size_t io_size = (linear_blocks * BLOCK_SZ);
+                // Write to the base device. Data is already in the RA buffer. Note
+                // that XOR ops is already handled by the RA thread. We just write
+                // the contents out.
+                int ret = TEMP_FAILURE_RETRY(pwrite(base_path_merge_fd_.get(),
+                                                    (char*)read_ahead_buffer + offset, io_size,
+                                                    source_offset));
+                if (ret < 0 || ret != io_size) {
+                    SNAP_LOG(ERROR) << "Failed to write to backing device while merging "
+                                    << " at offset: " << source_offset << " io_size: " << io_size;
+                    snapuserd_->SetMergeFailed(ra_block_index_);
+                    return false;
+                }
+
+                offset += io_size;
+                num_ops -= linear_blocks;
             }
 
-            size_t io_size = (linear_blocks * BLOCK_SZ);
-            // Write to the base device. Data is already in the RA buffer. Note
-            // that XOR ops is already handled by the RA thread. We just write
-            // the contents out.
-            int ret = TEMP_FAILURE_RETRY(pwrite(base_path_merge_fd_.get(),
-                                                (char*)read_ahead_buffer + offset, io_size,
-                                                source_offset));
-            if (ret < 0 || ret != io_size) {
-                SNAP_LOG(ERROR) << "Failed to write to backing device while merging "
-                                << " at offset: " << source_offset << " io_size: " << io_size;
+            // Verify all ops are merged
+            CHECK(num_ops == 0);
+
+            // Flush the data
+            if (fsync(base_path_merge_fd_.get()) < 0) {
+                SNAP_LOG(ERROR) << " Failed to fsync merged data";
                 snapuserd_->SetMergeFailed(ra_block_index_);
                 return false;
             }
 
-            offset += io_size;
-            num_ops -= linear_blocks;
-        }
+            // Merge is done and data is on disk. Update the COW Header about
+            // the merge completion
+            if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
+                SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
+                snapuserd_->SetMergeFailed(ra_block_index_);
+                return false;
+            }
 
-        // Verify all ops are merged
-        CHECK(num_ops == 0);
-
-        // Flush the data
-        if (fsync(base_path_merge_fd_.get()) < 0) {
-            SNAP_LOG(ERROR) << " Failed to fsync merged data";
-            snapuserd_->SetMergeFailed(ra_block_index_);
-            return false;
-        }
-
-        // Merge is done and data is on disk. Update the COW Header about
-        // the merge completion
-        if (!snapuserd_->CommitMerge(snapuserd_->GetTotalBlocksToMerge())) {
-            SNAP_LOG(ERROR) << " Failed to commit the merged block in the header";
-            snapuserd_->SetMergeFailed(ra_block_index_);
-            return false;
-        }
-
-        SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
-        // Mark the block as merge complete
-        snapuserd_->SetMergeCompleted(ra_block_index_);
+            SNAP_LOG(DEBUG) << "Block commit of size: " << snapuserd_->GetTotalBlocksToMerge();
+            // Mark the block as merge complete
+            snapuserd_->SetMergeCompleted(ra_block_index_);
+        }  // End of buffer lock
 
         // Notify RA thread that the merge thread is ready to merge the next
         // window
