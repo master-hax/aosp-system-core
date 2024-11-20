@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "703e815c_4a3cab18",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-11-20T20:36:39Z",
+      "side": 1,
+      "message": "Needs to wait on aosp/3364260",
+      "revId": "3e7c17a8e7ad7275ea3a65642608b1c0becb38ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
