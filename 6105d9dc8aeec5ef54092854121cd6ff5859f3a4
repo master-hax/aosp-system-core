@@ -16,6 +16,24 @@
       "message": "hi - are these sockets fuzzed?",
       "revId": "6105d9dc8aeec5ef54092854121cd6ff5859f3a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68d37308_63bf74a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1882601
+      },
+      "writtenOn": "2024-11-20T16:44:18Z",
+      "side": 1,
+      "message": "No, do you have an example of fuzzing the sockets?",
+      "parentUuid": "f9d155ae_7712807c",
+      "revId": "6105d9dc8aeec5ef54092854121cd6ff5859f3a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
