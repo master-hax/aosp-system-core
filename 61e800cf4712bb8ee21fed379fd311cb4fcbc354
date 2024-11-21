@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1daa51bb_cea8d0f3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-21T17:30:42Z",
+      "side": 1,
+      "message": "i thought i\u0027d found and fixed all these kinds of hacks in the last few months, but i missed your MS_LAZYTIME one ... let me know if you have any more bodies buried in the woods :-)",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "855ab572_ff085bf5",
         "filename": "fs_mgr/libfstab/fstab.cpp",
         "patchSetId": 1
@@ -48,6 +65,24 @@
       "writtenOn": "2024-11-21T17:26:28Z",
       "side": 1,
       "message": "Acknowledged",
+      "parentUuid": "855ab572_ff085bf5",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9aef7b16_ba092920",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-21T17:30:42Z",
+      "side": 1,
+      "message": "aye, but it\u0027s _best_ to just fix our host sysroot :-P\n\nhttps://android-review.googlesource.com/c/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+/3370917",
       "parentUuid": "855ab572_ff085bf5",
       "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
