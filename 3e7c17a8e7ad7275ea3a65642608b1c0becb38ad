@@ -16,6 +16,24 @@
       "message": "Needs to wait on aosp/3364260",
       "revId": "3e7c17a8e7ad7275ea3a65642608b1c0becb38ad",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2db026f8_6423f68e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1644679
+      },
+      "writtenOn": "2024-11-21T19:19:42Z",
+      "side": 1,
+      "message": "FWIW I think if we rerun the test that caused this CL to be reverted originally with this change and it passes, then we should be able to submit this CL and assume failures are intermittent and due to the infrastructure issues with building the tests separately from the device.\n\nThis(or similar) failure could happen with any `cc_test` that includes this `libprocessgroup` library as a `shared_lib`.",
+      "parentUuid": "703e815c_4a3cab18",
+      "revId": "3e7c17a8e7ad7275ea3a65642608b1c0becb38ad",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
