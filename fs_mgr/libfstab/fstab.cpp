@@ -79,6 +79,9 @@ FlagList kMountFlagsList[] = {
         {"slave", MS_SLAVE},
         {"shared", MS_SHARED},
         {"lazytime", MS_LAZYTIME},
+#ifdef MS_NOSYMFOLLOW
+        {"nosymfollow", MS_NOSYMFOLLOW},
+#endif
         {"defaults", 0},
 };
 
