@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e11b4de_478c5ff6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1965132
+      },
+      "writtenOn": "2024-11-21T07:46:55Z",
+      "side": 1,
+      "message": "FYI: `0664` was introduced by https://r.android.com/870936 when the default permission of the files were `0664` [1].\n\nHowever the default permission is `0200` at least for now.\n\n[1]: https://android-review.git.corp.google.com/c/platform/system/core/+/870936/comment/99fefa56_997aa50d/",
+      "revId": "b912e3e548c4879a015342be1910c12a629b8dd8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
