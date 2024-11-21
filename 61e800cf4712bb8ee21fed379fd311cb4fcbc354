@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c7fc768_fbdd5b9d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3524514
+      },
+      "writtenOn": "2024-11-21T17:48:52Z",
+      "side": 1,
+      "message": "Will do 😊",
+      "parentUuid": "1daa51bb_cea8d0f3",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "855ab572_ff085bf5",
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "yeah, that\u0027s why i keep popping up uninvited to offer this service. you can even do it yourself and just have us +2 the change, but it\u0027s hard to predict in advance whether it\u0027s going to be trivial or hairy, and my team should own the pain anyway as penance for not having finished the transition to musl for the host :-(",
       "parentUuid": "8cb8f0a0_750b1c14",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab090b08_9415e1aa",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 3524514
+      },
+      "writtenOn": "2024-11-21T17:48:52Z",
+      "side": 1,
+      "message": "Oh nice, so in this case we don\u0027t need to check def of both MS_NOSYMFOLLOW \u0026 MS_LAZYTIME 😊",
+      "parentUuid": "23dcb9ae_3db7d8b7",
       "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
