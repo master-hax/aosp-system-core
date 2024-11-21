@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a44b25f5_81a00aed",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.test.system.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-11-21T12:36:28Z",
+      "side": 1,
+      "message": "Do we need to start these test service conditionally only?",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "150483e3a1d7e88e6827d8ba11ec7a8b9e3688f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
