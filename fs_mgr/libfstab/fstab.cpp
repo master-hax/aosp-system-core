@@ -43,6 +43,10 @@
 #define MS_LAZYTIME (1 << 25)
 #endif
 
+#if !defined(MS_NOSYMFOLLOW)
+#define MS_NOSYMFOLLOW 256
+#endif
+
 using android::base::EndsWith;
 using android::base::ParseByteCount;
 using android::base::ParseInt;
@@ -79,6 +83,7 @@ FlagList kMountFlagsList[] = {
         {"slave", MS_SLAVE},
         {"shared", MS_SHARED},
         {"lazytime", MS_LAZYTIME},
+        {"nosymfollow", MS_NOSYMFOLLOW},
         {"defaults", 0},
 };
 
