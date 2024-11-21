@@ -104,6 +104,24 @@
       "parentUuid": "9aef7b16_ba092920",
       "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23dcb9ae_3db7d8b7",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-11-21T17:41:29Z",
+      "side": 1,
+      "message": "yeah, that\u0027s why i keep popping up uninvited to offer this service. you can even do it yourself and just have us +2 the change, but it\u0027s hard to predict in advance whether it\u0027s going to be trivial or hairy, and my team should own the pain anyway as penance for not having finished the transition to musl for the host :-(",
+      "parentUuid": "8cb8f0a0_750b1c14",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
