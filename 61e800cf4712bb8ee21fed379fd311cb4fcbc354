@@ -16,6 +16,23 @@
       "message": "Upstream from Meta 😊",
       "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "855ab572_ff085bf5",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-11-21T17:16:07Z",
+      "side": 1,
+      "message": "It\u0027d be better to have a \"!defined(MS_NOSYMFOLLOW)\" block like we do for MS_LAZYTIME.",
+      "revId": "61e800cf4712bb8ee21fed379fd311cb4fcbc354",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
