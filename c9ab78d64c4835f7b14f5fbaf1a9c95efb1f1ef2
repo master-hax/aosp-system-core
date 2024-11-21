@@ -1,0 +1,158 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cae00d8d_16d42b2d",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "Maybe what we want to explain is that this subcommand does replay if there\u0027s a pack, and record the second boot if there\u0027s no pack of the current build?",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18b0152b_c09b41d8",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "thought: maybe we wanted such an option not limited to Android. It\u0027s not obvious what an ideal command design for such a feature is, though. Maybe if we add a replay option to make it quit silently when there\u0027s no pack and a record option to make it quit silently when there\u0027s a pack, then we can call replay and record in sequence?",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4156210_5812fae1",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "`default_prefetch_path` looks confusing with the path to the record file. How about `..._ready_path` instead?",
+      "range": {
+        "startLine": 49,
+        "startChar": 3,
+        "endLine": 49,
+        "endChar": 24
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa1f9368_8ff65c9e",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "missing `#[cfg(target_os \u003d \"android\")]`?",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0446e57e_ecc07f8f",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "I think semantically this is `record_ready` instead?",
+      "range": {
+        "startLine": 62,
+        "startChar": 30,
+        "endLine": 62,
+        "endChar": 44
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb444bcb_3ee856bf",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "optional: In crosvm, we move this kinds of arch-specifc definitions to `src/arch/android` and import them like\n\n```\n#[cfg(target_os \u003d \"android\")]\npub use arch::android::*\n```\n\nThen, we don\u0027t have to add `#[cfg(target_os \u003d \"android\")]` to every Android definition",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e40bc0b2_e92a0840",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "Is it a timing to move these Android logic to some Android-specific `--stop-on-prpoerty` option of `Record` in this follow-up CL? Then we can make existing `duration` args optional.",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fdfc5d8_41a76573",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-21T10:38:28Z",
+      "side": 1,
+      "message": "Is this logic correct? It seems to me now Prefetch waits for `sys.boot_completed` first, then continue record for additional 10 seconds (default) or `prefetch_boot.record_stop` being true. IIUC, I think now what we want is to wait only for `prefetch_boot.record_stop` instead of `sys.boot_completed`. Then, a vendor can set `prefetch_boot.record_stop` whenever they set.",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 191,
+        "endChar": 19
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
