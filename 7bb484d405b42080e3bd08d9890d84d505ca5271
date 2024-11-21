@@ -16,6 +16,41 @@
       "message": "I am going to put -1 temporarily.",
       "revId": "7bb484d405b42080e3bd08d9890d84d505ca5271",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ff8e584_850eb21b",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 1964171
+      },
+      "writtenOn": "2024-11-21T16:24:30Z",
+      "side": 1,
+      "message": "do we want to follow the .reset() convention to release the lock like in the other files?",
+      "fixSuggestions": [
+        {
+          "fixId": "0a08de01_148b4f6a",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+              "range": {
+                "startLine": 714,
+                "startChar": 0,
+                "endLine": 715,
+                "endChar": 0
+              },
+              "replacement": "        std::unique_lock\u003cstd::mutex\u003e buffer_lock(snapuserd_-\u003eGetBufferLock());\n"
+            }
+          ]
+        }
+      ],
+      "revId": "7bb484d405b42080e3bd08d9890d84d505ca5271",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
