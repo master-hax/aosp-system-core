@@ -51,6 +51,24 @@
       ],
       "revId": "7bb484d405b42080e3bd08d9890d84d505ca5271",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8dda5a8_8266309f",
+        "filename": "fs_mgr/libsnapshot/snapuserd/user-space-merge/snapuserd_readahead.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 714,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T04:55:48Z",
+      "side": 1,
+      "message": "lock gets released when this goes out of scope at L733",
+      "parentUuid": "4ff8e584_850eb21b",
+      "revId": "7bb484d405b42080e3bd08d9890d84d505ca5271",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
