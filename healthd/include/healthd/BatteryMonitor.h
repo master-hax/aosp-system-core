@@ -74,10 +74,10 @@ class BatteryMonitor {
     status_t getProperty(int id, struct BatteryProperty *val);
     void dumpState(int fd);
 
-    android::hardware::health::V1_0::HealthInfo getHealthInfo_1_0() const;
-    android::hardware::health::V2_0::HealthInfo getHealthInfo_2_0() const;
-    android::hardware::health::V2_1::HealthInfo getHealthInfo_2_1() const;
-    const aidl::android::hardware::health::HealthInfo& getHealthInfo() const;
+    android::hardware::health::V1_0::HealthInfo getHealthInfo_1_0();
+    android::hardware::health::V2_0::HealthInfo getHealthInfo_2_0();
+    android::hardware::health::V2_1::HealthInfo getHealthInfo_2_1();
+    const aidl::android::hardware::health::HealthInfo& getHealthInfo();
 
     void updateValues(void);
     void logValues(void);
@@ -100,6 +100,7 @@ class BatteryMonitor {
     int mBatteryFixedTemperature;
     int mBatteryHealthStatus;
     std::unique_ptr<aidl::android::hardware::health::HealthInfo> mHealthInfo;
+    std::mutex mHealthInfoLock;
 };
 
 }; // namespace android
