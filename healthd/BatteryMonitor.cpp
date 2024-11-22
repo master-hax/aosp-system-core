@@ -146,25 +146,29 @@ BatteryMonitor::BatteryMonitor()
 
 BatteryMonitor::~BatteryMonitor() {}
 
-HealthInfo_1_0 BatteryMonitor::getHealthInfo_1_0() const {
+HealthInfo_1_0 BatteryMonitor::getHealthInfo_1_0() {
     HealthInfo_1_0 health_info_1_0;
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     translateToHidl(*mHealthInfo, &health_info_1_0);
     return health_info_1_0;
 }
 
-HealthInfo_2_0 BatteryMonitor::getHealthInfo_2_0() const {
+HealthInfo_2_0 BatteryMonitor::getHealthInfo_2_0() {
     HealthInfo_2_0 health_info_2_0;
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     translateToHidl(*mHealthInfo, &health_info_2_0);
     return health_info_2_0;
 }
 
-HealthInfo_2_1 BatteryMonitor::getHealthInfo_2_1() const {
+HealthInfo_2_1 BatteryMonitor::getHealthInfo_2_1() {
     HealthInfo_2_1 health_info_2_1;
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     translateToHidl(*mHealthInfo, &health_info_2_1);
     return health_info_2_1;
 }
 
-const HealthInfo& BatteryMonitor::getHealthInfo() const {
+const HealthInfo& BatteryMonitor::getHealthInfo() {
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     return *mHealthInfo;
 }
 
@@ -361,6 +365,8 @@ static bool isScopedPowerSupply(const char* name) {
 }
 
 void BatteryMonitor::updateValues(void) {
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
+
     initHealthInfo(mHealthInfo.get());
 
     if (!mHealthdConfig->batteryPresentPath.empty())
@@ -541,10 +547,12 @@ void BatteryMonitor::logValues(const HealthInfo_2_1& health_info,
 }
 
 void BatteryMonitor::logValues(void) {
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     doLogValues(*mHealthInfo, *mHealthdConfig);
 }
 
 bool BatteryMonitor::isChargerOnline() {
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     const HealthInfo& props = *mHealthInfo;
     return props.chargerAcOnline | props.chargerUsbOnline | props.chargerWirelessOnline |
            props.chargerDockOnline;
@@ -704,6 +712,7 @@ status_t BatteryMonitor::getSerialNumber(std::optional<std::string>* out) {
 void BatteryMonitor::dumpState(int fd) {
     int v;
     char vs[128];
+    std::lock_guard<decltype(mHealthInfoLock)> lock(mHealthInfoLock);
     const HealthInfo& props = *mHealthInfo;
 
     snprintf(vs, sizeof(vs),
