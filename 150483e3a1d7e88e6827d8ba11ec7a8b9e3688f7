@@ -22,6 +22,30 @@
       },
       "revId": "150483e3a1d7e88e6827d8ba11ec7a8b9e3688f7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24b40421_c8d059c2",
+        "filename": "trusty/utils/rpmb_dev/rpmb_dev.test.system.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1856745
+      },
+      "writtenOn": "2024-11-22T09:12:31Z",
+      "side": 1,
+      "message": "I don\u0027t think it matters much, these are mostly directories created at boot.\nwe could argue the `start rpmb_mock_test_system` be done manually on-demand similar to the way we start storageproxyd. But I don\u0027t think it will make any difference. Let\u0027s keep it simple.",
+      "parentUuid": "a44b25f5_81a00aed",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "150483e3a1d7e88e6827d8ba11ec7a8b9e3688f7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
