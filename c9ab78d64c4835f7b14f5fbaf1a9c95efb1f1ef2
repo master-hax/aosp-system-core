@@ -35,6 +35,42 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "828ba0b2_2af4fd2d",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cae00d8d_16d42b2d",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44029af1_3649f335",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Right. I think we will have to revisit some of this when we incorporate this outside of Android boot process.\n\nI am working on integrating this to debian boot. With that, we would have to change some of the flow. For now, given this is specific to Android boot flow, the given structure should be good. prefetch.rc gives your the control flow. We could probably change that flow a bit based on performance analysis.",
+      "parentUuid": "18b0152b_c09b41d8",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a4156210_5812fae1",
@@ -48,6 +84,30 @@
       "writtenOn": "2024-11-21T10:38:28Z",
       "side": 1,
       "message": "`default_prefetch_path` looks confusing with the path to the record file. How about `..._ready_path` instead?",
+      "range": {
+        "startLine": 49,
+        "startChar": 3,
+        "endLine": 49,
+        "endChar": 24
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb56ce19_6cc7f2de",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4156210_5812fae1",
       "range": {
         "startLine": 49,
         "startChar": 3,
@@ -75,6 +135,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "280b998c_d9331b06",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa1f9368_8ff65c9e",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0446e57e_ecc07f8f",
@@ -88,6 +166,30 @@
       "writtenOn": "2024-11-21T10:38:28Z",
       "side": 1,
       "message": "I think semantically this is `record_ready` instead?",
+      "range": {
+        "startLine": 62,
+        "startChar": 30,
+        "endLine": 62,
+        "endChar": 44
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b1b947c_1207fb00",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0446e57e_ecc07f8f",
       "range": {
         "startLine": 62,
         "startChar": 30,
@@ -115,6 +217,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4730b9b_0b78cb43",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb444bcb_3ee856bf",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e40bc0b2_e92a0840",
@@ -132,6 +252,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4286e0d2_2d1ef794",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "We don\u0027t need explicit stop option given we now have the property to set that through .rc. Please see the other comment below.\n\nNow, the only tunables in vendor\u0027s .rc files are:\n\n1: Enable the feature:\n\nPRODUCT_VENDOR_PROPERTIES +\u003d \\\n       ro.prefetch_boot.enabled\u003dtrue\n\n2: Stop the recording:\n\non property:sys.boot_completed\u003d1 \u0026\u0026 property:ro.prefetch_boot.enabled\u003dtrue\n    setprop ro.prefetch_boot.record_stop 1\n\nor set the duration or any other config properties available such as num_threads, max_fd_count, duration etc.",
+      "parentUuid": "e40bc0b2_e92a0840",
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4fdfc5d8_41a76573",
@@ -145,6 +283,30 @@
       "writtenOn": "2024-11-21T10:38:28Z",
       "side": 1,
       "message": "Is this logic correct? It seems to me now Prefetch waits for `sys.boot_completed` first, then continue record for additional 10 seconds (default) or `prefetch_boot.record_stop` being true. IIUC, I think now what we want is to wait only for `prefetch_boot.record_stop` instead of `sys.boot_completed`. Then, a vendor can set `prefetch_boot.record_stop` whenever they set.",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 191,
+        "endChar": 19
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ce0cc33_58b84f69",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-11-22T22:51:33Z",
+      "side": 1,
+      "message": "Yes. This was intentional wherein we first wait for sys.boot_completed and then explicitly wait for DEFAULT seconds and then stop recording.\n\nHowever, I have now removed this now and let vendors set it. So, in .rc file, we will have to set:\n\non property:sys.boot_completed\u003d1 \u0026\u0026 property:ro.prefetch_boot.enabled\u003dtrue\n    setprop ro.prefetch_boot.record_stop 1\n\nOr wherever vendors prefer to set it.. \n\nThe only caveat is that the record has not timeout set. If vendor fail to set this in .rc, then record will continue forever.. Setting default timeout is also tough.. For now, this should be ok. Let me know what you think.",
+      "parentUuid": "4fdfc5d8_41a76573",
       "range": {
         "startLine": 184,
         "startChar": 0,
