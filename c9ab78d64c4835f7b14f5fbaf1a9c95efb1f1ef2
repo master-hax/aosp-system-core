@@ -315,6 +315,30 @@
       },
       "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d013c2bf_9c0e0438",
+        "filename": "init/libprefetch/prefetch/src/lib.rs",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-23T03:08:45Z",
+      "side": 1,
+      "message": "Got it, thanks. Yeah having some default timeout as well makes sense, though the current design also looks good to me in practice.",
+      "parentUuid": "0ce0cc33_58b84f69",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 191,
+        "endChar": 19
+      },
+      "revId": "c9ab78d64c4835f7b14f5fbaf1a9c95efb1f1ef2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

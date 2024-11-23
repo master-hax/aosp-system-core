@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b45277da_7bd15158",
+        "filename": "init/libprefetch/prefetch/src/args/args_argh.rs",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1981075
+      },
+      "writtenOn": "2024-11-23T03:08:45Z",
+      "side": 1,
+      "message": "sorry, I meant to suggest replacing all `prefetch_reay` path with `record_ready`. If we replace the path, let\u0027s replace every `prefetcH_ready` with `record_ready`. If we keep the path, let\u0027s revert this `record_ready` comment to `prefetch_ready`",
+      "range": {
+        "startLine": 66,
+        "startChar": 30,
+        "endLine": 66,
+        "endChar": 42
+      },
+      "revId": "a4401d8e629a3e727afcecacd961f96dd066b61f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
