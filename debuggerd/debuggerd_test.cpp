@@ -959,6 +959,28 @@ TEST_F(CrasherTest, signal) {
   ASSERT_MATCH(result, R"(backtrace:)");
 }
 
+TEST_F(CrasherTest, executable) {
+  int intercept_result;
+  unique_fd output_fd;
+  StartProcess([]() {
+    while (true) {
+      sleep(1);
+    }
+  });
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  ASSERT_EQ(0, kill(crasher_pid, SIGSEGV));
+
+  AssertDeath(SIGSEGV);
+  FinishIntercept(&intercept_result);
+
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  ASSERT_MATCH(result, R"(Executable: /\S+\n)");
+}
+
 TEST_F(CrasherTest, abort_message) {
   int intercept_result;
   unique_fd output_fd;
