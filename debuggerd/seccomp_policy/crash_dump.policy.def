@@ -94,3 +94,6 @@ getgid32: 1
 getegid32: 1
 getgroups32: 1
 #endif
+
+readlink: 1
+readlinkat: 1

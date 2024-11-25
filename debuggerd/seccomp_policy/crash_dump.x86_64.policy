@@ -37,3 +37,5 @@ geteuid: 1
 getgid: 1
 getegid: 1
 getgroups: 1
+readlink: 1
+readlinkat: 1
