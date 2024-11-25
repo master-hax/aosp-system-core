@@ -27,11 +27,13 @@ using android::base::GetProperty;
 using android::base::SetProperty;
 using namespace std::literals;
 
-static void ControlService(bool start, const std::string& service) {
+static void ControlService(bool start, bool optional, const std::string& service) {
     if (!android::base::SetProperty(start ? "ctl.start" : "ctl.stop", service)) {
         std::cerr << "Unable to " << (start ? "start" : "stop") << " service '" << service
                   << "'\nSee dmesg for error reason." << std::endl;
-        exit(EXIT_FAILURE);
+        if (!optional) {
+            exit(EXIT_FAILURE);
+        }
     }
 }
 
@@ -43,6 +45,14 @@ static void ControlDefaultServices(bool start) {
         "zygote",
     };
 
+    std::vector<std::string> optional_services = {
+        "trackingservice",
+        "trackingfidelityservice",
+        "calibration_svr",
+        "mrsystemservice",
+        "sensorproxy",
+    };
+
     // Only start zygote_secondary if not single arch.
     std::string zygote_configuration = GetProperty("ro.zygote", "");
     if (zygote_configuration != "zygote32" && zygote_configuration != "zygote64") {
@@ -51,11 +61,17 @@ static void ControlDefaultServices(bool start) {
 
     if (start) {
         for (const auto& service : services) {
-            ControlService(true, service);
+            ControlService(true, false, service);
+        }
+        for (const auto& service: optional_services) {
+            ControlService(true, true, service);
         }
     } else {
+        for (const auto& service: optional_services) {
+            ControlService(false, true, service);
+        }
         for (auto it = services.crbegin(); it != services.crend(); ++it) {
-            ControlService(false, *it);
+            ControlService(false, false, *it);
         }
     }
 }
@@ -80,7 +96,7 @@ static int StartStop(int argc, char** argv, bool start) {
     }
 
     for (int i = 1; i < argc; ++i) {
-        ControlService(start, argv[i]);
+        ControlService(start, false, argv[i]);
     }
     return EXIT_SUCCESS;
 }
