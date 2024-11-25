@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e26d0701_e70bfc43",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-11-25T21:55:23Z",
+      "side": 1,
+      "message": "We have several accesses to /dev/memcg/ in https://cs.android.com/android/platform/superproject/main/+/main:system/core/rootdir/init.rc;l\u003d33. Should those be also removed or changed for memcg v2?",
+      "revId": "0382749842e864cd16b4b0f42c0533883b065110",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
