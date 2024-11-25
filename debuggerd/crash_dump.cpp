@@ -676,6 +676,7 @@ int main(int argc, char** argv) {
         info.signo = info.siginfo->si_signo;
 
         info.command_line = get_command_line(g_target_thread);
+        info.executable = get_thread_exe(g_target_thread);
       } else {
         info.registers.reset(unwindstack::Regs::RemoteGet(thread));
         if (!info.registers) {

@@ -48,6 +48,7 @@ message Tombstone {
   uint32 tid = 6;
   uint32 uid = 7;
   string selinux_label = 8;
+  string executable = 1000;
 
   repeated string command_line = 9;
 

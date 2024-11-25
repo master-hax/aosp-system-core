@@ -66,6 +66,7 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
 
   std::string thread_name = get_thread_name(target_tid);
   std::vector<std::string> command_line = get_command_line(pid);
+  std::string thread_exe = get_thread_exe(target_tid);
 
   std::unique_ptr<unwindstack::Regs> regs(
       unwindstack::Regs::CreateFromUcontext(unwindstack::Regs::CurrentArch(), ucontext));
@@ -77,7 +78,7 @@ void engrave_tombstone_ucontext(int tombstone_fd, int proto_fd, uint64_t abort_m
   threads[target_tid] = ThreadInfo {
     .registers = std::move(regs), .uid = uid, .tid = target_tid,
     .thread_name = std::move(thread_name), .pid = pid, .command_line = std::move(command_line),
-    .selinux_label = std::move(selinux_label), .siginfo = siginfo, .signo = siginfo->si_signo,
+    .selinux_label = std::move(selinux_label), .siginfo = siginfo, .signo = siginfo->si_signo, .executable = std::move(thread_exe),
     // Only supported on aarch64 for now.
 #if defined(__aarch64__)
     .tagged_addr_ctrl = prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0, 0),
