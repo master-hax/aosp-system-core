@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+#include <android-base/logging.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <linux/unistd.h>
 #include <linux/watchdog.h>
+#include <sched.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <android-base/logging.h>
 
 #define DEV_NAME "/dev/watchdog"
 
@@ -33,6 +34,12 @@ int main(int argc, char** argv) {
 
     int margin = 10;
     if (argc >= 3) margin = atoi(argv[2]);
+
+    // Make the watchdog thread run with SCHED_FIFO at ridiculous priority to
+    // ensure that the watchdog gets pet promptly on the interval.
+    struct sched_param schedParams;
+    schedParams.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    sched_setscheduler(gettid(), SCHED_FIFO, &schedParams);
 
     LOG(INFO) << "watchdogd started (interval " << interval << ", margin " << margin << ")!";
 
