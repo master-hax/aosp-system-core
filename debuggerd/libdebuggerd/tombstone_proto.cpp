@@ -857,6 +857,7 @@ void engrave_tombstone_proto(Tombstone* tombstone, unwindstack::AndroidUnwinder*
   result.set_tid(target_thread.tid);
   result.set_uid(target_thread.uid);
   result.set_selinux_label(target_thread.selinux_label);
+  result.set_executable(target_thread.executable);
   // The main thread must have a valid siginfo.
   CHECK(target_thread.siginfo != nullptr);
 

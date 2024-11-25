@@ -60,6 +60,12 @@ std::string get_thread_name(pid_t tid) {
   return android::base::Trim(result);
 }
 
+std::string get_thread_exe(pid_t tid) {
+  std::string result = "<unknown>";
+  android::base::Readlink(android::base::StringPrintf("/proc/%d/exe", tid), &result);
+  return result;
+}
+
 std::string get_timestamp() {
   timespec ts;
   clock_gettime(CLOCK_REALTIME, &ts);
