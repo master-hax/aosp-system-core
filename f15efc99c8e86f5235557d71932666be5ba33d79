@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c44ac599_14b33d57",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-11-26T18:42:48Z",
+      "side": 1,
+      "message": "`Bug:` is missing",
+      "revId": "f15efc99c8e86f5235557d71932666be5ba33d79",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
