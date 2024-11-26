@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f36d4ff5_e89a380e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1557540
+      },
+      "writtenOn": "2024-11-26T22:38:23Z",
+      "side": 1,
+      "message": "Why not fix the drivers so that you can support any module load ordering? That is the correct fix for this problem. This change is just making the parallel module loading logic more serial to hide driver issues. You will still have random module load ordering within the set of threads you spawn.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 55
+      },
+      "revId": "a9392451c1df027ee7f0662d8e13243864c3518d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9af8f6e8_f7f80843",
         "filename": "init/first_stage_init.cpp",
         "patchSetId": 15
