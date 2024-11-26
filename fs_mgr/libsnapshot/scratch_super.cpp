@@ -63,6 +63,10 @@ static bool UmountScratch() {
     auto ota_dir = std::string(kOtaMetadataMount) + "/" + "ota";
     std::error_code ec;
 
+    if (access(kOtaMetadataMount, F_OK) != 0 && errno == ENOENT) {
+        return true;
+    }
+
     if (std::filesystem::remove_all(ota_dir, ec) == static_cast<std::uintmax_t>(-1)) {
         LOG(ERROR) << "Failed to remove OTA directory: " << ec.message();
         return false;
