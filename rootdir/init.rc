@@ -821,6 +821,9 @@ on post-fs-data
     exec - virtualizationservice system -- /bin/rm -rf /data/misc/virtualizationservice
     mkdir /data/misc/virtualizationservice 0771 system system
 
+    # Create socket dir for vmterminal
+    mkdir /dev/socket/vmterminal 0770 virtualmachine virtualmachine
+
     # /data/preloads uses encryption=None because it only contains preloaded
     # files that are public information, similar to the system image.
     mkdir /data/preloads 0775 system system encryption=None
