@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b970bfcb_08e3944e",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2024-11-26T10:40:41Z",
+      "side": 1,
+      "message": "git clang-format showed no modified files to format",
+      "parentUuid": "9af8f6e8_f7f80843",
+      "range": {
+        "startLine": 214,
+        "startChar": 31,
+        "endLine": 214,
+        "endChar": 32
+      },
+      "revId": "a9392451c1df027ee7f0662d8e13243864c3518d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a839fc46_71341309",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-11-20T03:25:05Z",
       "side": 1,
       "message": "This needs a better name but I think Will might be able to come up with a better suggestion than I can.",
+      "revId": "a9392451c1df027ee7f0662d8e13243864c3518d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5216fc51_f8f2e70b",
+        "filename": "init/first_stage_init.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 1888377
+      },
+      "writtenOn": "2024-11-26T10:40:41Z",
+      "side": 1,
+      "message": "agreed..",
+      "parentUuid": "a839fc46_71341309",
       "revId": "a9392451c1df027ee7f0662d8e13243864c3518d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
