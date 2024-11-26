@@ -16,6 +16,24 @@
       "message": "We have several accesses to /dev/memcg/ in https://cs.android.com/android/platform/superproject/main/+/main:system/core/rootdir/init.rc;l\u003d33. Should those be also removed or changed for memcg v2?",
       "revId": "0382749842e864cd16b4b0f42c0533883b065110",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3333b8d_c67f1f46",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-11-26T18:25:50Z",
+      "side": 1,
+      "message": "There are also several places in the system where there is indirect use of memcg v1, like here: https://cs.android.com/android/platform/superproject/main/+/main:system/memory/lmkd/lmkd.cpp;l\u003d1171 which uses memcg v1 specific attribute: https://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d35.\nThese should be addressed as well.",
+      "parentUuid": "e26d0701_e70bfc43",
+      "revId": "0382749842e864cd16b4b0f42c0533883b065110",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
