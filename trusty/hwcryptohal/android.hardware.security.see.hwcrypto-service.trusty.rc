@@ -1,0 +1,12 @@
+
+service trusty-hwcryptohal /system_ext/bin/trusty-hwcryptohal-service \
+--cid ${trusty.security_vm.vm_cid} \
+--port ${trusty.security_vm.hwcryptohal.vm_port} \
+    disabled
+    user system
+    group system
+
+on boot && property:ro.boot.vendor.apex.com.android.hardware.keymint=\
+com.android.hardware.keymint.rust_cf_guest_trusty_nonsecure
+    setprop trusty.security_vm.hwcryptohal.vm_port 4
+    start trusty-hwcryptohal
