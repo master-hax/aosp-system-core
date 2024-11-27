@@ -16,6 +16,24 @@
       "message": "Thank you David!",
       "revId": "487584da236d931c4b67d5aaaaf686a6e23a1f4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db88cf78_e3755173",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1836235
+      },
+      "writtenOn": "2024-11-27T07:10:20Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "148c3af2_c0f53482",
+      "revId": "487584da236d931c4b67d5aaaaf686a6e23a1f4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
