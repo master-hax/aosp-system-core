@@ -441,7 +441,7 @@ static bool GetGuestRegistersFromCrashedProcess([[maybe_unused]] pid_t tid,
                   "failed to read thread register for thread " + std::to_string(tid), &base)) {
     return false;
   }
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) || defined(__arm__)
   // base is implicitly casted to uint64_t.
   struct iovec pt_iov {
     .iov_base = &base, .iov_len = sizeof(base),
@@ -522,6 +522,16 @@ static void ReadGuestRegisters([[maybe_unused]] std::unique_ptr<unwindstack::Reg
       break;
     }
 #endif
+    case NATIVE_BRIDGE_ARCH_ARM: {
+      unwindstack::arm_user_regs arm_user_regs = {};
+      regs->reset(unwindstack::RegsArm::Read(&arm_user_regs));
+      for (size_t i = 0; i < unwindstack::ARM_REG_LAST; i++) {
+        arm_user_regs.regs[i] = guest_regs.regs_arm.r[i];
+      }
+
+      g_guest_arch = Architecture::ARM32;
+      break;
+    }
     default:
       break;
   }
@@ -796,16 +806,17 @@ int main(int argc, char** argv) {
       ATRACE_NAME("engrave_tombstone");
       unwindstack::ArchEnum regs_arch = unwindstack::ARCH_UNKNOWN;
       switch (g_guest_arch) {
-        case Architecture::ARM64: {
+        case Architecture::ARM32:
+          regs_arch = unwindstack::ARCH_ARM;
+          break;
+        case Architecture::ARM64:
           regs_arch = unwindstack::ARCH_ARM64;
           break;
-        }
-        case Architecture::RISCV64: {
+        case Architecture::RISCV64:
           regs_arch = unwindstack::ARCH_RISCV64;
           break;
-        }
-        default: {
-        }
+        default:
+          break;
       }
       if (regs_arch == unwindstack::ARCH_UNKNOWN) {
         engrave_tombstone(std::move(g_output_fd), std::move(g_proto_fd), &unwinder, thread_info,
