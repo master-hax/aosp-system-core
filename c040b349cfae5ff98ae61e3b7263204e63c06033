@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "543efbe8_959da8da",
+        "filename": "toolbox/start.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-02T14:11:42Z",
+      "side": 1,
+      "message": "jiyong: are you aware of other OEMs having needed anything like this that would warrant us adding a configuration file somewhere? otherwise this seems like a patch facebook should just keep locally...",
+      "revId": "c040b349cfae5ff98ae61e3b7263204e63c06033",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
