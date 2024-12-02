@@ -16,6 +16,24 @@
       "message": "jiyong: are you aware of other OEMs having needed anything like this that would warrant us adding a configuration file somewhere? otherwise this seems like a patch facebook should just keep locally...",
       "revId": "c040b349cfae5ff98ae61e3b7263204e63c06033",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "343e74eb_7f9d788b",
+        "filename": "toolbox/start.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-02T14:29:08Z",
+      "side": 1,
+      "message": "No. This appears to be Meta-specific services. So, yes, I suggest Meta to keep this locally.\n\nTo be better, Meta or any other OEM could implement such optional services by starting or stopping them in response to events triggered here. For example, if you want to start trackingservice when surfaceflinger is up ...\n\n\n```\non property init.svc.surfaceflinger\u003drunning\n    start trackingservice\n```",
+      "parentUuid": "543efbe8_959da8da",
+      "revId": "c040b349cfae5ff98ae61e3b7263204e63c06033",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
