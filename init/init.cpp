@@ -89,6 +89,7 @@
 #include "subcontext.h"
 #include "system/core/init/property_service.pb.h"
 #include "util.h"
+#include "service_utils.h"
 
 #ifndef RECOVERY
 #include "com_android_apex.h"
@@ -1054,6 +1055,10 @@ int SecondStageMain(int argc, char** argv) {
             SetProperty(gsi::kDsuSlotProp, dsu_slot);
         }
     }
+
+    // Must be called before SetKptrRestrictAction so that it can remember an fd
+    // created while kallsyms are still visible.
+    { OpenProcKallsymsWithRawAddresses(); }
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(SetKptrRestrictAction, "SetKptrRestrict");

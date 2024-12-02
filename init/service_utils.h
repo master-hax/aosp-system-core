@@ -108,5 +108,7 @@ Result<void> SetProcessAttributes(const ProcessAttributes& attr, InterprocessFif
 
 Result<void> WritePidToFiles(std::vector<std::string>* files);
 
+android::base::unique_fd OpenProcKallsymsWithRawAddresses();
+
 }  // namespace init
 }  // namespace android

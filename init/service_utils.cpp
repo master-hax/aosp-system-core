@@ -180,10 +180,19 @@ Result<Descriptor> SocketDescriptor::Create(const std::string& global_context) c
 Result<Descriptor> FileDescriptor::Create() const {
     int flags = (type == "r") ? O_RDONLY : (type == "w") ? O_WRONLY : O_RDWR;
 
-    // Make sure we do not block on open (eg: devices can chose to block on carrier detect).  Our
-    // intention is never to delay launch of a service for such a condition.  The service can
-    // perform its own blocking on carrier detect.
-    unique_fd fd(TEMP_FAILURE_RETRY(open(name.c_str(), flags | O_NONBLOCK | O_CLOEXEC)));
+    unique_fd fd;
+    // prototype: this is here with a placeholder path to demonstrate that what
+    // we want is very similar to existing file handling. For the real
+    // implementation, it probably makes more sense to move this to a dedicated
+    // service option.
+    if (name == "//@:/proc/kallsyms") {
+        fd = OpenProcKallsymsWithRawAddresses();
+    } else {
+        // Make sure we do not block on open (eg: devices can chose to block on carrier detect). Our
+        // intention is never to delay launch of a service for such a condition.  The service can
+        // perform its own blocking on carrier detect.
+        fd = unique_fd(TEMP_FAILURE_RETRY(open(name.c_str(), flags | O_NONBLOCK | O_CLOEXEC)));
+    }
 
     if (fd < 0) {
         return ErrnoError() << "Failed to open file '" << name << "'";
@@ -339,6 +348,14 @@ Result<void> WritePidToFiles(std::vector<std::string>* files) {
         }
     }
     return {};
+}
+
+android::base::unique_fd OpenProcKallsymsWithRawAddresses() {
+    // open kallsyms and remember fd as a static since we care about retaining
+    // the permissions at the time of first open().
+    static int fd = TEMP_FAILURE_RETRY(open("/proc/kallsyms", O_RDONLY | O_NONBLOCK | O_CLOEXEC));
+    int ret_fd = fcntl(fd, F_DUPFD_CLOEXEC, /*min_fd=*/3);
+    return unique_fd(ret_fd);
 }
 
 }  // namespace init
