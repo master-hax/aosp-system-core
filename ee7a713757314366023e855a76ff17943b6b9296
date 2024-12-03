@@ -118,6 +118,30 @@
       },
       "revId": "ee7a713757314366023e855a76ff17943b6b9296",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96be76a8_227896ba",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-03T22:27:08Z",
+      "side": 1,
+      "message": "For posterity: we would actually fail here:https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/namei.c?h\u003dv6.13-rc1#n3409",
+      "parentUuid": "907cea4f_fbb7b566",
+      "range": {
+        "startLine": 15,
+        "startChar": 16,
+        "endLine": 15,
+        "endChar": 23
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
