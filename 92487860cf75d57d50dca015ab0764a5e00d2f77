@@ -70,6 +70,30 @@
       },
       "revId": "92487860cf75d57d50dca015ab0764a5e00d2f77",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75d3da32_bb5e65ad",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-03T20:49:26Z",
+      "side": 0,
+      "message": "Sure, I\u0027ll address that in a different CL 😊.",
+      "parentUuid": "67b511eb_ad923f48",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 118,
+        "endChar": 19
+      },
+      "revId": "92487860cf75d57d50dca015ab0764a5e00d2f77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

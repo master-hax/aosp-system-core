@@ -70,6 +70,30 @@
       },
       "revId": "ee7a713757314366023e855a76ff17943b6b9296",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97c84054_9da5f006",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-03T20:49:26Z",
+      "side": 1,
+      "message": "Ah yes, in the kernel code: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/namei.c?h\u003dv6.13-rc1#n3418\n\nThat checks the executable permissions of the file, and `/dev/ashmem*` does not have the execute bits set.",
+      "parentUuid": "3bf2f2ee_fa4052ad",
+      "range": {
+        "startLine": 15,
+        "startChar": 16,
+        "endLine": 15,
+        "endChar": 23
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
