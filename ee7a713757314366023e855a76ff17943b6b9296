@@ -46,6 +46,30 @@
       },
       "revId": "ee7a713757314366023e855a76ff17943b6b9296",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3bf2f2ee_fa4052ad",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-03T19:17:45Z",
+      "side": 1,
+      "message": "\"fexecve() cannot be used on those buffers\" implies a check somewhere in the fexecve() implementation.",
+      "parentUuid": "3f139d05_b8d16342",
+      "range": {
+        "startLine": 15,
+        "startChar": 16,
+        "endLine": 15,
+        "endChar": 23
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
