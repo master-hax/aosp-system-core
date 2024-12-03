@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51f49333_216ff90c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-03T18:47:05Z",
+      "side": 1,
+      "message": "(i don\u0027t know whether this is relevant, but note that bionic\u0027s fexecve() is currently implemented in terms of /proc/self/fd/%d and execve(). i\u0027m assuming whatever check you\u0027re thinking of is in shared code though? looks like it\u0027s been in the kernel since 3.19 though, so we could safely switch at this point if there\u0027s any reason to.)",
+      "range": {
+        "startLine": 15,
+        "startChar": 16,
+        "endLine": 15,
+        "endChar": 23
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

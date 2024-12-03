@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e6eca11_80fdca03",
+        "filename": "libcutils/ashmem-dev.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-03T18:47:05Z",
+      "side": 0,
+      "message": "(is there a reason this is using syscall() rather than calling memfd_create() directly? does this code need to build for API \u003c 30?)",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 118,
+        "endChar": 19
+      },
+      "revId": "92487860cf75d57d50dca015ab0764a5e00d2f77",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
