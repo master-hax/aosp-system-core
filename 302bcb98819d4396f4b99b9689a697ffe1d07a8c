@@ -16,6 +16,23 @@
       "message": "Upstream from Meta 😊",
       "revId": "302bcb98819d4396f4b99b9689a697ffe1d07a8c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d860f470_54bf1c8c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1121838
+      },
+      "writtenOn": "2024-12-03T04:00:30Z",
+      "side": 1,
+      "message": "Why is there a separate uevent thread? The health HAL service is designed to run single-threaded; therefore no locks are in place anywhere in this library. \n\nUevent updates goes to the main thread as well via polling. \n\nhttps://cs.android.com/android/platform/superproject/main/+/main:hardware/interfaces/health/utils/libhealthloop/HealthLoop.cpp;l\u003d126;drc\u003d4187755208c13f10ac0f7fcdd1f0326d7409a471\n\nBinder calls are also handled by the main thread via polling.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:hardware/interfaces/health/aidl/default/Health.cpp;l\u003d398;drc\u003de05c642c05da2621ef9136cf462c263feb399da6\n\nThe main thread (the only thread) keeps polling binder \u0026 uevent events, then handle them.\n\nhttps://cs.android.com/android/platform/superproject/main/+/main:hardware/interfaces/health/utils/libhealthloop/HealthLoop.cpp;l\u003d264;drc\u003de05c642c05da2621ef9136cf462c263feb399da6\n\nSo no locks should be necessary. If you need a separate BatteryMonitor that works in multi-threaded environment, you are free to fork libbatterymonitor but at your own risk.",
+      "revId": "302bcb98819d4396f4b99b9689a697ffe1d07a8c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
