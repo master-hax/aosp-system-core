@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "22449cb7_2fc3804d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-03T23:37:59Z",
+      "side": 1,
+      "message": "This only affects memfds created through libcutils. Does JIT use that, or does it invoke `memfd_create()` directly? I presume it\u0027s the latter, given that a quick `lsof` on my device shows a few memfd jit caches, but I don\u0027t have memfd enabled at the moment for ashmem.\n\nHowever, can you please confirm how JIT allocates memfds?",
+      "parentUuid": "67b64b8c_bdbc3267",
+      "range": {
+        "startLine": 7,
+        "startChar": 19,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "a77bd9af_dd33a38f",
@@ -60,6 +84,30 @@
       "writtenOn": "2024-12-03T23:25:17Z",
       "side": 1,
       "message": "is this actually possible today? I would have expected SELinux to stop this behavior, as no Android SELinux domain has `execute_no_trans` on *_tmpfs files (the SELinux label backing tmpfs virtual files). If this is possible, I worried there might be a further kernel bug.\n\nIs it possible to write a unittest for this, to prevent future regressions?",
+      "range": {
+        "startLine": 9,
+        "startChar": 59,
+        "endLine": 11,
+        "endChar": 50
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25617417_da805d42",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-03T23:37:59Z",
+      "side": 1,
+      "message": "It should be simple to write a unit test for this; I\u0027ll add it to my to-do list.",
+      "parentUuid": "cdaf0645_17c5ada6",
       "range": {
         "startLine": 9,
         "startChar": 59,
