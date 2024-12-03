@@ -16,6 +16,24 @@
       "message": "you should be able to delete this now...",
       "revId": "5aab16649ab4359e83543242d2a635fa021721e1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "85270895_bd365e67",
+        "filename": "fs_mgr/libfstab/fstab.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3524514
+      },
+      "writtenOn": "2024-12-03T11:48:12Z",
+      "side": 1,
+      "message": "@enh@google.com It has been deleted in the most recent Patchset (Patchset 3) already.",
+      "parentUuid": "637477c6_778413c0",
+      "revId": "5aab16649ab4359e83543242d2a635fa021721e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
