@@ -1,0 +1,20 @@
+props {
+  module: "android.sysprop.TrustyProperties"
+  prop {
+    api_name: "enabled"
+    prop_name: "trusty.security_vm.enabled"
+  }
+  prop {
+    api_name: "keymint_enabled"
+    prop_name: "trusty.security_vm.keymint.enabled"
+  }
+  prop {
+    api_name: "nonsecure_vm_ready"
+    prop_name: "trusty.security_vm.nonsecure_vm_ready"
+  }
+  prop {
+    api_name: "vm_cid"
+    type: Integer
+    prop_name: "trusty.security_vm.vm_cid"
+  }
+}
