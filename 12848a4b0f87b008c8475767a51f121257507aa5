@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0e066441_99260d05",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-04T23:55:30Z",
+      "side": 1,
+      "message": "This is the approach recommended by [upstream](https://source.android.com/docs/core/architecture/configuration/add-system-properties#step6-access-properties-runtime) [docs](https://source.android.com/docs/core/architecture/configuration/sysprops-apis), rather than accessing with a string and parsing as the correct type",
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "ba7f8c33_2b9c263d",
         "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
         "patchSetId": 1
