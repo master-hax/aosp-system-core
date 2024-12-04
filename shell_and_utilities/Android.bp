@@ -43,7 +43,7 @@ phony {
     required: [
         "sh.recovery",
         "toolbox.recovery",
-        "toybox.recovery",
+        "toybox_recovery",
         "ziptool.recovery",
     ],
 }
