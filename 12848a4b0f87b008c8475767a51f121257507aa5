@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba7f8c33_2b9c263d",
+        "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-04T23:53:25Z",
+      "side": 1,
+      "message": "I could use some help writing precisely correct docs for these attributes since I\u0027m not 100% sure what they are",
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
