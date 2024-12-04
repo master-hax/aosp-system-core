@@ -43,7 +43,7 @@ phony {
     required: [
         "sh.recovery",
         "toolbox.recovery",
-        "toybox.recovery",
+        "toybox_recovery",
         "ziptool.recovery",
     ],
 }
@@ -67,6 +67,6 @@ phony {
     name: "shell_and_utilities_vendor_ramdisk",
     required: [
         "sh.vendor_ramdisk",
-        "toybox.vendor_ramdisk",
+        "toybox_vendor_ramdisk",
     ],
 }
