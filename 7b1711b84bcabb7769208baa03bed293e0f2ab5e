@@ -16,6 +16,24 @@
       "message": "do all these others need to change too? (seems like someone might already have done shell_and_utilities_vendor?)",
       "revId": "7b1711b84bcabb7769208baa03bed293e0f2ab5e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "75057d63_3dd2e6e3",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1962375
+      },
+      "writtenOn": "2024-12-05T18:26:10Z",
+      "side": 1,
+      "message": "Yes, I believe that all of these have to be converted. I will work on this sequentially.",
+      "parentUuid": "0508f423_86b8dfd5",
+      "revId": "7b1711b84bcabb7769208baa03bed293e0f2ab5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
