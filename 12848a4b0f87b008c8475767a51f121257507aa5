@@ -60,6 +60,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8dfaf61e_66e1b5af",
+        "filename": "trusty/sysprops/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-05T17:27:28Z",
+      "side": 1,
+      "message": "AFAIK, `trusty::TipcChannel::connect` requires knowing the correct `vm_cid` in order to connect to a Trusty vsock. This library is [exposed to vendors](https://source.corp.google.com/h/googleplex-android/platform/superproject/main/+/main:system/core/trusty/libtrusty-rs/Android.bp;l\u003d22), so I expected this to be exposed to vendors as well. If it\u0027s supposed to be a system internal property, then A) something seems wrong with the TIPC APIs expecting info from it and B) internal and external properties sharing a prefix like `trusty.security_vm` is highly confusing.\n\nI [don\u0027t know what nonsecure_vm_ready](https://android-review.git.corp.google.com/c/platform/system/core/+/3390371/comment/ba7f8c33_2b9c263d/) means, can you elaborate on why vendors shouldn\u0027t know why the vm is ready?\n\nIt\u0027s not a big problem for me to remove `vendor_available` (fortunately now), but I don\u0027t understand why.",
+      "parentUuid": "8818b647_1727f02e",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5108d81c_2d6a0cb5",
         "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
         "patchSetId": 1
@@ -95,6 +119,30 @@
       "side": 1,
       "message": "Should we specify security_vm in `api_name` or just use `security_vm_vm_cid` to facilitate the addition of other api names as Orlando mentioned?",
       "parentUuid": "5108d81c_2d6a0cb5",
+      "range": {
+        "startLine": 20,
+        "startChar": 15,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c32d8dc5_4c02a4e7",
+        "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-05T17:27:28Z",
+      "side": 1,
+      "message": "My idea is to rename `TrustyProperties.sysprop` to `SecurityVm.sysprop`, which would change the access to `trustyproperties::securityvm::vm_cid()`. I\u0027d then change the module to `android.sysprop.trusty.SecurityVm`. That way if you add properties not related to `security_vm`, they can go in their own `sysprop` file and get namespaced.\n\nThoughts?\n\n(the decision to convert `CamelCase` into `lowercase` for Rust instead of `snake_case` is awful tbh)",
+      "parentUuid": "23f4a485_7b5e1e27",
       "range": {
         "startLine": 20,
         "startChar": 15,
