@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0508f423_86b8dfd5",
+        "filename": "shell_and_utilities/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-05T15:44:01Z",
+      "side": 1,
+      "message": "do all these others need to change too? (seems like someone might already have done shell_and_utilities_vendor?)",
+      "revId": "7b1711b84bcabb7769208baa03bed293e0f2ab5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
