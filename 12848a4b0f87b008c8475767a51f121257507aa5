@@ -35,6 +35,29 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "5108d81c_2d6a0cb5",
+        "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1942645
+      },
+      "writtenOn": "2024-12-05T00:26:19Z",
+      "side": 1,
+      "message": "We can have more than 1 trusty VM (like widevine_vm) with properties, so I think the name might need to be more specific. Also, adding @aliceywang@google.com for her opinion on the names (she is using these properties).",
+      "range": {
+        "startLine": 20,
+        "startChar": 15,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "ba7f8c33_2b9c263d",
