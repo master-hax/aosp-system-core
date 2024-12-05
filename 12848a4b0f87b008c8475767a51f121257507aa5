@@ -37,6 +37,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8818b647_1727f02e",
+        "filename": "trusty/sysprops/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-12-05T08:39:40Z",
+      "side": 1,
+      "message": "Not all the properties here are supposed to be exposed to vendor. Only the following two properties are vendor relevant:\n\n- trusty.security_vm.enabled\n- trusty.security_vm.keymint.enabled\n\nthe rest are system internal properties. Why do you want to expose this module to vendors?",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5108d81c_2d6a0cb5",
         "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
         "patchSetId": 1
@@ -48,6 +71,30 @@
       "writtenOn": "2024-12-05T00:26:19Z",
       "side": 1,
       "message": "We can have more than 1 trusty VM (like widevine_vm) with properties, so I think the name might need to be more specific. Also, adding @aliceywang@google.com for her opinion on the names (she is using these properties).",
+      "range": {
+        "startLine": 20,
+        "startChar": 15,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23f4a485_7b5e1e27",
+        "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-12-05T08:39:40Z",
+      "side": 1,
+      "message": "Should we specify security_vm in `api_name` or just use `security_vm_vm_cid` to facilitate the addition of other api names as Orlando mentioned?",
+      "parentUuid": "5108d81c_2d6a0cb5",
       "range": {
         "startLine": 20,
         "startChar": 15,
