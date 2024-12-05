@@ -133,7 +133,7 @@ cc_defaults {
         },
         recovery: {
             required: [
-                "e2fsdroid.recovery",
+                "e2fsdroid_recovery",
             ],
         },
     },

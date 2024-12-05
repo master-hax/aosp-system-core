@@ -304,7 +304,7 @@ cc_binary {
             required: [
                 "init_recovery.rc",
                 "ueventd.rc.recovery",
-                "e2fsdroid.recovery",
+                "e2fsdroid_recovery",
                 "make_f2fs.recovery",
                 "mke2fs.recovery",
                 "sload_f2fs.recovery",
