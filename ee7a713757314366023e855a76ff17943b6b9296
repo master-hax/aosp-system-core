@@ -74,6 +74,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "be617928_0e7363af",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003966
+      },
+      "writtenOn": "2024-12-05T21:08:15Z",
+      "side": 1,
+      "message": "From looking at the code, it appears that `memfd_create()` is used directly, and falls back to `ashmem` if it fails.\n\nhttps://android.googlesource.com/platform/art/+/3fe3180b51a2a98731409fcd6bc7ff87b94c589b/runtime/jit/jit_memory_region.cc#510\n\nIf we haven\u0027t seen any problems by now it\u0027s likely there\u0027s nothing to worry about here. Resolving this comment.",
+      "parentUuid": "d9ac1080_1caf6325",
+      "range": {
+        "startLine": 7,
+        "startChar": 19,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "ee7a713757314366023e855a76ff17943b6b9296",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "a77bd9af_dd33a38f",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
