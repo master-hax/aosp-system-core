@@ -84,6 +84,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "78e428c0_f9532e56",
+        "filename": "trusty/sysprops/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1958315
+      },
+      "writtenOn": "2024-12-06T08:50:38Z",
+      "side": 1,
+      "message": "\u003e trusty::TipcChannel::connect requires knowing the correct vm_cid \n\n`trusty.security_vm.vm_cid` is already a system internal property as defined in [1]. Currently, we pass CID as argument to `TipcChannel::connect`. As this library is generic, I don\u0027t think it needs this API to access the specific security VM CID in code.\n\nFurthermore, we only expose two sys properties to vendors. These properties are sufficient for vendors to enable the \"Security VM + KeyMint with VM\" feature. This is part of our deployment plan outlined in go/android-w-avf-trusty-vms \u003e Deployment.\n\n\u003e B) internal and external properties sharing a prefix like trusty.security_vm is highly confusing.\n\nAgreed. I also wanted to add different prefixes for these two types of properties, but the current way is recommended by selinux reviewer. See [2], CC @inseob@google.com.\n\n\u003e I don\u0027t know what nonsecure_vm_ready means, can you elaborate on why vendors shouldn\u0027t know why the vm is ready?\n\nTrusty Security VMs come in two flavors: non-secure and secure.\n\n1/ Non-secure VMs run on emulated environments like Cuttlefish, which lack pVM firmware and TEE support. Consequently, KeyMint\u0027s root-of-trust data is passed into the VM from the host\u0027s HAL, and an RPMB proxy provides secure storage.\n\n2/ Secure VMs run on physical devices. Here, pVM firmware handles the transfer of root-of-trust data via DeviceTree, and TEE provides secure storage.\n\nThe `trusty.security_vm.nonsecure_vm_ready` property is a signal used by the VM process to indicate that a non-secure VM (type 1) is ready. This signal should trigger the launch of the RPMB proxy[3] and KeyMint HALs (b/357821690 - TBD).\n\nVendors only need to specify whether they want the Security VM feature enabled on a device. Our deployment model abstracts away the VM\u0027s runtime status, so vendors don\u0027t need to track details like VM readiness.\n\nHappy to chat if there are more questions.\n\n[1] https://cs.android.com/android/platform/superproject/main/+/main:system/sepolicy/private/property_contexts;l\u003d1780-1786;drc\u003d61544252beab26655279ba80ec88e6b0d8fdda1c\n[2] https://android-review.git.corp.google.com/c/platform/system/sepolicy/+/3342288/comment/9b5bcfc8_fd488b99/\n[3] https://cs.android.com/android/platform/superproject/main/+/main:system/core/trusty/utils/rpmb_dev/rpmb_dev.system.rc;l\u003d27;drc\u003d5d5c732a3b374c7992dfa79b6d62ea9f95119a0d",
+      "parentUuid": "8dfaf61e_66e1b5af",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5108d81c_2d6a0cb5",
         "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
         "patchSetId": 1
