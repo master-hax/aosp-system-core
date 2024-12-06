@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "37077bca_451868f6",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-12-06T22:20:19Z",
+      "side": 1,
+      "message": "Done. As usual, I had a version that used ctype.h, but changed my mind. I forgot that you had optimized all of those routines recently.",
+      "parentUuid": "f51becc9_971c30ab",
+      "revId": "67dd8e3b666c61bf133d5a371c5214b3107666e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6f92410d_9f534a9f",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-12-06T19:30:29Z",
       "side": 1,
       "message": "this is isascii(c).\n\n(so oct_encode_non_ascii() would make more sense?)\n\nbut is this actually what you want? this allows all the iscntrl() characters through, which seems like too much? don\u0027t you actually want `isgraph(c) || isspace(c)` here?",
+      "range": {
+        "startLine": 129,
+        "startChar": 45,
+        "endLine": 129,
+        "endChar": 60
+      },
+      "revId": "67dd8e3b666c61bf133d5a371c5214b3107666e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "140633d7_c83a8c7d",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-12-06T22:20:19Z",
+      "side": 1,
+      "message": "Technically, this is only to make sure that the protobuf won\u0027t crash when trying to be read in. All of those values are fine. It probably makes sense to encode even the funky characters that don\u0027t really print properly, so I\u0027ll do that. I don\u0027t think anyone would want to see those values in the log anyway.",
+      "parentUuid": "6f92410d_9f534a9f",
       "range": {
         "startLine": 129,
         "startChar": 45,
