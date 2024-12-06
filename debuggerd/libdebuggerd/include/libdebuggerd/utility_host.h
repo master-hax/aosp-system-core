@@ -30,4 +30,5 @@ constexpr size_t kTagGranuleSize = 16;
 constexpr size_t kNumTagColumns = 16;
 constexpr size_t kNumTagRows = 16;
 
-std::string oct_encode(const std::string& data);
+std::string oct_encode_non_utf8(const std::string& data);
+std::string oct_encode_non_printable(const std::string& data);

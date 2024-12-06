@@ -3329,3 +3329,30 @@ TEST_F(CrasherTest, log_with_non_utf8) {
                   pos + 30) != std::string::npos)
       << "Couldn't find sanitized log message: " << result;
 }
+
+TEST_F(CrasherTest, log_with_non_printable_ascii) {
+  static const std::string kMsg = "Message with non-printable ascii\nSome data\tvalues";
+  StartProcess([]() { LOG(FATAL) << kMsg; });
+
+  unique_fd output_fd;
+  StartIntercept(&output_fd);
+  FinishCrasher();
+  AssertDeath(SIGABRT);
+  int intercept_result;
+  FinishIntercept(&intercept_result);
+  ASSERT_EQ(1, intercept_result) << "tombstoned reported failure";
+
+  std::string result;
+  ConsumeFd(std::move(output_fd), &result);
+  // Verify the abort message does not remove characters that are UTF8 but
+  // are, technically, not printable.
+  size_t pos = result.find(std::string("Abort message: '") + kMsg + "'");
+  EXPECT_TRUE(pos != std::string::npos) << "Couldn't find abort message: " << result;
+
+  // Make sure that the log message is handled properly too.
+  // The logger automatically splits a newline message into two pieces.
+  pos = result.find("Message with non-printable ascii", pos + kMsg.size());
+  EXPECT_TRUE(pos != std::string::npos) << "Couldn't find log message: " << result;
+  EXPECT_TRUE(result.find("Some data\tvalues", pos + 1) != std::string::npos)
+      << "Couldn't find sanitized log message: " << result;
+}

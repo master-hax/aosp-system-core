@@ -18,6 +18,7 @@
 
 #include <sys/prctl.h>
 
+#include <cctype>
 #include <charconv>
 #include <limits>
 #include <string>
@@ -102,14 +103,15 @@ std::string describe_pac_enabled_keys(long value) {
   return describe_end(value, desc);
 }
 
-std::string oct_encode(const std::string& data) {
+static std::string oct_encode(const std::string& data, bool (*valid_char_func)(int)) {
   std::string oct_encoded;
   oct_encoded.reserve(data.size());
 
   // N.B. the unsigned here is very important, otherwise e.g. \255 would render as
   // \-123 (and overflow our buffer).
   for (unsigned char c : data) {
-    if (isprint(c)) {
+    // Check for a non-UTF8 character.
+    if (valid_char_func(c)) {
       oct_encoded += c;
     } else {
       std::string oct_digits("\\\0\0\0", 4);
@@ -121,4 +123,12 @@ std::string oct_encode(const std::string& data) {
     }
   }
   return oct_encoded;
+}
+
+std::string oct_encode_non_utf8(const std::string& data) {
+  return oct_encode(data, [](int c) { return (c & 0x80) == 0; });
+}
+
+std::string oct_encode_non_printable(const std::string& data) {
+  return oct_encode(data, [](int c) { return std::isprint(c) != 0; });
 }
