@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f51becc9_971c30ab",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-06T19:30:29Z",
+      "side": 1,
+      "message": "use \u003cctype.h\u003e unless you specifically need the c++ variant (and if you do, say why).",
+      "revId": "67dd8e3b666c61bf133d5a371c5214b3107666e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f92410d_9f534a9f",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-06T19:30:29Z",
+      "side": 1,
+      "message": "this is isascii(c).\n\n(so oct_encode_non_ascii() would make more sense?)\n\nbut is this actually what you want? this allows all the iscntrl() characters through, which seems like too much? don\u0027t you actually want `isgraph(c) || isspace(c)` here?",
+      "range": {
+        "startLine": 129,
+        "startChar": 45,
+        "endLine": 129,
+        "endChar": 60
+      },
+      "revId": "67dd8e3b666c61bf133d5a371c5214b3107666e1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
