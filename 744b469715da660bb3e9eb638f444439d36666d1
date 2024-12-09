@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d23e898c_8ef0ffc1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1962375
+      },
+      "writtenOn": "2024-12-09T22:00:03Z",
+      "side": 1,
+      "message": "[ABTD run](https://android-build.corp.google.com/builds/abtd/run/L39100030008259019) on the previously failing test passed successfully.",
+      "revId": "744b469715da660bb3e9eb638f444439d36666d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
