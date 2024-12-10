@@ -48,6 +48,8 @@ cc_defaults {
     name: "fs_mgr_defaults",
     sanitize: {
         misc_undefined: ["integer"],
+        // TODO(b/381336406): Re-enable when fixed.
+        hwaddress: false,
     },
     cflags: [
         "-Wall",
