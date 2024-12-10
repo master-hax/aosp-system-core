@@ -53,6 +53,10 @@ cc_defaults {
         "-Wall",
         "-Werror",
     ],
+    sanitize: {
+        // TODO(b/381336406): Re-enable when fixed.
+        hwaddress: false,
+    },
 }
 
 cc_defaults {
