@@ -30,6 +30,8 @@ bool CgroupGetControllerPath(const std::string& cgroup_name, std::string* path);
 bool CgroupGetControllerFromPath(const std::string& path, std::string* cgroup_name);
 bool CgroupGetAttributePath(const std::string& attr_name, std::string* path);
 bool CgroupGetAttributePathForTask(const std::string& attr_name, pid_t tid, std::string* path);
+bool CgroupGetAttributePathForProcess(std::string_view attr_name, uid_t uid, pid_t pid,
+                                      std::string &path);
 
 bool SetTaskProfiles(pid_t tid, const std::vector<std::string>& profiles,
                      bool use_fd_cache = false);
