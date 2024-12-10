@@ -16,6 +16,63 @@
       "message": "Took me a while to get the testing correct.",
       "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd608fad_32b592a5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-10T14:08:28Z",
+      "side": 1,
+      "message": "maybe it\u0027s just too early in the morning, but i still think it\u0027s really confusing that the \"encode\" functions (a) don\u0027t encode and (b) return true for characters they _won\u0027t_ cause to be encoded.\n\ni haven\u0027t really come up with good alternative names, so maybe the clearest option is to add a `!` in the caller so these functions really do return true for the bytes to be encoded?",
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08ca4381_ff30f6ed",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility_host.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-10T14:08:28Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be \"non_ascii_printable\" if the comment is correct?\n\nor should the comment be\n\n// Encode any value that _is_ an ascii value but not printable (!isgraph() \u0026\u0026 !isspace())\n\n?\n\n(that is: s/not// and s/or/and/.)",
+      "range": {
+        "startLine": 34,
+        "startChar": 23,
+        "endLine": 34,
+        "endChar": 42
+      },
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ce6b4e4_3dadfb64",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-10T14:08:28Z",
+      "side": 1,
+      "message": "yeah, `isgraph() || isspace` \u003d\u003d `!isgraph() \u0026\u0026 !isspace()`. maybe rewrite this to match the (corrected) comment, because -- despite the negations -- the latter seems a bit easier to grok?\n\nalthough can\u0027t we then rewrite this as just `!isprint()`, since `isprint()` is `isgraph() || isspace()`?",
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
