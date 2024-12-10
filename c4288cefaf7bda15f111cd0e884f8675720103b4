@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a2e5336_7701abd3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-12-10T19:48:44Z",
+      "side": 1,
+      "message": "I changed this to invert like you mentioned and changed the name of the function to should_encode_func.",
+      "parentUuid": "fd608fad_32b592a5",
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "08ca4381_ff30f6ed",
@@ -58,6 +76,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c397be5c_f309e8a2",
+        "filename": "debuggerd/libdebuggerd/include/libdebuggerd/utility_host.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-12-10T19:48:44Z",
+      "side": 1,
+      "message": "I changed the comment and I think it makes a bit more sense. I did remove the !isgraph or !isspace since that seems I think the comment makes more sense.",
+      "parentUuid": "08ca4381_ff30f6ed",
+      "range": {
+        "startLine": 34,
+        "startChar": 23,
+        "endLine": 34,
+        "endChar": 42
+      },
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0ce6b4e4_3dadfb64",
@@ -71,6 +113,24 @@
       "writtenOn": "2024-12-10T14:08:28Z",
       "side": 1,
       "message": "yeah, `isgraph() || isspace` \u003d\u003d `!isgraph() \u0026\u0026 !isspace()`. maybe rewrite this to match the (corrected) comment, because -- despite the negations -- the latter seems a bit easier to grok?\n\nalthough can\u0027t we then rewrite this as just `!isprint()`, since `isprint()` is `isgraph() || isspace()`?",
+      "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e64afc4_2b71aaa5",
+        "filename": "debuggerd/libdebuggerd/utility_host.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1019050
+      },
+      "writtenOn": "2024-12-10T19:48:44Z",
+      "side": 1,
+      "message": "I did the inversion and I do think it makes it easier to understand.",
+      "parentUuid": "0ce6b4e4_3dadfb64",
       "revId": "c4288cefaf7bda15f111cd0e884f8675720103b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
