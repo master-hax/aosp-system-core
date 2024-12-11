@@ -34,6 +34,24 @@
       "parentUuid": "e26d0701_e70bfc43",
       "revId": "0382749842e864cd16b4b0f42c0533883b065110",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0bae47b_10bb6f42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-12-11T17:52:53Z",
+      "side": 1,
+      "message": "Let\u0027s remove /dev/memcg references in 17 since it\u0027s still an option in 16.",
+      "parentUuid": "e26d0701_e70bfc43",
+      "revId": "0382749842e864cd16b4b0f42c0533883b065110",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
