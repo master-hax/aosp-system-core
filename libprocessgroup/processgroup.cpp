@@ -618,7 +618,7 @@ static int KillProcessGroup(
             if (CgroupGetMemcgAppsPath(&memcg_apps_path) &&
                 (ret = RemoveCgroup(memcg_apps_path.c_str(), uid, initialPid)) < 0) {
                 const auto memcg_v1_cgroup_path =
-                        ConvertUidPidToPath(memcg_apps_path.c_str(), uid, initialPid);
+                        ConvertUidPidToPath(memcg_apps_path.c_str(), uid, initialPid, false);
                 PLOG(ERROR) << "Unable to remove memcg v1 cgroup " << memcg_v1_cgroup_path;
             }
         }
@@ -640,7 +640,7 @@ int killProcessGroupOnce(uid_t uid, pid_t initialPid, int signal) {
 
 static int createProcessGroupInternal(uid_t uid, pid_t initialPid, std::string cgroup,
                                       bool activate_controllers) {
-    auto uid_path = ConvertUidToPath(cgroup.c_str(), uid);
+    auto uid_path = ConvertUidToPath(cgroup.c_str(), uid, activate_controllers);
 
     struct stat cgroup_stat;
     mode_t cgroup_mode = 0750;
@@ -667,7 +667,7 @@ static int createProcessGroupInternal(uid_t uid, pid_t initialPid, std::string c
         }
     }
 
-    auto uid_pid_path = ConvertUidPidToPath(cgroup.c_str(), uid, initialPid);
+    auto uid_pid_path = ConvertUidPidToPath(cgroup.c_str(), uid, initialPid, activate_controllers);
 
     if (!MkdirAndChown(uid_pid_path, cgroup_mode, cgroup_uid, cgroup_gid)) {
         PLOG(ERROR) << "Failed to make and chown " << uid_pid_path;
