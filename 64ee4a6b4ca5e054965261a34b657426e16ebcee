@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "49c368d9_dc27f57b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-12-11T04:57:25Z",
+      "side": 1,
+      "message": "Discovered while implementing ag/30824773",
+      "revId": "64ee4a6b4ca5e054965261a34b657426e16ebcee",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
