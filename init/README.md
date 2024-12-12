@@ -369,6 +369,15 @@ runs the service.
 `setenv <name> <value>`
 > Set the environment variable _name_ to _value_ in the launched process.
 
+`shared_kallsyms`
+> New uses discouraged. If set, init will behave as if the service specified
+  "file /proc/kallsyms", except the service will receive a duplicate of a single
+  fd that init saved during early second\_stage boot, which retains address
+  visibility even after the systemwide kptr\_restrict sysctl is set to its
+  steady state on Android. Because of performance gotchas with concurrent use of
+  this shared fd, all uses need to coordinate via provisional flock locks on
+  separately opened /proc/kallsyms fds.
+
 `shutdown <shutdown_behavior>`
 > Set shutdown behavior of the service process. When this is not specified,
   the service is killed during shutdown process by using SIGTERM and SIGKILL.
