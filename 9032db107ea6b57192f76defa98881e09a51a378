@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "703c8816_364c2fe2",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-12-12T23:09:36Z",
+      "side": 1,
+      "message": "Let\u0027s not use defaults here so that we do not inadvertently use v2 instead of v1. Let users explicitly spefify which one they intend to use.",
+      "range": {
+        "startLine": 261,
+        "startChar": 83,
+        "endLine": 261,
+        "endChar": 89
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "5aca8cce_ce04e17c",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/task_profiles.h",
+              "range": {
+                "startLine": 261,
+                "startChar": 0,
+                "endLine": 262,
+                "endChar": 0
+              },
+              "replacement": "std::string ConvertUidToPath(const char* root_cgroup_path, uid_t uid, bool v2_path);\n"
+            },
+            {
+              "path": "libprocessgroup/task_profiles.h",
+              "range": {
+                "startLine": 263,
+                "startChar": 0,
+                "endLine": 264,
+                "endChar": 0
+              },
+              "replacement": "                                bool v2_path);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "9032db107ea6b57192f76defa98881e09a51a378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81eba458_14d0fb99",
+        "filename": "libprocessgroup/task_profiles.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-12-12T23:09:36Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 263,
+        "startChar": 44,
+        "endLine": 263,
+        "endChar": 51
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "89e152ec_5f97c8cb",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "libprocessgroup/task_profiles.h",
+              "range": {
+                "startLine": 261,
+                "startChar": 0,
+                "endLine": 262,
+                "endChar": 0
+              },
+              "replacement": "std::string ConvertUidToPath(const char* root_cgroup_path, uid_t uid, bool v2_path);\n"
+            },
+            {
+              "path": "libprocessgroup/task_profiles.h",
+              "range": {
+                "startLine": 263,
+                "startChar": 0,
+                "endLine": 264,
+                "endChar": 0
+              },
+              "replacement": "                                bool v2_path);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "9032db107ea6b57192f76defa98881e09a51a378",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
