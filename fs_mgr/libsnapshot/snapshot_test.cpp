@@ -3071,6 +3071,16 @@ int main(int argc, char** argv) {
     ::testing::AddGlobalTestEnvironment(new ::android::snapshot::SnapshotTestEnvironment());
     gflags::ParseCommandLineFlags(&argc, &argv, false);
 
+    // When snapshot update is in-progress, snapuserd daemon
+    // will be up and running. These tests will start and stop the daemon
+    // thereby interfering with the update. We don't support multiple daemon
+    // processes yet.
+    auto sm = android::snapshot::SnapshotManager::New();
+    if (sm->IsUserspaceSnapshotUpdateInProgress()) {
+        std::cerr << "Snapshot update is in progress. Skipping tests\n";
+        return 0;
+    }
+
     bool vab_legacy = false;
     if (FLAGS_force_mode == "vab-legacy") {
         vab_legacy = true;
