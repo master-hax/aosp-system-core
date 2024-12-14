@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "62a8b6be_35e55b5f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3777774
+      },
+      "writtenOn": "2024-12-14T15:28:51Z",
+      "side": 1,
+      "message": "Hernández Walter",
+      "revId": "6757ecd2a3bd9071052d5caf89836001a6f20e56",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
