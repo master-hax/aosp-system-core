@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "789acdab_321871ce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1042276
+      },
+      "writtenOn": "2024-12-16T19:00:08Z",
+      "side": 1,
+      "message": "PTAL.  I\u0027ll remove the rest of dead code gradually (all in other git projects).",
+      "revId": "c4956b0e4ed9d5dc191fb279eeddc18e5d28189e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
