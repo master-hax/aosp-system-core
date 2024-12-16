@@ -16,6 +16,75 @@
       "message": "PTAL",
       "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a08ec2e_cacb73c2",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-16T06:24:41Z",
+      "side": 1,
+      "message": "this can be `constexpr std::string` or `constexpr std::string_view`",
+      "range": {
+        "startLine": 848,
+        "startChar": 4,
+        "endLine": 848,
+        "endChar": 15
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71d587d4_5ba38e9c",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-16T06:24:41Z",
+      "side": 1,
+      "message": "Use the variable above",
+      "range": {
+        "startLine": 851,
+        "startChar": 44,
+        "endLine": 851,
+        "endChar": 59
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff411a29_f520fd2a",
+        "filename": "init/service.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-16T06:24:41Z",
+      "side": 1,
+      "message": "result is not checked here.",
+      "range": {
+        "startLine": 161,
+        "startChar": 48,
+        "endLine": 161,
+        "endChar": 73
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
