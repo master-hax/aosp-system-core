@@ -59,6 +59,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cdfad4fa_579de00e",
+        "filename": "init/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T17:40:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43768a00_f0160b6c",
+      "range": {
+        "startLine": 374,
+        "startChar": 20,
+        "endLine": 374,
+        "endChar": 61
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1a08ec2e_cacb73c2",
@@ -72,6 +96,30 @@
       "writtenOn": "2024-12-16T06:24:41Z",
       "side": 1,
       "message": "this can be `constexpr std::string` or `constexpr std::string_view`",
+      "range": {
+        "startLine": 848,
+        "startChar": 4,
+        "endLine": 848,
+        "endChar": 15
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb875c71_f9933e62",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T17:40:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a08ec2e_cacb73c2",
       "range": {
         "startLine": 848,
         "startChar": 4,
@@ -123,6 +171,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d9ff4a0_99265a93",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T17:40:09Z",
+      "side": 1,
+      "message": "Done as a function-level comment.",
+      "parentUuid": "cbe33ec5_25881838",
+      "range": {
+        "startLine": 849,
+        "startChar": 4,
+        "endLine": 849,
+        "endChar": 10
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "71d587d4_5ba38e9c",
@@ -146,6 +218,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "005201a6_28721bef",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T17:40:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71d587d4_5ba38e9c",
+      "range": {
+        "startLine": 851,
+        "startChar": 44,
+        "endLine": 851,
+        "endChar": 59
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ff411a29_f520fd2a",
@@ -159,6 +255,30 @@
       "writtenOn": "2024-12-16T06:24:41Z",
       "side": 1,
       "message": "result is not checked here.",
+      "range": {
+        "startLine": 161,
+        "startChar": 48,
+        "endLine": 161,
+        "endChar": 73
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28c3f0c5_bf50f4ba",
+        "filename": "init/service.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T17:40:09Z",
+      "side": 1,
+      "message": "Added an ERROR log, moved function into .cc file. If there\u0027s a failure, we continue anyway (the static fd will stay bad and hence not published, and the services will have to deal with that).",
+      "parentUuid": "ff411a29_f520fd2a",
       "range": {
         "startLine": 161,
         "startChar": 48,
