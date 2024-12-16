@@ -34,6 +34,7 @@
 #include <android-base/scopeguard.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
+#include <cutils/android_get_control_file.h>
 #include <cutils/sockets.h>
 #include <processgroup/processgroup.h>
 #include <selinux/selinux.h>
@@ -672,6 +673,14 @@ Result<void> Service::Start() {
         }
     }
 
+    if (shared_kallsyms_file_) {
+        if (auto result = CreateSharedKallsymsFd(); result.ok()) {
+            descriptors.emplace_back(std::move(*result));
+        } else {
+            LOG(INFO) << "Could not obtain a copy of /proc/kallsyms: " << result.error();
+        }
+    }
+
     pid_t pid = -1;
     if (namespaces_.flags) {
         pid = clone(nullptr, nullptr, namespaces_.flags | SIGCHLD, nullptr);
@@ -833,6 +842,23 @@ unique_fd Service::CreateSigchldFd() {
     }
 
     return unique_fd(signalfd(-1, &mask, SFD_CLOEXEC));
+}
+
+Result<Descriptor> Service::CreateSharedKallsymsFd() {
+    std::string path = "/proc/kallsyms";
+    static int static_fd = open(path.c_str(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+    if (static_fd < 0) {
+        return ErrnoError() << "failed open(/proc/kallsyms)";
+    }
+
+    unique_fd fd{fcntl(static_fd, F_DUPFD_CLOEXEC, /*min_fd=*/3)};
+    if (fd < 0) {
+        return ErrnoError() << "failed fcntl(F_DUPFD_CLOEXEC)";
+    }
+
+    // Use the same environment variable as if the service specified
+    // "file /proc/kallsyms".
+    return Descriptor(ANDROID_FILE_ENV_PREFIX + path, std::move(fd));
 }
 
 void Service::SetStartedInFirstStage(pid_t pid) {
