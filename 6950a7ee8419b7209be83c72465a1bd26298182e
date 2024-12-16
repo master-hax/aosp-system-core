@@ -130,6 +130,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2219ad20_d948b68c",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 1128769
+      },
+      "writtenOn": "2024-12-16T19:59:22Z",
+      "side": 1,
+      "message": "(ended up changing back to char[] since I need the string both null-terminated and as part of a std::string, while \"constexpr std::string\" didn\u0027t pass the compile time check on all platforms)",
+      "parentUuid": "bb875c71_f9933e62",
+      "range": {
+        "startLine": 848,
+        "startChar": 4,
+        "endLine": 848,
+        "endChar": 15
+      },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cbe33ec5_25881838",
