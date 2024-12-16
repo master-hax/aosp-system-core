@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "03a9a0b0_65a88cc9",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3080,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-12-16T18:37:39Z",
+      "side": 1,
+      "message": "This doesn\u0027t skip the tests, it makes them error. But, why are devices under test doing updates?",
+      "revId": "7a906052ed5a99ba1dafdc849b49edd491827021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
