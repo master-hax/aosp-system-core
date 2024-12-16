@@ -20,6 +20,47 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "43768a00_f0160b6c",
+        "filename": "init/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-12-16T08:10:42Z",
+      "side": 1,
+      "message": "You should clarify that this does not grant the necessary selinux permissions to handle this file. That needs to be granted separately and is gated by a neverallow rule.",
+      "range": {
+        "startLine": 374,
+        "startChar": 20,
+        "endLine": 374,
+        "endChar": 61
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "f8592162_a275af6e",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/README.md",
+              "range": {
+                "startLine": 377,
+                "startChar": 0,
+                "endLine": 377,
+                "endChar": 0
+              },
+              "replacement": "  Note that this does not grant the necessary selinux permissions to handle this\n  file. That needs to be granted separately and is gated by a neverallow rule.\n"
+            }
+          ]
+        }
+      ],
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1a08ec2e_cacb73c2",
         "filename": "init/service.cpp",
         "patchSetId": 8
@@ -37,6 +78,47 @@
         "endLine": 848,
         "endChar": 15
       },
+      "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbe33ec5_25881838",
+        "filename": "init/service.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1054468
+      },
+      "writtenOn": "2024-12-16T08:10:42Z",
+      "side": 1,
+      "message": "I wonder if a comment might be helpful here? Perhaps it\u0027s just me, but I find that the use of static variables is non-obvious and a little surprising when I\u0027m reading code, so it took me some time realize that the file opening and fd duplication were happening in the same function, but that the file opening only occurred on the first call to that function and not subsequent calls. A short comment might help folks in the future who are trying to read this code.",
+      "range": {
+        "startLine": 849,
+        "startChar": 4,
+        "endLine": 849,
+        "endChar": 10
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "b8b0d6b2_2bd77788",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "init/service.cpp",
+              "range": {
+                "startLine": 849,
+                "startChar": 0,
+                "endLine": 849,
+                "endChar": 0
+              },
+              "replacement": "    // Open /proc/kallsyms once and reuse the fd for all services that need it.\n    // This is done to avoid opening the file multiple times, which can be\n    // expensive.\n"
+            }
+          ]
+        }
+      ],
       "revId": "6950a7ee8419b7209be83c72465a1bd26298182e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
