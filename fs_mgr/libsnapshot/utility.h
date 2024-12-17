@@ -142,5 +142,9 @@ bool IsVendorFromAndroid12();
 // Swap the suffix of a partition name.
 std::string GetOtherPartitionName(const std::string& name);
 
+std::string ToHexString(const uint8_t* buf, size_t len);
+uint8_t HexDigitToByte(char c);
+bool HexToBytes(const std::string& hex, std::vector<uint8_t>* bytes);
+
 }  // namespace snapshot
 }  // namespace android

@@ -295,5 +295,45 @@ bool KernelSupportsCompressedSnapshots() {
     return dm.GetTargetByName("user", nullptr);
 }
 
+std::string ToHexString(const uint8_t* buf, size_t len) {
+    char lookup[] = "0123456789abcdef";
+    std::string out(len * 2 + 1, '\0');
+    char* outp = out.data();
+    for (; len > 0; len--, buf++) {
+        *outp++ = (char)lookup[*buf >> 4];
+        *outp++ = (char)lookup[*buf & 0xf];
+    }
+    return out;
+}
+
+uint8_t HexDigitToByte(char c) {
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    }
+    if (c >= 'a' && c <= 'f') {
+        return c - 'a' + 10;
+    }
+    if (c >= 'A' && c <= 'Z') {
+        return c - 'A' + 10;
+    }
+    return 0xff;
+}
+
+bool HexToBytes(const std::string& hex, std::vector<uint8_t>* bytes) {
+    if (hex.size() % 2 != 0) {
+        return false;
+    }
+    bytes->resize(hex.size() / 2);
+    for (unsigned i = 0; i < bytes->size(); i++) {
+        uint8_t hi = HexDigitToByte(hex[i * 2]);
+        uint8_t lo = HexDigitToByte(hex[i * 2 + 1]);
+        if (lo > 0xf || hi > 0xf) {
+            return false;
+        }
+        bytes->at(i) = (hi << 4) | lo;
+    }
+    return true;
+}
+
 }  // namespace snapshot
 }  // namespace android

@@ -27,6 +27,8 @@
 #include <openssl/sha.h>
 #include <payload_consumer/file_descriptor.h>
 
+#include "utility.h"
+
 namespace android {
 namespace snapshot {
 
@@ -76,17 +78,6 @@ std::string TestPartitionOpener::GetDeviceString(const std::string& partition_na
         return fake_super_path_;
     }
     return PartitionOpener::GetDeviceString(partition_name);
-}
-
-std::string ToHexString(const uint8_t* buf, size_t len) {
-    char lookup[] = "0123456789abcdef";
-    std::string out(len * 2 + 1, '\0');
-    char* outp = out.data();
-    for (; len > 0; len--, buf++) {
-        *outp++ = (char)lookup[*buf >> 4];
-        *outp++ = (char)lookup[*buf & 0xf];
-    }
-    return out;
 }
 
 bool WriteRandomData(const std::string& path, std::optional<size_t> expect_size,
