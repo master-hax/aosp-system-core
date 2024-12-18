@@ -73,6 +73,21 @@ cc_binary {
 }
 
 cc_binary {
+    name: "toolbox_ramdisk",
+    defaults: ["toolbox_binary_defaults"],
+    ramdisk: true,
+    static_executable: true,
+    exclude_shared_libs: [
+        "libbase",
+    ],
+    static_libs: [
+        "libbase",
+        "liblog",
+    ],
+    system_shared_libs: [],
+}
+
+cc_binary {
     name: "toolbox_vendor",
     stem: "toolbox",
     vendor: true,
