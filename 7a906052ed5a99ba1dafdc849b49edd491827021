@@ -34,6 +34,24 @@
       "parentUuid": "03a9a0b0_65a88cc9",
       "revId": "7a906052ed5a99ba1dafdc849b49edd491827021",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6840380_760d5577",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3080,
+      "author": {
+        "id": 1290458
+      },
+      "writtenOn": "2024-12-18T16:09:13Z",
+      "side": 1,
+      "message": "I think this needs a comment to explain why the edge case happens. It\u0027s not at all obvious from reading the code.",
+      "parentUuid": "6aebea13_82e96174",
+      "revId": "7a906052ed5a99ba1dafdc849b49edd491827021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
