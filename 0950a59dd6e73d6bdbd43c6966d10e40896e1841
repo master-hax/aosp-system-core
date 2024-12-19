@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "67557c77_16ec74b5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-12-19T10:49:37Z",
+      "side": 1,
+      "message": "This change is still for experiemnt. I\u0027ll update the comments and commit description once someone verified this change actually fixes b/383081955 and we are ready to land.",
+      "parentUuid": "9d99fb47_850ce612",
+      "revId": "0950a59dd6e73d6bdbd43c6966d10e40896e1841",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "04820ba9_ab7903b8",
         "filename": "toolbox/Android.bp",
         "patchSetId": 2
@@ -31,6 +49,24 @@
       "writtenOn": "2024-12-18T16:06:57Z",
       "side": 1,
       "message": "is this actually a worthwhile saving, or should we just static_libs this for simplicity?",
+      "revId": "0950a59dd6e73d6bdbd43c6966d10e40896e1841",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "619b5ca0_a637ee4d",
+        "filename": "toolbox/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1337669
+      },
+      "writtenOn": "2024-12-19T10:49:37Z",
+      "side": 1,
+      "message": "how much saving would it be counted as \"worthwhile\"?\n\nI tried static linking libbase and liblog, and the \"system\" partition version of toolbox change from 169616 -\u003e 187112, so dynamic linking libbase \u0026 liblog saves about 20KB.\n\nOne problem with static linking liblog though... Since liblog is llndk, the toolbox.vendor cannot static link liblog. So we would still need this complex logic anyway. Either we dynamic link all versions but the ramdisk ver, or we static link all versions but the vendor ver.",
+      "parentUuid": "04820ba9_ab7903b8",
       "revId": "0950a59dd6e73d6bdbd43c6966d10e40896e1841",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
