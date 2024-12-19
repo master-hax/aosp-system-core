@@ -52,6 +52,24 @@
       "parentUuid": "6aebea13_82e96174",
       "revId": "7a906052ed5a99ba1dafdc849b49edd491827021",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45434c9c_f0971e5c",
+        "filename": "fs_mgr/libsnapshot/snapshot_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3080,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-12-19T05:20:24Z",
+      "side": 1,
+      "message": "updated the comment.",
+      "parentUuid": "a6840380_760d5577",
+      "revId": "7a906052ed5a99ba1dafdc849b49edd491827021",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
