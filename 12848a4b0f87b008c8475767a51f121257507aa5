@@ -106,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "02f1e7cf_70969434",
+        "filename": "trusty/sysprops/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-20T20:53:10Z",
+      "side": 1,
+      "message": "Thank you for the info and context, that is very helpful.\n\n\u003e  As this library is generic, I don\u0027t think it needs this API to access the specific security VM CID in code.\n\nI don\u0027t understand what you mean here. If I\u0027m a vendor, writing a tipc client that needs to connect to the Trusty vsock, I need to know this system property, or have an alternative API within system that can access it to connect over vsock correctly.\n\nI\u0027ve removed the `vendor_available` though the current vsock situation on vendor seems like a bug. This property is currently an exposed dependency of tipc\u0027s API, regardless of its currently defined accessibility. So either:\n\n- the tipc API should have a way to connect to vsock that doesn\u0027t require knowing this cid, or\n- this property should be changed to a `system_restricted_prop`, which is read-only outside of `system/`",
+      "parentUuid": "78e428c0_f9532e56",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5108d81c_2d6a0cb5",
@@ -167,6 +191,30 @@
       "side": 1,
       "message": "My idea is to rename `TrustyProperties.sysprop` to `SecurityVm.sysprop`, which would change the access to `trustyproperties::securityvm::vm_cid()`. I\u0027d then change the module to `android.sysprop.trusty.SecurityVm`. That way if you add properties not related to `security_vm`, they can go in their own `sysprop` file and get namespaced.\n\nThoughts?\n\n(the decision to convert `CamelCase` into `lowercase` for Rust instead of `snake_case` is awful tbh)",
       "parentUuid": "23f4a485_7b5e1e27",
+      "range": {
+        "startLine": 20,
+        "startChar": 15,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "12848a4b0f87b008c8475767a51f121257507aa5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03855a45_1427bda3",
+        "filename": "trusty/sysprops/android/sysprop/TrustyProperties.sysprop",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3562310
+      },
+      "writtenOn": "2024-12-20T20:53:10Z",
+      "side": 1,
+      "message": "These are now namespaced by the `security_vm` module.",
+      "parentUuid": "c32d8dc5_4c02a4e7",
       "range": {
         "startLine": 20,
         "startChar": 15,
