@@ -69,6 +69,24 @@
       "parentUuid": "04820ba9_ab7903b8",
       "revId": "0950a59dd6e73d6bdbd43c6966d10e40896e1841",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c84c6be3_09ed765e",
+        "filename": "toolbox/Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2024-12-20T20:00:52Z",
+      "side": 1,
+      "message": "what happens with logging in ramdisk code? do you need a stub liblog.so that just does nothing?",
+      "parentUuid": "619b5ca0_a637ee4d",
+      "revId": "0950a59dd6e73d6bdbd43c6966d10e40896e1841",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
