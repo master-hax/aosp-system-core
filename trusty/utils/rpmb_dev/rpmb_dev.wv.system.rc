@@ -35,8 +35,8 @@ on boot && \
 on early-boot && \
     property:trusty.widevine_vm.enabled=1 && \
     property:trusty.widevine_vm.vm_cid=* && \
-    property:ro.boot.vendor.apex.com.android.services.widevine=\
-com.android.services.widevine.cf_guest_trusty_nonsecure
+    property:ro.boot.vendor.apex.com.google.android.widevine=\
+com.google.android.widevine.system.cf_guest_trusty_nonsecure
     # Create a persistent location for the RPMB data
     # (work around lack of RPMb block device on CF).
     # file contexts secure_storage_rpmb_system_file
