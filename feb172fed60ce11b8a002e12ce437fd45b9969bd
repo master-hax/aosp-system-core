@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2f98470_1fd1282f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-24T13:41:57Z",
+      "side": 1,
+      "message": "The change is abandoned. Please remove this message and the Merge-In clause below.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 121
+      },
+      "revId": "feb172fed60ce11b8a002e12ce437fd45b9969bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "693d1633_007bd24a",
+        "filename": "init/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-24T13:41:57Z",
+      "side": 1,
+      "message": "Property is never set in DT. If you are mentioning `ro.boot.*` properties coming from bootconfig (`androidboot.*`) please do mention them explicitly.",
+      "range": {
+        "startLine": 489,
+        "startChar": 17,
+        "endLine": 489,
+        "endChar": 45
+      },
+      "revId": "feb172fed60ce11b8a002e12ce437fd45b9969bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
