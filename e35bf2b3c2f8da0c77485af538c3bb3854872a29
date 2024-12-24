@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "afec511f_6f4113c8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-12-24T16:35:24Z",
+      "side": 1,
+      "message": "LGTM, as this follows the same pattern as other /proc/*info files.",
+      "revId": "e35bf2b3c2f8da0c77485af538c3bb3854872a29",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
