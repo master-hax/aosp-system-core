@@ -96,6 +96,8 @@ static bool check_vendor_memfd_allowed() {
  * which will be cached by the caller.
  */
 static bool __has_memfd_support() {
+    const size_t test_buffer_size = 64 << 10; // 64 KB
+
     if (check_vendor_memfd_allowed() == false) {
         return false;
     }
@@ -129,6 +131,16 @@ static bool __has_memfd_support() {
 
     if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE) == -1) {
         ALOGE("fcntl(F_ADD_SEALS) failed: %s, no memfd support.\n", strerror(errno));
+        return false;
+    }
+
+    /*
+     * Ensure that the kernel supports ashmem ioctl commands on memfds. If not,
+     * fall back to using ashmem.
+     */
+    if (TEMP_FAILURE_RETRY(ioctl(fd, ASHMEM_SET_SIZE, test_buffer_size)) < 0) {
+        ALOGE("ioctl(ASHMEM_SET_SIZE) failed: %s, no ashmem-memfd compat support.\n",
+              strerror(errno));
         return false;
     }
 
