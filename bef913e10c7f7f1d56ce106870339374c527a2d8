@@ -22,6 +22,30 @@
       },
       "revId": "bef913e10c7f7f1d56ce106870339374c527a2d8",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cff57daf_c65970e2",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1981335
+      },
+      "writtenOn": "2024-12-27T02:12:08Z",
+      "side": 1,
+      "message": "I thought we will at least need liburingutils, but it seems not necessary?",
+      "parentUuid": "28d74b54_60962fb6",
+      "range": {
+        "startLine": 43,
+        "startChar": 3,
+        "endLine": 44,
+        "endChar": 23
+      },
+      "revId": "bef913e10c7f7f1d56ce106870339374c527a2d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
