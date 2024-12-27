@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92e52b5d_dc000b0f",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1780760
+      },
+      "writtenOn": "2024-12-27T01:44:25Z",
+      "side": 1,
+      "message": "do we need this?",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 20
+      },
+      "revId": "4b39ae8a2607239cb528df428cfb66f12fccd722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "130ad34c_9d9d6a34",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1780760
+      },
+      "writtenOn": "2024-12-27T01:44:25Z",
+      "side": 1,
+      "message": "do we need this ?",
+      "range": {
+        "startLine": 47,
+        "startChar": 16,
+        "endLine": 47,
+        "endChar": 17
+      },
+      "revId": "4b39ae8a2607239cb528df428cfb66f12fccd722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
