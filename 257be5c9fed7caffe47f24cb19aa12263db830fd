@@ -16,6 +16,24 @@
       "message": "why do we have these libraries listed as dependency for current implementation. I dont see any api called.",
       "revId": "257be5c9fed7caffe47f24cb19aa12263db830fd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b217908e_8d838be2",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1981335
+      },
+      "writtenOn": "2024-12-27T01:42:57Z",
+      "side": 1,
+      "message": "Thanks, removed these",
+      "parentUuid": "48bcfabc_3d86c3fe",
+      "revId": "257be5c9fed7caffe47f24cb19aa12263db830fd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
