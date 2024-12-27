@@ -44,6 +44,8 @@
 #include <android-base/strings.h>
 #include <android-base/unique_fd.h>
 
+#define F_SEAL_FUTURE_EXEC 0x40
+
 /* ashmem identity */
 static dev_t __ashmem_rdev;
 /*
@@ -129,7 +131,7 @@ static bool __has_memfd_support() {
         return false;
     }
 
-    if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE) == -1) {
+    if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE | F_SEAL_FUTURE_EXEC) == -1) {
         ALOGE("fcntl(F_ADD_SEALS) failed: %s, no memfd support.\n", strerror(errno));
         return false;
     }
@@ -382,6 +384,7 @@ error:
 }
 
 static int memfd_set_prot_region(int fd, int prot) {
+    int additional_seals = 0;
     int seals = fcntl(fd, F_GET_SEALS);
     if (seals == -1) {
         ALOGE("memfd_set_prot_region(%d, %d): F_GET_SEALS failed: %s\n", fd, prot, strerror(errno));
@@ -398,13 +401,24 @@ static int memfd_set_prot_region(int fd, int prot) {
                              // read-only mode
             return -1;
         }
-        return 0;
+    } else {
+	    additional_seals |= F_SEAL_FUTURE_WRITE;
+    }
+
+    if (prot & PROT_EXEC) {
+        if (seals & F_SEAL_FUTURE_EXEC) {
+	    ALOGE("memfd_set_prot_region(%d, %d): region is exec protected\n", fd, prot);
+	    errno = EINVAL;
+	    return -1;
+	}
+    } else {
+	    additional_seals |= F_SEAL_FUTURE_EXEC;
     }
 
     /* We would only allow read-only for any future file operations */
-    if (fcntl(fd, F_ADD_SEALS, F_SEAL_FUTURE_WRITE) == -1) {
-        ALOGE("memfd_set_prot_region(%d, %d): F_SEAL_FUTURE_WRITE | F_SEAL_SEAL seal failed: %s\n",
-              fd, prot, strerror(errno));
+    if (additional_seals && fcntl(fd, F_ADD_SEALS, additional_seals) == -1) {
+        ALOGE("memfd_set_prot_region(%d, %d): adding %d seals failed: %s\n",
+              fd, prot, additional_seals, strerror(errno));
         return -1;
     }
 
