@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f00d34f_ca523b9b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-12-27T05:10:46Z",
+      "side": 1,
+      "message": "Lets not have this library in system/core - See enh@ response here: https://android-review.git.corp.google.com/c/platform/system/core/+/3285917/comments/ddb2e68f_33542b1e\n\nI would recommend moving this to system/core/libsysutils/",
+      "revId": "e1ecfcf134583075f6d3dc9bc242768ed47f5e80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
