@@ -16,6 +16,58 @@
       "message": "Lets not have this library in system/core - See enh@ response here: https://android-review.git.corp.google.com/c/platform/system/core/+/3285917/comments/ddb2e68f_33542b1e\n\nI would recommend moving this to system/core/libsysutils/",
       "revId": "e1ecfcf134583075f6d3dc9bc242768ed47f5e80",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7f594c4_5d297ad8",
+        "filename": "liburingutils/OWNERS",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-12-27T05:14:14Z",
+      "side": 1,
+      "message": "nit: remove empty lines",
+      "revId": "e1ecfcf134583075f6d3dc9bc242768ed47f5e80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59377de8_cd1044cd",
+        "filename": "liburingutils/include/liburingutils/LibUringUtils.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1724998
+      },
+      "writtenOn": "2024-12-27T05:14:14Z",
+      "side": 1,
+      "message": "nit: 2024 and for all the new files added",
+      "fixSuggestions": [
+        {
+          "fixId": "f60ec9ae_e03da306",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "liburingutils/include/liburingutils/LibUringUtils.h",
+              "range": {
+                "startLine": 2,
+                "startChar": 0,
+                "endLine": 3,
+                "endChar": 0
+              },
+              "replacement": " * Copyright (C) 2024 The Android Open Source Project\n"
+            }
+          ]
+        }
+      ],
+      "revId": "e1ecfcf134583075f6d3dc9bc242768ed47f5e80",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
