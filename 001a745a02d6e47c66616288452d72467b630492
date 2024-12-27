@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f54cfde_89b6c167",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1934715
+      },
+      "writtenOn": "2024-12-27T02:28:08Z",
+      "side": 1,
+      "message": "Blocked on: https://lore.kernel.org/all/20241227015205.1375680-1-isaacmanjarres@google.com/",
+      "revId": "001a745a02d6e47c66616288452d72467b630492",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
