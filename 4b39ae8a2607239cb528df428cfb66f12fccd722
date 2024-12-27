@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "63504c63_e1ca21eb",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1981335
+      },
+      "writtenOn": "2024-12-27T01:54:28Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "92e52b5d_dc000b0f",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 20
+      },
+      "revId": "4b39ae8a2607239cb528df428cfb66f12fccd722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "130ad34c_9d9d6a34",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-12-27T01:44:25Z",
       "side": 1,
       "message": "do we need this ?",
+      "range": {
+        "startLine": 47,
+        "startChar": 16,
+        "endLine": 47,
+        "endChar": 17
+      },
+      "revId": "4b39ae8a2607239cb528df428cfb66f12fccd722",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6511bad9_5352f62c",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1981335
+      },
+      "writtenOn": "2024-12-27T01:54:28Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "130ad34c_9d9d6a34",
       "range": {
         "startLine": 47,
         "startChar": 16,
