@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28d74b54_60962fb6",
+        "filename": "liburingutils/Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1780760
+      },
+      "writtenOn": "2024-12-27T01:56:21Z",
+      "side": 1,
+      "message": "do we need these too?",
+      "range": {
+        "startLine": 43,
+        "startChar": 3,
+        "endLine": 44,
+        "endChar": 23
+      },
+      "revId": "bef913e10c7f7f1d56ce106870339374c527a2d8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
